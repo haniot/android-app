@@ -196,7 +196,7 @@ void communication_agent_send_event_tx(FSMContext *ctx, fsm_events evt, FSMEvent
 /**
  * Execute association data protocol 20601 - agent
  *
- * @param ctx Context
+ * @param ctx ContextMeasurement
  * @param evt State events
  * @param data Event data
  */
@@ -233,7 +233,7 @@ void association_agent_mds(FSMContext *ctx, fsm_events evt, FSMEventData *data)
 /**
  * Answer ROIV GET MDS - agent
  *
- * @param ctx Context
+ * @param ctx ContextMeasurement
  * @param evt State events
  * @param data Event data
  */

@@ -22,7 +22,7 @@
 			System-Id OCTET STRING
 			
 			Production-Spec SEQUENCE OF ProdSpecEntry{
-											spec-type 
+											stypeIdtype
 											component-id
 											prod-spec
 										}
@@ -43,15 +43,15 @@
 							<entry>
 								<simple>
 									<name>code</name>
-									<type>intu16</type>
-									<value>0</value>
+									<typeId>intu16</typeId>
+									<valueId>0</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>partition</name>
-									<type>intu16</type>
-									<value>0</value>
+									<typeId>intu16</typeId>
+									<valueId>0</valueId>
 								</simple>
 							</entry>
 						</entries>
@@ -67,15 +67,15 @@
 							<entry>
 								<simple>
 									<name>manufacturer</name>
-									<type>string</type>
-									<value></value>
+									<typeId>string</typeId>
+									<valueId></valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>model-number</name>
-									<type>string</type>
-									<value></value>
+									<typeId>string</typeId>
+									<valueId></valueId>
 								</simple>
 							</entry>
 						</entries>
@@ -87,8 +87,8 @@
 					</meta-data>
 					<simple>
 						<name>System-Id</name>
-						<type>hex</type>
-						<value>002209225807E86B</value>
+						<typeId>hex</typeId>
+						<valueId>002209225807E86B</valueId>
 					</simple>
 				</entry>
 				<entry>
@@ -97,8 +97,8 @@
 					</meta-data>
 					<simple>
 						<name>Dev-Configuration-Id</name>
-						<type>intu16</type>
-						<value>16384</value>
+						<typeId>intu16</typeId>
+						<valueId>16384</valueId>
 					</simple>
 				</entry>
 				<entry>

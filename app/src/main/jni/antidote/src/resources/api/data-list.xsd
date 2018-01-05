@@ -18,7 +18,7 @@
 		<xs:complexType>
 			<xs:simpleContent>
 		        <xs:extension base="xs:string">
-		            <xs:attribute name="name" type="xs:string" use="required" />
+		            <xs:attribute name="name" typeId="xs:string" use="required" />
 		        </xs:extension>
 		    </xs:simpleContent>
 		</xs:complexType>
@@ -47,9 +47,9 @@
 	<xs:element name="simple">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="name" type="xs:string" />
-				<xs:element name="type" type="api-def-type" />
-				<xs:element name="value" type="xs:string" />
+				<xs:element name="name" typeId="xs:string" />
+				<xs:element name="typeId" typeId="api-def-typeId" />
+				<xs:element name="valueId" typeId="xs:string" />
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
@@ -65,7 +65,7 @@
 	<xs:element name="compound">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="name" type="xs:string" />
+				<xs:element name="name" typeId="xs:string" />
 				<xs:element name="entries" />
 			</xs:sequence>
 		</xs:complexType>

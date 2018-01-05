@@ -24,7 +24,7 @@ import org.json.JSONObject;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.model.User;
-import br.edu.uepb.nutes.haniot.model.dao.server.Server;
+import br.edu.uepb.nutes.haniot.server.Server;
 import br.edu.uepb.nutes.haniot.model.dao.UserDAO;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;

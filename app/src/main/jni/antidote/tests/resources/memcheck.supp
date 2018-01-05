@@ -402,7 +402,7 @@
 ################################################################################
 # From supression file of gstreamer unit tests
 ################################################################################
-# glib type leaks
+# glib typeId leaks
 {
    <insert_a_suppression_name_here>
    Memcheck:Leak

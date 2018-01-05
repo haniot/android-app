@@ -68,7 +68,7 @@
 			}
 
 /**
- * Plugin-private typedef for Context
+ * Plugin-private typedef for ContextMeasurement
  */
 typedef struct Context PluginContext;
 

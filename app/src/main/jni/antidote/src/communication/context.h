@@ -1,7 +1,7 @@
 /* -*- mode: C; c-file-style: "gnu"; indent-tabs-mode: nil; -*- */
 /**
  * \file context.h
- * \brief Context definitions.
+ * \brief ContextMeasurement definitions.
  *
  * Copyright (C) 2010 Signove Tecnologia Corporation.
  * All rights reserved.
@@ -38,7 +38,7 @@
  */
 
 /**
- * Context identification struct. Should be handled as
+ * ContextMeasurement identification struct. Should be handled as
  * opaque most of the time, unless you are a plugin writer.
  */
 typedef struct ContextId {
@@ -83,11 +83,11 @@ typedef struct timeout_callback {
 } timeout_callback;
 
 /**
- * This represents the Connection Context of IEEE Agent
+ * This represents the Connection ContextMeasurement of IEEE Agent
  */
 typedef struct Context {
 	/**
-         * Context is Manager or Agent
+         * ContextMeasurement is Manager or Agent
 	 */
 	int type;
 

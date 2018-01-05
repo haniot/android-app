@@ -17,8 +17,8 @@
 					</meta-data>
 					<simple>
 						<name>Basic-Nu-Observed-Value</name>
-						<type>float</type>
-						<value>100.000000</value>
+						<typeId>float</typeId>
+						<valueId>100.000000</valueId>
 					</simple>
 				</entry>
 			</entries>
@@ -38,8 +38,8 @@
 					</meta-data>
 					<simple>
 						<name>Basic-Nu-Observed-Value</name>
-						<type>float</type>
-						<value>97.000000</value>
+						<typeId>float</typeId>
+						<valueId>97.000000</valueId>
 					</simple>
 				</entry>
 			</entries>

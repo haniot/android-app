@@ -114,7 +114,7 @@ static NetworkSocket *get_socket(int port)
 /**
  * Services disconnection request from stack
  *
- * @param ctx Context
+ * @param ctx ContextMeasurement
  * @return status
  */
 static int network_force_disconnect(Context *ctx)
@@ -130,7 +130,7 @@ static int network_force_disconnect(Context *ctx)
  *
  * @param source GLib struct representing connection
  * @param condition condition received
- * @param data Related Context
+ * @param data Related ContextMeasurement
  * @return TRUE if connection stays open, FALSE otherwise
  */
 gboolean network_read_apdu(GIOChannel *source, GIOCondition condition,
@@ -321,7 +321,7 @@ static int network_init(unsigned int plugin_label)
  * Called by stack to block/sleep while waiting for data.
  * Not implemented in this plugin because it works in non-blocking mode.
  *
- * @param ctx Context
+ * @param ctx ContextMeasurement
  * @return TCP_ERROR
  */
 static int network_wait_for_data(Context *ctx)
@@ -333,7 +333,7 @@ static int network_wait_for_data(Context *ctx)
 /**
  * Called by stack to fetch received APDU
  *
- * @param ctx Context
+ * @param ctx ContextMeasurement
  * @return Byte stream containing APDU data
  */
 static ByteStreamReader *network_get_apdu_stream(Context *ctx)

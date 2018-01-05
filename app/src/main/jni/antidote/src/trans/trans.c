@@ -40,7 +40,7 @@ typedef struct TransDevice
 	char *lladdr;
 
 	/**
-	 * Related stack Context id of the device.
+	 * Related stack ContextMeasurement id of the device.
 	 * The "plugin id" inside this is always the same:
 	 * the dummy communication plug-in at communication/plugin/trans.
 	 */
@@ -54,12 +54,12 @@ typedef struct TransDevice
 } TransDevice;
 
 /**
- * Initial Context Id for a transcoded device
+ * Initial ContextMeasurement Id for a transcoded device
  */
 #define INITIAL_TRANS_CONTEXT 0x324
 
 /**
- * Context ID generator for all transcoded devices
+ * ContextMeasurement ID generator for all transcoded devices
  */
 static unsigned long long int new_context = INITIAL_TRANS_CONTEXT;
 
@@ -140,7 +140,7 @@ static int search_by_context(void *parg, void *pelement)
 /**
  * Find device by context id
  *
- * @param id Context id
+ * @param id ContextMeasurement id
  * @return TransDevice struct or NULL if not found
  */
 static TransDevice *get_device_by_context(ContextId id)
@@ -167,7 +167,7 @@ static char *get_addr_by_context(ContextId id)
  *
  * @param lladdr Low-level address, format is opaque
  * @param plugin The related transcoding plug-in for the device
- * @return Context ID
+ * @return ContextMeasurement ID
  */
 ContextId trans_context_get(char *lladdr, TransPlugin *plugin)
 {
@@ -387,7 +387,7 @@ int trans_disconnected(TransPlugin *plugin, char *lladdr)
 /**
  * Called by 11073 stack when a connection must be brought down
  *
- * @param id the Context id of device
+ * @param id the ContextMeasurement id of device
  */
 void trans_force_disconnect(ContextId id)
 {

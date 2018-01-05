@@ -27,6 +27,10 @@ android {
             path 'src/main/jni/Android.mk'
         }
     }
+    compileOptions {
+        targetCompatibility 1.8
+        sourceCompatibility 1.8
+    }
 }
 
 dependencies {
@@ -42,8 +46,7 @@ dependencies {
     implementation 'com.jakewharton:butterknife:8.8.1'
     implementation 'com.mikhaellopez:circularprogressbar:1.1.1'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.2'
-    implementation 'com.github.mklimek:ssl-utils-android:1.0.1'
-
+    implementation 'no.nordicsemi.android.support.v18:scanner:1.0.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
 
     testImplementation 'junit:junit:4.12'

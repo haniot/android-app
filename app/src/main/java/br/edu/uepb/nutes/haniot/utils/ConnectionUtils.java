@@ -2,13 +2,12 @@ package br.edu.uepb.nutes.haniot.utils;
 
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
-
-import butterknife.internal.Utils;
 
 /**
  * Provides routines for checking connection with internet and bluetooth.

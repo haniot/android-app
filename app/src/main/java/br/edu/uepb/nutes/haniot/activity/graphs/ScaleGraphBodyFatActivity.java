@@ -20,8 +20,6 @@ import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
-import br.edu.uepb.nutes.haniot.model.MeasurementScale;
-import br.edu.uepb.nutes.haniot.model.dao.MeasurementScaleDAO;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -71,12 +69,12 @@ public class ScaleGraphBodyFatActivity extends AppCompatActivity {
         long dateEnd = DateUtils.getCurrentDatetime();
         long dateStart = dateEnd - (dayMile * 7);
         String deviceAddress = "D4:36:39:91:75:71";
-        String userId = session.getIdLogged();
+//        String userId = session.getIdLogged();
 
 //String.valueOf(dateEnd)
 
         //ArrayList<MeasurementScale> measurementData = new ArrayList<MeasurementScale>();
-        List<MeasurementScale> measurementData= MeasurementScaleDAO.getInstance(this).filter(dateStart, dateEnd, deviceAddress, userId);
+//        List<MeasurementScale> measurementData= MeasurementScaleDAO.getInstance(this).filter(dateStart, dateEnd, deviceAddress, userId);
 
 //        MeasurementScale m1 = new MeasurementScale();
 //        m1.setWeight(70);
@@ -114,59 +112,59 @@ public class ScaleGraphBodyFatActivity extends AppCompatActivity {
 //        measurementData.add(m6);
 //        measurementData.add(m7);
 
-        if(measurementData.size() == 0) return;
-
-        final String[] quarters = new String[measurementData.size()];
-        ArrayList<Entry> entries = new ArrayList<Entry>();
-
-        for(int i = 0; i < measurementData.size(); i++) {
-            String format = "dd/MM";
-            String date =  DateUtils.getDatetime(measurementData.get(i).getRegistrationTime(), format);
-
-            float bodyfat = measurementData.get(i).getBodyFat();
-            entries.add(new Entry((float)i, bodyfat));
-            quarters[i] = date;
-        }
-
-        IAxisValueFormatter formatter = new IAxisValueFormatter() {
-
-            @Override
-            public String getFormattedValue(float value, AxisBase axis) {
-                if(value >= quarters.length){return "";}
-                return quarters[(int) value];
-            }
-
-            // we don't draw numbers, so no decimal digits needed
-            public int getDecimalDigits() {  return 0; }
-        };
-
-        XAxis xAxis = mChartBodyFat.getXAxis();
-        xAxis.setGranularity(1f); // minimum axis-step (interval) is 1
-        xAxis.setValueFormatter(formatter);
-//        xAxis.setSpaceMin(0);
-//        xAxis.setSpaceMax(measurementData.size()-1);
-        xAxis.setEnabled(true);
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-
-        ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
-
-        LineDataSet set = new LineDataSet(entries, "body fat");
-        set.setLineWidth(3f);
-        set.setDrawCircles(true);
-        set.setDrawCircleHole(true);
-        set.setAxisDependency(YAxis.AxisDependency.LEFT);
-
-        dataSets.add(set);
-        LineData data = new LineData(dataSets);
-
-        mChartBodyFat.animate();
-        mChartBodyFat.setData(data);
-        mChartBodyFat.setEnabled(true);
-        mChartBodyFat.invalidate();
-        mChartBodyFat.setVisibleXRangeMaximum(65f);
-        mChartBodyFat.resetViewPortOffsets();
-
-        mChartBodyFat.animateX(3000);
+//        if(measurementData.size() == 0) return;
+//
+//        final String[] quarters = new String[measurementData.size()];
+//        ArrayList<Entry> entries = new ArrayList<Entry>();
+//
+//        for(int i = 0; i < measurementData.size(); i++) {
+//            String format = "dd/MM";
+//            String date =  DateUtils.getDatetime(measurementData.get(i).getRegistrationTime(), format);
+//
+//            float bodyfat = measurementData.get(i).getBodyFat();
+//            entries.add(new Entry((float)i, bodyfat));
+//            quarters[i] = date;
+//        }
+//
+//        IAxisValueFormatter formatter = new IAxisValueFormatter() {
+//
+//            @Override
+//            public String getFormattedValue(float value, AxisBase axis) {
+//                if(value >= quarters.length){return "";}
+//                return quarters[(int) value];
+//            }
+//
+//            // we don't draw numbers, so no decimal digits needed
+//            public int getDecimalDigits() {  return 0; }
+//        };
+//
+//        XAxis xAxis = mChartBodyFat.getXAxis();
+//        xAxis.setGranularity(1f); // minimum axis-step (interval) is 1
+//        xAxis.setValueFormatter(formatter);
+////        xAxis.setSpaceMin(0);
+////        xAxis.setSpaceMax(measurementData.size()-1);
+//        xAxis.setEnabled(true);
+//        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+//
+//        ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
+//
+//        LineDataSet set = new LineDataSet(entries, "body fat");
+//        set.setLineWidth(3f);
+//        set.setDrawCircles(true);
+//        set.setDrawCircleHole(true);
+//        set.setAxisDependency(YAxis.AxisDependency.LEFT);
+//
+//        dataSets.add(set);
+//        LineData data = new LineData(dataSets);
+//
+//        mChartBodyFat.animate();
+//        mChartBodyFat.setData(data);
+//        mChartBodyFat.setEnabled(true);
+//        mChartBodyFat.invalidate();
+//        mChartBodyFat.setVisibleXRangeMaximum(65f);
+//        mChartBodyFat.resetViewPortOffsets();
+//
+//        mChartBodyFat.animateX(3000);
     }
 
     @Override

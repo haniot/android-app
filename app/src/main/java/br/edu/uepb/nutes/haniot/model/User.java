@@ -1,16 +1,18 @@
 package br.edu.uepb.nutes.haniot.model;
 
+import io.objectbox.annotation.Backlink;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.annotation.Index;
 import io.objectbox.annotation.NameInDb;
 import io.objectbox.annotation.Uid;
+import io.objectbox.relation.ToMany;
 
 /**
  * Represents User object.
  *
  * @author Douglas Rafael <douglas.rafael@nutes.uepb.edu.br>
- * @version 1.5
+ * @version 2.0
  * @copyright Copyright (c) 2017, NUTES UEPB
  */
 @Entity
@@ -22,24 +24,39 @@ public class User {
     private String _id; // _id in server remote (UUID)
 
     private String name;
+
+    @Index
     private String email;
+
     private String password;
     private int gender;
-    private int height; // in cm
     private long dateOfBirth;
-    private String token;
+    private int height; // in cm
+
+    private String token; // provide by the server
+
+    /**
+     * RELATIONS
+     */
+    @Backlink(to = "user")
+    private ToMany<Measurement> measurements;
+
+    /**
+     * {@link UserGroup()}
+     */
     private int group; // 1 super, 2 comum
 
     public User() {
     }
 
-    public User(String name, String email, String password, int gender, int height, long dateOfBirth) {
+    public User(String name, String email, String password, int gender, long dateOfBirth, int height, int group) {
         this.name = name;
         this.email = email;
         this.password = password;
         this.gender = gender;
-        this.height = height;
         this.dateOfBirth = dateOfBirth;
+        this.height = height;
+        this.group = group;
     }
 
     public long getId() {
@@ -90,20 +107,20 @@ public class User {
         this.gender = gender;
     }
 
-    public int getHeight() {
-        return height;
-    }
-
-    public void setHeight(int height) {
-        this.height = height;
-    }
-
     public long getDateOfBirth() {
         return dateOfBirth;
     }
 
     public void setDateOfBirth(long dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
     }
 
     public String getToken() {
@@ -122,12 +139,12 @@ public class User {
         this.group = group;
     }
 
-    @Override
-    public int hashCode() {
-        int result = (int) (id ^ (id >>> 32));
-        result = 31 * result + (_id != null ? _id.hashCode() : 0);
-        result = 31 * result + email.hashCode();
-        return result;
+    public ToMany<Measurement> getMeasurements() {
+        return measurements;
+    }
+
+    public void setMeasurements(ToMany<Measurement> measurements) {
+        this.measurements = measurements;
     }
 
     @Override
@@ -137,9 +154,7 @@ public class User {
 
         User other = (User) o;
 
-        if (id != other.id) return false;
-        if (_id != null ? !_id.equals(other._id) : other._id != null) return false;
-        return email.equals(other.email);
+        return other.get_id().equals(this.get_id()) && other.getEmail().equals(this.getEmail());
     }
 
     @Override
@@ -151,10 +166,11 @@ public class User {
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", gender=" + gender +
-                ", height=" + height +
                 ", dateOfBirth=" + dateOfBirth +
+                ", height=" + height +
                 ", token='" + token + '\'' +
                 ", group=" + group +
+                ", measurements=" + measurements +
                 '}';
     }
 }

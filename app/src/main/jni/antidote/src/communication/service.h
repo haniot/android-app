@@ -115,7 +115,7 @@ typedef struct Request {
 } Request;
 
 /**
- * Service Context
+ * Service ContextMeasurement
  */
 typedef struct Service {
 	ServiceState state;

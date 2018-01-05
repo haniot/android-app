@@ -1,7 +1,7 @@
 /* -*- mode: C; c-file-style: "gnu"; indent-tabs-mode: nil; -*- */
 /**
  * \file context_manager.c
- * \brief Connection Context Manager source.
+ * \brief Connection ContextMeasurement Manager source.
  *
  * Copyright (C) 2010 Signove Tecnologia Corporation.
  * All rights reserved.
@@ -30,7 +30,7 @@
  */
 
 /**
- * \defgroup ContextManager Connection Context Manager
+ * \defgroup ContextManager Connection ContextMeasurement Manager
  * \ingroup FSM
  * \brief Multiple context execution handling.
  *
@@ -99,7 +99,7 @@ static int destroy_context(void *element)
  * @brief Verify if the context element have the given id.
  *
  * @param arg ID to be compared.
- * @param element Context to be compared.
+ * @param element ContextMeasurement to be compared.
  * @return True if the element's id matches with the given ID.
  */
 static int context_search_by_id(void *arg, void *element)
@@ -122,7 +122,7 @@ static int context_search_by_id(void *arg, void *element)
  *
  * @param id id to be verified.
  * @param type The context type
- * @return Context pointer or NULL if cannot create one.
+ * @return ContextMeasurement pointer or NULL if cannot create one.
  */
 Context *context_create(ContextId id, int type)
 {
@@ -184,7 +184,7 @@ void context_remove_all()
 /**
  * @brief Get execution context.
  *
- * @param id Context ID
+ * @param id ContextMeasurement ID
  * @return pointer to context struct or NULL if cannot find.
  */
 Context *context_get(ContextId id)
