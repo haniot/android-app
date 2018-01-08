@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -16,12 +18,15 @@ import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.model.MeasurementHeartRate;
+import br.edu.uepb.nutes.haniot.model.MeasurementThermometer;
 import br.edu.uepb.nutes.haniot.model.dao.MeasurementHeartRateDAO;
+import br.edu.uepb.nutes.haniot.model.dao.MeasurementThermometerDAO;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,15 +36,27 @@ import butterknife.ButterKnife;
  * Created by izabella on 01/11/17.
  */
 
-public class HeartRateGraphActivity extends AppCompatActivity {
+public class HeartRateGraphActivity extends AppCompatActivity implements View.OnClickListener{
+    private final int GRAPH_TYPE_DAY = 1;
+    private final int GRAPH_TYPE_SEVEN = 2;
+    private final int GRAPH_TYPE_MONTH = 3;
 
     private Session session;
+    private static MeasurementThermometerDAO dao;
+
+    List<MeasurementHeartRate> measurementData;
 
     @BindView(R.id.chart_heart_rate)
     LineChart mChart;
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
+
+    @BindView(R.id.ver_por_mes)
+    Button mButtonMonth;
+
+    @BindView(R.id.ver_por_semana)
+    Button mButtonSeven;
 
 
     @Override
@@ -53,11 +70,15 @@ public class HeartRateGraphActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Heart Rate");
         session = new Session(this);
 
+        mButtonMonth.setOnClickListener(this);
+        mButtonSeven.setOnClickListener(this);
 
-        createChart();
+
+        createChart(GRAPH_TYPE_DAY);
+
     }
 
-    private void createChart() {
+    private void createChart(int type) {
 
         mChart.getDescription().setEnabled(false);
         mChart.setDrawGridBackground(false);
@@ -67,79 +88,185 @@ public class HeartRateGraphActivity extends AppCompatActivity {
         leftAxis.setAxisMaximum(150f);
 
         mChart.getAxisRight().setEnabled(false);
-//
+
         long dayMile = (24 * 60 * 60 * 1000);
         long dateEnd = DateUtils.getCurrentDatetime();
         long dateStart = dateEnd - (dayMile * 7);
         String deviceAddress = "E9:50:60:1F:31:D2";
         String userId = session.getIdLogged();
 
-        List<MeasurementHeartRate> measurementData= MeasurementHeartRateDAO.getInstance(this).filter(dateStart, dateEnd, deviceAddress, userId);
+        if(type == GRAPH_TYPE_DAY) {
 
-        if(measurementData.size() == 0) return;
+            measurementData = MeasurementHeartRateDAO.getInstance(this).filter(DateUtils.addDays(0).getTimeInMillis(), getDateTime(0), deviceAddress, session.getIdLogged());
 
-        final String[] quarters = new String[measurementData.size()];
-        ArrayList<Entry> entries = new ArrayList<Entry>();
+            if(measurementData.size() == 0) return;
 
-        for(int i = 0; i < measurementData.size(); i++) {
-            String format = "dd/MM";
-            String date =  DateUtils.getDatetime(measurementData.get(i).getRegistrationTime(), format);
+            final String[] quarters = new String[measurementData.size()];
+            ArrayList<Entry> entries = new ArrayList<Entry>();
 
-            int heartRate = measurementData.get(i).getFcMaximum();
-            entries.add(new Entry(i, heartRate));
-            quarters[i] = date;
+            for(int i = 0; i < measurementData.size(); i++) {
+                String format = "HH:MM:SS";
+                String date = DateUtils.getDatetime(measurementData.get(i).getRegistrationTime(), format);
+                float fc = measurementData.get(i).getFcMaximum(); //get
+                entries.add(new Entry((float)i, fc));
+                quarters[i] = date;
+            }
+            IAxisValueFormatter formatter = new IAxisValueFormatter() {
+
+                @Override
+                public String getFormattedValue(float value, AxisBase axis) {
+                    if(value >= quarters.length){return "";}
+                    return quarters[(int) value];
+                }
+
+                // we don't draw numbers, so no decimal digits needed
+                public int getDecimalDigits() {  return 0; }
+            };
+            XAxis xAxis = mChart.getXAxis();
+            xAxis.setGranularity(1f); // minimum axis-step (interval) is 1
+            xAxis.setValueFormatter(formatter);
+            xAxis.setEnabled(true);
+            xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+
+            ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
+
+            LineDataSet set = new LineDataSet(entries, "Maximum Frequency");
+            set.setLineWidth(3f);
+            set.setDrawCircles(true);
+            set.setDrawCircleHole(true);
+            set.setAxisDependency(YAxis.AxisDependency.LEFT);
+            dataSets.add(set);
+            LineData data = new LineData(dataSets);
+            mChart.animate();
+            mChart.setData(data);
+            mChart.setEnabled(true);
+            mChart.invalidate();
+            mChart.setVisibleXRangeMaximum(65f);
+            mChart.resetViewPortOffsets();
+            mChart.animateX(1000);
+            mChart.notifyDataSetChanged();
+        }else if(type == GRAPH_TYPE_SEVEN) {
+
+            measurementData= MeasurementHeartRateDAO.getInstance(this).filter(DateUtils.addDays(-7).getTimeInMillis(), getDateTime(0), deviceAddress, session.getIdLogged());
+
+            if(measurementData.size() == 0) return;
+
+            final String[] quarters = new String[measurementData.size()];
+            ArrayList<Entry> entries = new ArrayList<Entry>();
+
+            for(int i = 0; i < measurementData.size(); i++) {
+                String format = "dd/MM";
+                String date = DateUtils.getDatetime(measurementData.get(i).getRegistrationTime(), format);
+                float fc = measurementData.get(i).getFcMaximum(); //get
+                entries.add(new Entry((float)i, fc));
+                quarters[i] = date;
+            }
+            IAxisValueFormatter formatter = new IAxisValueFormatter() {
+
+                @Override
+                public String getFormattedValue(float value, AxisBase axis) {
+                    if(value >= quarters.length){return "";}
+                    return quarters[(int) value];
+                }
+
+                // we don't draw numbers, so no decimal digits needed
+                public int getDecimalDigits() {  return 0; }
+            };
+            XAxis xAxis = mChart.getXAxis();
+            xAxis.setGranularity(1f); // minimum axis-step (interval) is 1
+            xAxis.setValueFormatter(formatter);
+            xAxis.setEnabled(true);
+            xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+
+            ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
+
+            LineDataSet set = new LineDataSet(entries, "Maximum Frequency");
+            set.setLineWidth(3f);
+            set.setDrawCircles(true);
+            set.setDrawCircleHole(true);
+            set.setAxisDependency(YAxis.AxisDependency.LEFT);
+            dataSets.add(set);
+            LineData data = new LineData(dataSets);
+            mChart.animate();
+            mChart.setData(data);
+            mChart.setEnabled(true);
+            mChart.invalidate();
+            mChart.setVisibleXRangeMaximum(65f);
+            mChart.resetViewPortOffsets();
+            mChart.animateX(1000);
+            mChart.notifyDataSetChanged();
+
+        }else if(type == GRAPH_TYPE_MONTH){
+            measurementData= MeasurementHeartRateDAO.getInstance(this).filter(DateUtils.addDays(-30).getTimeInMillis(), getDateTime(0), deviceAddress, session.getIdLogged());
+
+            if(measurementData.size() == 0) return;
+
+            final String[] quarters = new String[measurementData.size()];
+            ArrayList<Entry> entries = new ArrayList<Entry>();
+
+            for(int i = 0; i < measurementData.size(); i++) {
+                String format = "dd/MM";
+                String date = DateUtils.getDatetime(measurementData.get(i).getRegistrationTime(), format);
+                float fc = measurementData.get(i).getFcMaximum(); //get
+                entries.add(new Entry((float)i, fc));
+                quarters[i] = date;
+            }
+            IAxisValueFormatter formatter = new IAxisValueFormatter() {
+
+                @Override
+                public String getFormattedValue(float value, AxisBase axis) {
+                    if(value >= quarters.length){return "";}
+                    return quarters[(int) value];
+                }
+
+                // we don't draw numbers, so no decimal digits needed
+                public int getDecimalDigits() {  return 0; }
+            };
+            XAxis xAxis = mChart.getXAxis();
+            xAxis.setGranularity(1f); // minimum axis-step (interval) is 1
+            xAxis.setValueFormatter(formatter);
+            xAxis.setEnabled(true);
+            xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+
+            ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
+
+            LineDataSet set = new LineDataSet(entries, "Maximum Frequency");
+            set.setLineWidth(3f);
+            set.setDrawCircles(true);
+            set.setDrawCircleHole(true);
+            set.setAxisDependency(YAxis.AxisDependency.LEFT);
+            dataSets.add(set);
+            LineData data = new LineData(dataSets);
+            mChart.animate();
+            mChart.setData(data);
+            mChart.setEnabled(true);
+            mChart.invalidate();
+            mChart.setVisibleXRangeMaximum(65f);
+            mChart.resetViewPortOffsets();
+            mChart.animateX(1000);
+            mChart.notifyDataSetChanged();
         }
 
-        IAxisValueFormatter formatter = new IAxisValueFormatter() {
 
-            @Override
-            public String getFormattedValue(float value, AxisBase axis) {
-                if(value >= quarters.length){return "";}
-                return quarters[(int) value];
-            }
-
-            // we don't draw numbers, so no decimal digits needed
-            public int getDecimalDigits() {  return 0; }
-        };
-
-        XAxis xAxis = mChart.getXAxis();
-        xAxis.setGranularity(1f); // minimum axis-step (interval) is 1
-        xAxis.setValueFormatter(formatter);
-//        xAxis.setSpaceMin(0);
-//        xAxis.setSpaceMax(measurementData.size()-1);
-        xAxis.setEnabled(true);
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-
-        ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
-
-        LineDataSet set = new LineDataSet(entries, "fc");
-        set.setLineWidth(3f);
-        set.setDrawCircles(true);
-        set.setDrawCircleHole(true);
-        set.setAxisDependency(YAxis.AxisDependency.LEFT);
-
-        dataSets.add(set);
-        LineData data = new LineData(dataSets);
-
-        mChart.animate();
-        mChart.setData(data);
-        mChart.setEnabled(true);
-        mChart.invalidate();
-        mChart.setVisibleXRangeMaximum(65f);
-        mChart.resetViewPortOffsets();
-       // mChart.getDrawingTime();
-
-        mChart.animateX(3000);
     }
 
+    private long getDateTime(int millis) {
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(c.getTimeInMillis() + millis);
+
+        return c.getTimeInMillis();
+    }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                super.onBackPressed();
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.ver_por_mes:
+                createChart(GRAPH_TYPE_MONTH);
+                break;
+
+            case R.id.ver_por_semana:
+                createChart(GRAPH_TYPE_SEVEN);
                 break;
         }
-        return super.onOptionsItemSelected(item);
     }
 }

@@ -132,14 +132,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginTop="10dp" />
 
-            <Button
-                android:id="@+id/button"
-                style="@style/Widget.AppCompat.Button.Colored"
-                android:layout_width="150dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="10dp"
-                android:text="Graph" />
+
         </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>
