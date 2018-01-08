@@ -10,12 +10,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.activity.devices.BodyCompositionMonitorHDPActivity;
-import br.edu.uepb.nutes.haniot.activity.devices.HeartRateActivity;
-import br.edu.uepb.nutes.haniot.activity.devices.ScaleActivity;
-import br.edu.uepb.nutes.haniot.activity.devices.GlucoseActivity;
-import br.edu.uepb.nutes.haniot.activity.devices.BloodPressureHDPActivity;
-import br.edu.uepb.nutes.haniot.activity.devices.ThermometerActivity;
+import br.edu.uepb.nutes.haniot.devices.BloodPressureHDPActivity;
+import br.edu.uepb.nutes.haniot.devices.BodyCompositionMonitorHDPActivity;
+import br.edu.uepb.nutes.haniot.devices.GlucoseActivity;
+import br.edu.uepb.nutes.haniot.devices.HeartRateActivity;
+import br.edu.uepb.nutes.haniot.devices.ScaleActivity;
+import br.edu.uepb.nutes.haniot.devices.ThermometerActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -34,9 +34,6 @@ public class ConnectDeviceFragment extends Fragment implements View.OnClickListe
 
     @BindView(R.id.device_glucose)
     ImageView imageViewGlucose;
-
-//    @BindView(R.id.device_blood_pressure)
-//    ImageView imageViewBloodPressure;
 
     @BindView(R.id.device_blood_pressure_hdp)
     ImageView imageViewBloodPressureHDP;
@@ -95,9 +92,6 @@ public class ConnectDeviceFragment extends Fragment implements View.OnClickListe
             case R.id.device_glucose:
                 startActivity(new Intent(getContext(), GlucoseActivity.class));
                 break;
-//            case R.id.device_blood_pressure:
-//                startActivity(new Intent(getActivity(), BloodPressureActivity.class));
-//                break;
             case R.id.device_blood_pressure_hdp:
                 startActivity(new Intent(getContext(), BloodPressureHDPActivity.class));
                 break;

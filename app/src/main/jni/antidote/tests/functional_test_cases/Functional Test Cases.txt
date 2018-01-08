@@ -350,7 +350,7 @@ TC 5.1
   3 - Agent sends configuration (with episodic scanner object) 
   4 - Manager accepts and enter in operation state
   5 - Manager set scanner-operational-state to enabled
-  6 - Agent send new scanner-operational-state value 
+  6 - Agent send new scanner-operational-state valueId
   7 - Agent send event report with the changed data (nbuf-grouped)
   8 - Manager send confirmation 
   9 - Agent send release request
@@ -363,7 +363,7 @@ TC 5.2
   3 - Agent sends configuration (with episodic scanner object) 
   4 - Manager accepts and enter in operation state
   5 - Manager set scanner-operational-state to enabled
-  6 - Agent send new scanner-operational-state value 
+  6 - Agent send new scanner-operational-state valueId
   7 - Agent send event report with the changed data (nbuf-fixed)
   8 - Manager send confirmation 
   9 - Agent send release request
@@ -376,7 +376,7 @@ TC 5.3
   3 - Agent sends configuration (with episodic scanner object) 
   4 - Manager accepts and enter in operation state
   5 - Manager set scanner-operational-state to enabled
-  6 - Agent send new scanner-operational-state value 
+  6 - Agent send new scanner-operational-state valueId
   7 - Agent send event report with the changed data (unbuf-var)
   8 - Manager send confirmation 
   9 - Agent send release request
@@ -391,7 +391,7 @@ TC 6.1
   3 - Agent sends configuration (with periodic scanner object) 
   4 - Manager accepts and enter in operation state
   5 - Manager set scanner-operational-state to enabled
-  6 - Agent send new scanner-operational-state value 
+  6 - Agent send new scanner-operational-state valueId
   7 - Agent send event report with the changed data (buf-grouped)
   8 - Manager send confirmation 
   9 - Agent send release request
@@ -404,7 +404,7 @@ TC 6.2
   3 - Agent sends configuration (with periodic scanner object) 
   4 - Manager accepts and enter in operation state
   5 - Manager set scanner-operational-state to enabled
-  6 - Agent send new scanner-operational-state value 
+  6 - Agent send new scanner-operational-state valueId
   7 - Agent send event report with the changed data (buf-fixed)
   8 - Manager send confirmation 
   9 - Agent send release request
@@ -417,7 +417,7 @@ TC 6.3
   3 - Agent sends configuration (with periodic scanner object) 
   4 - Manager accepts and enter in operation state
   5 - Manager set scanner-operational-state to enabled
-  6 - Agent send new scanner-operational-state value 
+  6 - Agent send new scanner-operational-state valueId
   7 - Agent send event report with the changed data (buf-var)
   8 - Manager send confirmation 
   9 - Agent send release request

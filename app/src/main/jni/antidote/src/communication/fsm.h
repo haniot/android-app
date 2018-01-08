@@ -196,7 +196,7 @@ typedef struct FSM {
 
 
 /**
- * FSM typedef for Context
+ * FSM typedef for ContextMeasurement
  */
 typedef struct Context FSMContext;
 

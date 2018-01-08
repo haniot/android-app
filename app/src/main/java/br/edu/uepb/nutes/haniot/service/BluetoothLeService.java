@@ -31,17 +31,15 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
+import org.json.JSONException;
+
 import java.util.List;
 import java.util.UUID;
 
-import br.edu.uepb.nutes.haniot.model.MeasurementGlucose;
-import br.edu.uepb.nutes.haniot.model.MeasurementThermometer;
+import br.edu.uepb.nutes.haniot.parse.GattHRParser;
+import br.edu.uepb.nutes.haniot.parse.GattHTParser;
+import br.edu.uepb.nutes.haniot.parse.YunmaiParser;
 import br.edu.uepb.nutes.haniot.utils.GattAttributes;
-import br.edu.uepb.nutes.haniot.utils.GlucoseMeasurementContextParser;
-import br.edu.uepb.nutes.haniot.utils.GlucoseMeasurementParser;
-import br.edu.uepb.nutes.haniot.utils.HeartRateMeasurementParser;
-import br.edu.uepb.nutes.haniot.utils.ScaleMeasurementParser;
-import br.edu.uepb.nutes.haniot.utils.TemperatureMeasurementParser;
 
 /**
  * Service for managing connection and data communication with a GATT server hosted on a
@@ -120,22 +118,26 @@ public class BluetoothLeService extends Service {
         final Intent intent = new Intent(action);
         Log.i(LOG, "broadcastUpdate()");
         if (characteristic.getUuid().equals(UUID.fromString(GattAttributes.CHARACTERISTIC_TEMPERATURE_MEASUREMENT))) {
-            MeasurementThermometer measurementThermometer = TemperatureMeasurementParser.parse(characteristic, getApplicationContext());
-            intent.putExtra(EXTRA_DATA, measurementThermometer);
+            try {
+                intent.putExtra(EXTRA_DATA, GattHTParser.parse(characteristic).toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         } else if (characteristic.getUuid().equals(UUID.fromString(GattAttributes.CHARACTERISTIC_GLUSOSE_MEASUREMENT))) {
-            MeasurementGlucose measurement = GlucoseMeasurementParser.parse(characteristic, getApplicationContext());
-            intent.putExtra(EXTRA_DATA, measurement);
         } else if (characteristic.getUuid().equals(UUID.fromString(GattAttributes.CHARACTERISTIC_GLUSOSE_MEASUREMENT_CONTEXT))) {
             Log.i(LOG, "broadcastUpdate() - CHARACTERISTIC_GLUSOSE_MEASUREMENT_CONTEXT");
-            MeasurementGlucose measurement = GlucoseMeasurementContextParser.parse(characteristic, getApplicationContext());
-            intent.putExtra(EXTRA_DATA_CONTEXT, measurement);
         } else if (characteristic.getUuid().equals(UUID.fromString(GattAttributes.CHARACTERISTIC_SCALE_MEASUREMENT))) {
-            Log.w(LOG, "broadcastUpdate() - CHARACTERISTIC_SCALE_MEASUREMENT");
-            intent.putExtra(EXTRA_DATA, ScaleMeasurementParser.parse(characteristic.getValue()));
+            try {
+                intent.putExtra(EXTRA_DATA, YunmaiParser.parse(characteristic.getValue()).toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         } else if (characteristic.getUuid().equals(UUID.fromString(GattAttributes.CHARACTERISTIC_HEART_RATE_MEASUREMENT))) {
-            Integer measurementHeartRate = HeartRateMeasurementParser.parse(characteristic);
-            intent.putExtra(EXTRA_DATA, measurementHeartRate);
-            Log.w(LOG, "broadcastUpdate() - CHARACTERISTIC_HEART_RATE_MEASUREMENT - " + measurementHeartRate);
+            try {
+                intent.putExtra(EXTRA_DATA, GattHRParser.parse(characteristic).toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         } else {
             final byte[] data = characteristic.getValue();
             Log.w(LOG, "broadcastUpdate() - OTHER");

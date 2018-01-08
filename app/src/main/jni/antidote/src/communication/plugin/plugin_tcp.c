@@ -348,7 +348,7 @@ static ByteStreamReader *network_get_apdu_stream(Context *ctx)
 /**
  * Sends an encoded apdu
  *
- * @param ctx Context
+ * @param ctx ContextMeasurement
  * @param stream the apdu to be sent
  * @return TCP_ERROR_NONE if data sent successfully and TCP_ERROR otherwise
  */

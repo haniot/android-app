@@ -17,15 +17,15 @@
 							<entry>
 								<simple>
 									<name>code</name>
-									<type>intu16</type>
-									<value>0</value>
+									<typeId>intu16</typeId>
+									<valueId>0</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>partition</name>
-									<type>intu16</type>
-									<value>0</value>
+									<typeId>intu16</typeId>
+									<valueId>0</valueId>
 								</simple>
 							</entry>
 						</entries>
@@ -41,15 +41,15 @@
 							<entry>
 								<simple>
 									<name>manufacturer</name>
-									<type>string</type>
-									<value></value>
+									<typeId>string</typeId>
+									<valueId></valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>model-number</name>
-									<type>string</type>
-									<value></value>
+									<typeId>string</typeId>
+									<valueId></valueId>
 								</simple>
 							</entry>
 						</entries>
@@ -61,8 +61,8 @@
 					</meta-data>
 					<simple>
 						<name>System-Id</name>
-						<type>hex</type>
-						<value>001C0501000028A1</value>
+						<typeId>hex</typeId>
+						<valueId>001C0501000028A1</valueId>
 					</simple>
 				</entry>
 				<entry>
@@ -71,8 +71,8 @@
 					</meta-data>
 					<simple>
 						<name>Dev-Configuration-Id</name>
-						<type>intu16</type>
-						<value>401</value>
+						<typeId>intu16</typeId>
+						<valueId>401</valueId>
 					</simple>
 				</entry>
 				<entry>

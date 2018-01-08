@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">OCARIoT</string>
+    <string name="app_name">HANIoT</string>
     <string name="copyright">Ⓒ 2017 NUTES</string>
     <string name="app_version">1.0</string>
     <string name="start_scan">Start scan</string>
@@ -79,7 +79,8 @@
     <string name="time_format_simple">mm:ss</string>
 
     // FORMATS
-    <string name="weight_format">#.0</string>
+    <string name="weight_format">##.0</string>
+    <string name="temperature_format">#.0</string>
 
     // EXCEPTIONS LOGS
     <string name="device_not_found">"Device: %1$s not found!"</string>
@@ -119,7 +120,7 @@
     <string name="glucose_status_annunciation_sensor_malfunction">Sensor malfunction or faulting at time of measurement</string>
     <string name="glucose_status_annunciation_sample_size_insufficient">Sample size for blood or control solution insufficient at time of measurement</string>
     <string name="glucose_status_annunciation_strip_insertion_error">Strip insertion error</string>
-    <string name="glucose_status_annunciation_strip_incorrect">Strip type incorrect for device</string>
+    <string name="glucose_status_annunciation_strip_incorrect">Strip typeId incorrect for device</string>
     <string name="glucose_status_annunciation_result_high">Sensor result higher than the device can process</string>
     <string name="glucose_status_annunciation_result_lower">Sensor result lower than the device can process</string>
     <string name="glucose_status_annunciation_sensor_temperature_high">Sensor temperature too high for valid test/result at time of measurement</string>
@@ -133,7 +134,7 @@
     <string name="glucose_location_alternate">Alternate Site Test (AST)</string>
     <string name="glucose_location_earlobe">Earlobe</string>
     <string name="glucose_location_control_solution">Contril solution</string>
-    <string name="glucose_location_sample_not_available">Sample Location value not available</string>
+    <string name="glucose_location_sample_not_available">Sample Location valueId not available</string>
 
     // GLUCOSE TYPE
     <string name="glucose_type_capillary_whole">Capillary Whole blood</string>
@@ -244,5 +245,43 @@
     <string name="synchronization_success">Successful data synchronization!</string>
     <string name="synchronization_data">Synchronizing data...</string>
     <string name="synchronization_no_data_to_send">There is no data to send...</string>
+
+    <!--TYPES AND GROUPS-->
+    <string-array name="device_types_array">
+        <item>Thermometer</item>
+        <item>Glucometer</item>
+        <item>Scale</item>
+        <item>Blood Pressure</item>
+        <item>Heart Rate</item>
+        <item>Smart Watch</item>
+    </string-array>
+
+    <string-array name="measurement_types_array">
+        <item>Temperature</item>
+        <item>Blood Glucose</item>
+        <item>Body Weight</item>
+        <item>Body Fat</item>
+        <item>Blood Pressure</item>
+        <item>Heart Rate</item>
+    </string-array>
+
+    <string-array name="measurement_context_types_array">
+        <item>Meal</item>
+    </string-array>
+
+    <string-array name="measurement_values_context_types_array">
+        <item>Meal</item>
+    </string-array>
+
+    <string-array name="training_types_array">
+        <item>Walking</item>
+        <item>Running</item>
+        <item>Cycling</item>
+    </string-array>
+
+    <string-array name="user_group_array">
+        <item>Super</item>
+        <item>Common</item>
+    </string-array>
 
 </resources>

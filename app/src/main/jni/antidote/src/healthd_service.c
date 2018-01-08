@@ -285,7 +285,7 @@ static void tcp_announce(const char *command, const char *path, const char *arg)
 /**
  * Resets a framework-depende timer
  *
- * @param ctx Context
+ * @param ctx ContextMeasurement
  */
 static void timer_reset_timeout(Context *ctx)
 {
@@ -313,7 +313,7 @@ static gboolean timer_alarm(gpointer data)
 /**
  * Initiates a timer in behalf of IEEE library
  *
- * @param ctx Context
+ * @param ctx ContextMeasurement
  * @return The timer handle
  */
 static int timer_count_timeout(Context *ctx)
@@ -629,7 +629,7 @@ void self_configure()
 /**
  * Finds device object given handle
  *
- * @param handle Context ID
+ * @param handle ContextMeasurement ID
  * @return device pointer or NULL if not found
  */
 static Device *device_by_handle(ContextId handle)
@@ -729,7 +729,7 @@ void client_disconnected()
  * Creates a com.signove.Health.Device object.
  *
  * @param low_addr Device address (e.g. Bluetooth MAC)
- * @param conn_handle Context ID
+ * @param conn_handle ContextMeasurement ID
  * @return a copy of object path (does not transfer ownership)
  */
 static const char *get_device_object(const char *low_addr, ContextId conn_handle)
@@ -838,7 +838,7 @@ static void call_agent_epilogue(DBusGProxy *proxy, DBusGProxyCall *call, gpointe
 /**
  * Function that calls D-Bus agent.Connected method.
  *
- * @param conn_handle Context ID
+ * @param conn_handle ContextMeasurement ID
  * @param low_addr Device address e.g. Bluetooth MAC
  * @return TRUE if success
  */
@@ -886,7 +886,7 @@ static gboolean call_agent_connected(ContextId conn_handle, const char *low_addr
 /**
  * Function that calls D-Bus agent.Associated method.
  *
- * @param conn_handle Context ID
+ * @param conn_handle ContextMeasurement ID
  * @param xml Data in XML format
  * @return success status
  */
@@ -985,7 +985,7 @@ static gboolean call_agent_measurementdata(ContextId conn_handle, gchar *xml)
 /**
  * Function that calls D-Bus agent.SegmentInfo method.
  *
- * @param conn_handle Context ID
+ * @param conn_handle ContextMeasurement ID
  * @param handle PM-Store handle
  * @param xml PM-Segment instance data in XML format
  * @return success status
@@ -1278,7 +1278,7 @@ static gboolean call_agent_segmentcleared(ContextId conn_handle, guint handle,
 /**
  * Function that calls D-Bus agent.DeviceAttributes method.
  *
- * @param conn_handle Context ID
+ * @param conn_handle ContextMeasurement ID
  * @param xml Data in xml format
  * @return success status
  */
@@ -1326,7 +1326,7 @@ static gboolean call_agent_deviceattributes(ContextId conn_handle, gchar *xml)
 /**
  * Function that calls D-Bus agent.Disassociated method.
  *
- * @param conn_handle Context ID
+ * @param conn_handle ContextMeasurement ID
  * @return success status
  */
 static gboolean call_agent_disassociated(ContextId conn_handle)
@@ -1372,7 +1372,7 @@ static gboolean call_agent_disassociated(ContextId conn_handle)
 /**
  * Function that calls D-Bus agent.Disconnected method.
  *
- * @param conn_handle Context ID
+ * @param conn_handle ContextMeasurement ID
  * @param low_addr Device address e.g. Bluetooth MAC
  * @return success status
  */
@@ -1445,7 +1445,7 @@ gboolean device_disconnect(Device *obj, GError **err)
 /**
  * Callback used to request mds attributes
  *
- * \param ctx Context
+ * \param ctx ContextMeasurement
  * \param r Related request struct (the same returned to request caller)
  * \param response_apdu Data APDU
  */
@@ -1572,7 +1572,7 @@ gboolean device_abortassoc(Device *obj, GError **err)
 
 /*Callback for PM-Store GET
  *
- * \param ctx Context
+ * \param ctx ContextMeasurement
  * \param r Request object
  * \param response_apdu response Data APDU
  */

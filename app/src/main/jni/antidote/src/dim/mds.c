@@ -459,7 +459,7 @@ Request *mds_get_pmstore(Context *ctx, int handle, service_request_callback requ
  *
  * After configuration steps the Manager is ready to execute operational mode
  *
- * \param ctx context Operating Context
+ * \param ctx context Operating ContextMeasurement
  * \param config_obj_list Configuration object list
  * \param manager Manager flag
  */

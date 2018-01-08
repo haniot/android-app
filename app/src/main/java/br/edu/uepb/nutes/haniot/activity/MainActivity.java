@@ -25,7 +25,7 @@ import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.SettingsActivity;
 import br.edu.uepb.nutes.haniot.fragment.ConnectDeviceFragment;
 import br.edu.uepb.nutes.haniot.fragment.ScanDeviceFragment;
-import br.edu.uepb.nutes.haniot.model.dao.SynchronizationServer;
+import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -145,29 +145,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void synchronizationWithServer() {
         changeSynchronization(true);
 
-        new SynchronizationServer(this).run(new SynchronizationServer.Callback() {
-            @Override
-            public void onError(JSONObject result) {
-                changeSynchronization(false);
-                showToast(getString(R.string.synchronization_failed));
-            }
-
-            @Override
-            public void onSuccess(JSONObject result) {
-                changeSynchronization(false);
-                String message = getString(R.string.synchronization_success);
-
-                if (result.has("message")) {
-                    try {
-                        message = result.getString("message");
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+        SynchronizationServer.getInstance(this)
+                .run(new SynchronizationServer.Callback() {
+                    @Override
+                    public void onError(JSONObject result) {
+                        changeSynchronization(false);
+                        showToast(getString(R.string.synchronization_failed));
                     }
-                }
 
-                showToast(message);
-            }
-        });
+                    @Override
+                    public void onSuccess(JSONObject result) {
+                        changeSynchronization(false);
+                        String message = getString(R.string.synchronization_success);
+
+                        if (result.has("message")) {
+                            try {
+                                message = result.getString("message");
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        showToast(message);
+                    }
+                });
     }
 
     private void changeSynchronization(final boolean isSynchronizing) {

@@ -23,7 +23,7 @@ import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.MainActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.model.User;
-import br.edu.uepb.nutes.haniot.model.dao.server.Server;
+import br.edu.uepb.nutes.haniot.server.Server;
 import br.edu.uepb.nutes.haniot.model.dao.UserDAO;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
@@ -145,10 +145,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 try {
                     final User user = result.has("user") ? new Gson().fromJson(result.getString("user"), User.class) : null;
                     final String token = result.has("token") ? new Gson().fromJson(result.getString("token"), String.class) : null;
-                    Log.i("USER", user.toString());
 
                     if (user.get_id() != null && token != null) {
-                        session.setLogged(user.get_id(), token);
                         user.setToken(token);
 
                         runOnUiThread(new Runnable() {
@@ -159,6 +157,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 } else {
                                     userDAO.save(user);
                                 }
+                                session.setLogged(user.getId(), token);
                             }
                         });
                         startActivity(new Intent(getApplicationContext(), MainActivity.class));

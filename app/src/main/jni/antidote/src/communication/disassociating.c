@@ -146,7 +146,7 @@ void disassociating_process_apdu_agent(Context *ctx, APDU *apdu)
 /**
  *  Listen to fsm event and send Release Request APDU
  *
- * @param ctx Context state machine
+ * @param ctx ContextMeasurement state machine
  * @param evt input event
  * @param data should inform the release request reason
  */

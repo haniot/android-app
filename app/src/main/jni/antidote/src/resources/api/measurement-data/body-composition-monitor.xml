@@ -18,8 +18,8 @@
 					</meta-data>
 					<simple>
 						<name>Simple-Nu-Observed-Value</name>
-						<type>float</type>
-						<value>63.200001</value>
+						<typeId>float</typeId>
+						<valueId>63.200001</valueId>
 					</simple>
 				</entry>
 				<entry>
@@ -29,57 +29,57 @@
 							<entry>
 								<simple>
 									<name>century</name>
-									<type>intu8</type>
-									<value>20</value>
+									<typeId>intu8</typeId>
+									<valueId>20</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>year</name>
-									<type>intu8</type>
-									<value>10</value>
+									<typeId>intu8</typeId>
+									<valueId>10</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>month</name>
-									<type>intu8</type>
-									<value>9</value>
+									<typeId>intu8</typeId>
+									<valueId>9</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>day</name>
-									<type>intu8</type>
-									<value>7</value>
+									<typeId>intu8</typeId>
+									<valueId>7</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>hour</name>
-									<type>intu8</type>
-									<value>9</value>
+									<typeId>intu8</typeId>
+									<valueId>9</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>minute</name>
-									<type>intu8</type>
-									<value>27</value>
+									<typeId>intu8</typeId>
+									<valueId>27</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>second</name>
-									<type>intu8</type>
-									<value>0</value>
+									<typeId>intu8</typeId>
+									<valueId>0</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>sec_fractions</name>
-									<type>intu8</type>
-									<value>0</value>
+									<typeId>intu8</typeId>
+									<valueId>0</valueId>
 								</simple>
 							</entry>
 						</entries>
@@ -103,8 +103,8 @@
 					</meta-data>
 					<simple>
 						<name>Simple-Nu-Observed-Value</name>
-						<type>float</type>
-						<value>185.000000</value>
+						<typeId>float</typeId>
+						<valueId>185.000000</valueId>
 					</simple>
 				</entry>
 				<entry>
@@ -114,57 +114,57 @@
 							<entry>
 								<simple>
 									<name>century</name>
-									<type>intu8</type>
-									<value>20</value>
+									<typeId>intu8</typeId>
+									<valueId>20</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>year</name>
-									<type>intu8</type>
-									<value>10</value>
+									<typeId>intu8</typeId>
+									<valueId>10</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>month</name>
-									<type>intu8</type>
-									<value>9</value>
+									<typeId>intu8</typeId>
+									<valueId>9</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>day</name>
-									<type>intu8</type>
-									<value>7</value>
+									<typeId>intu8</typeId>
+									<valueId>7</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>hour</name>
-									<type>intu8</type>
-									<value>9</value>
+									<typeId>intu8</typeId>
+									<valueId>9</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>minute</name>
-									<type>intu8</type>
-									<value>27</value>
+									<typeId>intu8</typeId>
+									<valueId>27</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>second</name>
-									<type>intu8</type>
-									<value>0</value>
+									<typeId>intu8</typeId>
+									<valueId>0</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>sec_fractions</name>
-									<type>intu8</type>
-									<value>0</value>
+									<typeId>intu8</typeId>
+									<valueId>0</valueId>
 								</simple>
 							</entry>
 						</entries>
@@ -188,8 +188,8 @@
 					</meta-data>
 					<simple>
 						<name>Simple-Nu-Observed-Value</name>
-						<type>float</type>
-						<value>18.500000</value>
+						<typeId>float</typeId>
+						<valueId>18.500000</valueId>
 					</simple>
 				</entry>
 				<entry>
@@ -199,57 +199,57 @@
 							<entry>
 								<simple>
 									<name>century</name>
-									<type>intu8</type>
-									<value>20</value>
+									<typeId>intu8</typeId>
+									<valueId>20</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>year</name>
-									<type>intu8</type>
-									<value>10</value>
+									<typeId>intu8</typeId>
+									<valueId>10</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>month</name>
-									<type>intu8</type>
-									<value>9</value>
+									<typeId>intu8</typeId>
+									<valueId>9</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>day</name>
-									<type>intu8</type>
-									<value>7</value>
+									<typeId>intu8</typeId>
+									<valueId>7</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>hour</name>
-									<type>intu8</type>
-									<value>9</value>
+									<typeId>intu8</typeId>
+									<valueId>9</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>minute</name>
-									<type>intu8</type>
-									<value>27</value>
+									<typeId>intu8</typeId>
+									<valueId>27</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>second</name>
-									<type>intu8</type>
-									<value>0</value>
+									<typeId>intu8</typeId>
+									<valueId>0</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>sec_fractions</name>
-									<type>intu8</type>
-									<value>0</value>
+									<typeId>intu8</typeId>
+									<valueId>0</valueId>
 								</simple>
 							</entry>
 						</entries>
@@ -273,8 +273,8 @@
 					</meta-data>
 					<simple>
 						<name>Simple-Nu-Observed-Value</name>
-						<type>float</type>
-						<value>10.300000</value>
+						<typeId>float</typeId>
+						<valueId>10.300000</valueId>
 					</simple>
 				</entry>
 				<entry>
@@ -284,57 +284,57 @@
 							<entry>
 								<simple>
 									<name>century</name>
-									<type>intu8</type>
-									<value>20</value>
+									<typeId>intu8</typeId>
+									<valueId>20</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>year</name>
-									<type>intu8</type>
-									<value>10</value>
+									<typeId>intu8</typeId>
+									<valueId>10</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>month</name>
-									<type>intu8</type>
-									<value>9</value>
+									<typeId>intu8</typeId>
+									<valueId>9</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>day</name>
-									<type>intu8</type>
-									<value>7</value>
+									<typeId>intu8</typeId>
+									<valueId>7</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>hour</name>
-									<type>intu8</type>
-									<value>9</value>
+									<typeId>intu8</typeId>
+									<valueId>9</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>minute</name>
-									<type>intu8</type>
-									<value>27</value>
+									<typeId>intu8</typeId>
+									<valueId>27</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>second</name>
-									<type>intu8</type>
-									<value>0</value>
+									<typeId>intu8</typeId>
+									<valueId>0</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>sec_fractions</name>
-									<type>intu8</type>
-									<value>0</value>
+									<typeId>intu8</typeId>
+									<valueId>0</valueId>
 								</simple>
 							</entry>
 						</entries>
@@ -358,8 +358,8 @@
 					</meta-data>
 					<simple>
 						<name>Simple-Nu-Observed-Value</name>
-						<type>float</type>
-						<value>1518000.000000</value>
+						<typeId>float</typeId>
+						<valueId>1518000.000000</valueId>
 					</simple>
 				</entry>
 				<entry>
@@ -369,57 +369,57 @@
 							<entry>
 								<simple>
 									<name>century</name>
-									<type>intu8</type>
-									<value>20</value>
+									<typeId>intu8</typeId>
+									<valueId>20</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>year</name>
-									<type>intu8</type>
-									<value>10</value>
+									<typeId>intu8</typeId>
+									<valueId>10</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>month</name>
-									<type>intu8</type>
-									<value>9</value>
+									<typeId>intu8</typeId>
+									<valueId>9</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>day</name>
-									<type>intu8</type>
-									<value>7</value>
+									<typeId>intu8</typeId>
+									<valueId>7</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>hour</name>
-									<type>intu8</type>
-									<value>9</value>
+									<typeId>intu8</typeId>
+									<valueId>9</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>minute</name>
-									<type>intu8</type>
-									<value>27</value>
+									<typeId>intu8</typeId>
+									<valueId>27</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>second</name>
-									<type>intu8</type>
-									<value>0</value>
+									<typeId>intu8</typeId>
+									<valueId>0</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>sec_fractions</name>
-									<type>intu8</type>
-									<value>0</value>
+									<typeId>intu8</typeId>
+									<valueId>0</valueId>
 								</simple>
 							</entry>
 						</entries>
@@ -443,8 +443,8 @@
 					</meta-data>
 					<simple>
 						<name>Basic-Nu-Observed-Value</name>
-						<type>float</type>
-						<value>1.000000</value>
+						<typeId>float</typeId>
+						<valueId>1.000000</valueId>
 					</simple>
 				</entry>
 				<entry>
@@ -454,57 +454,57 @@
 							<entry>
 								<simple>
 									<name>century</name>
-									<type>intu8</type>
-									<value>20</value>
+									<typeId>intu8</typeId>
+									<valueId>20</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>year</name>
-									<type>intu8</type>
-									<value>10</value>
+									<typeId>intu8</typeId>
+									<valueId>10</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>month</name>
-									<type>intu8</type>
-									<value>9</value>
+									<typeId>intu8</typeId>
+									<valueId>9</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>day</name>
-									<type>intu8</type>
-									<value>7</value>
+									<typeId>intu8</typeId>
+									<valueId>7</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>hour</name>
-									<type>intu8</type>
-									<value>9</value>
+									<typeId>intu8</typeId>
+									<valueId>9</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>minute</name>
-									<type>intu8</type>
-									<value>27</value>
+									<typeId>intu8</typeId>
+									<valueId>27</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>second</name>
-									<type>intu8</type>
-									<value>0</value>
+									<typeId>intu8</typeId>
+									<valueId>0</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>sec_fractions</name>
-									<type>intu8</type>
-									<value>0</value>
+									<typeId>intu8</typeId>
+									<valueId>0</valueId>
 								</simple>
 							</entry>
 						</entries>
@@ -528,8 +528,8 @@
 					</meta-data>
 					<simple>
 						<name>Basic-Nu-Observed-Value</name>
-						<type>float</type>
-						<value>18.000000</value>
+						<typeId>float</typeId>
+						<valueId>18.000000</valueId>
 					</simple>
 				</entry>
 				<entry>
@@ -539,57 +539,57 @@
 							<entry>
 								<simple>
 									<name>century</name>
-									<type>intu8</type>
-									<value>20</value>
+									<typeId>intu8</typeId>
+									<valueId>20</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>year</name>
-									<type>intu8</type>
-									<value>10</value>
+									<typeId>intu8</typeId>
+									<valueId>10</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>month</name>
-									<type>intu8</type>
-									<value>9</value>
+									<typeId>intu8</typeId>
+									<valueId>9</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>day</name>
-									<type>intu8</type>
-									<value>7</value>
+									<typeId>intu8</typeId>
+									<valueId>7</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>hour</name>
-									<type>intu8</type>
-									<value>9</value>
+									<typeId>intu8</typeId>
+									<valueId>9</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>minute</name>
-									<type>intu8</type>
-									<value>27</value>
+									<typeId>intu8</typeId>
+									<valueId>27</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>second</name>
-									<type>intu8</type>
-									<value>0</value>
+									<typeId>intu8</typeId>
+									<valueId>0</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>sec_fractions</name>
-									<type>intu8</type>
-									<value>0</value>
+									<typeId>intu8</typeId>
+									<valueId>0</valueId>
 								</simple>
 							</entry>
 						</entries>
@@ -617,8 +617,8 @@
 								</meta-data>
 								<simple>
 									<name>0</name>
-									<type>float</type>
-									<value>43.299999</value>
+									<typeId>float</typeId>
+									<valueId>43.299999</valueId>
 								</simple>
 							</entry>
 							<entry>
@@ -628,8 +628,8 @@
 								</meta-data>
 								<simple>
 									<name>1</name>
-									<type>float</type>
-									<value>0.000000</value>
+									<typeId>float</typeId>
+									<valueId>0.000000</valueId>
 								</simple>
 							</entry>
 							<entry>
@@ -639,8 +639,8 @@
 								</meta-data>
 								<simple>
 									<name>2</name>
-									<type>float</type>
-									<value>0.000000</value>
+									<typeId>float</typeId>
+									<valueId>0.000000</valueId>
 								</simple>
 							</entry>
 							<entry>
@@ -650,8 +650,8 @@
 								</meta-data>
 								<simple>
 									<name>3</name>
-									<type>float</type>
-									<value>0.000000</value>
+									<typeId>float</typeId>
+									<valueId>0.000000</valueId>
 								</simple>
 							</entry>
 						</entries>
@@ -664,57 +664,57 @@
 							<entry>
 								<simple>
 									<name>century</name>
-									<type>intu8</type>
-									<value>20</value>
+									<typeId>intu8</typeId>
+									<valueId>20</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>year</name>
-									<type>intu8</type>
-									<value>10</value>
+									<typeId>intu8</typeId>
+									<valueId>10</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>month</name>
-									<type>intu8</type>
-									<value>9</value>
+									<typeId>intu8</typeId>
+									<valueId>9</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>day</name>
-									<type>intu8</type>
-									<value>7</value>
+									<typeId>intu8</typeId>
+									<valueId>7</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>hour</name>
-									<type>intu8</type>
-									<value>9</value>
+									<typeId>intu8</typeId>
+									<valueId>9</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>minute</name>
-									<type>intu8</type>
-									<value>27</value>
+									<typeId>intu8</typeId>
+									<valueId>27</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>second</name>
-									<type>intu8</type>
-									<value>0</value>
+									<typeId>intu8</typeId>
+									<valueId>0</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>sec_fractions</name>
-									<type>intu8</type>
-									<value>0</value>
+									<typeId>intu8</typeId>
+									<valueId>0</valueId>
 								</simple>
 							</entry>
 						</entries>
@@ -738,8 +738,8 @@
 					</meta-data>
 					<simple>
 						<name>Basic-Nu-Observed-Value</name>
-						<type>float</type>
-						<value>0.000000</value>
+						<typeId>float</typeId>
+						<valueId>0.000000</valueId>
 					</simple>
 				</entry>
 				<entry>
@@ -749,57 +749,57 @@
 							<entry>
 								<simple>
 									<name>century</name>
-									<type>intu8</type>
-									<value>20</value>
+									<typeId>intu8</typeId>
+									<valueId>20</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>year</name>
-									<type>intu8</type>
-									<value>10</value>
+									<typeId>intu8</typeId>
+									<valueId>10</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>month</name>
-									<type>intu8</type>
-									<value>9</value>
+									<typeId>intu8</typeId>
+									<valueId>9</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>day</name>
-									<type>intu8</type>
-									<value>7</value>
+									<typeId>intu8</typeId>
+									<valueId>7</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>hour</name>
-									<type>intu8</type>
-									<value>9</value>
+									<typeId>intu8</typeId>
+									<valueId>9</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>minute</name>
-									<type>intu8</type>
-									<value>27</value>
+									<typeId>intu8</typeId>
+									<valueId>27</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>second</name>
-									<type>intu8</type>
-									<value>0</value>
+									<typeId>intu8</typeId>
+									<valueId>0</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>sec_fractions</name>
-									<type>intu8</type>
-									<value>0</value>
+									<typeId>intu8</typeId>
+									<valueId>0</valueId>
 								</simple>
 							</entry>
 						</entries>
@@ -827,8 +827,8 @@
 								</meta-data>
 								<simple>
 									<name>0</name>
-									<type>float</type>
-									<value>0.000000</value>
+									<typeId>float</typeId>
+									<valueId>0.000000</valueId>
 								</simple>
 							</entry>
 							<entry>
@@ -838,8 +838,8 @@
 								</meta-data>
 								<simple>
 									<name>1</name>
-									<type>float</type>
-									<value>26.000000</value>
+									<typeId>float</typeId>
+									<valueId>26.000000</valueId>
 								</simple>
 							</entry>
 						</entries>
@@ -852,57 +852,57 @@
 							<entry>
 								<simple>
 									<name>century</name>
-									<type>intu8</type>
-									<value>20</value>
+									<typeId>intu8</typeId>
+									<valueId>20</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>year</name>
-									<type>intu8</type>
-									<value>10</value>
+									<typeId>intu8</typeId>
+									<valueId>10</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>month</name>
-									<type>intu8</type>
-									<value>9</value>
+									<typeId>intu8</typeId>
+									<valueId>9</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>day</name>
-									<type>intu8</type>
-									<value>7</value>
+									<typeId>intu8</typeId>
+									<valueId>7</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>hour</name>
-									<type>intu8</type>
-									<value>9</value>
+									<typeId>intu8</typeId>
+									<valueId>9</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>minute</name>
-									<type>intu8</type>
-									<value>27</value>
+									<typeId>intu8</typeId>
+									<valueId>27</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>second</name>
-									<type>intu8</type>
-									<value>0</value>
+									<typeId>intu8</typeId>
+									<valueId>0</valueId>
 								</simple>
 							</entry>
 							<entry>
 								<simple>
 									<name>sec_fractions</name>
-									<type>intu8</type>
-									<value>0</value>
+									<typeId>intu8</typeId>
+									<valueId>0</valueId>
 								</simple>
 							</entry>
 						</entries>

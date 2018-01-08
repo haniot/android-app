@@ -2,6 +2,7 @@ package br.edu.uepb.nutes.haniot.model.dao;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import java.util.List;
 
@@ -36,13 +37,23 @@ public class UserDAO {
     }
 
     /**
-     * get user.
+     * get user server remote.
      *
      * @param uuid String
      * @return User
      */
     public User get(@NonNull String uuid) {
         return userBox.query().equal(User_._id, uuid).build().findFirst();
+    }
+
+    /**
+     * Selects user based on local id
+     *
+     * @param id long
+     * @return User
+     */
+    public User get(@NonNull long id) {
+        return userBox.query().equal(User_.id, id).build().findFirst();
     }
 
     public List<User> listAll() {
@@ -73,7 +84,7 @@ public class UserDAO {
              * Id is required for an update
              * Otherwise it will be an insert
              */
-            if (userUp != null) return false;
+            if (userUp == null) return false;
 
             user.setId(userUp.getId());
         }

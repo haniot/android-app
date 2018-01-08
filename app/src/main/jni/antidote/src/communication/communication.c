@@ -896,7 +896,7 @@ void communication_roer_tx(Context *ctx, fsm_events evt, FSMEventData *data)
  * Notifies the communication layer that timeout indication occurs.
  * This method locks the communication layer thread.
  *
- * @param ctx Context
+ * @param ctx ContextMeasurement
  */
 void communication_timeout(Context *ctx)
 {
@@ -962,7 +962,7 @@ int communication_is_rorj_type(DATA_apdu *data)
 /**
  * Gets the current state.
  *
- * @param ctx Context
+ * @param ctx ContextMeasurement
  * @return the current state.
  */
 fsm_states communication_get_state(Context *ctx)

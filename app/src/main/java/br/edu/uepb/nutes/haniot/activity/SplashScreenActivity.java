@@ -12,7 +12,7 @@ import org.json.JSONObject;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.account.LoginActivity;
-import br.edu.uepb.nutes.haniot.model.dao.SynchronizationServer;
+import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -43,20 +43,21 @@ public class SplashScreenActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        new SynchronizationServer(this).run(new SynchronizationServer.Callback() {
-            @Override
-            public void onError(JSONObject result) {
-                Log.i(TAG, "onError()");
-                if (result != null) Log.i(TAG, result.toString());
-                openLoginActivity();
-            }
+        SynchronizationServer.getInstance(this)
+                .run(new SynchronizationServer.Callback() {
+                    @Override
+                    public void onError(JSONObject result) {
+                        Log.i(TAG, "onError()");
+                        if (result != null) Log.i(TAG, result.toString());
+                        openLoginActivity();
+                    }
 
-            @Override
-            public void onSuccess(JSONObject result) {
-                if (result != null) Log.i(TAG, "onSuccess()" + result.toString());
-                openLoginActivity();
-            }
-        });
+                    @Override
+                    public void onSuccess(JSONObject result) {
+                        if (result != null) Log.i(TAG, "onSuccess()" + result.toString());
+                        openLoginActivity();
+                    }
+                });
     }
 
     private void openLoginActivity() {

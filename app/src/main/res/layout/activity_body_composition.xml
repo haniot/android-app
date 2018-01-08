@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="br.edu.uepb.nutes.haniot.activity.devices.ScaleActivity">
+    tools:context=".devices.ScaleActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar_layout"
@@ -41,7 +41,7 @@
                     app:cpb_progressbar_width="6dp" />
 
                 <TextView
-                    android:id="@+id/scale_measurement"
+                    android:id="@+id/body_mass_measurement"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignEnd="@+id/view_circle"
@@ -54,7 +54,7 @@
                     tools:ignore="HardcodedText" />
 
                 <TextView
-                    android:id="@+id/textView7"
+                    android:id="@+id/body_mass_unit_measurement"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignBottom="@+id/view_circle"

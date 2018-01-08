@@ -58,7 +58,7 @@ static DBusConnection *connection = NULL;
 */
 
 /**
- * Context ID DEFAULT
+ * ContextMeasurement ID DEFAULT
  */
 static ContextId DEFAULT_CONTEXT_ID = {1, 97};
 
@@ -73,7 +73,7 @@ static CommunicationPlugin comm_plugin = COMMUNICATION_PLUGIN_NULL;
  */
 void new_data_received(Context *ctx, DataList *list)
 {
-	fprintf(stderr, "Medical Device System Data Updated (Context %u:%llx):\n",
+	fprintf(stderr, "Medical Device System Data Updated (ContextMeasurement %u:%llx):\n",
 			ctx->id.plugin, ctx->id.connid);
 
 	char *data = xml_encode_data_list(list);
@@ -90,7 +90,7 @@ void new_data_received(Context *ctx, DataList *list)
 
 void device_associated(Context *ctx, DataList *list)
 {
-	fprintf(stderr, " Medical Device System Associated (Context %u:%llx):\n",
+	fprintf(stderr, " Medical Device System Associated (ContextMeasurement %u:%llx):\n",
 			ctx->id.plugin, ctx->id.connid);
 }
 

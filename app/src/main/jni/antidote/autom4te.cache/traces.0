@@ -5,7 +5,7 @@ AC_CHECK_HEADERS([argz.h], [], [], [AC_INCLUDES_DEFAULT])
 AC_CHECK_TYPES([error_t],
   [],
   [AC_DEFINE([error_t], [int],
-   [Define to a type to use for `error_t' if it is not otherwise available.])
+   [Define to a typeId to use for `error_t' if it is not otherwise available.])
    AC_DEFINE([__error_t_defined], [1], [Define so that glibc/gnulib argp.h
     does not typedef error_t.])],
   [#if defined(HAVE_ARGZ_H)
@@ -56,7 +56,7 @@ AS_IF([test -z "$ARGZ_H"],
 	 esac]])
      AS_IF([test "$lt_cv_sys_argz_works" = yes],
         [AC_DEFINE([HAVE_WORKING_ARGZ], 1,
-                   [This value is set to 1 to indicate that the system argz facility works])],
+                   [This valueId is set to 1 to indicate that the system argz facility works])],
         [ARGZ_H=argz.h
         AC_LIBOBJ([argz])])])
 
@@ -392,7 +392,7 @@ AC_CACHE_VAL([lt_cv_sys_max_cmd_len], [dnl
     ;;
 
   interix*)
-    # We know the value 262144 and hardcode it with a safety zone (like BSD)
+    # We know the valueId 262144 and hardcode it with a safety zone (like BSD)
     lt_cv_sys_max_cmd_len=196608
     ;;
 
@@ -447,7 +447,7 @@ AC_CACHE_VAL([lt_cv_sys_max_cmd_len], [dnl
       teststring=
       # Add a significant safety factor because C++ compilers can tack on
       # massive amounts of additional arguments before passing them to the
-      # linker.  It appears as though 1/2 is a usable value.
+      # linker.  It appears as though 1/2 is a usable valueId.
       lt_cv_sys_max_cmd_len=`expr $lt_cv_sys_max_cmd_len \/ 2`
     fi
     ;;
@@ -763,7 +763,7 @@ else
 	#   nm: unknown option "B" ignored
 	# Tru64's nm complains that /dev/null is an invalid object file
 	case `"$tmp_nm" -B /dev/null 2>&1 | sed '1q'` in
-	*/dev/null* | *'Invalid file or object type'*)
+	*/dev/null* | *'Invalid file or object typeId'*)
 	  lt_cv_path_NM="$tmp_nm -B"
 	  break
 	  ;;
@@ -984,7 +984,7 @@ case ,$with_included_ltdl,$with_ltdl_include,$with_ltdl_lib, in
 	m4_case(m4_default(_LTDL_TYPE, [convenience]),
 	    [convenience], [_LTDL_CONVENIENCE],
 	    [installable], [_LTDL_INSTALLABLE],
-	  [m4_fatal([unknown libltdl build type: ]_LTDL_TYPE)])
+	  [m4_fatal([unknown libltdl build typeId: ]_LTDL_TYPE)])
 	;;
   ,no,no,no,)
 	# If the included ltdl is not to be used, then use the
@@ -1857,7 +1857,7 @@ m4trace:/usr/share/aclocal-1.11/depout.m4:14: -1- AC_DEFUN([_AM_OUTPUT_DEPENDENC
     U=`sed -n 's/^U = //p' < "$mf"`
     # Find all dependency output files, they are included files with
     # $(DEPDIR) in their names.  We invoke sed twice because it is the
-    # simplest approach to changing $(DEPDIR) to its actual value in the
+    # simplest approach to changing $(DEPDIR) to its actual valueId in the
     # expansion.
     for file in `sed -n "
       s/^$am__include $am__quote\(.*(DEPDIR).*\)$am__quote"'$/\1/p' <"$mf" | \
@@ -2074,7 +2074,7 @@ m4trace:/usr/share/aclocal-1.11/mkdirp.m4:11: -1- AC_DEFUN([AM_PROG_MKDIR_P], [A
 AC_REQUIRE([AC_PROG_MKDIR_P])dnl
 dnl Automake 1.8 to 1.9.6 used to define mkdir_p.  We now use MKDIR_P,
 dnl while keeping a definition of mkdir_p for backward compatibility.
-dnl @MKDIR_P@ is magic: AC_OUTPUT adjusts its value for each Makefile.
+dnl @MKDIR_P@ is magic: AC_OUTPUT adjusts its valueId for each Makefile.
 dnl However we cannot define mkdir_p as $(MKDIR_P) for the sake of
 dnl Makefile.ins that do not define MKDIR_P, so we do our own
 dnl adjustment using top_builddir (which is defined more often than
@@ -2108,7 +2108,7 @@ case `pwd` in
 esac
 case $srcdir in
   *[[\\\"\#\$\&\'\`$am_lf\ \	]]*)
-    AC_MSG_ERROR([unsafe srcdir value: `$srcdir']);;
+    AC_MSG_ERROR([unsafe srcdir valueId: `$srcdir']);;
 esac
 
 # Do `set' in a subshell so we don't clobber the current shell's
@@ -2219,7 +2219,7 @@ do
     ;;
   esac
 
-  # If the value was cached, stop now.  We just wanted to have am__tar
+  # If the valueId was cached, stop now.  We just wanted to have am__tar
   # and am__untar set.
   test -n "${am_cv_prog_tar_$1}" && break
 

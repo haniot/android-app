@@ -1,105 +1,234 @@
 package br.edu.uepb.nutes.haniot.model.dao;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import java.util.List;
 
+import br.edu.uepb.nutes.haniot.App;
+import br.edu.uepb.nutes.haniot.model.Measurement;
+import br.edu.uepb.nutes.haniot.model.Measurement_;
+import br.edu.uepb.nutes.haniot.utils.DateUtils;
+import io.objectbox.Box;
+import io.objectbox.BoxStore;
+
 /**
- * MeasurementDAO interface.
+ * MeasurementDAO implementation.
  *
  * @author Douglas Rafael <douglas.rafael@nutes.uepb.edu.br>
- * @version 1.2
+ * @version 1.5
  * @copyright Copyright (c) 2017, NUTES UEPB
  */
-public interface MeasurementDAO<T> {
+public class MeasurementDAO {
+    public static MeasurementDAO instance;
+    private static Box<Measurement> measurementBox;
+
+    private MeasurementDAO() {
+    }
+
+    public static synchronized MeasurementDAO getInstance(@NonNull Context context) {
+        if (instance == null) instance = new MeasurementDAO();
+
+        BoxStore boxStore = ((App) context.getApplicationContext()).getBoxStore();
+        measurementBox = boxStore.boxFor(Measurement.class);
+
+        return instance;
+    }
 
     /**
      * Adds a new measurement to the database.
      *
-     * @param o
+     * @param measurement
      * @return boolean
      */
-    public boolean save(@NonNull T o);
+    public boolean save(@NonNull Measurement measurement) {
+        return measurementBox.put(measurement) > 0;
+    }
 
     /**
-     * Updates object data.
+     * Update measurement data.
      *
-     * @param o
+     * @param measurement
      * @return boolean
      */
-    public boolean update(@NonNull T o);
+    public boolean update(@NonNull Measurement measurement) {
+        if (measurement.getId() == 0) {
+            /**
+             * Id is required for an update
+             * Otherwise it will be an insert
+             */
+            return false;
+        }
+
+        return save(measurement); // update
+    }
 
     /**
-     * Removes measurement passed as parameter.
+     * Remove measurement.
      *
-     * @param o
+     * @param measurement
      * @return boolean
      */
-    public boolean remove(@NonNull T o);
+    public boolean remove(@NonNull Measurement measurement) {
+        return measurementBox.query()
+                .equal(Measurement_.id, measurement.getId())
+                .build()
+                .remove() > 0;
+    }
 
     /**
-     * Removes all measurements of a device.
+     * Remove all measurements associated with device and user.
      *
-     * @param deviceAddress String
-     * @param userId        String
-     * @return long - Total number of items removed
+     * @param deviceId long
+     * @param userId   long
+     * @return boolean
      */
-    public long removeAll(@NonNull String deviceAddress, @NonNull String userId);
+    public boolean removeAll(@NonNull long deviceId, @NonNull long userId) {
+        return measurementBox.query()
+                .equal(Measurement_.deviceId, deviceId)
+                .equal(Measurement_.userId, userId)
+                .build()
+                .remove() > 0;
+    }
 
     /**
-     * Select a Measurement.
+     * Remove all measurements associated with user.
+     *
+     * @param userId long
+     * @return boolean
+     */
+    public boolean removeAll(@NonNull long userId) {
+        return measurementBox.query()
+                .equal(Measurement_.userId, userId)
+                .build()
+                .remove() > 0;
+    }
+
+    /**
+     * Remove all measurements associated with the user that are expired.
+     * A Measurement expires if a registration data for less than the current year
+     *
+     * @param userId long
+     * @return boolean
+     */
+    public boolean removeAllExpired(@NonNull long userId) {
+        return measurementBox.query()
+                .equal(Measurement_.userId, userId)
+                .less(Measurement_.registrationDate, DateUtils.getCurrentYear())
+                .equal(Measurement_.hasSent, 0)
+                .build()
+                .remove() > 0;
+    }
+
+    /**
+     * Select a measurement.
      *
      * @param id long
      * @return Object
      */
-    public T get(@NonNull long id);
+    public Measurement get(@NonNull long id) {
+        return measurementBox.query()
+                .equal(Measurement_.id, id)
+                .build()
+                .findFirst();
+    }
 
     /**
-     * Retrieves all measurements from device and user.
+     * Select all measurements associated with the user.
      *
-     * @param deviceAddress String
-     * @param userId        String
-     * @return List<T>
+     * @param userId long
+     * @param offset int
+     * @param limit  int
+     * @return List<Measurement>
      */
-    public List<T> listAll(@NonNull String deviceAddress, @NonNull String userId);
+    public List<Measurement> list(@NonNull long userId, @NonNull int offset, @NonNull int limit) {
+        return measurementBox.query()
+                .equal(Measurement_.userId, userId)
+                .orderDesc(Measurement_.id)
+                .build()
+                .find(offset, limit);
+    }
 
     /**
-     * List measurements according to parameters.
+     * Select all measurements of a type associated with the user.
      *
-     * @param deviceAddress String
-     * @param userId        String
-     * @param offset        int
-     * @param limit         int
-     * @return List<T>
+     * @param typeId int
+     * @param userId long
+     * @param offset int
+     * @param limit  int
+     * @return List<Measurement>
      */
-    public List<T> list(@NonNull String deviceAddress, @NonNull String userId, @NonNull int offset, @NonNull int limit);
+    public List<Measurement> list(@NonNull int typeId, @NonNull long userId, @NonNull int offset, @NonNull int limit) {
+        return measurementBox.query()
+                .equal(Measurement_.typeId, typeId)
+                .equal(Measurement_.userId, userId)
+                .orderDesc(Measurement_.id)
+                .build()
+                .find(offset, limit);
+    }
 
     /**
-     * Retrieves all measurements of a device in accordance with the filters.
+     * Select all measurements associated with the device and user.
      *
-     * @param dateStart     long - datetime start
-     * @param dateEnd       long - datetime end
-     * @param deviceAddress String
-     * @param userId        String
-     * @return List<T>
+     * @param deviceId long
+     * @param userId   long
+     * @param offset   int
+     * @param limit    int
+     * @return List<Measurement>
      */
-    public List<T> filter(@NonNull long dateStart, @NonNull long dateEnd, @NonNull String deviceAddress, @NonNull String userId);
+    public List<Measurement> list(@NonNull long deviceId, @NonNull long userId, @NonNull int offset, @NonNull int limit) {
+        return measurementBox.query()
+                .equal(Measurement_.deviceId, deviceId)
+                .equal(Measurement_.userId, userId)
+                .orderDesc(Measurement_.id)
+                .build()
+                .find(offset, limit);
+    }
 
     /**
-     * Retrieves all measurements of a device that have not been sent to the remote server.
+     * Select measurements of a type associated with a user according to the start and end date.
      *
-     * @param deviceAddress String
-     * @param userId        String
-     * @return List<T>
+     * @param dateStart long
+     * @param dateEnd   long
+     * @param typeId    int
+     * @param userId    long
+     * @return List<Measurement>
      */
-    public List<T> getNotSent(@NonNull String deviceAddress, @NonNull String userId);
+    public List<Measurement> filter(@NonNull long dateStart, @NonNull long dateEnd, @NonNull int typeId, @NonNull long userId) {
+        return measurementBox.query()
+                .equal(Measurement_.typeId, typeId)
+                .equal(Measurement_.userId, userId)
+                .between(Measurement_.registrationDate, dateStart, dateEnd)
+                .orderDesc(Measurement_.id)
+                .build()
+                .find();
+    }
 
     /**
-     * Retrieves all measurements of a device that were sent to the remote server
+     * Select all measurements of a user that were not sent to the remote server.
      *
-     * @param deviceAddress String
-     * @param userId        String
-     * @return List<T>
+     * @param userId long
+     * @return List<Measurement>
      */
-    public List<T> getWasSent(@NonNull String deviceAddress, @NonNull String userId);
+    public List<Measurement> getNotSent(@NonNull long userId) {
+        return measurementBox.query()
+                .equal(Measurement_.userId, userId)
+                .equal(Measurement_.hasSent, 0)
+                .build()
+                .find();
+    }
+
+    /**
+     * Select all measurements from a user that have been sent to the remote server.
+     *
+     * @param userId long
+     * @return List<Measurement>
+     */
+    public List<Measurement> getWasSent(@NonNull long userId) {
+        return measurementBox.query()
+                .equal(Measurement_.userId, userId)
+                .equal(Measurement_.hasSent, 1)
+                .build()
+                .find();
+    }
 }
