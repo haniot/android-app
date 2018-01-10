@@ -81,8 +81,6 @@ public class SynchronizationServer {
      * @return String json
      */
     private String prepareMeasurements(List<Measurement> measurements) {
-        Log.i("TOTAL", measurements.size() + "");
-
         // No data send
         if (measurements == null || measurements.isEmpty()) {
             return null;
@@ -107,9 +105,6 @@ public class SynchronizationServer {
                 measurementsNoRelations.add(m);
             }
         }
-
-        Log.i(TAG, "WITH REL: " + measurementsWithRelations.size());
-        Log.i(TAG, "NO REL: " + measurementsNoRelations.size());
 
         /**
          * To treat the relationships and remove from the final json

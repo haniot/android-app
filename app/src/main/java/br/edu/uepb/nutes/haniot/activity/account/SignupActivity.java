@@ -155,7 +155,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         } else {
             buttonChangePassword.setVisibility(View.GONE);
 
-            passwordEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            passwordConfirmEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                 @Override
                 public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                     if (actionId == EditorInfo.IME_ACTION_SEND) signup();
@@ -272,7 +272,6 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         emailEditText.setFocusableInTouchMode(false);
 
         enabledView(false);
-        loading(true);
 
         // get user local
         user = userDAO.get(session.getIdLogged());
@@ -280,19 +279,13 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         if (!ConnectionUtils.internetIsEnabled(this)) {
             return;
         }
+        loading(true);
         populateView();
-
-        /**
-         * Get the required user token in request authentication
-         */
-        Headers headers = new Headers.Builder()
-                .add("Authorization", "JWT ".concat(session.getTokenLogged()))
-                .build();
 
         /**
          * Get user in server
          */
-        Server.getInstance(this).get("users/", headers, new Server.Callback() {
+        Server.getInstance(this).get("users/", new Server.Callback() {
             @Override
             public void onError(JSONObject result) {
                 enabledView(true);
@@ -392,14 +385,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
 
         loading(true);
 
-        /**
-         * Get the required user token in request authentication
-         */
-        Headers headers = new Headers.Builder()
-                .add("Authorization", "JWT ".concat(session.getTokenLogged()))
-                .build();
-
-        Server.getInstance(this).put("users", new Gson().toJson(getUserView()), headers, new Server.Callback() {
+        Server.getInstance(this).put("users", new Gson().toJson(getUserView()), new Server.Callback() {
             @Override
             public void onError(JSONObject result) {
                 printMessage(result);
