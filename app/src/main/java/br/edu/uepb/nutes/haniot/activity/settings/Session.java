@@ -39,12 +39,21 @@ public class Session {
     }
 
     /**
-     * Get id
+     * Get id local
      *
      * @return long
      */
     public long getIdLogged() {
         return prefs.getLong("userLoggedId", -1);
+    }
+
+    /**
+     * Get _id in remote server.
+     *
+     * @return String
+     */
+    public String get_idLogged() {
+        return getUserLogged().get_id();
     }
 
     /**

@@ -1,4 +1,4 @@
-package br.edu.uepb.nutes.haniot.devices;
+package br.edu.uepb.nutes.haniot.devices.hdp;
 
 import android.content.Intent;
 import android.os.Bundle;

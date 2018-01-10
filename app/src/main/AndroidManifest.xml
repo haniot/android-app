@@ -60,13 +60,13 @@
             android:name=".devices.GlucoseActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".devices.BloodPressureHDPActivity"
+            android:name=".devices.hdp.BloodPressureHDPActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="com.signove.health.service.HealthService" />
             </intent-filter>
         </activity>
-        <activity android:name=".devices.BodyCompositionMonitorHDPActivity" />
+        <activity android:name=".devices.hdp.BodyCompositionMonitorHDPActivity" />
         <activity
             android:name=".devices.ScaleActivity"
             android:screenOrientation="portrait" />

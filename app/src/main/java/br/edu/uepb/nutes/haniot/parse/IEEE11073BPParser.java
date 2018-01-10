@@ -28,8 +28,19 @@ public class IEEE11073BPParser {
      * Parse for IEEE 11073 device blood pressure.
      * Supported Models: OMRON BP792IT.
      *
+     * FORMAT return Json:
+     * { systolic: int_value,
+     *   diastolic: int_value,
+     *   map: double_value
+     *   pulse: int_value,
+     *   pulse: int_value,
+     *   systolicUnit: string_value,
+     *   diastolicUnit: string_value,
+     *   pulseUnit: string_value,
+     *   timestamp: long_value
+     *
      * @param data xml
-     * @return JSONObject
+     * @return JSONObject json
      * @throws JSONException
      * @throws XmlPullParserException
      * @throws IOException

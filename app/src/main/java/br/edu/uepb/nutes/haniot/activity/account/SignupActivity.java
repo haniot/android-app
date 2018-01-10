@@ -36,13 +36,12 @@ import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.activity.settings.SettingsActivity;
 import br.edu.uepb.nutes.haniot.fragment.GenericDialogFragment;
 import br.edu.uepb.nutes.haniot.model.User;
-import br.edu.uepb.nutes.haniot.server.Server;
 import br.edu.uepb.nutes.haniot.model.dao.UserDAO;
+import br.edu.uepb.nutes.haniot.server.Server;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import okhttp3.Headers;
 
 /**
  * SignupActivity implementation.
@@ -276,16 +275,15 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         // get user local
         user = userDAO.get(session.getIdLogged());
 
-        if (!ConnectionUtils.internetIsEnabled(this)) {
-            return;
-        }
+        if (!ConnectionUtils.internetIsEnabled(this)) return;
+
         loading(true);
-        populateView();
+        populateView(); // Populate view with local data
 
         /**
          * Get user in server
          */
-        Server.getInstance(this).get("users/", new Server.Callback() {
+        Server.getInstance(this).get("users/".concat(session.get_idLogged()), new Server.Callback() {
             @Override
             public void onError(JSONObject result) {
                 enabledView(true);
@@ -302,7 +300,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                populateView();
+                                populateView(); // Populate view with data from server
                             }
                         });
                     }
@@ -344,35 +342,36 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         Log.i(TAG, "signup in remote server");
         loading(true);
 
-        Server.getInstance(this).post("users/signup", new Gson().toJson(getUserView()), new Server.Callback() {
-            @Override
-            public void onError(JSONObject result) {
-                printMessage(result);
-                loading(false);
-            }
-
-            @Override
-            public void onSuccess(JSONObject result) {
-                try {
-                    final User user = new Gson().fromJson(result.getString("user"), User.class);
-                    if (user.get_id() != null) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                userDAO.save(user); // save in local
-                            }
-                        });
-
-                        finish(); // to back login activity
+        Server.getInstance(this).post("users/signup",
+                new Gson().toJson(getUserView()), new Server.Callback() {
+                    @Override
+                    public void onError(JSONObject result) {
+                        printMessage(result);
+                        loading(false);
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                } finally {
-                    loading(false);
-                    printMessage(result);
-                }
-            }
-        });
+
+                    @Override
+                    public void onSuccess(JSONObject result) {
+                        try {
+                            final User user = new Gson().fromJson(result.getString("user"), User.class);
+                            if (user.get_id() != null) {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        userDAO.save(user); // save in local
+                                    }
+                                });
+
+                                finish(); // to back login activity
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        } finally {
+                            loading(false);
+                            printMessage(result);
+                        }
+                    }
+                });
     }
 
     /**
@@ -385,34 +384,35 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
 
         loading(true);
 
-        Server.getInstance(this).put("users", new Gson().toJson(getUserView()), new Server.Callback() {
-            @Override
-            public void onError(JSONObject result) {
-                printMessage(result);
-                loading(false);
-            }
-
-            @Override
-            public void onSuccess(JSONObject result) {
-                try {
-                    final User userUpdate = new Gson().fromJson(result.getString("user"), User.class);
-
-                    if (userUpdate.get_id() != null) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                userDAO.update(user); // save in local
-                            }
-                        });
+        Server.getInstance(this).put("users".concat(session.get_idLogged()),
+                new Gson().toJson(getUserView()), new Server.Callback() {
+                    @Override
+                    public void onError(JSONObject result) {
+                        printMessage(result);
+                        loading(false);
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                } finally {
-                    loading(false);
-                    printMessage(result);
-                }
-            }
-        });
+
+                    @Override
+                    public void onSuccess(JSONObject result) {
+                        try {
+                            final User userUpdate = new Gson().fromJson(result.getString("user"), User.class);
+
+                            if (userUpdate.get_id() != null) {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        userDAO.update(user); // save in local
+                                    }
+                                });
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        } finally {
+                            loading(false);
+                            printMessage(result);
+                        }
+                    }
+                });
     }
 
     /**

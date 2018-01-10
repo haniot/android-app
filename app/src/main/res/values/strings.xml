@@ -60,8 +60,8 @@
     <string name="glucose_measurement">Glucose Measurement</string>
     <string name="glucose_concentration">Glucose Concentration:</string>
     <string name="blood_pressure_measurement">Blood Pressure Measurement</string>
-    <string name="blood_pressure">Pressure:</string>
-    <string name="body_composition">Body Composition:</string>
+    <string name="blood_pressure">Blood Pressure</string>
+    <string name="body_composition">Body Composition</string>
     <string name="body_composition_measurement">Body Composition Measurement</string>
 
     <string name="all_records">All</string>

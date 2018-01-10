@@ -6,7 +6,7 @@ import org.json.JSONObject;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 
 /**
- * Parse for blood pressure.
+ * Parse for body composition.
  *
  * @author Douglas Rafael <douglas.rafael@nutes.uepb.edu.br>
  * @version 1.0

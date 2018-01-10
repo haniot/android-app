@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".devices.BloodPressureHDPActivity">
+    tools:context=".devices.hdp.BloodPressureHDPActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar_layout"
@@ -45,8 +45,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignBottom="@+id/textView8"
-                    android:layout_alignStart="@+id/view_circle"
-                    android:layout_marginStart="39dp"
+                    android:layout_marginEnd="40dp"
+                    android:layout_toStartOf="@+id/view_pulse"
                     android:text="000"
                     android:textColor="@color/colorTextDark"
                     android:textSize="60sp"
@@ -69,7 +69,6 @@
                     android:layout_height="wrap_content"
                     android:layout_alignEnd="@+id/pressure_measurement_dia"
                     android:layout_below="@+id/view_pulse"
-                    android:layout_marginEnd="10dp"
                     android:text="@string/unit_pressure"
                     android:textSize="25sp" />
 
@@ -89,11 +88,10 @@
                     android:id="@+id/pressure_measurement_pulse"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignBottom="@+id/pressure_measurement_sys"
+                    android:layout_above="@+id/textView8"
                     android:layout_alignStart="@+id/view_pulse"
-                    android:layout_marginBottom="18dp"
-                    android:layout_marginStart="25dp"
-                    android:text="000"
+                    android:layout_marginStart="35dp"
+                    android:text="00"
                     android:textColor="@color/colorTextDark"
                     android:textSize="30sp"
                     tools:ignore="HardcodedText" />
@@ -102,9 +100,8 @@
                     android:id="@+id/textView8"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignEnd="@+id/pressure_measurement_pulse"
+                    android:layout_alignStart="@+id/pressure_measurement_pulse"
                     android:layout_centerVertical="true"
-                    android:layout_marginEnd="8dp"
                     android:text="/min"
                     android:textSize="16sp" />
             </RelativeLayout>
