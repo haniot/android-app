@@ -25,7 +25,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
 import org.json.JSONException;
@@ -42,9 +41,6 @@ import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.graphs.TemperatureGraphActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.TemperatureAdapter;
-import br.edu.uepb.nutes.haniot.model.ContextMeasurement;
-import br.edu.uepb.nutes.haniot.model.ContextMeasurementType;
-import br.edu.uepb.nutes.haniot.model.ContextMeasurementValueType;
 import br.edu.uepb.nutes.haniot.model.Device;
 import br.edu.uepb.nutes.haniot.model.DeviceType;
 import br.edu.uepb.nutes.haniot.model.Measurement;
@@ -336,21 +332,21 @@ public class ThermometerActivity extends AppCompatActivity implements Temperatur
     /**
      * Convert json to Measurement object.
      *
-     * @param json
+     * @param json String
      * @return Measurement
      */
     private Measurement jsonToMeasuremnt(String json) {
         Measurement measurement = null;
-
         try {
             JSONObject jsonObject = new JSONObject(json);
-            measurement = new Gson().fromJson(json, Measurement.class);
 
-            measurement.setRegistrationDate((long) jsonObject.get("timestamp"));
-            measurement.setDevice(mDevice);
+            measurement = new Measurement(
+                    jsonObject.getString("temperature"),
+                    jsonObject.getString("temperatureUnit"),
+                    jsonObject.getLong("timestamp"),
+                    MeasurementType.TEMPERATURE);
             measurement.setUser(session.getUserLogged());
-            measurement.setTypeId(MeasurementType.TEMPERATURE);
-            measurement.setHasSent(0);
+            measurement.setDevice(mDevice);
         } catch (JSONException e) {
             e.printStackTrace();
         }

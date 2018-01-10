@@ -106,7 +106,6 @@ public class BloodPressureHDPActivity extends AppCompatActivity {
         Intent intent = new Intent("com.signove.health.service.HealthService");
         startService(intent);
         bindService(intent, serviceConnection, 0);
-        Log.w("HST", "Activity created");
 
         SynchronizationServer.getInstance(this).run();
     }
@@ -159,7 +158,6 @@ public class BloodPressureHDPActivity extends AppCompatActivity {
                     mCircularPulse.setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAlertDanger));
                     mCircularPulse.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
                 }
-
             }
         });
     }

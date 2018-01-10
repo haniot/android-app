@@ -1,5 +1,7 @@
 package br.edu.uepb.nutes.haniot.model;
 
+import java.util.List;
+
 import io.objectbox.annotation.Backlink;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
@@ -68,83 +70,92 @@ public class Measurement {
         return value;
     }
 
-    public void setValue(String value) {
+    public Measurement setValue(String value) {
         this.value = value;
+        return this;
     }
 
     public String getUnit() {
         return unit;
     }
 
-    public void setUnit(String unit) {
+    public Measurement setUnit(String unit) {
         this.unit = unit;
+        return this;
     }
 
     public long getRegistrationDate() {
         return registrationDate;
     }
 
-    public void setRegistrationDate(long registrationDate) {
+    public Measurement setRegistrationDate(long registrationDate) {
         this.registrationDate = registrationDate;
+        return this;
     }
 
     public ToOne<User> getUser() {
         return user;
     }
 
-    public void setUser(User user) {
-        this.user.setTarget(user);
-    }
-
     public ToOne<Device> getDevice() {
         return device;
-    }
-
-    public void setDevice(Device device) {
-        this.device.setTarget(device);
     }
 
     public ToOne<Training> getTraining() {
         return training;
     }
 
-    public void setTraining(Training training) {
+    public void setUser(User user) {
+        this.user.setTarget(user);
+    }
+
+    public void setDevice(Device device) {
+        this.device.setTarget(device);
+    }
+
+    public Measurement setTraining(Training training) {
         this.training.setTarget(training);
+        return this;
     }
 
-    public int getTypeId() {
-        return typeId;
+    public Measurement addContext(ContextMeasurement contextMeasurement) {
+        this.getContextMeasurements().add(contextMeasurement);
+        return this;
     }
 
-    public void setTypeId(int typeId) {
-        this.typeId = typeId;
-    }
-
-    public ToMany<ContextMeasurement> getContextMeasurements() {
-        return contextMeasurements;
-    }
-
-    public boolean addContext(ContextMeasurement contextMeasurement) {
-        return this.getContextMeasurements().add(contextMeasurement);
-    }
-
-    public ToMany<Measurement> getMeasurements() {
-        return measurements;
+    public Measurement addContext(List<ContextMeasurement> contextsMeasurements) {
+        this.getContextMeasurements().addAll(contextsMeasurements);
+        return this;
     }
 
     public boolean addMeasurement(Measurement measurement) {
         return this.getMeasurements().add(measurement);
     }
 
-
-    public int getHasSent() {
-        return hasSent;
-    }
-
     public void setHasSent(int hasSent) {
         this.hasSent = hasSent;
     }
 
+    public int getTypeId() {
+        return typeId;
+    }
+
+    public Measurement setTypeId(int typeId) {
+        this.typeId = typeId;
+        return this;
+    }
+
+    public ToMany<ContextMeasurement> getContextMeasurements() {
+        return contextMeasurements;
+    }
+
+    public ToMany<Measurement> getMeasurements() {
+        return measurements;
+    }
+
+    public int getHasSent() {
+        return hasSent;
+    }
 
     @Override
     public int hashCode() {
