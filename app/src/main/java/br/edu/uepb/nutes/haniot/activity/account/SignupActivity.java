@@ -342,6 +342,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         Log.i(TAG, "signup in remote server");
         loading(true);
 
+        // Send for remote server /users/signup
         Server.getInstance(this).post("users/signup",
                 new Gson().toJson(getUserView()), new Server.Callback() {
                     @Override
@@ -384,7 +385,8 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
 
         loading(true);
 
-        Server.getInstance(this).put("users".concat(session.get_idLogged()),
+        // Send for remote server /users/:userId
+        Server.getInstance(this).put("users/".concat(session.get_idLogged()),
                 new Gson().toJson(getUserView()), new Server.Callback() {
                     @Override
                     public void onError(JSONObject result) {
@@ -543,7 +545,9 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
     private void closeActivity() {
         if (openDialog) {
             GenericDialogFragment dialogHasChange = GenericDialogFragment.newDialog(DIALOG_HAS_CHANGE,
-                    R.string.back_confirm, new int[]{R.string.bt_ok, R.string.bt_cancel}, null);
+                    R.string.back_confirm,
+                    new int[]{R.string.bt_ok, R.string.bt_cancel},
+                    null);
             dialogHasChange.show(getSupportFragmentManager());
         } else {
             super.onBackPressed();

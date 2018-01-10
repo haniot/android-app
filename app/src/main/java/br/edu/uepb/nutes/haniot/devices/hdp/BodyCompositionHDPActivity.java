@@ -22,12 +22,6 @@ import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 import com.signove.health.service.HealthAgentAPI;
 import com.signove.health.service.HealthServiceAPI;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.IOException;
-
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.model.Device;
@@ -35,19 +29,11 @@ import br.edu.uepb.nutes.haniot.model.DeviceType;
 import br.edu.uepb.nutes.haniot.model.Measurement;
 import br.edu.uepb.nutes.haniot.model.dao.DeviceDAO;
 import br.edu.uepb.nutes.haniot.model.dao.MeasurementDAO;
-import br.edu.uepb.nutes.haniot.parse.IEEE11073BPParser;
 import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-/**
- * Activity to capture the balance data.
- *
- * @author Lucas Barbosa
- * @version 1.2
- * @copyright Copyright (c) 2017, NUTES UEPB
- */
-public class BloodPressureHDPActivity extends AppCompatActivity {
+public class BodyCompositionHDPActivity extends AppCompatActivity {
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -55,23 +41,17 @@ public class BloodPressureHDPActivity extends AppCompatActivity {
     @BindView(R.id.view_circle)
     CircularProgressBar mCircularProgressBar;
 
-    @BindView(R.id.view_pulse)
-    CircularProgressBar mCircularPulse;
-
     @BindView(R.id.collapsi_toolbar)
     CollapsingToolbarLayout mCollapsingToolbarLayout;
 
     @BindView(R.id.app_bar_layout)
     AppBarLayout mAppBarLayout;
 
-    @BindView(R.id.pressure_measurement_sys)
-    TextView mBloodPressureSysTextView;
+    @BindView(R.id.body_mass_measurement)
+    TextView mBodyCompositionHdpTextView;
 
-    @BindView(R.id.pressure_measurement_dia)
-    TextView mBloodPressureDiaTextView;
-
-    @BindView(R.id.pressure_measurement_pulse)
-    TextView mBloodPressurePulseTextView;
+    @BindView(R.id.body_mass_unit_measurement)
+    TextView mBodyMassUnitMeasurement;
 
     private Animation animation;
     private Device mDevice;
@@ -80,18 +60,14 @@ public class BloodPressureHDPActivity extends AppCompatActivity {
     private DeviceDAO deviceDAO;
     private Measurement measurement;
 
-    private int[] specs = {0x1007};
+    private int[] specs = {0x1014};
     private Handler tm;
     private HealthServiceAPI api;
 
-    /**
-     * Called when the activity is first created.
-     */
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        setContentView(R.layout.activity_blood_pressure_hdp);
+        setContentView(R.layout.activity_body_composition_hdp);
         ButterKnife.bind(this);
 
         initializeToolBar();
@@ -111,14 +87,13 @@ public class BloodPressureHDPActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onResume() {
+        super.onResume();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-
         try {
             Log.w("HST", "Unconfiguring...");
             api.Unconfigure(agent);
@@ -144,19 +119,13 @@ public class BloodPressureHDPActivity extends AppCompatActivity {
             public void run() {
                 mCircularProgressBar.setProgress(0);
                 mCircularProgressBar.setProgressWithAnimation(100); // Default animate duration = 1500ms
-                mCircularPulse.setProgress(0);
-                mCircularPulse.setProgressWithAnimation(100); // Default animate duration = 1500ms
 
                 if (isConnected) {
                     mCircularProgressBar.setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
                     mCircularProgressBar.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAlertDanger));
-                    mCircularPulse.setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
-                    mCircularPulse.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAlertDanger));
                 } else {
                     mCircularProgressBar.setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAlertDanger));
                     mCircularProgressBar.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
-                    mCircularPulse.setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAlertDanger));
-                    mCircularPulse.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
                 }
             }
         });
@@ -180,7 +149,7 @@ public class BloodPressureHDPActivity extends AppCompatActivity {
                     scrollRange = appBarLayout.getTotalScrollRange();
 
                 if (scrollRange + verticalOffset == 0) {
-                    mCollapsingToolbarLayout.setTitle(getString(R.string.blood_pressure));
+                    mCollapsingToolbarLayout.setTitle(getString(R.string.body_weight_scale));
                     isShow = true;
                 } else if (isShow) {
                     mCollapsingToolbarLayout.setTitle("");
@@ -190,19 +159,38 @@ public class BloodPressureHDPActivity extends AppCompatActivity {
         });
     }
 
+    private void RequestConfig(String dev) {
+        try {
+            Log.w("HST", "Getting configuration ");
+            String xmldata = api.GetConfiguration(dev);
+            Log.w("HST", "Received configuration");
+            Log.w("HST", ".." + xmldata);
+        } catch (RemoteException e) {
+            Log.w("HST", "Exception (RequestConfig)");
+        }
+    }
+
+    private void RequestDeviceAttributes(String dev) {
+        try {
+            Log.w("HST", "Requested device attributes");
+            api.RequestDeviceAttributes(dev);
+        } catch (RemoteException e) {
+            Log.w("HST", "Exception (RequestDeviceAttributes)");
+        }
+    }
+
     private HealthAgentAPI.Stub agent = new HealthAgentAPI.Stub() {
         @Override
         public void Connected(String dev, String addr) {
             Log.w("HST", "Connected " + dev);
             Log.w("HST", "..." + addr);
-            updateConnectionState(true);
 
             // TODO REMOVER!!! Pois o cadastro do device deverá ser no processo de emparelhamento
             if (mDevice == null) {
                 mDevice = deviceDAO.get(addr, session.getIdLogged());
 
                 if (mDevice == null) {
-                    mDevice = new Device(addr, "BLOOD PRESSURE MONITOR", "OMRON", "BP792IT", DeviceType.BLOOD_PRESSURE, session.getUserLogged());
+                    mDevice = new Device(addr, "BODY WEIGHT SCALE", "OMRON", "HBF-206IT", DeviceType.BODY_COMPOSITION, session.getUserLogged());
                     mDevice.set_id("3b1847dfd7bcdd2448000cc6");
                     if (!deviceDAO.save(mDevice)) finish();
                 }
@@ -233,29 +221,6 @@ public class BloodPressureHDPActivity extends AppCompatActivity {
         public void MeasurementData(String dev, String xmldata) {
             Log.w("HST", "MeasurementData " + dev);
             Log.w("HST", "....." + xmldata);
-
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        JSONObject data = IEEE11073BPParser.parse(xmldata);
-
-                        mBloodPressureSysTextView.setText(String.format("%03d", data.getInt("systolic")));
-                        mBloodPressureDiaTextView.setText(String.format("%03d", data.getInt("diastolic")));
-                        mBloodPressurePulseTextView.setText(String.valueOf(data.getInt("pulse")));
-
-                        mBloodPressurePulseTextView.startAnimation(animation);
-                        mBloodPressureDiaTextView.startAnimation(animation);
-                        mBloodPressurePulseTextView.startAnimation(animation);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    } catch (XmlPullParserException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
         }
 
         @Override
@@ -272,7 +237,6 @@ public class BloodPressureHDPActivity extends AppCompatActivity {
         @Override
         public void Disconnected(String dev) {
             Log.w("HST", "Disconnected " + dev);
-            updateConnectionState(false);
         }
     };
 
@@ -296,23 +260,4 @@ public class BloodPressureHDPActivity extends AppCompatActivity {
             Log.w("HST", "Service connection closed");
         }
     };
-
-    private void RequestConfig(String dev) {
-        try {
-            String xmldata = api.GetConfiguration(dev);
-            Log.w("HST", "Received configuration");
-            Log.w("HST", ".." + xmldata);
-        } catch (RemoteException e) {
-            Log.w("HST", "Exception (RequestConfig)");
-        }
-    }
-
-    private void RequestDeviceAttributes(String dev) {
-        try {
-            Log.w("HST", "Requested device attributes");
-            api.RequestDeviceAttributes(dev);
-        } catch (RemoteException e) {
-            Log.w("HST", "Exception (RequestDeviceAttributes)");
-        }
-    }
 }

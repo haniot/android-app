@@ -66,7 +66,7 @@
                 <action android:name="com.signove.health.service.HealthService" />
             </intent-filter>
         </activity>
-        <activity android:name=".devices.hdp.BodyCompositionMonitorHDPActivity" />
+        <activity android:name=".devices.hdp.BodyCompositionHDPActivity" />
         <activity
             android:name=".devices.ScaleActivity"
             android:screenOrientation="portrait" />

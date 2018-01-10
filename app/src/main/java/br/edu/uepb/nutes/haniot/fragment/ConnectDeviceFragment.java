@@ -11,7 +11,7 @@ import android.widget.ImageView;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.devices.hdp.BloodPressureHDPActivity;
-import br.edu.uepb.nutes.haniot.devices.hdp.BodyCompositionMonitorHDPActivity;
+import br.edu.uepb.nutes.haniot.devices.hdp.BodyCompositionHDPActivity;
 import br.edu.uepb.nutes.haniot.devices.GlucoseActivity;
 import br.edu.uepb.nutes.haniot.devices.HeartRateActivity;
 import br.edu.uepb.nutes.haniot.devices.ScaleActivity;
@@ -96,7 +96,7 @@ public class ConnectDeviceFragment extends Fragment implements View.OnClickListe
                 startActivity(new Intent(getContext(), BloodPressureHDPActivity.class));
                 break;
             case R.id.device_body_composition_hdp:
-                startActivity(new Intent(getContext(), BodyCompositionMonitorHDPActivity.class));
+                startActivity(new Intent(getContext(), BodyCompositionHDPActivity.class));
                 break;
             case R.id.device_scale_ble:
                 startActivity(new Intent(getContext(), ScaleActivity.class));

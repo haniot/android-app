@@ -45,9 +45,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignBottom="@+id/textView8"
-                    android:layout_marginEnd="40dp"
+                    android:layout_alignStart="@+id/view_circle"
                     android:layout_toStartOf="@+id/view_pulse"
                     android:text="000"
+                    android:gravity="center"
                     android:textColor="@color/colorTextDark"
                     android:textSize="60sp"
                     tools:ignore="HardcodedText" />
@@ -56,9 +57,12 @@
                     android:id="@+id/pressure_measurement_dia"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignEnd="@+id/pressure_measurement_sys"
+                    android:layout_alignStart="@+id/view_circle"
                     android:layout_alignTop="@+id/textView8"
+                    android:layout_toStartOf="@+id/view_pulse"
                     android:text="00"
+                    android:gravity="right"
+                    android:layout_marginRight="40dp"
                     android:textColor="@color/colorTextDark"
                     android:textSize="40sp"
                     tools:ignore="HardcodedText" />
@@ -68,9 +72,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignEnd="@+id/pressure_measurement_dia"
+                    android:layout_alignStart="@+id/view_circle"
                     android:layout_below="@+id/view_pulse"
                     android:text="@string/unit_pressure"
-                    android:textSize="25sp" />
+                    android:gravity="right"
+                    android:textSize="20sp" />
 
                 <com.mikhaellopez.circularprogressbar.CircularProgressBar
                     android:id="@+id/view_pulse"
@@ -89,9 +95,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_above="@+id/textView8"
+                    android:layout_alignEnd="@+id/view_pulse"
                     android:layout_alignStart="@+id/view_pulse"
-                    android:layout_marginStart="35dp"
-                    android:text="00"
+                    android:gravity="center"
+                    android:text="000"
                     android:textColor="@color/colorTextDark"
                     android:textSize="30sp"
                     tools:ignore="HardcodedText" />
@@ -100,8 +107,10 @@
                     android:id="@+id/textView8"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignStart="@+id/pressure_measurement_pulse"
+                    android:layout_alignEnd="@+id/view_pulse"
+                    android:layout_alignStart="@+id/view_pulse"
                     android:layout_centerVertical="true"
+                    android:gravity="center"
                     android:text="/min"
                     android:textSize="16sp" />
             </RelativeLayout>
