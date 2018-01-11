@@ -37,7 +37,7 @@ public class IEEE11073BPParser {
      *   systolicUnit: string_value,
      *   diastolicUnit: string_value,
      *   pulseUnit: string_value,
-     *   timestamp: long_value
+     *   timestamp: long_value }
      *
      * @param data xml
      * @return JSONObject json
@@ -46,8 +46,9 @@ public class IEEE11073BPParser {
      * @throws IOException
      */
     public static JSONObject parse(String data) throws JSONException, XmlPullParserException, IOException {
-        XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
-        XmlPullParser xmlParser = factory.newPullParser();
+        XmlPullParser xmlParser = XmlPullParserFactory.newInstance().newPullParser();
+        xmlParser.setInput(new StringReader(data));
+
         Calendar timestamp = GregorianCalendar.getInstance();
         JSONObject result = new JSONObject();
 
@@ -67,7 +68,6 @@ public class IEEE11073BPParser {
                 sec = null,
                 sec_fractions = null;
 
-        xmlParser.setInput(new StringReader(data));
         int eventType = xmlParser.getEventType();
         while (eventType != XmlPullParser.END_DOCUMENT && !end) {
             String name = null;

@@ -60,7 +60,7 @@ public class BodyCompositionHDPActivity extends AppCompatActivity {
     private DeviceDAO deviceDAO;
     private Measurement measurement;
 
-    private int[] specs = {0x1014};
+    private int[] specs = {0x100F}; // 0x100F - Body Weight Scale
     private Handler tm;
     private HealthServiceAPI api;
 
