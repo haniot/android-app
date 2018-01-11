@@ -145,7 +145,7 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
                     scrollRange = appBarLayout.getTotalScrollRange();
                 }
                 if (scrollRange + verticalOffset == 0) {
-                    mCollapsingToolbarLayout.setTitle(getString(R.string.scale_measurement));
+                    mCollapsingToolbarLayout.setTitle(getString(R.string.body_weight_scale));
                     isShow = true;
                 } else if (isShow) {
                     mCollapsingToolbarLayout.setTitle("");

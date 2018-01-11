@@ -81,8 +81,6 @@ public class SynchronizationServer {
      * @return String json
      */
     private String prepareMeasurements(List<Measurement> measurements) {
-        Log.i("TOTAL", measurements.size() + "");
-
         // No data send
         if (measurements == null || measurements.isEmpty()) {
             return null;
@@ -107,9 +105,6 @@ public class SynchronizationServer {
                 measurementsNoRelations.add(m);
             }
         }
-
-        Log.i(TAG, "WITH REL: " + measurementsWithRelations.size());
-        Log.i(TAG, "NO REL: " + measurementsNoRelations.size());
 
         /**
          * To treat the relationships and remove from the final json
@@ -215,17 +210,11 @@ public class SynchronizationServer {
         }
 
         /**
-         * Get the required user token in request authentication
-         */
-        Headers headers = new Headers.Builder()
-                .add("Authorization", "JWT ".concat(new Session(context).getTokenLogged()))
-                .build();
-
-        /**
          * Send to server
+         * /measurements/users/:userId
          */
         Server.getInstance(context).post("measurements/users/" + session.getUserLogged().get_id(),
-                jsonMeasurements, headers, new Server.Callback() {
+                jsonMeasurements, new Server.Callback() {
                     @Override
                     public void onError(JSONObject result) {
                         if (callbackSynchronization != null)

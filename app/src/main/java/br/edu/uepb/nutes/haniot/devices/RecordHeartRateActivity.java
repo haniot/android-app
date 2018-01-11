@@ -28,6 +28,9 @@ import android.widget.TextView;
 
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.UUID;
 
 import br.edu.uepb.nutes.haniot.R;
@@ -35,10 +38,10 @@ import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.fragment.GenericDialogFragment;
 import br.edu.uepb.nutes.haniot.model.Device;
 import br.edu.uepb.nutes.haniot.model.Measurement;
+import br.edu.uepb.nutes.haniot.model.MeasurementType;
 import br.edu.uepb.nutes.haniot.model.dao.DeviceDAO;
 import br.edu.uepb.nutes.haniot.model.dao.MeasurementDAO;
 import br.edu.uepb.nutes.haniot.service.BluetoothLeService;
-import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import br.edu.uepb.nutes.haniot.utils.GattAttributes;
 import butterknife.BindView;
@@ -54,7 +57,6 @@ import butterknife.ButterKnife;
 public class RecordHeartRateActivity extends AppCompatActivity implements View.OnClickListener, GenericDialogFragment.OnClickDialogListener {
     private final String TAG = "RecordHeartRateActivity";
     public final int DIALOG_SAVE_DATA = 1;
-    public final String SEPARATOR = ",";
 
     private long lastPause = 0;
 
@@ -67,7 +69,6 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
     private String[] deviceInformations;
     private ObjectAnimator heartAnimation;
     private boolean isChronometerRunnig;
-    private StringBuilder bpms;
     private Session session;
     private MeasurementDAO MeasurementDAO;
     private DeviceDAO deviceDAO;
@@ -78,7 +79,7 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
     Toolbar mToolbar;
 
     @BindView(R.id.heart_rate_measurement)
-    TextView mTemperatureTextView;
+    TextView mHeartRateTextView;
 
     @BindView(R.id.view_circle)
     CircularProgressBar mCircularProgressBar;
@@ -103,14 +104,13 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
         ButterKnife.bind(this);
 
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setTitle(R.string.heart_rate_measurement);
+        getSupportActionBar().setTitle(R.string.heart_rate);
 
         mButtonRecordPausePlay.setOnClickListener(this);
         mButtonRecordStop.setOnClickListener(this);
 
         Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
-        bpms = new StringBuilder();
         session = new Session(this);
         deviceDAO = DeviceDAO.getInstance(this);
         MeasurementDAO = MeasurementDAO.getInstance(this);
@@ -153,7 +153,7 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
         registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
 
         if (mBluetoothLeService != null) {
-            boolean result = mBluetoothLeService.connect(mDeviceAddress);
+            mBluetoothLeService.connect(mDeviceAddress);
         }
     }
 
@@ -308,10 +308,10 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
 
             if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
                 mConnected = true;
-                updateConnectionState(true);
+                updateConnectionState(mConnected);
             } else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
                 mConnected = false;
-                updateConnectionState(false);
+                updateConnectionState(mConnected);
             } else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
                 BluetoothGattService gattService = mBluetoothLeService.getGattService(UUID.fromString(GattAttributes.SERVICE_HEART_RATE));
 
@@ -321,21 +321,19 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
                         setCharacteristicNotification(characteristic);
                 }
             } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
-                final Integer Measurement = (Integer) intent.getSerializableExtra(BluetoothLeService.EXTRA_DATA);
+                final Measurement measurement = jsonToMeasuremnt(intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
+                Log.i("MeasurementTO", measurement.toString());
+                if(!mConnected) {
+                    mConnected = true;
+                    updateConnectionState(mConnected);
+                }
 
                 // display data
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        int bpm = Measurement == null ? 0 : Measurement;
-
-                        mTemperatureTextView.setText(String.format("%03d", bpm));
-                        // bpm;currentTime
-                        if (bpms.length() == 0) {
-                            bpms.append(String.valueOf(bpm).concat(";").concat(String.valueOf(SystemClock.elapsedRealtime() - mChronometer.getBase())));
-                        } else {
-                            bpms.append(SEPARATOR.concat(String.valueOf(bpm)).concat(";").concat(String.valueOf(SystemClock.elapsedRealtime() - mChronometer.getBase())));
-                        }
+                        int bpm = measurement.getValue() == null ? 0 : new Integer(measurement.getValue());
+                        mHeartRateTextView.setText(String.format("%03d", bpm));
 
                         fcAccumulate += bpm;
                         fcMinimum = (bpm > 0 && bpm < fcMinimum) ? bpm : fcMinimum;
@@ -346,6 +344,31 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
             }
         }
     };
+
+    /**
+     * Convert json to Measurement object.
+     *
+     * @param json
+     * @return Measurement
+     */
+    private Measurement jsonToMeasuremnt(String json) {
+        Measurement measurement = null;
+
+        try {
+            JSONObject jsonObject = new JSONObject(json);
+
+            measurement = new Measurement(
+                    jsonObject.getString("heartRate"),
+                    jsonObject.getString("heartRateUnit"),
+                    jsonObject.getLong("timestamp"),
+                    MeasurementType.HEART_RATE);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return measurement;
+    }
 
     @Override
     public void onClickDialog(int id, int button) {
