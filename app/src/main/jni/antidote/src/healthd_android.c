@@ -84,7 +84,7 @@ CommunicationPlugin plugin;
 /**
  * Resets a framework-depende timer
  *
- * @param ctx Context
+ * @param ctx ContextMeasurement
  */
 static void timer_reset_timeout(Context *ctx)
 {
@@ -100,7 +100,7 @@ static void timer_reset_timeout(Context *ctx)
  *
  * @param env JNI thread environment
  * @param obj JNI bridge object
- * @param id Context id (supplied when timer was created)
+ * @param id ContextMeasurement id (supplied when timer was created)
  */
 void Java_com_signove_health_service_JniBridge_Ctimeralarm(JNIEnv *env, jobject obj, jint id)
 {
@@ -118,7 +118,7 @@ void Java_com_signove_health_service_JniBridge_Ctimeralarm(JNIEnv *env, jobject 
 /**
  * Initiates a timer in behalf of IEEE library
  *
- * @param ctx Context
+ * @param ctx ContextMeasurement
  * @return The timer handle
  */
 static int timer_count_timeout(Context *ctx)
@@ -410,7 +410,7 @@ static void device_reqmdsattr_callback(Context *ctx, Request *r, DATA_apdu *resp
  *
  * \param env JNI thread environment
  * \param obj JNI bridge object
- * \param handle Context ID
+ * \param handle ContextMeasurement ID
  */
 void Java_com_signove_health_service_JniBridge_Creqmdsattr(JNIEnv *env, jobject obj, jint handle)
 {
@@ -425,7 +425,7 @@ void Java_com_signove_health_service_JniBridge_Creqmdsattr(JNIEnv *env, jobject 
  *
  * \param env JNI thread environment
  * \param obj JNI bridge object
- * \param handle Context ID
+ * \param handle ContextMeasurement ID
  */
 jstring Java_com_signove_health_service_JniBridge_Cgetconfig(JNIEnv *env, jobject obj, jint handle)
 {
@@ -455,7 +455,7 @@ jstring Java_com_signove_health_service_JniBridge_Cgetconfig(JNIEnv *env, jobjec
  *
  * \param env JNI thread environment
  * \param obj JNI bridge object
- * \param handle Context ID
+ * \param handle ContextMeasurement ID
  */
 void Java_com_signove_health_service_JniBridge_Creqmeasurement(JNIEnv *env, jobject obj, jint handle)
 {
@@ -470,7 +470,7 @@ void Java_com_signove_health_service_JniBridge_Creqmeasurement(JNIEnv *env, jobj
  *
  * \param env JNI thread environment
  * \param obj JNI bridge object
- * \param handle Context ID
+ * \param handle ContextMeasurement ID
  * \param ihandle Object handle
  */
 void Java_com_signove_health_service_JniBridge_Creqactivationscanner(JNIEnv *env, jobject obj, jint handle, jint ihandle)
@@ -486,7 +486,7 @@ void Java_com_signove_health_service_JniBridge_Creqactivationscanner(JNIEnv *env
  *
  * \param env JNI thread environment
  * \param obj JNI bridge object
- * \param handle Context ID
+ * \param handle ContextMeasurement ID
  * \param ihandle Object handle
  */
 void Java_com_signove_health_service_JniBridge_Creqdeactivationscanner(JNIEnv *env, jobject obj, jint handle, jint ihandle)
@@ -502,7 +502,7 @@ void Java_com_signove_health_service_JniBridge_Creqdeactivationscanner(JNIEnv *e
  *
  * \param env JNI thread environment
  * \param obj JNI bridge object
- * \param handle Context ID
+ * \param handle ContextMeasurement ID
  */
 void Java_com_signove_health_service_JniBridge_Creleaseassoc(JNIEnv *env, jobject obj, jint handle)
 {
@@ -517,7 +517,7 @@ void Java_com_signove_health_service_JniBridge_Creleaseassoc(JNIEnv *env, jobjec
  *
  * \param env JNI thread environment
  * \param obj JNI bridge object
- * \param handle Context ID
+ * \param handle ContextMeasurement ID
  */
 void Java_com_signove_health_service_JniBridge_Cabortassoc(JNIEnv *env, jobject obj, jint handle)
 {
@@ -557,7 +557,7 @@ static void device_get_pmstore_cb(Context *ctx, Request *r, DATA_apdu *response_
  *
  * \param env JNI thread environment
  * \param obj JNI bridge object
- * \param handle Context ID
+ * \param handle ContextMeasurement ID
  * \param ihandle Object handle
  */
 jint Java_com_signove_health_service_JniBridge_Cgetpmstore(JNIEnv *env,
@@ -631,7 +631,7 @@ static void device_clear_segm_cb(Context *ctx, Request *r, DATA_apdu *response_a
  *
  * \param env JNI thread environment
  * \param obj JNI bridge object
- * \param handle Context ID
+ * \param handle ContextMeasurement ID
  * \param ihandle Object handle
  */
 jint Java_com_signove_health_service_JniBridge_Cgetsegminfo(JNIEnv *env, jobject obj, jint handle, jint ihandle)
@@ -651,7 +651,7 @@ jint Java_com_signove_health_service_JniBridge_Cgetsegminfo(JNIEnv *env, jobject
  *
  * \param env JNI thread environment
  * \param obj JNI bridge object
- * \param handle Context ID
+ * \param handle ContextMeasurement ID
  * \param ihandle Object handle
  * \param instnumber PM-Segment Instance number
  */
@@ -673,7 +673,7 @@ jint Java_com_signove_health_service_JniBridge_Cgetsegmdata(JNIEnv *env,
  *
  * \param env JNI thread environment
  * \param obj JNI bridge object
- * \param handle Context ID
+ * \param handle ContextMeasurement ID
  * \param ihandle Object handle
  * \param instnumber PM-Segment Instance number
  */
@@ -696,7 +696,7 @@ jint Java_com_signove_health_service_JniBridge_Cclearsegmdata(JNIEnv *env, jobje
  *
  * \param env JNI thread environment
  * \param obj JNI bridge object
- * \param handle Context ID
+ * \param handle ContextMeasurement ID
  * \param ihandle Object handle
  */
 jint Java_com_signove_health_service_JniBridge_Cclearallsegmdata(JNIEnv *env, jobject obj,

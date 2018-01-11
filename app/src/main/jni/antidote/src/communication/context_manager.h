@@ -1,7 +1,7 @@
 /* -*- mode: C; c-file-style: "gnu"; indent-tabs-mode: nil; -*- */
 /**
  * \file context_manager.h
- * \brief Connection Context Manager header.
+ * \brief Connection ContextMeasurement Manager header.
  * Copyright (C) 2010 Signove Tecnologia Corporation.
  * All rights reserved.
  * Contact: Signove Tecnologia Corporation (contact@signove.com)

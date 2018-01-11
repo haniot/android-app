@@ -7,10 +7,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.List;
+import java.util.Locale;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.model.MeasurementThermometer;
+import br.edu.uepb.nutes.haniot.model.Measurement;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -25,11 +28,11 @@ import butterknife.ButterKnife;
 public class TemperatureAdapter extends RecyclerView.Adapter<TemperatureAdapter.ViewHolder> {
     private final String LOG = "BluetoothDeviceAdapter";
 
-    private final List<MeasurementThermometer> mValues;
+    private final List<Measurement> mValues;
     private final OnItemClickListener mListener;
     private final Context context;
 
-    public TemperatureAdapter(List<MeasurementThermometer> items, OnItemClickListener listener, Context context) {
+    public TemperatureAdapter(List<Measurement> items, OnItemClickListener listener, Context context) {
         mValues = items;
         mListener = listener;
         this.context = context;
@@ -45,8 +48,12 @@ public class TemperatureAdapter extends RecyclerView.Adapter<TemperatureAdapter.
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         holder.mItem = mValues.get(position);
 
-        holder.value.setText(String.valueOf(mValues.get(position).getValue()));
-        holder.date.setText(DateUtils.getDatetime(mValues.get(position).getRegistrationTime(), context.getString(R.string.datetime_format)));
+        DecimalFormat df = new DecimalFormat(
+                context.getResources().getString(R.string.temperature_format),
+                new DecimalFormatSymbols(Locale.US));
+
+        holder.value.setText(df.format(Float.parseFloat(mValues.get(position).getValue())));
+        holder.date.setText(DateUtils.getDatetime(mValues.get(position).getRegistrationDate(), context.getString(R.string.datetime_format)));
         holder.unit.setText(mValues.get(position).getUnit());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
@@ -64,7 +71,7 @@ public class TemperatureAdapter extends RecyclerView.Adapter<TemperatureAdapter.
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public MeasurementThermometer mItem;
+        public Measurement mItem;
 
         @BindView(R.id.measurement_temperature)
         TextView value;
@@ -92,6 +99,6 @@ public class TemperatureAdapter extends RecyclerView.Adapter<TemperatureAdapter.
     }
 
     public interface OnItemClickListener {
-        void onItemClick(MeasurementThermometer item);
+        void onItemClick(Measurement item);
     }
 }

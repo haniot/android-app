@@ -5,9 +5,9 @@
 #
 # All text after a hash (#) is considered a comment and will be ignored
 # The format is:
-#       TAG = value [value, ...]
+#       TAG = valueId [valueId, ...]
 # For lists items can also be appended using:
-#       TAG += value [value, ...]
+#       TAG += valueId [valueId, ...]
 # Values that contain spaces should be placed between quotes (" ")
 
 #---------------------------------------------------------------------------
@@ -168,16 +168,16 @@ INHERIT_DOCS = YES
 SEPARATE_MEMBER_PAGES = NO
 
 # The TAB_SIZE tag can be used to set the number of spaces in a tab.
-# Doxygen uses this value to replace tabs by spaces in code fragments.
+# Doxygen uses this valueId to replace tabs by spaces in code fragments.
 
 TAB_SIZE = 8
 
 # This tag can be used to specify a number of aliases that acts
-# as commands in the documentation. An alias has the form "name=value".
+# as commands in the documentation. An alias has the form "name=valueId".
 # For example adding "sideeffect=\par Side Effects:\n" will allow you to
 # put the command \sideeffect (or @sideeffect) in the documentation, which
 # will result in a user-defined paragraph with heading "Side Effects:".
-# You can put \n's in the value part of an alias to insert newlines.
+# You can put \n's in the valueId part of an alias to insert newlines.
 
 ALIASES = 
 
@@ -242,7 +242,7 @@ SIP_SUPPORT = NO
 # and setter methods for a property. Setting this option to YES (the default)
 # will make doxygen to replace the get and set methods by a property in the
 # documentation. This will only work if the methods are indeed getting or
-# setting a simple type. If this is not the case, or you want to show the
+# setting a simple typeId. If this is not the case, or you want to show the
 # methods anyway, you should set this option to NO.
 
 IDL_PROPERTY_SUPPORT = YES
@@ -255,8 +255,8 @@ IDL_PROPERTY_SUPPORT = YES
 DISTRIBUTE_GROUP_DOC = NO
 
 # Set the SUBGROUPING tag to YES (the default) to allow class member groups of
-# the same type (for instance a group of public functions) to be put as a
-# subgroup of that type (e.g. under the Public Functions section). Set it to
+# the same typeId (for instance a group of public functions) to be put as a
+# subgroup of that typeId (e.g. under the Public Functions section). Set it to
 # NO to prevent subgrouping. Alternatively, this can be done per class using
 # the \nosubgrouping command.
 
@@ -275,12 +275,12 @@ TYPEDEF_HIDES_STRUCT = NO
 # The SYMBOL_CACHE_SIZE determines the size of the internal cache use to
 # determine which symbols to keep in memory and which to flush to disk.
 # When the cache is full, less often used symbols will be written to disk.
-# For small to medium size projects (<1000 input files) the default value is
+# For small to medium size projects (<1000 input files) the default valueId is
 # probably good enough. For larger projects a too small cache size can cause
 # doxygen to be busy swapping symbols to and from disk most of the time
 # causing a significant performance penality.
 # If the system has enough physical memory increasing the cache will improve the
-# performance by keeping more symbols in memory. Note that the value works on
+# performance by keeping more symbols in memory. Note that the valueId works on
 # a logarithmic scale so increasing the size by one will rougly double the
 # memory usage. The cache size is given by this formula:
 # 2^(16+SYMBOL_CACHE_SIZE). The valid range is 0..9, the default is 0,
@@ -461,9 +461,9 @@ GENERATE_DEPRECATEDLIST = YES
 ENABLED_SECTIONS = 
 
 # The MAX_INITIALIZER_LINES tag determines the maximum number of lines
-# the initial value of a variable or define consists of for it to appear in
+# the initial valueId of a variable or define consists of for it to appear in
 # the documentation. If the initializer consists of more lines than specified
-# here it will be hidden. Use a value of 0 to hide initializers completely.
+# here it will be hidden. Use a valueId of 0 to hide initializers completely.
 # The appearance of the initializer of individual variables and defines in the
 # documentation can be controlled using \showinitializer or \hideinitializer
 # command in the documentation regardless of this setting.
@@ -498,7 +498,7 @@ SHOW_NAMESPACES = YES
 # The FILE_VERSION_FILTER tag can be used to specify a program or script that
 # doxygen should invoke to get the current version for each file (typically from
 # the version control system). Doxygen will invoke the program by executing (via
-# popen()) the command <command> <input-file>, where <command> is the value of
+# popen()) the command <command> <input-file>, where <command> is the valueId of
 # the FILE_VERSION_FILTER tag, and <input-file> is the name of an input file
 # provided by doxygen. Whatever the program writes to standard output
 # is used as the file version. See the manual for examples.
@@ -544,7 +544,7 @@ WARN_IF_DOC_ERROR = YES
 
 # This WARN_NO_PARAMDOC option can be abled to get warnings for
 # functions that are documented, but have no documentation for their parameters
-# or return value. If set to NO (the default) doxygen will only warn about
+# or return valueId. If set to NO (the default) doxygen will only warn about
 # wrong or incomplete parameter documentation, but not about the absence of
 # documentation.
 
@@ -584,7 +584,7 @@ INPUT = ../src
 
 INPUT_ENCODING = UTF-8
 
-# If the value of the INPUT tag contains directories, you can use the
+# If the valueId of the INPUT tag contains directories, you can use the
 # FILE_PATTERNS tag to specify one or more wildcard pattern (like *.cpp
 # and *.h) to filter out the source-files in the directories. If left
 # blank the following patterns are tested:
@@ -611,7 +611,7 @@ EXCLUDE = src/test_tcp_app.c
 
 EXCLUDE_SYMLINKS = NO
 
-# If the value of the INPUT tag contains directories, you can use the
+# If the valueId of the INPUT tag contains directories, you can use the
 # EXCLUDE_PATTERNS tag to specify one or more wildcard patterns to exclude
 # certain files from those directories. Note that the wildcards are matched
 # against the file with absolute path, so to exclude all test directories
@@ -633,7 +633,7 @@ EXCLUDE_SYMBOLS =
 
 EXAMPLE_PATH = 
 
-# If the value of the EXAMPLE_PATH tag contains directories, you can use the
+# If the valueId of the EXAMPLE_PATH tag contains directories, you can use the
 # EXAMPLE_PATTERNS tag to specify one or more wildcard pattern (like *.cpp
 # and *.h) to filter out the source-files in the directories. If left
 # blank all files are included.
@@ -642,7 +642,7 @@ EXAMPLE_PATTERNS =
 
 # If the EXAMPLE_RECURSIVE tag is set to YES then subdirectories will be
 # searched for input files to be used with the \include or \dontinclude
-# commands irrespective of the value of the RECURSIVE tag.
+# commands irrespective of the valueId of the RECURSIVE tag.
 # Possible values are YES and NO. If left blank NO is used.
 
 EXAMPLE_RECURSIVE = NO
@@ -656,7 +656,7 @@ IMAGE_PATH = ./images/
 # The INPUT_FILTER tag can be used to specify a program that doxygen should
 # invoke to filter for each input file. Doxygen will invoke the filter program
 # by executing (via popen()) the command <filter> <input-file>, where <filter>
-# is the value of the INPUT_FILTER tag, and <input-file> is the name of an
+# is the valueId of the INPUT_FILTER tag, and <input-file> is the name of an
 # input file. Doxygen will then use the output that the filter program writes
 # to standard output.
 # If FILTER_PATTERNS is specified, this tag will be
@@ -770,7 +770,7 @@ IGNORE_PREFIX =
 GENERATE_HTML = YES
 
 # The HTML_OUTPUT tag is used to specify where the HTML docs will be put.
-# If a relative path is entered the value of OUTPUT_DIRECTORY will be
+# If a relative path is entered the valueId of OUTPUT_DIRECTORY will be
 # put in front of it. If left blank `html' will be used as the default path.
 
 HTML_OUTPUT = html
@@ -947,7 +947,7 @@ QHG_LOCATION =
 # menu in Eclipse, the contents of the directory containing the HTML and XML
 # files needs to be copied into the plugins directory of eclipse. The name of
 # the directory within the plugins directory should be the same as
-# the ECLIPSE_DOC_ID value. After copying Eclipse needs to be restarted before the help appears.
+# the ECLIPSE_DOC_ID valueId. After copying Eclipse needs to be restarted before the help appears.
 
 GENERATE_ECLIPSEHELP = NO
 
@@ -958,8 +958,8 @@ GENERATE_ECLIPSEHELP = NO
 ECLIPSE_DOC_ID = org.doxygen.Project
 
 # The DISABLE_INDEX tag can be used to turn on/off the condensed index at
-# top of each HTML page. The value NO (the default) enables the index and
-# the value YES disables it.
+# top of each HTML page. The valueId NO (the default) enables the index and
+# the valueId YES disables it.
 
 DISABLE_INDEX = NO
 
@@ -970,7 +970,7 @@ ENUM_VALUES_PER_LINE = 4
 
 # The GENERATE_TREEVIEW tag is used to specify whether a tree-like index
 # structure should be generated to display hierarchical information.
-# If the tag value is set to YES, a side panel will be generated
+# If the tag valueId is set to YES, a side panel will be generated
 # containing a tree-like index structure (just like the one that
 # is generated for HTML Help). For this to work a browser that supports
 # JavaScript, DHTML, CSS and frames is required (i.e. any modern browser).
@@ -1020,7 +1020,7 @@ SERVER_BASED_SEARCH = NO
 GENERATE_LATEX = NO
 
 # The LATEX_OUTPUT tag is used to specify where the LaTeX docs will be put.
-# If a relative path is entered the value of OUTPUT_DIRECTORY will be
+# If a relative path is entered the valueId of OUTPUT_DIRECTORY will be
 # put in front of it. If left blank `latex' will be used as the default path.
 
 LATEX_OUTPUT = latex
@@ -1045,7 +1045,7 @@ MAKEINDEX_CMD_NAME = makeindex
 
 COMPACT_LATEX = NO
 
-# The PAPER_TYPE tag can be used to set the paper type that is used
+# The PAPER_TYPE tag can be used to set the paper typeId that is used
 # by the printer. Possible values are: a4, a4wide, letter, legal and
 # executive. If left blank a4wide will be used.
 
@@ -1104,7 +1104,7 @@ LATEX_SOURCE_CODE = NO
 GENERATE_RTF = NO
 
 # The RTF_OUTPUT tag is used to specify where the RTF docs will be put.
-# If a relative path is entered the value of OUTPUT_DIRECTORY will be
+# If a relative path is entered the valueId of OUTPUT_DIRECTORY will be
 # put in front of it. If left blank `rtf' will be used as the default path.
 
 RTF_OUTPUT = rtf
@@ -1126,7 +1126,7 @@ RTF_HYPERLINKS = NO
 
 # Load stylesheet definitions from file. Syntax is similar to doxygen's
 # config file, i.e. a series of assignments. You only have to provide
-# replacements, missing definitions are set to their default value.
+# replacements, missing definitions are set to their default valueId.
 
 RTF_STYLESHEET_FILE = 
 
@@ -1145,7 +1145,7 @@ RTF_EXTENSIONS_FILE =
 GENERATE_MAN = NO
 
 # The MAN_OUTPUT tag is used to specify where the man pages will be put.
-# If a relative path is entered the value of OUTPUT_DIRECTORY will be
+# If a relative path is entered the valueId of OUTPUT_DIRECTORY will be
 # put in front of it. If left blank `man' will be used as the default path.
 
 MAN_OUTPUT = man
@@ -1174,7 +1174,7 @@ MAN_LINKS = NO
 GENERATE_XML = NO
 
 # The XML_OUTPUT tag is used to specify where the XML pages will be put.
-# If a relative path is entered the value of OUTPUT_DIRECTORY will be
+# If a relative path is entered the valueId of OUTPUT_DIRECTORY will be
 # put in front of it. If left blank `xml' will be used as the default path.
 
 XML_OUTPUT = xml
@@ -1505,7 +1505,7 @@ DOTFILE_DIRS =
 
 # The DOT_GRAPH_MAX_NODES tag can be used to set the maximum number of
 # nodes that will be shown in the graph. If the number of nodes in a graph
-# becomes larger than this value, doxygen will truncate the graph, which is
+# becomes larger than this valueId, doxygen will truncate the graph, which is
 # visualized by representing a node as a red box. Note that doxygen if the
 # number of direct children of the root node in a graph is already larger than
 # DOT_GRAPH_MAX_NODES then the graph will not be shown at all. Also note
@@ -1514,7 +1514,7 @@ DOTFILE_DIRS =
 DOT_GRAPH_MAX_NODES = 50
 
 # The MAX_DOT_GRAPH_DEPTH tag can be used to set the maximum depth of the
-# graphs generated by dot. A depth value of 3 means that only nodes reachable
+# graphs generated by dot. A depth valueId of 3 means that only nodes reachable
 # from the root by following a path via at most 3 edges will be shown. Nodes
 # that lay further from the root node will be omitted. Note that setting this
 # option to 1 or 2 may greatly reduce the computation time needed for large

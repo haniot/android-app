@@ -1,5 +1,6 @@
 package br.edu.uepb.nutes.haniot.utils;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DateFormat;
@@ -7,6 +8,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 /**
  * Provides useful methods for handling date/time.
@@ -28,13 +30,14 @@ public final class DateUtils {
 
     /**
      * Returns the current datetime in format of format_date string passed as parameter.
+     * If "format_date" is null the default value: "yyyy-MM-dd HH:mm:ss" will be used.
      *
      * @param format_date The datetime format
      * @return Datetime formatted
      */
     public static String getCurrentDatetime(String format_date) {
         if (format_date == null)
-            return null;
+            format_date = "yyyy-MM-dd HH:mm:ss";
 
         Calendar calendar = GregorianCalendar.getInstance();
 
@@ -49,6 +52,21 @@ public final class DateUtils {
      */
     public static long getCurrentDatetime() {
         return GregorianCalendar.getInstance().getTimeInMillis();
+    }
+
+    /**
+     * Returns the current timestamp.
+     * - millis - long
+     * - timezone - Object (TimeZone)
+     * - value - String (yyyy-MM-dd HH:mm:ss)
+     *
+     * @return JSONObject
+     * @throws JSONException
+     */
+    public static JSONObject getCurrentTimestamp() throws JSONException {
+        return new JSONObject().put("timezone", TimeZone.getDefault())
+                .put("mills", DateUtils.getCurrentDatetime())
+                .put("value", DateUtils.getCurrentDatetime(null)); // yyyy-MM-dd HH:mm:ss
     }
 
     /**
@@ -126,7 +144,6 @@ public final class DateUtils {
     /**
      * Converts string to Calendar Object.
      *
-     *
      * @param timeStamp
      * @param date_input - Format: yyyy-MM-dd hh:mm:ss
      * @return Calendar
@@ -175,24 +192,42 @@ public final class DateUtils {
         return c;
     }
 
-    public static long timeStamp(JSONObject json){
-        try {
-            String timeStamp = "";
-            String[] timeFragment = {"century","year","month","day","hour","minute","second"};
-            for (String time: timeFragment) {
+    /**
+     * returns the current year in milliseconds.
+     * Example YEAR-01-01 00:00:00
+     *
+     * @return long
+     */
+    public static long getCurrentYear() {
+        Calendar c = GregorianCalendar.getInstance();
 
-                if(json.get(time).toString().length()<2)
-                    timeStamp += "0"+json.get(time).toString();
-                else
-                    timeStamp += json.get(time).toString();
-                if (!time.equals("century")) {
-                    timeStamp += " ";
-                }
-            }
-            return DateUtils.stringToCalendar(timeStamp, "yyyy mm dd HH MM SS").getTimeInMillis();
-        }catch (Exception e) {
-            e.printStackTrace();
-        }
-        return 0L;
+        c.set(Calendar.DAY_OF_YEAR, c.getActualMinimum(Calendar.DAY_OF_YEAR));
+        c.set(Calendar.HOUR_OF_DAY, c.getActualMinimum(Calendar.HOUR_OF_DAY));
+        c.set(Calendar.MINUTE,      c.getActualMinimum(Calendar.MINUTE));
+        c.set(Calendar.SECOND,      c.getActualMinimum(Calendar.SECOND));
+        c.set(Calendar.MILLISECOND, c.getActualMinimum(Calendar.MILLISECOND));
+
+        return c.getTimeInMillis();
     }
+
+//    public static long timeStamp(JSONObject json){
+//        try {
+//            String timeStamp = "";
+//            String[] timeFragment = {"century","year","month","day","hour","minute","second"};
+//            for (String time: timeFragment) {
+//
+//                if(json.get(time).toString().length()<2)
+//                    timeStamp += "0"+json.get(time).toString();
+//                else
+//                    timeStamp += json.get(time).toString();
+//                if (!time.equals("century")) {
+//                    timeStamp += " ";
+//                }
+//            }
+//            return DateUtils.stringToCalendar(timeStamp, "yyyy mm dd HH MM SS").getTimeInMillis();
+//        }catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return 0L;
+//    }
 }

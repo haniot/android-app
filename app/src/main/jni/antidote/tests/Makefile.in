@@ -332,7 +332,7 @@ install-binPROGRAMS: $(bin_PROGRAMS)
 	    if ($$2 == $$4) files[d] = files[d] " " $$1; \
 	    else { print "f", $$3 "/" $$4, $$1; } } \
 	  END { for (d in files) print "f", d, files[d] }' | \
-	while read type dir files; do \
+	while read typeId dir files; do \
 	    if test "$$dir" = .; then dir=; else dir=/$$dir; fi; \
 	    test -z "$$files" || { \
 	    echo " $(INSTALL_PROGRAM_ENV) $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL_PROGRAM) $$files '$(DESTDIR)$(bindir)$$dir'"; \
@@ -558,11 +558,11 @@ distdir: $(DISTFILES)
 	  if test -d $$d/$$file; then \
 	    dir=`echo "/$$file" | sed -e 's,/[^/]*$$,,'`; \
 	    if test -d "$(distdir)/$$file"; then \
-	      find "$(distdir)/$$file" -type d ! -perm -700 -exec chmod u+rwx {} \;; \
+	      find "$(distdir)/$$file" -typeId d ! -perm -700 -exec chmod u+rwx {} \;; \
 	    fi; \
 	    if test -d $(srcdir)/$$file && test $$d != $(srcdir); then \
 	      cp -fpR $(srcdir)/$$file "$(distdir)$$dir" || exit 1; \
-	      find "$(distdir)/$$file" -type d ! -perm -700 -exec chmod u+rwx {} \;; \
+	      find "$(distdir)/$$file" -typeId d ! -perm -700 -exec chmod u+rwx {} \;; \
 	    fi; \
 	    cp -fpR $$d/$$file "$(distdir)$$dir" || exit 1; \
 	  else \

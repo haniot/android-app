@@ -28,7 +28,7 @@ Transcoding:
 
 Add System-Type-Spec-List (and others) for Agent
 
-PMStore get wrong value x timeout
+PMStore get wrong valueId x timeout
 
 PMStore ROER
 
@@ -78,10 +78,10 @@ at higher-level code like communication/association.c.
 
 The need of pre-encoding normally happens because some
 APDU structures have the "Any" element, which contains
-pre-encoded data (whose actual type is opaque to
+pre-encoded data (whose actual typeId is opaque to
 APDU final encoder).
 
-So, this refactoring will mean removing the Any type,
+So, this refactoring will mean removing the Any typeId,
 replacing it by some other structure that can contain
 a range of sub-structures, and is capable of
 introspection (i.e. knowing which sub-structure it

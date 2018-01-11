@@ -84,7 +84,7 @@ static void app_clean_up()
 /**
  * Resets a framework-depende timer
  *
- * @param ctx Context
+ * @param ctx ContextMeasurement
  */
 static void timer_reset_timeout(Context *ctx)
 {
@@ -97,7 +97,7 @@ static void timer_reset_timeout(Context *ctx)
  * Timer callback.
  * Calls the supplied callback when timer reaches timeout, and cancels timer.
  *
- * @param data Callback pointer that contains Context
+ * @param data Callback pointer that contains ContextMeasurement
  * @return FALSE (to cancel the timeout)
  */
 static gboolean timer_alarm(gpointer data)
@@ -111,7 +111,7 @@ static gboolean timer_alarm(gpointer data)
 /**
  * Initiates a timer in behalf of IEEE library
  *
- * @param ctx Context
+ * @param ctx ContextMeasurement
  * @return The timer handle
  */
 static int timer_count_timeout(Context *ctx)
@@ -126,7 +126,7 @@ static gboolean sigalrm(gpointer data);
 /**
  * Initiates a timer for agent-related actions
  *
- * @param id Context ID
+ * @param id ContextMeasurement ID
  * @param to timeout in seconds
  * @return The timer handle
  */
@@ -215,7 +215,7 @@ void device_connected(Context *ctx)
 /**
  * Callback when a Bluetooth device connects
  *
- * @param context Context ID
+ * @param context ContextMeasurement ID
  * @param btaddr Bluetooth MAC address
  * @return TRUE
  */
@@ -227,7 +227,7 @@ static gboolean bt_connected(ContextId context, const char *btaddr)
 
 /**
  * Callback when a Bluetooth device disconnects
- * @param context Context Id
+ * @param context ContextMeasurement Id
  * @param btaddr Bluetooth MAC address
  * @return TRUE
  */

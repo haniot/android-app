@@ -75,7 +75,7 @@ distdir = $(PACKAGE)-$(VERSION)
 top_distdir = $(distdir)
 am__remove_distdir = \
   { test ! -d "$(distdir)" \
-    || { find "$(distdir)" -type d ! -perm -200 -exec chmod u+w {} ';' \
+    || { find "$(distdir)" -typeId d ! -perm -200 -exec chmod u+w {} ';' \
          && rm -fr "$(distdir)"; }; }
 am__relativize = \
   dir0=`pwd`; \
@@ -104,8 +104,8 @@ am__relativize = \
   reldir="$$dir2"
 DIST_ARCHIVES = $(distdir).tar.gz
 GZIP_ENV = --best
-distuninstallcheck_listfiles = find . -type f -print
-distcleancheck_listfiles = find . -type f -print
+distuninstallcheck_listfiles = find . -typeId f -print
+distcleancheck_listfiles = find . -typeId f -print
 ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
 AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
@@ -436,11 +436,11 @@ distdir: $(DISTFILES)
 	  if test -d $$d/$$file; then \
 	    dir=`echo "/$$file" | sed -e 's,/[^/]*$$,,'`; \
 	    if test -d "$(distdir)/$$file"; then \
-	      find "$(distdir)/$$file" -type d ! -perm -700 -exec chmod u+rwx {} \;; \
+	      find "$(distdir)/$$file" -typeId d ! -perm -700 -exec chmod u+rwx {} \;; \
 	    fi; \
 	    if test -d $(srcdir)/$$file && test $$d != $(srcdir); then \
 	      cp -fpR $(srcdir)/$$file "$(distdir)$$dir" || exit 1; \
-	      find "$(distdir)/$$file" -type d ! -perm -700 -exec chmod u+rwx {} \;; \
+	      find "$(distdir)/$$file" -typeId d ! -perm -700 -exec chmod u+rwx {} \;; \
 	    fi; \
 	    cp -fpR $$d/$$file "$(distdir)$$dir" || exit 1; \
 	  else \
@@ -478,11 +478,11 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 	-test -n "$(am__skip_mode_fix)" \
-	|| find "$(distdir)" -type d ! -perm -755 \
+	|| find "$(distdir)" -typeId d ! -perm -755 \
 		-exec chmod u+rwx,go+rx {} \; -o \
-	  ! -type d ! -perm -444 -links 1 -exec chmod a+r {} \; -o \
-	  ! -type d ! -perm -400 -exec chmod a+r {} \; -o \
-	  ! -type d ! -perm -444 -exec $(install_sh) -c -m a+r {} {} \; \
+	  ! -typeId d ! -perm -444 -links 1 -exec chmod a+r {} \; -o \
+	  ! -typeId d ! -perm -400 -exec chmod a+r {} \; -o \
+	  ! -typeId d ! -perm -444 -exec $(install_sh) -c -m a+r {} {} \; \
 	|| chmod -R a+r "$(distdir)"
 dist-gzip: distdir
 	tardir=$(distdir) && $(am__tar) | GZIP=$(GZIP_ENV) gzip -c >$(distdir).tar.gz

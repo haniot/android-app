@@ -9,36 +9,36 @@ name = ''
 structs = {}
 function_mapping = {'intu8':'read_intu8(stream)', 'intu16':'read_intu16(stream)', 'intu32':'read_intu32(stream)'}
 
-def print_name(value):
+def print_name(valueId):
 	isMalloc = 0
 	newName = ''
 
-	if (value[0] == 'UNION'):
+	if (valueId[0] == 'UNION'):
 		print '    // UNION'
 		return
 	
-	x = value[1].find('[')
+	x = valueId[1].find('[')
 	if (x != -1):
-		newName = value[1][0:x]
+		newName = valueId[1][0:x]
 		ret = '    pointer->' + newName + ' = '
 	else:
-		ret = '    pointer->' + value[1] + ' = '
+		ret = '    pointer->' + valueId[1] + ' = '
 	
-	if (value[1].find('[') != -1):
-		ret += 'malloc(pointer->count*sizeof(' + value[0] + ')); // ' + value[0] + ' ' + value[1]
+	if (valueId[1].find('[') != -1):
+		ret += 'malloc(pointer->count*sizeof(' + valueId[0] + ')); // ' + valueId[0] + ' ' + valueId[1]
 		isMalloc = 1	
-	elif (value[0] in structs):
-		ret = '    decode_' + value[0].lower() + '(stream, &pointer->' + value[1] + '); // ' + value[0] + ' ' + value[1]	
+	elif (valueId[0] in structs):
+		ret = '    decode_' + valueId[0].lower() + '(stream, &pointer->' + valueId[1] + '); // ' + valueId[0] + ' ' + valueId[1]
 	else:
-		if value[0] in function_mapping.keys():
-			ret += function_mapping[value[0]] + '; // ' + value[0] + ' ' + value[1]
+		if valueId[0] in function_mapping.keys():
+			ret += function_mapping[valueId[0]] + '; // ' + valueId[0] + ' ' + valueId[1]
 			
 	if isMalloc == 1:
 		isMalloc = 0
 		ret += '\n'
 		ret += '    int i;\n'
 		ret += '    for (i = 0; i < pointer->count; i++) {\n'
-		ret += '        decode_' + value[0].lower() + '(stream, pointer->' + newName + ' + i);' + '\n'
+		ret += '        decode_' + valueId[0].lower() + '(stream, pointer->' + newName + ' + i);' + '\n'
 		ret += '     }\n'
 
 	print ret;
@@ -99,15 +99,15 @@ def check_typedefs(line):
 			function_mapping[line.split()[2][0:-1]] = function_mapping[tmp];
 
 def print_c_file():
-	for key, value in structs.iteritems():
+	for key, valueId in structs.iteritems():
 		print 'void decode_' + key.lower() + '(ByteStream *stream, ' + key + ' *pointer) {'
-		for attr in value:
+		for attr in valueId:
 			print_name(attr)
 		print '}'
 		print ''	
 
 def print_h_file():
-	for key, value in structs.iteritems():
+	for key, valueId in structs.iteritems():
 		print 'void decode_' + key.lower() + '(ByteStream *stream, ' + key + ' *pointer);'	
 
 if __name__ == "__main__":

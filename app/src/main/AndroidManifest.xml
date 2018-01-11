@@ -17,7 +17,7 @@
         android:required="false" />
 
     <application
-        android:name="br.edu.uepb.nutes.haniot.App"
+        android:name=".App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -26,21 +26,19 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-      <!-- ACTIVITIES -->
-        <activity android:name="br.edu.uepb.nutes.haniot.activity.SplashScreenActivity">
+        <!-- ACTIVITIES -->
+        <activity android:name=".activity.SplashScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
-            android:name="br.edu.uepb.nutes.haniot.activity.account.LoginActivity"
+            android:name=".activity.account.LoginActivity"
             android:windowSoftInputMode="stateHidden" />
-
         <activity
-            android:name="br.edu.uepb.nutes.haniot.activity.account.SignupActivity"
+            android:name=".activity.account.SignupActivity"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="br.edu.uepb.nutes.ocariot.activity.account.SignupActivity" />
@@ -48,67 +46,52 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-
         <activity
-            android:name="br.edu.uepb.nutes.haniot.activity.MainActivity"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name="br.edu.uepb.nutes.haniot.activity.DeviceInforActivity"
-            android:parentActivityName="br.edu.uepb.nutes.haniot.activity.MainActivity"
+            android:name=".activity.MainActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="br.edu.uepb.nutes.haniot.activity.devices.ThermometerActivity"
+            android:name=".activity.DeviceInforActivity"
+            android:parentActivityName=".activity.MainActivity"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name="br.edu.uepb.nutes.haniot.activity.devices.GlucoseActivity"
+            android:name=".devices.ThermometerActivity"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name="br.edu.uepb.nutes.haniot.activity.devices.BloodPressureActivity"
+            android:name=".devices.GlucoseActivity"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name="br.edu.uepb.nutes.haniot.activity.devices.BloodPressureHDPActivity"
+            android:name=".devices.BloodPressureHDPActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="com.signove.health.service.HealthService" />
             </intent-filter>
         </activity>
-
-        <activity android:name="br.edu.uepb.nutes.haniot.activity.devices.BodyCompositionMonitorHDPActivity" />
-
+        <activity android:name=".devices.BodyCompositionMonitorHDPActivity" />
         <activity
-            android:name="br.edu.uepb.nutes.haniot.activity.devices.ScaleActivity"
+            android:name=".devices.ScaleActivity"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name="br.edu.uepb.nutes.haniot.activity.devices.HeartRateActivity"
+            android:name=".devices.HeartRateActivity"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name="br.edu.uepb.nutes.haniot.activity.devices.RecordHeartRateActivity"
+            android:name=".devices.RecordHeartRateActivity"
             android:screenOrientation="portrait" />
-
-        <activity android:name="br.edu.uepb.nutes.haniot.activity.pairing.ScalePairingActivity" />
-
+        <activity android:name=".activity.pairing.ScalePairingActivity" />
         <activity
-            android:name="br.edu.uepb.nutes.haniot.activity.settings.SettingsActivity"
+            android:name=".activity.settings.SettingsActivity"
             android:label="@string/action_settings"
             android:theme="@style/AppTheme.Settings" />
-
-        <activity android:name="br.edu.uepb.nutes.haniot.activity.account.ChangePasswordActivity"></activity>
-
-        <activity android:name="br.edu.uepb.nutes.haniot.activity.graphs.ScaleGraphActivity"></activity>
-        <activity android:name="br.edu.uepb.nutes.haniot.activity.graphs.ScaleGraphBodyFatActivity"></activity>
-        <activity android:name="br.edu.uepb.nutes.haniot.activity.graphs.TemperatureGraphActivity"></activity>
-        <activity android:name="br.edu.uepb.nutes.haniot.activity.graphs.HeartRateGraphActivity"></activity>
-        <activity android:name="br.edu.uepb.nutes.haniot.activity.graphs.BloodPresssureHDPGraphActivity"></activity>
+        <activity android:name=".activity.account.ChangePasswordActivity" />
+        <activity android:name=".activity.graphs.ScaleGraphActivity" />
+        <activity android:name=".activity.graphs.ScaleGraphBodyFatActivity" />
+        <activity android:name=".activity.graphs.TemperatureGraphActivity" />
+        <activity android:name=".activity.graphs.HeartRateGraphActivity" />
+        <activity android:name=".activity.graphs.BloodPresssureHDPGraphActivity" />
+        <activity android:name=".devices.smartband.miband.SmartBandActivity"></activity>
 
         <!-- SERVICES -->
         <service
-            android:name="br.edu.uepb.nutes.haniot.service.BluetoothLeService"
+            android:name=".service.BluetoothLeService"
             android:enabled="true" />
         <service
             android:name="com.signove.health.service.HealthService"

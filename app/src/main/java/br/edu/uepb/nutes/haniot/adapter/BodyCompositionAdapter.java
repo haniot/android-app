@@ -11,7 +11,7 @@ import java.text.DecimalFormat;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.model.MeasurementScale;
+import br.edu.uepb.nutes.haniot.model.Measurement;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -26,11 +26,11 @@ import butterknife.ButterKnife;
 public class BodyCompositionAdapter extends RecyclerView.Adapter<BodyCompositionAdapter.ViewHolder> {
     private final String LOG = "BluetoothDeviceAdapter";
 
-    private final List<MeasurementScale> mValues;
+    private final List<Measurement> mValues;
     private final OnItemClickListener mListener;
     private final Context context;
 
-    public BodyCompositionAdapter(List<MeasurementScale> items, OnItemClickListener listener, Context context) {
+    public BodyCompositionAdapter(List<Measurement> items, OnItemClickListener listener, Context context) {
         mValues = items;
         mListener = listener;
         this.context = context;
@@ -44,21 +44,21 @@ public class BodyCompositionAdapter extends RecyclerView.Adapter<BodyComposition
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        holder.mItem = mValues.get(position);
-
-        DecimalFormat df = new DecimalFormat(context.getResources().getString(R.string.weight_format));
-
-        holder.weight.setText(df.format(mValues.get(position).getWeight()));
-        holder.bodyFat.setText(df.format(mValues.get(position).getBodyFat()));
-        holder.date.setText(DateUtils.getDatetime(mValues.get(position).getRegistrationTime(), context.getString(R.string.datetime_format)));
-        holder.unit.setText(mValues.get(position).getUnit());
-
-        holder.mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mListener.onItemClick(holder.mItem);
-            }
-        });
+//        holder.mItem = mValues.get(position);
+//
+//        DecimalFormat df = new DecimalFormat(context.getResources().getString(R.string.weight_format));
+//
+//        holder.weight.setText(df.format(mValues.get(position).getValue()));
+//        holder.bodyFat.setText(df.format(mValues.get(position).getBodyFat()));
+//        holder.date.setText(DateUtils.getDatetime(mValues.get(position).getRegistrationTime(), context.getString(R.string.datetime_format)));
+//        holder.unit.setText(mValues.get(position).getUnit());
+//
+//        holder.mView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                mListener.onItemClick(holder.mItem);
+//            }
+//        });
     }
 
     @Override
@@ -68,7 +68,7 @@ public class BodyCompositionAdapter extends RecyclerView.Adapter<BodyComposition
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public MeasurementScale mItem;
+        public Measurement mItem;
 
         @BindView(R.id.measurement_weight)
         TextView weight;
@@ -99,6 +99,6 @@ public class BodyCompositionAdapter extends RecyclerView.Adapter<BodyComposition
     }
 
     public interface OnItemClickListener {
-        void onItemClick(MeasurementScale item);
+        void onItemClick(Measurement item);
     }
 }

@@ -30,7 +30,7 @@ def get_system_id_from_mds(xmldata):
 				sname = getText(name).strip()
 				if "System-Id" != sname:
 					continue
-				values = simple.getElementsByTagName("value")
+				values = simple.getElementsByTagName("valueId")
 				if values:
 					sid = getText(values[0]).strip()
 					return sid
@@ -92,8 +92,8 @@ class Entry(object):
 
 		metas = childrenByTag(metas[0], "meta")
 		for meta in metas:
-			name, value = self.parse_metadata(meta)
-			m[name] = value
+			name, valueId = self.parse_metadata(meta)
+			m[name] = valueId
 		return m
 	
 	def parse_metadata(self, node):
@@ -104,8 +104,8 @@ class Entry(object):
 		if not name:
 			print "No name attribute in meta data"
 			raise InvalidEntryNode()
-		value = getText(node).strip()
-		return name, value
+		valueId = getText(node).strip()
+		return name, valueId
 
 	def detect_type(self, node):
 		simple = childrenByTag(node, "simple")
@@ -146,8 +146,8 @@ class Entry(object):
 		return l, d
 
 	def parse_simple(self, node):
-		t = childrenByTag(node, "type")
-		v = childrenByTag(node, "value")
+		t = childrenByTag(node, "typeId")
+		v = childrenByTag(node, "valueId")
 		if not t:
 			print "Typeless entry"
 			raise InvalidEntryNode()
@@ -164,7 +164,7 @@ class Entry(object):
 			self.entries, self.entries_map = self.parse_children(cnode)
 			self.compound = True
 		else:
-			self.dtype, self.value = self.parse_simple(cnode)
+			self.dtype, self.valueId = self.parse_simple(cnode)
 			self.compound = False
 
 
@@ -181,7 +181,7 @@ class Configuration(object):
 			print "\t" + obj.name,
 			if obj.name == "Numeric":
 				print " unit ",
-				print obj.entries_map["Unit-Code"].value
+				print obj.entries_map["Unit-Code"].valueId
 			elif obj.name == "PM-Store":
 				print " handle ",
 				print obj.meta["HANDLE"]
@@ -205,10 +205,10 @@ class Measurement(object):
 		return "(unit %s)" % entry.meta["unit-code"]
 
 	def simple_nu(self, entry):
-		print entry.value + self.unit(entry),
+		print entry.valueId + self.unit(entry),
 
 	def basic_nu(self, entry):
-		print entry.value + self.unit(entry),
+		print entry.valueId + self.unit(entry),
 
 	def compound_basic_nu(self, entry):
 		unit = self.unit(entry)
@@ -216,7 +216,7 @@ class Measurement(object):
 		for sub in entry.entries:
 			if len(s) > 1:
 				s += ", "
-			s += sub.value
+			s += sub.valueId
 		s += ") " + unit
 		print s,
 
@@ -224,7 +224,7 @@ class Measurement(object):
 	def absolute_timestamp(entry):
 		k = ["century", "year", "month", "day", "hour", "minute", "second", "sec_fractions"]
 		try:
-			ats = [entry.entries_map[ks].value for ks in k]
+			ats = [entry.entries_map[ks].valueId for ks in k]
 		except KeyError:
 			print "(invalid timestamp)",
 			return
@@ -267,17 +267,17 @@ class DeviceAttributes(object):
 		self.handlers["System-Type-Spec-List"] = self.system_type
 
 	def system_model(self,  e):
-		print "Manufacturer:", e.entries_map["manufacturer"].value,
-		print "Model:", e.entries_map["model-number"].value,
+		print "Manufacturer:", e.entries_map["manufacturer"].valueId,
+		print "Model:", e.entries_map["model-number"].valueId,
 
 	def system_id(self, e):
-		print "System ID", e.value,
+		print "System ID", e.valueId,
 
 	def system_type(self, e):
 		if e.entries:
 			print "Specializations:",
 		for spec in e.entries:
-			num = spec.entries_map["type"].value
+			num = spec.entries_map["typeId"].valueId
 			num = int(num)
 			print "0x%x" % num,
 
@@ -305,13 +305,13 @@ class PMStore(object):
 		self.handlers["Number-Of-Segments"] = self.nosegments
 
 	def capacity(self, e):
-		print "Capacity:", e.value,
+		print "Capacity:", e.valueId,
 
 	def usage(self, e):
-		print "Usage:", e.value,
+		print "Usage:", e.valueId,
 
 	def nosegments(self, e):
-		print "# segments:", e.value,
+		print "# segments:", e.valueId,
 
 	def describe(self):
 		print
@@ -333,9 +333,9 @@ class SegmentInfo(object):
 		self.data = datalist
 
 	def describe_segm(self, e):
-		print "\t#" + e.entries_map["Instance-Number"].value,
-		print e.entries_map["PM-Segment-Label"].value,
-		print "count " + e.entries_map["Usage-Count"].value
+		print "\t#" + e.entries_map["Instance-Number"].valueId,
+		print e.entries_map["PM-Segment-Label"].valueId,
+		print "count " + e.entries_map["Usage-Count"].valueId
 
 	def describe(self):
 		print
@@ -360,7 +360,7 @@ class SegmentData(object):
 
 		try:
 			tm = e.entries_map["Segment-Relative-Time"]
-			print "r@" + tm.value,
+			print "r@" + tm.valueId,
 			return
 		except KeyError:
 			pass
@@ -368,8 +368,8 @@ class SegmentData(object):
 		try:
 			tm = e.entries_map["Segment-Hires-Relative-Time"]
 			try:
-				hi = int(tm.entries_map["hi"].value)
-				lo = int(tm.entries_map["lo"].value)
+				hi = int(tm.entries_map["hi"].valueId)
+				lo = int(tm.entries_map["lo"].valueId)
 			except (KeyError, ValueError):
 				return
 			print "hr@" + hi * 2**32 + lo,
@@ -414,7 +414,7 @@ if __name__ == '__main__':
 				print " " + str(e.meta)
 			if not e.compound:
 				print indent + " Type: " + e.dtype,
-				print " Value: " + e.value
+				print " Value: " + e.valueId
 			else:
 				print_entries(e, indent + "    ")
 

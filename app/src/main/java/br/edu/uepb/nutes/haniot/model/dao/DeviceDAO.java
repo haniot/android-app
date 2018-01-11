@@ -1,64 +1,137 @@
 package br.edu.uepb.nutes.haniot.model.dao;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import java.util.List;
 
+import br.edu.uepb.nutes.haniot.App;
+import br.edu.uepb.nutes.haniot.model.Device;
+import br.edu.uepb.nutes.haniot.model.Device_;
+import io.objectbox.Box;
+import io.objectbox.BoxStore;
+
 /**
- * DeviceDAO interface.
+ * DeviceDAO implementation.
  *
  * @author Douglas Rafael <douglas.rafael@nutes.uepb.edu.br>
  * @version 1.5
  * @copyright Copyright (c) 2017, NUTES UEPB
  */
-public interface DeviceDAO<T> {
+public class DeviceDAO {
+    public static DeviceDAO instance;
+    private static Box<Device> deviceBox;
+
+    private DeviceDAO() {
+    }
+
+    /**
+     * @param context
+     * @return DeviceDAO
+     */
+    public static synchronized DeviceDAO getInstance(@NonNull Context context) {
+        if (instance == null) instance = new DeviceDAO();
+
+        BoxStore boxStore = ((App) context.getApplicationContext()).getBoxStore();
+        deviceBox = boxStore.boxFor(Device.class);
+
+        return instance;
+    }
 
     /**
      * Adds a new device to the database.
      *
-     * @param o
+     * @param device Device
      * @return boolean
      */
-    public boolean save(@NonNull T o);
+    public boolean save(@NonNull Device device) {
+        return deviceBox.put(device) > 0;
+    }
 
     /**
-     * Update device data according to id.
+     * Update device.
+     * According to your _id and _id user provided by the remote server.
      *
-     * @param o
+     * @param device Device
      * @return boolean
      */
-    public boolean update(@NonNull T o);
+    public boolean update(@NonNull Device device) {
+        if (device.getId() == 0) {
+            Device deviceUp = get(device.getId());
+
+            /**
+             * Id is required for an update
+             * Otherwise it will be an insert
+             */
+            if (deviceUp == null) return false;
+
+            device.setId(deviceUp.getId());
+        }
+
+        return save(device); // update
+    }
 
     /**
      * Removes device passed as parameter.
      *
-     * @param o
+     * @param device Device
      * @return boolean
      */
-    public boolean remove(@NonNull T o);
+    public boolean remove(@NonNull Device device) {
+        return (deviceBox.query()
+                .equal(Device_.id, device.getId())
+                .build()
+                .remove()) > 0;
+    }
 
     /**
      * Removes all devices.
+     * According to userId user.
      *
-     * @param userId String
+     * @param userId long
      * @return long - Total number of items removed
      */
-    public long removeAll(@NonNull String userId);
+    public boolean removeAll(@NonNull long userId) {
+        return deviceBox.query()
+                .equal(Device_.userId, userId)
+                .build().remove() > 0;
+    }
 
     /**
-     * Select a Device.
+     * Select a Device according to id.
      *
-     * @param address String
-     * @param userId  String
+     * @param id long
      * @return Object
      */
-    public T get(@NonNull String address, @NonNull String userId);
+    public Device get(@NonNull long id) {
+        return deviceBox.query()
+                .equal(Device_.id, id)
+                .build().findFirst();
+    }
 
     /**
-     * Retrieves all device.
+     * Select a Device according to address and userId.
      *
-     * @param userId String
+     * @param address String
+     * @param userId long
+     * @return Object
+     */
+    public Device get(@NonNull String address, long userId) {
+        return deviceBox.query()
+                .equal(Device_.address, address)
+                .equal(Device_.userId, userId)
+                .build().findFirst();
+    }
+
+    /**
+     * Retrieves all device according to userId.
+     *
+     * @param userId long
      * @return List<T>
      */
-    public List<T> listAll(@NonNull String userId);
+    public List<Device> list(@NonNull long userId) {
+        return deviceBox.query()
+                .equal(Device_.userId, userId)
+                .build().find();
+    }
 }

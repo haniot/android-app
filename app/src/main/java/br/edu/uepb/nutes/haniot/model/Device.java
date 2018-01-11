@@ -3,12 +3,13 @@ package br.edu.uepb.nutes.haniot.model;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.annotation.Index;
+import io.objectbox.relation.ToOne;
 
 /**
  * Represents Device object.
  *
  * @author Douglas Rafael <douglas.rafael@nutes.uepb.edu.br>
- * @version 1.0
+ * @version 2.0
  * @copyright Copyright (c) 2017, NUTES UEPB
  */
 @Entity
@@ -17,40 +18,44 @@ public class Device {
     private long id;
 
     @Index
-    private String address; // MAC address of the device (Thermometer, Glucose...)
+    private String _id; // _id in server remote (UUID)
 
-    @Index
-    private String userId; // _id provided by remote server
-
+    private String address; // MAC address
     private String name;
     private String manufacturer;
     private String modelNumber;
 
     /**
-     * 1 - Thermometer
-     * 2 - Glucose
-     * 3 - Weighing Scale
-     * 4 - Heart Rate
-     * 5 - Blood Pressure
-     * 6 -
+     * RELATIONS
+     */
+    private ToOne<User> user;
+
+    /**
+     * {@link DeviceType()}
      */
     private int type;
 
     public Device() {
     }
 
+    /**
+     * TODO REMOVER!!! Pois não deve permitir criar device sem o type associado
+     *
+     * @param address
+     * @param name
+     */
     public Device(String address, String name) {
         this.address = address;
         this.name = name;
     }
 
-    public Device(String address, String name, String manufacturer, String modelNumber, int type, String userId) {
+    public Device(String address, String name, String manufacturer, String modelNumber, int type, User user) {
         this.address = address;
-        this.userId = userId;
         this.name = name;
         this.manufacturer = manufacturer;
         this.modelNumber = modelNumber;
         this.type = type;
+        this.user.setTarget(user);
     }
 
     public long getId() {
@@ -59,6 +64,14 @@ public class Device {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public String get_id() {
+        return _id;
+    }
+
+    public void set_id(String _id) {
+        this._id = _id;
     }
 
     public String getAddress() {
@@ -93,14 +106,6 @@ public class Device {
         this.modelNumber = modelNumber;
     }
 
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
     public int getType() {
         return type;
     }
@@ -109,43 +114,47 @@ public class Device {
         this.type = type;
     }
 
+    public ToOne<User> getUser() {
+        return user;
+    }
+
+    public void setUser(ToOne<User> user) {
+        this.user = user;
+    }
+
     @Override
     public int hashCode() {
         int result = (int) (id ^ (id >>> 32));
-        result = 31 * result + (address != null ? address.hashCode() : 0);
-        result = 31 * result + (userId != null ? userId.hashCode() : 0);
-        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + address.hashCode();
+        result = 31 * result + name.hashCode();
         result = 31 * result + (manufacturer != null ? manufacturer.hashCode() : 0);
+        result = 31 * result + (modelNumber != null ? modelNumber.hashCode() : 0);
         result = 31 * result + type;
+        result = 31 * result + user.hashCode();
         return result;
     }
 
     @Override
     public boolean equals(Object o) {
-        if(!(o instanceof Device))
+        if (!(o instanceof Device))
             return false;
 
         Device other = (Device) o;
 
-        if (id != other.id) return false;
-        if (type != other.type) return false;
-        if (address != null ? !address.equals(other.address) : other.address != null)
-            return false;
-        if (userId != null ? !userId.equals(other.userId) : other.userId != null) return false;
-        if (name != null ? !name.equals(other.name) : other.name != null) return false;
-        return manufacturer != null ? manufacturer.equals(other.manufacturer) : other.manufacturer == null;
+        return this.address.equals(other.address) && this.user.equals(other.user);
     }
 
     @Override
     public String toString() {
         return "Device{" +
                 "id=" + id +
+                ", _id='" + _id + '\'' +
                 ", address='" + address + '\'' +
-                ", userId='" + userId + '\'' +
                 ", name='" + name + '\'' +
                 ", manufacturer='" + manufacturer + '\'' +
                 ", modelNumber='" + modelNumber + '\'' +
                 ", type=" + type +
+                ", user=" + user +
                 '}';
     }
 }

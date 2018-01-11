@@ -64,7 +64,7 @@ public class BloodPresssureHDPGraphActivity extends AppCompatActivity {
         long dateEnd = DateUtils.getCurrentDatetime();
         long dateStart = dateEnd - (dayMile * 7);
         String deviceAddress = "1C:87:74:01:73:10";
-        String userId = session.getIdLogged();
+//        String userId = session.getIdLogged();
 
 //String.valueOf(dateEnd)
 

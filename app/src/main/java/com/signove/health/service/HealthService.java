@@ -95,7 +95,7 @@ public class HealthService extends Service {
 	public BluetoothDevice get_device(int context)
 	{
 		if (! ctx_dev.containsKey(context)) {
-			Log.w(TAG, "Context " + context + " has no associated device");
+			Log.w(TAG, "ContextMeasurement " + context + " has no associated device");
 			return null;
 		}
 		return ctx_dev.get(context);

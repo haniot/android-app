@@ -85,7 +85,7 @@ fi
 # We need space, tab and new line, in precisely that order.  Quoting is
 # there to prevent editors from complaining about space-tab.
 # (If _AS_PATH_WALK were called with IFS unset, it would disable word
-# splitting by setting IFS to empty value.)
+# splitting by setting IFS to empty valueId.)
 IFS=" ""	$as_nl"
 
 # Find who we are.  Look in the path if we contain no directory separator.
@@ -221,7 +221,7 @@ IFS=$as_save_IFS
 
       if test "x$CONFIG_SHELL" != x; then :
   # We cannot yet assume a decent shell, so we have to provide a
-	# neutralization value for shells without unset; and this also
+	# neutralization valueId for shells without unset; and this also
 	# works around shells that cannot unset nonexistent variables.
 	# Preserve -v and -x to the replacement shell.
 	BASH_ENV=/dev/null
@@ -1174,7 +1174,7 @@ Try \`$0 --help' for more information"
     # FIXME: should be removed in autoconf 3.0.
     $as_echo "$as_me: WARNING: you should use --build, --host, --target" >&2
     expr "x$ac_option" : ".*[^-._$as_cr_alnum]" >/dev/null &&
-      $as_echo "$as_me: WARNING: invalid host type: $ac_option" >&2
+      $as_echo "$as_me: WARNING: invalid host typeId: $ac_option" >&2
     : "${build_alias=$ac_option} ${host_alias=$ac_option} ${target_alias=$ac_option}"
     ;;
 
@@ -1226,7 +1226,7 @@ target=$target_alias
 if test "x$host_alias" != x; then
   if test "x$build_alias" = x; then
     cross_compiling=maybe
-    $as_echo "$as_me: WARNING: if you wanted to set the --build type, don't use --host.
+    $as_echo "$as_me: WARNING: if you wanted to set the --build typeId, don't use --host.
     If a cross compiler is detected then cross compile mode will be used" >&2
   elif test "x$build_alias" != "x$host_alias"; then
     cross_compiling=yes
@@ -1746,7 +1746,7 @@ else
 #undef $2
 
 /* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
+   Use char because int might match the return typeId of a GCC
    builtin and then its argument prototype would still apply.  */
 #ifdef __cplusplus
 extern "C"
@@ -1951,7 +1951,7 @@ do
     2)
       as_fn_append ac_configure_args1 " '$ac_arg'"
       if test $ac_must_keep_next = true; then
-	ac_must_keep_next=false # Got value, back to normal.
+	ac_must_keep_next=false # Got valueId, back to normal.
       else
 	case $ac_arg in
 	  *=* | --config-cache | -C | -disable-* | --disable-* \
@@ -2153,7 +2153,7 @@ $as_echo "$as_me: creating cache $cache_file" >&6;}
 fi
 
 # Check that the precious variables saved in the cache have kept the same
-# value.
+# valueId.
 ac_cache_corrupted=false
 for ac_var in $ac_precious_vars; do
   eval ac_old_set=\$ac_cv_env_${ac_var}_set
@@ -2184,10 +2184,10 @@ $as_echo "$as_me: error: \`$ac_var' has changed since the previous run:" >&2;}
 $as_echo "$as_me: warning: ignoring whitespace changes in \`$ac_var' since the previous run:" >&2;}
 	  eval $ac_var=\$ac_old_val
 	fi
-	{ $as_echo "$as_me:${as_lineno-$LINENO}:   former value:  \`$ac_old_val'" >&5
-$as_echo "$as_me:   former value:  \`$ac_old_val'" >&2;}
-	{ $as_echo "$as_me:${as_lineno-$LINENO}:   current value: \`$ac_new_val'" >&5
-$as_echo "$as_me:   current value: \`$ac_new_val'" >&2;}
+	{ $as_echo "$as_me:${as_lineno-$LINENO}:   former valueId:  \`$ac_old_val'" >&5
+$as_echo "$as_me:   former valueId:  \`$ac_old_val'" >&2;}
+	{ $as_echo "$as_me:${as_lineno-$LINENO}:   current valueId: \`$ac_new_val'" >&5
+$as_echo "$as_me:   current valueId: \`$ac_new_val'" >&2;}
       fi;;
   esac
   # Pass precious variables to config.status.
@@ -2331,9 +2331,9 @@ fi
     INSTALL=$ac_cv_path_install
   else
     # As a last resort, use the slow shell script.  Don't cache a
-    # value for INSTALL within a source directory, because that will
+    # valueId for INSTALL within a source directory, because that will
     # break other packages using the cache if that directory is
-    # removed, or if the value is a relative name.
+    # removed, or if the valueId is a relative name.
     INSTALL=$ac_install_sh
   fi
 fi
@@ -2363,7 +2363,7 @@ case `pwd` in
 esac
 case $srcdir in
   *[\\\"\#\$\&\'\`$am_lf\ \	]*)
-    as_fn_error $? "unsafe srcdir value: \`$srcdir'" "$LINENO" 5;;
+    as_fn_error $? "unsafe srcdir valueId: \`$srcdir'" "$LINENO" 5;;
 esac
 
 # Do `set' in a subshell so we don't clobber the current shell's
@@ -2572,9 +2572,9 @@ fi
     MKDIR_P="$ac_cv_path_mkdir -p"
   else
     # As a last resort, use the slow shell script.  Don't cache a
-    # value for MKDIR_P within a source directory, because that will
+    # valueId for MKDIR_P within a source directory, because that will
     # break other packages using the cache if that directory is
-    # removed, or if the value is a relative name.
+    # removed, or if the valueId is a relative name.
     MKDIR_P="$ac_install_sh -d"
   fi
 fi
@@ -2773,8 +2773,8 @@ ltmain="$ac_aux_dir/ltmain.sh"
 $SHELL "$ac_aux_dir/config.sub" sun4 >/dev/null 2>&1 ||
   as_fn_error $? "cannot run $SHELL $ac_aux_dir/config.sub" "$LINENO" 5
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking build system type" >&5
-$as_echo_n "checking build system type... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking build system typeId" >&5
+$as_echo_n "checking build system typeId... " >&6; }
 if ${ac_cv_build+:} false; then :
   $as_echo_n "(cached) " >&6
 else
@@ -2782,7 +2782,7 @@ else
 test "x$ac_build_alias" = x &&
   ac_build_alias=`$SHELL "$ac_aux_dir/config.guess"`
 test "x$ac_build_alias" = x &&
-  as_fn_error $? "cannot guess build type; you must specify one" "$LINENO" 5
+  as_fn_error $? "cannot guess build typeId; you must specify one" "$LINENO" 5
 ac_cv_build=`$SHELL "$ac_aux_dir/config.sub" $ac_build_alias` ||
   as_fn_error $? "$SHELL $ac_aux_dir/config.sub $ac_build_alias failed" "$LINENO" 5
 
@@ -2791,7 +2791,7 @@ fi
 $as_echo "$ac_cv_build" >&6; }
 case $ac_cv_build in
 *-*-*) ;;
-*) as_fn_error $? "invalid value of canonical build" "$LINENO" 5;;
+*) as_fn_error $? "invalid valueId of canonical build" "$LINENO" 5;;
 esac
 build=$ac_cv_build
 ac_save_IFS=$IFS; IFS='-'
@@ -2807,8 +2807,8 @@ IFS=$ac_save_IFS
 case $build_os in *\ *) build_os=`echo "$build_os" | sed 's/ /-/g'`;; esac
 
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking host system type" >&5
-$as_echo_n "checking host system type... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking host system typeId" >&5
+$as_echo_n "checking host system typeId... " >&6; }
 if ${ac_cv_host+:} false; then :
   $as_echo_n "(cached) " >&6
 else
@@ -2824,7 +2824,7 @@ fi
 $as_echo "$ac_cv_host" >&6; }
 case $ac_cv_host in
 *-*-*) ;;
-*) as_fn_error $? "invalid value of canonical host" "$LINENO" 5;;
+*) as_fn_error $? "invalid valueId of canonical host" "$LINENO" 5;;
 esac
 host=$ac_cv_host
 ac_save_IFS=$IFS; IFS='-'
@@ -3344,7 +3344,7 @@ $as_echo "$ac_try_echo"; } >&5
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then :
   # Autoconf-2.13 could set the ac_cv_exeext variable to `no'.
-# So ignore a value of `no', otherwise this would lead to `EXEEXT = no'
+# So ignore a valueId of `no', otherwise this would lead to `EXEEXT = no'
 # in a Makefile.  We should not override ac_cv_exeext if it was cached,
 # so that the user can short-circuit this test for compilers unknown to
 # Autoconf.
@@ -4323,7 +4323,7 @@ else
 	#   nm: unknown option "B" ignored
 	# Tru64's nm complains that /dev/null is an invalid object file
 	case `"$tmp_nm" -B /dev/null 2>&1 | sed '1q'` in
-	*/dev/null* | *'Invalid file or object type'*)
+	*/dev/null* | *'Invalid file or object typeId'*)
 	  lt_cv_path_NM="$tmp_nm -B"
 	  break
 	  ;;
@@ -4573,7 +4573,7 @@ else
     ;;
 
   interix*)
-    # We know the value 262144 and hardcode it with a safety zone (like BSD)
+    # We know the valueId 262144 and hardcode it with a safety zone (like BSD)
     lt_cv_sys_max_cmd_len=196608
     ;;
 
@@ -4628,7 +4628,7 @@ else
       teststring=
       # Add a significant safety factor because C++ compilers can tack on
       # massive amounts of additional arguments before passing them to the
-      # linker.  It appears as though 1/2 is a usable value.
+      # linker.  It appears as though 1/2 is a usable valueId.
       lt_cv_sys_max_cmd_len=`expr $lt_cv_sys_max_cmd_len \/ 2`
     fi
     ;;
@@ -8303,7 +8303,7 @@ $as_echo "$lt_cv_prog_compiler_c_o" >&6; }
 
 hard_links="nottested"
 if test "$lt_cv_prog_compiler_c_o" = no && test "$need_locks" != no; then
-  # do not overwrite the value of need_locks provided by the user
+  # do not overwrite the valueId of need_locks provided by the user
   { $as_echo "$as_me:${as_lineno-$LINENO}: checking if we can lock with hard links" >&5
 $as_echo_n "checking if we can lock with hard links... " >&6; }
   hard_links=yes
@@ -8814,7 +8814,7 @@ _LT_EOF
 	# Warning - without using the other runtime loading flags (-brtl),
 	# -berok will link without error, but may produce a broken library.
 	allow_undefined_flag='-berok'
-        # Determine the default libpath from the value encoded in an
+        # Determine the default libpath from the valueId encoded in an
         # empty executable.
         if test "${lt_cv_aix_libpath+set}" = set; then
   aix_libpath=$lt_cv_aix_libpath
@@ -8867,7 +8867,7 @@ fi
 	  allow_undefined_flag="-z nodefs"
 	  archive_expsym_cmds="\$CC $shared_flag"' -o $output_objdir/$soname $libobjs $deplibs '"\${wl}$no_entry_flag"' $compiler_flags ${wl}${allow_undefined_flag} '"\${wl}$exp_sym_flag:\$export_symbols"
 	else
-	 # Determine the default libpath from the value encoded in an
+	 # Determine the default libpath from the valueId encoded in an
 	 # empty executable.
 	 if test "${lt_cv_aix_libpath+set}" = set; then
   aix_libpath=$lt_cv_aix_libpath
@@ -10672,7 +10672,7 @@ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
 /* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
+   Use char because int might match the return typeId of a GCC
    builtin and then its argument prototype would still apply.  */
 #ifdef __cplusplus
 extern "C"
@@ -10725,7 +10725,7 @@ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
 /* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
+   Use char because int might match the return typeId of a GCC
    builtin and then its argument prototype would still apply.  */
 #ifdef __cplusplus
 extern "C"
@@ -10768,7 +10768,7 @@ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
 /* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
+   Use char because int might match the return typeId of a GCC
    builtin and then its argument prototype would still apply.  */
 #ifdef __cplusplus
 extern "C"
@@ -10807,7 +10807,7 @@ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
 /* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
+   Use char because int might match the return typeId of a GCC
    builtin and then its argument prototype would still apply.  */
 #ifdef __cplusplus
 extern "C"
@@ -10846,7 +10846,7 @@ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
 /* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
+   Use char because int might match the return typeId of a GCC
    builtin and then its argument prototype would still apply.  */
 #ifdef __cplusplus
 extern "C"
@@ -12966,7 +12966,7 @@ fi
 # We need space, tab and new line, in precisely that order.  Quoting is
 # there to prevent editors from complaining about space-tab.
 # (If _AS_PATH_WALK were called with IFS unset, it would disable word
-# splitting by setting IFS to empty value.)
+# splitting by setting IFS to empty valueId.)
 IFS=" ""	$as_nl"
 
 # Find who we are.  Look in the path if we contain no directory separator.
@@ -13905,9 +13905,9 @@ cat >>"\$ac_tmp/subs1.awk" <<_ACAWK &&
     key = field[i]
     keylen = length(key)
     if (S_is_set[key]) {
-      value = S[key]
-      line = substr(line, 1, len) "" value "" substr(line, len + keylen + 3)
-      len += length(value) + length(field[++i])
+      valueId = S[key]
+      line = substr(line, 1, len) "" valueId "" substr(line, len + keylen + 3)
+      len += length(valueId) + length(field[++i])
       substed = 1
     } else
       len += 1 + keylen
@@ -14240,7 +14240,7 @@ $as_echo X"$mf" |
     U=`sed -n 's/^U = //p' < "$mf"`
     # Find all dependency output files, they are included files with
     # $(DEPDIR) in their names.  We invoke sed twice because it is the
-    # simplest approach to changing $(DEPDIR) to its actual value in the
+    # simplest approach to changing $(DEPDIR) to its actual valueId in the
     # expansion.
     for file in `sed -n "
       s/^$am__include $am__quote\(.*(DEPDIR).*\)$am__quote"'$/\1/p' <"$mf" | \
@@ -14341,7 +14341,7 @@ build_libtool_libs=$enable_shared
 # Whether or not to build static libraries.
 build_old_libs=$enable_static
 
-# What type of objects to build.
+# What typeId of objects to build.
 pic_mode=$pic_mode
 
 # Whether or not to optimize for fast installation.
@@ -14519,7 +14519,7 @@ need_lib_prefix=$need_lib_prefix
 # Do we need a version for libraries?
 need_version=$need_version
 
-# Library versioning type.
+# Library versioning typeId.
 version_type=$version_type
 
 # Shared library runtime path variable.

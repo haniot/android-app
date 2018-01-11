@@ -46,7 +46,7 @@ static int test_finish_suite(void)
 
 void testctxmanager_add_suite()
 {
-	CU_pSuite suite = CU_add_suite("Context Manager Test Suite", test_init_suite,
+	CU_pSuite suite = CU_add_suite("ContextMeasurement Manager Test Suite", test_init_suite,
 				       test_finish_suite);
 
 	/* Add tests here - Start */
@@ -61,9 +61,9 @@ void testctxmanager_test()
 	// TODO check MDS and FSM destruction
 
 	/*
-	Context *c1 = context_create(1);
-	Context *c2 = context_create(2);
-	Context *c3 = context_create(3);
+	ContextMeasurement *c1 = context_create(1);
+	ContextMeasurement *c2 = context_create(2);
+	ContextMeasurement *c3 = context_create(3);
 
 	CU_ASSERT_EQUAL(c1, context_get(1));
 	CU_ASSERT_EQUAL(c2, context_get(2));

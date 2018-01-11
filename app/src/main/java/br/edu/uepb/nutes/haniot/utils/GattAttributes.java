@@ -75,7 +75,7 @@ public class GattAttributes {
          * Characteristics MeasurementGlucose
          */
         attributes.put(CHARACTERISTIC_GLUSOSE_MEASUREMENT, "MeasurementGlucose Measurement");
-        attributes.put(CHARACTERISTIC_GLUSOSE_MEASUREMENT_CONTEXT, "MeasurementGlucose Measurement Context");
+        attributes.put(CHARACTERISTIC_GLUSOSE_MEASUREMENT_CONTEXT, "MeasurementGlucose Measurement ContextMeasurement");
         attributes.put("00002a51-0000-1000-8000-00805f9b34fb", "MeasurementGlucose Feature");
         attributes.put(CHARACTERISTIC_GLUSOSE_RECORD_ACCESS_CONTROL, "Record Access Control Point");
         attributes.put(CHARACTERISTIC_GLUSOSE_CUSTOM, "Custom Charactetistic");

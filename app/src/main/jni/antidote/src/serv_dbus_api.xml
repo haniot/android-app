@@ -2,19 +2,19 @@
 
 <node name="/com/signove/health">
   <interface name="com.signove.health.manager">
-    <annotation name="org.freedesktop.DBus.GLib.CSymbol" value="srv"/>
+    <annotation name="org.freedesktop.DBus.GLib.CSymbol" valueId="srv"/>
     <method name="Configure">
-      <annotation name="org.freedesktop.DBus.GLib.CSymbol" value="srv_configure"/>
-      <annotation name="org.freedesktop.DBus.GLib.Async" value="1"/>
-      <arg type="o" name="agent" direction="in"/>
-      <arg type="s" name="addr" direction="in"/>
-      <arg type="ai" name="data_types" direction="in"/>
+      <annotation name="org.freedesktop.DBus.GLib.CSymbol" valueId="srv_configure"/>
+      <annotation name="org.freedesktop.DBus.GLib.Async" valueId="1"/>
+      <arg typeId="o" name="agent" direction="in"/>
+      <arg typeId="s" name="addr" direction="in"/>
+      <arg typeId="ai" name="data_types" direction="in"/>
     </method>
     <method name="ConfigurePassive">
-      <annotation name="org.freedesktop.DBus.GLib.CSymbol" value="srv_configurepassive"/>
-      <annotation name="org.freedesktop.DBus.GLib.Async" value="1"/>
-      <arg type="o" name="agent" direction="in"/>
-      <arg type="ai" name="data_types" direction="in"/>
+      <annotation name="org.freedesktop.DBus.GLib.CSymbol" valueId="srv_configurepassive"/>
+      <annotation name="org.freedesktop.DBus.GLib.Async" valueId="1"/>
+      <arg typeId="o" name="agent" direction="in"/>
+      <arg typeId="ai" name="data_types" direction="in"/>
     </method>
   </interface>
 </node>

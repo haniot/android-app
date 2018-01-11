@@ -10,7 +10,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.model.MeasurementHeartRate;
+import br.edu.uepb.nutes.haniot.model.Measurement;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -26,11 +26,11 @@ public class HeartRateAdapter extends RecyclerView.Adapter<HeartRateAdapter.View
     private final String LOG = "BluetoothDeviceAdapter";
     private final int EMPTY_VIEW = 10;
 
-    private final List<MeasurementHeartRate> mValues;
+    private final List<Measurement> mValues;
     private final OnItemClickListener mListener;
     private final Context context;
 
-    public HeartRateAdapter(List<MeasurementHeartRate> items, OnItemClickListener listener, Context context) {
+    public HeartRateAdapter(List<Measurement> items, OnItemClickListener listener, Context context) {
         mValues = items;
         mListener = listener;
         this.context = context;
@@ -49,17 +49,17 @@ public class HeartRateAdapter extends RecyclerView.Adapter<HeartRateAdapter.View
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        holder.mItem = mValues.get(position);
-        holder.fcMax.setText(String.format("%03d", mValues.get(position).getFcMaximum()));
-        holder.date.setText(DateUtils.getDatetime(mValues.get(position).getRegistrationTime(), context.getString(R.string.datetime_format)));
-        holder.duration.setText(DateUtils.getDatetime(mValues.get(position).getDurationTime(), context.getString(R.string.time_format_simple)));
-
-        holder.mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mListener.onItemClick(holder.mItem);
-            }
-        });
+//        holder.mItem = mValues.get(position);
+//        holder.fcMax.setText(String.format("%03d", mValues.get(position).getFcMaximum()));
+//        holder.date.setText(DateUtils.getDatetime(mValues.get(position).getRegistrationTime(), context.getString(R.string.datetime_format)));
+//        holder.duration.setText(DateUtils.getDatetime(mValues.get(position).getDurationTime(), context.getString(R.string.time_format_simple)));
+//
+//        holder.mView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                mListener.onItemClick(holder.mItem);
+//            }
+//        });
     }
 
     @Override
@@ -67,19 +67,19 @@ public class HeartRateAdapter extends RecyclerView.Adapter<HeartRateAdapter.View
         return mValues == null ? 0 : mValues.size();
     }
 
-    public void addItem(MeasurementHeartRate m, int position) {
+    public void addItem(Measurement m, int position) {
         mValues.add(m);
         notifyItemInserted(position);
     }
 
-    public void removeItem(MeasurementHeartRate m, int position) {
+    public void removeItem(Measurement m, int position) {
         mValues.remove(m);
         notifyItemRemoved(position);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public MeasurementHeartRate mItem;
+        public Measurement mItem;
 
         @BindView(R.id.fcmax_textview)
         TextView fcMax;
@@ -105,6 +105,6 @@ public class HeartRateAdapter extends RecyclerView.Adapter<HeartRateAdapter.View
     }
 
     public interface OnItemClickListener {
-        void onItemClick(MeasurementHeartRate item);
+        void onItemClick(Measurement item);
     }
 }

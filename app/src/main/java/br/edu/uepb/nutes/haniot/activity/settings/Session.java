@@ -3,6 +3,9 @@ package br.edu.uepb.nutes.haniot.activity.settings;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import br.edu.uepb.nutes.haniot.model.User;
+import br.edu.uepb.nutes.haniot.model.dao.UserDAO;
+
 /**
  * Session implementation.
  *
@@ -24,28 +27,38 @@ public class Session {
     /**
      * Save user data on shared preferences.
      *
-     * @param _id String
+     * @param id    long
      * @param token String
      * @return boolean
      */
-    public boolean setLogged(String _id, String token) {
-        editor.putString("userLogged", _id);
+    public boolean setLogged(long id, String token) {
+        editor.putLong("userLoggedId", id);
         editor.putString("userLoggedToken", token);
 
         return editor.commit();
     }
 
     /**
-     * Get _id
+     * Get id
      *
-     * @return String
+     * @return long
      */
-    public String getIdLogged() {
-        return prefs.getString("userLogged", null);
+    public long getIdLogged() {
+        return prefs.getLong("userLoggedId", -1);
+    }
+
+    /**
+     * Retrieve the logged user
+     *
+     * @return User
+     */
+    public User getUserLogged() {
+        return UserDAO.getInstance(context).get(getIdLogged());
     }
 
     /**
      * Get token.
+     *
      * @return String
      */
     public String getTokenLogged() {
@@ -58,7 +71,7 @@ public class Session {
      * @return boolean
      */
     public boolean isLogged() {
-        return getIdLogged() != null;
+        return getIdLogged() > 0;
     }
 
     /**
@@ -67,7 +80,7 @@ public class Session {
      * @return boolean
      */
     public boolean removeLogged() {
-        editor.remove("userLogged");
+        editor.remove("userLoggedId");
         editor.remove("userLoggedToken");
 
         return editor.commit();
