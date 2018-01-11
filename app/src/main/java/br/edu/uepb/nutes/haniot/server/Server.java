@@ -86,11 +86,10 @@ public class Server {
     /**
      * Action GET.
      * The default header will be used {@link #getHeadersDefault()}.
+     *  @param path
      *
-     * @param path
-     * @param serverCallback
      */
-    public void get(String path, Callback serverCallback) {
+    public void get(String path) {
         get(path, getHeadersDefault(), serverCallback);
     }
 

@@ -37,7 +37,7 @@ import static br.edu.uepb.nutes.haniot.server.SynchronizationServer.context;
  * Created by izabella on 01/11/17.
  */
 
-public class TemperatureGraphActivity extends AppCompatActivity implements View.OnClickListener{
+public class TemperatureGraphActivity extends AppCompatActivity implements View.OnClickListener {
     private final int GRAPH_TYPE_DAY = 1;
     private final int GRAPH_TYPE_SEVEN = 2;
     private final int GRAPH_TYPE_MONTH = 3;
@@ -72,13 +72,15 @@ public class TemperatureGraphActivity extends AppCompatActivity implements View.
         mButtonMonth.setOnClickListener(this);
         mButtonSeven.setOnClickListener(this);
 
-        //createChart(GRAPH_TYPE_DAY);
+        createChart(GRAPH_TYPE_DAY);
     }
 
-    private void createChart(int type, String jsonMeasurements, final SynchronizationServer.Callback callbackSynchronization) {
+    private void createChart(int type) {
 
         mChart.getDescription().setEnabled(false);
         mChart.setDrawGridBackground(false);
+        final SynchronizationServer.Callback callbackSynchronization = null;
+        String jsonMea0surements;
 
         YAxis leftAxis = mChart.getAxisLeft();
         leftAxis.setAxisMinimum(0f);
@@ -90,242 +92,29 @@ public class TemperatureGraphActivity extends AppCompatActivity implements View.
         long dateStart = dateEnd - (dayMile * 7);
         String deviceAddress = "1C:87:74:01:73:10";
 
-        if(type == GRAPH_TYPE_DAY) {
+        if (type == GRAPH_TYPE_DAY) {
+            long userId = session.getUserLogged().getId();
 
-            long userId =  session.getUserLogged().getId();
-            /**
-             * Get the required user token in request authentication
-             */
-            Headers headers = new Headers.Builder()
-                    .add("Authorization", "JWT ".concat(new Session(context).getTokenLogged()))
-                    .build();
-
-            /**
-             * Send to server
-             */
-//           Server.getInstance(context).get("/measurements/types/1?dateStart=2018-01-08&period=7" + session.getUserLogged().get_id(),
-//                    jsonMeasurements, headers, new Server.Callback() {
-//                        @Override
-//                        public void onError(JSONObject result) {
-//                            if (callbackSynchronization != null)
-//                                callbackSynchronization.onError(result);
-//
-//                            //mensagem de erro para o usuario
-//                        }
-//
-//                        @Override
-//                        public void onSuccess(JSONObject result) {
-//                            // Sending successfully, we can remove from the database these measurements
-//                            removeAllMeasurements();
-//
-//                            if (callbackSynchronization != null)
-//                                callbackSynchronization.onSuccess(result);
-//                        }
-//                    });
-
-//            measurementData= MeasurementThermometerDAO.getInstance(this).filter(DateUtils.addDays(0).getTimeInMillis(), getDateTime(0), deviceAddress, session.getIdLogged());
-//
-//            if(measurementData.size() == 0) return;
-//
-//            final String[] quarters = new String[measurementData.size()];
-//            ArrayList<Entry> entries = new ArrayList<Entry>();
-//
-//            for(int i = 0; i < measurementData.size(); i++) {
-//                String format = "HH:MM:SS";
-//                String date = DateUtils.getDatetime(measurementData.get(i).getRegistrationTime(), format);
-//                float temperature = measurementData.get(i).getValueId(); //get
-//                entries.add(new Entry((float)i, temperature));
-//                quarters[i] = date;
-//            }
-//            IAxisValueFormatter formatter = new IAxisValueFormatter() {
-//
-//                @Override
-//                public String getFormattedValue(float value, AxisBase axis) {
-//                    if(value >= quarters.length){return "";}
-//                    return quarters[(int) value];
-//                }
-//
-//                // we don't draw numbers, so no decimal digits needed
-//                public int getDecimalDigits() {  return 0; }
-//            };
-//            XAxis xAxis = mChart.getXAxis();
-//            xAxis.setGranularity(1f); // minimum axis-step (interval) is 1
-//            xAxis.setValueFormatter(formatter);
-//            xAxis.setEnabled(true);
-//            xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-//
-//            ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
-//
-//            LineDataSet set = new LineDataSet(entries, "temperature");
-//            set.setLineWidth(3f);
-//            set.setDrawCircles(true);
-//            set.setDrawCircleHole(true);
-//            set.setAxisDependency(YAxis.AxisDependency.LEFT);
-//            dataSets.add(set);
-//            LineData data = new LineData(dataSets);
-//            mChart.animate();
-//            mChart.setData(data);
-//            mChart.setEnabled(true);
-//            mChart.invalidate();
-//            mChart.setVisibleXRangeMaximum(65f);
-//            mChart.resetViewPortOffsets();
-//            mChart.animateX(3000);
-//            mChart.notifyDataSetChanged();
-        }
-
-        else if(type == GRAPH_TYPE_SEVEN) {
-
-//            measurementData= MeasurementThermometerDAO.getInstance(this).filter(DateUtils.addDays(-7).getTimeInMillis(), getDateTime(0), deviceAddress, session.getIdLogged());
-//
-//            if(measurementData.size() == 0) return;
-//
-//            final String[] quarters = new String[measurementData.size()];
-//            ArrayList<Entry> entries = new ArrayList<Entry>();
-//
-//            for(int i = 0; i < measurementData.size(); i++) {
-//                String format = "dd/MM";
-//                String date = DateUtils.getDatetime(measurementData.get(i).getRegistrationTime(), format);
-//                float temperature = measurementData.get(i).getValueId(); //get
-//                entries.add(new Entry((float)i, temperature));
-//                quarters[i] = date;
-//            }
-//            IAxisValueFormatter formatter = new IAxisValueFormatter() {
-//
-//                @Override
-//                public String getFormattedValue(float value, AxisBase axis) {
-//                    if(value >= quarters.length){return "";}
-//                    return quarters[(int) value];
-//                }
-//
-//                // we don't draw numbers, so no decimal digits needed
-//                public int getDecimalDigits() {  return 0; }
-//            };
-//            XAxis xAxis = mChart.getXAxis();
-//            xAxis.setGranularity(1f); // minimum axis-step (interval) is 1
-//            xAxis.setValueFormatter(formatter);
-//            xAxis.setEnabled(true);
-//            xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-//
-//            ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
-//
-//            LineDataSet set = new LineDataSet(entries, "temperature");
-//            set.setLineWidth(3f);
-//            set.setDrawCircles(true);
-//            set.setDrawCircleHole(true);
-//            set.setAxisDependency(YAxis.AxisDependency.LEFT);
-//            dataSets.add(set);
-//            LineData data = new LineData(dataSets);
-//            mChart.animate();
-//            mChart.setData(data);
-//            mChart.setEnabled(true);
-//            mChart.invalidate();
-//            mChart.setVisibleXRangeMaximum(65f);
-//            mChart.resetViewPortOffsets();
-//            mChart.animateX(3000);
-//            mChart.notifyDataSetChanged();
-        }
-
-        else if(type == GRAPH_TYPE_MONTH){
-//            measurementData= MeasurementThermometerDAO.getInstance(this).filter(DateUtils.addDays(-30).getTimeInMillis(), getDateTime(0), deviceAddress, session.getIdLogged());
-//
-//        if(measurementData.size() == 0) return;
-//
-//        final String[] quarters = new String[measurementData.size()];
-//        ArrayList<Entry> entries = new ArrayList<Entry>();
-//
-//        for(int i = 0; i < measurementData.size(); i++) {
-//            String format = "dd/MM";
-//            String date = DateUtils.getDatetime(measurementData.get(i).getRegistrationTime(), format);
-//            float temperature = measurementData.get(i).getValueId(); //get
-//            entries.add(new Entry((float)i, temperature));
-//            quarters[i] = date;
-//        }
-//        IAxisValueFormatter formatter = new IAxisValueFormatter() {
-//
-//            @Override
-//            public String getFormattedValue(float value, AxisBase axis) {
-//                if(value >= quarters.length){return "";}
-//                return quarters[(int) value];
-//            }
-//
-//            // we don't draw numbers, so no decimal digits needed
-//            public int getDecimalDigits() {  return 0; }
-//        };
-//        XAxis xAxis = mChart.getXAxis();
-//        xAxis.setGranularity(1f); // minimum axis-step (interval) is 1
-//        xAxis.setValueFormatter(formatter);
-//        xAxis.setEnabled(true);
-//        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-//
-//        ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
-//
-//        LineDataSet set = new LineDataSet(entries, "temperature");
-//        set.setLineWidth(3f);
-//        set.setDrawCircles(true);
-//        set.setDrawCircleHole(true);
-//        set.setAxisDependency(YAxis.AxisDependency.LEFT);
-//        dataSets.add(set);
-//        LineData data = new LineData(dataSets);
-//        mChart.animate();
-//        mChart.setData(data);
-//        mChart.setEnabled(true);
-//        mChart.invalidate();
-//        mChart.setVisibleXRangeMaximum(65f);
-//        mChart.resetViewPortOffsets();
-//        mChart.animateX(3000);
-//        mChart.notifyDataSetChanged();
-        }
-    }
-
-    /**
-     * Removes all measurements and their associations.
-     */
-    private void removeAllMeasurements() {
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-//                Log.i(TAG, "removeAllMeasurements()");
-                ContextMeasurementDAO contextMeasurementDAO = ContextMeasurementDAO.getInstance(context);
-                MeasurementDAO measurementDAO = MeasurementDAO.getInstance(context);
-                for (Measurement m : measurementDAO.getNotSent(session.getIdLogged())) {
-                    if (m.getContextMeasurements().size() > 0)
-                        contextMeasurementDAO.removeAllOfMeasurement(m.getId());
+            Server.getInstance(this).get("/measurements/types/1?dateStart=2018-01-08&period=7" + new Server.Callback() {
+                @Override
+                public void onError(JSONObject result) {
+                    if (callbackSynchronization != null) callbackSynchronization.onError(result);
                 }
-                MeasurementDAO.getInstance(context).removeAll(session.getIdLogged());
-            }
-        });
-    }
 
+                @Override
+                public void onSuccess(JSONObject result) {
+                    // popular a lista aqui
+                    if (callbackSynchronization != null) callbackSynchronization.onSuccess(result);
+                }
 
-    private long getDateTime(int millis) {
-        Calendar c = Calendar.getInstance();
-        c.setTimeInMillis(c.getTimeInMillis() + millis);
+            });
 
-        return c.getTimeInMillis();
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                super.onBackPressed();
-                break;
         }
-        return super.onOptionsItemSelected(item);
+
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.ver_por_mes:
-                //createChart(GRAPH_TYPE_MONTH);
-                break;
 
-            case R.id.ver_por_semana:
-                //createChart(GRAPH_TYPE_SEVEN);
-                break;
-        }
     }
 }
-
-
