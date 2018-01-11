@@ -23,8 +23,8 @@ import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.MainActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.model.User;
-import br.edu.uepb.nutes.haniot.server.Server;
 import br.edu.uepb.nutes.haniot.model.dao.UserDAO;
+import br.edu.uepb.nutes.haniot.server.Server;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -133,6 +133,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         Log.i(TAG, "authenticationInServer()");
         loadingSend(true);
 
+        // Send for remote server /users/authenticate
         Server.getInstance(this).post("users/authenticate", getJsonData(), new Server.Callback() {
             @Override
             public void onError(JSONObject result) {

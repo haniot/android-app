@@ -75,8 +75,8 @@ public class GattHTParser {
          * Populating the JSON
          */
         result.put("timestamp", DateUtils.getCurrentDatetime());
-        result.put("value", tempValue);
-        result.put("unit", unit);
+        result.put("temperature", tempValue);
+        result.put("temperatureUnit", unit);
 
         return result;
     }

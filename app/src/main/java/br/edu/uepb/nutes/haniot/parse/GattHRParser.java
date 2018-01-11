@@ -46,8 +46,8 @@ public class GattHRParser {
          * Populating the JSON
          */
         result.put("timestamp", DateUtils.getCurrentDatetime());
-        result.put("value", heartRateValue);
-        result.put("unit", "bpm");
+        result.put("heartRate", heartRateValue);
+        result.put("heartRateUnit", "bpm");
 
         return result;
     }

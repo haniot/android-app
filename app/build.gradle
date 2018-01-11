@@ -45,7 +45,7 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.2'
     implementation 'com.jakewharton:butterknife:8.8.1'
     implementation 'com.mikhaellopez:circularprogressbar:1.1.1'
-    implementation 'com.github.PhilJay:MPAndroidChart:v3.0.2'
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
     implementation 'no.nordicsemi.android.support.v18:scanner:1.0.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
 

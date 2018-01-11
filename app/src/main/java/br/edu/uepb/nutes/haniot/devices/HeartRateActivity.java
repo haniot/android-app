@@ -340,11 +340,13 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
 
         try {
             JSONObject jsonObject = new JSONObject(json);
-            measurement = new Gson().fromJson(json, Measurement.class);
 
-            measurement.setRegistrationDate((long) jsonObject.get("timestamp"));
-            measurement.setTypeId(MeasurementType.TEMPERATURE);
-            measurement.setHasSent(0);
+            measurement = new Measurement(
+                    jsonObject.getString("heartRate"),
+                    jsonObject.getString("heartRateUnit"),
+                    jsonObject.getLong("timestamp"),
+                    MeasurementType.HEART_RATE);
+
         } catch (JSONException e) {
             e.printStackTrace();
         }

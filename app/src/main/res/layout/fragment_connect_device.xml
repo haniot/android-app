@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
             android:adjustViewBounds="true"
-            android:contentDescription="@string/scale_measurement"
+            android:contentDescription="@string/body_weight_scale"
             android:scaleType="centerInside"
             app:srcCompat="@drawable/device_scale_yunmai_mini" />
 

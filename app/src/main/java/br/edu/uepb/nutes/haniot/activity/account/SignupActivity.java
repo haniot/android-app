@@ -36,13 +36,12 @@ import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.activity.settings.SettingsActivity;
 import br.edu.uepb.nutes.haniot.fragment.GenericDialogFragment;
 import br.edu.uepb.nutes.haniot.model.User;
-import br.edu.uepb.nutes.haniot.server.Server;
 import br.edu.uepb.nutes.haniot.model.dao.UserDAO;
+import br.edu.uepb.nutes.haniot.server.Server;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import okhttp3.Headers;
 
 /**
  * SignupActivity implementation.
@@ -155,7 +154,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         } else {
             buttonChangePassword.setVisibility(View.GONE);
 
-            passwordEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            passwordConfirmEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                 @Override
                 public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                     if (actionId == EditorInfo.IME_ACTION_SEND) signup();
@@ -272,27 +271,19 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         emailEditText.setFocusableInTouchMode(false);
 
         enabledView(false);
-        loading(true);
 
         // get user local
         user = userDAO.get(session.getIdLogged());
 
-        if (!ConnectionUtils.internetIsEnabled(this)) {
-            return;
-        }
-        populateView();
+        if (!ConnectionUtils.internetIsEnabled(this)) return;
 
-        /**
-         * Get the required user token in request authentication
-         */
-        Headers headers = new Headers.Builder()
-                .add("Authorization", "JWT ".concat(session.getTokenLogged()))
-                .build();
+        loading(true);
+        populateView(); // Populate view with local data
 
         /**
          * Get user in server
          */
-        Server.getInstance(this).get("users/", headers, new Server.Callback() {
+        Server.getInstance(this).get("users/".concat(session.get_idLogged()), new Server.Callback() {
             @Override
             public void onError(JSONObject result) {
                 enabledView(true);
@@ -309,7 +300,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                populateView();
+                                populateView(); // Populate view with data from server
                             }
                         });
                     }
@@ -351,35 +342,37 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         Log.i(TAG, "signup in remote server");
         loading(true);
 
-        Server.getInstance(this).post("users/signup", new Gson().toJson(getUserView()), new Server.Callback() {
-            @Override
-            public void onError(JSONObject result) {
-                printMessage(result);
-                loading(false);
-            }
-
-            @Override
-            public void onSuccess(JSONObject result) {
-                try {
-                    final User user = new Gson().fromJson(result.getString("user"), User.class);
-                    if (user.get_id() != null) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                userDAO.save(user); // save in local
-                            }
-                        });
-
-                        finish(); // to back login activity
+        // Send for remote server /users/signup
+        Server.getInstance(this).post("users/signup",
+                new Gson().toJson(getUserView()), new Server.Callback() {
+                    @Override
+                    public void onError(JSONObject result) {
+                        printMessage(result);
+                        loading(false);
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                } finally {
-                    loading(false);
-                    printMessage(result);
-                }
-            }
-        });
+
+                    @Override
+                    public void onSuccess(JSONObject result) {
+                        try {
+                            final User user = new Gson().fromJson(result.getString("user"), User.class);
+                            if (user.get_id() != null) {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        userDAO.save(user); // save in local
+                                    }
+                                });
+
+                                finish(); // to back login activity
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        } finally {
+                            loading(false);
+                            printMessage(result);
+                        }
+                    }
+                });
     }
 
     /**
@@ -392,41 +385,36 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
 
         loading(true);
 
-        /**
-         * Get the required user token in request authentication
-         */
-        Headers headers = new Headers.Builder()
-                .add("Authorization", "JWT ".concat(session.getTokenLogged()))
-                .build();
-
-        Server.getInstance(this).put("users", new Gson().toJson(getUserView()), headers, new Server.Callback() {
-            @Override
-            public void onError(JSONObject result) {
-                printMessage(result);
-                loading(false);
-            }
-
-            @Override
-            public void onSuccess(JSONObject result) {
-                try {
-                    final User userUpdate = new Gson().fromJson(result.getString("user"), User.class);
-
-                    if (userUpdate.get_id() != null) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                userDAO.update(user); // save in local
-                            }
-                        });
+        // Send for remote server /users/:userId
+        Server.getInstance(this).put("users/".concat(session.get_idLogged()),
+                new Gson().toJson(getUserView()), new Server.Callback() {
+                    @Override
+                    public void onError(JSONObject result) {
+                        printMessage(result);
+                        loading(false);
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                } finally {
-                    loading(false);
-                    printMessage(result);
-                }
-            }
-        });
+
+                    @Override
+                    public void onSuccess(JSONObject result) {
+                        try {
+                            final User userUpdate = new Gson().fromJson(result.getString("user"), User.class);
+
+                            if (userUpdate.get_id() != null) {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        userDAO.update(user); // save in local
+                                    }
+                                });
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        } finally {
+                            loading(false);
+                            printMessage(result);
+                        }
+                    }
+                });
     }
 
     /**
@@ -557,7 +545,9 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
     private void closeActivity() {
         if (openDialog) {
             GenericDialogFragment dialogHasChange = GenericDialogFragment.newDialog(DIALOG_HAS_CHANGE,
-                    R.string.back_confirm, new int[]{R.string.bt_ok, R.string.bt_cancel}, null);
+                    R.string.back_confirm,
+                    new int[]{R.string.bt_ok, R.string.bt_cancel},
+                    null);
             dialogHasChange.show(getSupportFragmentManager());
         } else {
             super.onBackPressed();

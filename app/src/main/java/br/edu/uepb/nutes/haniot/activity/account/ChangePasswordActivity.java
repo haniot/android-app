@@ -24,12 +24,11 @@ import org.json.JSONObject;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.model.User;
-import br.edu.uepb.nutes.haniot.server.Server;
 import br.edu.uepb.nutes.haniot.model.dao.UserDAO;
+import br.edu.uepb.nutes.haniot.server.Server;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import okhttp3.Headers;
 
 /**
  * ChangePasswordActivity implementation.
@@ -202,52 +201,46 @@ public class ChangePasswordActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        /**
-         * Get the required user token in request authentication
-         */
-        Headers headers = new Headers.Builder()
-                .add("Authorization", "JWT ".concat(session.getTokenLogged()))
-                .build();
-
-        // Send for remote server
-        Server.getInstance(this).put("users/password", jsonObject.toString(), headers, new Server.Callback() {
-            @Override
-            public void onError(JSONObject result) {
-                printMessage(result);
-                loadingSend(false);
-            }
-
-            @Override
-            public void onSuccess(JSONObject result) {
-                try {
-                    final User userUpdate = new Gson().fromJson(result.getString("user"), User.class);
-                    Log.i("USER UPDATE", userUpdate.toString());
-
-                    if (userUpdate.getPassword() != null) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                userDAO.update(userUpdate); // save in local
-                            }
-                        });
-
-                        /**
-                         * Remove user from session and redirect to login screen.
-                         */
-                        session.removeLogged();
-                        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(intent);
-                        finish();
+        // Send for remote server /users/:userId/password
+        Server.getInstance(this).put("users/".concat(session.get_idLogged()) + "/password",
+                jsonObject.toString(), new Server.Callback() {
+                    @Override
+                    public void onError(JSONObject result) {
+                        printMessage(result);
+                        loadingSend(false);
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                } finally {
-                    loadingSend(false);
-                    printMessage(result);
-                }
-            }
-        });
+
+                    @Override
+                    public void onSuccess(JSONObject result) {
+                        try {
+                            final User userUpdate = new Gson().fromJson(result.getString("user"), User.class);
+                            Log.i("USER UPDATE", userUpdate.toString());
+
+                            if (userUpdate.getPassword() != null) {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        userDAO.update(userUpdate); // save in local
+                                    }
+                                });
+
+                                /**
+                                 * Remove user from session and redirect to login screen.
+                                 */
+                                session.removeLogged();
+                                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent);
+                                finish();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        } finally {
+                            loadingSend(false);
+                            printMessage(result);
+                        }
+                    }
+                });
     }
 
     /**
