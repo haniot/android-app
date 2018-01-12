@@ -1,7 +1,5 @@
 package br.edu.uepb.nutes.haniot.parse;
 
-import android.util.Log;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.xmlpull.v1.XmlPullParser;
@@ -12,8 +10,6 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-
-import br.edu.uepb.nutes.haniot.utils.DateUtils;
 
 /**
  * Parse for blood pressure.
@@ -28,16 +24,16 @@ public class IEEE11073BPParser {
      * Parse for IEEE 11073 device blood pressure.
      * Supported Models: OMRON BP792IT.
      *
-     * FORMAT return Json:
-     * { systolic: int_value,
-     *   diastolic: int_value,
-     *   map: double_value
-     *   pulse: int_value,
-     *   pulse: int_value,
-     *   systolicUnit: string_value,
-     *   diastolicUnit: string_value,
-     *   pulseUnit: string_value,
-     *   timestamp: long_value }
+     * FORMAT return JOSN:
+     * { systolic: int,
+     *   diastolic: int,
+     *   map: double
+     *   pulse: int,
+     *   pulse: int,
+     *   systolicUnit: string,
+     *   diastolicUnit: string,
+     *   pulseUnit: string,
+     *   timestamp: long }
      *
      * @param data xml
      * @return JSONObject json

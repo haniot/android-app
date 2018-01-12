@@ -34,6 +34,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class BodyCompositionHDPActivity extends AppCompatActivity {
+    private final String TAG = "BodyCompositionHDPActivity";
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -202,6 +203,7 @@ public class BodyCompositionHDPActivity extends AppCompatActivity {
             final String idev = dev;
             Log.w("HST", "Associated " + dev);
             Log.w("HST", "...." + xmldata);
+            d(TAG,"ASSOCIATED: "+ xmldata);
 
             Runnable req1 = new Runnable() {
                 public void run() {
@@ -221,12 +223,14 @@ public class BodyCompositionHDPActivity extends AppCompatActivity {
         public void MeasurementData(String dev, String xmldata) {
             Log.w("HST", "MeasurementData " + dev);
             Log.w("HST", "....." + xmldata);
+            d(TAG,"MEASUREMENT: "+ xmldata);
         }
 
         @Override
         public void DeviceAttributes(String dev, String xmldata) {
             Log.w("HST", "DeviceAttributes " + dev);
             Log.w("HST", ".." + xmldata);
+            d(TAG,"DEVICE ATTR: "+ xmldata);
         }
 
         @Override
@@ -260,4 +264,17 @@ public class BodyCompositionHDPActivity extends AppCompatActivity {
             Log.w("HST", "Service connection closed");
         }
     };
+
+
+    // TODO Apenas para debug
+    public void d(String TAG, String message) {
+        int maxLogSize = 2000;
+        for (int i = 0; i <= message.length() / maxLogSize; i++) {
+            int start = i * maxLogSize;
+            int end = (i + 1) * maxLogSize;
+            end = end > message.length() ? message.length() : end;
+            android.util.Log.d(TAG, message.substring(start, end));
+        }
+    }
+
 }
