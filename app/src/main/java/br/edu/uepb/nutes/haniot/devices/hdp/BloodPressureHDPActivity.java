@@ -48,6 +48,7 @@ import butterknife.ButterKnife;
  * @copyright Copyright (c) 2017, NUTES UEPB
  */
 public class BloodPressureHDPActivity extends AppCompatActivity {
+    private final String TAG = "BloodPressureHDPActivity";
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
