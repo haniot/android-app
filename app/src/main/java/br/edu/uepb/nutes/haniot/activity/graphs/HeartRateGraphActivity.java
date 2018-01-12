@@ -17,6 +17,8 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -25,6 +27,8 @@ import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.model.Measurement;
 import br.edu.uepb.nutes.haniot.model.dao.MeasurementDAO;
+import br.edu.uepb.nutes.haniot.server.Server;
+import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -80,24 +84,33 @@ public class HeartRateGraphActivity extends AppCompatActivity implements View.On
 
         mChart.getDescription().setEnabled(false);
         mChart.setDrawGridBackground(false);
+        final SynchronizationServer.Callback callbackSynchronization = null;
+        String jsonMea0surements;
 
         YAxis leftAxis = mChart.getAxisLeft();
         leftAxis.setAxisMinimum(0f);
         leftAxis.setAxisMaximum(150f);
 
         mChart.getAxisRight().setEnabled(false);
+        long userId = session.getUserLogged().getId();
 
-        long dayMile = (24 * 60 * 60 * 1000);
-        long dateEnd = DateUtils.getCurrentDatetime();
-        long dateStart = dateEnd - (dayMile * 7);
-        String deviceAddress = "E9:50:60:1F:31:D2";
-//        long userId = session.getIdLogged();
-//
-//        if(type == GRAPH_TYPE_DAY) {
-//
-//            measurementData = MeasurementDAO.getInstance(this).filter(DateUtils.addDays(0).getTimeInMillis(), getDateTime(0), deviceAddress, session.getIdLogged());
-//
-//            if(measurementData.size() == 0) return;
+        if (type == GRAPH_TYPE_DAY) {
+
+            Server.getInstance(this).get("/measurements/types/7?period/1d" + new Server.Callback() {
+                @Override
+                public void onError(JSONObject result) {
+                    if (callbackSynchronization != null) callbackSynchronization.onError(result);
+                }
+
+                @Override
+                public void onSuccess(JSONObject result) {
+                    // popular a lista aqui
+                    if (callbackSynchronization != null) callbackSynchronization.onSuccess(result);
+                }
+
+            });
+
+
 //
 //            final String[] quarters = new String[measurementData.size()];
 //            ArrayList<Entry> entries = new ArrayList<Entry>();
@@ -245,8 +258,47 @@ public class HeartRateGraphActivity extends AppCompatActivity implements View.On
 //            mChart.notifyDataSetChanged();
 //        }
 
+        }
 
+        if (type == GRAPH_TYPE_SEVEN) {
+
+            Server.getInstance(this).get("/measurements/types/7?period/1w" + new Server.Callback() {
+                @Override
+                public void onError(JSONObject result) {
+                    if (callbackSynchronization != null) callbackSynchronization.onError(result);
+                }
+
+                @Override
+                public void onSuccess(JSONObject result) {
+                    // popular a lista aqui
+                    if (callbackSynchronization != null) callbackSynchronization.onSuccess(result);
+                }
+
+            });
+
+
+        }
+
+        if (type == GRAPH_TYPE_SEVEN) {
+
+            Server.getInstance(this).get("/measurements/types/7?period/1w" + new Server.Callback() {
+                @Override
+                public void onError(JSONObject result) {
+                    if (callbackSynchronization != null) callbackSynchronization.onError(result);
+                }
+
+                @Override
+                public void onSuccess(JSONObject result) {
+                    // popular a lista aqui
+                    if (callbackSynchronization != null) callbackSynchronization.onSuccess(result);
+                }
+
+            });
+
+
+        }
     }
+
 
     private long getDateTime(int millis) {
         Calendar c = Calendar.getInstance();
