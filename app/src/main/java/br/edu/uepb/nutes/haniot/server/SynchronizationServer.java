@@ -224,7 +224,7 @@ public class SynchronizationServer {
                     @Override
                     public void onSuccess(JSONObject result) {
                         // Sending successfully, we can remove from the database these measurements
-                        removeAllMeasurements();
+//                        removeAllMeasurements();
 
                         if (callbackSynchronization != null)
                             callbackSynchronization.onSuccess(result);

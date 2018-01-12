@@ -28,7 +28,6 @@ import android.widget.TextView;
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -47,6 +46,7 @@ import br.edu.uepb.nutes.haniot.model.Measurement;
 import br.edu.uepb.nutes.haniot.model.MeasurementType;
 import br.edu.uepb.nutes.haniot.model.dao.DeviceDAO;
 import br.edu.uepb.nutes.haniot.model.dao.MeasurementDAO;
+import br.edu.uepb.nutes.haniot.parse.JsonToMeasurementParser;
 import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
 import br.edu.uepb.nutes.haniot.service.BluetoothLeService;
 import br.edu.uepb.nutes.haniot.utils.GattAttributes;
@@ -304,55 +304,37 @@ public class ThermometerActivity extends AppCompatActivity implements Temperatur
                         setCharacteristicNotification(characteristic);
                 }
             } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
-                final Measurement measurement = jsonToMeasuremnt(intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
-                DecimalFormat df = new DecimalFormat(getString(R.string.temperature_format),
-                        new DecimalFormatSymbols(Locale.US));
+                DecimalFormat df = new DecimalFormat(getString(R.string.temperature_format), new DecimalFormatSymbols(Locale.US));
 
                 // display data
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        mTemperatureTextView.setText(df.format(Float.parseFloat(measurement.getValue())));
-                        mTemperatureTextView.startAnimation(animation);
+                        try {
+                            Measurement measurement = JsonToMeasurementParser
+                                    .temperature(intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
+                            measurement.setDevice(mDevice);
+                            measurement.setUser(session.getUserLogged());
 
-                        /**
-                         * Save in local
-                         * Send to server saved successfully
-                         */
-                        if (measurementDAO.save(measurement))
-                            SynchronizationServer.getInstance(getApplicationContext()).run();
+                            mTemperatureTextView.setText(df.format(measurement.getValue()));
+                            mTemperatureTextView.startAnimation(animation);
 
-                        refreshRecyclerView();
+                            /**
+                             * Save in local
+                             * Send to server saved successfully
+                             */
+                            if (measurementDAO.save(measurement))
+                                SynchronizationServer.getInstance(getApplicationContext()).run();
+
+                            refreshRecyclerView();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
                 });
             }
         }
     };
-
-    /**
-     * Convert json to Measurement object.
-     *
-     * @param json String
-     * @return Measurement
-     */
-    private Measurement jsonToMeasuremnt(String json) {
-        Measurement measurement = null;
-        try {
-            JSONObject jsonObject = new JSONObject(json);
-
-            measurement = new Measurement(
-                    jsonObject.getString("temperature"),
-                    jsonObject.getString("temperatureUnit"),
-                    jsonObject.getLong("timestamp"),
-                    MeasurementType.TEMPERATURE);
-            measurement.setUser(session.getUserLogged());
-            measurement.setDevice(mDevice);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return measurement;
-    }
 
     @Override
     public void onItemClick(Measurement item) {

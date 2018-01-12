@@ -26,7 +26,7 @@ public class YunmaiParser {
      */
     public static JSONObject parse(@NonNull final byte[] data) throws JSONException {
         JSONObject result = new JSONObject();
-        float bodyMass = 0f;
+        double bodyMass = 0f;
 
         if (data.length > 0) {
             /**
@@ -64,7 +64,7 @@ public class YunmaiParser {
                 /**
                  * 15-16: resistance - BE uint 16
                  */
-                final float resistance = Integer.valueOf(String.format("%02X", data[15]) + String.format("%02X", data[16]), 16);
+                final double resistance = Integer.valueOf(String.format("%02X", data[15]) + String.format("%02X", data[16]), 16);
                 result.put("resistance", resistance);
 
                 /**
@@ -72,7 +72,7 @@ public class YunmaiParser {
                  *
                  * 17-18: - BE uint16 times 0.01
                  */
-                final float bodyFat = Integer.valueOf(String.format("%02X", data[17]) + String.format("%02X", data[18]), 16) * 0.01f;
+                final double bodyFat = Integer.valueOf(String.format("%02X", data[17]) + String.format("%02X", data[18]), 16) * 0.01f;
                 result.put("bodyFat", bodyFat);
                 result.put("bodyFatUnit", "%"); // value fixed
 

@@ -52,9 +52,9 @@ public class IEEE11073BPParser {
         String systolic = null,
                 diastolic = null,
                 map = null, // Mean Arterial Pressure (MAP)
-                pulse = null,
+                heartRate = null, // Pulse
                 pressureUnit = null,
-                pulseUnit = null,
+                heartRateUnit = null,
                 century = null,
                 year = null,
                 month = null,
@@ -78,8 +78,8 @@ public class IEEE11073BPParser {
                         if (attributeValue.equalsIgnoreCase("unit")) {
                             if (pressureUnit == null)
                                 pressureUnit = xmlParser.nextText();
-                            else if (pulseUnit == null)
-                                pulseUnit = xmlParser.nextText();
+                            else if (heartRateUnit == null)
+                                heartRateUnit = xmlParser.nextText();
                         }
                     } else if (name.equalsIgnoreCase("value")) {
                         if (systolic == null)
@@ -104,8 +104,8 @@ public class IEEE11073BPParser {
                             sec = xmlParser.nextText();
                         else if (sec_fractions == null)
                             sec_fractions = xmlParser.nextText();
-                        else if (pulse == null)
-                            pulse = xmlParser.nextText();
+                        else if (heartRate == null)
+                            heartRate = xmlParser.nextText();
                         else
                             end = true;
                     }
@@ -133,13 +133,13 @@ public class IEEE11073BPParser {
         /**
          * Populating the JSON
          */
-        result.put("systolic", (int) Double.parseDouble(systolic));
-        result.put("diastolic", (int) Double.parseDouble(diastolic));
-        result.put("map", (int) Double.parseDouble(map));
-        result.put("pulse", (int) Double.parseDouble(pulse));
+        result.put("systolic", Double.parseDouble(systolic));
+        result.put("diastolic",Double.parseDouble(diastolic));
+        result.put("map", Double.parseDouble(map));
+        result.put("heartRate", Double.parseDouble(heartRate));
         result.put("systolicUnit", pressureUnit);
         result.put("diastolicUnit", pressureUnit);
-        result.put("pulseUnit", pulseUnit);
+        result.put("heartRateUnit", heartRateUnit);
         result.put("timestamp", timestamp.getTimeInMillis());
 
         return result;

@@ -21,7 +21,7 @@ public class Measurement {
     @Id
     private long id;
 
-    private String value;
+    private double value;
     private String unit;
     private long registrationDate;
 
@@ -45,13 +45,13 @@ public class Measurement {
     public Measurement() {
     }
 
-    public Measurement(String value, String unit, int typeId) {
+    public Measurement(double value, String unit, int typeId) {
         this.value = value;
         this.unit = unit;
         this.typeId = typeId;
     }
 
-    public Measurement(String value, String unit, long registrationDate, int typeId) {
+    public Measurement(double value, String unit, long registrationDate, int typeId) {
         this.value = value;
         this.unit = unit;
         this.registrationDate = registrationDate;
@@ -66,11 +66,11 @@ public class Measurement {
         this.id = id;
     }
 
-    public String getValue() {
+    public double getValue() {
         return value;
     }
 
-    public Measurement setValue(String value) {
+    public Measurement setValue(double value) {
         this.value = value;
         return this;
     }
@@ -132,6 +132,11 @@ public class Measurement {
         return this.getMeasurements().add(measurement);
     }
 
+    public void addMeasurement(Measurement... measurement) {
+        for (Measurement m : measurement)
+            this.getMeasurements().add(m);
+    }
+
     public void setHasSent(int hasSent) {
         this.hasSent = hasSent;
     }
@@ -159,13 +164,17 @@ public class Measurement {
 
     @Override
     public int hashCode() {
-        int result = (int) (id ^ (id >>> 32));
-        result = 31 * result + (value != null ? value.hashCode() : 0);
+        int result;
+        long temp;
+        result = (int) (id ^ (id >>> 32));
+        temp = Double.doubleToLongBits(value);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
         result = 31 * result + (unit != null ? unit.hashCode() : 0);
         result = 31 * result + (int) (registrationDate ^ (registrationDate >>> 32));
         result = 31 * result + (user != null ? user.hashCode() : 0);
         result = 31 * result + (device != null ? device.hashCode() : 0);
         result = 31 * result + typeId;
+        result = 31 * result + hasSent;
         return result;
     }
 
@@ -176,7 +185,8 @@ public class Measurement {
 
         Measurement other = (Measurement) o;
 
-        return other.getRegistrationDate() == this.getRegistrationDate() &&
+        return other.value == this.value &&
+                other.getRegistrationDate() == this.getRegistrationDate() &&
                 other.user.equals(this.user) &&
                 other.device.equals(this.device);
     }

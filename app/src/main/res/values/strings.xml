@@ -68,6 +68,8 @@
     <string name="first_record">First</string>
     <string name="last_record">Last</string>
     <string name="most_recent_entries">Most recent entries</string>
+    <string name="body_fat_title">Body Fat</string>
+    <string name="body_bmi_title">BMI</string>
 
     <string name="value_default">_ _</string>
 
@@ -272,11 +274,56 @@
     </string-array>.
 
     <string-array name="measurement_context_types_array">
-        <item>Meal</item>
+        <item>Glucose Carbohydrate</item>
+        <item>Glucose Meal</item>
+        <item>Glucose Location</item>
+        <item>Glucose Type</item>
+        <item>Temperature Type</item>
     </string-array>
 
     <string-array name="measurement_values_context_types_array">
-        <item>Meal</item>
+        <item>Other</item>
+        <!--GLUCOSE CARBOHYDRATE (2-8)-->
+        <item>@string/glucose_carbohydrate_breakfast</item>
+        <item>@string/glucose_carbohydrate_lunch</item>
+        <item>@string/glucose_carbohydrate_dinner</item>
+        <item>@string/glucose_carbohydrate_snakck</item>
+        <item>@string/glucose_carbohydrate_drink</item>
+        <item>@string/glucose_carbohydrate_supper</item>
+        <item>@string/glucose_carbohydrate_brunch</item>
+        <!--GLUCOSE MEAL (9-13)-->
+        <item>@string/glucose_meal_preprandial</item>
+        <item>@string/glucose_meal_postprandial</item>
+        <item>@string/glucose_meal_fasting</item>
+        <item>@string/glucose_meal_casual</item>
+        <item>@string/glucose_meal_bedtime</item>
+        <!--GLUCOSE LOCATION (14-18)-->
+        <item>@string/glucose_location_finger</item>
+        <item>@string/glucose_location_alternate</item>
+        <item>@string/glucose_location_earlobe</item>
+        <item>@string/glucose_location_control_solution</item>
+        <item>@string/glucose_location_sample_not_available</item>
+        <!--GLUCOSE TYPE (19-28)-->
+        <item>@string/glucose_type_capillary_whole</item>
+        <item>@string/glucose_type_capillary_plasma</item>
+        <item>@string/glucose_type_venous_whole</item>
+        <item>@string/glucose_type_venous_plasma</item>
+        <item>@string/glucose_type_arterial_whole</item>
+        <item>@string/glucose_type_arterial_plama</item>
+        <item>@string/glucose_type_undertermined_whole</item>
+        <item>@string/glucose_type_undertermined_plasma</item>
+        <item>@string/glucose_type_interstitial</item>
+        <item>@string/glucose_type_control_solution</item>
+        <!--TEMPERATURE TYPE (29-37)-->
+        <item>@string/temperatre_type_armpit</item>
+        <item>@string/temperatre_type_body</item>
+        <item>@string/temperatre_type_ear</item>
+        <item>@string/temperatre_type_finger</item>
+        <item>@string/temperatre_type_gastro</item>
+        <item>@string/temperatre_type_mouth</item>
+        <item>@string/temperatre_type_rectum</item>
+        <item>@string/temperatre_type_toe</item>
+        <item>@string/temperatre_type_typanum</item>
     </string-array>
 
     <string-array name="training_types_array">

@@ -33,9 +33,11 @@ import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.model.Device;
 import br.edu.uepb.nutes.haniot.model.DeviceType;
 import br.edu.uepb.nutes.haniot.model.Measurement;
+import br.edu.uepb.nutes.haniot.model.User;
 import br.edu.uepb.nutes.haniot.model.dao.DeviceDAO;
 import br.edu.uepb.nutes.haniot.model.dao.MeasurementDAO;
 import br.edu.uepb.nutes.haniot.parse.IEEE11073BPParser;
+import br.edu.uepb.nutes.haniot.parse.JsonToMeasurementParser;
 import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -191,6 +193,27 @@ public class BloodPressureHDPActivity extends AppCompatActivity {
         });
     }
 
+    private ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            Log.w("HST", "Service connection established");
+
+            // that's how we get the client side of the IPC connection
+            api = HealthServiceAPI.Stub.asInterface(service);
+            try {
+                Log.w("HST", "Configuring...");
+                api.ConfigurePassive(agent, specs);
+            } catch (RemoteException e) {
+                Log.e("HST", "Failed to add listener", e);
+            }
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            Log.w("HST", "Service connection closed");
+        }
+    };
+
     private HealthAgentAPI.Stub agent = new HealthAgentAPI.Stub() {
         @Override
         public void Connected(String dev, String addr) {
@@ -232,22 +255,12 @@ public class BloodPressureHDPActivity extends AppCompatActivity {
 
         @Override
         public void MeasurementData(String dev, String xmldata) {
-            Log.w("HST", "MeasurementData " + dev);
-            Log.w("HST", "....." + xmldata);
-
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     try {
                         JSONObject data = IEEE11073BPParser.parse(xmldata);
-
-                        mBloodPressureSysTextView.setText(String.format("%03d", data.getInt("systolic")));
-                        mBloodPressureDiaTextView.setText(String.format("%03d", data.getInt("diastolic")));
-                        mBloodPressurePulseTextView.setText(String.valueOf(data.getInt("pulse")));
-
-                        mBloodPressurePulseTextView.startAnimation(animation);
-                        mBloodPressureDiaTextView.startAnimation(animation);
-                        mBloodPressurePulseTextView.startAnimation(animation);
+                        handleMeasurement(data.toString());
                     } catch (JSONException e) {
                         e.printStackTrace();
                     } catch (XmlPullParserException e) {
@@ -277,27 +290,6 @@ public class BloodPressureHDPActivity extends AppCompatActivity {
         }
     };
 
-    private ServiceConnection serviceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            Log.w("HST", "Service connection established");
-
-            // that's how we get the client side of the IPC connection
-            api = HealthServiceAPI.Stub.asInterface(service);
-            try {
-                Log.w("HST", "Configuring...");
-                api.ConfigurePassive(agent, specs);
-            } catch (RemoteException e) {
-                Log.e("HST", "Failed to add listener", e);
-            }
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            Log.w("HST", "Service connection closed");
-        }
-    };
-
     private void RequestConfig(String dev) {
         try {
             String xmldata = api.GetConfiguration(dev);
@@ -315,5 +307,54 @@ public class BloodPressureHDPActivity extends AppCompatActivity {
         } catch (RemoteException e) {
             Log.w("HST", "Exception (RequestDeviceAttributes)");
         }
+    }
+
+    /**
+     * Treats the measurement by breaking down types of measurements.
+     * Add Relationships, saves to the local database and sends it to the server.
+     *
+     * @param xmldata String
+     */
+    private void handleMeasurement(String xmldata) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    User user = session.getUserLogged();
+
+                    Measurement systolic = JsonToMeasurementParser.systolic(xmldata);
+                    systolic.setUser(user);
+                    systolic.setDevice(mDevice);
+
+                    Measurement diastolic = JsonToMeasurementParser.diastolic(xmldata);
+                    diastolic.setUser(user);
+                    diastolic.setDevice(mDevice);
+
+                    Measurement heartRate = JsonToMeasurementParser.heartRate(xmldata);
+                    heartRate.setUser(user);
+                    heartRate.setDevice(mDevice);
+
+                    /**
+                     * Update UI
+                     */
+                    mBloodPressureSysTextView.setText(String.format("%03d", (int) systolic.getValue()));
+                    mBloodPressureDiaTextView.setText(String.format("%03d", (int) diastolic.getValue()));
+                    mBloodPressurePulseTextView.setText(String.valueOf((int) diastolic.getValue()));
+
+                    mBloodPressureSysTextView.startAnimation(animation);
+                    mBloodPressureDiaTextView.startAnimation(animation);
+                    mBloodPressurePulseTextView.startAnimation(animation);
+
+                    /**
+                     * Add relationships, save and send to server
+                     */
+                    systolic.addMeasurement(diastolic, heartRate);
+                    if (MeasurementDAO.getInstance(getApplicationContext()).save(systolic))
+                        SynchronizationServer.getInstance(getApplicationContext()).run();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 }

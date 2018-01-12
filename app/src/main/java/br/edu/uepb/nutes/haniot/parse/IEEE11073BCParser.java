@@ -71,7 +71,7 @@ public class IEEE11073BCParser {
                 rmrUnit = null,
                 visceralFatUnit = null,
                 bodyAgeUnit = null,
-                skeletalMuscleUnit = null,
+                muscleMassUnit = null,
                 century = null,
                 year = null,
                 month = null,
@@ -112,8 +112,8 @@ public class IEEE11073BCParser {
                                 visceralFatUnit = xmlParser.nextText();
                             else if (bodyAgeUnit == null)
                                 bodyAgeUnit = xmlParser.nextText();
-                            else if (skeletalMuscleUnit == null)
-                                skeletalMuscleUnit = xmlParser.nextText();
+                            else if (muscleMassUnit == null)
+                                muscleMassUnit = xmlParser.nextText();
                         }
                     } else if (name.equalsIgnoreCase("value")) {
                         if (ignore) {
@@ -205,7 +205,7 @@ public class IEEE11073BCParser {
         result.put("rmrUnit", rmrUnit);
         result.put("visceralFatUnit", visceralFatUnit);
         result.put("bodyAgeUnit", bodyAgeUnit);
-        result.put("skeletalMuscleUnit", muscleMass);
+        result.put("muscleMassUnit", muscleMassUnit);
         result.put("timestamp", timestamp.getTimeInMillis());
 
         return result;
