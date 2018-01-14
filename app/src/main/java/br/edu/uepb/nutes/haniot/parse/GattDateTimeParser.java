@@ -11,7 +11,7 @@ import java.util.Calendar;
  * @version 1.0
  * @copyright Copyright (c) 2017, NUTES UEPB
  */
-public class DateTimeParser {
+public class GattDateTimeParser {
     /**
      * Parses the date and time info.
      *

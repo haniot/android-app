@@ -28,7 +28,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
 import org.json.JSONException;
@@ -44,6 +43,7 @@ import br.edu.uepb.nutes.haniot.adapter.HeartRateAdapter;
 import br.edu.uepb.nutes.haniot.model.Measurement;
 import br.edu.uepb.nutes.haniot.model.MeasurementType;
 import br.edu.uepb.nutes.haniot.model.dao.MeasurementDAO;
+import br.edu.uepb.nutes.haniot.parse.JsonToMeasurementParser;
 import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
 import br.edu.uepb.nutes.haniot.service.BluetoothLeService;
 import br.edu.uepb.nutes.haniot.utils.GattAttributes;
@@ -128,7 +128,8 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
         mDeviceAddress = getIntent().getStringExtra(EXTRA_DEVICE_ADDRESS);
         deviceInformations = getIntent().getStringArrayExtra(EXTRA_DEVICE_INFORMATIONS);
 
-        SynchronizationServer.getInstance(this).run();
+        // synchronization with server
+        synchronizeWithServer();
     }
 
     private void iniAnimations() {
@@ -315,44 +316,22 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
                         setCharacteristicNotification(characteristic);
                 }
             } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
-                final Measurement measurement = jsonToMeasuremnt(intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
-                Log.i("MeasurementTO", measurement.toString());
-
-                // display data
-                new Handler().postDelayed(new Runnable() {
+                runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        mHeartRateTextView.setText(String.format("%03d", new Integer(measurement.getValue())));
+                        try {
+                            Measurement measurement = JsonToMeasurementParser.heartRate(intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
+                            Log.i("MeasurementTO", measurement.toString());
+
+                            mHeartRateTextView.setText(String.format("%03d", (int) measurement.getValue()));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
-                }, 1000);
+                });
             }
         }
     };
-
-    /**
-     * Convert json to Measurement object.
-     *
-     * @param json
-     * @return Measurement
-     */
-    private Measurement jsonToMeasuremnt(String json) {
-        Measurement measurement = null;
-
-        try {
-            JSONObject jsonObject = new JSONObject(json);
-
-            measurement = new Measurement(
-                    jsonObject.getString("heartRate"),
-                    jsonObject.getString("heartRateUnit"),
-                    jsonObject.getLong("timestamp"),
-                    MeasurementType.HEART_RATE);
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return measurement;
-    }
 
     @Override
     public void onClick(View view) {
@@ -371,5 +350,12 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
     @Override
     public void onItemClick(Measurement item) {
         Log.i("onItemClick()", item.toString());
+    }
+
+    /**
+     * Performs routine for data synchronization with server.
+     */
+    private void synchronizeWithServer() {
+        SynchronizationServer.getInstance(this).run();
     }
 }

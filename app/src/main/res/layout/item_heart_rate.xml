@@ -31,8 +31,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentTop="true"
                 android:gravity="right"
-                android:text="2017/10/27 22:23:44"
-                android:textSize="14sp"/>
+                android:text="2017/10/27 22:23:44"/>
 
             <TextView
                 android:id="@+id/duration_heart_rate_textview"

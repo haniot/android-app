@@ -52,7 +52,7 @@ public class TemperatureAdapter extends RecyclerView.Adapter<TemperatureAdapter.
                 context.getResources().getString(R.string.temperature_format),
                 new DecimalFormatSymbols(Locale.US));
 
-        holder.value.setText(df.format(Float.parseFloat(mValues.get(position).getValue())));
+        holder.value.setText(df.format(mValues.get(position).getValue()));
         holder.date.setText(DateUtils.getDatetime(mValues.get(position).getRegistrationDate(), context.getString(R.string.datetime_format)));
         holder.unit.setText(mValues.get(position).getUnit());
 

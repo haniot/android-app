@@ -13,7 +13,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.support.design.widget.FloatingActionButton;
@@ -29,7 +28,6 @@ import android.widget.TextView;
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.UUID;
 
@@ -37,10 +35,12 @@ import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.fragment.GenericDialogFragment;
 import br.edu.uepb.nutes.haniot.model.Device;
+import br.edu.uepb.nutes.haniot.model.DeviceType;
 import br.edu.uepb.nutes.haniot.model.Measurement;
-import br.edu.uepb.nutes.haniot.model.MeasurementType;
 import br.edu.uepb.nutes.haniot.model.dao.DeviceDAO;
 import br.edu.uepb.nutes.haniot.model.dao.MeasurementDAO;
+import br.edu.uepb.nutes.haniot.parse.JsonToMeasurementParser;
+import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
 import br.edu.uepb.nutes.haniot.service.BluetoothLeService;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import br.edu.uepb.nutes.haniot.utils.GattAttributes;
@@ -136,14 +136,14 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
     @Override
     protected void onStart() {
         super.onStart();
+
+        // TODO REMOVER!!! Pois o cadastro do device deverá ser no processo de emparelhamento
+        mDevice = deviceDAO.get(mDeviceAddress, session.getIdLogged());
+
         if (mDevice == null) {
-            mDevice = deviceDAO.get(mDeviceAddress, session.getIdLogged());
-
-            if (mDevice == null) {
-                mDevice = new Device(mDeviceAddress, "HEART RATE SENSOR", deviceInformations[0], deviceInformations[1], 4, session.getUserLogged());
-
-//                if (!deviceDAO.save(mDevice)) finish();
-            }
+            mDevice = new Device(mDeviceAddress, "HEART RATE SENSOR", deviceInformations[0], deviceInformations[1], 4, session.getUserLogged());
+            mDevice.set_id("1544647dfd7bcdd2448000ff5");
+            if (!deviceDAO.save(mDevice)) finish();
         }
     }
 
@@ -321,86 +321,47 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
                         setCharacteristicNotification(characteristic);
                 }
             } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
-                final Measurement measurement = jsonToMeasuremnt(intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
-                Log.i("MeasurementTO", measurement.toString());
-                if(!mConnected) {
+                if (!mConnected) {
                     mConnected = true;
                     updateConnectionState(mConnected);
                 }
 
-                // display data
-                new Handler().postDelayed(new Runnable() {
+                runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        int bpm = measurement.getValue() == null ? 0 : new Integer(measurement.getValue());
-                        mHeartRateTextView.setText(String.format("%03d", bpm));
+                        try {
+                            Measurement measurement = JsonToMeasurementParser.heartRate(intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
+                            Log.i("MeasurementTO", measurement.toString());
 
-                        fcAccumulate += bpm;
-                        fcMinimum = (bpm > 0 && bpm < fcMinimum) ? bpm : fcMinimum;
-                        fcMaximum = (bpm > fcMaximum) ? bpm : fcMaximum;
-                        fcTotal++;
+                            int bpm = (int) measurement.getValue();
+                            mHeartRateTextView.setText(String.format("%03d", (int) measurement.getValue()));
+
+                            fcAccumulate += bpm;
+                            fcMinimum = (bpm > 0 && bpm < fcMinimum) ? bpm : fcMinimum;
+                            fcMaximum = (bpm > fcMaximum) ? bpm : fcMaximum;
+                            fcTotal++;
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
-                }, 1000);
+                });
             }
         }
     };
-
-    /**
-     * Convert json to Measurement object.
-     *
-     * @param json
-     * @return Measurement
-     */
-    private Measurement jsonToMeasuremnt(String json) {
-        Measurement measurement = null;
-
-        try {
-            JSONObject jsonObject = new JSONObject(json);
-
-            measurement = new Measurement(
-                    jsonObject.getString("heartRate"),
-                    jsonObject.getString("heartRateUnit"),
-                    jsonObject.getLong("timestamp"),
-                    MeasurementType.HEART_RATE);
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return measurement;
-    }
 
     @Override
     public void onClickDialog(int id, int button) {
         if (button == DialogInterface.BUTTON_POSITIVE) {
             //TODO CONCERTAR!!! Deverá ser salvo como um treino
-//            /**
-//             * Total de bpms medidos
-//             */
-//            if (fcTotal > 0) {
-//                /**
-//                 * Prepare object for save data in local and send to server
-//                 */
-//                Measurement Measurement = new Measurement();
-//                Measurement.setRegistrationTime(registrationTimeStart);
-//                Measurement.setDurationTime(durationRegistration);
-//                Measurement.setBpms(String.valueOf(bpms));
-//                Measurement.setFcMinimum(fcMinimum);
-//                Measurement.setFcMaximum(fcMaximum);
-//                Measurement.setFcAverage(fcAccumulate / fcTotal);
-//
-//                /**
-//                 * Save in local
-//                 * Send to server saved successfully
-//                 */
-//                Measurement.setDeviceAddress(mDevice.getAddress());
-//                Measurement.setUserId(session.getIdLogged());
-//
-//                if (MeasurementDAO.save(Measurement))
-//                    sendMeasurementToServer();
-//            }
         }
         // close activity
         finish();
+    }
+
+    /**
+     * Performs routine for data synchronization with server.
+     */
+    private void synchronizeWithServer() {
+        SynchronizationServer.getInstance(this).run();
     }
 }

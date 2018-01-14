@@ -25,7 +25,7 @@ public class GattHTParser {
      * Parse for the PHILIPS device, according to GATT.
      * Supported Models: DL8740.
      *
-     * {@link <https://www.bluetooth.com/specifications/gatt/viewer?attributeXmlFile=org.bluetooth.service.health_thermometer.xml>}
+     * {@link <https://www.bluetooth.com/specifications/gatt/viewer?attributeXmlFile=org.bluetooth.characteristic.temperature_measurement.xml>}
      *
      * @param characteristic BluetoothGattCharacteristic
      * @return JSONObject
@@ -60,7 +60,7 @@ public class GattHTParser {
 
         Calendar timestamp = null;
         if (timestampIncluded) {
-            timestamp = DateTimeParser.parse(characteristic, offset);
+            timestamp = GattDateTimeParser.parse(characteristic, offset);
             offset += 7;
         }
 
@@ -74,9 +74,9 @@ public class GattHTParser {
         /**
          * Populating the JSON
          */
-        result.put("timestamp", DateUtils.getCurrentDatetime());
         result.put("temperature", tempValue);
         result.put("temperatureUnit", unit);
+        result.put("timestamp", DateUtils.getCurrentDatetime());
 
         return result;
     }

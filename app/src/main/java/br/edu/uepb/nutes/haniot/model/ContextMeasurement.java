@@ -86,8 +86,7 @@ public class ContextMeasurement {
 
         ContextMeasurement other = (ContextMeasurement) o;
 
-        if (typeId != other.typeId) return false;
-        return valueId == other.valueId && typeId == other.typeId;
+        return this.typeId == other.typeId && this.valueId == other.valueId;
     }
 
     @Override
