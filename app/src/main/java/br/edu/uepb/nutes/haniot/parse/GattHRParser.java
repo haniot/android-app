@@ -21,6 +21,8 @@ public class GattHRParser {
      * Parse for the POLAR device, according to GATT.
      * Supported Models: H7, H10.
      *
+     * {@link <https://www.bluetooth.com/specifications/gatt/viewer?attributeXmlFile=org.bluetooth.characteristic.heart_rate_measurement.xml>}
+     *
      * @param characteristic
      * @return JSONObject
      * @throws JSONException
@@ -45,9 +47,9 @@ public class GattHRParser {
         /**
          * Populating the JSON
          */
-        result.put("timestamp", DateUtils.getCurrentDatetime());
         result.put("heartRate", heartRateValue);
         result.put("heartRateUnit", "bpm");
+        result.put("timestamp", DateUtils.getCurrentDatetime());
 
         return result;
     }

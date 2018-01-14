@@ -28,7 +28,7 @@ public class GattGlucoseParser {
      * Parse for the ACCU-CHEK device, according to GATT.
      * Supported Models: Accu-Chek Performa Connect.
      *
-     *{@link <https://www.bluetooth.com/specifications/gatt/viewer?attributeXmlFile=org.bluetooth.characteristic.glucose_measurement.xml>}
+     * {@link <https://www.bluetooth.com/specifications/gatt/viewer?attributeXmlFile=org.bluetooth.characteristic.glucose_measurement.xml>}
      *
      * @param characteristic
      * @return JSONObject
@@ -37,6 +37,7 @@ public class GattGlucoseParser {
     public static JSONObject parse(final BluetoothGattCharacteristic characteristic) throws JSONException {
         JSONObject result = new JSONObject();
         float glucoseConcentration = 0;
+        Calendar calendar = null;
         String unit = "";
 
         int offset = 0;
@@ -59,7 +60,7 @@ public class GattGlucoseParser {
         offset += 2;
 
         if (timestampIncluded) {
-            Calendar calendar = DateTimeParser.parse(characteristic, offset);
+            calendar = GattDateTimeParser.parse(characteristic, offset);
             offset += 7;
         }
 
@@ -80,8 +81,8 @@ public class GattGlucoseParser {
             /**
              * Id of Type and Sample Location
              */
-            result.put("typeId", type); // Type Id
-            result.put("sampleLocationId", type); // Sample Location Id
+            result.put("glucoseTypeId", type); // Type Id
+            result.put("glucoseLocationId", type); // Sample Location Id
         }
 
         if (sensorStatusAnnunciationPresent) {
@@ -93,10 +94,12 @@ public class GattGlucoseParser {
             result.put("sensorStatusAnnunciationId", status);
         }
 
-        result.put("timestamp", DateUtils.getCurrentTimestamp());
-        result.put("value", glucoseConcentration);
+        result.put("glucose", glucoseConcentration);
+        result.put("glucoseUnit", unit);
         result.put("sequenceNumber", sequenceNumber);
-        result.put("unit", unit);
+        result.put("timestamp", calendar != null ?
+                calendar.getTimeInMillis() :
+                DateUtils.getCurrentTimestamp());
 
         return result;
     }
@@ -104,8 +107,8 @@ public class GattGlucoseParser {
     /**
      * Parse for the ACCU-CHEK device, according to GATT.
      * Supported Models: Accu-Chek Performa Connect.
-     *
-     *{@link <https://www.bluetooth.com/specifications/gatt/viewer?attributeXmlFile=org.bluetooth.characteristic.glucose_measurement_context.xml>}
+     * <p>
+     * {@link <https://www.bluetooth.com/specifications/gatt/viewer?attributeXmlFile=org.bluetooth.characteristic.glucose_measurement_context.xml>}
      *
      * @param characteristic
      * @return JSONObject
@@ -141,8 +144,8 @@ public class GattGlucoseParser {
              * Carbohydrate ID and
              * Carbohydrate - units of kilograms
              */
-            result.put("carbohydrateId", carbohydrateId); // Carbohydrate Id
-            result.put("carbohydrateUnits", carbohydrateUnits); // Carbohydrate Units
+            result.put("glucoseCarbohydrateId", carbohydrateId); // Carbohydrate Id
+            result.put("glucoseCarbohydrateUnits", carbohydrateUnits); // Carbohydrate Units
         }
 
         if (mealPresent) {
@@ -152,7 +155,7 @@ public class GattGlucoseParser {
             /**
              * Meal ID
              */
-            result.put("mealId", meal);
+            result.put("glucoseMealId", meal);
         }
 
         if (testerHealthPresent) {
@@ -185,7 +188,6 @@ public class GattGlucoseParser {
             // TODO handle data when you need it
         }
 
-        result.put("timestamp", DateUtils.getCurrentDatetime());
         result.put("sequenceNumber", sequenceNumber);
 
         return result;

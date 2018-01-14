@@ -44,7 +44,7 @@
                 android:layout_marginStart="21dp"
                 android:text="000"
                 android:textColor="@color/colorTextDark"
-                android:textSize="65sp"
+                android:textSize="60sp"
                 tools:ignore="HardcodedText" />
 
             <ImageView
@@ -69,7 +69,7 @@
                 android:layout_toEndOf="@+id/heart_rate_measurement"
                 android:text="bpm"
                 android:textColor="@color/colorTextDark"
-                android:textSize="20sp"
+                android:textSize="18sp"
                 tools:ignore="HardcodedText,RtlHardcoded" />
 
             <Chronometer

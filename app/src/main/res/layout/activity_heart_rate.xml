@@ -49,7 +49,7 @@
                     android:layout_marginStart="20dp"
                     android:text="000"
                     android:textColor="@color/colorTextDark"
-                    android:textSize="65sp"
+                    android:textSize="60sp"
                     tools:ignore="HardcodedText" />
 
                 <ImageView
@@ -74,7 +74,7 @@
                     android:layout_toEndOf="@+id/heart_rate_measurement"
                     android:text="bpm"
                     android:textColor="@color/colorTextDark"
-                    android:textSize="20sp"
+                    android:textSize="18sp"
                     tools:ignore="HardcodedText,RtlHardcoded" />
 
             </RelativeLayout>
@@ -131,15 +131,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="10dp" />
-
-            <Button
-                android:id="@+id/button"
-                style="@style/Widget.AppCompat.Button.Colored"
-                android:layout_width="150dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="10dp"
-                android:text="Graph" />
         </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>

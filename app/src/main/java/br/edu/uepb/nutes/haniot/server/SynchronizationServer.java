@@ -20,7 +20,6 @@ import br.edu.uepb.nutes.haniot.model.Measurement;
 import br.edu.uepb.nutes.haniot.model.dao.ContextMeasurementDAO;
 import br.edu.uepb.nutes.haniot.model.dao.MeasurementDAO;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
-import okhttp3.Headers;
 
 /**
  * Class that implements logic for synchronizing local data with the remote server.
@@ -224,7 +223,7 @@ public class SynchronizationServer {
                     @Override
                     public void onSuccess(JSONObject result) {
                         // Sending successfully, we can remove from the database these measurements
-//                        removeAllMeasurements();
+                        removeAllMeasurements();
 
                         if (callbackSynchronization != null)
                             callbackSynchronization.onSuccess(result);
@@ -246,7 +245,7 @@ public class SynchronizationServer {
                     if (m.getContextMeasurements().size() > 0)
                         contextMeasurementDAO.removeAllOfMeasurement(m.getId());
                 }
-                MeasurementDAO.getInstance(context).removeAll(session.getIdLogged());
+                measurementDAO.removeAll(session.getIdLogged());
             }
         });
     }

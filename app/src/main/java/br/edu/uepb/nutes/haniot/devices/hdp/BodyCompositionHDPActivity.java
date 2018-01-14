@@ -76,12 +76,11 @@ public class BodyCompositionHDPActivity extends AppCompatActivity {
     private Device mDevice;
     private Session session;
     private DeviceDAO deviceDAO;
-    private Measurement measurement;
+    private MeasurementDAO measurementDAO;
 
     private int[] specs = {0x100F}; // 0x100F - Body Weight Scale
     private Handler tm;
     private HealthServiceAPI api;
-    private String xmlDevice;
     private DecimalFormat decimalFormat;
 
     @Override
@@ -95,6 +94,7 @@ public class BodyCompositionHDPActivity extends AppCompatActivity {
         animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
         session = new Session(this);
         deviceDAO = DeviceDAO.getInstance(this);
+        measurementDAO = MeasurementDAO.getInstance(this);
         decimalFormat = new DecimalFormat(getString(R.string.temperature_format), new DecimalFormatSymbols(Locale.US));
 
         tm = new Handler();
@@ -103,7 +103,8 @@ public class BodyCompositionHDPActivity extends AppCompatActivity {
         bindService(intent, serviceConnection, 0);
         Log.w("HST", "Activity created");
 
-        SynchronizationServer.getInstance(this).run();
+        // synchronization with server
+        synchronizeWithServer();
     }
 
     @Override
@@ -181,10 +182,7 @@ public class BodyCompositionHDPActivity extends AppCompatActivity {
 
     private void RequestConfig(String dev) {
         try {
-            Log.w("HST", "Getting configuration ");
             String xmldata = api.GetConfiguration(dev);
-            Log.w("HST", "Received configuration");
-            Log.w("HST", ".." + xmldata);
         } catch (RemoteException e) {
             Log.w("HST", "Exception (RequestConfig)");
         }
@@ -192,7 +190,6 @@ public class BodyCompositionHDPActivity extends AppCompatActivity {
 
     private void RequestDeviceAttributes(String dev) {
         try {
-            Log.w("HST", "Requested device attributes");
             api.RequestDeviceAttributes(dev);
         } catch (RemoteException e) {
             Log.w("HST", "Exception (RequestDeviceAttributes)");
@@ -207,7 +204,6 @@ public class BodyCompositionHDPActivity extends AppCompatActivity {
             // that's how we get the client side of the IPC connection
             api = HealthServiceAPI.Stub.asInterface(service);
             try {
-                Log.w("HST", "Configuring...");
                 api.ConfigurePassive(agent, specs);
             } catch (RemoteException e) {
                 Log.e("HST", "Failed to add listener", e);
@@ -223,36 +219,28 @@ public class BodyCompositionHDPActivity extends AppCompatActivity {
     private HealthAgentAPI.Stub agent = new HealthAgentAPI.Stub() {
         @Override
         public void Connected(String dev, String addr) {
-            Log.w("HST", "Connected " + dev);
-            Log.w("HST", "..." + addr);
+            updateConnectionState(true);
 
             // TODO REMOVER!!! Pois o cadastro do device deverá ser no processo de emparelhamento
-            if (mDevice == null) {
-                mDevice = deviceDAO.get(addr, session.getIdLogged());
+            mDevice = deviceDAO.get(addr, session.getIdLogged());
 
-                if (mDevice == null) {
-                    mDevice = new Device(addr, "BODY WEIGHT SCALE", "OMRON", "HBF-206IT", DeviceType.BODY_COMPOSITION, session.getUserLogged());
-                    mDevice.set_id("3b1847dfd7bcdd2448000cc6");
-                    if (!deviceDAO.save(mDevice)) finish();
-                }
+            if (mDevice == null) {
+                mDevice = new Device(addr, "BODY WEIGHT SCALE", "OMRON", "HBF-206IT", DeviceType.BODY_COMPOSITION, session.getUserLogged());
+                mDevice.set_id("3b1847dfd7bcdd2448000cc6");
+                if (!deviceDAO.save(mDevice)) finish();
             }
         }
 
         @Override
         public void Associated(String dev, String xmldata) {
-            final String idev = dev;
-            Log.w("HST", "Associated " + dev);
-            Log.w("HST", "...." + xmldata);
-            d(TAG, "ASSOCIATED: " + xmldata);
-
             Runnable req1 = new Runnable() {
                 public void run() {
-                    RequestConfig(idev);
+                    RequestConfig(dev);
                 }
             };
             Runnable req2 = new Runnable() {
                 public void run() {
-                    RequestDeviceAttributes(idev);
+                    RequestDeviceAttributes(dev);
                 }
             };
             tm.postDelayed(req1, 1);
@@ -261,7 +249,7 @@ public class BodyCompositionHDPActivity extends AppCompatActivity {
 
         @Override
         public void MeasurementData(String dev, String xmldata) {
-            d(TAG, "MEASUREMENT: " + xmldata);
+            br.edu.uepb.nutes.haniot.utils.Log.d(TAG, "MEASUREMENT: " + xmldata);
 
             try {
                 JSONObject jsonObject = IEEE11073BCParser.parse(xmldata);
@@ -277,8 +265,7 @@ public class BodyCompositionHDPActivity extends AppCompatActivity {
 
         @Override
         public void DeviceAttributes(String dev, String xmldata) {
-            d(TAG, "DeviceAttributes: " + xmldata);
-            xmlDevice = xmldata;
+            br.edu.uepb.nutes.haniot.utils.Log.d(TAG, "DeviceAttributes: " + xmldata);
         }
 
         @Override
@@ -289,6 +276,7 @@ public class BodyCompositionHDPActivity extends AppCompatActivity {
         @Override
         public void Disconnected(String dev) {
             Log.w("HST", "Disconnected " + dev);
+            updateConnectionState(false);
         }
     };
 
@@ -346,8 +334,7 @@ public class BodyCompositionHDPActivity extends AppCompatActivity {
                      * Add relationships, save and send to server
                      */
                     bodyMass.addMeasurement(bodyFat, bmi, rmr, muscleMass, visceralFat, bodyAge);
-                    if (MeasurementDAO.getInstance(getApplicationContext()).save(bodyMass))
-                        SynchronizationServer.getInstance(getApplicationContext()).run();
+                    if (measurementDAO.save(bodyMass)) synchronizeWithServer();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -355,15 +342,10 @@ public class BodyCompositionHDPActivity extends AppCompatActivity {
         });
     }
 
-    // TODO Apenas para debug
-    public void d(String TAG, String message) {
-        int maxLogSize = 2000;
-        for (int i = 0; i <= message.length() / maxLogSize; i++) {
-            int start = i * maxLogSize;
-            int end = (i + 1) * maxLogSize;
-            end = end > message.length() ? message.length() : end;
-            android.util.Log.d(TAG, message.substring(start, end));
-        }
+    /**
+     * Performs routine for data synchronization with server.
+     */
+    private void synchronizeWithServer() {
+        SynchronizationServer.getInstance(this).run();
     }
-
 }

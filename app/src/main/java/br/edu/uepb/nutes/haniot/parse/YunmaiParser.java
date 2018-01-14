@@ -1,5 +1,6 @@
 package br.edu.uepb.nutes.haniot.parse;
 
+import android.bluetooth.BluetoothGattCharacteristic;
 import android.support.annotation.NonNull;
 
 import org.json.JSONException;
@@ -20,11 +21,12 @@ public class YunmaiParser {
      * Parse for YUNMAI device.
      * Supported Models: smart scale (M1301, M1302, M1303, M1501).
      *
-     * @param data
+     * @param characteristic BluetoothGattCharacteristic
      * @return JSONObject
      * @throws JSONException
      */
-    public static JSONObject parse(@NonNull final byte[] data) throws JSONException {
+    public static JSONObject parse(@NonNull final BluetoothGattCharacteristic characteristic) throws JSONException {
+        final byte[] data = characteristic.getValue();
         JSONObject result = new JSONObject();
         double bodyMass = 0f;
 

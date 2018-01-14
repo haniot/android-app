@@ -79,7 +79,7 @@ public class BloodPressureHDPActivity extends AppCompatActivity {
     private Animation animation;
     private Device mDevice;
     private Session session;
-    private MeasurementDAO MeasurementDAO;
+    private MeasurementDAO measurementDAO;
     private DeviceDAO deviceDAO;
     private Measurement measurement;
 
@@ -101,7 +101,7 @@ public class BloodPressureHDPActivity extends AppCompatActivity {
 
         animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
         session = new Session(this);
-        MeasurementDAO = MeasurementDAO.getInstance(this);
+        measurementDAO = MeasurementDAO.getInstance(this);
         deviceDAO = DeviceDAO.getInstance(this);
 
         tm = new Handler();
@@ -110,7 +110,8 @@ public class BloodPressureHDPActivity extends AppCompatActivity {
         bindService(intent, serviceConnection, 0);
         Log.w("HST", "Activity created");
 
-        SynchronizationServer.getInstance(this).run();
+        // synchronization with server
+        synchronizeWithServer();
     }
 
     @Override
@@ -201,7 +202,6 @@ public class BloodPressureHDPActivity extends AppCompatActivity {
             // that's how we get the client side of the IPC connection
             api = HealthServiceAPI.Stub.asInterface(service);
             try {
-                Log.w("HST", "Configuring...");
                 api.ConfigurePassive(agent, specs);
             } catch (RemoteException e) {
                 Log.e("HST", "Failed to add listener", e);
@@ -217,36 +217,28 @@ public class BloodPressureHDPActivity extends AppCompatActivity {
     private HealthAgentAPI.Stub agent = new HealthAgentAPI.Stub() {
         @Override
         public void Connected(String dev, String addr) {
-            Log.w("HST", "Connected " + dev);
-            Log.w("HST", "..." + addr);
             updateConnectionState(true);
 
             // TODO REMOVER!!! Pois o cadastro do device deverá ser no processo de emparelhamento
-            if (mDevice == null) {
-                mDevice = deviceDAO.get(addr, session.getIdLogged());
+            mDevice = deviceDAO.get(addr, session.getIdLogged());
 
-                if (mDevice == null) {
-                    mDevice = new Device(addr, "BLOOD PRESSURE MONITOR", "OMRON", "BP792IT", DeviceType.BLOOD_PRESSURE, session.getUserLogged());
-                    mDevice.set_id("3b1847dfd7bcdd2448000cc6");
-                    if (!deviceDAO.save(mDevice)) finish();
-                }
+            if (mDevice == null) {
+                mDevice = new Device(addr, "BLOOD PRESSURE MONITOR", "OMRON", "BP792IT", DeviceType.BLOOD_PRESSURE, session.getUserLogged());
+                mDevice.set_id("15647dfd7bcdd2448000cc6");
+                if (!deviceDAO.save(mDevice)) finish();
             }
         }
 
         @Override
         public void Associated(String dev, String xmldata) {
-            final String idev = dev;
-            Log.w("HST", "Associated " + dev);
-            Log.w("HST", "...." + xmldata);
-
             Runnable req1 = new Runnable() {
                 public void run() {
-                    RequestConfig(idev);
+                    RequestConfig(dev);
                 }
             };
             Runnable req2 = new Runnable() {
                 public void run() {
-                    RequestDeviceAttributes(idev);
+                    RequestDeviceAttributes(dev);
                 }
             };
             tm.postDelayed(req1, 1);
@@ -255,6 +247,7 @@ public class BloodPressureHDPActivity extends AppCompatActivity {
 
         @Override
         public void MeasurementData(String dev, String xmldata) {
+            br.edu.uepb.nutes.haniot.utils.Log.d(TAG, "MeasurementData: " + xmldata);
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -274,8 +267,8 @@ public class BloodPressureHDPActivity extends AppCompatActivity {
 
         @Override
         public void DeviceAttributes(String dev, String xmldata) {
-            Log.w("HST", "DeviceAttributes " + dev);
             Log.w("HST", ".." + xmldata);
+            br.edu.uepb.nutes.haniot.utils.Log.d(TAG, "DeviceAttributes: " + xmldata);
         }
 
         @Override
@@ -293,8 +286,6 @@ public class BloodPressureHDPActivity extends AppCompatActivity {
     private void RequestConfig(String dev) {
         try {
             String xmldata = api.GetConfiguration(dev);
-            Log.w("HST", "Received configuration");
-            Log.w("HST", ".." + xmldata);
         } catch (RemoteException e) {
             Log.w("HST", "Exception (RequestConfig)");
         }
@@ -302,7 +293,6 @@ public class BloodPressureHDPActivity extends AppCompatActivity {
 
     private void RequestDeviceAttributes(String dev) {
         try {
-            Log.w("HST", "Requested device attributes");
             api.RequestDeviceAttributes(dev);
         } catch (RemoteException e) {
             Log.w("HST", "Exception (RequestDeviceAttributes)");
@@ -349,12 +339,18 @@ public class BloodPressureHDPActivity extends AppCompatActivity {
                      * Add relationships, save and send to server
                      */
                     systolic.addMeasurement(diastolic, heartRate);
-                    if (MeasurementDAO.getInstance(getApplicationContext()).save(systolic))
-                        SynchronizationServer.getInstance(getApplicationContext()).run();
+                    if (measurementDAO.save(systolic)) synchronizeWithServer();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
         });
+    }
+
+    /**
+     * Performs routine for data synchronization with server.
+     */
+    private void synchronizeWithServer() {
+        SynchronizationServer.getInstance(this).run();
     }
 }

@@ -128,7 +128,8 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
         mDeviceAddress = getIntent().getStringExtra(EXTRA_DEVICE_ADDRESS);
         deviceInformations = getIntent().getStringArrayExtra(EXTRA_DEVICE_INFORMATIONS);
 
-        SynchronizationServer.getInstance(this).run();
+        // synchronization with server
+        synchronizeWithServer();
     }
 
     private void iniAnimations() {
@@ -315,14 +316,19 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
                         setCharacteristicNotification(characteristic);
                 }
             } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
-                try {
-                    Measurement measurement = JsonToMeasurementParser.heartRate(intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
-                    Log.i("MeasurementTO", measurement.toString());
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Measurement measurement = JsonToMeasurementParser.heartRate(intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
+                            Log.i("MeasurementTO", measurement.toString());
 
-                    mHeartRateTextView.setText(String.format("%03d", (int) measurement.getValue()));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                            mHeartRateTextView.setText(String.format("%03d", (int) measurement.getValue()));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
             }
         }
     };
@@ -344,5 +350,12 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
     @Override
     public void onItemClick(Measurement item) {
         Log.i("onItemClick()", item.toString());
+    }
+
+    /**
+     * Performs routine for data synchronization with server.
+     */
+    private void synchronizeWithServer() {
+        SynchronizationServer.getInstance(this).run();
     }
 }

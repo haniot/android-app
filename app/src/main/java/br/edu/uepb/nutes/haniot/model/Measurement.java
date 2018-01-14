@@ -70,27 +70,24 @@ public class Measurement {
         return value;
     }
 
-    public Measurement setValue(double value) {
+    public void setValue(double value) {
         this.value = value;
-        return this;
     }
 
     public String getUnit() {
         return unit;
     }
 
-    public Measurement setUnit(String unit) {
+    public void setUnit(String unit) {
         this.unit = unit;
-        return this;
     }
 
     public long getRegistrationDate() {
         return registrationDate;
     }
 
-    public Measurement setRegistrationDate(long registrationDate) {
+    public void setRegistrationDate(long registrationDate) {
         this.registrationDate = registrationDate;
-        return this;
     }
 
     public ToOne<User> getUser() {
@@ -113,27 +110,24 @@ public class Measurement {
         this.device.setTarget(device);
     }
 
-    public Measurement setTraining(Training training) {
+    public void setTraining(Training training) {
         this.training.setTarget(training);
-        return this;
     }
 
-    public Measurement addContext(ContextMeasurement contextMeasurement) {
-        this.getContextMeasurements().add(contextMeasurement);
-        return this;
+    public boolean addContext(ContextMeasurement contextMeasurement) {
+        return this.contextMeasurements.add(contextMeasurement);
     }
 
-    public Measurement addContext(List<ContextMeasurement> contextsMeasurements) {
-        this.getContextMeasurements().addAll(contextsMeasurements);
-        return this;
+    public boolean addContext(List<ContextMeasurement> contextsMeasurements) {
+        return this.contextMeasurements.addAll(contextsMeasurements);
     }
 
     public boolean addMeasurement(Measurement measurement) {
         return this.getMeasurements().add(measurement);
     }
 
-    public void addMeasurement(Measurement... measurement) {
-        for (Measurement m : measurement)
+    public void addMeasurement(Measurement... measurements) {
+        for (Measurement m : measurements)
             this.getMeasurements().add(m);
     }
 
@@ -145,9 +139,8 @@ public class Measurement {
         return typeId;
     }
 
-    public Measurement setTypeId(int typeId) {
+    public void setTypeId(int typeId) {
         this.typeId = typeId;
-        return this;
     }
 
     public ToMany<ContextMeasurement> getContextMeasurements() {

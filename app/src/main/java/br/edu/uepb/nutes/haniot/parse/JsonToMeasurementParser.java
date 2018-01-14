@@ -58,7 +58,6 @@ public class JsonToMeasurementParser {
     }
 
     /**
-     * TODO Implementar!!!
      * Convert json to Blood Glucose Measurement.
      *
      * @param json String
@@ -68,7 +67,11 @@ public class JsonToMeasurementParser {
     public static Measurement boodGlucose(String json) throws JSONException {
         JSONObject o = new JSONObject(json);
 
-        Measurement measurement = null;
+        Measurement measurement = new Measurement(
+                o.getDouble("glucose"),
+                o.getString("glucoseUnit"),
+                o.getLong("timestamp"),
+                MeasurementType.BLOOD_GLUCOSE);
 
         return measurement;
     }
