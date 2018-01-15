@@ -59,7 +59,6 @@ public class App extends Application {
 
         Log.i("TESTE", historical.toString());
 
-
         for (Measurement m : list) {
             Log.i("TESTE LOOP 1", m.toString());
             for (Measurement mm : m.getMeasurements()) {

@@ -6,6 +6,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.edu.uepb.nutes.haniot.model.ContextMeasurement;
 import br.edu.uepb.nutes.haniot.model.Measurement;
 import br.edu.uepb.nutes.haniot.model.MeasurementType;
 
@@ -19,20 +20,95 @@ import br.edu.uepb.nutes.haniot.model.MeasurementType;
 public class JsonToMeasurementParser {
 
     /**
-     * @param json
-     * @param measurementType
+     * @param data
      * @return List<Measurement>
      * @throws JSONException
      */
-    public static List<Measurement> parse(String json, int measurementType) throws JSONException {
+    public static List<Measurement> parse(String... data) throws JSONException {
         List<Measurement> result = new ArrayList<>();
-        JSONObject o = new JSONObject(json);
+        Measurement item = null;
+        JSONObject o = null;
 
-        switch (measurementType) {
-            case MeasurementType.TEMPERATURE:
-            case MeasurementType.BLOOD_GLUCOSE:
-            default:
-                break;
+        for (String json : data) {
+            o = new JSONObject(json);
+
+            if (o.has("temperature")) {
+                item = temperature(json);
+                if (!result.contains(item)) result.add(item);
+                continue;
+            }
+
+            if (o.has("glucose")) {
+                item = boodGlucose(json);
+                if (!result.contains(item)) result.add(item);
+                continue;
+            }
+
+            if (o.has("heartRate")) {
+                item = heartRate(json);
+                if (!result.contains(item)) result.add(item);
+                continue;
+            }
+
+            if (o.has("systolic")) {
+                item = systolic(json);
+                if (!result.contains(item)) result.add(item);
+                continue;
+            }
+
+            if (o.has("diastolic")) {
+                item = diastolic(json);
+                if (!result.contains(item)) result.add(item);
+                continue;
+            }
+
+            if (o.has("bodyMass")) {
+                item = bodyMass(json);
+                if (!result.contains(item)) result.add(item);
+                continue;
+            }
+
+            if (o.has("bodyFat")) {
+                item = bodyFat(json);
+                if (!result.contains(item)) result.add(item);
+                continue;
+            }
+
+            if (o.has("bmi")) {
+                item = bmi(json);
+                if (!result.contains(item)) result.add(item);
+                continue;
+            }
+
+            if (o.has("rmr")) {
+                item = rmr(json);
+                if (!result.contains(item)) result.add(item);
+                continue;
+            }
+
+            if (o.has("bmr")) {
+                item = bmr(json);
+                if (!result.contains(item)) result.add(item);
+                continue;
+            }
+
+            if (o.has("muscleMass")) {
+                item = muscleMass(json);
+                if (!result.contains(item)) result.add(item);
+                continue;
+            }
+
+            if (o.has("visceralFat")) {
+                item = visceralFat(json);
+                if (!result.contains(item)) result.add(item);
+                continue;
+            }
+
+            if (o.has("bodyAge")) {
+                item = bodyAge(json);
+                if (!result.contains(item)) result.add(item);
+                continue;
+            }
         }
 
         return result;

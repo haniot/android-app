@@ -4,8 +4,11 @@ import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.server.Server;
@@ -79,15 +82,29 @@ public final class Historical<E> {
             @Override
             public void onSuccess(JSONObject result) {
                 callback.onAfterSend();
-
                 callback.onSuccess(buildObjects(result));
             }
         });
     }
 
-    private List<Historical<E>> buildObjects(JSONObject data) {
+    private List<E> buildObjects(JSONObject data) {
+        List<E> result = new ArrayList<>();
 
-        return null;
+        if (type == HistoricalType.MEASUREMENTS_USER ||
+                type == HistoricalType.MEASUREMENTS_TYPE_USER ||
+                type == HistoricalType.MEASUREMENTS_DEVICE_USER) {
+
+                if(!data.has("measurements")) {
+                    try {
+                        JSONArray jsonArray = data.getJSONArray("measurements");
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+        }
+
+        return result;
     }
 
     public static class Query {
@@ -485,4 +502,3 @@ public final class Historical<E> {
         void onAfterSend();
     }
 }
-

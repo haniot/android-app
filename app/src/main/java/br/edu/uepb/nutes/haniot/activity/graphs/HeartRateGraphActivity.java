@@ -96,19 +96,19 @@ public class HeartRateGraphActivity extends AppCompatActivity implements View.On
 
         if (type == GRAPH_TYPE_DAY) {
 
-            Server.getInstance(this).get("/measurements/types/7?period/1d" + new Server.Callback() {
-                @Override
-                public void onError(JSONObject result) {
-                    if (callbackSynchronization != null) callbackSynchronization.onError(result);
-                }
-
-                @Override
-                public void onSuccess(JSONObject result) {
-                    // popular a lista aqui
-                    if (callbackSynchronization != null) callbackSynchronization.onSuccess(result);
-                }
-
-            });
+//            Server.getInstance(this).get("/measurements/types/7?period/1d" + new Server.Callback() {
+//                @Override
+//                public void onError(JSONObject result) {
+//                    if (callbackSynchronization != null) callbackSynchronization.onError(result);
+//                }
+//
+//                @Override
+//                public void onSuccess(JSONObject result) {
+//                    // popular a lista aqui
+//                    if (callbackSynchronization != null) callbackSynchronization.onSuccess(result);
+//                }
+//
+//            });
 
 
 //
@@ -259,44 +259,44 @@ public class HeartRateGraphActivity extends AppCompatActivity implements View.On
 //        }
 
         }
-
-        if (type == GRAPH_TYPE_SEVEN) {
-
-            Server.getInstance(this).get("/measurements/types/7?period/1w" + new Server.Callback() {
-                @Override
-                public void onError(JSONObject result) {
-                    if (callbackSynchronization != null) callbackSynchronization.onError(result);
-                }
-
-                @Override
-                public void onSuccess(JSONObject result) {
-                    // popular a lista aqui
-                    if (callbackSynchronization != null) callbackSynchronization.onSuccess(result);
-                }
-
-            });
-
-
-        }
-
-        if (type == GRAPH_TYPE_SEVEN) {
-
-            Server.getInstance(this).get("/measurements/types/7?period/1w" + new Server.Callback() {
-                @Override
-                public void onError(JSONObject result) {
-                    if (callbackSynchronization != null) callbackSynchronization.onError(result);
-                }
-
-                @Override
-                public void onSuccess(JSONObject result) {
-                    // popular a lista aqui
-                    if (callbackSynchronization != null) callbackSynchronization.onSuccess(result);
-                }
-
-            });
-
-
-        }
+//
+//        if (type == GRAPH_TYPE_SEVEN) {
+//
+//            Server.getInstance(this).get("/measurements/types/7?period/1w" + new Server.Callback() {
+//                @Override
+//                public void onError(JSONObject result) {
+//                    if (callbackSynchronization != null) callbackSynchronization.onError(result);
+//                }
+//
+//                @Override
+//                public void onSuccess(JSONObject result) {
+//                    // popular a lista aqui
+//                    if (callbackSynchronization != null) callbackSynchronization.onSuccess(result);
+//                }
+//
+//            });
+//
+//
+//        }
+//
+//        if (type == GRAPH_TYPE_SEVEN) {
+//
+//            Server.getInstance(this).get("/measurements/types/7?period/1w" + new Server.Callback() {
+//                @Override
+//                public void onError(JSONObject result) {
+//                    if (callbackSynchronization != null) callbackSynchronization.onError(result);
+//                }
+//
+//                @Override
+//                public void onSuccess(JSONObject result) {
+//                    // popular a lista aqui
+//                    if (callbackSynchronization != null) callbackSynchronization.onSuccess(result);
+//                }
+//
+//            });
+//
+//
+//        }
     }
 
 

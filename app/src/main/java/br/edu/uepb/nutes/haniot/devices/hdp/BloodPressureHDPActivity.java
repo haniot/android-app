@@ -329,7 +329,7 @@ public class BloodPressureHDPActivity extends AppCompatActivity {
                      */
                     mBloodPressureSysTextView.setText(String.format("%03d", (int) systolic.getValue()));
                     mBloodPressureDiaTextView.setText(String.format("%03d", (int) diastolic.getValue()));
-                    mBloodPressurePulseTextView.setText(String.valueOf((int) diastolic.getValue()));
+                    mBloodPressurePulseTextView.setText(String.format("%03d", heartRate.getValue()));
 
                     mBloodPressureSysTextView.startAnimation(animation);
                     mBloodPressureDiaTextView.startAnimation(animation);

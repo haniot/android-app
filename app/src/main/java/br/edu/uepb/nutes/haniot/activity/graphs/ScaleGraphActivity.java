@@ -93,19 +93,19 @@ public class ScaleGraphActivity extends AppCompatActivity implements View.OnClic
 
         if (type == GRAPH_TYPE_DAY) {
 
-            Server.getInstance(this).get("/measurements/types/3?period/1d" + new Server.Callback() {
-                @Override
-                public void onError(JSONObject result) {
-                    if (callbackSynchronization != null) callbackSynchronization.onError(result);
-                }
-
-                @Override
-                public void onSuccess(JSONObject result) {
-                    // popular a lista aqui
-                    if (callbackSynchronization != null) callbackSynchronization.onSuccess(result);
-                }
-
-            });
+//            Server.getInstance(this).get("/measurements/types/3?period/1d" + new Server.Callback() {
+//                @Override
+//                public void onError(JSONObject result) {
+//                    if (callbackSynchronization != null) callbackSynchronization.onError(result);
+//                }
+//
+//                @Override
+//                public void onSuccess(JSONObject result) {
+//                    // popular a lista aqui
+//                    if (callbackSynchronization != null) callbackSynchronization.onSuccess(result);
+//                }
+//
+//            });
 
 
 //            final String[] quarters = new String[measurementData.size()];
@@ -155,39 +155,39 @@ public class ScaleGraphActivity extends AppCompatActivity implements View.OnClic
 //        }else if(type == GRAPH_TYPE_SEVEN) {
 
         }
-        else if (type == GRAPH_TYPE_SEVEN){ //semana atual
-
-            Server.getInstance(this).get("/measurements/types/3?period/1w" + new Server.Callback() {
-                @Override
-                public void onError(JSONObject result) {
-                    if (callbackSynchronization != null) callbackSynchronization.onError(result);
-                }
-
-                @Override
-                public void onSuccess(JSONObject result) {
-                    // popular a lista aqui
-                    if (callbackSynchronization != null) callbackSynchronization.onSuccess(result);
-                }
-
-            });
-        }
-
-        else if (type == GRAPH_TYPE_MONTH){ //mês atual
-
-            Server.getInstance(this).get("/measurements/types/3?period/1m" + new Server.Callback() {
-                @Override
-                public void onError(JSONObject result) {
-                    if (callbackSynchronization != null) callbackSynchronization.onError(result);
-                }
-
-                @Override
-                public void onSuccess(JSONObject result) {
-                    // popular a lista aqui
-                    if (callbackSynchronization != null) callbackSynchronization.onSuccess(result);
-                }
-
-            });
-        }
+//        else if (type == GRAPH_TYPE_SEVEN){ //semana atual
+//
+//            Server.getInstance(this).get("/measurements/types/3?period/1w" + new Server.Callback() {
+//                @Override
+//                public void onError(JSONObject result) {
+//                    if (callbackSynchronization != null) callbackSynchronization.onError(result);
+//                }
+//
+//                @Override
+//                public void onSuccess(JSONObject result) {
+//                    // popular a lista aqui
+//                    if (callbackSynchronization != null) callbackSynchronization.onSuccess(result);
+//                }
+//
+//            });
+//        }
+//
+//        else if (type == GRAPH_TYPE_MONTH){ //mês atual
+//
+//            Server.getInstance(this).get("/measurements/types/3?period/1m" + new Server.Callback() {
+//                @Override
+//                public void onError(JSONObject result) {
+//                    if (callbackSynchronization != null) callbackSynchronization.onError(result);
+//                }
+//
+//                @Override
+//                public void onSuccess(JSONObject result) {
+//                    // popular a lista aqui
+//                    if (callbackSynchronization != null) callbackSynchronization.onSuccess(result);
+//                }
+//
+//            });
+//        }
     }
 
     private long getDateTime(int millis) {
