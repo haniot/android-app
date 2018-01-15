@@ -33,7 +33,7 @@ public class SynchronizationServer {
 
     private static SynchronizationServer instance;
     private static Session session;
-    private static Context context;
+    public static Context context;
 
     private SynchronizationServer() {
     }

@@ -38,8 +38,11 @@ import java.util.List;
 import java.util.UUID;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.activity.graphs.HeartRateGraphActivity;
+import br.edu.uepb.nutes.haniot.activity.graphs.ScaleGraphActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.HeartRateAdapter;
+import br.edu.uepb.nutes.haniot.devices.RecordHeartRateActivity;
 import br.edu.uepb.nutes.haniot.model.Measurement;
 import br.edu.uepb.nutes.haniot.model.MeasurementType;
 import br.edu.uepb.nutes.haniot.model.dao.MeasurementDAO;
@@ -347,9 +350,16 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
         }
     }
 
+//    @Override
+//    public void onItemClick(MeasurementHeartRate item) {
+//        Intent it = new Intent(getApplicationContext(), HeartRateGraphActivity.class);
+//        startActivity(it);
+//        //Log.i("onItemClick()", item.toString());
+//    }
+
     @Override
     public void onItemClick(Measurement item) {
-        Log.i("onItemClick()", item.toString());
+
     }
 
     /**
