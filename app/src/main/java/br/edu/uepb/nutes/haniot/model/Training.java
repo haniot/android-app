@@ -37,16 +37,16 @@ public class Training {
     /**
      * {@link TrainingType()}
      */
-    private int type;
+    private int typeId;
 
     public Training() {
     }
 
-    public Training(String title, long startDate, long endDate, int type) {
+    public Training(String title, long startDate, long endDate, int typeId) {
         this.title = title;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.type = type;
+        this.typeId = typeId;
     }
 
     public long getId() {
@@ -89,12 +89,12 @@ public class Training {
         this.user = user;
     }
 
-    public int getType() {
-        return type;
+    public int getTypeId() {
+        return typeId;
     }
 
-    public void setType(int type) {
-        this.type = type;
+    public void setTypeId(int typeId) {
+        this.typeId = typeId;
     }
 
     public ToMany<Measurement> getMeasurements() {
@@ -120,7 +120,7 @@ public class Training {
         result = 31 * result + (int) (startDate ^ (startDate >>> 32));
         result = 31 * result + (int) (endDate ^ (endDate >>> 32));
         result = 31 * result + (user != null ? user.hashCode() : 0);
-        result = 31 * result + type;
+        result = 31 * result + typeId;
         return result;
     }
 
@@ -146,7 +146,7 @@ public class Training {
                 ", endDate=" + endDate +
                 ", user=" + user +
                 ", measurements=" + measurements +
-                ", type=" + type +
+                ", typeId=" + typeId +
                 '}';
     }
 }

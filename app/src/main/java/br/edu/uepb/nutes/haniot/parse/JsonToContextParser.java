@@ -24,16 +24,16 @@ public class JsonToContextParser {
     /**
      * Receives one or more JSON in string format and returns objects of type ContextMeasurement.
      *
-     * @param datas String
+     * @param data String
      * @return List<ContextMeasurement>
      * @throws JSONException
      */
-    public static List<ContextMeasurement> parse(String... datas) throws JSONException {
+    public static List<ContextMeasurement> parse(String... data) throws JSONException {
         List<ContextMeasurement> result = new ArrayList<>();
         ContextMeasurement item = null;
         JSONObject o = null;
 
-        for (String json : datas) {
+        for (String json : data) {
             o = new JSONObject(json);
             if (o.has("glucoseCarbohydrateId")) {
                 item = glucoseCarbohydrate(json);

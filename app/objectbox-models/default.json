@@ -30,7 +30,7 @@
     },
     {
       "id": "2:5160038154588877903",
-      "lastPropertyId": "8:1312800606666900292",
+      "lastPropertyId": "9:1654746572035880392",
       "name": "Device",
       "properties": [
         {
@@ -59,13 +59,13 @@
           "name": "modelNumber"
         },
         {
-          "id": "7:5561050326172457451",
-          "name": "type"
-        },
-        {
           "id": "8:1312800606666900292",
           "indexId": "3:8759750843797025499",
           "name": "userId"
+        },
+        {
+          "id": "9:1654746572035880392",
+          "name": "typeId"
         }
       ],
       "relations": []
@@ -124,7 +124,7 @@
     },
     {
       "id": "4:2750639173831291233",
-      "lastPropertyId": "7:7284323419881829743",
+      "lastPropertyId": "8:7833983265507533913",
       "name": "Training",
       "properties": [
         {
@@ -149,20 +149,20 @@
           "name": "endDate"
         },
         {
-          "id": "6:6871709170743519590",
-          "name": "type"
-        },
-        {
           "id": "7:7284323419881829743",
           "indexId": "8:895889447705470514",
           "name": "userId"
+        },
+        {
+          "id": "8:7833983265507533913",
+          "name": "typeId"
         }
       ],
       "relations": []
     },
     {
       "id": "5:1331688017304391436",
-      "lastPropertyId": "10:1129417480129834013",
+      "lastPropertyId": "11:4319812105147408854",
       "name": "User",
       "properties": [
         {
@@ -204,8 +204,8 @@
           "name": "token"
         },
         {
-          "id": "10:1129417480129834013",
-          "name": "group"
+          "id": "11:4319812105147408854",
+          "name": "groupId"
         }
       ],
       "relations": []
@@ -219,7 +219,11 @@
   "modelVersionParserMinimum": 4,
   "retiredEntityUids": [],
   "retiredIndexUids": [],
-  "retiredPropertyUids": [],
+  "retiredPropertyUids": [
+    6871709170743519590,
+    5561050326172457451,
+    1129417480129834013
+  ],
   "retiredRelationUids": [],
   "version": 1
 }

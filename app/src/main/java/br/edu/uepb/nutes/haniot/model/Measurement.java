@@ -122,6 +122,11 @@ public class Measurement {
         return this.contextMeasurements.addAll(contextsMeasurements);
     }
 
+    public void addContext(ContextMeasurement... contextMeasurements) {
+        for (ContextMeasurement c : contextMeasurements)
+            this.contextMeasurements.add(c);
+    }
+
     public boolean addMeasurement(Measurement measurement) {
         return this.getMeasurements().add(measurement);
     }
