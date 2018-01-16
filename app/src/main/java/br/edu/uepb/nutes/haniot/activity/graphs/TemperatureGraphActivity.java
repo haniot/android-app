@@ -22,10 +22,15 @@ import java.util.List;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.model.Measurement;
+import br.edu.uepb.nutes.haniot.model.MeasurementType;
 import br.edu.uepb.nutes.haniot.model.dao.ContextMeasurementDAO;
 import br.edu.uepb.nutes.haniot.model.dao.MeasurementDAO;
 import br.edu.uepb.nutes.haniot.server.Server;
 import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
+import br.edu.uepb.nutes.haniot.server.historical.CallbackHistorical;
+import br.edu.uepb.nutes.haniot.server.historical.Historical;
+import br.edu.uepb.nutes.haniot.server.historical.HistoricalType;
+import br.edu.uepb.nutes.haniot.server.historical.Params;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -43,6 +48,7 @@ public class TemperatureGraphActivity extends AppCompatActivity implements View.
     private final int GRAPH_TYPE_MONTH = 3;
 
     private Session session;
+    private static final String TAG = "FragmentActivity";
 
     List<Measurement> measurementData;
 
@@ -92,6 +98,36 @@ public class TemperatureGraphActivity extends AppCompatActivity implements View.
         if (type == GRAPH_TYPE_DAY) {
             long userId = session.getUserLogged().getId();
 
+            Params params = new Params(session.get_idLogged(), MeasurementType.TEMPERATURE);
+            Historical hist = new Historical.Query()
+                    .type(HistoricalType.MEASUREMENTS_TYPE_USER) // required
+                    .params(params) // required
+                    .ordination("registrationDate", "asc") // optional
+                    .build();
+
+
+            hist.request(this, new CallbackHistorical<Measurement>() {
+                @Override
+                public void onBeforeSend() {
+                    Log.w(TAG, "onBeforeSend()");
+                }
+
+                @Override
+                public void onError(JSONObject result) {
+                    Log.w(TAG, "onError()");
+                }
+
+                @Override
+                public void onSuccess(List<Measurement> result) {
+                    Log.w(TAG, "onSuccess()");
+
+                }
+
+                @Override
+                public void onAfterSend() {
+                    Log.w(TAG, "onAfterSend()");
+                }
+            });
 //            Server.getInstance(this).get("/measurements/types/1?period/1d" + new Server.Callback() {
 //                @Override
 //                public void onError(JSONObject result) {

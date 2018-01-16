@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -42,7 +43,7 @@ import io.objectbox.relation.ToMany;
  * Created by izabella on 15/01/18.
  */
 
-public class GraphRealTimeFragment extends AppCompatActivity implements OnChartValueSelectedListener {
+public class GraphRealTimeFragment extends FragmentActivity implements OnChartValueSelectedListener {
 
     private LineChart mChart;
     protected Typeface mTfLight;
@@ -53,7 +54,7 @@ public class GraphRealTimeFragment extends AppCompatActivity implements OnChartV
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.fragment_realtime_linechart);
+        setContentView(R.layout.activity_record_heart_rate);
 
         mChart = (LineChart) findViewById(R.id.chart1);
         mChart.setOnChartValueSelectedListener(this);
