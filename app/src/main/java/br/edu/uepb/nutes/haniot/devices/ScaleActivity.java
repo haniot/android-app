@@ -39,7 +39,6 @@ import java.util.Locale;
 import java.util.UUID;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.activity.graphs.ScaleGraphActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.BodyCompositionAdapter;
 import br.edu.uepb.nutes.haniot.model.Device;
@@ -372,8 +371,8 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onItemClick(Measurement item) {
 
-        Intent it = new Intent(getApplicationContext(), ScaleGraphActivity.class);
-        startActivity(it);
+//        Intent it = new Intent(getApplicationContext(), ScaleGraphActivity.class);
+//        startActivity(it);
     }
     @Override
     public void onClick(View v) {

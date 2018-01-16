@@ -48,7 +48,7 @@ public class Server {
 //    /* PC WIFI DOUGLAS */ private final String URI_DEFAULT = "http://192.168.50.175:3000/api/v1";
  //   /* PC ETHERNET DOUGLAS */ private final String URI_DEFAULT = "http://192.168.50.139:3000/api/v1";
 //    /* PC EDSON */ private final String URI_DEFAULT = "http://192.168.50.38:3000/api/v1";
-        /* PC IZABELLA */ private final String URI_DEFAULT = "http://192.168.50.88:3000/api/v1";
+        /* PC IZABELLA */ private final String URI_DEFAULT = "http://192.168.50.179:3000/api/v1";
 
 
     private Server() {
@@ -81,16 +81,6 @@ public class Server {
                 .build();
 
         sendRequest(request, serverCallback);
-    }
-
-    /**
-     * Action GET.
-     * The default header will be used {@link #getHeadersDefault()}.
-     *  @param path
-     *
-     */
-    public void get(String path) {
-        get(path, getHeadersDefault(), serverCallback);
     }
 
     /**

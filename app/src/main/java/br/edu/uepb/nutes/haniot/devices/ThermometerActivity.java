@@ -38,7 +38,6 @@ import java.util.Locale;
 import java.util.UUID;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.activity.graphs.TemperatureGraphActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.TemperatureAdapter;
 import br.edu.uepb.nutes.haniot.model.Device;
@@ -52,6 +51,8 @@ import br.edu.uepb.nutes.haniot.service.BluetoothLeService;
 import br.edu.uepb.nutes.haniot.utils.GattAttributes;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+//import br.edu.uepb.nutes.haniot.activity.graphs.TemperatureGraphActivity;
 
 /**
  * Activity to capture the thermometer data.
@@ -356,7 +357,12 @@ public class ThermometerActivity extends AppCompatActivity implements Temperatur
 
     @Override
     public void onItemClick(Measurement item) {
-        Intent it = new Intent(getApplicationContext(), TemperatureGraphActivity.class);
-        startActivity(it);
+
     }
+
+//    @Override
+//    public void onItemClick(Measurement item) {
+//        Intent it = new Intent(getApplicationContext(), TemperatureGraphActivity.class);
+//        startActivity(it);
+//    }
 }

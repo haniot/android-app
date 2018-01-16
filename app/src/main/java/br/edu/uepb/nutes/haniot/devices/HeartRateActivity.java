@@ -39,8 +39,8 @@ import java.util.List;
 import java.util.UUID;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.activity.graphs.HeartRateGraphActivity;
-import br.edu.uepb.nutes.haniot.activity.graphs.ScaleGraphActivity;
+//import br.edu.uepb.nutes.haniot.activity.graphs.HeartRateGraphActivity;
+//import br.edu.uepb.nutes.haniot.activity.graphs.ScaleGraphActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.HeartRateAdapter;
 import br.edu.uepb.nutes.haniot.devices.RecordHeartRateActivity;
