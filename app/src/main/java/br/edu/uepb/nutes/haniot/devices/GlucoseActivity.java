@@ -90,7 +90,7 @@ public class GlucoseActivity extends AppCompatActivity implements GlucoseAdapter
     @BindView(R.id.blood_glucose_context)
     TextView bloodGlucoseContextTextView;
 
-    @BindView(R.id.app_bar_layout)
+    @BindView(R.id.box_bar_layout)
     AppBarLayout mAppBarLayout;
 
     @BindView(R.id.view_circle)

@@ -42,7 +42,7 @@ public final class Historical<E> {
      * @param context  Context
      * @param callback CallbackHistorical<E>
      */
-    public void request(Context context, CallbackHistorical<E> callback) {
+    public void request(Context context, CallbackHistorical callback) {
         if (callback == null) throw new IllegalArgumentException("callback is required!");
         if (context == null) throw new IllegalArgumentException("context is required!");
 
@@ -266,7 +266,7 @@ public final class Historical<E> {
          * @param value        long
          * @return Query
          */
-        public Query filter(String filterColumn, String opt, long value) {
+        public Query filterValue(String filterColumn, String opt, long value) {
             this.filterColumn(filterColumn);
             processOperators(opt, value);
 
@@ -285,7 +285,7 @@ public final class Historical<E> {
          * @param value2       long - value 2
          * @return Query
          */
-        public Query filter(String filterColumn, String opt1, long value1, String opt2, long value2) {
+        public Query filterValue(String filterColumn, String opt1, long value1, String opt2, long value2) {
             this.filterColumn(filterColumn);
             processOperators(opt1, value1);
             processOperators(opt2, value2);
@@ -299,7 +299,7 @@ public final class Historical<E> {
          * @param dateEnd   String
          * @return Query
          */
-        public Query date(String dateStart, @Nullable String dateEnd) {
+        public Query filterDate(String dateStart, @Nullable String dateEnd) {
             this.dateStart(dateStart);
             if (dateEnd != null) this.dateEnd(dateEnd);
             return this;
@@ -311,7 +311,7 @@ public final class Historical<E> {
          * @param period String
          * @return Query
          */
-        public Query date(String period) {
+        public Query filterDate(String period) {
             this.period(period);
             return this;
         }

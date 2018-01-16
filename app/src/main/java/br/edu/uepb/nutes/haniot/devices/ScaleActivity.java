@@ -100,7 +100,7 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
     @BindView(R.id.collapsi_toolbar)
     CollapsingToolbarLayout mCollapsingToolbarLayout;
 
-    @BindView(R.id.app_bar_layout)
+    @BindView(R.id.box_bar_layout)
     AppBarLayout mAppBarLayout;
 
     @BindView(R.id.history_body_composition_listview)
