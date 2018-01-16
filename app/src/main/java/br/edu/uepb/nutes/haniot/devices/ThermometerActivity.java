@@ -28,6 +28,7 @@ import android.widget.TextView;
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -48,7 +49,12 @@ import br.edu.uepb.nutes.haniot.model.dao.DeviceDAO;
 import br.edu.uepb.nutes.haniot.model.dao.MeasurementDAO;
 import br.edu.uepb.nutes.haniot.parse.JsonToMeasurementParser;
 import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
+import br.edu.uepb.nutes.haniot.server.historical.CallbackHistorical;
+import br.edu.uepb.nutes.haniot.server.historical.Historical;
+import br.edu.uepb.nutes.haniot.server.historical.HistoricalType;
+import br.edu.uepb.nutes.haniot.server.historical.Params;
 import br.edu.uepb.nutes.haniot.service.BluetoothLeService;
+import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import br.edu.uepb.nutes.haniot.utils.GattAttributes;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -61,7 +67,7 @@ import butterknife.ButterKnife;
  * @copyright Copyright (c) 2017, NUTES UEPB
  */
 public class ThermometerActivity extends AppCompatActivity implements TemperatureAdapter.OnItemClickListener {
-    private final String LOG = "ThermometerActivity";
+    private final String TAG = "ThermometerActivity";
 
     private BluetoothLeService mBluetoothLeService;
     private boolean mConnected = false;
@@ -181,9 +187,50 @@ public class ThermometerActivity extends AppCompatActivity implements Temperatur
     private void refreshRecyclerView() {
         measurementList.clear();
 
-        for (Measurement m : measurementDAO.list(MeasurementType.TEMPERATURE, session.getIdLogged(), 0, 20)) {
-            measurementList.add(m);
-            mAdapter.notifyDataSetChanged();
+        if(!ConnectionUtils.internetIsEnabled(this)) {
+            for (Measurement m : measurementDAO.list(MeasurementType.TEMPERATURE, session.getIdLogged(), 0, 20)) {
+                measurementList.add(m);
+                mAdapter.notifyDataSetChanged();
+            }
+        } else {
+            Params params = new Params(session.get_idLogged(), MeasurementType.TEMPERATURE);
+            Historical<Measurement> hist = new Historical.Query()
+                    .type(HistoricalType.MEASUREMENTS_TYPE_USER)
+                    .params(params)
+                    .limit(20)
+                    .build();
+
+            hist.request(this, new CallbackHistorical<Measurement>() {
+                @Override
+                public void onBeforeSend() {
+                    Log.w(TAG, "onBeforeSend()");
+
+                }
+
+                @Override
+                public void onError(JSONObject result) {
+                    Log.w(TAG, "onError()");
+
+                }
+
+                @Override
+                public void onSuccess(List<Measurement> result) {
+                    Log.w(TAG, "onSuccess()");
+                    measurementList = result;
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mAdapter.notifyDataSetChanged();
+                        }
+                    });
+                }
+
+                @Override
+                public void onAfterSend() {
+                    Log.w(TAG, "onAfterSend()");
+
+                }
+            });
         }
     }
 
@@ -266,7 +313,7 @@ public class ThermometerActivity extends AppCompatActivity implements Temperatur
         public void onServiceConnected(ComponentName componentName, IBinder service) {
             mBluetoothLeService = ((BluetoothLeService.LocalBinder) service).getService();
             if (!mBluetoothLeService.initialize()) {
-                Log.e(LOG, "Unable to initialize Bluetooth");
+                Log.e(TAG, "Unable to initialize Bluetooth");
                 finish();
             }
             // Conecta-se automaticamente ao dispositivo após a inicialização bem-sucedida.

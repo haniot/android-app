@@ -118,13 +118,13 @@ public class Measurement {
         return this.contextMeasurements.add(contextMeasurement);
     }
 
-    public boolean addContext(List<ContextMeasurement> contextsMeasurements) {
-        return this.contextMeasurements.addAll(contextsMeasurements);
-    }
-
     public void addContext(ContextMeasurement... contextMeasurements) {
         for (ContextMeasurement c : contextMeasurements)
             this.contextMeasurements.add(c);
+    }
+
+    public boolean addContext(List<ContextMeasurement> contextsMeasurements) {
+        return this.contextMeasurements.addAll(contextsMeasurements);
     }
 
     public boolean addMeasurement(Measurement measurement) {
@@ -134,6 +134,10 @@ public class Measurement {
     public void addMeasurement(Measurement... measurements) {
         for (Measurement m : measurements)
             this.getMeasurements().add(m);
+    }
+
+    public boolean addMeasurement(List<Measurement> measurement) {
+        return this.getMeasurements().addAll(measurement);
     }
 
     public void setHasSent(int hasSent) {
