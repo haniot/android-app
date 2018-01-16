@@ -53,7 +53,7 @@ public class BodyCompositionAdapter extends RecyclerView.Adapter<BodyComposition
 //        holder.date.setText(DateUtils.getDatetime(mValues.get(position).getRegistrationTime(), context.getString(R.string.datetime_format)));
 //        holder.unit.setText(mValues.get(position).getUnit());
 //
-//        holder.mView.setOnClickListener(new View.OnClickListener() {
+//        holder.view.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
 //                mListener.onItemClick(holder.mItem);
@@ -87,8 +87,8 @@ public class BodyCompositionAdapter extends RecyclerView.Adapter<BodyComposition
 
         @Override
         public String toString() {
-            return "ViewHolder{" +
-                    "mView=" + mView +
+            return "ItemViewHolder{" +
+                    "view=" + mView +
                     ", mItem=" + mItem +
                     ", weight=" + weight +
                     ", bodyFat=" + bodyFat +

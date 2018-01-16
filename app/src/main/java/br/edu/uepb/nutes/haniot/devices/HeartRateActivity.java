@@ -12,7 +12,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -38,8 +37,6 @@ import java.util.List;
 import java.util.UUID;
 
 import br.edu.uepb.nutes.haniot.R;
-//import br.edu.uepb.nutes.haniot.activity.graphs.HeartRateGraphActivity;
-//import br.edu.uepb.nutes.haniot.activity.graphs.ScaleGraphActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.HeartRateAdapter;
 import br.edu.uepb.nutes.haniot.devices.RecordHeartRateActivity;
@@ -96,7 +93,7 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
     @BindView(R.id.collapsi_toolbar)
     CollapsingToolbarLayout mCollapsingToolbarLayout;
 
-    @BindView(R.id.app_bar_layout)
+    @BindView(R.id.box_bar_layout)
     AppBarLayout mAppBarLayout;
 
     @BindView(R.id.history_heart_rate_listview)

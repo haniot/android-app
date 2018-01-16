@@ -54,7 +54,7 @@ public class HeartRateAdapter extends RecyclerView.Adapter<HeartRateAdapter.View
 //        holder.date.setText(DateUtils.getDatetime(mValues.get(position).getRegistrationTime(), context.getString(R.string.datetime_format)));
 //        holder.duration.setText(DateUtils.getDatetime(mValues.get(position).getDurationTime(), context.getString(R.string.time_format_simple)));
 //
-//        holder.mView.setOnClickListener(new View.OnClickListener() {
+//        holder.view.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
 //                mListener.onItemClick(holder.mItem);
@@ -96,7 +96,7 @@ public class HeartRateAdapter extends RecyclerView.Adapter<HeartRateAdapter.View
 
         @Override
         public String toString() {
-            return "ViewHolder{" +
+            return "ItemViewHolder{" +
                     ", fcMax=" + fcMax +
                     ", date=" + date +
                     ", duration=" + duration +

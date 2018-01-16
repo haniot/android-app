@@ -22,6 +22,7 @@ import java.util.List;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.model.Measurement;
+import br.edu.uepb.nutes.haniot.model.MeasurementThermometer_;
 import br.edu.uepb.nutes.haniot.model.MeasurementType;
 import br.edu.uepb.nutes.haniot.model.dao.ContextMeasurementDAO;
 import br.edu.uepb.nutes.haniot.model.dao.MeasurementDAO;
@@ -93,16 +94,18 @@ public class TemperatureGraphActivity extends AppCompatActivity implements View.
         leftAxis.setAxisMaximum(100f);
 
         mChart.getAxisRight().setEnabled(false);
+        long userId = session.getUserLogged().getId();
+
 
 
         if (type == GRAPH_TYPE_DAY) {
-            long userId = session.getUserLogged().getId();
 
             Params params = new Params(session.get_idLogged(), MeasurementType.TEMPERATURE);
             Historical hist = new Historical.Query()
                     .type(HistoricalType.MEASUREMENTS_TYPE_USER) // required
                     .params(params) // required
                     .ordination("registrationDate", "asc") // optional
+                    .filterDate("1d")
                     .build();
 
 
@@ -121,6 +124,7 @@ public class TemperatureGraphActivity extends AppCompatActivity implements View.
                 public void onSuccess(List<Measurement> result) {
                     Log.w(TAG, "onSuccess()");
 
+//                   measurementData = MeasurementThermometer_.
                 }
 
                 @Override
@@ -128,19 +132,6 @@ public class TemperatureGraphActivity extends AppCompatActivity implements View.
                     Log.w(TAG, "onAfterSend()");
                 }
             });
-//            Server.getInstance(this).get("/measurements/types/1?period/1d" + new Server.Callback() {
-//                @Override
-//                public void onError(JSONObject result) {
-//                    if (callbackSynchronization != null) callbackSynchronization.onError(result);
-//                }
-//
-//                @Override
-//                public void onSuccess(JSONObject result) {
-//                    // popular a lista aqui
-//                    if (callbackSynchronization != null) callbackSynchronization.onSuccess(result);
-//                }
-//
-//            });
 
 //            final String[] quarters = new String[measurementData.size()];
 //            ArrayList<Entry> entries = new ArrayList<Entry>();
@@ -148,7 +139,7 @@ public class TemperatureGraphActivity extends AppCompatActivity implements View.
 //            for(int i = 0; i < measurementData.size(); i++) {
 //                String format = "HH:MM:SS";
 //                String date =  DateUtils.getDatetime(measurementData.get(i).getRegistrationTime(), format);
-//                float weight = measurementData.get(i).getWeight();
+//                float temperature = measurementData.get(i).getWeight();
 //                entries.add(new Entry((float)i, weight));
 //                quarters[i] = date;
 //            }
@@ -171,7 +162,7 @@ public class TemperatureGraphActivity extends AppCompatActivity implements View.
 //
 //            ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
 //
-//            LineDataSet set = new LineDataSet(entries, "weight");
+//            LineDataSet set = new LineDataSet(entries, "temperature");
 //            set.setLineWidth(3f);
 //            set.setDrawCircles(true);
 //            set.setDrawCircleHole(true);
@@ -188,41 +179,81 @@ public class TemperatureGraphActivity extends AppCompatActivity implements View.
 //            mChart.notifyDataSetChanged();
 
         }
-//        if (type == GRAPH_TYPE_SEVEN) {
-//            long userId = session.getUserLogged().getId();
-//
-//            Server.getInstance(this).get("/measurements/types/1?period/1w" + new Server.Callback() {
-//                @Override
-//                public void onError(JSONObject result) {
-//                    if (callbackSynchronization != null) callbackSynchronization.onError(result);
-//                }
-//
-//                @Override
-//                public void onSuccess(JSONObject result) {
-//                    // popular a lista aqui
-//                    if (callbackSynchronization != null) callbackSynchronization.onSuccess(result);
-//                }
-//
-//            });
-//        }
-//
-//        if (type == GRAPH_TYPE_MONTH) {
-//            long userId = session.getUserLogged().getId();
-//
-//            Server.getInstance(this).get("/measurements/types/1?period/1m" + new Server.Callback() {
-//                @Override
-//                public void onError(JSONObject result) {
-//                    if (callbackSynchronization != null) callbackSynchronization.onError(result);
-//                }
-//
-//                @Override
-//                public void onSuccess(JSONObject result) {
-//                    // popular a lista aqui
-//                    if (callbackSynchronization != null) callbackSynchronization.onSuccess(result);
-//                }
-//
-//            });
-//        }
+        if (type == GRAPH_TYPE_SEVEN) {
+
+            Params params = new Params(session.get_idLogged(), MeasurementType.TEMPERATURE);
+            Historical hist = new Historical.Query()
+                    .type(HistoricalType.MEASUREMENTS_TYPE_USER) // required
+                    .params(params) // required
+                    .ordination("registrationDate", "asc") // optional
+                    .filterDate("1w")
+                    .build();
+
+
+            hist.request(this, new CallbackHistorical<Measurement>() {
+                @Override
+                public void onBeforeSend() {
+                    Log.w(TAG, "onBeforeSend()");
+                }
+
+                @Override
+                public void onError(JSONObject result) {
+                    Log.w(TAG, "onError()");
+                }
+
+                @Override
+                public void onSuccess(List<Measurement> result) {
+                    Log.w(TAG, "onSuccess()");
+
+                    // measurementData;
+                }
+
+                @Override
+                public void onAfterSend() {
+                    Log.w(TAG, "onAfterSend()");
+                }
+            });
+
+
+
+        }
+        if (type == GRAPH_TYPE_MONTH) {
+
+            Params params = new Params(session.get_idLogged(), MeasurementType.TEMPERATURE);
+            Historical hist = new Historical.Query()
+                    .type(HistoricalType.MEASUREMENTS_TYPE_USER) // required
+                    .params(params) // required
+                    .ordination("registrationDate", "asc") // optional
+                    .filterDate("1m")
+                    .build();
+
+
+            hist.request(this, new CallbackHistorical<Measurement>() {
+                @Override
+                public void onBeforeSend() {
+                    Log.w(TAG, "onBeforeSend()");
+                }
+
+                @Override
+                public void onError(JSONObject result) {
+                    Log.w(TAG, "onError()");
+                }
+
+                @Override
+                public void onSuccess(List<Measurement> result) {
+                    Log.w(TAG, "onSuccess()");
+
+                    // measurementData;
+                }
+
+                @Override
+                public void onAfterSend() {
+                    Log.w(TAG, "onAfterSend()");
+                }
+            });
+
+
+        }
 
 
     }

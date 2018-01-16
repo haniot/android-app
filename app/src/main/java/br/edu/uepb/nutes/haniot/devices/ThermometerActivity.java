@@ -33,6 +33,7 @@ import org.json.JSONObject;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
@@ -40,6 +41,8 @@ import java.util.UUID;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.graphs.TemperatureGraphActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
+import br.edu.uepb.nutes.haniot.adapter.OnItemClickListener;
+import br.edu.uepb.nutes.haniot.adapter.OnLoadMoreListener;
 import br.edu.uepb.nutes.haniot.adapter.TemperatureAdapter;
 import br.edu.uepb.nutes.haniot.model.Device;
 import br.edu.uepb.nutes.haniot.model.DeviceType;
@@ -66,7 +69,7 @@ import butterknife.ButterKnife;
  * @version 1.0
  * @copyright Copyright (c) 2017, NUTES UEPB
  */
-public class ThermometerActivity extends AppCompatActivity implements TemperatureAdapter.OnItemClickListener {
+public class ThermometerActivity extends AppCompatActivity implements OnItemClickListener, OnLoadMoreListener {
     private final String TAG = "ThermometerActivity";
 
     private BluetoothLeService mBluetoothLeService;
@@ -77,11 +80,11 @@ public class ThermometerActivity extends AppCompatActivity implements Temperatur
     private Animation animation;
     private Device mDevice;
     private Session session;
-    private List<Measurement> measurementList;
+    private List<Measurement> listMeasurements;
     private MeasurementDAO measurementDAO;
     private DeviceDAO deviceDAO;
-    private RecyclerView.Adapter mAdapter;
     private DecimalFormat decimalFormat;
+    private RecyclerView.Adapter mAdapter;
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -95,7 +98,7 @@ public class ThermometerActivity extends AppCompatActivity implements Temperatur
     @BindView(R.id.collapsi_toolbar)
     CollapsingToolbarLayout mCollapsingToolbarLayout;
 
-    @BindView(R.id.app_bar_layout)
+    @BindView(R.id.box_bar_layout)
     AppBarLayout mAppBarLayout;
 
     @BindView(R.id.history_temperature_listview)
@@ -119,11 +122,11 @@ public class ThermometerActivity extends AppCompatActivity implements Temperatur
 
         animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
 
-        measurementList = new ArrayList<>();
+        listMeasurements = new ArrayList<>();
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mAdapter = new TemperatureAdapter(measurementList, this, this);
+        mAdapter = new TemperatureAdapter(mRecyclerView, listMeasurements, this, this, this);
         mRecyclerView.setAdapter(mAdapter);
 
         // synchronization with server
@@ -185,52 +188,11 @@ public class ThermometerActivity extends AppCompatActivity implements Temperatur
     }
 
     private void refreshRecyclerView() {
-        measurementList.clear();
+        listMeasurements.clear();
 
-        if(!ConnectionUtils.internetIsEnabled(this)) {
-            for (Measurement m : measurementDAO.list(MeasurementType.TEMPERATURE, session.getIdLogged(), 0, 20)) {
-                measurementList.add(m);
-                mAdapter.notifyDataSetChanged();
-            }
-        } else {
-            Params params = new Params(session.get_idLogged(), MeasurementType.TEMPERATURE);
-            Historical<Measurement> hist = new Historical.Query()
-                    .type(HistoricalType.MEASUREMENTS_TYPE_USER)
-                    .params(params)
-                    .limit(20)
-                    .build();
-
-            hist.request(this, new CallbackHistorical<Measurement>() {
-                @Override
-                public void onBeforeSend() {
-                    Log.w(TAG, "onBeforeSend()");
-
-                }
-
-                @Override
-                public void onError(JSONObject result) {
-                    Log.w(TAG, "onError()");
-
-                }
-
-                @Override
-                public void onSuccess(List<Measurement> result) {
-                    Log.w(TAG, "onSuccess()");
-                    measurementList = result;
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mAdapter.notifyDataSetChanged();
-                        }
-                    });
-                }
-
-                @Override
-                public void onAfterSend() {
-                    Log.w(TAG, "onAfterSend()");
-
-                }
-            });
+        for (Measurement m : measurementDAO.list(MeasurementType.TEMPERATURE, session.getIdLogged(), 0, 20)) {
+            listMeasurements.add(m);
+            mAdapter.notifyDataSetChanged();
         }
     }
 
@@ -388,10 +350,16 @@ public class ThermometerActivity extends AppCompatActivity implements Temperatur
         startActivity(it);
     }
 
+    @Override
+    public void onLoadMore() {
+
+    }
+
     /**
      * Performs routine for data synchronization with server.
      */
     private void synchronizeWithServer() {
         SynchronizationServer.getInstance(this).run();
     }
+
 }
