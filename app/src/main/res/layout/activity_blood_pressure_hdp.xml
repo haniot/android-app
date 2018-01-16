@@ -57,12 +57,11 @@
                     android:id="@+id/pressure_measurement_dia"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignStart="@+id/view_circle"
-                    android:layout_alignTop="@+id/textView8"
+                    android:layout_below="@+id/pressure_measurement_pulse"
+                    android:layout_marginEnd="42dp"
                     android:layout_toStartOf="@+id/view_pulse"
-                    android:text="00"
                     android:gravity="right"
-                    android:layout_marginRight="40dp"
+                    android:text="00"
                     android:textColor="@color/colorTextDark"
                     android:textSize="40sp"
                     tools:ignore="HardcodedText" />
@@ -75,7 +74,9 @@
                     android:layout_alignStart="@+id/view_circle"
                     android:layout_below="@+id/view_pulse"
                     android:text="@string/unit_pressure"
+                    android:layout_marginTop="5dp"
                     android:gravity="right"
+                    android:layout_marginRight="2dp"
                     android:textSize="20sp" />
 
                 <com.mikhaellopez.circularprogressbar.CircularProgressBar
@@ -141,15 +142,21 @@
             android:orientation="vertical"
             android:padding="@dimen/activity_horizontal_margin">
 
-            <Button
-                android:id="@+id/button"
-                style="@style/Widget.AppCompat.Button.Colored"
-                android:layout_width="150dp"
+            <TextView
+                android:id="@+id/text_view_title_history"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="10dp"
-                android:text="Graph" />
+                android:text="@string/most_recent_entries"
+                android:textAllCaps="false"
+                android:textColor="@color/colorPrimary"
+                android:textSize="14sp"
+                android:textStyle="normal" />
 
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/history_blood_pressure_listview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp" />
         </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>

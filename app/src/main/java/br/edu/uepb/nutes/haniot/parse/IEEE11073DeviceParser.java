@@ -8,8 +8,6 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 /**
  * Parse for device HDP.
@@ -27,15 +25,15 @@ public class IEEE11073DeviceParser {
      * FORMAT return Json:
      * { code: int_value,
      *   partition: int_value,
-     *   manufacturer: string_value
-     *   modelNumber: string_value,
-     *   systemId: string_value,
-     *   version: int_value,
-     *   type: int_value,
-     *   devConfigurationId: int_value,
-     *   componentId: int_value,
-     *   prodSpec: string_value,
-     *   prodSpecType: int_value }
+     *   manufacturer: string
+     *   modelNumber: string,
+     *   systemId: string,
+     *   version: int,
+     *   type: int,
+     *   devConfigurationId: int,
+     *   componentId: int,
+     *   prodSpec: string,
+     *   prodSpecType: int }
      *
      * @param data xml
      * @return JSONObject json

@@ -33,7 +33,7 @@ public class Device {
     /**
      * {@link DeviceType()}
      */
-    private int type;
+    private int typeId;
 
     public Device() {
     }
@@ -49,12 +49,12 @@ public class Device {
         this.name = name;
     }
 
-    public Device(String address, String name, String manufacturer, String modelNumber, int type, User user) {
+    public Device(String address, String name, String manufacturer, String modelNumber, int typeId, User user) {
         this.address = address;
         this.name = name;
         this.manufacturer = manufacturer;
         this.modelNumber = modelNumber;
-        this.type = type;
+        this.typeId = typeId;
         this.user.setTarget(user);
     }
 
@@ -106,12 +106,12 @@ public class Device {
         this.modelNumber = modelNumber;
     }
 
-    public int getType() {
-        return type;
+    public int getTypeId() {
+        return typeId;
     }
 
-    public void setType(int type) {
-        this.type = type;
+    public void setTypeId(int typeId) {
+        this.typeId = typeId;
     }
 
     public ToOne<User> getUser() {
@@ -129,7 +129,7 @@ public class Device {
         result = 31 * result + name.hashCode();
         result = 31 * result + (manufacturer != null ? manufacturer.hashCode() : 0);
         result = 31 * result + (modelNumber != null ? modelNumber.hashCode() : 0);
-        result = 31 * result + type;
+        result = 31 * result + typeId;
         result = 31 * result + user.hashCode();
         return result;
     }
@@ -153,7 +153,7 @@ public class Device {
                 ", name='" + name + '\'' +
                 ", manufacturer='" + manufacturer + '\'' +
                 ", modelNumber='" + modelNumber + '\'' +
-                ", type=" + type +
+                ", typeId=" + typeId +
                 ", user=" + user +
                 '}';
     }

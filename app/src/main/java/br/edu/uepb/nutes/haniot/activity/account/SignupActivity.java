@@ -630,7 +630,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         user.setName(String.valueOf(nameEditText.getText()));
         user.setHeight(Integer.valueOf(heightEditText.getText().toString()));
         user.setGender(genderRadioGroup.getCheckedRadioButtonId() == R.id.radio_gender_male ? 1 : 2);
-        user.setGroup(2); // common user
+        user.setGroupId(2); // common user
 
         if (!isUpdate) {
             user.setEmail(String.valueOf(emailEditText.getText()));

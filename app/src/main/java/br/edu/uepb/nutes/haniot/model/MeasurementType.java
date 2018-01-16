@@ -19,12 +19,34 @@ public class MeasurementType {
     public static final int BLOOD_PRESSURE_SYSTOLIC = 5;
     public static final int BLOOD_PRESSURE_DIASTOLIC = 6;
     public static final int HEART_RATE = 7;
+    public static final int BMI = 8; // Body Mass Index - IMC
+    public static final int RMR = 9; // Resting Metabolic Rate
+    public static final int BMR = 10; // Basal Metabolic Rate
+    public static final int MUSCLE_MASS = 11;
+    public static final int VISCERAL_FAT = 12;
+    public static final int BODY_AGE = 13;
+
+    public static int[] SUPPORTED_TYPES = {
+            TEMPERATURE,
+            BLOOD_GLUCOSE,
+            BODY_MASS,
+            BODY_FAT,
+            BLOOD_PRESSURE_SYSTOLIC,
+            BLOOD_PRESSURE_DIASTOLIC,
+            HEART_RATE,
+            BMI,
+            RMR,
+            BMR,
+            MUSCLE_MASS,
+            VISCERAL_FAT,
+            BODY_AGE
+    };
 
     /**
      * Retrieve the mapped type name in resources.
      *
      * @param context ContextMeasurement
-     * @param type int
+     * @param type    int
      * @return String
      */
     public static String getString(Context context, int type) {
@@ -33,5 +55,18 @@ public class MeasurementType {
         if (types.length > type && types.length < type) return types[type];
 
         return "";
+    }
+
+    /**
+     * Checks whether a type is supported.
+     *
+     * @param type int
+     * @return boolean
+     */
+    public static boolean isSupportedType(int type) {
+        for (int x : SUPPORTED_TYPES)
+            if (x == type) return true;
+
+        return false;
     }
 }

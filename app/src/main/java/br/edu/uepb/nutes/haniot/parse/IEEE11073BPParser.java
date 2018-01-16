@@ -1,7 +1,5 @@
 package br.edu.uepb.nutes.haniot.parse;
 
-import android.util.Log;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.xmlpull.v1.XmlPullParser;
@@ -12,8 +10,6 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-
-import br.edu.uepb.nutes.haniot.utils.DateUtils;
 
 /**
  * Parse for blood pressure.
@@ -28,16 +24,16 @@ public class IEEE11073BPParser {
      * Parse for IEEE 11073 device blood pressure.
      * Supported Models: OMRON BP792IT.
      *
-     * FORMAT return Json:
-     * { systolic: int_value,
-     *   diastolic: int_value,
-     *   map: double_value
-     *   pulse: int_value,
-     *   pulse: int_value,
-     *   systolicUnit: string_value,
-     *   diastolicUnit: string_value,
-     *   pulseUnit: string_value,
-     *   timestamp: long_value }
+     * FORMAT return JOSN:
+     * { systolic: int,
+     *   diastolic: int,
+     *   map: double
+     *   pulse: int,
+     *   pulse: int,
+     *   systolicUnit: string,
+     *   diastolicUnit: string,
+     *   pulseUnit: string,
+     *   timestamp: long }
      *
      * @param data xml
      * @return JSONObject json
@@ -56,9 +52,9 @@ public class IEEE11073BPParser {
         String systolic = null,
                 diastolic = null,
                 map = null, // Mean Arterial Pressure (MAP)
-                pulse = null,
+                heartRate = null, // Pulse
                 pressureUnit = null,
-                pulseUnit = null,
+                heartRateUnit = null,
                 century = null,
                 year = null,
                 month = null,
@@ -82,8 +78,8 @@ public class IEEE11073BPParser {
                         if (attributeValue.equalsIgnoreCase("unit")) {
                             if (pressureUnit == null)
                                 pressureUnit = xmlParser.nextText();
-                            else if (pulseUnit == null)
-                                pulseUnit = xmlParser.nextText();
+                            else if (heartRateUnit == null)
+                                heartRateUnit = xmlParser.nextText();
                         }
                     } else if (name.equalsIgnoreCase("value")) {
                         if (systolic == null)
@@ -108,8 +104,8 @@ public class IEEE11073BPParser {
                             sec = xmlParser.nextText();
                         else if (sec_fractions == null)
                             sec_fractions = xmlParser.nextText();
-                        else if (pulse == null)
-                            pulse = xmlParser.nextText();
+                        else if (heartRate == null)
+                            heartRate = xmlParser.nextText();
                         else
                             end = true;
                     }
@@ -137,13 +133,13 @@ public class IEEE11073BPParser {
         /**
          * Populating the JSON
          */
-        result.put("systolic", (int) Double.parseDouble(systolic));
-        result.put("diastolic", (int) Double.parseDouble(diastolic));
-        result.put("map", (int) Double.parseDouble(map));
-        result.put("pulse", (int) Double.parseDouble(pulse));
+        result.put("systolic", Double.parseDouble(systolic));
+        result.put("diastolic",Double.parseDouble(diastolic));
+        result.put("map", Double.parseDouble(map));
+        result.put("heartRate", Double.parseDouble(heartRate));
         result.put("systolicUnit", pressureUnit);
         result.put("diastolicUnit", pressureUnit);
-        result.put("pulseUnit", pulseUnit);
+        result.put("heartRateUnit", heartRateUnit);
         result.put("timestamp", timestamp.getTimeInMillis());
 
         return result;

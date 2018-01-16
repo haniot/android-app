@@ -21,7 +21,7 @@ public class Measurement {
     @Id
     private long id;
 
-    private String value;
+    private double value;
     private String unit;
     private long registrationDate;
 
@@ -45,13 +45,13 @@ public class Measurement {
     public Measurement() {
     }
 
-    public Measurement(String value, String unit, int typeId) {
+    public Measurement(double value, String unit, int typeId) {
         this.value = value;
         this.unit = unit;
         this.typeId = typeId;
     }
 
-    public Measurement(String value, String unit, long registrationDate, int typeId) {
+    public Measurement(double value, String unit, long registrationDate, int typeId) {
         this.value = value;
         this.unit = unit;
         this.registrationDate = registrationDate;
@@ -66,31 +66,28 @@ public class Measurement {
         this.id = id;
     }
 
-    public String getValue() {
+    public double getValue() {
         return value;
     }
 
-    public Measurement setValue(String value) {
+    public void setValue(double value) {
         this.value = value;
-        return this;
     }
 
     public String getUnit() {
         return unit;
     }
 
-    public Measurement setUnit(String unit) {
+    public void setUnit(String unit) {
         this.unit = unit;
-        return this;
     }
 
     public long getRegistrationDate() {
         return registrationDate;
     }
 
-    public Measurement setRegistrationDate(long registrationDate) {
+    public void setRegistrationDate(long registrationDate) {
         this.registrationDate = registrationDate;
-        return this;
     }
 
     public ToOne<User> getUser() {
@@ -113,23 +110,34 @@ public class Measurement {
         this.device.setTarget(device);
     }
 
-    public Measurement setTraining(Training training) {
+    public void setTraining(Training training) {
         this.training.setTarget(training);
-        return this;
     }
 
-    public Measurement addContext(ContextMeasurement contextMeasurement) {
-        this.getContextMeasurements().add(contextMeasurement);
-        return this;
+    public boolean addContext(ContextMeasurement contextMeasurement) {
+        return this.contextMeasurements.add(contextMeasurement);
     }
 
-    public Measurement addContext(List<ContextMeasurement> contextsMeasurements) {
-        this.getContextMeasurements().addAll(contextsMeasurements);
-        return this;
+    public void addContext(ContextMeasurement... contextMeasurements) {
+        for (ContextMeasurement c : contextMeasurements)
+            this.contextMeasurements.add(c);
+    }
+
+    public boolean addContext(List<ContextMeasurement> contextsMeasurements) {
+        return this.contextMeasurements.addAll(contextsMeasurements);
     }
 
     public boolean addMeasurement(Measurement measurement) {
         return this.getMeasurements().add(measurement);
+    }
+
+    public void addMeasurement(Measurement... measurements) {
+        for (Measurement m : measurements)
+            this.getMeasurements().add(m);
+    }
+
+    public boolean addMeasurement(List<Measurement> measurement) {
+        return this.getMeasurements().addAll(measurement);
     }
 
     public void setHasSent(int hasSent) {
@@ -140,9 +148,8 @@ public class Measurement {
         return typeId;
     }
 
-    public Measurement setTypeId(int typeId) {
+    public void setTypeId(int typeId) {
         this.typeId = typeId;
-        return this;
     }
 
     public ToMany<ContextMeasurement> getContextMeasurements() {
@@ -159,13 +166,17 @@ public class Measurement {
 
     @Override
     public int hashCode() {
-        int result = (int) (id ^ (id >>> 32));
-        result = 31 * result + (value != null ? value.hashCode() : 0);
+        int result;
+        long temp;
+        result = (int) (id ^ (id >>> 32));
+        temp = Double.doubleToLongBits(value);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
         result = 31 * result + (unit != null ? unit.hashCode() : 0);
         result = 31 * result + (int) (registrationDate ^ (registrationDate >>> 32));
         result = 31 * result + (user != null ? user.hashCode() : 0);
         result = 31 * result + (device != null ? device.hashCode() : 0);
         result = 31 * result + typeId;
+        result = 31 * result + hasSent;
         return result;
     }
 
@@ -176,7 +187,8 @@ public class Measurement {
 
         Measurement other = (Measurement) o;
 
-        return other.getRegistrationDate() == this.getRegistrationDate() &&
+        return other.value == this.value &&
+                other.getRegistrationDate() == this.getRegistrationDate() &&
                 other.user.equals(this.user) &&
                 other.device.equals(this.device);
     }

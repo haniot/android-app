@@ -44,19 +44,19 @@ public class User {
     /**
      * {@link UserGroup()}
      */
-    private int group; // 1 super, 2 comum
+    private int groupId; // 1 super, 2 comum
 
     public User() {
     }
 
-    public User(String name, String email, String password, int gender, long dateOfBirth, int height, int group) {
+    public User(String name, String email, String password, int gender, long dateOfBirth, int height, int groupId) {
         this.name = name;
         this.email = email;
         this.password = password;
         this.gender = gender;
         this.dateOfBirth = dateOfBirth;
         this.height = height;
-        this.group = group;
+        this.groupId = groupId;
     }
 
     public long getId() {
@@ -131,12 +131,12 @@ public class User {
         this.token = token;
     }
 
-    public int getGroup() {
-        return group;
+    public int getGroupId() {
+        return groupId;
     }
 
-    public void setGroup(int group) {
-        this.group = group;
+    public void setGroupId(int groupId) {
+        this.groupId = groupId;
     }
 
     public ToMany<Measurement> getMeasurements() {
@@ -169,7 +169,7 @@ public class User {
                 ", dateOfBirth=" + dateOfBirth +
                 ", height=" + height +
                 ", token='" + token + '\'' +
-                ", group=" + group +
+                ", groupId=" + groupId +
                 ", measurements=" + measurements +
                 '}';
     }

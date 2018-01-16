@@ -38,6 +38,7 @@ import java.util.Locale;
 import java.util.UUID;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.activity.graphs.TemperatureGraphActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.TemperatureAdapter;
 import br.edu.uepb.nutes.haniot.model.Device;
@@ -46,13 +47,17 @@ import br.edu.uepb.nutes.haniot.model.Measurement;
 import br.edu.uepb.nutes.haniot.model.MeasurementType;
 import br.edu.uepb.nutes.haniot.model.dao.DeviceDAO;
 import br.edu.uepb.nutes.haniot.model.dao.MeasurementDAO;
+import br.edu.uepb.nutes.haniot.parse.JsonToMeasurementParser;
 import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
+import br.edu.uepb.nutes.haniot.server.historical.CallbackHistorical;
+import br.edu.uepb.nutes.haniot.server.historical.Historical;
+import br.edu.uepb.nutes.haniot.server.historical.HistoricalType;
+import br.edu.uepb.nutes.haniot.server.historical.Params;
 import br.edu.uepb.nutes.haniot.service.BluetoothLeService;
+import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import br.edu.uepb.nutes.haniot.utils.GattAttributes;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-//import br.edu.uepb.nutes.haniot.activity.graphs.TemperatureGraphActivity;
 
 /**
  * Activity to capture the thermometer data.
@@ -62,7 +67,7 @@ import butterknife.ButterKnife;
  * @copyright Copyright (c) 2017, NUTES UEPB
  */
 public class ThermometerActivity extends AppCompatActivity implements TemperatureAdapter.OnItemClickListener {
-    private final String LOG = "ThermometerActivity";
+    private final String TAG = "ThermometerActivity";
 
     private BluetoothLeService mBluetoothLeService;
     private boolean mConnected = false;
@@ -72,10 +77,11 @@ public class ThermometerActivity extends AppCompatActivity implements Temperatur
     private Animation animation;
     private Device mDevice;
     private Session session;
-    private List<Measurement> MeasurementList;
+    private List<Measurement> measurementList;
     private MeasurementDAO measurementDAO;
     private DeviceDAO deviceDAO;
     private RecyclerView.Adapter mAdapter;
+    private DecimalFormat decimalFormat;
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -106,20 +112,22 @@ public class ThermometerActivity extends AppCompatActivity implements Temperatur
         session = new Session(this);
         measurementDAO = MeasurementDAO.getInstance(this);
         deviceDAO = DeviceDAO.getInstance(this);
+        decimalFormat = new DecimalFormat(getString(R.string.temperature_format), new DecimalFormatSymbols(Locale.US));
 
         Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
 
         animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
 
-        MeasurementList = new ArrayList<>();
+        measurementList = new ArrayList<>();
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mAdapter = new TemperatureAdapter(MeasurementList, this, this);
+        mAdapter = new TemperatureAdapter(measurementList, this, this);
         mRecyclerView.setAdapter(mAdapter);
 
-        SynchronizationServer.getInstance(this).run();
+        // synchronization with server
+        synchronizeWithServer();
     }
 
     private void initializeToolBar() {
@@ -140,7 +148,7 @@ public class ThermometerActivity extends AppCompatActivity implements Temperatur
                     scrollRange = appBarLayout.getTotalScrollRange();
 
                 if (scrollRange + verticalOffset == 0) {
-                    mCollapsingToolbarLayout.setTitle(getString(R.string.temperature_measurement));
+                    mCollapsingToolbarLayout.setTitle(getString(R.string.temperature));
                     isShow = true;
                 } else if (isShow) {
                     mCollapsingToolbarLayout.setTitle("");
@@ -155,14 +163,12 @@ public class ThermometerActivity extends AppCompatActivity implements Temperatur
         super.onStart();
 
         // TODO REMOVER!!! Pois o cadastro do device deverá ser no processo de emparelhamento
-        if (mDevice == null) {
-            mDevice = deviceDAO.get(mDeviceAddress, session.getIdLogged());
+        mDevice = deviceDAO.get(mDeviceAddress, session.getIdLogged());
 
-            if (mDevice == null) {
-                mDevice = new Device(mDeviceAddress, "EAR THERMOMETER", "PHILIPS", "DL8740", DeviceType.THERMOMETER, session.getUserLogged());
-                mDevice.set_id("3b4647dfd7bcdd2448000ff5");
-                if (!deviceDAO.save(mDevice)) finish();
-            }
+        if (mDevice == null) {
+            mDevice = new Device(mDeviceAddress, "EAR THERMOMETER", "PHILIPS", "DL8740", DeviceType.THERMOMETER, session.getUserLogged());
+            mDevice.set_id("3b4647dfd7bcdd2448000ff5");
+            if (!deviceDAO.save(mDevice)) finish();
         }
     }
 
@@ -179,11 +185,52 @@ public class ThermometerActivity extends AppCompatActivity implements Temperatur
     }
 
     private void refreshRecyclerView() {
-        MeasurementList.clear();
+        measurementList.clear();
 
-        for (Measurement m : measurementDAO.list(MeasurementType.TEMPERATURE, session.getIdLogged(), 0, 20)) {
-            MeasurementList.add(m);
-            mAdapter.notifyDataSetChanged();
+        if(!ConnectionUtils.internetIsEnabled(this)) {
+            for (Measurement m : measurementDAO.list(MeasurementType.TEMPERATURE, session.getIdLogged(), 0, 20)) {
+                measurementList.add(m);
+                mAdapter.notifyDataSetChanged();
+            }
+        } else {
+            Params params = new Params(session.get_idLogged(), MeasurementType.TEMPERATURE);
+            Historical<Measurement> hist = new Historical.Query()
+                    .type(HistoricalType.MEASUREMENTS_TYPE_USER)
+                    .params(params)
+                    .limit(20)
+                    .build();
+
+            hist.request(this, new CallbackHistorical<Measurement>() {
+                @Override
+                public void onBeforeSend() {
+                    Log.w(TAG, "onBeforeSend()");
+
+                }
+
+                @Override
+                public void onError(JSONObject result) {
+                    Log.w(TAG, "onError()");
+
+                }
+
+                @Override
+                public void onSuccess(List<Measurement> result) {
+                    Log.w(TAG, "onSuccess()");
+                    measurementList = result;
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mAdapter.notifyDataSetChanged();
+                        }
+                    });
+                }
+
+                @Override
+                public void onAfterSend() {
+                    Log.w(TAG, "onAfterSend()");
+
+                }
+            });
         }
     }
 
@@ -266,7 +313,7 @@ public class ThermometerActivity extends AppCompatActivity implements Temperatur
         public void onServiceConnected(ComponentName componentName, IBinder service) {
             mBluetoothLeService = ((BluetoothLeService.LocalBinder) service).getService();
             if (!mBluetoothLeService.initialize()) {
-                Log.e(LOG, "Unable to initialize Bluetooth");
+                Log.e(TAG, "Unable to initialize Bluetooth");
                 finish();
             }
             // Conecta-se automaticamente ao dispositivo após a inicialização bem-sucedida.
@@ -305,64 +352,46 @@ public class ThermometerActivity extends AppCompatActivity implements Temperatur
                         setCharacteristicNotification(characteristic);
                 }
             } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
-                final Measurement measurement = jsonToMeasuremnt(intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
-                DecimalFormat df = new DecimalFormat(getString(R.string.temperature_format),
-                        new DecimalFormatSymbols(Locale.US));
+                String jsonData = intent.getStringExtra(BluetoothLeService.EXTRA_DATA);
 
-                // display data
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        mTemperatureTextView.setText(df.format(Float.parseFloat(measurement.getValue())));
-                        mTemperatureTextView.startAnimation(animation);
+                        try {
+                            Measurement measurement = JsonToMeasurementParser.temperature(jsonData);
+                            measurement.setDevice(mDevice);
+                            measurement.setUser(session.getUserLogged());
 
-                        /**
-                         * Save in local
-                         * Send to server saved successfully
-                         */
-                        if (measurementDAO.save(measurement))
-                            SynchronizationServer.getInstance(getApplicationContext()).run();
+                            mTemperatureTextView.setText(decimalFormat.format(measurement.getValue()));
+                            mTemperatureTextView.startAnimation(animation);
 
-                        refreshRecyclerView();
+                            /**
+                             * Save in local
+                             * Send to server saved successfully
+                             */
+                            if (measurementDAO.save(measurement))
+                                synchronizeWithServer();
+
+                            refreshRecyclerView();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
                 });
             }
         }
     };
 
-    /**
-     * Convert json to Measurement object.
-     *
-     * @param json String
-     * @return Measurement
-     */
-    private Measurement jsonToMeasuremnt(String json) {
-        Measurement measurement = null;
-        try {
-            JSONObject jsonObject = new JSONObject(json);
-
-            measurement = new Measurement(
-                    jsonObject.getString("temperature"),
-                    jsonObject.getString("temperatureUnit"),
-                    jsonObject.getLong("timestamp"),
-                    MeasurementType.TEMPERATURE);
-            measurement.setUser(session.getUserLogged());
-            measurement.setDevice(mDevice);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return measurement;
-    }
-
     @Override
     public void onItemClick(Measurement item) {
-
+        Intent it = new Intent(getApplicationContext(), TemperatureGraphActivity.class);
+        startActivity(it);
     }
 
-//    @Override
-//    public void onItemClick(Measurement item) {
-//        Intent it = new Intent(getApplicationContext(), TemperatureGraphActivity.class);
-//        startActivity(it);
-//    }
+    /**
+     * Performs routine for data synchronization with server.
+     */
+    private void synchronizeWithServer() {
+        SynchronizationServer.getInstance(this).run();
+    }
 }

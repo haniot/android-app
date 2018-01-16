@@ -45,8 +45,10 @@ import br.edu.uepb.nutes.haniot.model.Device;
 import br.edu.uepb.nutes.haniot.model.DeviceType;
 import br.edu.uepb.nutes.haniot.model.Measurement;
 import br.edu.uepb.nutes.haniot.model.MeasurementType;
+import br.edu.uepb.nutes.haniot.model.User;
 import br.edu.uepb.nutes.haniot.model.dao.DeviceDAO;
 import br.edu.uepb.nutes.haniot.model.dao.MeasurementDAO;
+import br.edu.uepb.nutes.haniot.parse.JsonToMeasurementParser;
 import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
 import br.edu.uepb.nutes.haniot.service.BluetoothLeService;
 import br.edu.uepb.nutes.haniot.utils.GattAttributes;
@@ -80,10 +82,16 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
     Toolbar mToolbar;
 
     @BindView(R.id.body_mass_measurement)
-    TextView mBodyMassMeasurement;
+    TextView bodyMassTextView;
 
     @BindView(R.id.body_mass_unit_measurement)
-    TextView mBodyMassUnitMeasurement;
+    TextView bodyMassUnitTextView;
+
+    @BindView(R.id.body_fat_textview)
+    TextView bodyFatTextView;
+
+    @BindView(R.id.bmi_textview)
+    TextView bmiTextView;
 
     @BindView(R.id.view_circle)
     CircularProgressBar mCircularProgressBar;
@@ -123,7 +131,8 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
 
         mCircularProgressBar.setOnClickListener(this);
 
-        SynchronizationServer.getInstance(this).run();
+        // synchronization with server
+        synchronizeWithServer();
     }
 
     private void initializeToolBar() {
@@ -159,15 +168,12 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
         super.onStart();
 
         // TODO REMOVER!!! Pois o cadastro do device deverá ser no processo de emparelhamento
-        deviceDAO.removeAll(session.getIdLogged());
-        if (mDevice == null) {
-            mDevice = deviceDAO.get(mDeviceAddress, session.getIdLogged());
+        mDevice = deviceDAO.get(mDeviceAddress, session.getIdLogged());
 
-            if (mDevice == null) {
-                mDevice = new Device(mDeviceAddress, "YUNMAI SCALE", "YUNMAI", "5031", DeviceType.BODY_COMPOSITION, session.getUserLogged());
-                mDevice.set_id("3e4647dfd7bcdd2448000ed63");
-                if (!deviceDAO.save(mDevice)) finish();
-            }
+        if (mDevice == null) {
+            mDevice = new Device(mDeviceAddress, "YUNMAI SCALE", "YUNMAI", "5031", DeviceType.BODY_COMPOSITION, session.getUserLogged());
+            mDevice.set_id("3e4647dfd7bcdd2448000ed63");
+            if (!deviceDAO.save(mDevice)) finish();
         }
     }
 
@@ -317,43 +323,61 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
                         setCharacteristicNotification(characteristic);
                 }
             } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
-                try {
-                    JSONObject jsonObject = new JSONObject(intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
-                    DecimalFormat df = new DecimalFormat(getString(R.string.temperature_format), new DecimalFormatSymbols(Locale.US));
-                    final boolean isFinalized = jsonObject.getBoolean("isFinalized");
-                    final String bodyMass = df.format(Float.parseFloat(jsonObject.getString("bodyMass")));
-                    final String bodyMassUnit = jsonObject.getString("bodyMassUnit");
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            JSONObject jsonData = new JSONObject(intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
 
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mBodyMassMeasurement.setText(bodyMass.equals(".0") ? "00.0" : bodyMass);
-                            mBodyMassUnitMeasurement.setText(bodyMassUnit);
+                            final boolean isFinalized = jsonData.getBoolean("isFinalized");
+                            final String bodyMassMeasurement = formatNumber(jsonData.getDouble("bodyMass"));
+                            final String bodyMassUnit = jsonData.getString("bodyMassUnit");
 
-                            /**
-                             * Save in local
-                             * Send to server saved successfully
-                             */
+                            bodyMassTextView.setText(bodyMassMeasurement);
+                            bodyMassUnitTextView.setText(bodyMassUnit);
+
                             if (isFinalized && showAnimation) {
                                 showAnimation = false;
-                                mBodyMassMeasurement.startAnimation(animation);
 
-                                Measurement measurementBodyMass = jsonToMeasuremntBodyMass(jsonObject);
-                                Measurement measurementBodyFat = jsonToMeasuremntBodyFat(jsonObject);
-                                measurementBodyMass.addMeasurement(measurementBodyFat);
+                                User user = session.getUserLogged();
 
-                                if (measurementDAO.save(measurementBodyMass))
-                                    SynchronizationServer.getInstance(getApplicationContext()).run();
+                                Measurement bodyMass = JsonToMeasurementParser.bodyMass(jsonData.toString());
+                                bodyMass.setUser(user);
+                                bodyMass.setDevice(mDevice);
 
-                                refreshRecyclerView();
+                                Measurement bmi = new Measurement(
+                                        calcBMI(bodyMass.getValue()),
+                                        "kg/m2",
+                                        bodyMass.getRegistrationDate(),
+                                        MeasurementType.BMI);
+                                bmi.setUser(user);
+                                bmi.setDevice(mDevice);
+
+                                Measurement bodyFat = JsonToMeasurementParser.bodyFat(jsonData.toString());
+                                bodyFat.setUser(user);
+                                bodyFat.setDevice(mDevice);
+
+                                /**
+                                 * Update UI
+                                 */
+                                bmiTextView.setText(formatNumber(bmi.getValue()));
+                                bodyFatTextView.setText(formatNumber(bodyFat.getValue()));
+                                bodyMassTextView.startAnimation(animation);
+
+                                /**
+                                 * Add relationships, save and send to server
+                                 */
+                                bodyMass.addMeasurement(bmi, bodyFat);
+                                if (measurementDAO.save(bodyMass)) synchronizeWithServer();
                             } else {
                                 showAnimation = true;
                             }
+                            refreshRecyclerView();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-                    });
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                    }
+                });
             }
         }
     };
@@ -388,50 +412,37 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
     }
 
     /**
-     * Convert json to Measurement object.
+     * Return value of BMI.
+     * formula: bodyMass(kg)/height(m)^2
      *
-     * @param jsonObject
-     * @return Measurement
+     * @param bodyMass double
+     * @return double
      */
-    private Measurement jsonToMeasuremntBodyMass(JSONObject jsonObject) {
-        Measurement measurement = null;
-
-        try {
-             measurement = new Measurement(
-                     jsonObject.getString("bodyMass"),
-                     jsonObject.getString("bodyMassUnit"),
-                     jsonObject.getLong("timestamp"),
-                     MeasurementType.BODY_MASS);
-            measurement.setUser(session.getUserLogged());
-            measurement.setDevice(mDevice);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return measurement;
+    private double calcBMI(double bodyMass) {
+        double height = (session.getUserLogged().getHeight()) / 100D;
+        return bodyMass / (Math.pow(height, 2));
     }
 
     /**
-     * Convert json to Measurement object.
+     * Format value for XX.X
      *
-     * @param jsonObject
-     * @return Measurement
+     * @param value double
+     * @return String
      */
-    private Measurement jsonToMeasuremntBodyFat(JSONObject jsonObject) {
-        Measurement measurement = null;
+    private String formatNumber(double value) {
+        DecimalFormat decimalFormat = new DecimalFormat(
+                getString(R.string.weight_format),
+                new DecimalFormatSymbols(Locale.US));
 
-        try {
-            measurement = new Measurement(
-                    jsonObject.getString("bodyFat"),
-                    jsonObject.getString("bodyFatUnit"),
-                    jsonObject.getLong("timestamp"),
-                    MeasurementType.BODY_FAT);
-            measurement.setUser(session.getUserLogged());
-            measurement.setDevice(mDevice);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        String result = decimalFormat.format(value);
 
-        return measurement;
+        return result.equals(".0") ? "00.0" : result;
+    }
+
+    /**
+     * Performs routine for data synchronization with server.
+     */
+    private void synchronizeWithServer() {
+        SynchronizationServer.getInstance(this).run();
     }
 }

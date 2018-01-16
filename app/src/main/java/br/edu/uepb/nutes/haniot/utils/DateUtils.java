@@ -1,5 +1,7 @@
 package br.edu.uepb.nutes.haniot.utils;
 
+import android.support.annotation.Nullable;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -203,31 +205,32 @@ public final class DateUtils {
 
         c.set(Calendar.DAY_OF_YEAR, c.getActualMinimum(Calendar.DAY_OF_YEAR));
         c.set(Calendar.HOUR_OF_DAY, c.getActualMinimum(Calendar.HOUR_OF_DAY));
-        c.set(Calendar.MINUTE,      c.getActualMinimum(Calendar.MINUTE));
-        c.set(Calendar.SECOND,      c.getActualMinimum(Calendar.SECOND));
+        c.set(Calendar.MINUTE, c.getActualMinimum(Calendar.MINUTE));
+        c.set(Calendar.SECOND, c.getActualMinimum(Calendar.SECOND));
         c.set(Calendar.MILLISECOND, c.getActualMinimum(Calendar.MILLISECOND));
 
         return c.getTimeInMillis();
     }
 
-//    public static long timeStamp(JSONObject json){
-//        try {
-//            String timeStamp = "";
-//            String[] timeFragment = {"century","year","month","day","hour","minute","second"};
-//            for (String time: timeFragment) {
-//
-//                if(json.get(time).toString().length()<2)
-//                    timeStamp += "0"+json.get(time).toString();
-//                else
-//                    timeStamp += json.get(time).toString();
-//                if (!time.equals("century")) {
-//                    timeStamp += " ";
-//                }
-//            }
-//            return DateUtils.stringToCalendar(timeStamp, "yyyy mm dd HH MM SS").getTimeInMillis();
-//        }catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return 0L;
-//    }
+    /**
+     * Validate date.
+     *
+     * @param date   String
+     * @param format String
+     * @return boolean
+     */
+    public static boolean isDateValid(String date, @Nullable String format) {
+        if (format == null || format.length() == 0)
+            format = "yyyy-MM-dd";
+
+        try {
+            DateFormat df = new SimpleDateFormat(format);
+            df.setLenient(false);
+            df.parse(date);
+
+            return true;
+        } catch (ParseException e) {
+            return false;
+        }
+    }
 }

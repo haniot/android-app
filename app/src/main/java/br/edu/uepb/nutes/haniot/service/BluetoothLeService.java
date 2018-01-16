@@ -36,6 +36,7 @@ import org.json.JSONException;
 import java.util.List;
 import java.util.UUID;
 
+import br.edu.uepb.nutes.haniot.parse.GattGlucoseParser;
 import br.edu.uepb.nutes.haniot.parse.GattHRParser;
 import br.edu.uepb.nutes.haniot.parse.GattHTParser;
 import br.edu.uepb.nutes.haniot.parse.YunmaiParser;
@@ -124,11 +125,22 @@ public class BluetoothLeService extends Service {
                 e.printStackTrace();
             }
         } else if (characteristic.getUuid().equals(UUID.fromString(GattAttributes.CHARACTERISTIC_GLUSOSE_MEASUREMENT))) {
+            Log.i(LOG, "broadcastUpdate() - CHARACTERISTIC_GLUSOSE_MEASUREMENT");
+            try {
+                intent.putExtra(EXTRA_DATA, GattGlucoseParser.parse(characteristic).toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         } else if (characteristic.getUuid().equals(UUID.fromString(GattAttributes.CHARACTERISTIC_GLUSOSE_MEASUREMENT_CONTEXT))) {
             Log.i(LOG, "broadcastUpdate() - CHARACTERISTIC_GLUSOSE_MEASUREMENT_CONTEXT");
+            try {
+                intent.putExtra(EXTRA_DATA_CONTEXT, GattGlucoseParser.contextParse(characteristic).toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         } else if (characteristic.getUuid().equals(UUID.fromString(GattAttributes.CHARACTERISTIC_SCALE_MEASUREMENT))) {
             try {
-                intent.putExtra(EXTRA_DATA, YunmaiParser.parse(characteristic.getValue()).toString());
+                intent.putExtra(EXTRA_DATA, YunmaiParser.parse(characteristic).toString());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -139,8 +151,8 @@ public class BluetoothLeService extends Service {
                 e.printStackTrace();
             }
         } else {
-            final byte[] data = characteristic.getValue();
             Log.w(LOG, "broadcastUpdate() - OTHER");
+            final byte[] data = characteristic.getValue();
             if (data != null && data.length > 0) {
                 final StringBuilder stringBuilder = new StringBuilder(data.length);
                 for (byte byteChar : data)

@@ -10,29 +10,43 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
+
+import com.mikhaellopez.circularprogressbar.CircularProgressBar;
+
+import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.activity.settings.Session;
+import br.edu.uepb.nutes.haniot.adapter.GlucoseAdapter;
+import br.edu.uepb.nutes.haniot.model.ContextMeasurement;
+import br.edu.uepb.nutes.haniot.model.ContextMeasurementType;
+import br.edu.uepb.nutes.haniot.model.ContextMeasurementValueType;
 import br.edu.uepb.nutes.haniot.model.Device;
+import br.edu.uepb.nutes.haniot.model.DeviceType;
 import br.edu.uepb.nutes.haniot.model.Measurement;
+import br.edu.uepb.nutes.haniot.model.dao.DeviceDAO;
+import br.edu.uepb.nutes.haniot.model.dao.MeasurementDAO;
+import br.edu.uepb.nutes.haniot.parse.JsonToContextParser;
+import br.edu.uepb.nutes.haniot.parse.JsonToMeasurementParser;
 import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
 import br.edu.uepb.nutes.haniot.service.BluetoothLeService;
 import br.edu.uepb.nutes.haniot.utils.GattAttributes;
@@ -43,89 +57,149 @@ import butterknife.ButterKnife;
  * Activity to capture the glucose data.
  *
  * @author Douglas Rafael <douglas.rafael@nutes.uepb.edu.br>
- * @version 1.0
+ * @version 1.2
  * @copyright Copyright (c) 2017, NUTES UEPB
  */
-public class GlucoseActivity extends AppCompatActivity implements View.OnClickListener, ListView.OnItemClickListener {
-    private final String LOG = "GlucoseActivity";
-
-    private final int ACTION_ALL_RECORDS = 0;
-    private final int ACTION_FIRST_RECORD = 1;
-    private final int ACTION_LAST_RECORD = 2;
-    private final String LIST_MEASUREMENT = "measurement";
-    private final String LIST_TIME_STAMP = "timestamp";
+public class GlucoseActivity extends AppCompatActivity implements GlucoseAdapter.OnItemClickListener {
+    private final String TAG = "GlucoseActivity";
 
     private BluetoothLeService mBluetoothLeService;
     private BluetoothGattCharacteristic characteristicMeasurement, characteristicMeasurementContext, characteristicRecordAccess;
-    private boolean mConnected = false;
+    private boolean mConnected;
     private BluetoothGattService mGattService = null;
-    private List<Measurement> mListMeasurementsContext;
-
-    private Menu mMenu;
     private String mDeviceAddress;
     private Animation animation;
-    private SimpleAdapter mAdapterRecords;
-    private List<Map<String, String>> mListRecords;
-    private int mActionRecords = -1;
-
     private Device mDevice;
+    private Session session;
+    private List<Measurement> measurementList;
+    private Measurement glucoseMeasurement;
+    private List<ContextMeasurement> contextMeasurements;
+    private MeasurementDAO measurementDAO;
+    private DeviceDAO deviceDAO;
+    private RecyclerView.Adapter mAdapter;
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
 
-    @BindView(R.id.connection_state)
-    TextView mConnectionStateTextView;
+    @BindView(R.id.blood_glucose_measurement)
+    TextView bloodGlucoseTextView;
 
-    @BindView(R.id.glucose_concentration)
-    TextView mGlucoseConcentrationTextView;
+    @BindView(R.id.blood_glucose_measurement_unit)
+    TextView bloodGlucoseUnitTextView;
 
-    @BindView(R.id.glucose_meal)
-    TextView mGlucoseMealTextView;
+    @BindView(R.id.blood_glucose_context)
+    TextView bloodGlucoseContextTextView;
 
-    @BindView(R.id.button_all_records)
-    Button mAllRecordsButton;
+    @BindView(R.id.app_bar_layout)
+    AppBarLayout mAppBarLayout;
 
-    @BindView(R.id.button_first_records)
-    Button mFirstRecordButton;
+    @BindView(R.id.view_circle)
+    CircularProgressBar mCircularProgressBar;
 
-    @BindView(R.id.button_last_records)
-    Button mLastRecordButton;
+    @BindView(R.id.collapsi_toolbar)
+    CollapsingToolbarLayout mCollapsingToolbarLayout;
 
-    @BindView(R.id.list_view_glucose_records)
-    ListView mRecordsListView;
+    @BindView(R.id.history_blood_glucose_listview)
+    RecyclerView mRecyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_glucose);
         ButterKnife.bind(this);
+        ButterKnife.bind(this);
+        initializeToolBar();
+
         mDeviceAddress = "00:60:19:60:68:62";
-        mDevice = new Device(mDeviceAddress, "Accu-Check Performa Connect");
-
-        setSupportActionBar(mToolbar);
-        getSupportActionBar().setTitle(R.string.glucose_measurement);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        mConnectionStateTextView.setText(getString(R.string.device_connection_state, getString(R.string.disconnected)));
-        animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
+        session = new Session(this);
+        measurementDAO = MeasurementDAO.getInstance(this);
+        deviceDAO = DeviceDAO.getInstance(this);
 
         Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
 
-        mAllRecordsButton.setOnClickListener(this);
-        mFirstRecordButton.setOnClickListener(this);
-        mLastRecordButton.setOnClickListener(this);
-        mRecordsListView.setOnItemClickListener(this);
+        animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
 
-        mListRecords = new ArrayList<>();
-//        mAdapterRecords = new SimpleAdapter(this, convertToListItems(mDevice.getMeasurements()),
-//                android.R.layout.simple_list_item_2, new String[]{LIST_MEASUREMENT, LIST_TIME_STAMP}, new int[]{android.R.id.text1, android.R.id.text2});
-//        mRecordsListView.setAdapter(mAdapterRecords);
+        measurementList = new ArrayList<>();
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        mAdapter = new GlucoseAdapter(measurementList, this, this);
+        mRecyclerView.setAdapter(mAdapter);
 
-        mListMeasurementsContext = new ArrayList<>();
-
-        SynchronizationServer.getInstance(this).run();
+        // synchronization with server
+        synchronizeWithServer();
     }
+
+    private void initializeToolBar() {
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        mCollapsingToolbarLayout.setExpandedTitleColor(ContextCompat.getColor(getApplicationContext(), android.R.color.transparent));
+        mCollapsingToolbarLayout.setCollapsedTitleTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorTextDark));
+
+        mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            boolean isShow = false;
+            int scrollRange = -1;
+
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                if (scrollRange == -1)
+                    scrollRange = appBarLayout.getTotalScrollRange();
+
+                if (scrollRange + verticalOffset == 0) {
+                    mCollapsingToolbarLayout.setTitle(getString(R.string.glucose));
+                    isShow = true;
+                } else if (isShow) {
+                    mCollapsingToolbarLayout.setTitle("");
+                    isShow = false;
+                }
+            }
+        });
+    }
+
+    private void updateConnectionState(final boolean isConnected) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mCircularProgressBar.setProgress(0);
+                mCircularProgressBar.setProgressWithAnimation(100); // Default animate duration = 1500ms
+
+                if (isConnected) {
+                    mCircularProgressBar.setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
+                    mCircularProgressBar.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAlertDanger));
+                } else {
+                    mCircularProgressBar.setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAlertDanger));
+                    mCircularProgressBar.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
+                }
+            }
+        });
+    }
+
+    private void refreshRecyclerView() {
+//        measurementList.clear();
+//
+//        for (Measurement m : measurementDAO.list(MeasurementType.TEMPERATURE, session.getIdLogged(), 0, 20)) {
+//            measurementList.add(m);
+//            mAdapter.notifyDataSetChanged();
+//        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        // TODO REMOVER!!! Pois o cadastro do device deverá ser no processo de emparelhamento
+        mDevice = deviceDAO.get(mDeviceAddress, session.getIdLogged());
+
+        if (mDevice == null) {
+            mDevice = new Device(mDeviceAddress, "ACCU-CHEK PERFORMA CONNECT", "ACCU-CHEK", "", DeviceType.GLUCOMETER, session.getUserLogged());
+            mDevice.set_id("123447dfd7bcdd24483500f35");
+            if (!deviceDAO.save(mDevice)) finish();
+        }
+    }
+
 
     @Override
     protected void onResume() {
@@ -135,6 +209,8 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
         if (mBluetoothLeService != null) {
             boolean result = mBluetoothLeService.connect(mDeviceAddress);
         }
+
+        refreshRecyclerView();
     }
 
     @Override
@@ -161,35 +237,6 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.button_all_records:
-                mAdapterRecords.notifyDataSetChanged();
-                mGlucoseConcentrationTextView.setText(getString(R.string.value_default));
-
-                getAllRecords();
-                break;
-            case R.id.button_first_records:
-                getFirstRecord();
-                break;
-            case R.id.button_last_records:
-                getLastRecord();
-                break;
-            default:
-                break;
-        }
-    }
-
-    private void updateConnectionState(final String state) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mConnectionStateTextView.setText(getString(R.string.device_connection_state, state));
-            }
-        });
-    }
-
     private static IntentFilter makeGattUpdateIntentFilter() {
         final IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(BluetoothLeService.ACTION_GATT_CONNECTED);
@@ -201,10 +248,9 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     public void getAllRecords() {
-        Log.i(LOG, "getAllRecords()");
+        Log.i(TAG, "getAllRecords()");
         if (mGattService == null) return;
 
-        mActionRecords = ACTION_ALL_RECORDS;
         BluetoothGattCharacteristic characteristic = mGattService.getCharacteristic(UUID.fromString(GattAttributes.CHARACTERISTIC_GLUSOSE_RECORD_ACCESS_CONTROL));
 
         byte[] data = new byte[2];
@@ -217,10 +263,9 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void getFirstRecord() {
-        Log.i(LOG, "getFirstRecord()");
+        Log.i(TAG, "getFirstRecord()");
         if (mGattService == null) return;
 
-        mActionRecords = ACTION_FIRST_RECORD;
         BluetoothGattCharacteristic characteristic = mGattService.getCharacteristic(UUID.fromString(GattAttributes.CHARACTERISTIC_GLUSOSE_RECORD_ACCESS_CONTROL));
         byte[] data = new byte[2];
         data[0] = 0x01; // Report Stored records
@@ -232,10 +277,9 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void getLastRecord() {
-        Log.i(LOG, "getLastRecord()");
+        Log.i(TAG, "getLastRecord()");
         if (mGattService == null) return;
 
-        mActionRecords = ACTION_LAST_RECORD;
         BluetoothGattCharacteristic characteristic = mGattService.getCharacteristic(UUID.fromString(GattAttributes.CHARACTERISTIC_GLUSOSE_RECORD_ACCESS_CONTROL));
         byte[] data = new byte[2];
         data[0] = 0x01; // Report Stored records
@@ -246,51 +290,13 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
         mBluetoothLeService.writeCharacteristic(characteristic);
     }
 
-    private List<Map<String, String>> convertToListItems(List<Measurement> measurements) {
-//        if (measurements != null) {
-//            for (final Measurement measurement : measurements) {
-//                Map<String, String> listItemMap = new HashMap<>();
-//                listItemMap.put(LIST_MEASUREMENT, valueToString(measurement));
-//                listItemMap.put(LIST_TIME_STAMP, DateUtils.getDatetime(measurement.getRegistrationTime(), getString(R.string.datetime_format)) + (measurement.getMeal() == null ? "" : " | " + measurement.getMeal()));
-//
-//                if (!mListRecords.contains(listItemMap))
-//                    mListRecords.add(listItemMap);
-//            }
-//        }
-
-        return mListRecords;
-    }
-
-    private String valueToString(Measurement measurement) {
-        // TODO CONCERTAR!!!
-//        String unit = measurement.getUnit();
-//        float value = measurement.getValueId();
-//
-//        if (measurement.getUnit().equals("kg/L")) {
-//            unit = "mg/dL";
-//            value = value * 100000;
-//        }
-//
-//        String value_formated = String.valueOf(value);
-//        if (value > 600) {
-//            value_formated = "HI"; // The blood glucose value may be above the reading range of the system.
-//        } else if (value < 0) {
-//            value_formated = "LO"; // The blood glucose value may be below the reading range of the system.
-//        } else {
-//            value_formated = String.valueOf((int) value) + unit;
-//        }
-//
-//        return value_formated;
-        return null;
-    }
-
     // Code to manage Service lifecycle.
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder service) {
             mBluetoothLeService = ((BluetoothLeService.LocalBinder) service).getService();
             if (!mBluetoothLeService.initialize()) {
-                Log.e(LOG, "Unable to initialize Bluetooth");
+                Log.e(TAG, "Unable to initialize Bluetooth");
                 finish();
             }
             // Conecta-se automaticamente ao dispositivo após a inicialização bem-sucedida.
@@ -318,69 +324,63 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
 
             if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
                 mConnected = true;
-                updateConnectionState(getString(R.string.connected));
+                updateConnectionState(mConnected);
             } else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
                 mConnected = false;
-                updateConnectionState(getString(R.string.disconnected));
+                updateConnectionState(mConnected);
             } else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
                 mGattService = mBluetoothLeService.getGattService(UUID.fromString(GattAttributes.SERVICE_GLUCOSE));
                 if (mGattService != null)
-                    initCharacteristic();
+                    initCharacteristics();
             } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
-//                final Measurement measurement = (Measurement) intent.getSerializableExtra(BluetoothLeService.EXTRA_DATA);
-//                final Measurement measurementContext = (Measurement) intent.getSerializableExtra(BluetoothLeService.EXTRA_DATA_CONTEXT);
-//
-//                if (measurementContext != null) {
-//                    Log.i("CONTEXT", measurementContext.toString());
-//                    if (!mListMeasurementsContext.contains(measurementContext)) {
-//                        mListMeasurementsContext.add(measurementContext);
-//                    }
-//                }
-//
-//                new Handler().postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        if (measurement != null) {
-//                            String value_formated = valueToString(measurement);
-//
-//                            relationGlucoseContext(measurement);
-//
-//                            if (mActionRecords == ACTION_ALL_RECORDS) {
-//                                Log.i(LOG, "ACTION_ALL_RECORDS");
-//
-////                                if (!mDevice.getMeasurements().contains(measurement)) {
-////                                    mDevice.addMeasurement(measurement);
-////                                    convertToListItems(mDevice.getMeasurements());
-////                                    mAdapterRecords.notifyDataSetChanged();
-////                                }
-//                            } else {
-//                                mActionRecords = -1;
-//                                mGlucoseConcentrationTextView.setText(value_formated);
-//                                mGlucoseMealTextView.setText(measurement.getMeal());
-//                                mGlucoseConcentrationTextView.startAnimation(animation);
-//                            }
-//
-//                            Log.i(LOG, measurement.toString());
-//                        }
-//                    }
-//                }, 300);
+                String jsonGlucoseData = intent.getStringExtra(BluetoothLeService.EXTRA_DATA);
+                String jsonGlucoseContextData = intent.getStringExtra(BluetoothLeService.EXTRA_DATA_CONTEXT);
+
+                try {
+                    if (jsonGlucoseData != null)
+                        glucoseMeasurement = JsonToMeasurementParser.boodGlucose(jsonGlucoseData);
+
+                    if (jsonGlucoseContextData != null)
+                        contextMeasurements = JsonToContextParser.parse(jsonGlucoseData, jsonGlucoseContextData);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (glucoseMeasurement != null) {
+                            Log.i(TAG, "MEASUREMENT: " + glucoseMeasurement.toString());
+
+                            glucoseMeasurement.setDevice(mDevice);
+                            glucoseMeasurement.setUser(session.getUserLogged());
+
+                            /**
+                             * Update UI
+                             */
+                            bloodGlucoseTextView.setText(valueToString(glucoseMeasurement));
+                            bloodGlucoseUnitTextView.setText(glucoseMeasurement.getUnit());
+                            bloodGlucoseContextTextView.setText(mealToString(contextMeasurements));
+                            bloodGlucoseTextView.startAnimation(animation);
+
+                            /**
+                             * Add relationships, save and send to server
+                             */
+                            if (contextMeasurements != null)
+                                glucoseMeasurement.addContext(contextMeasurements);
+
+                            if (measurementDAO.save(glucoseMeasurement))
+                                synchronizeWithServer();
+
+                            refreshRecyclerView();
+                        }
+                    }
+                }, 300);
             }
         }
     };
 
-    private Measurement relationGlucoseContext(Measurement measurement) {
-//        for (Measurement m : mListMeasurementsContext) {
-//            if (m.getSequenceNumber() == measurement.getSequenceNumber()) {
-//                measurement.setMeal(m.getMeal());
-//                measurement.setStatusAnnunciation(m.getStatusAnnunciation());
-//
-//                return measurement;
-//            }
-//        }
-        return null;
-    }
-
-    private void initCharacteristic() {
+    private void initCharacteristics() {
         if (characteristicMeasurement == null) {
             characteristicMeasurement = mGattService.getCharacteristic(UUID.fromString(GattAttributes.CHARACTERISTIC_GLUSOSE_MEASUREMENT));
             mBluetoothLeService.setCharacteristicNotification(characteristicMeasurement, BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE, true);
@@ -400,13 +400,56 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-        String valueSelected = ((TextView) view.findViewById(android.R.id.text1)).getText().toString();
-        String valueMeal = ((TextView) view.findViewById(android.R.id.text2)).getText().toString();
-        mGlucoseConcentrationTextView.setText(valueSelected);
+    /**
+     * Recover text from context value meal.
+     *
+     * @param contextMeasurements
+     * @return String
+     */
+    public String mealToString(List<ContextMeasurement> contextMeasurements) {
+        for (ContextMeasurement c : contextMeasurements) {
+            Log.i(TAG, "CONTEXTO: " + c.toString());
+            if (c.getTypeId() == ContextMeasurementType.GLUCOSE_MEAL)
+                return ContextMeasurementValueType.getString(this, c.getValueId());
+        }
+        return "";
+    }
 
-        String[] temp = valueMeal.split(" ");
-        mGlucoseMealTextView.setText(temp.length >= 3 ? temp[3] : "");
+    /**
+     * Convert value glucose for String.
+     *
+     * @param measurement
+     * @return String
+     */
+    public String valueToString(Measurement measurement) {
+        String value_formated = "";
+        double value = measurement.getValue();
+
+        if (measurement.getUnit().equals("kg/L")) {
+            measurement.setUnit(getString(R.string.unit_glucose_mg_dL));
+            value = value * 100000;
+        }
+
+        if (value > 600) {
+            value_formated = "HI"; // The blood glucose value may be above the reading range of the system.
+        } else if (value < 0) {
+            value_formated = "LO"; // The blood glucose value may be below the reading range of the system.
+        } else {
+            value_formated = String.format("%02d", (int) value);
+        }
+
+        return value_formated;
+    }
+
+    /**
+     * Performs routine for data synchronization with server.
+     */
+    private void synchronizeWithServer() {
+        SynchronizationServer.getInstance(this).run();
+    }
+
+    @Override
+    public void onItemClick(Measurement item) {
+
     }
 }
