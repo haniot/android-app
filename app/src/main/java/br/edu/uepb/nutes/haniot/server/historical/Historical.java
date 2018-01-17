@@ -20,12 +20,12 @@ import br.edu.uepb.nutes.haniot.utils.NameColumnsDB;
 /**
  * Module to perform measurements queries on the server.
  *
- * @param <E>
+ * @param <T>
  * @author Douglas Rafael <douglas.rafael@nutes.uepb.edu.br>
  * @version 1.0
  * @copyright Copyright (c) 2017, NUTES UEPB
  */
-public final class Historical<E> {
+public final class Historical<T> {
     private final String urn;
     private final String queryStrings;
     private final int type;
@@ -40,16 +40,15 @@ public final class Historical<E> {
      * Perform request.
      *
      * @param context  Context
-     * @param callback CallbackHistorical<E>
+     * @param callback CallbackHistorical<T>
      */
-    public void request(Context context, CallbackHistorical callback) {
+    public void request(Context context, CallbackHistorical<T> callback) {
         if (callback == null) throw new IllegalArgumentException("callback is required!");
         if (context == null) throw new IllegalArgumentException("context is required!");
 
         callback.onBeforeSend();
 
         String path = this.urn.concat(this.queryStrings);
-        Log.w("URN ============== ", path);
 
         Server.getInstance(context).get(path, new Server.Callback() {
             @Override
@@ -61,7 +60,7 @@ public final class Historical<E> {
             @Override
             public void onSuccess(JSONObject result) {
                 callback.onAfterSend();
-                callback.onSuccess(buildObjects(result));
+                callback.onResult(buildObjects(result));
             }
         });
     }
@@ -70,10 +69,10 @@ public final class Historical<E> {
      * Construct the objects according to the type of search.
      *
      * @param data JSONObject
-     * @return List<E>
+     * @return List<T>
      */
-    private List<E> buildObjects(JSONObject data) {
-        List<E> result = new ArrayList<>();
+    private List<T> buildObjects(JSONObject data) {
+        List<T> result = new ArrayList<>();
 
         if (type == HistoricalType.MEASUREMENTS_USER ||
                 type == HistoricalType.MEASUREMENTS_TYPE_USER ||
@@ -84,7 +83,7 @@ public final class Historical<E> {
                     JSONArray arrayData = data.getJSONArray(NameColumnsDB.MEASUREMENT);
 
                     for (int i = 0; i < arrayData.length(); i++) {
-                        result.add((E) buildMeasurement(arrayData.getJSONObject(i)));
+                        result.add((T) buildMeasurement(arrayData.getJSONObject(i)));
                     }
                 }
             } catch (JSONException e) {

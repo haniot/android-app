@@ -28,6 +28,7 @@
     <string name="bluetooth_classic">Bluetooth Classic</string>
     <string name="bluetooth_le">Bluetooth LE</string>
     <string name="welcome">Welcome</string>
+    <string name="no_more_data">No more data available...</string>
 
     <!--ACTIONS-->
     <string name="action_settings">Settings</string>

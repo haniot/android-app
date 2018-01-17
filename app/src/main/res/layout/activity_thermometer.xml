@@ -44,22 +44,24 @@
                     android:id="@+id/thermometer_measurement"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
+                    android:layout_alignStart="@+id/view_circle"
                     android:layout_centerVertical="true"
+                    android:layout_marginStart="23dp"
+                    android:gravity="center"
                     android:text="00.0"
                     android:textColor="@color/colorTextDark"
-                    android:textSize="65sp"
+                    android:textSize="55sp"
                     tools:ignore="HardcodedText" />
 
                 <TextView
                     android:id="@+id/textView7"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignBottom="@+id/view_circle"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginBottom="15dp"
+                    android:layout_alignBaseline="@+id/thermometer_measurement"
+                    android:layout_alignBottom="@+id/thermometer_measurement"
+                    android:layout_toEndOf="@+id/thermometer_measurement"
                     android:text="@string/unit_celsius"
-                    android:textSize="30sp" />
+                    android:textSize="25sp" />
 
             </RelativeLayout>
 
@@ -75,7 +77,7 @@
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.widget.NestedScrollView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
@@ -97,12 +99,20 @@
                 android:textSize="14sp"
                 android:textStyle="normal" />
 
+            <ProgressBar
+                android:id="@+id/load_data_progressbar"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="match_parent"
+                android:visibility="gone"
+                android:layout_height="wrap_content" />
+
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/history_temperature_listview"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginTop="10dp" />
+
         </LinearLayout>
 
-    </android.support.v4.widget.NestedScrollView>
+    </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

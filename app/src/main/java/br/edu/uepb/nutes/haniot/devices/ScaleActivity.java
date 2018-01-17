@@ -395,10 +395,10 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onItemClick(Measurement item) {
-
         Intent it = new Intent(getApplicationContext(), ScaleGraphActivity.class);
         startActivity(it);
     }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {

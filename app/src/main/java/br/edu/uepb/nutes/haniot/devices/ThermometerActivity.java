@@ -14,6 +14,7 @@ import android.os.IBinder;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -21,9 +22,12 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
@@ -33,7 +37,6 @@ import org.json.JSONObject;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
@@ -41,8 +44,8 @@ import java.util.UUID;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.graphs.TemperatureGraphActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
-import br.edu.uepb.nutes.haniot.adapter.OnItemClickListener;
 import br.edu.uepb.nutes.haniot.adapter.OnLoadMoreListener;
+import br.edu.uepb.nutes.haniot.adapter.SeparatorDecoration;
 import br.edu.uepb.nutes.haniot.adapter.TemperatureAdapter;
 import br.edu.uepb.nutes.haniot.model.Device;
 import br.edu.uepb.nutes.haniot.model.DeviceType;
@@ -69,8 +72,9 @@ import butterknife.ButterKnife;
  * @version 1.0
  * @copyright Copyright (c) 2017, NUTES UEPB
  */
-public class ThermometerActivity extends AppCompatActivity implements OnItemClickListener, OnLoadMoreListener {
+public class ThermometerActivity extends AppCompatActivity implements View.OnClickListener {
     private final String TAG = "ThermometerActivity";
+    private final int LIMIT_PER_PAGE = 5;
 
     private BluetoothLeService mBluetoothLeService;
     private boolean mConnected = false;
@@ -80,11 +84,13 @@ public class ThermometerActivity extends AppCompatActivity implements OnItemClic
     private Animation animation;
     private Device mDevice;
     private Session session;
-    private List<Measurement> listMeasurements;
     private MeasurementDAO measurementDAO;
     private DeviceDAO deviceDAO;
     private DecimalFormat decimalFormat;
-    private RecyclerView.Adapter mAdapter;
+    private TemperatureAdapter mAdapter;
+    private List<Measurement> listMeasurements;
+    private Params params;
+    private Historical historical;
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -104,6 +110,9 @@ public class ThermometerActivity extends AppCompatActivity implements OnItemClic
     @BindView(R.id.history_temperature_listview)
     RecyclerView mRecyclerView;
 
+    @BindView(R.id.load_data_progressbar)
+    ProgressBar mLoadDataProgressBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -111,28 +120,190 @@ public class ThermometerActivity extends AppCompatActivity implements OnItemClic
         ButterKnife.bind(this);
         initializeToolBar();
 
+        // synchronization with server
+        synchronizeWithServer();
+
         mDeviceAddress = "1C:87:74:01:73:10";
         session = new Session(this);
         measurementDAO = MeasurementDAO.getInstance(this);
         deviceDAO = DeviceDAO.getInstance(this);
         decimalFormat = new DecimalFormat(getString(R.string.temperature_format), new DecimalFormatSymbols(Locale.US));
+        params = new Params(session.get_idLogged(), MeasurementType.TEMPERATURE);
+        mCircularProgressBar.setOnClickListener(this);
 
         Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
 
         animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
 
+        initializeRecyclerView();
+    }
+
+    private void initializeRecyclerView() {
         listMeasurements = new ArrayList<>();
+        SeparatorDecoration itemDecorator = new SeparatorDecoration(this,
+                ResourcesCompat.getColor(getResources(), R.color.colorItemSeparator, null),
+                1);
+
+        mAdapter = new TemperatureAdapter(this, listMeasurements);
+        mAdapter.setLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                /**
+                 * Calling loadMoreData function in Runnable to fix the
+                 * java.lang.IllegalStateException: Cannot call this method while RecyclerView is computing a layout or scrolling error
+                 */
+                mRecyclerView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        loadMoreData();
+                    }
+                });
+            }
+        });
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mAdapter = new TemperatureAdapter(mRecyclerView, listMeasurements, this, this, this);
+        mRecyclerView.addItemDecoration(itemDecorator);
         mRecyclerView.setAdapter(mAdapter);
 
-        // synchronization with server
-        synchronizeWithServer();
+        loadData();
     }
 
+    /**
+     * Load data.
+     * If there is no internet connection, we can display the local database.
+     * Otherwise it displays from the remote server.
+     */
+    private void loadData() {
+        listMeasurements.clear();
+
+        if (!ConnectionUtils.internetIsEnabled(this)) {
+            for (Measurement m : measurementDAO.list(MeasurementType.TEMPERATURE, session.getIdLogged(), 0, 100)) {
+                listMeasurements.add(m);
+                mAdapter.notifyDataSetChanged();
+            }
+        } else {
+            Historical historical = new Historical.Query()
+                    .type(HistoricalType.MEASUREMENTS_TYPE_USER)
+                    .params(params)
+                    .pagination(0, LIMIT_PER_PAGE)
+                    .build();
+
+            historical.request(this, new CallbackHistorical<Measurement>() {
+                @Override
+                public void onBeforeSend() {
+                    toggleLoadingInitial(true);
+                }
+
+                @Override
+                public void onError(JSONObject result) {
+                    printMessage(getString(R.string.error_500));
+                    toggleLoadingInitial(false);
+                }
+
+                @Override
+                public void onResult(List<Measurement> result) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (result != null && result.size() > 0) {
+                                listMeasurements.addAll(result);
+                                updateUILastMeasurement(listMeasurements.get(0), false);
+                            }
+                            mAdapter.notifyDataChanged();
+                        }
+                    });
+                }
+
+                @Override
+                public void onAfterSend() {
+                    toggleLoadingInitial(false);
+                }
+            });
+        }
+    }
+
+    /**
+     * List more items from the remote server.
+     */
+    private void loadMoreData() {
+        Historical historical = new Historical.Query()
+                .type(HistoricalType.MEASUREMENTS_TYPE_USER)
+                .params(params)
+                .pagination(listMeasurements.size(), LIMIT_PER_PAGE)
+                .build();
+
+        historical.request(this, new CallbackHistorical<Measurement>() {
+            @Override
+            public void onBeforeSend() {
+                //add loading progress view
+                listMeasurements.add(null);
+                mAdapter.notifyItemInserted(listMeasurements.size() - 1);
+            }
+
+            @Override
+            public void onError(JSONObject result) {
+                Toast.makeText(getApplicationContext(), R.string.error_500, Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onResult(List<Measurement> result) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (result != null && result.size() > 0) {
+                            listMeasurements.addAll(result);
+                        } else {
+                            mAdapter.setMoreDataAvailable(false);
+                            //telling adapter to stop calling loadData loadData as no loadData server data available
+                            printMessage(getString(R.string.no_more_data));
+                        }
+                        mAdapter.notifyDataChanged();
+                    }
+                });
+            }
+
+            @Override
+            public void onAfterSend() {
+                //remove loading view
+                listMeasurements.remove(listMeasurements.size() - 1);
+            }
+        });
+    }
+
+    /**
+     * Enable/Disable loading data initial in RecyclerView
+     *
+     * @param enabled boolean
+     */
+    private void toggleLoadingInitial(boolean enabled) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (enabled) mLoadDataProgressBar.setVisibility(View.VISIBLE);
+                else mLoadDataProgressBar.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    /**
+     * Print Toast Messages.
+     *
+     * @param message
+     */
+    private void printMessage(String message) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    /**
+     * initializeToolBar
+     */
     private void initializeToolBar() {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -182,17 +353,6 @@ public class ThermometerActivity extends AppCompatActivity implements OnItemClic
 
         if (mBluetoothLeService != null) {
             mBluetoothLeService.connect(mDeviceAddress);
-        }
-
-        refreshRecyclerView();
-    }
-
-    private void refreshRecyclerView() {
-        listMeasurements.clear();
-
-        for (Measurement m : measurementDAO.list(MeasurementType.TEMPERATURE, session.getIdLogged(), 0, 20)) {
-            listMeasurements.add(m);
-            mAdapter.notifyDataSetChanged();
         }
     }
 
@@ -316,43 +476,54 @@ public class ThermometerActivity extends AppCompatActivity implements OnItemClic
             } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
                 String jsonData = intent.getStringExtra(BluetoothLeService.EXTRA_DATA);
 
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            Measurement measurement = JsonToMeasurementParser.temperature(jsonData);
-                            measurement.setDevice(mDevice);
-                            measurement.setUser(session.getUserLogged());
+                try {
+                    Measurement measurement = JsonToMeasurementParser.temperature(jsonData);
+                    measurement.setDevice(mDevice);
+                    measurement.setUser(session.getUserLogged());
 
-                            mTemperatureTextView.setText(decimalFormat.format(measurement.getValue()));
-                            mTemperatureTextView.startAnimation(animation);
+                    updateUILastMeasurement(measurement, true);
 
-                            /**
-                             * Save in local
-                             * Send to server saved successfully
-                             */
-                            if (measurementDAO.save(measurement))
-                                synchronizeWithServer();
-
-                            refreshRecyclerView();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                    /**
+                     * Save in local
+                     * Send to server saved successfully
+                     */
+                    if (measurementDAO.save(measurement)) {
+                        synchronizeWithServer();
+                        loadData();
                     }
-                });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         }
     };
 
-    @Override
-    public void onItemClick(Measurement item) {
-        Intent it = new Intent(getApplicationContext(), TemperatureGraphActivity.class);
-        startActivity(it);
+    /**
+     * update the UI with the last measurement.
+     *
+     * @param m {@link Measurement}
+     */
+    private void updateUILastMeasurement(Measurement m, boolean applyAnimation) {
+        if (m == null) return;
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mTemperatureTextView.setText(decimalFormat.format(m.getValue()));
+                if (applyAnimation) mTemperatureTextView.startAnimation(animation);
+            }
+        });
     }
 
     @Override
-    public void onLoadMore() {
-
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.view_circle:
+                startActivity(new Intent(getApplicationContext(), TemperatureGraphActivity.class));
+                break;
+            default:
+                break;
+        }
     }
 
     /**
@@ -361,5 +532,4 @@ public class ThermometerActivity extends AppCompatActivity implements OnItemClic
     private void synchronizeWithServer() {
         SynchronizationServer.getInstance(this).run();
     }
-
 }

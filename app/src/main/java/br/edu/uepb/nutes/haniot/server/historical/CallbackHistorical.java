@@ -7,17 +7,17 @@ import java.util.List;
 /**
  * Interface CallbackHistorical.
  *
- * @param <E>
+ * @param <T>
  * @author Douglas Rafael <douglas.rafael@nutes.uepb.edu.br>
  * @version 1.0
  * @copyright Copyright (c) 2017, NUTES UEPB
  */
-public interface CallbackHistorical<E> {
+public interface CallbackHistorical<T> {
     void onBeforeSend();
 
     void onError(JSONObject result);
 
-    void onSuccess(List<E> result);
+    void onResult(List<T> result);
 
     void onAfterSend();
 }
