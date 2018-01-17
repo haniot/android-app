@@ -45,6 +45,11 @@ public class Measurement {
     public Measurement() {
     }
 
+
+    public Measurement(long id) {
+        this.id = id;
+    }
+
     public Measurement(double value, String unit, int typeId) {
         this.value = value;
         this.unit = unit;

@@ -12,10 +12,6 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
-    <uses-feature
-        android:name="android.hardware.bluetooth_le"
-        android:required="false" />
-
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -87,7 +83,7 @@
         <activity android:name=".activity.graphs.TemperatureGraphActivity" />
         <activity android:name=".activity.graphs.HeartRateGraphActivity" />
         <activity android:name=".activity.graphs.BloodPresssureHDPGraphActivity" />
-        <activity android:name=".devices.smartband.miband.SmartBandActivity"></activity>
+        <activity android:name=".devices.smartband.miband.SmartBandActivity" />
 
         <!-- SERVICES -->
         <service

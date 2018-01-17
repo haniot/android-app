@@ -39,6 +39,8 @@ import java.util.Locale;
 import java.util.UUID;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.activity.graphs.ScaleGraphActivity;
+import br.edu.uepb.nutes.haniot.activity.graphs.TemperatureGraphActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.BodyCompositionAdapter;
 import br.edu.uepb.nutes.haniot.model.Device;
@@ -398,13 +400,12 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
 //        Intent it = new Intent(getApplicationContext(), ScaleGraphActivity.class);
 //        startActivity(it);
     }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.view_circle:
-                Log.i(TAG, "onClick() - view_circle");
-                // Chamada para tela de gráfico
-
+                startActivity(new Intent(getApplicationContext(),ScaleGraphActivity.class));
                 break;
             default:
                 break;

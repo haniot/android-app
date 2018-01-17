@@ -3,23 +3,12 @@ package br.edu.uepb.nutes.haniot.activity.graphs;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.AxisBase;
-import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.formatter.IAxisValueFormatter;
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -27,9 +16,7 @@ import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.model.Measurement;
 import br.edu.uepb.nutes.haniot.model.dao.MeasurementDAO;
-import br.edu.uepb.nutes.haniot.server.Server;
 import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
-import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -54,10 +41,10 @@ public class HeartRateGraphActivity extends AppCompatActivity implements View.On
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
 
-    @BindView(R.id.ver_por_mes)
+    @BindView(R.id.month_button)
     Button mButtonMonth;
 
-    @BindView(R.id.ver_por_semana)
+    @BindView(R.id.week_button)
     Button mButtonSeven;
 
 
@@ -310,11 +297,11 @@ public class HeartRateGraphActivity extends AppCompatActivity implements View.On
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.ver_por_mes:
+            case R.id.month_button:
                 createChart(GRAPH_TYPE_MONTH);
                 break;
 
-            case R.id.ver_por_semana:
+            case R.id.week_button:
                 createChart(GRAPH_TYPE_SEVEN);
                 break;
         }
