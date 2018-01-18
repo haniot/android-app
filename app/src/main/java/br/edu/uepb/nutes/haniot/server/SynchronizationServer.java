@@ -245,7 +245,7 @@ public class SynchronizationServer {
                     if (m.getContextMeasurements().size() > 0)
                         contextMeasurementDAO.removeAllOfMeasurement(m.getId());
                 }
-                measurementDAO.removeAll(session.getIdLogged());
+//                measurementDAO.removeAll(session.getIdLogged());
             }
         });
     }

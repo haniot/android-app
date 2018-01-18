@@ -25,7 +25,7 @@ import br.edu.uepb.nutes.haniot.utils.DateUtils;
  * @version 1.0
  * @copyright Copyright (c) 2017, NUTES UEPB
  */
-public class TemperatureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class TemperatureAdapter extends RecyclerView.Adapter<TemperatureAdapter.ItemViewHolder> {
     private final String LOG = "BluetoothDeviceAdapter";
 
     private final int VIEW_TYPE_ITEM = 0;
@@ -36,6 +36,12 @@ public class TemperatureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     private OnItemClickListener itemClckListener;
     private OnLoadMoreListener loadMoreListener;
+
+    /**
+     * Used to signal that callback is not required onLoadMore,
+     * because data is being listed from the local database.
+     */
+    private boolean isDataLocal = false;
 
     /**
      * isLoading - to set the remote loading and complete status to fix back to back load more call
@@ -60,27 +66,28 @@ public class TemperatureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public TemperatureAdapter.ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
-
-        if (viewType == VIEW_TYPE_ITEM)
-            return new ItemViewHolder(inflater.inflate(R.layout.item_temperature, parent, false));
-
-        // Loading
-        return new LoadingViewHolder(inflater.inflate(R.layout.item_loading, parent, false));
+        return new ItemViewHolder(inflater.inflate(R.layout.item_temperature, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        if (position >= getItemCount() - 1 && isMoreDataAvailable && !isLoading && loadMoreListener != null) {
-            isLoading = true;
-            loadMoreListener.onLoadMore();
-        }
-
-        if (getItemViewType(position) == VIEW_TYPE_ITEM && holder instanceof ItemViewHolder)
+    public void onBindViewHolder(ItemViewHolder holder, int position) {
+        if (holder instanceof ItemViewHolder)
             ((ItemViewHolder) holder).bindData(items.get(position));
-
     }
+
+//    @Override
+//    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+//        if (position >= getItemCount() - 1 && isMoreDataAvailable && !isLoading && loadMoreListener != null) {
+//            isLoading = true;
+//            loadMoreListener.onLoadMore();
+//        }
+//
+//        if (getItemViewType(position) == VIEW_TYPE_ITEM && holder instanceof ItemViewHolder)
+//            ((ItemViewHolder) holder).bindData(items.get(position));
+//
+//    }
 
     @Override
     public int getItemViewType(int position) {
@@ -131,6 +138,10 @@ public class TemperatureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         public LoadingViewHolder(View view) {
             super(view);
         }
+    }
+
+    public void setDataLocal(boolean dataLocal) {
+        isDataLocal = dataLocal;
     }
 
     public void setMoreDataAvailable(boolean moreDataAvailable) {

@@ -47,14 +47,11 @@ public class SplashScreenActivity extends AppCompatActivity {
                 .run(new SynchronizationServer.Callback() {
                     @Override
                     public void onError(JSONObject result) {
-                        Log.i(TAG, "onError()");
-                        if (result != null) Log.i(TAG, result.toString());
                         openLoginActivity();
                     }
 
                     @Override
                     public void onSuccess(JSONObject result) {
-                        if (result != null) Log.i(TAG, "onSuccess()" + result.toString());
                         openLoginActivity();
                     }
                 });
