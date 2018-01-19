@@ -148,8 +148,8 @@ public class ScaleGraphActivity extends AppCompatActivity implements View.OnClic
             String date = DateUtils.getDatetime(measurementData.get(i).getRegistrationDate(),
                     getString(R.string.date_format));
 
-            float temp = (float) measurementData.get(i).getValue();
-            entries.add(new Entry((float) i, temp));
+            float weight = (float) measurementData.get(i).getValue();
+            entries.add(new Entry((float) i, weight));
             quarters[i] = date;
         }
 

@@ -46,9 +46,9 @@ public class Server {
      */
 //    /* PC HOME */ private final String URI_DEFAULT = "https://192.168.31.113/api/v1";
 //    /* PC WIFI DOUGLAS */ private final String URI_DEFAULT = "http://192.168.50.175:3000/api/v1";
- //   /* PC ETHERNET DOUGLAS */ private final String URI_DEFAULT = "http://192.168.50.139:3000/api/v1";
+    /* PC ETHERNET DOUGLAS */ private final String URI_DEFAULT = "https://192.168.50.139/api/v1";
 //    /* PC EDSON */ private final String URI_DEFAULT = "http://192.168.50.38:3000/api/v1";
-        /* PC IZABELLA */ private final String URI_DEFAULT = "http://192.168.50.179:3000/api/v1";
+ //       /* PC IZABELLA */ private final String URI_DEFAULT = "http://192.168.50.179:3000/api/v1";
 
     private final String MEDIA_TYPE = "application/json; charset=utf-8";
 
