@@ -162,7 +162,7 @@ public class MeasurementDAO {
         return measurementBox.query()
                 .equal(Measurement_.typeId, typeId)
                 .equal(Measurement_.userId, userId)
-                .orderDesc(Measurement_.id)
+                .orderDesc(Measurement_.registrationDate)
                 .build()
                 .find(offset, limit);
     }

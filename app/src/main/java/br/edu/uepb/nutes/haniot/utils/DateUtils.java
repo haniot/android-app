@@ -1,6 +1,8 @@
 package br.edu.uepb.nutes.haniot.utils;
 
+import android.content.Context;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -10,7 +12,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 import java.util.TimeZone;
+
+import br.edu.uepb.nutes.haniot.R;
 
 /**
  * Provides useful methods for handling date/time.
@@ -232,5 +237,45 @@ public final class DateUtils {
         } catch (ParseException e) {
             return false;
         }
+    }
+
+    /**
+     * Returns date passed as abbreviated parameter: MMMM dd, EEE
+     * - If the phone language is "pt": Jan 18, 2018
+     * - If for another: January 18, 2018
+     *
+     * @param dateMills long
+     * @return String
+     */
+    public static String abbreviatedDate(Context context, long dateMills) {
+        if (isToday(dateMills))
+            return context.getResources().getString(R.string.today_text);
+
+        StringBuilder result = new StringBuilder();
+        Calendar c = GregorianCalendar.getInstance();
+        c.setTimeInMillis(dateMills);
+
+        DateFormat dateFormat = new SimpleDateFormat("MMMM dd, EEE");
+        return dateFormat.format(c.getTime());
+    }
+
+    /**
+     * Checks if the date passed as parameter is today.
+     *
+     * @param dateMills long
+     * @return boolean
+     */
+    public static boolean isToday(long dateMills) {
+        Calendar c1 = GregorianCalendar.getInstance();
+        Calendar c2 = GregorianCalendar.getInstance();
+        c1.setTimeInMillis(dateMills);
+        c2.setTimeInMillis(getCurrentDatetime());
+
+        if (c1.get(Calendar.DAY_OF_MONTH) == c2.get(Calendar.DAY_OF_MONTH) &&
+                c1.get(Calendar.MONTH) == c2.get(Calendar.MONTH) &&
+                c2.get(Calendar.YEAR) == c2.get(Calendar.YEAR))
+            return true;
+
+        return false;
     }
 }

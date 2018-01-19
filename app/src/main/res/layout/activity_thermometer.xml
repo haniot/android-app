@@ -45,8 +45,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignStart="@+id/view_circle"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="23dp"
+                    android:layout_alignTop="@+id/view_circle"
+                    android:layout_marginStart="27dp"
+                    android:layout_marginTop="50dp"
                     android:gravity="center"
                     android:text="00.0"
                     android:textColor="@color/colorTextDark"
@@ -62,6 +63,18 @@
                     android:layout_toEndOf="@+id/thermometer_measurement"
                     android:text="@string/unit_celsius"
                     android:textSize="25sp" />
+
+                <TextView
+                    android:id="@+id/date_measurement_textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignEnd="@+id/view_circle"
+                    android:layout_alignStart="@+id/view_circle"
+                    android:layout_below="@+id/thermometer_measurement"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center_horizontal"
+                    android:textSize="15sp"
+                    android:text="@null" />
 
             </RelativeLayout>
 
@@ -81,38 +94,47 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
+        android:orientation="vertical"
+        android:padding="@dimen/activity_horizontal_margin"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+        <TextView
+            android:id="@+id/text_view_title_history"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="@dimen/activity_horizontal_margin">
+            android:text="@string/most_recent_entries"
+            android:textAllCaps="false"
+            android:textColor="@color/colorPrimary"
+            android:textSize="14sp"
+            android:textStyle="normal" />
 
-            <TextView
-                android:id="@+id/text_view_title_history"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/most_recent_entries"
-                android:textAllCaps="false"
-                android:textColor="@color/colorPrimary"
-                android:textSize="14sp"
-                android:textStyle="normal" />
-
-            <ProgressBar
-                android:id="@+id/load_data_progressbar"
-                style="?android:attr/progressBarStyle"
-                android:layout_width="match_parent"
-                android:visibility="gone"
-                android:layout_height="wrap_content" />
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/history_temperature_listview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="10dp" />
+                android:layout_marginTop="15dp"
+                android:scrollbars="vertical" />
 
-        </LinearLayout>
+            <ProgressBar
+                android:id="@+id/load_data_progressbar"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="top"
+                android:layout_marginTop="25dp"
+                android:indeterminate="true"
+                android:indeterminateTint="@color/colorAccent"
+                android:indeterminateTintMode="src_in"
+                android:visibility="gone" />
+        </FrameLayout>
 
     </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>
