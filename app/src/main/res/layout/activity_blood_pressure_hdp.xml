@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".devices.hdp.BloodPressureHDPActivity">
 
+
     <android.support.design.widget.AppBarLayout
         android:id="@+id/box_bar_layout"
         android:layout_width="match_parent"

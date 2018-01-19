@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
@@ -32,6 +33,8 @@ import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.activity.graphs.BloodPresssureHDPGraphActivity;
+import br.edu.uepb.nutes.haniot.activity.graphs.ScaleGraphActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.model.Device;
 import br.edu.uepb.nutes.haniot.model.DeviceType;
@@ -45,7 +48,7 @@ import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class BodyCompositionHDPActivity extends AppCompatActivity {
+public class BodyCompositionHDPActivity extends AppCompatActivity implements  View.OnClickListener {
     private final String TAG = "BodyCompositionHDPActivity";
 
     @BindView(R.id.toolbar)
@@ -99,6 +102,7 @@ public class BodyCompositionHDPActivity extends AppCompatActivity {
 
         tm = new Handler();
         Intent intent = new Intent("com.signove.health.service.HealthService");
+        intent.setPackage(this.getPackageName());
         startService(intent);
         bindService(intent, serviceConnection, 0);
         Log.w("HST", "Activity created");
@@ -347,5 +351,16 @@ public class BodyCompositionHDPActivity extends AppCompatActivity {
      */
     private void synchronizeWithServer() {
         SynchronizationServer.getInstance(this).run();
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.view_circle:
+                startActivity(new Intent(getApplicationContext(),BloodPresssureHDPGraphActivity.class));
+                break;
+            default:
+                break;
+        }
     }
 }
