@@ -83,7 +83,6 @@ public class ScaleGraphActivity extends AppCompatActivity implements View.OnClic
         mButtonWeek.setOnClickListener(this);
 
         params = new Params(session.get_idLogged(), MeasurementType.BODY_FAT);
-
         createChart(GRAPH_TYPE_DAY);
     }
 

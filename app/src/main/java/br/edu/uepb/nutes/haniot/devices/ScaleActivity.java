@@ -150,7 +150,7 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
         session = new Session(this);
         measurementDAO = MeasurementDAO.getInstance(this);
         deviceDAO = DeviceDAO.getInstance(this);
-        decimalFormat = new DecimalFormat(getString(R.string.weight_format), new DecimalFormatSymbols(Locale.US));
+        decimalFormat = new DecimalFormat(getString(R.string.format_number2), new DecimalFormatSymbols(Locale.US));
         params = new Params(session.get_idLogged(), MeasurementType.BODY_MASS);
 
         animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
@@ -674,6 +674,7 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
                 mDateLastMeasurement.setText(DateUtils.abbreviatedDate(
                         getApplicationContext(), measurement.getRegistrationDate()));
                 bodyMassTextView.setText(formatNumber(measurement.getValue()));
+                bodyMassUnitTextView.setText(measurement.getUnit());
 
                 /**
                  * Relations

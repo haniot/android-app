@@ -22,7 +22,7 @@
             android:padding="12dp">
 
             <TextView
-                android:id="@+id/measurement_temperature"
+                android:id="@+id/temperature_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
@@ -35,10 +35,10 @@
                 android:id="@+id/unit_temperature_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignBaseline="@+id/measurement_temperature"
-                android:layout_alignBottom="@+id/measurement_temperature"
+                android:layout_alignBaseline="@+id/temperature_textview"
+                android:layout_alignBottom="@+id/temperature_textview"
                 android:layout_marginStart="2dp"
-                android:layout_toEndOf="@+id/measurement_temperature"
+                android:layout_toEndOf="@+id/temperature_textview"
                 android:text="@string/unit_celsius"
                 android:textSize="20sp" />
 
@@ -54,7 +54,7 @@
                 android:id="@+id/date_measurement_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/measurement_temperature"
+                android:layout_alignBottom="@+id/temperature_textview"
                 android:layout_alignParentEnd="true"
                 android:text="2017/10/27 22:23:44"
                 android:textSize="13sp" />

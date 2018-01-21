@@ -137,7 +137,7 @@ public class BodyCompositionHDPActivity extends AppCompatActivity implements Vie
         session = new Session(this);
         deviceDAO = DeviceDAO.getInstance(this);
         measurementDAO = MeasurementDAO.getInstance(this);
-        decimalFormat = new DecimalFormat(getString(R.string.weight_format), new DecimalFormatSymbols(Locale.US));
+        decimalFormat = new DecimalFormat(getString(R.string.format_number2), new DecimalFormatSymbols(Locale.US));
         params = new Params(session.get_idLogged(), MeasurementType.BODY_MASS);
 
         animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
@@ -419,9 +419,10 @@ public class BodyCompositionHDPActivity extends AppCompatActivity implements Vie
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                bodyMassTextView.setText(decimalFormat.format(measurement.getValue()));
+                bodyMassUnitTextView.setText(measurement.getUnit());
                 mDateLastMeasurement.setText(DateUtils.abbreviatedDate(
                         getApplicationContext(), measurement.getRegistrationDate()));
-                bodyMassTextView.setText(decimalFormat.format(measurement.getValue()));
 
                 /**
                  * Relations
@@ -478,34 +479,6 @@ public class BodyCompositionHDPActivity extends AppCompatActivity implements Vie
                 } else {
                     mCircularProgressBar.setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAlertDanger));
                     mCircularProgressBar.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
-                }
-            }
-        });
-    }
-
-    private void initializeToolBar() {
-        setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-
-        mCollapsingToolbarLayout.setExpandedTitleColor(ContextCompat.getColor(getApplicationContext(), android.R.color.transparent));
-        mCollapsingToolbarLayout.setCollapsedTitleTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorTextDark));
-
-        mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            boolean isShow = false;
-            int scrollRange = -1;
-
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if (scrollRange == -1)
-                    scrollRange = appBarLayout.getTotalScrollRange();
-
-                if (scrollRange + verticalOffset == 0) {
-                    mCollapsingToolbarLayout.setTitle(getString(R.string.body_weight_scale));
-                    isShow = true;
-                } else if (isShow) {
-                    mCollapsingToolbarLayout.setTitle("");
-                    isShow = false;
                 }
             }
         });
@@ -652,15 +625,6 @@ public class BodyCompositionHDPActivity extends AppCompatActivity implements Vie
                     Measurement bodyAge = JsonToMeasurementParser.bodyAge(xmldata);
                     bodyAge.setUser(user);
                     bodyAge.setDevice(mDevice);
-
-                    /**
-                     * Update UI
-                     */
-                    bodyMassTextView.setText(decimalFormat.format(bodyMass.getValue()));
-                    bodyMassUnitTextView.setText(bodyMass.getUnit());
-                    bmiTextView.setText(decimalFormat.format(bmi.getValue()));
-                    bodyFatTextView.setText(decimalFormat.format(bodyFat.getValue()));
-                    bodyMassTextView.startAnimation(animation);
 
                     /**
                      * Add relationships

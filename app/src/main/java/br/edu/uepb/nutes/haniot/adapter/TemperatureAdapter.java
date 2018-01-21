@@ -1,6 +1,7 @@
 package br.edu.uepb.nutes.haniot.adapter;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -12,7 +13,6 @@ import java.util.Locale;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.adapter.base.BaseAdapter;
-import br.edu.uepb.nutes.haniot.adapter.base.BaseRecyclerViewHolder;
 import br.edu.uepb.nutes.haniot.model.Measurement;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
@@ -38,7 +38,7 @@ public class TemperatureAdapter extends BaseAdapter<Measurement> {
      */
     public TemperatureAdapter(Context context) {
         this.context = context;
-        this.decimalFormat = new DecimalFormat(context.getResources().getString(R.string.temperature_format), new DecimalFormatSymbols(Locale.US));
+        this.decimalFormat = new DecimalFormat(context.getResources().getString(R.string.format_number1), new DecimalFormatSymbols(Locale.US));
     }
 
     @Override
@@ -47,12 +47,12 @@ public class TemperatureAdapter extends BaseAdapter<Measurement> {
     }
 
     @Override
-    public BaseRecyclerViewHolder createViewHolder(View view) {
+    public RecyclerView.ViewHolder createViewHolder(View view) {
         return new ViewHolder(view);
     }
 
     @Override
-    public void showData(BaseRecyclerViewHolder holder, int position, List<Measurement> itemsList) {
+    public void showData(RecyclerView.ViewHolder holder, int position, List<Measurement> itemsList) {
         if (holder instanceof ViewHolder) {
             final Measurement m = itemsList.get(position);
             ViewHolder h = (ViewHolder) holder;
@@ -81,17 +81,17 @@ public class TemperatureAdapter extends BaseAdapter<Measurement> {
     }
 
     @Override
-    public void clearAnimation(BaseRecyclerViewHolder holder) {
+    public void clearAnimation(RecyclerView.ViewHolder holder) {
         ((ViewHolder) holder).clearAnimation();
     }
 
     /**
      * Class ViewHolder for item.
      */
-    public class ViewHolder extends BaseRecyclerViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         final View mView;
 
-        @BindView(R.id.measurement_temperature)
+        @BindView(R.id.temperature_textview)
         TextView value;
 
         @BindView(R.id.unit_temperature_textview)

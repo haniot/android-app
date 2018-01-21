@@ -99,8 +99,11 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
 
-    @BindView(R.id.thermometer_measurement)
+    @BindView(R.id.temperature_textview)
     TextView mTemperatureTextView;
+
+    @BindView(R.id.unit_temperature_textview)
+    TextView mUnitTemperatureTextView;
 
     @BindView(R.id.date_last_measurement_textView)
     TextView mDateLastMeasurement;
@@ -139,7 +142,7 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
         session = new Session(this);
         measurementDAO = MeasurementDAO.getInstance(this);
         deviceDAO = DeviceDAO.getInstance(this);
-        decimalFormat = new DecimalFormat(getString(R.string.temperature_format), new DecimalFormatSymbols(Locale.US));
+        decimalFormat = new DecimalFormat(getString(R.string.format_number1), new DecimalFormatSymbols(Locale.US));
         params = new Params(session.get_idLogged(), MeasurementType.TEMPERATURE);
 
         animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
@@ -584,6 +587,7 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
             @Override
             public void run() {
                 mTemperatureTextView.setText(decimalFormat.format(m.getValue()));
+                mUnitTemperatureTextView.setText(m.getUnit());
                 mDateLastMeasurement.setText(DateUtils.abbreviatedDate(
                         getApplicationContext(), m.getRegistrationDate()));
 

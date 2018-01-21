@@ -22,28 +22,40 @@
             android:padding="12dp">
 
             <TextView
-                android:id="@+id/measurement_blood_pressure_textview"
+                android:id="@+id/blood_pressure_sys_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
-                android:text="134/84"
+                android:text="000/"
                 android:textSize="26sp"
                 android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/blood_pressure_dia_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/blood_pressure_sys_textview"
+                android:layout_alignBottom="@+id/blood_pressure_sys_textview"
+                android:layout_toEndOf="@+id/blood_pressure_sys_textview"
+                android:text="00"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
 
             <TextView
                 android:id="@+id/unit_blood_pressure_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignBaseline="@+id/measurement_blood_pressure_textview"
-                android:layout_alignBottom="@+id/measurement_blood_pressure_textview"
+                android:layout_alignBaseline="@+id/blood_pressure_dia_textview"
+                android:layout_alignBottom="@+id/blood_pressure_dia_textview"
                 android:layout_marginStart="2dp"
-                android:layout_toEndOf="@+id/measurement_blood_pressure_textview"
+                android:layout_toEndOf="@+id/blood_pressure_dia_textview"
                 android:text="@string/unit_pressure"
-                android:textSize="16sp" />
+                android:textSize="15sp" />
 
             <TextView
-                android:id="@+id/pulse_textView"
+                android:id="@+id/blood_pressure_pulse_textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@+id/min_textview"
@@ -51,21 +63,21 @@
                 android:text="@string/pulse_mark_title" />
 
             <TextView
-                android:id="@+id/measurement_body_fat"
+                android:id="@+id/pulse_measurement_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/unit_blood_pressure_textview"
-                android:layout_toEndOf="@+id/pulse_textView"
                 android:layout_marginStart="2dp"
-                android:text="00"/>
+                android:layout_toEndOf="@+id/blood_pressure_pulse_textView"
+                android:text="00" />
 
             <TextView
                 android:id="@+id/min_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignBaseline="@+id/measurement_body_fat"
-                android:layout_alignBottom="@+id/measurement_body_fat"
-                android:layout_toEndOf="@+id/measurement_body_fat"
+                android:layout_alignBaseline="@+id/pulse_measurement_textview"
+                android:layout_alignBottom="@+id/pulse_measurement_textview"
+                android:layout_toEndOf="@+id/pulse_measurement_textview"
                 android:text="/min"
                 android:textSize="11sp" />
 

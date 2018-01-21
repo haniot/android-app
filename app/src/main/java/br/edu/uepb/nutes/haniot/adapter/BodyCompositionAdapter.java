@@ -1,6 +1,7 @@
 package br.edu.uepb.nutes.haniot.adapter;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -12,7 +13,6 @@ import java.util.Locale;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.adapter.base.BaseAdapter;
-import br.edu.uepb.nutes.haniot.adapter.base.BaseRecyclerViewHolder;
 import br.edu.uepb.nutes.haniot.model.Measurement;
 import br.edu.uepb.nutes.haniot.model.MeasurementType;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
@@ -20,7 +20,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Adapter from the RecyclerView to list the temperatures.
+ * Adapter from the RecyclerView to list the body composition.
  *
  * @author Douglas Rafael <douglasrafaelcg@gmail.com>
  * @version 1.0
@@ -34,7 +34,7 @@ public class BodyCompositionAdapter extends BaseAdapter<Measurement> {
 
     public BodyCompositionAdapter(Context context) {
         this.context = context;
-        this.decimalFormat = new DecimalFormat(context.getResources().getString(R.string.temperature_format), new DecimalFormatSymbols(Locale.US));
+        this.decimalFormat = new DecimalFormat(context.getResources().getString(R.string.format_number2), new DecimalFormatSymbols(Locale.US));
     }
 
     @Override
@@ -43,12 +43,12 @@ public class BodyCompositionAdapter extends BaseAdapter<Measurement> {
     }
 
     @Override
-    public BaseRecyclerViewHolder createViewHolder(View view) {
+    public RecyclerView.ViewHolder createViewHolder(View view) {
         return new ViewHolder(view);
     }
 
     @Override
-    public void showData(BaseRecyclerViewHolder holder, int position, List<Measurement> itemsList) {
+    public void showData(RecyclerView.ViewHolder holder, int position, List<Measurement> itemsList) {
         if (holder instanceof ViewHolder) {
             final Measurement m = itemsList.get(position);
             ViewHolder h = (ViewHolder) holder;
@@ -84,14 +84,14 @@ public class BodyCompositionAdapter extends BaseAdapter<Measurement> {
     }
 
     @Override
-    public void clearAnimation(BaseRecyclerViewHolder holder) {
+    public void clearAnimation(RecyclerView.ViewHolder holder) {
         ((ViewHolder) holder).clearAnimation();
     }
 
     /**
      * Class ViewHolder Item.
      */
-    public class ViewHolder extends BaseRecyclerViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
 
         @BindView(R.id.measurement_body_mass)

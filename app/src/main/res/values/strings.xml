@@ -87,8 +87,8 @@
     <string name="time_format_simple">mm:ss</string>
 
     // FORMATS
-    <string name="weight_format">##.0</string>
-    <string name="temperature_format">#.0</string>
+    <string name="format_number1">#.0</string>
+    <string name="format_number2">##.0</string>
 
     // EXCEPTIONS LOGS
     <string name="device_not_found">"Device: %1$s not found!"</string>

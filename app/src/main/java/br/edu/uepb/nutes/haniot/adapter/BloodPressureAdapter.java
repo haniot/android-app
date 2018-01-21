@@ -14,55 +14,60 @@ import java.util.Locale;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.adapter.base.BaseAdapter;
 import br.edu.uepb.nutes.haniot.model.Measurement;
+import br.edu.uepb.nutes.haniot.model.MeasurementType;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Adapter from the RecyclerView to list the glucose.
+ * Adapter from the RecyclerView to list the Blood Pressure.
  *
  * @author Douglas Rafael <douglasrafaelcg@gmail.com>
  * @version 1.0
  * @copyright Copyright (c) 2017, NUTES UEPB
  */
-public class GlucoseAdapter extends BaseAdapter<Measurement> {
-    private final String LOG = "BluetoothDeviceAdapter";
+public class BloodPressureAdapter extends BaseAdapter<Measurement> {
+    private final String LOG = "TemperatureAdapter";
     private final Context context;
-
-    private DecimalFormat decimalFormat;
 
     /**
      * Contructor.
      *
      * @param context {@link Context}
      */
-    public GlucoseAdapter(Context context) {
+    public BloodPressureAdapter(Context context) {
         this.context = context;
-        this.decimalFormat = new DecimalFormat(context.getResources().getString(R.string.format_number1), new DecimalFormatSymbols(Locale.US));
     }
 
     @Override
     public View createView(ViewGroup viewGroup, int viewType) {
-        return View.inflate(context, R.layout.item_temperature, null);
+        return View.inflate(context, R.layout.item_blood_pressure, null);
     }
 
     @Override
     public RecyclerView.ViewHolder createViewHolder(View view) {
-        return new GlucoseAdapter.ViewHolder(view);
+        return new ViewHolder(view);
     }
 
     @Override
     public void showData(RecyclerView.ViewHolder holder, int position, List<Measurement> itemsList) {
-        if (holder instanceof TemperatureAdapter.ViewHolder) {
+        if (holder instanceof ViewHolder) {
             final Measurement m = itemsList.get(position);
-            TemperatureAdapter.ViewHolder h = (TemperatureAdapter.ViewHolder) holder;
+            ViewHolder h = (ViewHolder) holder;
 
-            h.value.setText(decimalFormat.format(m.getValue()));
+            h.systolic.setText(String.valueOf((int) m.getValue()).concat("/"));
+
+            // Relations
+            for (Measurement parent : m.getMeasurements()) {
+                if (parent.getTypeId() == MeasurementType.BLOOD_PRESSURE_DIASTOLIC)
+                    h.diastolic.setText(String.valueOf((int) m.getValue()));
+                else if (parent.getTypeId() == MeasurementType.HEART_RATE)
+                    h.pulse.setText(String.valueOf((int) m.getValue()));
+            }
             h.unit.setText(m.getUnit());
             h.dayWeek.setText(DateUtils.formatDate(m.getRegistrationDate(), "EEEE"));
-            h.date.setText(DateUtils.formatDate(
-                    m.getRegistrationDate(), context.getString(R.string.datetime_format))
-            );
+            h.date.setText(DateUtils.formatDate(m.getRegistrationDate(),
+                    context.getString(R.string.datetime_format)));
 
             /**
              * OnClick Item
@@ -70,8 +75,8 @@ public class GlucoseAdapter extends BaseAdapter<Measurement> {
             h.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (GlucoseAdapter.super.mListener != null)
-                        GlucoseAdapter.super.mListener.onItemClick(m);
+                    if (BloodPressureAdapter.super.mListener != null)
+                        BloodPressureAdapter.super.mListener.onItemClick(m);
                 }
             });
 
@@ -82,38 +87,43 @@ public class GlucoseAdapter extends BaseAdapter<Measurement> {
 
     @Override
     public void clearAnimation(RecyclerView.ViewHolder holder) {
-        ((TemperatureAdapter.ViewHolder) holder).clearAnimation();
+        ((ViewHolder) holder).clearAnimation();
     }
 
-
+    /**
+     * Class ViewHolder for item.
+     */
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public final View mView;
-        public Measurement mItem;
+        final View mView;
 
-        @BindView(R.id.fcmax_textview)
-        TextView fcMax;
-        @BindView(R.id.date_heart_rate_textview)
+        @BindView(R.id.blood_pressure_sys_textview)
+        TextView systolic;
+
+        @BindView(R.id.blood_pressure_dia_textview)
+        TextView diastolic;
+
+        @BindView(R.id.blood_pressure_pulse_textView)
+        TextView pulse;
+
+        @BindView(R.id.unit_blood_pressure_textview)
+        TextView unit;
+
+        @BindView(R.id.date_measurement_textview)
         TextView date;
-        @BindView(R.id.duration_heart_rate_textview)
-        TextView duration;
+
+        @BindView(R.id.day_week_measurement_textview)
+        TextView dayWeek;
 
         public ViewHolder(View view) {
             super(view);
-            mView = view;
             ButterKnife.bind(this, view);
+
+            this.mView = view.getRootView();
         }
 
-        @Override
-        public String toString() {
-            return "ViewHolder{" +
-                    ", fcMax=" + fcMax +
-                    ", date=" + date +
-                    ", duration=" + duration +
-                    '}';
+        public void clearAnimation() {
+            mView.clearAnimation();
         }
-    }
-
-    public interface OnItemClickListener {
-        void onItemClick(Measurement item);
     }
 }
+

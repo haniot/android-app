@@ -2,7 +2,6 @@ package br.edu.uepb.nutes.haniot.adapter.base;
 
 import android.os.Handler;
 import android.os.Looper;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +27,7 @@ import java.util.List;
  * @version 1.0
  * @copyright Copyright (c) 2017, NUTES UEPB
  */
-public abstract class BaseAdapter<T> extends RecyclerView.Adapter<BaseRecyclerViewHolder> {
+public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     protected List<T> itemsList;
     protected int lastPosition = -1;
     public OnRecyclerViewListener mListener;
@@ -174,14 +173,14 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<BaseRecyclerVi
     }
 
     @Override
-    public BaseRecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = createView(parent, viewType);
-        BaseRecyclerViewHolder holder = createViewHolder(view);
+        RecyclerView.ViewHolder holder = createViewHolder(view);
         return holder;
     }
 
     @Override
-    public void onBindViewHolder(BaseRecyclerViewHolder holder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         showData(holder, position, itemsList);
     }
 
@@ -191,7 +190,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<BaseRecyclerVi
     }
 
     @Override
-    public void onViewDetachedFromWindow(BaseRecyclerViewHolder holder) {
+    public void onViewDetachedFromWindow(RecyclerView.ViewHolder holder) {
         super.onViewDetachedFromWindow(holder);
         clearAnimation(holder);
     }
@@ -209,23 +208,23 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<BaseRecyclerVi
      * Create
      *
      * @param view View
-     * @return BaseRecyclerViewHolder {@link BaseRecyclerViewHolder}
+     * @return RecyclerView.ViewHolder {@link RecyclerView.ViewHolder}
      */
-    public abstract BaseRecyclerViewHolder createViewHolder(View view);
+    public abstract RecyclerView.ViewHolder createViewHolder(View view);
 
     /**
      * Constructs item for display.
      *
-     * @param holder    {@link BaseRecyclerViewHolder}
+     * @param holder    {@link RecyclerView.ViewHolder}
      * @param position  int
      * @param itemsList List<T>
      */
-    public abstract void showData(BaseRecyclerViewHolder holder, int position, List<T> itemsList);
+    public abstract void showData(RecyclerView.ViewHolder holder, int position, List<T> itemsList);
 
     /**
      * Clear animation in view.
      *
-     * @param holder {@link BaseRecyclerViewHolder}
+     * @param holder {@link RecyclerView.ViewHolder}
      */
-    public abstract void clearAnimation(BaseRecyclerViewHolder holder);
+    public abstract void clearAnimation(RecyclerView.ViewHolder holder);
 }
