@@ -22,14 +22,12 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.model.Measurement;
 import br.edu.uepb.nutes.haniot.model.MeasurementType;
-import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
 import br.edu.uepb.nutes.haniot.server.historical.CallbackHistorical;
 import br.edu.uepb.nutes.haniot.server.historical.Historical;
 import br.edu.uepb.nutes.haniot.server.historical.HistoricalType;
@@ -145,7 +143,7 @@ public class ScaleGraphActivity extends AppCompatActivity implements View.OnClic
         List<Entry> entries = new ArrayList<>();
 
         for (int i = 0; i < measurementData.size(); i++) {
-            String date = DateUtils.getDatetime(measurementData.get(i).getRegistrationDate(),
+            String date = DateUtils.formatDate(measurementData.get(i).getRegistrationDate(),
                     getString(R.string.date_format));
 
             float temp = (float) measurementData.get(i).getValue();

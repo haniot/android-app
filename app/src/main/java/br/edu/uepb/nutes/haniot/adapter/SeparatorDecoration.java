@@ -18,14 +18,14 @@ import android.widget.ProgressBar;
 import br.edu.uepb.nutes.haniot.R;
 
 /**
- * SeparatorDecoration for items in RecyclerView
+ * SeparatorDecoration for itemsList in RecyclerView
  * (@Link https://github.com/bleeding182/recyclerviewItemDecorations/blob/master/app/src/main/java/com/github/bleeding182/recyclerviewdecorations/SeparatorDecoration.java)
  */
 public class SeparatorDecoration extends RecyclerView.ItemDecoration {
     private final Paint mPaint;
 
     /**
-     * Create a decoration that draws a line in the given color and width between the items in the view.
+     * Create a decoration that draws a line in the given color and width between the itemsList in the mView.
      *
      * @param context  a context to access the resources.
      * @param color    the color of the separator to draw.
@@ -47,7 +47,7 @@ public class SeparatorDecoration extends RecyclerView.ItemDecoration {
         // we want to retrieve the position in the list
         final int position = params.getViewAdapterPosition();
 
-        // and add a separator to any view but the last one
+        // and add a separator to any mView but the last one
         if (position < state.getItemCount()) {
             outRect.set(0, 0, 0, (int) mPaint.getStrokeWidth()); // left, top, right, bottom
         } else {
@@ -60,13 +60,10 @@ public class SeparatorDecoration extends RecyclerView.ItemDecoration {
         // we set the stroke width before, so as to correctly draw the line we have to offset by width / 2
         final int offset = (int) (mPaint.getStrokeWidth() / 2);
 
-        // this will iterate over every visible view
+        // this will iterate over every visible mView
         for (int i = 0; i < parent.getChildCount() - 1; i++) {
-            // get the view
+            // get the mView
             final View view = parent.getChildAt(i);
-
-            if (view.getId() == R.id.load_data_progressbar)
-                continue;
 
             final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) view.getLayoutParams();
 

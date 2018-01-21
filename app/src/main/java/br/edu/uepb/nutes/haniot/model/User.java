@@ -38,6 +38,10 @@ public class User {
     /**
      * RELATIONS
      */
+
+    /**
+     * {@link Measurement}
+     */
     @Backlink(to = "user")
     private ToMany<Measurement> measurements;
 

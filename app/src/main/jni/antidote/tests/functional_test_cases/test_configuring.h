@@ -38,7 +38,7 @@ void functionaltest_configuring_add_suite(void);
  * 1 - Association to enter in operational state
  * 2 - Manager requests "MDS GET ALL"
  * 3 - Agent send response
- * 4 - Manager update MDS
+ * 4 - Manager updateOrSave MDS
  * 5 - Manager disconnects
  */
 void functional_test_configuring_tc_2_1();

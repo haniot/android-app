@@ -104,7 +104,7 @@ public class HeartRateGraphActivity extends AppCompatActivity implements View.On
 //
 //            for(int i = 0; i < measurementData.size(); i++) {
 //                String format = "HH:MM:SS";
-//                String date = DateUtils.getDatetime(measurementData.get(i).getRegistrationTime(), format);
+//                String date = DateUtils.formatDate(measurementData.get(i).getRegistrationTime(), format);
 //                float fc = measurementData.get(i).getFcMaximum(); //get
 //                entries.add(new Entry((float)i, fc));
 //                quarters[i] = date;
@@ -154,7 +154,7 @@ public class HeartRateGraphActivity extends AppCompatActivity implements View.On
 //
 //            for(int i = 0; i < measurementData.size(); i++) {
 //                String format = "dd/MM";
-//                String date = DateUtils.getDatetime(measurementData.get(i).getRegistrationTime(), format);
+//                String date = DateUtils.formatDate(measurementData.get(i).getRegistrationTime(), format);
 //                float fc = measurementData.get(i).getFcMaximum(); //get
 //                entries.add(new Entry((float)i, fc));
 //                quarters[i] = date;
@@ -204,7 +204,7 @@ public class HeartRateGraphActivity extends AppCompatActivity implements View.On
 //
 //            for(int i = 0; i < measurementData.size(); i++) {
 //                String format = "dd/MM";
-//                String date = DateUtils.getDatetime(measurementData.get(i).getRegistrationTime(), format);
+//                String date = DateUtils.formatDate(measurementData.get(i).getRegistrationTime(), format);
 //                float fc = measurementData.get(i).getFcMaximum(); //get
 //                entries.add(new Entry((float)i, fc));
 //                quarters[i] = date;

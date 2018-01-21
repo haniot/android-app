@@ -21,89 +21,103 @@ import butterknife.ButterKnife;
  * @version 1.0
  * @copyright Copyright (c) 2017, NUTES UEPB
  */
-public class GlucoseAdapter extends RecyclerView.Adapter<GlucoseAdapter.ViewHolder> {
+public class GlucoseAdapter  {
     private final String LOG = "BluetoothDeviceAdapter";
     private final int EMPTY_VIEW = 10;
 
-    private final List<Measurement> mValues;
-    private final OnItemClickListener mListener;
-    private final Context context;
-
-    public GlucoseAdapter(List<Measurement> items, OnItemClickListener listener, Context context) {
-        mValues = items;
-        mListener = listener;
-        this.context = context;
-    }
-
-    @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if (viewType == EMPTY_VIEW) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.empty_view, parent, false);
-            new ViewHolder(view);
-        }
-
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_heart_rate, parent, false);
-        return new ViewHolder(view);
-    }
-
-    @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
-//        holder.mItem = mValues.get(position);
-//        holder.fcMax.setText(String.format("%03d", mValues.get(position).getFcMaximum()));
-//        holder.date.setText(DateUtils.getDatetime(mValues.get(position).getRegistrationTime(), context.getString(R.string.datetime_format)));
-//        holder.duration.setText(DateUtils.getDatetime(mValues.get(position).getDurationTime(), context.getString(R.string.time_format_simple)));
+//    private final List<Measurement> mValues;
+//    private final OnItemClickListener mListener;
+//    private final Context context;
 //
-//        holder.view.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                mListener.onItemClick(holder.mItem);
-//            }
-//        });
-    }
+//    public GlucoseAdapter(List<Measurement> items, OnItemClickListener listener, Context context) {
+//        super(items);
+//        mValues = items;
+//        mListener = listener;
+//        this.context = context;
+//    }
+//
+//    @Override
+//    public void onBindViewHolder(ViewHolder holder, int position) {
+//        super.onBindViewHolder(holder, position);
+//    }
+//
+//    @Override
+//    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+//        LayoutInflater inflater = LayoutInflater.from(context);
+//        return new ViewHolder(inflater.inflate(R.layout.item_temperature, parent, false));
+////        return super.onCreateViewHolder(parent, viewType);
+//    }
 
-    @Override
-    public int getItemCount() {
-        return mValues == null ? 0 : mValues.size();
-    }
-
-    public void addItem(Measurement m, int position) {
-        mValues.add(m);
-        notifyItemInserted(position);
-    }
-
-    public void removeItem(Measurement m, int position) {
-        mValues.remove(m);
-        notifyItemRemoved(position);
-    }
-
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        public final View mView;
-        public Measurement mItem;
-
-        @BindView(R.id.fcmax_textview)
-        TextView fcMax;
-        @BindView(R.id.date_heart_rate_textview)
-        TextView date;
-        @BindView(R.id.duration_heart_rate_textview)
-        TextView duration;
-
-        public ViewHolder(View view) {
-            super(view);
-            mView = view;
-            ButterKnife.bind(this, view);
-        }
-
-        @Override
-        public String toString() {
-            return "ItemViewHolder{" +
-                    ", fcMax=" + fcMax +
-                    ", date=" + date +
-                    ", duration=" + duration +
-                    '}';
-        }
-    }
-
-    public interface OnItemClickListener {
-        void onItemClick(Measurement item);
-    }
+    //
+//    @Override
+//    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+//        if (viewType == EMPTY_VIEW) {
+//            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.empty_view, parent, false);
+//            new ViewHolder(view);
+//        }
+//
+//        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_heart_rate, parent, false);
+//        return new ViewHolder(view);
+//    }
+//
+//    @Override
+//    public void onBindViewHolder(final ViewHolder holder, final int position) {
+////        holder.mItem = mValues.get(position);
+////        holder.fcMax.setText(String.format("%03d", mValues.get(position).getFcMaximum()));
+////        holder.date.setText(DateUtils.formatDate(mValues.get(position).getRegistrationTime(), context.getString(R.string.datetime_format)));
+////        holder.duration.setText(DateUtils.formatDate(mValues.get(position).getDurationTime(), context.getString(R.string.time_format_simple)));
+////
+////        holder.mView.setOnClickListener(new View.OnClickListener() {
+////            @Override
+////            public void onClick(View mView) {
+////                mListener.onItemClick(holder.mItem);
+////            }
+////        });
+//    }
+//
+//    @Override
+//    public int getItemCount() {
+//        return mValues == null ? 0 : mValues.size();
+//    }
+//
+//    public void addItem(Measurement m, int position) {
+//        mValues.add(m);
+//        notifyItemInserted(position);
+//    }
+//
+//    public void removeItem(Measurement m, int position) {
+//        mValues.remove(m);
+//        notifyItemRemoved(position);
+//    }
+//
+//    public class ViewHolder extends RecyclerView.ViewHolder {
+//        public final View mView;
+//        public Measurement mItem;
+//
+//        @BindView(R.id.fcmax_textview)
+//        TextView fcMax;
+//        @BindView(R.id.date_heart_rate_textview)
+//        TextView date;
+//        @BindView(R.id.duration_heart_rate_textview)
+//        TextView duration;
+//
+//        public ViewHolder(View view) {
+//            super(view);
+//            mView = view;
+//            ButterKnife.bind(this, view);
+//        }
+//
+//        @Override
+//        public String toString() {
+//            return "ViewHolder{" +
+//                    ", fcMax=" + fcMax +
+//                    ", date=" + date +
+//                    ", duration=" + duration +
+//                    '}';
+//        }
+//    }
+//
+//    public interface OnItemClickListener {
+//        void onItemClick(Measurement item);
+//    }
 }

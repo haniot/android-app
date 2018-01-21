@@ -60,7 +60,7 @@ public class DeviceDAO {
             Device deviceUp = get(device.getId());
 
             /**
-             * Id is required for an update
+             * Id is required for an updateOrSave
              * Otherwise it will be an insert
              */
             if (deviceUp == null) return false;
@@ -68,7 +68,7 @@ public class DeviceDAO {
             device.setId(deviceUp.getId());
         }
 
-        return save(device); // update
+        return save(device); // updateOrSave
     }
 
     /**
@@ -89,7 +89,7 @@ public class DeviceDAO {
      * According to userId user.
      *
      * @param userId long
-     * @return long - Total number of items removed
+     * @return long - Total number of itemsList removed
      */
     public boolean removeAll(@NonNull long userId) {
         return deviceBox.query()

@@ -137,7 +137,7 @@ int llist_remove(LinkedList *list, void *element)
 					}
 				}
 
-				// update variables
+				// updateOrSave variables
 				list->size -= 1;
 
 				LinkedNode *next = node->next;

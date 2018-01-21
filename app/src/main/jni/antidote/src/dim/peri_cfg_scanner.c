@@ -50,10 +50,10 @@
  * Reporting-Interval attribute value.
  *
  * The number of observations for each metric object is dependent
- * on the metric object’s update interval and the scanner’s Reporting-Interval.
+ * on the metric object’s updateOrSave interval and the scanner’s Reporting-Interval.
  *
  * Example: A periodic configurable scanner is set up to “scan” two
- * metric objects with a Reporting-Interval of 1 s. The two objects update
+ * metric objects with a Reporting-Interval of 1 s. The two objects updateOrSave
  * their corresponding observed value periodically with an interval of 1 s and ½ s,
  * respectively. The periodic configurable scanner then issues event reports
  * every second containing one observation scan of metric object #1 and

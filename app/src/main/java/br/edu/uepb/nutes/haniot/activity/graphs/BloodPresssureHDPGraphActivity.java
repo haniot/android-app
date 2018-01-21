@@ -114,7 +114,7 @@ public class BloodPresssureHDPGraphActivity extends AppCompatActivity {
 //
 //        for(int i = 0; i < measurementData.size(); i++) {
 //            String format = "dd/MM";
-//            String date =  DateUtils.getDatetime(measurementData.get(i).getRegistrationTime(), format);
+//            String date =  DateUtils.formatDate(measurementData.get(i).getRegistrationTime(), format);
 //            float temperature = measurementData.get(i).getHeartFate(); //get
 //            entries.add(new Entry(i, temperature));
 //            quarters[i] = date;

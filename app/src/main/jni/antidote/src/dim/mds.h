@@ -118,7 +118,7 @@ typedef struct MDS {
 
 	/**
 	 * This attribute defines the attributes that are reported in
-	 * the fixed format data update messages (see 7.4.5 for more
+	 * the fixed format data updateOrSave messages (see 7.4.5 for more
 	 * information). Usage of this	attribute is mandatory if the agent
 	 * device uses fixed format value messages to report dynamic data
 	 * for the object.
@@ -219,7 +219,7 @@ typedef struct MDS {
 
 	/**
 	 * This attribute lists various	regulatory and/or certification
-	 * compliance items to which the agent claims adherence as an
+	 * compliance itemsList to which the agent claims adherence as an
 	 * informative statement. The Implementation Conformace	Statements
 	 * (see Clause 9) take precedence over this attribute and are the
 	 * legally binding claims. This attribute shall remain unchanged

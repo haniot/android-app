@@ -37,13 +37,13 @@ public class UserDAO {
     }
 
     /**
-     * get user server remote.
+     * get user for email.
      *
-     * @param uuid String
+     * @param email String
      * @return User
      */
-    public User get(@NonNull String uuid) {
-        return userBox.query().equal(User_._id, uuid).build().findFirst();
+    public User get(@NonNull String email) {
+        return userBox.query().equal(User_.email, email).build().findFirst();
     }
 
     /**
@@ -78,7 +78,7 @@ public class UserDAO {
      */
     public boolean update(@NonNull User user) {
         if (user.getId() == 0) {
-            User userUp = get(user.get_id());
+            User userUp = get(user.getEmail());
 
             /**
              * Id is required for an update

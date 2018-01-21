@@ -162,7 +162,7 @@ struct Metric {
 
 	/**
 	 *This attribute defines the attributes that are reported in
-	 *the fixed format data update messages. Usage of this attribute
+	 *the fixed format data updateOrSave messages. Usage of this attribute
 	 *is mandatory if the agent uses fixed format value messages to
 	 *report dynamic measurement data for the object
 	 *

@@ -123,7 +123,12 @@ public class TemperatureGraphActivity extends AppCompatActivity implements View.
                     measurementData.clear();
                     measurementData.addAll(result);
 
-                    paintChart();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            paintChart();
+                        }
+                    });
                 }
             }
 
@@ -171,7 +176,7 @@ public class TemperatureGraphActivity extends AppCompatActivity implements View.
         List<Entry> entries = new ArrayList<>();
 
         for (int i = 0; i < measurementData.size(); i++) {
-            String date = DateUtils.getDatetime(measurementData.get(i).getRegistrationDate(),
+            String date = DateUtils.formatDate(measurementData.get(i).getRegistrationDate(),
                     getString(R.string.date_format));
 
             float temp = (float) measurementData.get(i).getValue();

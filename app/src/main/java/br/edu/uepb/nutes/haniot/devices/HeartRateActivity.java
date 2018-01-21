@@ -78,7 +78,7 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
 
-    @BindView(R.id.floating_button_record_play)
+    @BindView(R.id.record_floating_button)
     FloatingActionButton mPlayFloatingActionButton;
 
     @BindView(R.id.heart_rate_measurement)
@@ -336,7 +336,7 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.floating_button_record_play:
+            case R.id.record_floating_button:
                 Intent intent = new Intent(this, RecordHeartRateActivity.class);
                 intent.putExtra(HeartRateActivity.EXTRA_DEVICE_ADDRESS, mDeviceAddress);
                 intent.putExtra(HeartRateActivity.EXTRA_DEVICE_INFORMATIONS, deviceInformations);

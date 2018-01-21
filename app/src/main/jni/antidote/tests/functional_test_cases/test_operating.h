@@ -37,7 +37,7 @@ void functionaltest_operating_add_suite(void);
  * 1 - Association to enter in operational state
  * 2 - Manager requests "MDS GET ALL"
  * 3 - Agent send response
- * 4 - Manager update MDS
+ * 4 - Manager updateOrSave MDS
  * 5 - Manager disconnects
  */
 void functional_test_operating_tc_3_1();
@@ -47,7 +47,7 @@ void functional_test_operating_tc_3_1();
  *  1 - Association to enter in operational state
  *  2 - Manager requests "MDS GET ALL"
  *  3 - Agent send response
- *  4 - Manager update MDS
+ *  4 - Manager updateOrSave MDS
  *  5 - Agent reports var data
  *  6 - Metric values updated
  *  7 - Manager disconnects
@@ -59,7 +59,7 @@ TC 3.3 (Blood pressure - scan report info fixed)
 1 - Association to enter in operational state
 2 - Manager requests "MDS GET ALL"
 3 - Agent send response
-4 - Manager update MDS
+4 - Manager updateOrSave MDS
 5 - Agent reports fixed data
 6 - Metric values updated
 7 - Manager disconnects
@@ -82,7 +82,7 @@ TC 3.5 (Weighing Scale - data report - scan report info fixed)
 2 - Agent send extended configuration
 3 - Manager requests "MDS GET ALL"
 4 - Agent send response
-5 - Manager update MDS
+5 - Manager updateOrSave MDS
 6 - Agent reports fixed data
 7 - Metric values updated
 8 - Manager disconnects

@@ -60,7 +60,7 @@ import butterknife.ButterKnife;
  * @version 1.2
  * @copyright Copyright (c) 2017, NUTES UEPB
  */
-public class GlucoseActivity extends AppCompatActivity implements GlucoseAdapter.OnItemClickListener {
+public class GlucoseActivity extends AppCompatActivity {
     private final String TAG = "GlucoseActivity";
 
     private BluetoothLeService mBluetoothLeService;
@@ -120,12 +120,12 @@ public class GlucoseActivity extends AppCompatActivity implements GlucoseAdapter
 
         animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
 
-        measurementList = new ArrayList<>();
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mAdapter = new GlucoseAdapter(measurementList, this, this);
-        mRecyclerView.setAdapter(mAdapter);
+//        measurementList = new ArrayList<>();
+//        mRecyclerView.setHasFixedSize(true);
+//        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+//        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+//        mAdapter = new GlucoseAdapter(measurementList, this, this);
+//        mRecyclerView.setAdapter(mAdapter);
 
         // synchronization with server
         synchronizeWithServer();
@@ -195,8 +195,9 @@ public class GlucoseActivity extends AppCompatActivity implements GlucoseAdapter
 
         if (mDevice == null) {
             mDevice = new Device(mDeviceAddress, "ACCU-CHEK PERFORMA CONNECT", "ACCU-CHEK", "", DeviceType.GLUCOMETER, session.getUserLogged());
-            mDevice.set_id("123447dfd7bcdd24483500f35");
+            mDevice.set_id("5a62c1a1d6f33400146c9b68");
             if (!deviceDAO.save(mDevice)) finish();
+            mDevice = deviceDAO.get(mDeviceAddress, session.getIdLogged());
         }
     }
 
@@ -448,8 +449,4 @@ public class GlucoseActivity extends AppCompatActivity implements GlucoseAdapter
         SynchronizationServer.getInstance(this).run();
     }
 
-    @Override
-    public void onItemClick(Measurement item) {
-
-    }
 }

@@ -54,13 +54,13 @@ public class MeasurementDAO {
     public boolean update(@NonNull Measurement measurement) {
         if (measurement.getId() == 0) {
             /**
-             * Id is required for an update
+             * Id is required for an updateOrSave
              * Otherwise it will be an insert
              */
             return false;
         }
 
-        return save(measurement); // update
+        return save(measurement); // updateOrSave
     }
 
     /**

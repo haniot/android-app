@@ -47,8 +47,8 @@
                     android:layout_alignBottom="@+id/textView8"
                     android:layout_alignStart="@+id/view_circle"
                     android:layout_toStartOf="@+id/view_pulse"
-                    android:text="000"
                     android:gravity="center"
+                    android:text="000"
                     android:textColor="@color/colorTextDark"
                     android:textSize="60sp"
                     tools:ignore="HardcodedText" />
@@ -73,10 +73,10 @@
                     android:layout_alignEnd="@+id/pressure_measurement_dia"
                     android:layout_alignStart="@+id/view_circle"
                     android:layout_below="@+id/view_pulse"
-                    android:text="@string/unit_pressure"
+                    android:layout_marginRight="2dp"
                     android:layout_marginTop="5dp"
                     android:gravity="right"
-                    android:layout_marginRight="2dp"
+                    android:text="@string/unit_pressure"
                     android:textSize="20sp" />
 
                 <com.mikhaellopez.circularprogressbar.CircularProgressBar
@@ -126,38 +126,59 @@
                 tools:ignore="HardcodedText" />
 
         </android.support.design.widget.CollapsingToolbarLayout>
-
-
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.widget.NestedScrollView
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/chart_floating_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/fab_margin"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@drawable/ic_action_show_chart"
+        app:layout_anchor="@id/box_bar_layout"
+        app:layout_anchorGravity="bottom|right|end" />
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
+        android:orientation="vertical"
+        android:padding="@dimen/activity_horizontal_margin"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/text_view_title_history"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:text="@string/most_recent_entries"
+            android:textAllCaps="false"
+            android:textColor="@color/colorPrimary" />
+
+        <TextView
+            android:id="@+id/no_data_textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:text="@string/no_data_available"
+            android:visibility="gone" />
+
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/data_swiperefresh"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:padding="@dimen/activity_horizontal_margin">
-
-            <TextView
-                android:id="@+id/text_view_title_history"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/most_recent_entries"
-                android:textAllCaps="false"
-                android:textColor="@color/colorPrimary"
-                android:textSize="14sp"
-                android:textStyle="normal" />
+            android:paddingTop="10dp">
 
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/history_blood_pressure_listview"
+                android:id="@+id/temperature_recyclerview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="10dp" />
-        </LinearLayout>
+                android:scrollbarSize="3sp"
+                android:scrollbarThumbVertical="@color/colorAccent"
+                android:scrollbars="vertical" />
 
-    </android.support.v4.widget.NestedScrollView>
+        </android.support.v4.widget.SwipeRefreshLayout>
+    </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

@@ -119,7 +119,7 @@ public class ScaleGraphBodyFatActivity extends AppCompatActivity {
 //
 //        for(int i = 0; i < measurementData.size(); i++) {
 //            String format = "dd/MM";
-//            String date =  DateUtils.getDatetime(measurementData.get(i).getRegistrationTime(), format);
+//            String date =  DateUtils.formatDate(measurementData.get(i).getRegistrationTime(), format);
 //
 //            float bodyfat = measurementData.get(i).getBodyFat();
 //            entries.add(new Entry((float)i, bodyfat));

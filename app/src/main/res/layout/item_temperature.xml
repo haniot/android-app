@@ -2,47 +2,66 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@color/colorCard"
     android:orientation="vertical">
 
-    <RelativeLayout
+    <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/card_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?android:attr/selectableItemBackground"
-        android:clickable="true"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:layout_gravity="center"
+        android:foreground="?android:attr/selectableItemBackground"
+        card_view:cardBackgroundColor="@color/colorCard"
+        card_view:cardCornerRadius="4dp"
+        card_view:cardPreventCornerOverlap="false"
+        card_view:cardUseCompatPadding="true">
 
-        <TextView
-            android:id="@+id/date_temperature_textview"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentTop="true"
-            android:gravity="right"
-            android:text="2017/10/27 22:23:44" />
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="12dp">
 
-        <TextView
-            android:id="@+id/measurement_temperature"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:text="154"
-            android:textSize="26sp"
-            android:textStyle="bold" />
+            <TextView
+                android:id="@+id/measurement_temperature"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:text="154"
+                android:textSize="26sp"
+                android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/unit_temperature_textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/measurement_temperature"
-            android:layout_alignBottom="@+id/measurement_temperature"
-            android:layout_marginStart="2dp"
-            android:layout_toEndOf="@+id/measurement_temperature"
-            android:text="@string/unit_celsius"
-            android:textSize="20sp" />
+            <TextView
+                android:id="@+id/unit_temperature_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/measurement_temperature"
+                android:layout_alignBottom="@+id/measurement_temperature"
+                android:layout_marginStart="2dp"
+                android:layout_toEndOf="@+id/measurement_temperature"
+                android:text="@string/unit_celsius"
+                android:textSize="20sp" />
 
-    </RelativeLayout>
+            <TextView
+                android:id="@+id/day_week_measurement_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                android:text="Tuesday" />
+
+            <TextView
+                android:id="@+id/date_measurement_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/measurement_temperature"
+                android:layout_alignParentEnd="true"
+                android:text="2017/10/27 22:23:44"
+                android:textSize="13sp" />
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
 
 </LinearLayout>
+

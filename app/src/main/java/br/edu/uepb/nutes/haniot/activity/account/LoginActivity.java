@@ -144,23 +144,21 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void onSuccess(JSONObject result) {
                 try {
-                    final User user = result.has("user") ? new Gson().fromJson(result.getString("user"), User.class) : null;
+                    User user = result.has("user") ? new Gson().fromJson(result.getString("user"), User.class) : null;
                     final String token = result.has("token") ? new Gson().fromJson(result.getString("token"), String.class) : null;
 
                     if (user.get_id() != null && token != null) {
                         user.setToken(token);
+                        User u = userDAO.get(user.getEmail());
 
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (userDAO.get(user.get_id()) != null) {
-                                    userDAO.update(user);
-                                } else {
-                                    userDAO.save(user);
-                                }
-                                session.setLogged(user.getId(), token);
-                            }
-                        });
+                        if (u != null) {
+                            userDAO.update(user);
+                        } else {
+                            userDAO.save(user);
+                            user = userDAO.get(user.getEmail());
+                        }
+                        session.setLogged(user.getId(), token);
+                        
                         startActivity(new Intent(getApplicationContext(), MainActivity.class));
                         finish();
                     } else {

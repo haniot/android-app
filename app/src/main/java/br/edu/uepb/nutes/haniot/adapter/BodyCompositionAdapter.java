@@ -1,17 +1,20 @@
 package br.edu.uepb.nutes.haniot.adapter;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.List;
+import java.util.Locale;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.adapter.base.BaseAdapter;
+import br.edu.uepb.nutes.haniot.adapter.base.BaseRecyclerViewHolder;
 import br.edu.uepb.nutes.haniot.model.Measurement;
+import br.edu.uepb.nutes.haniot.model.MeasurementType;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -23,61 +26,88 @@ import butterknife.ButterKnife;
  * @version 1.0
  * @copyright Copyright (c) 2017, NUTES UEPB
  */
-public class BodyCompositionAdapter extends RecyclerView.Adapter<BodyCompositionAdapter.ViewHolder> {
-    private final String LOG = "BluetoothDeviceAdapter";
-
-    private final List<Measurement> mValues;
-    private final OnItemClickListener mListener;
+public class BodyCompositionAdapter extends BaseAdapter<Measurement> {
+    private final String LOG = "BodyCompositionAdapter";
     private final Context context;
 
-    public BodyCompositionAdapter(List<Measurement> items, OnItemClickListener listener, Context context) {
-        mValues = items;
-        mListener = listener;
+    private DecimalFormat decimalFormat;
+
+    public BodyCompositionAdapter(Context context) {
         this.context = context;
+        this.decimalFormat = new DecimalFormat(context.getResources().getString(R.string.temperature_format), new DecimalFormatSymbols(Locale.US));
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_body_composition, parent, false);
+    public View createView(ViewGroup viewGroup, int viewType) {
+        return View.inflate(context, R.layout.item_body_composition, null);
+    }
+
+    @Override
+    public BaseRecyclerViewHolder createViewHolder(View view) {
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
-//        holder.mItem = mValues.get(position);
-//
-//        DecimalFormat df = new DecimalFormat(context.getResources().getString(R.string.weight_format));
-//
-//        holder.weight.setText(df.format(mValues.get(position).getValue()));
-//        holder.bodyFat.setText(df.format(mValues.get(position).getBodyFat()));
-//        holder.date.setText(DateUtils.getDatetime(mValues.get(position).getRegistrationTime(), context.getString(R.string.datetime_format)));
-//        holder.unit.setText(mValues.get(position).getUnit());
-//
-//        holder.view.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                mListener.onItemClick(holder.mItem);
-//            }
-//        });
+    public void showData(BaseRecyclerViewHolder holder, int position, List<Measurement> itemsList) {
+        if (holder instanceof ViewHolder) {
+            final Measurement m = itemsList.get(position);
+            ViewHolder h = (ViewHolder) holder;
+
+            h.bodyMass.setText(decimalFormat.format(m.getValue()));
+            h.unitBodyMass.setText(m.getUnit());
+            h.dayWeek.setText(DateUtils.formatDate(m.getRegistrationDate(), "EEEE"));
+            h.date.setText(DateUtils.formatDate(m.getRegistrationDate(),
+                    context.getString(R.string.datetime_format)));
+
+            /**
+             * Relations
+             */
+            for (Measurement parent : m.getMeasurements()) {
+                if (parent.getTypeId() == MeasurementType.BODY_FAT)
+                    h.bodyFat.setText(decimalFormat.format(parent.getValue()));
+            }
+
+            /**
+             * OnClick Item
+             */
+            h.mView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (BodyCompositionAdapter.super.mListener != null)
+                        BodyCompositionAdapter.super.mListener.onItemClick(m);
+                }
+            });
+
+            // call Animation function
+            setAnimation(h.mView, position);
+        }
     }
 
     @Override
-    public int getItemCount() {
-        return mValues == null ? 0 : mValues.size();
+    public void clearAnimation(BaseRecyclerViewHolder holder) {
+        ((ViewHolder) holder).clearAnimation();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    /**
+     * Class ViewHolder Item.
+     */
+    public class ViewHolder extends BaseRecyclerViewHolder {
         public final View mView;
-        public Measurement mItem;
 
-        @BindView(R.id.measurement_weight)
-        TextView weight;
-        @BindView(R.id.measurement_bodyfat)
+        @BindView(R.id.measurement_body_mass)
+        TextView bodyMass;
+
+        @BindView(R.id.unit_body_mass_textview)
+        TextView unitBodyMass;
+
+        @BindView(R.id.measurement_body_fat)
         TextView bodyFat;
-        @BindView(R.id.date_weight_textview)
+
+        @BindView(R.id.date_measurement_textview)
         TextView date;
-        @BindView(R.id.unit_weight_textview)
-        TextView unit;
+
+        @BindView(R.id.day_week_measurement_textview)
+        TextView dayWeek;
 
         public ViewHolder(View view) {
             super(view);
@@ -85,20 +115,9 @@ public class BodyCompositionAdapter extends RecyclerView.Adapter<BodyComposition
             ButterKnife.bind(this, view);
         }
 
-        @Override
-        public String toString() {
-            return "ItemViewHolder{" +
-                    "view=" + mView +
-                    ", mItem=" + mItem +
-                    ", weight=" + weight +
-                    ", bodyFat=" + bodyFat +
-                    ", date=" + date +
-                    ", unit=" + unit +
-                    '}';
+        public void clearAnimation() {
+            mView.clearAnimation();
         }
     }
 
-    public interface OnItemClickListener {
-        void onItemClick(Measurement item);
-    }
 }

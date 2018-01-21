@@ -94,15 +94,27 @@
     </android.support.design.widget.AppBarLayout>
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/floating_button_record_play"
+        android:id="@+id/chart_floating_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="70dp"
+        android:clickable="true"
+        android:src="@drawable/ic_action_show_chart"
+        app:elevation="6dp"
+        app:layout_anchor="@id/box_bar_layout"
+        app:layout_anchorGravity="bottom|right|end" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/record_floating_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
         android:clickable="true"
-        android:focusable="true"
         android:src="@drawable/ic_action_play_arrow"
+        app:elevation="6dp"
         app:layout_anchor="@id/box_bar_layout"
         app:layout_anchorGravity="bottom|right|end" />
+
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"

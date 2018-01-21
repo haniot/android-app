@@ -65,7 +65,7 @@
                     android:textSize="25sp" />
 
                 <TextView
-                    android:id="@+id/date_measurement_textView"
+                    android:id="@+id/date_last_measurement_textView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignEnd="@+id/view_circle"
@@ -73,8 +73,8 @@
                     android:layout_below="@+id/thermometer_measurement"
                     android:layout_marginTop="5dp"
                     android:gravity="center_horizontal"
-                    android:textSize="15sp"
-                    android:text="@null" />
+                    android:text="@null"
+                    android:textSize="15sp" />
 
             </RelativeLayout>
 
@@ -89,6 +89,17 @@
 
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/chart_floating_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/fab_margin"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@drawable/ic_action_show_chart"
+        app:layout_anchor="@id/box_bar_layout"
+        app:layout_anchorGravity="bottom|right|end" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -105,36 +116,31 @@
             android:orientation="vertical"
             android:text="@string/most_recent_entries"
             android:textAllCaps="false"
-            android:textColor="@color/colorPrimary"
-            android:textSize="14sp"
-            android:textStyle="normal" />
+            android:textColor="@color/colorPrimary" />
 
-        <FrameLayout
+        <TextView
+            android:id="@+id/no_data_textView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:text="@string/no_data_available"
+            android:visibility="gone" />
+
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/data_swiperefresh"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="10dp">
 
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/history_temperature_listview"
+                android:id="@+id/temperature_recyclerview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="15dp"
+                android:scrollbarSize="3sp"
+                android:scrollbarThumbVertical="@color/colorAccent"
                 android:scrollbars="vertical" />
 
-            <ProgressBar
-                android:id="@+id/load_data_progressbar"
-                style="?android:attr/progressBarStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:layout_gravity="top"
-                android:layout_marginTop="25dp"
-                android:indeterminate="true"
-                android:indeterminateTint="@color/colorAccent"
-                android:indeterminateTintMode="src_in"
-                android:visibility="gone" />
-        </FrameLayout>
-
+        </android.support.v4.widget.SwipeRefreshLayout>
     </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

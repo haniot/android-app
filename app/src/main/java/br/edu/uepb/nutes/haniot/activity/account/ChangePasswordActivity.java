@@ -216,14 +216,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
                             final User userUpdate = new Gson().fromJson(result.getString("user"), User.class);
                             Log.i("USER UPDATE", userUpdate.toString());
 
-                            if (userUpdate.getPassword() != null) {
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        userDAO.update(userUpdate); // save in local
-                                    }
-                                });
-
+                            if (userUpdate.getPassword() != null && userDAO.update(userUpdate)) {
                                 /**
                                  * Remove user from session and redirect to login screen.
                                  */

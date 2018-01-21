@@ -690,7 +690,7 @@ static void mds_populate_configuration_attributes(OID_Type supertype,
 	int j;
 
 	// These objects are here just to satifsy the dimutil_*_fill_attr()
-	// functions, that are also used to update actual MDS objects
+	// functions, that are also used to updateOrSave actual MDS objects
 
 	struct Metric *metric = metric_instance();
 	struct Metric *metric_n = metric_instance();

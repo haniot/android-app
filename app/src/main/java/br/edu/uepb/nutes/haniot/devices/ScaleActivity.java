@@ -13,7 +13,9 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -25,6 +27,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
@@ -33,16 +36,15 @@ import org.json.JSONObject;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.graphs.ScaleGraphActivity;
-import br.edu.uepb.nutes.haniot.activity.graphs.TemperatureGraphActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.BodyCompositionAdapter;
+import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
 import br.edu.uepb.nutes.haniot.model.Device;
 import br.edu.uepb.nutes.haniot.model.DeviceType;
 import br.edu.uepb.nutes.haniot.model.Measurement;
@@ -52,7 +54,13 @@ import br.edu.uepb.nutes.haniot.model.dao.DeviceDAO;
 import br.edu.uepb.nutes.haniot.model.dao.MeasurementDAO;
 import br.edu.uepb.nutes.haniot.parse.JsonToMeasurementParser;
 import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
+import br.edu.uepb.nutes.haniot.server.historical.CallbackHistorical;
+import br.edu.uepb.nutes.haniot.server.historical.Historical;
+import br.edu.uepb.nutes.haniot.server.historical.HistoricalType;
+import br.edu.uepb.nutes.haniot.server.historical.Params;
 import br.edu.uepb.nutes.haniot.service.BluetoothLeService;
+import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
+import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import br.edu.uepb.nutes.haniot.utils.GattAttributes;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -64,10 +72,12 @@ import butterknife.ButterKnife;
  * @version 1.0
  * @copyright Copyright (c) 2017, NUTES UEPB
  */
-public class ScaleActivity extends AppCompatActivity implements View.OnClickListener, BodyCompositionAdapter.OnItemClickListener {
+public class ScaleActivity extends AppCompatActivity implements View.OnClickListener {
     private final String TAG = "ScaleActivity";
+    private final int LIMIT_PER_PAGE = 20;
 
     private BluetoothLeService mBluetoothLeService;
+    private boolean mConnected = false;
     private boolean showAnimation = true;
     private BluetoothGattCharacteristic mNotifyCharacteristic;
 
@@ -77,8 +87,16 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
     private Session session;
     private MeasurementDAO measurementDAO;
     private DeviceDAO deviceDAO;
-    private List<Measurement> measurementBodyCompositionList;
-    private RecyclerView.Adapter mAdapter;
+    private DecimalFormat decimalFormat;
+    private BodyCompositionAdapter mAdapter;
+    private Params params;
+
+    /**
+     * We need this variable to lock and unlock loading more.
+     * We should not charge more when a request has already been made.
+     * The load will be activated when the requisition is completed.
+     */
+    private boolean itShouldLoadMore = true;
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -95,6 +113,12 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
     @BindView(R.id.bmi_textview)
     TextView bmiTextView;
 
+    @BindView(R.id.date_last_measurement_textView)
+    TextView mDateLastMeasurement;
+
+    @BindView(R.id.no_data_textView)
+    TextView noDataMessage;
+
     @BindView(R.id.view_circle)
     CircularProgressBar mCircularProgressBar;
 
@@ -104,8 +128,14 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
     @BindView(R.id.box_bar_layout)
     AppBarLayout mAppBarLayout;
 
-    @BindView(R.id.history_body_composition_listview)
+    @BindView(R.id.body_composition_recyclerview)
     RecyclerView mRecyclerView;
+
+    @BindView(R.id.data_swiperefresh)
+    SwipeRefreshLayout mDataSwipeRefresh;
+
+    @BindView(R.id.chart_floating_button)
+    FloatingActionButton mChartButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,31 +143,37 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_body_composition);
         ButterKnife.bind(this);
 
+        // synchronization with server
+        synchronizeWithServer();
+
         mDeviceAddress = "D4:36:39:91:75:71";
-        initializeToolBar();
+        session = new Session(this);
+        measurementDAO = MeasurementDAO.getInstance(this);
+        deviceDAO = DeviceDAO.getInstance(this);
+        decimalFormat = new DecimalFormat(getString(R.string.weight_format), new DecimalFormatSymbols(Locale.US));
+        params = new Params(session.get_idLogged(), MeasurementType.BODY_MASS);
+
+        animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
+        mChartButton.setOnClickListener(this);
 
         Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
 
-        animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
-        session = new Session(this);
-        measurementDAO = MeasurementDAO.getInstance(this);
-        deviceDAO = DeviceDAO.getInstance(this);
-
-        measurementBodyCompositionList = new ArrayList<>();
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mAdapter = new BodyCompositionAdapter(measurementBodyCompositionList, this, this);
-        mRecyclerView.setAdapter(mAdapter);
-
-        mCircularProgressBar.setOnClickListener(this);
-
-        // synchronization with server
-        synchronizeWithServer();
+        initComponents();
     }
 
-    private void initializeToolBar() {
+    /**
+     * Initialize components
+     */
+    private void initComponents() {
+        initToolBar();
+        initRecyclerView();
+        initDataSwipeRefresh();
+        loadData();
+    }
+
+
+    private void initToolBar() {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -165,6 +201,220 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
         });
     }
 
+    /**
+     * Init RecyclerView
+     */
+    private void initRecyclerView() {
+        mAdapter = new BodyCompositionAdapter(this);
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+
+        mAdapter.setListener(new OnRecyclerViewListener() {
+            @Override
+            public void onItemClick(Measurement item) {
+                Log.w(TAG, "onItemClick()");
+            }
+        });
+
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (dy > 0) {
+                    // Recycle view scrolling downwards...
+                    // this if statement detects when user reaches the end of recyclerView, this is only time we should load more
+                    if (!recyclerView.canScrollVertically(RecyclerView.FOCUS_DOWN)) {
+                        // here we are now allowed to load more, but we need to be careful
+                        // we must check if itShouldLoadMore variable is true [unlocked]
+                        if (itShouldLoadMore) loadMoreData();
+                    }
+                }
+            }
+        });
+
+        mRecyclerView.setAdapter(mAdapter);
+    }
+
+    /**
+     * Initialize SwipeRefresh
+     */
+    private void initDataSwipeRefresh() {
+        mDataSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (itShouldLoadMore)
+                    loadData();
+            }
+        });
+    }
+
+    /**
+     * Load data from the local database.
+     * It should only be called when there is no internet connection or
+     * when an error occurs on the first request with the server.
+     */
+    private void loadDataLocal() {
+        mAdapter.addItems(measurementDAO.list(MeasurementType.BODY_MASS, session.getIdLogged(), 0, 100));
+
+        if (!mAdapter.itemsIsEmpty()) {
+            updateUILastMeasurement(mAdapter.getFirstItem(), false);
+        } else {
+            toggleNoDataMessage(true); // Enable message no data
+            toggleLoading(false);
+        }
+    }
+
+    /**
+     * Load data.
+     * If there is no internet connection, we can display the local database.
+     * Otherwise it displays from the remote server.
+     */
+    private void loadData() {
+        mAdapter.clearItems();
+
+        if (!ConnectionUtils.internetIsEnabled(this)) {
+            loadDataLocal();
+        } else {
+            Historical historical = new Historical.Query()
+                    .type(HistoricalType.MEASUREMENTS_TYPE_USER)
+                    .params(params) // Measurements of the temperature type, associated to the user
+                    .pagination(0, LIMIT_PER_PAGE)
+                    .build();
+
+            historical.request(this, new CallbackHistorical<Measurement>() {
+                @Override
+                public void onBeforeSend() {
+                    Log.w(TAG, "loadData - onBeforeSend()");
+                    toggleLoading(true); // Enable loading
+                    toggleNoDataMessage(false); // Disable message no data
+                }
+
+                @Override
+                public void onError(JSONObject result) {
+                    Log.w(TAG, "loadData - onError()");
+                    if (!mAdapter.itemsIsEmpty()) printMessage(getString(R.string.error_500));
+                    else loadDataLocal();
+                }
+
+                @Override
+                public void onResult(List<Measurement> result) {
+                    Log.w(TAG, "loadData - onResult()");
+                    if (result != null && result.size() > 0) {
+                        mAdapter.addItems(result);
+                        updateUILastMeasurement(mAdapter.getItems().get(0), false);
+                    } else {
+                        toggleNoDataMessage(true); // Enable message no data
+                    }
+                }
+
+                @Override
+                public void onAfterSend() {
+                    Log.w(TAG, "loadData - onAfterSend()");
+                    toggleLoading(false); // Disable loading
+                }
+            });
+        }
+    }
+
+    /**
+     * List more itemsList from the remote server.
+     */
+    private void loadMoreData() {
+        if (!ConnectionUtils.internetIsEnabled(this))
+            return;
+
+        Historical historical = new Historical.Query()
+                .type(HistoricalType.MEASUREMENTS_TYPE_USER)
+                .params(params) // Measurements of the temperature type, associated to the user
+                .pagination(mAdapter.getItemCount(), LIMIT_PER_PAGE)
+                .build();
+
+        historical.request(this, new CallbackHistorical<Measurement>() {
+            @Override
+            public void onBeforeSend() {
+                Log.w(TAG, "loadMoreData - onBeforeSend()");
+                toggleLoading(true); // Enable loading
+            }
+
+            @Override
+            public void onError(JSONObject result) {
+                Log.w(TAG, "loadMoreData - onError()");
+                printMessage(getString(R.string.error_500));
+            }
+
+            @Override
+            public void onResult(List<Measurement> result) {
+                Log.w(TAG, "loadMoreData - onResult()");
+                if (result != null && result.size() > 0) mAdapter.addItems(result);
+                else printMessage(getString(R.string.no_more_data));
+            }
+
+            @Override
+            public void onAfterSend() {
+                Log.w(TAG, "loadMoreData - onAfterSend()");
+                toggleLoading(false); // Disable loading
+            }
+        });
+    }
+
+    /**
+     * Enable/Disable display loading data.
+     *
+     * @param enabled boolean
+     */
+    private void toggleLoading(boolean enabled) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (!enabled) {
+                    mDataSwipeRefresh.setRefreshing(false);
+                    itShouldLoadMore = true;
+                } else {
+                    mDataSwipeRefresh.setRefreshing(true);
+                    itShouldLoadMore = false;
+                }
+            }
+        });
+    }
+
+    /**
+     * Enable/Disable display messgae no data.
+     *
+     * @param visible boolean
+     */
+    private void toggleNoDataMessage(boolean visible) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (visible) {
+                    if (!ConnectionUtils.internetIsEnabled(getApplicationContext())) {
+                        noDataMessage.setText(getString(R.string.connect_network_try_again));
+                    } else {
+                        noDataMessage.setText(getString(R.string.no_data_available));
+                    }
+                    noDataMessage.setVisibility(View.VISIBLE);
+                } else {
+                    noDataMessage.setVisibility(View.GONE);
+                }
+            }
+        });
+    }
+
+    /**
+     * Print Toast Messages.
+     *
+     * @param message
+     */
+    private void printMessage(String message) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -174,8 +424,9 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
 
         if (mDevice == null) {
             mDevice = new Device(mDeviceAddress, "YUNMAI SCALE", "YUNMAI", "5031", DeviceType.BODY_COMPOSITION, session.getUserLogged());
-            mDevice.set_id("3e4647dfd7bcdd2448000ed63");
+            mDevice.set_id("5a62bf80d6f33400146c9b64");
             if (!deviceDAO.save(mDevice)) finish();
+            mDevice = deviceDAO.get(mDeviceAddress, session.getIdLogged());
         }
     }
 
@@ -187,16 +438,6 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
         if (mBluetoothLeService != null) {
             mBluetoothLeService.connect(mDeviceAddress);
         }
-
-        refreshRecyclerView();
-    }
-
-    private void refreshRecyclerView() {
-//        measurementBodyCompositionList.clear();
-//        for (Measurement m : measurementDAO.list(mDeviceAddress, session.getIdLogged(), 0, 10)) {
-//            measurementBodyCompositionList.add(m);
-//            mAdapter.notifyDataSetChanged();
-//        }
     }
 
     @Override
@@ -347,11 +588,8 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
                                 bodyMass.setUser(user);
                                 bodyMass.setDevice(mDevice);
 
-                                Measurement bmi = new Measurement(
-                                        calcBMI(bodyMass.getValue()),
-                                        "kg/m2",
-                                        bodyMass.getRegistrationDate(),
-                                        MeasurementType.BMI);
+                                Measurement bmi = new Measurement(calcBMI(bodyMass.getValue()),
+                                        "kg/m2", bodyMass.getRegistrationDate(), MeasurementType.BMI);
                                 bmi.setUser(user);
                                 bmi.setDevice(mDevice);
 
@@ -360,21 +598,26 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
                                 bodyFat.setDevice(mDevice);
 
                                 /**
-                                 * Update UI
-                                 */
-                                bmiTextView.setText(formatNumber(bmi.getValue()));
-                                bodyFatTextView.setText(formatNumber(bodyFat.getValue()));
-                                bodyMassTextView.startAnimation(animation);
-
-                                /**
-                                 * Add relationships, save and send to server
+                                 * Add relationships
                                  */
                                 bodyMass.addMeasurement(bmi, bodyFat);
-                                if (measurementDAO.save(bodyMass)) synchronizeWithServer();
+
+                                /**
+                                 * Update UI
+                                 */
+                                updateUILastMeasurement(bodyMass, true);
+
+                                /**
+                                 * Save in local
+                                 * Send to server saved successfully
+                                 */
+                                if (measurementDAO.save(bodyMass)) {
+                                    synchronizeWithServer();
+                                    loadData();
+                                }
                             } else {
                                 showAnimation = true;
                             }
-                            refreshRecyclerView();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -392,24 +635,6 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
         }
 
         return false;
-    }
-
-    @Override
-    public void onItemClick(Measurement item) {
-
-//        Intent it = new Intent(getApplicationContext(), ScaleGraphActivity.class);
-//        startActivity(it);
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.view_circle:
-                startActivity(new Intent(getApplicationContext(),ScaleGraphActivity.class));
-                break;
-            default:
-                break;
-        }
     }
 
     /**
@@ -431,13 +656,38 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
      * @return String
      */
     private String formatNumber(double value) {
-        DecimalFormat decimalFormat = new DecimalFormat(
-                getString(R.string.weight_format),
-                new DecimalFormatSymbols(Locale.US));
-
         String result = decimalFormat.format(value);
-
         return result.equals(".0") ? "00.0" : result;
+    }
+
+    /**
+     * updateOrSave the UI with the last measurement.
+     *
+     * @param measurement {@link Measurement}
+     */
+    private void updateUILastMeasurement(Measurement measurement, boolean applyAnimation) {
+        if (measurement == null) return;
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mDateLastMeasurement.setText(DateUtils.abbreviatedDate(
+                        getApplicationContext(), measurement.getRegistrationDate()));
+                bodyMassTextView.setText(formatNumber(measurement.getValue()));
+
+                /**
+                 * Relations
+                 */
+                for (Measurement m : measurement.getMeasurements()) {
+                    if (m.getTypeId() == MeasurementType.BMI)
+                        bmiTextView.setText(formatNumber(m.getValue()));
+                    else if (m.getTypeId() == MeasurementType.BODY_FAT)
+                        bodyFatTextView.setText(formatNumber(m.getValue()));
+                }
+
+                if (applyAnimation) bodyMassTextView.startAnimation(animation);
+            }
+        });
     }
 
     /**
@@ -445,5 +695,16 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
      */
     private void synchronizeWithServer() {
         SynchronizationServer.getInstance(this).run();
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.chart_floating_button:
+                startActivity(new Intent(getApplicationContext(), ScaleGraphActivity.class));
+                break;
+            default:
+                break;
+        }
     }
 }

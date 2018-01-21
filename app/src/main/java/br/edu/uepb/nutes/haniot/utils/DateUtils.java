@@ -137,7 +137,7 @@ public final class DateUtils {
      * @param format_date
      * @return String
      */
-    public static String getDatetime(long milliseconds, String format_date) {
+    public static String formatDate(long milliseconds, String format_date) {
         if (format_date == null)
             return null;
 
@@ -146,41 +146,6 @@ public final class DateUtils {
 
         DateFormat dateFormat = new SimpleDateFormat(format_date);
         return dateFormat.format(calendar.getTime());
-    }
-
-    /**
-     * Converts string to Calendar Object.
-     *
-     * @param timeStamp
-     * @param date_input - Format: yyyy-MM-dd hh:mm:ss
-     * @return Calendar
-     */
-    public static Calendar stringToCalendar(String timeStamp, String date_input) throws ParseException {
-        Calendar c = Calendar.getInstance();
-
-        try {
-            /**
-             * Checks if the date is in the correct format
-             */
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-mm-dd HH:MM:SS");
-            format.parse(date_input);
-
-            /**
-             * Take the string data
-             */
-            int year = Integer.parseInt(date_input.substring(0, 4));
-            int month = Integer.parseInt(date_input.substring(5, 7)) - 1;
-            int day = Integer.parseInt(date_input.substring(8, 10));
-            int hour = Integer.parseInt(date_input.substring(11, 13));
-            int minute = Integer.parseInt(date_input.substring(14, 16));
-            int second = Integer.parseInt(date_input.substring(17, 19));
-
-            c.set(year, month, day, day, minute, second);
-
-            return c;
-        } catch (ParseException e) {
-            throw new ParseException(e.getMessage(), e.getErrorOffset());
-        }
     }
 
     /**
@@ -248,6 +213,26 @@ public final class DateUtils {
      * @return String
      */
     public static String abbreviatedDate(Context context, long dateMills) {
+        if (isToday(dateMills))
+            return context.getResources().getString(R.string.today_text);
+
+        StringBuilder result = new StringBuilder();
+        Calendar c = GregorianCalendar.getInstance();
+        c.setTimeInMillis(dateMills);
+
+        DateFormat dateFormat = new SimpleDateFormat("MMMM dd, EEE");
+        return dateFormat.format(c.getTime());
+    }
+
+    /**
+     * Returns date passed as abbreviated parameter: MMMM dd, EEE
+     * - If the phone language is "pt": Jan 18, 2018
+     * - If for another: January 18, 2018
+     *
+     * @param dateMills long
+     * @return String
+     */
+    public static String getDayWeek(Context context, long dateMills) {
         if (isToday(dateMills))
             return context.getResources().getString(R.string.today_text);
 

@@ -51,12 +51,12 @@ public class HeartRateAdapter extends RecyclerView.Adapter<HeartRateAdapter.View
     public void onBindViewHolder(final ViewHolder holder, final int position) {
 //        holder.mItem = mValues.get(position);
 //        holder.fcMax.setText(String.format("%03d", mValues.get(position).getFcMaximum()));
-//        holder.date.setText(DateUtils.getDatetime(mValues.get(position).getRegistrationTime(), context.getString(R.string.datetime_format)));
-//        holder.duration.setText(DateUtils.getDatetime(mValues.get(position).getDurationTime(), context.getString(R.string.time_format_simple)));
+//        holder.date.setText(DateUtils.formatDate(mValues.get(position).getRegistrationTime(), context.getString(R.string.datetime_format)));
+//        holder.duration.setText(DateUtils.formatDate(mValues.get(position).getDurationTime(), context.getString(R.string.time_format_simple)));
 //
-//        holder.view.setOnClickListener(new View.OnClickListener() {
+//        holder.mView.setOnClickListener(new View.OnClickListener() {
 //            @Override
-//            public void onClick(View view) {
+//            public void onClick(View mView) {
 //                mListener.onItemClick(holder.mItem);
 //            }
 //        });
@@ -96,7 +96,7 @@ public class HeartRateAdapter extends RecyclerView.Adapter<HeartRateAdapter.View
 
         @Override
         public String toString() {
-            return "ItemViewHolder{" +
+            return "ViewHolder{" +
                     ", fcMax=" + fcMax +
                     ", date=" + date +
                     ", duration=" + duration +

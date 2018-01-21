@@ -355,14 +355,8 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                     public void onSuccess(JSONObject result) {
                         try {
                             final User user = new Gson().fromJson(result.getString("user"), User.class);
-                            if (user.get_id() != null) {
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        userDAO.save(user); // save in local
-                                    }
-                                });
-
+                            if (user.getEmail() != null) {
+                                userDAO.save(user); // save in local
                                 finish(); // to back login activity
                             }
                         } catch (JSONException e) {
@@ -399,14 +393,8 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                         try {
                             final User userUpdate = new Gson().fromJson(result.getString("user"), User.class);
 
-                            if (userUpdate.get_id() != null) {
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        userDAO.update(user); // save in local
-                                    }
-                                });
-                            }
+                            if (userUpdate.getEmail() != null)
+                                userDAO.update(user); // save in local
                         } catch (JSONException e) {
                             e.printStackTrace();
                         } finally {
@@ -454,7 +442,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
      */
     private void populateView() {
         nameEditText.setText(user.getName());
-        dateOfBirthEditText.setText(DateUtils.getDatetime(user.getDateOfBirth(), getString(R.string.date_format)));
+        dateOfBirthEditText.setText(DateUtils.formatDate(user.getDateOfBirth(), getString(R.string.date_format)));
         heightEditText.setText(String.valueOf(user.getHeight()));
         emailEditText.setText(user.getEmail());
         emailEditText.setEnabled(false);

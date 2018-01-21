@@ -106,6 +106,7 @@ public class BloodPressureHDPActivity extends AppCompatActivity {
 
         tm = new Handler();
         Intent intent = new Intent("com.signove.health.service.HealthService");
+        intent.setPackage(this.getPackageName());
         startService(intent);
         bindService(intent, serviceConnection, 0);
         Log.w("HST", "Activity created");
@@ -224,8 +225,9 @@ public class BloodPressureHDPActivity extends AppCompatActivity {
 
             if (mDevice == null) {
                 mDevice = new Device(addr, "BLOOD PRESSURE MONITOR", "OMRON", "BP792IT", DeviceType.BLOOD_PRESSURE, session.getUserLogged());
-                mDevice.set_id("15647dfd7bcdd2448000cc6");
+                mDevice.set_id("5a62c42dd6f33400146c9b6a");
                 if (!deviceDAO.save(mDevice)) finish();
+                mDevice = deviceDAO.get(addr, session.getIdLogged());
             }
         }
 

@@ -75,6 +75,7 @@
     <string name="most_recent_entries">Most recent entries</string>
     <string name="body_fat_title">Body Fat</string>
     <string name="body_bmi_title">BMI</string>
+    <string name="pulse_mark_title">Pulse:</string>
 
     <string name="value_default">_ _</string>
 
@@ -201,7 +202,9 @@
     <!--ERROR-->
     <string name="error_sign_out">There was an error while trying to quit...</string>
     <string name="error_500">Could not complete request! Please try again later...</string>
+    <string name="error_internal_device">Could not complete request! Please try again later...</string>
     <string name="error_connectivity">There was an error communicating with our servers.\nPlease, check your phone connectivity and try again later.</string>
+    <string name="connect_network_try_again">Connect to a network and try again...</string>
 
     <!--SETTINGS-->
     <string name="settings_your_data">Your Data</string>
@@ -246,6 +249,7 @@
     <string name="unit_percentage">%</string>
     <string name="unit_celsius">°C</string>
     <string name="unit_pressure">mmHg</string>
+    <string name="unit_pulse">bpm</string>
     <string name="unit_glucose_mg_dL">mg/dL</string>
     <string name="unit_glucose_kg_L">kg/L</string>
 

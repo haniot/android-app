@@ -22,6 +22,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.activity.account.LoginActivity;
+import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.activity.settings.SettingsActivity;
 import br.edu.uepb.nutes.haniot.fragment.ConnectDeviceFragment;
 import br.edu.uepb.nutes.haniot.fragment.ScanDeviceFragment;
@@ -71,6 +73,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onResume() {
         super.onResume();
+
+        /**
+         * User not logged
+         */
+        if (!(new Session(this).isLogged())) {
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+        }
 
         openFragment(fragment);
     }
