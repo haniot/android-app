@@ -60,9 +60,9 @@ public class BloodPressureAdapter extends BaseAdapter<Measurement> {
             // Relations
             for (Measurement parent : m.getMeasurements()) {
                 if (parent.getTypeId() == MeasurementType.BLOOD_PRESSURE_DIASTOLIC)
-                    h.diastolic.setText(String.valueOf((int) m.getValue()));
+                    h.diastolic.setText(String.valueOf((int) parent.getValue()));
                 else if (parent.getTypeId() == MeasurementType.HEART_RATE)
-                    h.pulse.setText(String.valueOf((int) m.getValue()));
+                    h.pulse.setText(String.valueOf((int) parent.getValue()));
             }
             h.unit.setText(m.getUnit());
             h.dayWeek.setText(DateUtils.formatDate(m.getRegistrationDate(), "EEEE"));

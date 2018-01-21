@@ -85,6 +85,8 @@ public class HeartRateGraphActivity extends AppCompatActivity implements View.On
         mButtonWeek.setOnClickListener(this);
 
         params = new Params(session.get_idLogged(), MeasurementType.HEART_RATE);
+        measurementData = new ArrayList<>();
+
 
         createChart(GRAPH_TYPE_DAY);
     }
@@ -120,15 +122,19 @@ public class HeartRateGraphActivity extends AppCompatActivity implements View.On
             @Override
             public void onResult(List<Measurement> result) {
                 Log.w(TAG, "onSuccess()");
-                measurementData.clear();
-                measurementData.addAll(result);
 
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        paintChart();
-                    }
-                });
+                if (result != null && result.size() > 0) {
+                    measurementData.clear();
+                    measurementData.addAll(result);
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            paintChart();
+                        }
+                    });
+
+                };
             }
             @Override
             public void onAfterSend() {

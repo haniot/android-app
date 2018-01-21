@@ -428,7 +428,8 @@ public class BloodPressureHDPActivity extends AppCompatActivity implements View.
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mBloodPressureSysTextView.setText(String.valueOf((int) measurement.getValue()));
+                mBloodPressureSysTextView.setText(
+                        String.valueOf((int) measurement.getValue()).concat("/"));
                 mUnitBloodPressurePulseTextView.setText(measurement.getUnit());
                 mDateLastMeasurement.setText(DateUtils.abbreviatedDate(
                         getApplicationContext(), measurement.getRegistrationDate()));
@@ -438,9 +439,9 @@ public class BloodPressureHDPActivity extends AppCompatActivity implements View.
                  */
                 for (Measurement m : measurement.getMeasurements()) {
                     if (m.getTypeId() == MeasurementType.BLOOD_PRESSURE_DIASTOLIC)
-                        mBloodPressureDiaTextView.setText(String.valueOf((int) measurement.getValue()));
+                        mBloodPressureDiaTextView.setText(String.valueOf((int) m.getValue()));
                     else if (m.getTypeId() == MeasurementType.HEART_RATE)
-                        mBloodPressurePulseTextView.setText(String.valueOf((int) measurement.getValue()));
+                        mBloodPressurePulseTextView.setText(String.valueOf((int) m.getValue()));
                 }
 
                 if (applyAnimation) {

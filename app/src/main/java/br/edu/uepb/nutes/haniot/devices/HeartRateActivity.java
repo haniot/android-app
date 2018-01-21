@@ -342,7 +342,7 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
                 startActivity(intent);
                 break;
 
-            case R.id.view_circle:
+            case R.id.chart_floating_button:
                 startActivity(new Intent(getApplicationContext(), HeartRateGraphActivity.class));
                 break;
             default:
