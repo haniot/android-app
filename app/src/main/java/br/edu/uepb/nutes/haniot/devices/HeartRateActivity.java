@@ -30,16 +30,15 @@ import android.widget.TextView;
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.activity.graphs.HeartRateGraphActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.HeartRateAdapter;
-import br.edu.uepb.nutes.haniot.devices.RecordHeartRateActivity;
 import br.edu.uepb.nutes.haniot.model.Measurement;
 import br.edu.uepb.nutes.haniot.model.MeasurementType;
 import br.edu.uepb.nutes.haniot.model.dao.MeasurementDAO;
@@ -342,27 +341,25 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
                 intent.putExtra(HeartRateActivity.EXTRA_DEVICE_INFORMATIONS, deviceInformations);
                 startActivity(intent);
                 break;
+
+            case R.id.view_circle:
+                startActivity(new Intent(getApplicationContext(), HeartRateGraphActivity.class));
+                break;
             default:
                 break;
         }
     }
 
-//    @Override
-//    public void onItemClick(MeasurementHeartRate item) {
-//        Intent it = new Intent(getApplicationContext(), HeartRateGraphActivity.class);
-//        startActivity(it);
-//        //Log.i("onItemClick()", item.toString());
-//    }
-
-    @Override
-    public void onItemClick(Measurement item) {
-
-    }
 
     /**
      * Performs routine for data synchronization with server.
      */
     private void synchronizeWithServer() {
         SynchronizationServer.getInstance(this).run();
+    }
+
+    @Override
+    public void onItemClick(Measurement item) {
+
     }
 }

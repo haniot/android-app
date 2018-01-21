@@ -118,13 +118,15 @@ public class ScaleGraphActivity extends AppCompatActivity implements View.OnClic
             @Override
             public void onResult(List<Measurement> result) {
                 Log.w(TAG, "onSuccess()");
+                measurementData.clear();
+                measurementData.addAll(result);
 
-                if (result != null && result.size() > 0) {
-                    measurementData.clear();
-                    measurementData.addAll(result);
-
-                    paintChart();
-                }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        paintChart();
+                    }
+                });
             }
 
             @Override
@@ -146,8 +148,8 @@ public class ScaleGraphActivity extends AppCompatActivity implements View.OnClic
             String date = DateUtils.formatDate(measurementData.get(i).getRegistrationDate(),
                     getString(R.string.date_format));
 
-            float temp = (float) measurementData.get(i).getValue();
-            entries.add(new Entry((float) i, temp));
+            float weight = (float) measurementData.get(i).getValue();
+            entries.add(new Entry((float) i, weight));
             quarters[i] = date;
         }
 

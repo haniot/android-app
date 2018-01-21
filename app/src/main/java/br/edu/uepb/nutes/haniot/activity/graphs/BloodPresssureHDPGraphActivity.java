@@ -3,7 +3,10 @@ package br.edu.uepb.nutes.haniot.activity.graphs;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -15,19 +18,37 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
+import br.edu.uepb.nutes.haniot.model.Measurement;
+import br.edu.uepb.nutes.haniot.model.MeasurementType;
+import br.edu.uepb.nutes.haniot.server.historical.CallbackHistorical;
+import br.edu.uepb.nutes.haniot.server.historical.Historical;
+import br.edu.uepb.nutes.haniot.server.historical.HistoricalType;
+import br.edu.uepb.nutes.haniot.server.historical.Params;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
  * Created by izabella on 10/11/17.
- * Não concluida
  */
 
-public class BloodPresssureHDPGraphActivity extends AppCompatActivity {
+public class BloodPresssureHDPGraphActivity extends AppCompatActivity implements View.OnClickListener {
+    private final String TAG = "FragmentActivity";
+
+    private final int GRAPH_TYPE_DAY = 1;
+    private final int GRAPH_TYPE_SEVEN = 2;
+    private final int GRAPH_TYPE_MONTH = 3;
+
     private Session session;
+    private Params params;
+    private List<Measurement> measurementData;
 
     @BindView(R.id.chart_blood_pressure)
     LineChart mChart;
@@ -35,6 +56,14 @@ public class BloodPresssureHDPGraphActivity extends AppCompatActivity {
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
 
+    @BindView(R.id.day_button)
+    Button mButtonDay;
+
+    @BindView(R.id.week_button)
+    Button mButtonWeek;
+
+    @BindView(R.id.month_button)
+    Button mButtonMonth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,127 +76,146 @@ public class BloodPresssureHDPGraphActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         session = new Session(this);
 
-        createChart();
+        mButtonDay.setOnClickListener(this);
+        mButtonMonth.setOnClickListener(this);
+        mButtonWeek.setOnClickListener(this);
+
+        params = new Params(session.get_idLogged(), MeasurementType.BLOOD_PRESSURE_DIASTOLIC);
+
+        createChart(GRAPH_TYPE_DAY);
     }
 
-    private void createChart() {
+    private void createChart(int type) {
+        if (type == GRAPH_TYPE_DAY)
+            requestData("1d");
+        else if (type == GRAPH_TYPE_SEVEN)
+            requestData("1w");
+        else if (type == GRAPH_TYPE_MONTH)
+            requestData("1m");
+    }
+
+    private void requestData(String period) {
+        Historical hist = new Historical.Query()
+                .type(HistoricalType.MEASUREMENTS_TYPE_USER) // required
+                .params(params) // required
+                .filterDate(period)
+                .build();
+
+        hist.request(this, new CallbackHistorical<Measurement>() {
+            @Override
+            public void onBeforeSend() {
+                Log.w(TAG, "onBeforeSend()");
+                // TODO Colocar loading
+            }
+
+            @Override
+            public void onError(JSONObject result) {
+                Log.w(TAG, "onError()");
+                printMessage(getString(R.string.error_500));
+            }
+
+            @Override
+            public void onResult(List<Measurement> result) {
+                Log.w(TAG, "onSuccess()");
+
+                measurementData.clear();
+                measurementData.addAll(result);
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        paintChart();
+                    }
+                });
+            }
+
+            @Override
+            public void onAfterSend() {
+                Log.w(TAG, "onAfterSend()");
+                // TODO Remover loading
+            }
+        });
+    }
+
+    /**
+     *
+     */
+    private void paintChart() {
+        final String[] quarters = new String[measurementData.size()];
+        List<Entry> entries = new ArrayList<>();
+
+        for (int i = 0; i < measurementData.size(); i++) {
+            String date = DateUtils.formatDate(measurementData.get(i).getRegistrationDate(),
+                    getString(R.string.date_format));
+
+            float pressure = (float) measurementData.get(i).getValue();
+            entries.add(new Entry((float) i, pressure));
+            quarters[i] = date;
+        }
+
+        IAxisValueFormatter formatter = new IAxisValueFormatter() {
+            @Override
+            public String getFormattedValue(float value, AxisBase axis) {
+                if (value >= quarters.length) return "";
+                return quarters[(int) value];
+            }
+        };
+        XAxis xAxis = mChart.getXAxis();
+        xAxis.setGranularity(1f); // minimum axis-step (interval) is 1
+        xAxis.setValueFormatter(formatter);
+        xAxis.setEnabled(true);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+
+        ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
+
+        LineDataSet set = new LineDataSet(entries, getString(R.string.blood_pressure));
+        set.setLineWidth(3f);
+        set.setDrawCircles(true);
+        set.setDrawCircleHole(true);
+        set.setAxisDependency(YAxis.AxisDependency.LEFT);
+        dataSets.add(set);
+        LineData data = new LineData(dataSets);
 
         mChart.getDescription().setEnabled(false);
         mChart.setDrawGridBackground(false);
-
         YAxis leftAxis = mChart.getAxisLeft();
-        leftAxis.setAxisMinimum(50);
-        leftAxis.setAxisMaximum(140);
+        leftAxis.setAxisMinimum(0f);
+        leftAxis.setAxisMaximum(100f);
         mChart.getAxisRight().setEnabled(false);
-//
-        long dayMile = (24 * 60 * 60 * 1000);
-        long dateEnd = DateUtils.getCurrentDatetime();
-        long dateStart = dateEnd - (dayMile * 7);
-        String deviceAddress = "1C:87:74:01:73:10";
-//        String userId = session.getIdLogged();
+        mChart.animate();
+        mChart.setData(data);
+        mChart.setEnabled(true);
+        mChart.invalidate();
+        mChart.setVisibleXRangeMaximum(65f);
+        mChart.resetViewPortOffsets();
+        mChart.animateX(200);
 
-//String.valueOf(dateEnd)
+        mChart.notifyDataSetChanged();
+    }
 
-//        ArrayList<MeasurementBloodPressure> measurementData = new ArrayList<MeasurementBloodPressure>();
-//        List<MeasurementBloodPressure> measurementData= MeasurementBloodPressure.getInstance(this).filter(dateStart, dateEnd, deviceAddress, userId);
-//
-//        MeasurementBloodPressure m1 = new MeasurementBloodPressure();
-//        m1.setHeartFate(70);
-//        m1.setRegistrationTime(dateStart);
-//
-//        MeasurementBloodPressure m2 = new MeasurementBloodPressure();
-//        m2.setHeartFate(60);
-//        m2.setRegistrationTime(dateStart + (dayMile * 2));
-//
-//        MeasurementBloodPressure m3 = new MeasurementBloodPressure();
-//        m3.setHeartFate(60);
-//        m3.setRegistrationTime(dateStart + (dayMile * 3));
-//
-//        MeasurementBloodPressure m4 = new MeasurementBloodPressure();
-//        m4.setHeartFate(65);
-//        m4.setRegistrationTime(dateStart + (dayMile * 4));
-//
-//        MeasurementBloodPressure m5 = new MeasurementBloodPressure();
-//        m5.setHeartFate(57);
-//        m5.setRegistrationTime(dateStart + (dayMile * 5));
-//
-//        MeasurementBloodPressure m6 = new MeasurementBloodPressure();
-//        m6.setHeartFate(90);
-//        m6.setRegistrationTime(dateStart + (dayMile * 6));
-//
-//        MeasurementBloodPressure m7 = new MeasurementBloodPressure();
-//        m7.setHeartFate(80);
-//        m7.setRegistrationTime(dateEnd);
-//
-//        measurementData.add(m1);
-//        measurementData.add(m2);
-//        measurementData.add(m3);
-//        measurementData.add(m4);
-//        measurementData.add(m5);
-//        measurementData.add(m6);
-//        measurementData.add(m7);
-
-//        if(measurementData.size() == 0) return;
-//
-//        final String[] quarters = new String[measurementData.size()];
-//        ArrayList<Entry> entries = new ArrayList<Entry>();
-//
-//        for(int i = 0; i < measurementData.size(); i++) {
-//            String format = "dd/MM";
-//            String date =  DateUtils.formatDate(measurementData.get(i).getRegistrationTime(), format);
-//            float temperature = measurementData.get(i).getHeartFate(); //get
-//            entries.add(new Entry(i, temperature));
-//            quarters[i] = date;
-//        }
-//
-//        IAxisValueFormatter formatter = new IAxisValueFormatter() {
-//
-//            @Override
-//            public String getFormattedValue(float value, AxisBase axis) {
-//                if(value >= quarters.length){return "";}
-//                return quarters[(int) value];
-//            }
-//
-//            // we don't draw numbers, so no decimal digits needed
-//            public int getDecimalDigits() {  return 0; }
-//        };
-//
-//        XAxis xAxis = mChart.getXAxis();
-//        xAxis.setGranularity(1f); // minimum axis-step (interval) is 1
-//        xAxis.setValueFormatter(formatter);
-////        xAxis.setSpaceMin(0);
-////        xAxis.setSpaceMax(measurementData.size()-1);
-//        xAxis.setEnabled(true);
-//        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-//
-//        ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
-//
-//        LineDataSet set = new LineDataSet(entries, "blood pressure");
-//        set.setLineWidth(3f);
-//        set.setDrawCircles(true);
-//        set.setDrawCircleHole(true);
-//        set.setAxisDependency(YAxis.AxisDependency.LEFT);
-//
-//        dataSets.add(set);
-//        LineData data = new LineData(dataSets);
-//
-//        mChart.animate();
-//        mChart.setData(data);
-//        mChart.setEnabled(true);
-//        mChart.invalidate();
-//        mChart.setVisibleXRangeMaximum(65f);
-//        mChart.resetViewPortOffsets();
-//
-//        mChart.animateX(3000);
+    private void printMessage(String message) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                super.onBackPressed();
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.day_button:
+                createChart(GRAPH_TYPE_DAY);
+                break;
+
+            case R.id.month_button:
+                createChart(GRAPH_TYPE_MONTH);
+                break;
+
+            case R.id.week_button:
+                createChart(GRAPH_TYPE_SEVEN);
                 break;
         }
-        return super.onOptionsItemSelected(item);
     }
 }

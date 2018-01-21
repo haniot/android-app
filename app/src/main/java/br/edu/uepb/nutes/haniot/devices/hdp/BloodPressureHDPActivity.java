@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
@@ -29,6 +30,7 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.activity.graphs.BloodPresssureHDPGraphActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.model.Device;
 import br.edu.uepb.nutes.haniot.model.DeviceType;
@@ -49,7 +51,7 @@ import butterknife.ButterKnife;
  * @version 1.2
  * @copyright Copyright (c) 2017, NUTES UEPB
  */
-public class BloodPressureHDPActivity extends AppCompatActivity {
+public class BloodPressureHDPActivity extends AppCompatActivity implements View.OnClickListener {
     private final String TAG = "BloodPressureHDPActivity";
 
     @BindView(R.id.toolbar)
@@ -354,5 +356,17 @@ public class BloodPressureHDPActivity extends AppCompatActivity {
      */
     private void synchronizeWithServer() {
         SynchronizationServer.getInstance(this).run();
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.view_circle:
+                startActivity(new Intent(getApplicationContext(),BloodPresssureHDPGraphActivity.class));
+                break;
+
+            default:
+                break;
+        }
     }
 }

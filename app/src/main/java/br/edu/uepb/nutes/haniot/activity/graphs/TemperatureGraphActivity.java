@@ -83,6 +83,8 @@ public class TemperatureGraphActivity extends AppCompatActivity implements View.
 
         params = new Params(session.get_idLogged(), MeasurementType.TEMPERATURE);
 
+        measurementData = new ArrayList<>();
+
         createChart(GRAPH_TYPE_DAY);
     }
 
@@ -129,6 +131,7 @@ public class TemperatureGraphActivity extends AppCompatActivity implements View.
                             paintChart();
                         }
                     });
+
                 }
             }
 
@@ -172,6 +175,13 @@ public class TemperatureGraphActivity extends AppCompatActivity implements View.
      *
      */
     private void paintChart() {
+        mChart.getDescription().setEnabled(false);
+        mChart.setDrawGridBackground(false);
+        YAxis leftAxis = mChart.getAxisLeft();
+        leftAxis.setAxisMinimum(0f);
+        leftAxis.setAxisMaximum(100f);
+        mChart.getAxisRight().setEnabled(false);
+
         final String[] quarters = new String[measurementData.size()];
         List<Entry> entries = new ArrayList<>();
 
@@ -207,12 +217,6 @@ public class TemperatureGraphActivity extends AppCompatActivity implements View.
         dataSets.add(set);
         LineData data = new LineData(dataSets);
 
-        mChart.getDescription().setEnabled(false);
-        mChart.setDrawGridBackground(false);
-        YAxis leftAxis = mChart.getAxisLeft();
-        leftAxis.setAxisMinimum(0f);
-        leftAxis.setAxisMaximum(100f);
-        mChart.getAxisRight().setEnabled(false);
         mChart.animate();
         mChart.setData(data);
         mChart.setEnabled(true);
