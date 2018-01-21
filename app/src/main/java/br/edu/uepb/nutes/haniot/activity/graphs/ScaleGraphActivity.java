@@ -120,13 +120,15 @@ public class ScaleGraphActivity extends AppCompatActivity implements View.OnClic
             @Override
             public void onResult(List<Measurement> result) {
                 Log.w(TAG, "onSuccess()");
+                measurementData.clear();
+                measurementData.addAll(result);
 
-                if (result != null && result.size() > 0) {
-                    measurementData.clear();
-                    measurementData.addAll(result);
-
-                    paintChart();
-                }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        paintChart();
+                    }
+                });
             }
 
             @Override

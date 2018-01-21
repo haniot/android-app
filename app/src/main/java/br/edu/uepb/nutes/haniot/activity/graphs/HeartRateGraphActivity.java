@@ -120,13 +120,15 @@ public class HeartRateGraphActivity extends AppCompatActivity implements View.On
             @Override
             public void onResult(List<Measurement> result) {
                 Log.w(TAG, "onSuccess()");
+                measurementData.clear();
+                measurementData.addAll(result);
 
-                if (result != null && result.size() > 0) {
-                    measurementData.clear();
-                    measurementData.addAll(result);
-
-                    paintChart();
-                }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        paintChart();
+                    }
+                });
             }
             @Override
             public void onAfterSend() {

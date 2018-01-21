@@ -357,7 +357,7 @@ public class BodyCompositionHDPActivity extends AppCompatActivity implements  Vi
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.view_circle:
-                startActivity(new Intent(getApplicationContext(),BloodPresssureHDPGraphActivity.class));
+                startActivity(new Intent(getApplicationContext(),ScaleGraphActivity.class));
                 break;
             default:
                 break;
