@@ -81,6 +81,8 @@ public class BloodPresssureHDPGraphActivity extends AppCompatActivity implements
         mButtonWeek.setOnClickListener(this);
 
         params = new Params(session.get_idLogged(), MeasurementType.BLOOD_PRESSURE_DIASTOLIC);
+        measurementData = new ArrayList<>();
+
 
         createChart(GRAPH_TYPE_DAY);
     }
@@ -117,16 +119,18 @@ public class BloodPresssureHDPGraphActivity extends AppCompatActivity implements
             @Override
             public void onResult(List<Measurement> result) {
                 Log.w(TAG, "onSuccess()");
+                if (result != null && result.size() > 0) {
+                    measurementData.clear();
+                    measurementData.addAll(result);
 
-                measurementData.clear();
-                measurementData.addAll(result);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            paintChart();
+                        }
+                    });
 
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        paintChart();
-                    }
-                });
+                }
             }
 
             @Override

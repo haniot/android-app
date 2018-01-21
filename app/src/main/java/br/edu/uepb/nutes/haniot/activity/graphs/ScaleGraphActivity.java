@@ -83,6 +83,8 @@ public class ScaleGraphActivity extends AppCompatActivity implements View.OnClic
         mButtonWeek.setOnClickListener(this);
 
         params = new Params(session.get_idLogged(), MeasurementType.BODY_FAT);
+        measurementData = new ArrayList<>();
+
 
         createChart(GRAPH_TYPE_DAY);
     }
@@ -95,6 +97,7 @@ public class ScaleGraphActivity extends AppCompatActivity implements View.OnClic
         else if (type == GRAPH_TYPE_MONTH)
             requestData("1m");
     }
+
     private void requestData(String period) {
         Historical hist = new Historical.Query()
                 .type(HistoricalType.MEASUREMENTS_TYPE_USER) // required
@@ -118,16 +121,19 @@ public class ScaleGraphActivity extends AppCompatActivity implements View.OnClic
             @Override
             public void onResult(List<Measurement> result) {
                 Log.w(TAG, "onSuccess()");
-                measurementData.clear();
-                measurementData.addAll(result);
 
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        paintChart();
-                    }
-                });
-            }
+                if (result != null && result.size() > 0) {
+                    measurementData.clear();
+                    measurementData.addAll(result);
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            paintChart();
+                        }
+                    });
+
+                }            }
 
             @Override
             public void onAfterSend() {
@@ -141,6 +147,13 @@ public class ScaleGraphActivity extends AppCompatActivity implements View.OnClic
      *
      */
     private void paintChart() {
+        mChart.getDescription().setEnabled(false);
+        mChart.setDrawGridBackground(false);
+        YAxis leftAxis = mChart.getAxisLeft();
+        leftAxis.setAxisMinimum(0f);
+        leftAxis.setAxisMaximum(100f);
+        mChart.getAxisRight().setEnabled(false);
+
         final String[] quarters = new String[measurementData.size()];
         List<Entry> entries = new ArrayList<>();
 
@@ -176,12 +189,7 @@ public class ScaleGraphActivity extends AppCompatActivity implements View.OnClic
         dataSets.add(set);
         LineData data = new LineData(dataSets);
 
-        mChart.getDescription().setEnabled(false);
-        mChart.setDrawGridBackground(false);
-        YAxis leftAxis = mChart.getAxisLeft();
-        leftAxis.setAxisMinimum(0f);
-        leftAxis.setAxisMaximum(100f);
-        mChart.getAxisRight().setEnabled(false);
+
         mChart.animate();
         mChart.setData(data);
         mChart.setEnabled(true);
