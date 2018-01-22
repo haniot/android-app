@@ -558,6 +558,9 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
                     measurement.setDevice(mDevice);
                     measurement.setUser(session.getUserLogged());
 
+                    /**
+                     * Update UI
+                     */
                     updateUILastMeasurement(measurement, true);
 
                     /**

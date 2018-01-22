@@ -107,8 +107,17 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
     @BindView(R.id.unit_body_mass_textview)
     TextView bodyMassUnitTextView;
 
+    @BindView(R.id.title_body_fat_textview)
+    TextView titleBodyFatTextView;
+
     @BindView(R.id.body_fat_textview)
     TextView bodyFatTextView;
+
+    @BindView(R.id.unit_body_fat_textview)
+    TextView unitBodyFatTextView;
+
+    @BindView(R.id.title_bmi_fat_textview)
+    TextView titleBmiTextView;
 
     @BindView(R.id.bmi_textview)
     TextView bmiTextView;
@@ -671,19 +680,23 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mDateLastMeasurement.setText(DateUtils.abbreviatedDate(
-                        getApplicationContext(), measurement.getRegistrationDate()));
                 bodyMassTextView.setText(formatNumber(measurement.getValue()));
                 bodyMassUnitTextView.setText(measurement.getUnit());
+                mDateLastMeasurement.setText(DateUtils.abbreviatedDate(
+                        getApplicationContext(), measurement.getRegistrationDate()));
 
                 /**
                  * Relations
                  */
                 for (Measurement m : measurement.getMeasurements()) {
-                    if (m.getTypeId() == MeasurementType.BMI)
+                    if (m.getTypeId() == MeasurementType.BMI) {
                         bmiTextView.setText(formatNumber(m.getValue()));
-                    else if (m.getTypeId() == MeasurementType.BODY_FAT)
+                        titleBmiTextView.setVisibility(View.VISIBLE);
+                    } else if (m.getTypeId() == MeasurementType.BODY_FAT) {
                         bodyFatTextView.setText(formatNumber(m.getValue()));
+                        unitBodyFatTextView.setText(m.getUnit());
+                        titleBodyFatTextView.setVisibility(View.VISIBLE);
+                    }
                 }
 
                 if (applyAnimation) bodyMassTextView.startAnimation(animation);

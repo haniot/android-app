@@ -41,13 +41,14 @@
                     app:cpb_progressbar_width="6dp" />
 
                 <TextView
-                    android:id="@+id/heart_rate_measurement"
+                    android:id="@+id/heart_rate_textview"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignStart="@+id/view_circle"
-                    android:layout_centerVertical="true"
+                    android:layout_alignTop="@+id/view_circle"
                     android:layout_marginStart="20dp"
-                    android:text="000"
+                    android:layout_marginTop="40dp"
+                    android:text="@null"
                     android:textColor="@color/colorTextDark"
                     android:textSize="60sp"
                     tools:ignore="HardcodedText" />
@@ -56,27 +57,39 @@
                     android:id="@+id/heart_imageview"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:layout_alignTop="@+id/heart_rate_measurement"
+                    android:layout_alignTop="@+id/heart_rate_textview"
                     android:layout_marginLeft="5dp"
                     android:layout_marginTop="19dp"
-                    android:layout_toEndOf="@+id/heart_rate_measurement"
-                    android:contentDescription=""
+                    android:layout_toEndOf="@+id/heart_rate_textview"
+                    android:contentDescription="heart"
+                    android:visibility="gone"
                     app:srcCompat="@drawable/heart"
                     tools:ignore="ContentDescription,RtlHardcoded" />
 
                 <TextView
-                    android:id="@+id/textView6"
+                    android:id="@+id/heart_rate_unit_textview"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignBaseline="@+id/heart_rate_measurement"
-                    android:layout_alignBottom="@+id/heart_rate_measurement"
+                    android:layout_alignBaseline="@+id/heart_rate_textview"
+                    android:layout_alignBottom="@+id/heart_rate_textview"
                     android:layout_marginLeft="2dp"
-                    android:layout_toEndOf="@+id/heart_rate_measurement"
-                    android:text="bpm"
+                    android:layout_toEndOf="@+id/heart_rate_textview"
+                    android:text="@null"
                     android:textColor="@color/colorTextDark"
                     android:textSize="18sp"
                     tools:ignore="HardcodedText,RtlHardcoded" />
 
+                <TextView
+                    android:id="@+id/date_last_measurement_textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignEnd="@+id/view_circle"
+                    android:layout_alignStart="@+id/view_circle"
+                    android:layout_below="@+id/heart_rate_textview"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center_horizontal"
+                    android:text="@null"
+                    android:textSize="15sp" />
             </RelativeLayout>
 
             <android.support.v7.widget.Toolbar
@@ -87,22 +100,8 @@
                 app:layout_collapseMode="pin"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
                 tools:ignore="HardcodedText" />
-
         </android.support.design.widget.CollapsingToolbarLayout>
-
-
     </android.support.design.widget.AppBarLayout>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/chart_floating_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="70dp"
-        android:clickable="true"
-        android:src="@drawable/ic_action_show_chart"
-        app:elevation="6dp"
-        app:layout_anchor="@id/box_bar_layout"
-        app:layout_anchorGravity="bottom|right|end" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/record_floating_button"
@@ -115,35 +114,57 @@
         app:layout_anchor="@id/box_bar_layout"
         app:layout_anchorGravity="bottom|right|end" />
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/chart_floating_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="90dp"
+        android:clickable="true"
+        android:src="@drawable/ic_action_show_chart"
+        app:elevation="6dp"
+        app:layout_anchor="@id/box_bar_layout"
+        app:layout_anchorGravity="bottom|right|end" />
 
-    <android.support.v4.widget.NestedScrollView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
+        android:orientation="vertical"
+        android:padding="@dimen/activity_horizontal_margin"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/text_view_title_history"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:text="@string/most_recent_entries"
+            android:textAllCaps="false"
+            android:textColor="@color/colorPrimary" />
+
+        <TextView
+            android:id="@+id/no_data_textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:text="@string/no_data_available"
+            android:visibility="gone" />
+
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/data_swiperefresh"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:padding="@dimen/activity_horizontal_margin">
-
-            <TextView
-                android:id="@+id/text_view_title_history"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/most_recent_entries"
-                android:textAllCaps="false"
-                android:textColor="@color/colorPrimary"
-                android:textSize="14sp"
-                android:textStyle="normal" />
+            android:paddingTop="10dp">
 
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/history_heart_rate_listview"
+                android:id="@+id/heart_rate_recyclerview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="10dp" />
-        </LinearLayout>
+                android:scrollbarSize="3sp"
+                android:scrollbarThumbVertical="@color/colorAccent"
+                android:scrollbars="vertical" />
 
-    </android.support.v4.widget.NestedScrollView>
+        </android.support.v4.widget.SwipeRefreshLayout>
+    </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

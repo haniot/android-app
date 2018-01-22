@@ -99,11 +99,14 @@ public class BloodPressureHDPActivity extends AppCompatActivity implements View.
     @BindView(R.id.blood_pressure_dia_textview)
     TextView mBloodPressureDiaTextView;
 
+    @BindView(R.id.unit_blood_pressure_textview)
+    TextView mBloodPressureUnitTextView;
+
     @BindView(R.id.blood_pressure_pulse_textview)
     TextView mBloodPressurePulseTextView;
 
-    @BindView(R.id.unit_blood_pressure_textview)
-    TextView mUnitBloodPressurePulseTextView;
+    @BindView(R.id.unit_pulse_textview)
+    TextView mBloodPressurePulseUnitTextView;
 
     @BindView(R.id.date_last_measurement_textView)
     TextView mDateLastMeasurement;
@@ -430,7 +433,7 @@ public class BloodPressureHDPActivity extends AppCompatActivity implements View.
             public void run() {
                 mBloodPressureSysTextView.setText(
                         String.valueOf((int) measurement.getValue()).concat("/"));
-                mUnitBloodPressurePulseTextView.setText(measurement.getUnit());
+                mBloodPressureUnitTextView.setText(measurement.getUnit());
                 mDateLastMeasurement.setText(DateUtils.abbreviatedDate(
                         getApplicationContext(), measurement.getRegistrationDate()));
 
@@ -440,14 +443,16 @@ public class BloodPressureHDPActivity extends AppCompatActivity implements View.
                 for (Measurement m : measurement.getMeasurements()) {
                     if (m.getTypeId() == MeasurementType.BLOOD_PRESSURE_DIASTOLIC)
                         mBloodPressureDiaTextView.setText(String.valueOf((int) m.getValue()));
-                    else if (m.getTypeId() == MeasurementType.HEART_RATE)
+                    else if (m.getTypeId() == MeasurementType.HEART_RATE) {
                         mBloodPressurePulseTextView.setText(String.valueOf((int) m.getValue()));
+                        mBloodPressurePulseUnitTextView.setVisibility(View.VISIBLE);
+                    }
                 }
 
                 if (applyAnimation) {
                     mBloodPressureSysTextView.startAnimation(animation);
                     mBloodPressureDiaTextView.startAnimation(animation);
-                    mUnitBloodPressurePulseTextView.startAnimation(animation);
+                    mBloodPressureUnitTextView.startAnimation(animation);
                 }
             }
         });
@@ -639,7 +644,7 @@ public class BloodPressureHDPActivity extends AppCompatActivity implements View.
                     /**
                      * Add relationships
                      */
-                    systolic.addMeasurement(diastolic,heartRate);
+                    systolic.addMeasurement(diastolic, heartRate);
 
                     /**
                      * Update UI

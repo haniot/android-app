@@ -243,6 +243,7 @@
     <string name="bt_save">Save</string>
     <string name="title_save_captured_data">Save data...</string>
     <string name="message_save_captured_data">Do you want to save the captured data?</string>
+    <string name="message_save_captured_heart_rate">Do you want to save the captured heart rate?</string>
 
     <string name="no_data_available">No data to display...</string>
     <string name="unit_kg">kg</string>

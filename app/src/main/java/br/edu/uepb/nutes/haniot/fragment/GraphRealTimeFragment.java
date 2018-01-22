@@ -3,10 +3,7 @@ package br.edu.uepb.nutes.haniot.fragment;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,30 +11,18 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.activity.settings.Session;
-import br.edu.uepb.nutes.haniot.model.Measurement;
-import br.edu.uepb.nutes.haniot.model.dao.MeasurementDAO;
-import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
-import br.edu.uepb.nutes.haniot.utils.DateUtils;
-import butterknife.BindView;
-import io.objectbox.relation.ToMany;
 
 /**
  * Created by izabella on 15/01/18.
@@ -54,7 +39,7 @@ public class GraphRealTimeFragment extends FragmentActivity implements OnChartVa
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.activity_record_heart_rate);
+        setContentView(R.layout.activity_heart_rate_record);
 
         mChart = (LineChart) findViewById(R.id.chart1);
         mChart.setOnChartValueSelectedListener(this);

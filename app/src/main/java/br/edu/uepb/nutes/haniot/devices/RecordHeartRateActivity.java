@@ -78,7 +78,7 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
 
-    @BindView(R.id.heart_rate_measurement)
+    @BindView(R.id.heart_rate_textview)
     TextView mHeartRateTextView;
 
     @BindView(R.id.view_circle)
@@ -99,7 +99,7 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_record_heart_rate);
+        setContentView(R.layout.activity_heart_rate_record);
 
         ButterKnife.bind(this);
 

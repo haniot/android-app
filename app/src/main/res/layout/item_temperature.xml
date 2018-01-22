@@ -11,7 +11,8 @@
         android:layout_gravity="center"
         android:foreground="?android:attr/selectableItemBackground"
         card_view:cardBackgroundColor="@color/colorCard"
-        card_view:cardCornerRadius="4dp"
+        card_view:cardCornerRadius="2dp"
+        card_view:cardElevation="2dp"
         card_view:cardPreventCornerOverlap="false"
         card_view:cardUseCompatPadding="true">
 
@@ -19,7 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:padding="12dp">
+            android:padding="16dp">
 
             <TextView
                 android:id="@+id/temperature_textview"
@@ -40,7 +41,7 @@
                 android:layout_marginStart="2dp"
                 android:layout_toEndOf="@+id/temperature_textview"
                 android:text="@string/unit_celsius"
-                android:textSize="20sp" />
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/day_week_measurement_textview"

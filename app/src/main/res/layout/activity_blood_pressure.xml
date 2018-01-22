@@ -58,7 +58,7 @@
                         android:layout_alignParentStart="true"
                         android:layout_marginTop="40dp"
                         android:gravity="right"
-                        android:text="0/"
+                        android:text="@null"
                         android:paddingRight="62dp"
                         android:textColor="@color/colorTextDark"
                         android:textSize="50sp"
@@ -72,7 +72,7 @@
                         android:layout_alignParentStart="true"
                         android:gravity="left"
                         android:paddingLeft="112dp"
-                        android:text="0"
+                        android:text="@null"
                         android:textColor="@color/colorTextDark"
                         android:textSize="30sp"
                         tools:ignore="HardcodedText" />
@@ -84,7 +84,7 @@
                         android:layout_alignEnd="@+id/blood_pressure_dia_textview"
                         android:layout_alignTop="@+id/blood_pressure_dia_textview"
                         android:layout_marginTop="32dp"
-                        android:text="@string/unit_pressure"
+                        android:text="@null"
                         android:textSize="20sp" />
 
                     <TextView
@@ -132,7 +132,7 @@
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentStart="true"
                         android:gravity="bottom|center"
-                        android:text="0"
+                        android:text="@null"
                         android:textColor="@color/colorTextDark"
                         android:textSize="30sp" />
 
@@ -145,6 +145,7 @@
                         android:layout_marginBottom="20dp"
                         android:gravity="center"
                         android:text="/min"
+                        android:visibility="gone"
                         android:textSize="16sp" />
                 </RelativeLayout>
 

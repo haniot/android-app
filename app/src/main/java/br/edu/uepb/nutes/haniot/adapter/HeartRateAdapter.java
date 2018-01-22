@@ -2,14 +2,18 @@ package br.edu.uepb.nutes.haniot.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.List;
+import java.util.Locale;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.adapter.base.BaseAdapter;
 import br.edu.uepb.nutes.haniot.model.Measurement;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
@@ -22,89 +26,95 @@ import butterknife.ButterKnife;
  * @version 1.0
  * @copyright Copyright (c) 2017, NUTES UEPB
  */
-public class HeartRateAdapter extends RecyclerView.Adapter<HeartRateAdapter.ViewHolder> {
-    private final String LOG = "BluetoothDeviceAdapter";
-    private final int EMPTY_VIEW = 10;
-
-    private final List<Measurement> mValues;
-    private final OnItemClickListener mListener;
+public class HeartRateAdapter extends BaseAdapter<Measurement> {
+    private final String LOG = "HeartRateAdapter";
     private final Context context;
 
-    public HeartRateAdapter(List<Measurement> items, OnItemClickListener listener, Context context) {
-        mValues = items;
-        mListener = listener;
+    /**
+     * Contructor.
+     *
+     * @param context {@link Context}
+     */
+    public HeartRateAdapter(Context context) {
         this.context = context;
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if (viewType == EMPTY_VIEW) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.empty_view, parent, false);
-            new ViewHolder(view);
-        }
+    public View createView(ViewGroup viewGroup, int viewType) {
+        return View.inflate(context, R.layout.item_heart_rate, null);
+    }
 
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_heart_rate, parent, false);
+    @Override
+    public RecyclerView.ViewHolder createViewHolder(View view) {
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
-//        holder.mItem = mValues.get(position);
-//        holder.fcMax.setText(String.format("%03d", mValues.get(position).getFcMaximum()));
-//        holder.date.setText(DateUtils.formatDate(mValues.get(position).getRegistrationTime(), context.getString(R.string.datetime_format)));
-//        holder.duration.setText(DateUtils.formatDate(mValues.get(position).getDurationTime(), context.getString(R.string.time_format_simple)));
-//
-//        holder.mView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View mView) {
-//                mListener.onItemClick(holder.mItem);
-//            }
-//        });
+    public void showData(RecyclerView.ViewHolder holder, int position, List<Measurement> itemsList) {
+        if (holder instanceof ViewHolder) {
+            final Measurement m = itemsList.get(position);
+            ViewHolder h = (ViewHolder) holder;
+
+            h.value.setText(String.format("%03d", (int) m.getValue()));
+            h.unit.setText(m.getUnit());
+            h.dayWeek.setText(DateUtils.formatDate(m.getRegistrationDate(), "EEEE"));
+            h.date.setText(DateUtils.formatDate(
+                    m.getRegistrationDate(), context.getString(R.string.datetime_format))
+            );
+            h.imageHeart.setVisibility(View.VISIBLE);
+
+            /**
+             * OnClick Item
+             */
+            h.mView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (HeartRateAdapter.super.mListener != null)
+                        HeartRateAdapter.super.mListener.onItemClick(m);
+                }
+            });
+
+            // call Animation function
+            setAnimation(h.mView, position);
+        }
     }
 
     @Override
-    public int getItemCount() {
-        return mValues == null ? 0 : mValues.size();
+    public void clearAnimation(RecyclerView.ViewHolder holder) {
+        ((ViewHolder) holder).clearAnimation();
     }
 
-    public void addItem(Measurement m, int position) {
-        mValues.add(m);
-        notifyItemInserted(position);
-    }
-
-    public void removeItem(Measurement m, int position) {
-        mValues.remove(m);
-        notifyItemRemoved(position);
-    }
-
+    /**
+     * Class ViewHolder for item.
+     */
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public final View mView;
-        public Measurement mItem;
+        final View mView;
 
-        @BindView(R.id.fcmax_textview)
-        TextView fcMax;
-        @BindView(R.id.date_heart_rate_textview)
+        @BindView(R.id.heart_rate_textview)
+        TextView value;
+
+        @BindView(R.id.heart_rate_unit_textview)
+        TextView unit;
+
+        @BindView(R.id.date_measurement_textview)
         TextView date;
-        @BindView(R.id.duration_heart_rate_textview)
-        TextView duration;
+
+        @BindView(R.id.day_week_measurement_textview)
+        TextView dayWeek;
+
+        @BindView(R.id.heart_imageview)
+        ImageView imageHeart;
 
         public ViewHolder(View view) {
             super(view);
-            mView = view;
             ButterKnife.bind(this, view);
+
+            this.mView = view.getRootView();
         }
 
-        @Override
-        public String toString() {
-            return "ViewHolder{" +
-                    ", fcMax=" + fcMax +
-                    ", date=" + date +
-                    ", duration=" + duration +
-                    '}';
+        public void clearAnimation() {
+            mView.clearAnimation();
         }
-    }
-
-    public interface OnItemClickListener {
-        void onItemClick(Measurement item);
     }
 }
+

@@ -72,7 +72,7 @@ public class BodyCompositionHDPActivity extends AppCompatActivity implements Vie
     private Session session;
     private DeviceDAO deviceDAO;
     private MeasurementDAO measurementDAO;
-    private DecimalFormat decimalFormat;
+    private DecimalFormat formatNumber;
     private BodyCompositionAdapter mAdapter;
     private Params params;
     private Handler tm;
@@ -95,8 +95,17 @@ public class BodyCompositionHDPActivity extends AppCompatActivity implements Vie
     @BindView(R.id.unit_body_mass_textview)
     TextView bodyMassUnitTextView;
 
+    @BindView(R.id.title_body_fat_textview)
+    TextView titleBodyFatTextView;
+
     @BindView(R.id.body_fat_textview)
     TextView bodyFatTextView;
+
+    @BindView(R.id.unit_body_fat_textview)
+    TextView unitBodyFatTextView;
+
+    @BindView(R.id.title_bmi_fat_textview)
+    TextView titleBmiTextView;
 
     @BindView(R.id.bmi_textview)
     TextView bmiTextView;
@@ -137,7 +146,7 @@ public class BodyCompositionHDPActivity extends AppCompatActivity implements Vie
         session = new Session(this);
         deviceDAO = DeviceDAO.getInstance(this);
         measurementDAO = MeasurementDAO.getInstance(this);
-        decimalFormat = new DecimalFormat(getString(R.string.format_number2), new DecimalFormatSymbols(Locale.US));
+        formatNumber = new DecimalFormat(getString(R.string.format_number2), new DecimalFormatSymbols(Locale.US));
         params = new Params(session.get_idLogged(), MeasurementType.BODY_MASS);
 
         animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
@@ -419,7 +428,7 @@ public class BodyCompositionHDPActivity extends AppCompatActivity implements Vie
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                bodyMassTextView.setText(decimalFormat.format(measurement.getValue()));
+                bodyMassTextView.setText(formatNumber.format(measurement.getValue()));
                 bodyMassUnitTextView.setText(measurement.getUnit());
                 mDateLastMeasurement.setText(DateUtils.abbreviatedDate(
                         getApplicationContext(), measurement.getRegistrationDate()));
@@ -428,10 +437,14 @@ public class BodyCompositionHDPActivity extends AppCompatActivity implements Vie
                  * Relations
                  */
                 for (Measurement m : measurement.getMeasurements()) {
-                    if (m.getTypeId() == MeasurementType.BMI)
-                        bmiTextView.setText(decimalFormat.format(m.getValue()));
-                    else if (m.getTypeId() == MeasurementType.BODY_FAT)
-                        bodyFatTextView.setText(decimalFormat.format(m.getValue()));
+                    if (m.getTypeId() == MeasurementType.BMI) {
+                        bmiTextView.setText(formatNumber.format(m.getValue()));
+                        titleBmiTextView.setVisibility(View.VISIBLE);
+                    } else if (m.getTypeId() == MeasurementType.BODY_FAT) {
+                        bodyFatTextView.setText(formatNumber.format(m.getValue()));
+                        unitBodyFatTextView.setText(m.getUnit());
+                        titleBodyFatTextView.setVisibility(View.VISIBLE);
+                    }
                 }
 
                 if (applyAnimation) bodyMassTextView.startAnimation(animation);

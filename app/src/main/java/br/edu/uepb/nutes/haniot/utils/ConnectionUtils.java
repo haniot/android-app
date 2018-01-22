@@ -1,5 +1,6 @@
 package br.edu.uepb.nutes.haniot.utils;
 
+import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
@@ -8,6 +9,12 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.Build;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.widget.Toast;
+
+import br.edu.uepb.nutes.haniot.R;
 
 /**
  * Provides routines for checking connection with internet and bluetooth.
@@ -17,6 +24,7 @@ import android.net.wifi.WifiManager;
  * @copyright Copyright (c) 2017, NUTES UEPB
  */
 public final class ConnectionUtils {
+    public static final int REQUEST_ENABLE_BLUETOOTH = 1;
 
     /**
      * Checks if the device supports bluetooth.

@@ -7,8 +7,6 @@
     android:layout_height="match_parent"
     tools:context=".devices.RecordHeartRateActivity">
 
-    <include layout="@layout/toolbar" />
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -16,7 +14,7 @@
         <LinearLayout
             android:id="@+id/box_bar_layout"
             android:layout_width="match_parent"
-            android:layout_height="350dp"
+            android:layout_height="300dp"
             android:background="@color/colorPrimary"
             android:orientation="vertical">
 
@@ -34,14 +32,14 @@
                     android:layout_height="180dp"
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="80dp"
+                    android:layout_marginTop="60dp"
                     app:cpb_background_progressbar_color="@color/colorAlertDanger"
                     app:cpb_background_progressbar_width="6dp"
                     app:cpb_progressbar_color="@color/colorAccent"
                     app:cpb_progressbar_width="6dp" />
 
                 <TextView
-                    android:id="@+id/heart_rate_measurement"
+                    android:id="@+id/heart_rate_textview"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignBottom="@+id/view_circle"
@@ -57,10 +55,10 @@
                     android:id="@+id/heart_imageview"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:layout_alignTop="@+id/heart_rate_measurement"
+                    android:layout_alignTop="@+id/heart_rate_textview"
                     android:layout_marginLeft="5dp"
                     android:layout_marginTop="19dp"
-                    android:layout_toEndOf="@+id/heart_rate_measurement"
+                    android:layout_toEndOf="@+id/heart_rate_textview"
                     android:contentDescription=""
                     app:srcCompat="@drawable/heart"
                     tools:ignore="ContentDescription,RtlHardcoded" />
@@ -69,10 +67,10 @@
                     android:id="@+id/textView6"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignBaseline="@+id/heart_rate_measurement"
-                    android:layout_alignBottom="@+id/heart_rate_measurement"
+                    android:layout_alignBaseline="@+id/heart_rate_textview"
+                    android:layout_alignBottom="@+id/heart_rate_textview"
                     android:layout_marginLeft="2dp"
-                    android:layout_toEndOf="@+id/heart_rate_measurement"
+                    android:layout_toEndOf="@+id/heart_rate_textview"
                     android:text="bpm"
                     android:textColor="@color/colorTextDark"
                     android:textSize="18sp"
@@ -82,9 +80,8 @@
                     android:id="@+id/chronometer_heart_rate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
+                    android:layout_below="@+id/view_circle"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginBottom="35dp"
                     android:textColor="@color/colorTextDark"
                     android:textSize="30sp" />
 
@@ -120,7 +117,6 @@
         android:clickable="true"
         android:src="@drawable/ic_action_stop"
         app:elevation="6dp"
-        app:fabSize="mini"
         app:layout_anchor="@id/box_bar_layout"
         app:layout_anchorGravity="bottom|right|end" />
 
@@ -132,7 +128,6 @@
         android:clickable="true"
         android:src="@drawable/ic_action_pause"
         app:elevation="6dp"
-        app:fabSize="mini"
         app:layout_anchor="@id/box_bar_layout"
         app:layout_anchorGravity="bottom|right|end" />
 

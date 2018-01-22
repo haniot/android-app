@@ -3,8 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="?attr/selectableItemBackground"
-    android:clickable="true"
     android:orientation="vertical">
 
     <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
@@ -12,68 +10,69 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:foreground="?android:attr/selectableItemBackground"
         card_view:cardBackgroundColor="@color/colorCard"
         card_view:cardCornerRadius="2dp"
         card_view:cardElevation="2dp"
+        card_view:cardPreventCornerOverlap="false"
         card_view:cardUseCompatPadding="true">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-
-            android:layout_margin="@dimen/activity_vertical_margin"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/date_heart_rate_textview"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentTop="true"
-                android:gravity="right"
-                android:text="2017/10/27 22:23:44"/>
-
-            <TextView
-                android:id="@+id/duration_heart_rate_textview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:textSize="12sp"
-                android:layout_marginTop="5dp"
-                android:layout_below="@+id/date_heart_rate_textview"
-                android:text="Duration: 00:11" />
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="16dp">
 
             <ImageView
-                android:id="@+id/imageView2"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
+                android:id="@+id/heart_imageview"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:paddingTop="4dp"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
                 app:srcCompat="@drawable/heart" />
 
             <TextView
-                android:id="@+id/fcmax_textview"
+                android:id="@+id/heart_rate_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignTop="@+id/date_heart_rate_textview"
-                android:layout_marginStart="40dp"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="2dp"
+                android:layout_toEndOf="@+id/heart_imageview"
                 android:text="154"
                 android:textSize="26sp"
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/textView14"
+                android:id="@+id/heart_rate_unit_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignEnd="@+id/fcmax_textview"
-                android:layout_below="@+id/date_heart_rate_textview"
-                android:layout_marginTop="8dp"
-                android:layout_marginRight="2dp"
-                android:text="FC Max"
-                android:textSize="12sp" />
+                android:layout_alignBaseline="@+id/heart_rate_textview"
+                android:layout_alignBottom="@+id/heart_rate_textview"
+                android:layout_marginStart="2dp"
+                android:layout_toEndOf="@+id/heart_rate_textview"
+                android:text="bpm"
+                android:textSize="18sp" />
 
+            <TextView
+                android:id="@+id/day_week_measurement_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                android:text="Tuesday" />
+
+            <TextView
+                android:id="@+id/date_measurement_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/heart_rate_textview"
+                android:layout_alignParentEnd="true"
+                android:text="2017/10/27 22:23:44"
+                android:textSize="13sp" />
         </RelativeLayout>
 
     </android.support.v7.widget.CardView>
+
 </LinearLayout>
+

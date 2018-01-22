@@ -1,11 +1,18 @@
 package br.edu.uepb.nutes.haniot.activity;
 
+import android.Manifest;
+import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -28,6 +35,7 @@ import br.edu.uepb.nutes.haniot.activity.settings.SettingsActivity;
 import br.edu.uepb.nutes.haniot.fragment.ConnectDeviceFragment;
 import br.edu.uepb.nutes.haniot.fragment.ScanDeviceFragment;
 import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
+import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -40,6 +48,7 @@ import butterknife.ButterKnife;
  */
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private final String TAG = "MainActivity";
+    private final int REQUEST_ENABLE_BLUETOOTH = 1;
 
     @BindView(R.id.drawer_layout)
     DrawerLayout mDrawer;
@@ -73,6 +82,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onResume() {
         super.onResume();
+        requestDependencies();
 
         /**
          * User not logged
@@ -83,6 +93,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         openFragment(fragment);
+    }
+
+    private void requestDependencies() {
+        // Request Bluetooth permission
+        if (!ConnectionUtils.bluetoothIsEnabled())
+            startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE),
+                    REQUEST_ENABLE_BLUETOOTH);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_ENABLE_BLUETOOTH && resultCode != Activity.RESULT_OK)
+            finish();
     }
 
     @Override
