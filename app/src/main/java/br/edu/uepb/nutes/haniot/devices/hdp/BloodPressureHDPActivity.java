@@ -671,7 +671,7 @@ public class BloodPressureHDPActivity extends AppCompatActivity implements View.
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.view_circle:
+            case R.id.chart_floating_button:
                 startActivity(new Intent(getApplicationContext(), BloodPresssureHDPGraphActivity.class));
                 break;
 

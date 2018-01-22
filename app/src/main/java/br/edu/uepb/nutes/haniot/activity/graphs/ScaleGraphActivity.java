@@ -82,7 +82,7 @@ public class ScaleGraphActivity extends AppCompatActivity implements View.OnClic
         mButtonMonth.setOnClickListener(this);
         mButtonWeek.setOnClickListener(this);
 
-        params = new Params(session.get_idLogged(), MeasurementType.BODY_FAT);
+        params = new Params(session.get_idLogged(), MeasurementType.BODY_MASS);
         measurementData = new ArrayList<>();
 
 
