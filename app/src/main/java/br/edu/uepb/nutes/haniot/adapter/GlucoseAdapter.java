@@ -2,6 +2,7 @@ package br.edu.uepb.nutes.haniot.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -13,7 +14,11 @@ import java.util.Locale;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.adapter.base.BaseAdapter;
+import br.edu.uepb.nutes.haniot.model.ContextMeasurement;
+import br.edu.uepb.nutes.haniot.model.ContextMeasurementType;
+import br.edu.uepb.nutes.haniot.model.ContextMeasurementValueType;
 import br.edu.uepb.nutes.haniot.model.Measurement;
+import br.edu.uepb.nutes.haniot.model.MeasurementType;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -29,8 +34,6 @@ public class GlucoseAdapter extends BaseAdapter<Measurement> {
     private final String LOG = "BluetoothDeviceAdapter";
     private final Context context;
 
-    private DecimalFormat decimalFormat;
-
     /**
      * Contructor.
      *
@@ -38,12 +41,11 @@ public class GlucoseAdapter extends BaseAdapter<Measurement> {
      */
     public GlucoseAdapter(Context context) {
         this.context = context;
-        this.decimalFormat = new DecimalFormat(context.getResources().getString(R.string.format_number1), new DecimalFormatSymbols(Locale.US));
     }
 
     @Override
     public View createView(ViewGroup viewGroup, int viewType) {
-        return View.inflate(context, R.layout.item_temperature, null);
+        return View.inflate(context, R.layout.item_glucose, null);
     }
 
     @Override
@@ -53,16 +55,24 @@ public class GlucoseAdapter extends BaseAdapter<Measurement> {
 
     @Override
     public void showData(RecyclerView.ViewHolder holder, int position, List<Measurement> itemsList) {
-        if (holder instanceof TemperatureAdapter.ViewHolder) {
+        if (holder instanceof GlucoseAdapter.ViewHolder) {
             final Measurement m = itemsList.get(position);
-            TemperatureAdapter.ViewHolder h = (TemperatureAdapter.ViewHolder) holder;
+            GlucoseAdapter.ViewHolder h = (GlucoseAdapter.ViewHolder) holder;
 
-            h.value.setText(decimalFormat.format(m.getValue()));
-            h.unit.setText(m.getUnit());
+            h.glucose.setText(String.valueOf((int) m.getValue()));
+            h.unitGlucose.setText(m.getUnit());
             h.dayWeek.setText(DateUtils.formatDate(m.getRegistrationDate(), "EEEE"));
             h.date.setText(DateUtils.formatDate(
                     m.getRegistrationDate(), context.getString(R.string.datetime_format))
             );
+
+            /**
+             * Relations
+             */
+            for (ContextMeasurement c : m.getContextMeasurements()) {
+                if (c.getTypeId() == ContextMeasurementType.GLUCOSE_MEAL)
+                    h.glucoseMeal.setText(ContextMeasurementValueType.getString(context, c.getValueId()));
+            }
 
             /**
              * OnClick Item
@@ -82,20 +92,26 @@ public class GlucoseAdapter extends BaseAdapter<Measurement> {
 
     @Override
     public void clearAnimation(RecyclerView.ViewHolder holder) {
-        ((TemperatureAdapter.ViewHolder) holder).clearAnimation();
+        ((GlucoseAdapter.ViewHolder) holder).clearAnimation();
     }
-
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public Measurement mItem;
 
-        @BindView(R.id.fcmax_textview)
-        TextView fcMax;
-        @BindView(R.id.date_heart_rate_textview)
+        @BindView(R.id.glucose_textview)
+        TextView glucose;
+
+        @BindView(R.id.unit_glucose_textview)
+        TextView unitGlucose;
+
+        @BindView(R.id.glucose_meal_textview)
+        TextView glucoseMeal;
+
+        @BindView(R.id.date_measurement_textview)
         TextView date;
-        @BindView(R.id.duration_heart_rate_textview)
-        TextView duration;
+
+        @BindView(R.id.day_week_measurement_textview)
+        TextView dayWeek;
 
         public ViewHolder(View view) {
             super(view);
@@ -103,17 +119,8 @@ public class GlucoseAdapter extends BaseAdapter<Measurement> {
             ButterKnife.bind(this, view);
         }
 
-        @Override
-        public String toString() {
-            return "ViewHolder{" +
-                    ", fcMax=" + fcMax +
-                    ", date=" + date +
-                    ", duration=" + duration +
-                    '}';
+        public void clearAnimation() {
+            mView.clearAnimation();
         }
-    }
-
-    public interface OnItemClickListener {
-        void onItemClick(Measurement item);
     }
 }

@@ -123,7 +123,7 @@ public class BloodPressureHDPActivity extends AppCompatActivity implements View.
     @BindView(R.id.box_bar_layout)
     AppBarLayout mAppBarLayout;
 
-    @BindView(R.id.temperature_recyclerview)
+    @BindView(R.id.blood_pressure_recyclerview)
     RecyclerView mRecyclerView;
 
     @BindView(R.id.data_swiperefresh)
@@ -280,7 +280,7 @@ public class BloodPressureHDPActivity extends AppCompatActivity implements View.
         } else {
             Historical historical = new Historical.Query()
                     .type(HistoricalType.MEASUREMENTS_TYPE_USER)
-                    .params(params) // Measurements of the temperature type, associated to the user
+                    .params(params) // Measurements of the blood pressure type, associated to the user
                     .pagination(0, LIMIT_PER_PAGE)
                     .build();
 
@@ -328,7 +328,7 @@ public class BloodPressureHDPActivity extends AppCompatActivity implements View.
 
         Historical historical = new Historical.Query()
                 .type(HistoricalType.MEASUREMENTS_TYPE_USER)
-                .params(params) // Measurements of the temperature type, associated to the user
+                .params(params) // Measurements of the blood pressure type, associated to the user
                 .pagination(mAdapter.getItemCount(), LIMIT_PER_PAGE)
                 .build();
 

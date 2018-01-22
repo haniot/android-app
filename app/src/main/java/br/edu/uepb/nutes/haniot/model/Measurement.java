@@ -45,7 +45,6 @@ public class Measurement {
     public Measurement() {
     }
 
-
     public Measurement(long id) {
         this.id = id;
     }

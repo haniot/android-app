@@ -41,28 +41,28 @@
                     app:cpb_progressbar_width="6dp" />
 
                 <TextView
-                    android:id="@+id/body_mass_measurement"
+                    android:id="@+id/body_mass_textview"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignStart="@+id/view_circle"
                     android:layout_alignTop="@+id/view_circle"
-                    android:layout_marginStart="21dp"
-                    android:layout_marginTop="50dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="40dp"
                     android:gravity="center"
-                    android:text="00.0"
+                    android:text="0.0"
                     android:textColor="@color/colorTextDark"
                     android:textSize="55sp"
                     tools:ignore="HardcodedText" />
 
                 <TextView
-                    android:id="@+id/body_mass_unit_measurement"
+                    android:id="@+id/unit_body_mass_textview"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignBaseline="@+id/body_mass_measurement"
-                    android:layout_alignBottom="@+id/body_mass_measurement"
-                    android:layout_toEndOf="@+id/body_mass_measurement"
+                    android:layout_alignBaseline="@+id/body_mass_textview"
+                    android:layout_alignBottom="@+id/body_mass_textview"
+                    android:layout_toEndOf="@+id/body_mass_textview"
                     android:text="@string/unit_kg"
-                    android:textSize="25sp" />
+                    android:layout_marginStart="2dp"
+                    android:textSize="20sp" />
 
                 <TextView
                     android:id="@+id/date_last_measurement_textView"
@@ -70,8 +70,8 @@
                     android:layout_height="wrap_content"
                     android:layout_alignEnd="@+id/view_circle"
                     android:layout_alignStart="@+id/view_circle"
-                    android:layout_below="@+id/body_mass_measurement"
-                    android:layout_marginTop="5dp"
+                    android:layout_below="@+id/body_mass_textview"
+                    android:layout_marginTop="10dp"
                     android:gravity="center_horizontal"
                     android:text="@null"
                     android:textSize="15sp" />

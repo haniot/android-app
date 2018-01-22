@@ -41,50 +41,42 @@
                     app:cpb_progressbar_width="6dp" />
 
                 <TextView
-                    android:id="@+id/blood_glucose_measurement"
+                    android:id="@+id/glucose_textview"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/unit_glucose_textview"
                     android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
+                    android:layout_marginBottom="14dp"
+                    android:gravity="center"
                     android:text="00"
                     android:textColor="@color/colorTextDark"
-                    android:textSize="60sp"
+                    android:textSize="55sp"
                     tools:ignore="HardcodedText" />
 
                 <TextView
-                    android:id="@+id/blood_glucose_measurement_unit"
+                    android:id="@+id/unit_glucose_textview"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignBottom="@+id/view_circle"
-                    android:layout_alignStart="@+id/view_circle"
-                    android:layout_marginBottom="25dp"
-                    android:layout_toStartOf="@+id/relativeLayout"
+                    android:layout_above="@+id/date_last_measurement_textView"
+                    android:layout_alignEnd="@+id/glucose_textview"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="2dp"
                     android:gravity="center"
                     android:text="mg/dL"
                     android:textSize="20sp" />
 
-                <RelativeLayout
-                    android:id="@+id/relativeLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                <TextView
+                    android:id="@+id/date_last_measurement_textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_alignBottom="@+id/view_circle"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignTop="@+id/view_circle"
-                    android:layout_toEndOf="@+id/view_circle"
-                    android:gravity="center_vertical|left"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp">
-
-                    <TextView
-                        android:id="@+id/blood_glucose_context"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_centerVertical="true"
-                        android:text="" />
-
-                </RelativeLayout>
-
+                    android:layout_alignEnd="@+id/view_circle"
+                    android:layout_alignStart="@+id/view_circle"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="35dp"
+                    android:gravity="center_horizontal"
+                    android:text="@null"
+                    android:textSize="15sp" />
             </RelativeLayout>
 
             <android.support.v7.widget.Toolbar
@@ -98,34 +90,57 @@
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.widget.NestedScrollView
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/chart_floating_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/fab_margin"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@drawable/ic_action_show_chart"
+        app:layout_anchor="@id/box_bar_layout"
+        app:layout_anchorGravity="bottom|right|end" />
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
+        android:orientation="vertical"
+        android:padding="@dimen/activity_horizontal_margin"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/text_view_title_history"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:text="@string/most_recent_entries"
+            android:textAllCaps="false"
+            android:textColor="@color/colorPrimary" />
+
+        <TextView
+            android:id="@+id/no_data_textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:text="@string/no_data_available"
+            android:visibility="gone" />
+
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/data_swiperefresh"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:padding="@dimen/activity_horizontal_margin">
-
-            <TextView
-                android:id="@+id/text_view_title_history"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/most_recent_entries"
-                android:textAllCaps="false"
-                android:textColor="@color/colorPrimary"
-                android:textSize="14sp"
-                android:textStyle="normal" />
+            android:paddingTop="10dp">
 
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/history_blood_glucose_listview"
+                android:id="@+id/glucose_recyclerview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="10dp" />
-        </LinearLayout>
+                android:scrollbarSize="3sp"
+                android:scrollbarThumbVertical="@color/colorAccent"
+                android:scrollbars="vertical" />
 
-    </android.support.v4.widget.NestedScrollView>
+        </android.support.v4.widget.SwipeRefreshLayout>
+    </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

@@ -89,10 +89,10 @@ public class BodyCompositionHDPActivity extends AppCompatActivity implements Vie
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
 
-    @BindView(R.id.body_mass_measurement)
+    @BindView(R.id.body_mass_textview)
     TextView bodyMassTextView;
 
-    @BindView(R.id.body_mass_unit_measurement)
+    @BindView(R.id.unit_body_mass_textview)
     TextView bodyMassUnitTextView;
 
     @BindView(R.id.body_fat_textview)
@@ -271,7 +271,7 @@ public class BodyCompositionHDPActivity extends AppCompatActivity implements Vie
         } else {
             Historical historical = new Historical.Query()
                     .type(HistoricalType.MEASUREMENTS_TYPE_USER)
-                    .params(params) // Measurements of the temperature type, associated to the user
+                    .params(params) // Measurements of the blood composition type, associated to the user
                     .pagination(0, LIMIT_PER_PAGE)
                     .build();
 
@@ -319,7 +319,7 @@ public class BodyCompositionHDPActivity extends AppCompatActivity implements Vie
 
         Historical historical = new Historical.Query()
                 .type(HistoricalType.MEASUREMENTS_TYPE_USER)
-                .params(params) // Measurements of the temperature type, associated to the user
+                .params(params) // Measurements of the body composition type, associated to the user
                 .pagination(mAdapter.getItemCount(), LIMIT_PER_PAGE)
                 .build();
 

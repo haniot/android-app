@@ -101,10 +101,10 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
 
-    @BindView(R.id.body_mass_measurement)
+    @BindView(R.id.body_mass_textview)
     TextView bodyMassTextView;
 
-    @BindView(R.id.body_mass_unit_measurement)
+    @BindView(R.id.unit_body_mass_textview)
     TextView bodyMassUnitTextView;
 
     @BindView(R.id.body_fat_textview)
@@ -278,7 +278,7 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
         } else {
             Historical historical = new Historical.Query()
                     .type(HistoricalType.MEASUREMENTS_TYPE_USER)
-                    .params(params) // Measurements of the temperature type, associated to the user
+                    .params(params) // Measurements of the body mass type, associated to the user
                     .pagination(0, LIMIT_PER_PAGE)
                     .build();
 
@@ -326,7 +326,7 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
 
         Historical historical = new Historical.Query()
                 .type(HistoricalType.MEASUREMENTS_TYPE_USER)
-                .params(params) // Measurements of the temperature type, associated to the user
+                .params(params) // Measurements of the body mass type, associated to the user
                 .pagination(mAdapter.getItemCount(), LIMIT_PER_PAGE)
                 .build();
 

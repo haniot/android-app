@@ -22,7 +22,7 @@
             android:padding="12dp">
 
             <TextView
-                android:id="@+id/measurement_body_mass"
+                android:id="@+id/body_mass_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
@@ -35,29 +35,29 @@
                 android:id="@+id/unit_body_mass_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignBaseline="@+id/measurement_body_mass"
-                android:layout_alignBottom="@+id/measurement_body_mass"
+                android:layout_alignBaseline="@+id/body_mass_textview"
+                android:layout_alignBottom="@+id/body_mass_textview"
                 android:layout_marginStart="2dp"
-                android:layout_toEndOf="@+id/measurement_body_mass"
+                android:layout_toEndOf="@+id/body_mass_textview"
                 android:text="@string/unit_kg"
                 android:textSize="18sp" />
 
             <TextView
-                android:id="@+id/measurement_body_fat"
+                android:id="@+id/body_fat_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:layout_below="@+id/measurement_body_mass"
+                android:layout_below="@+id/body_mass_textview"
                 android:text="18.7"/>
 
             <TextView
                 android:id="@+id/unit_percentage_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignBaseline="@+id/measurement_body_fat"
-                android:layout_alignBottom="@+id/measurement_body_fat"
+                android:layout_alignBaseline="@+id/body_fat_text_view"
+                android:layout_alignBottom="@+id/body_fat_text_view"
                 android:layout_marginStart="1dp"
-                android:layout_toEndOf="@+id/measurement_body_fat"
+                android:layout_toEndOf="@+id/body_fat_text_view"
                 android:text="@string/unit_percentage"
                 android:textSize="11sp" />
 

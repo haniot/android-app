@@ -94,13 +94,13 @@ public class BodyCompositionAdapter extends BaseAdapter<Measurement> {
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
 
-        @BindView(R.id.measurement_body_mass)
+        @BindView(R.id.body_mass_textview)
         TextView bodyMass;
 
         @BindView(R.id.unit_body_mass_textview)
         TextView unitBodyMass;
 
-        @BindView(R.id.measurement_body_fat)
+        @BindView(R.id.body_fat_text_view)
         TextView bodyFat;
 
         @BindView(R.id.date_measurement_textview)

@@ -2,8 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="?attr/selectableItemBackground"
-    android:clickable="true"
     android:orientation="vertical">
 
     <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
@@ -11,57 +9,63 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:foreground="?android:attr/selectableItemBackground"
         card_view:cardBackgroundColor="@color/colorCard"
-        card_view:cardCornerRadius="2dp"
-        card_view:cardElevation="2dp"
+        card_view:cardCornerRadius="4dp"
+        card_view:cardPreventCornerOverlap="false"
         card_view:cardUseCompatPadding="true">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-
-            android:layout_margin="@dimen/activity_vertical_margin"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/date_weight_textview"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentTop="true"
-                android:gravity="right"
-                android:text="2017/10/27 22:23:44" />
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="12dp">
 
             <TextView
-                android:id="@+id/measurement_glucose"
+                android:id="@+id/glucose_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
-                android:text="110"
+                android:text="120"
                 android:textSize="26sp"
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/unit_weight_textview"
+                android:id="@+id/unit_glucose_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignBaseline="@+id/measurement_glucose"
-                android:layout_alignBottom="@+id/measurement_glucose"
+                android:layout_alignBaseline="@+id/glucose_textview"
+                android:layout_alignBottom="@+id/glucose_textview"
                 android:layout_marginStart="2dp"
-                android:layout_toEndOf="@+id/measurement_glucose"
+                android:layout_toEndOf="@+id/glucose_textview"
                 android:text="@string/unit_glucose_mg_dL"
-                android:textSize="15sp" />
+                android:textSize="18sp" />
 
             <TextView
-                android:id="@+id/meal_textview"
+                android:id="@+id/glucose_meal_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:layout_below="@+id/unit_weight_textview"
-                android:text="@string/other"
-                android:textSize="11sp" />
+                android:layout_below="@+id/glucose_textview"
+                android:text="@string/other" />
 
+            <TextView
+                android:id="@+id/day_week_measurement_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                android:text="Tuesday" />
+
+            <TextView
+                android:id="@+id/date_measurement_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@+id/day_week_measurement_textview"
+                android:text="2017/10/27 22:23:44"
+                android:textSize="13sp" />
         </RelativeLayout>
 
     </android.support.v7.widget.CardView>
