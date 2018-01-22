@@ -10,7 +10,7 @@
         android:layout_height="wrap_content" />
 
     <com.github.mikephil.charting.charts.LineChart
-        android:id="@+id/chart_scale_bodyfat"
+        android:id="@+id/chart_bodyComposition"
         android:layout_width="match_parent"
         android:layout_height="386dp"></com.github.mikephil.charting.charts.LineChart>
 

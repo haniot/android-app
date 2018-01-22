@@ -44,7 +44,7 @@ import butterknife.ButterKnife;
  * Created by izabella on 01/11/17.
  */
 
-public class HeartRateGraphActivity extends AppCompatActivity implements View.OnClickListener{
+public class HeartRateGraphActivity extends AppCompatActivity implements View.OnClickListener {
     private final String TAG = "FragmentActivity";
 
     private final int GRAPH_TYPE_DAY = 1;
@@ -77,6 +77,8 @@ public class HeartRateGraphActivity extends AppCompatActivity implements View.On
         setContentView(R.layout.activity_heart_rate_graph);
         ButterKnife.bind(this);
 
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setTitle(getString(R.string.heart_rate));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         session = new Session(this);
 
@@ -99,6 +101,7 @@ public class HeartRateGraphActivity extends AppCompatActivity implements View.On
         else if (type == GRAPH_TYPE_MONTH)
             requestData("1m");
     }
+
     private void requestData(String period) {
         Historical hist = new Historical.Query()
                 .type(HistoricalType.MEASUREMENTS_TYPE_USER) // required
@@ -134,8 +137,10 @@ public class HeartRateGraphActivity extends AppCompatActivity implements View.On
                         }
                     });
 
-                };
+                }
+                ;
             }
+
             @Override
             public void onAfterSend() {
                 Log.w(TAG, "onAfterSend()");
@@ -153,7 +158,7 @@ public class HeartRateGraphActivity extends AppCompatActivity implements View.On
 
         for (int i = 0; i < measurementData.size(); i++) {
             String date = DateUtils.formatDate(measurementData.get(i).getRegistrationDate(),
-                    getString(R.string.date_format));
+                    getString(R.string.date_format_month_day));
 
             float hr = (float) measurementData.get(i).getValue();
             entries.add(new Entry((float) i, hr));
@@ -187,7 +192,7 @@ public class HeartRateGraphActivity extends AppCompatActivity implements View.On
         mChart.setDrawGridBackground(false);
         YAxis leftAxis = mChart.getAxisLeft();
         leftAxis.setAxisMinimum(0f);
-        leftAxis.setAxisMaximum(100f);
+        leftAxis.setAxisMaximum(200f);
         mChart.getAxisRight().setEnabled(false);
         mChart.animate();
         mChart.setData(data);

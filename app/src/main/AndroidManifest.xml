@@ -78,12 +78,11 @@
             android:label="@string/action_settings"
             android:theme="@style/AppTheme.Settings" />
         <activity android:name=".activity.account.ChangePasswordActivity" />
-        <activity android:name=".activity.graphs.ScaleGraphActivity" />
-        <activity android:name=".activity.graphs.ScaleGraphBodyFatActivity" />
+        <activity android:name=".activity.graphs.BodyCompositionGraphActivity" />
         <activity android:name=".activity.graphs.TemperatureGraphActivity" />
         <activity android:name=".activity.graphs.HeartRateGraphActivity" />
         <activity android:name=".activity.graphs.GlucoseGraphActivity" />
-        <activity android:name=".activity.graphs.BloodPresssureHDPGraphActivity" />
+        <activity android:name=".activity.graphs.BloodPresssureGraphActivity" />
         <activity android:name=".devices.smartband.miband.SmartBandActivity" />
 
         <!-- SERVICES -->

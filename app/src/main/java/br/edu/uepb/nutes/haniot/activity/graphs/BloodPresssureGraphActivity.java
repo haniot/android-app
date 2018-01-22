@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -39,7 +40,7 @@ import butterknife.ButterKnife;
  * Created by izabella on 10/11/17.
  */
 
-public class BloodPresssureHDPGraphActivity extends AppCompatActivity implements View.OnClickListener {
+public class BloodPresssureGraphActivity extends AppCompatActivity implements View.OnClickListener {
     private final String TAG = "FragmentActivity";
 
     private final int GRAPH_TYPE_DAY = 1;
@@ -64,6 +65,7 @@ public class BloodPresssureHDPGraphActivity extends AppCompatActivity implements
 
     @BindView(R.id.month_button)
     Button mButtonMonth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,7 +82,7 @@ public class BloodPresssureHDPGraphActivity extends AppCompatActivity implements
         mButtonMonth.setOnClickListener(this);
         mButtonWeek.setOnClickListener(this);
 
-        params = new Params(session.get_idLogged(), MeasurementType.BLOOD_PRESSURE_DIASTOLIC);
+        params = new Params(session.get_idLogged(), MeasurementType.BLOOD_PRESSURE_SYSTOLIC);
         measurementData = new ArrayList<>();
 
 
@@ -150,7 +152,7 @@ public class BloodPresssureHDPGraphActivity extends AppCompatActivity implements
 
         for (int i = 0; i < measurementData.size(); i++) {
             String date = DateUtils.formatDate(measurementData.get(i).getRegistrationDate(),
-                    getString(R.string.date_format));
+                    getString(R.string.date_format_month_day));
 
             float pressure = (float) measurementData.get(i).getValue();
             entries.add(new Entry((float) i, pressure));
@@ -184,7 +186,7 @@ public class BloodPresssureHDPGraphActivity extends AppCompatActivity implements
         mChart.setDrawGridBackground(false);
         YAxis leftAxis = mChart.getAxisLeft();
         leftAxis.setAxisMinimum(0f);
-        leftAxis.setAxisMaximum(100f);
+        leftAxis.setAxisMaximum(200f);
         mChart.getAxisRight().setEnabled(false);
         mChart.animate();
         mChart.setData(data);
@@ -204,6 +206,16 @@ public class BloodPresssureHDPGraphActivity extends AppCompatActivity implements
                 Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                super.onBackPressed();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

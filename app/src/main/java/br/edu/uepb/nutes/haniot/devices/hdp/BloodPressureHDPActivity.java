@@ -37,7 +37,7 @@ import java.io.IOException;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.activity.graphs.BloodPresssureHDPGraphActivity;
+import br.edu.uepb.nutes.haniot.activity.graphs.BloodPresssureGraphActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.BloodPressureAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
@@ -677,7 +677,7 @@ public class BloodPressureHDPActivity extends AppCompatActivity implements View.
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.chart_floating_button:
-                startActivity(new Intent(getApplicationContext(), BloodPresssureHDPGraphActivity.class));
+                startActivity(new Intent(getApplicationContext(), BloodPresssureGraphActivity.class));
                 break;
 
             default:

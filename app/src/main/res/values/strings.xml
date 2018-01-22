@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">HANIoT</string>
+    <string name="app_name">DAE</string>
     <string name="copyright">Ⓒ 2017 NUTES</string>
     <string name="app_version">1.0</string>
     <string name="start_scan">Start scan</string>
@@ -58,6 +58,7 @@
 
     <string name="temperature">Temperature</string>
     <string name="weight">Weight</string>
+    <string name="body_mass">Body Mass</string>
     <string name="temperature_measurement">Temperature Measurement</string>
     <string name="body_weight_scale">Body Weight Scale</string>
     <string name="heart_rate_measurement">Heart Rate Measurement</string>
@@ -81,6 +82,7 @@
 
     // DATE/TIME FORMAT
     <string name="date_format">yyyy/MM/dd</string>
+    <string name="date_format_month_day">MM/dd</string>
     <string name="datetime_format">yyyy/MM/dd HH:mm:ss</string>
     <string name="datetime_format_db">yyyy-MM-dd HH:mm:ss</string>
     <string name="time_format">HH:mm:ss</string>

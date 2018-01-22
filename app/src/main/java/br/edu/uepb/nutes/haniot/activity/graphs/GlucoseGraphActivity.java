@@ -132,8 +132,8 @@ public class GlucoseGraphActivity extends AppCompatActivity implements View.OnCl
                             paintChart();
                         }
                     });
-
-                }            }
+                }
+            }
 
             @Override
             public void onAfterSend() {
@@ -159,7 +159,7 @@ public class GlucoseGraphActivity extends AppCompatActivity implements View.OnCl
 
         for (int i = 0; i < measurementData.size(); i++) {
             String date = DateUtils.formatDate(measurementData.get(i).getRegistrationDate(),
-                    getString(R.string.date_format));
+                    getString(R.string.date_format_month_day));
 
             float glucose = (float) measurementData.get(i).getValue();
             entries.add(new Entry((float) i, glucose));
@@ -199,6 +199,7 @@ public class GlucoseGraphActivity extends AppCompatActivity implements View.OnCl
 
         mChart.notifyDataSetChanged();
     }
+
     private void printMessage(String message) {
         runOnUiThread(new Runnable() {
             @Override
@@ -207,7 +208,6 @@ public class GlucoseGraphActivity extends AppCompatActivity implements View.OnCl
             }
         });
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

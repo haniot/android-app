@@ -187,7 +187,7 @@ public class TemperatureGraphActivity extends AppCompatActivity implements View.
 
         for (int i = 0; i < measurementData.size(); i++) {
             String date = DateUtils.formatDate(measurementData.get(i).getRegistrationDate(),
-                    getString(R.string.date_format));
+                    getString(R.string.date_format_month_day));
 
             float temp = (float) measurementData.get(i).getValue();
             entries.add(new Entry((float) i, temp));

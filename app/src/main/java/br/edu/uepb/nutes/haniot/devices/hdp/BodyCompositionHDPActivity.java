@@ -40,7 +40,7 @@ import java.util.List;
 import java.util.Locale;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.activity.graphs.ScaleGraphActivity;
+import br.edu.uepb.nutes.haniot.activity.graphs.BodyCompositionGraphActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.BodyCompositionAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
@@ -675,7 +675,7 @@ public class BodyCompositionHDPActivity extends AppCompatActivity implements Vie
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.chart_floating_button:
-                startActivity(new Intent(getApplicationContext(), ScaleGraphActivity.class));
+                startActivity(new Intent(getApplicationContext(), BodyCompositionGraphActivity.class));
                 break;
             default:
                 break;
