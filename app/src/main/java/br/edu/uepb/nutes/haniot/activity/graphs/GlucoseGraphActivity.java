@@ -37,10 +37,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Created by izabella on 23/10/17.
+ * Created by izabella on 22/01/18.
  */
 
-public class ScaleGraphActivity extends AppCompatActivity implements View.OnClickListener{
+public class GlucoseGraphActivity extends AppCompatActivity implements View.OnClickListener {
     private final String TAG = "FragmentActivity";
 
     private final int GRAPH_TYPE_DAY = 1;
@@ -51,7 +51,7 @@ public class ScaleGraphActivity extends AppCompatActivity implements View.OnClic
     private Params params;
     private List<Measurement> measurementData;
 
-    @BindView(R.id.chart_scale_bodyfat)
+    @BindView(R.id.chart_glucose)
     LineChart mChart;
 
     @BindView(R.id.toolbar)
@@ -70,11 +70,11 @@ public class ScaleGraphActivity extends AppCompatActivity implements View.OnClic
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_scale_graph);
+        setContentView(R.layout.activity_glucose_graph);
         ButterKnife.bind(this);
 
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setTitle("Weight");
+        getSupportActionBar().setTitle("Glucose");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         session = new Session(this);
 
@@ -82,7 +82,7 @@ public class ScaleGraphActivity extends AppCompatActivity implements View.OnClic
         mButtonMonth.setOnClickListener(this);
         mButtonWeek.setOnClickListener(this);
 
-        params = new Params(session.get_idLogged(), MeasurementType.BODY_MASS);
+        params = new Params(session.get_idLogged(), MeasurementType.BLOOD_GLUCOSE);
         measurementData = new ArrayList<>();
 
 
@@ -161,8 +161,8 @@ public class ScaleGraphActivity extends AppCompatActivity implements View.OnClic
             String date = DateUtils.formatDate(measurementData.get(i).getRegistrationDate(),
                     getString(R.string.date_format));
 
-            float weight = (float) measurementData.get(i).getValue();
-            entries.add(new Entry((float) i, weight));
+            float glucose = (float) measurementData.get(i).getValue();
+            entries.add(new Entry((float) i, glucose));
             quarters[i] = date;
         }
 
@@ -181,7 +181,7 @@ public class ScaleGraphActivity extends AppCompatActivity implements View.OnClic
 
         ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
 
-        LineDataSet set = new LineDataSet(entries, getString(R.string.weight));
+        LineDataSet set = new LineDataSet(entries, getString(R.string.glucose));
         set.setLineWidth(3f);
         set.setDrawCircles(true);
         set.setDrawCircleHole(true);
@@ -199,7 +199,6 @@ public class ScaleGraphActivity extends AppCompatActivity implements View.OnClic
 
         mChart.notifyDataSetChanged();
     }
-
     private void printMessage(String message) {
         runOnUiThread(new Runnable() {
             @Override
@@ -236,4 +235,5 @@ public class ScaleGraphActivity extends AppCompatActivity implements View.OnClic
                 break;
         }
     }
+
 }

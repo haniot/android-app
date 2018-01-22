@@ -82,6 +82,7 @@
         <activity android:name=".activity.graphs.ScaleGraphBodyFatActivity" />
         <activity android:name=".activity.graphs.TemperatureGraphActivity" />
         <activity android:name=".activity.graphs.HeartRateGraphActivity" />
+        <activity android:name=".activity.graphs.GlucoseGraphActivity" />
         <activity android:name=".activity.graphs.BloodPresssureHDPGraphActivity" />
         <activity android:name=".devices.smartband.miband.SmartBandActivity" />
 

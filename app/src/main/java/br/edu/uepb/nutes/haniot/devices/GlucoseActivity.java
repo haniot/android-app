@@ -39,6 +39,8 @@ import java.util.List;
 import java.util.UUID;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.activity.graphs.GlucoseGraphActivity;
+import br.edu.uepb.nutes.haniot.activity.graphs.ScaleGraphActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.GlucoseAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
@@ -718,6 +720,7 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.chart_floating_button:
+                startActivity(new Intent(getApplicationContext(), GlucoseGraphActivity.class));
                 break;
             default:
                 break;
