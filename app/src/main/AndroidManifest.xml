@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="br.edu.uepb.nutes.haniot">
+
+    <!-- PERMISSIONS -->
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <!-- Android >= 6 necessita de localização ativa -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
+    <application
+        android:name=".App"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:screenOrientation="portrait"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+
+        <!-- ACTIVITIES -->
+        <activity android:name=".activity.SplashScreenActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".activity.account.LoginActivity"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activity.account.SignupActivity"
+            android:windowSoftInputMode="stateHidden">
+            <intent-filter>
+                <action android:name="br.edu.uepb.nutes.ocariot.activity.account.SignupActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".activity.MainActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.DeviceInforActivity"
+            android:parentActivityName=".activity.MainActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".devices.ThermometerActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".devices.GlucoseActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".devices.hdp.BloodPressureHDPActivity"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="com.signove.health.service.HealthService" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".devices.hdp.BodyCompositionHDPActivity" />
+        <activity
+            android:name=".devices.ScaleActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".devices.HeartRateActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".devices.RecordHeartRateActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".activity.pairing.ScalePairingActivity" />
+        <activity
+            android:name=".activity.settings.SettingsActivity"
+            android:label="@string/action_settings"
+            android:theme="@style/AppTheme.Settings" />
+        <activity android:name=".activity.account.ChangePasswordActivity" />
+        <activity android:name=".activity.graphs.BodyCompositionGraphActivity" />
+        <activity android:name=".activity.graphs.TemperatureGraphActivity" />
+        <activity android:name=".activity.graphs.HeartRateGraphActivity" />
+        <activity android:name=".activity.graphs.GlucoseGraphActivity" />
+        <activity android:name=".activity.graphs.BloodPresssureGraphActivity" />
+        <activity android:name=".devices.smartband.miband.SmartBandActivity" />
+
+        <!-- SERVICES -->
+        <service
+            android:name=".service.BluetoothLeService"
+            android:enabled="true" />
+        <service
+            android:name="com.signove.health.service.HealthService"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="android.permission.BLUETOOTH"
+            android:stopWithTask="false">
+            <intent-filter>
+                <action android:name="com.signove.health.service.HealthService" />
+            </intent-filter>
+        </service>
+        <service android:name="com.signove.health.service.BluetoothHDPService" />
+
+    </application>
+
+</manifest>

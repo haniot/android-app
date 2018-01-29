@@ -1,0 +1,372 @@
+<resources>
+    <string name="app_name">DAE</string>
+    <string name="copyright">Ⓒ 2017 NUTES</string>
+    <string name="app_version">1.0</string>
+    <string name="start_scan">Start scan</string>
+    <string name="start_synchronization">Start Synchronization</string>
+    <string name="stop_scan">Stop scan</string>
+    <string name="device_address">Address: %s</string>
+    <string name="device_connection_state">State: %s</string>
+    <string name="device_read_data">Data: %s</string>
+    <string name="device_read_rssi">RSSI: %d</string>
+    <string name="prefix_hex">0x</string>
+    <string name="disconnect">Disconnect</string>
+    <string name="connect">Connect</string>
+    <string name="connecting">Connecting</string>
+    <string name="connected">Connected</string>
+    <string name="disconnected">Disconnected</string>
+    <string name="measurement">Measurement</string>
+    <string name="read">Read</string>
+    <string name="write">Write</string>
+    <string name="devices">Devices</string>
+    <string name="device_bonded">Bonded</string>
+    <string name="device_bonding">Bonding</string>
+    <string name="device_not_bonded">Not bonded</string>
+    <string name="not_bluetooth">Your device does not support bluetooth!</string>
+    <string name="permission_location">The permission to get BLE location data is required</string>
+    <string name="not_bluetooth_le">Your device does not support Bluetooth Low Energy!</string>
+    <string name="bluetooth_classic">Bluetooth Classic</string>
+    <string name="bluetooth_le">Bluetooth LE</string>
+    <string name="welcome">Welcome</string>
+    <string name="no_more_data">No more data available...</string>
+    <string name="day_text">Day</string>
+    <string name="week_text">Week</string>
+    <string name="month_text">Month</string>
+    <string name="today_text">Today</string>
+
+    <!--ACTIONS-->
+    <string name="action_settings">Settings</string>
+    <string name="action_bond">Bond</string>
+    <string name="action_connect_devices">Connect Devices</string>
+    <string name="action_scanner_devices">Scanner Devices</string>
+    <string name="action_save">Save</string>
+    <string name="action_sign_out">Sign out</string>
+
+    <string name="unknown">Unknown</string>
+    <string name="unknown_device">Unknown device</string>
+    <string name="unknown_characteristic">Unknown characteristic</string>
+    <string name="unknown_service">Unknown service</string>
+
+    <string name="uepb">UEPB</string>
+    <string name="nutes">NUTES</string>
+    <string name="nutes_desc">Nucleus of Strategic Technologies in Health</string>
+    <string name="libe">LIBE</string>
+    <string name="libe_desc">Laboratory of Biomedical Instrumentation and Electronic Testing</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="temperature">Temperature</string>
+    <string name="weight">Weight</string>
+    <string name="body_mass">Body Mass</string>
+    <string name="temperature_measurement">Temperature Measurement</string>
+    <string name="body_weight_scale">Body Weight Scale</string>
+    <string name="heart_rate_measurement">Heart Rate Measurement</string>
+    <string name="heart_rate">Heart Rate</string>
+    <string name="glucose_measurement">Glucose Measurement</string>
+    <string name="glucose">Glucose</string>
+    <string name="blood_pressure_measurement">Blood Pressure Measurement</string>
+    <string name="blood_pressure">Blood Pressure</string>
+    <string name="body_composition">Body Composition</string>
+    <string name="body_composition_measurement">Body Composition Measurement</string>
+
+    <string name="all_records">All</string>
+    <string name="first_record">First</string>
+    <string name="last_record">Last</string>
+    <string name="most_recent_entries">Most recent entries</string>
+    <string name="body_fat_title">Body Fat</string>
+    <string name="body_bmi_title">BMI</string>
+    <string name="pulse_mark_title">Pulse:</string>
+
+    <string name="value_default">_ _</string>
+
+    // DATE/TIME FORMAT
+    <string name="date_format">yyyy/MM/dd</string>
+    <string name="date_format_month_day">MM/dd</string>
+    <string name="datetime_format">yyyy/MM/dd HH:mm:ss</string>
+    <string name="datetime_format_db">yyyy-MM-dd HH:mm:ss</string>
+    <string name="time_format">HH:mm:ss</string>
+    <string name="time_format_simple">mm:ss</string>
+
+    // FORMATS
+    <string name="format_number1">#.0</string>
+    <string name="format_number2">##.0</string>
+
+    // EXCEPTIONS LOGS
+    <string name="device_not_found">"Device: %1$s not found!"</string>
+    <string name="not_save_object_empty">"You cannot save an object as empty!"</string>
+    <string name="not_delete_object_empty">"You cannot delete an object as empty!"</string>
+    <string name="no_data_found">"No data found!"</string>
+
+    // TEMPERATURE TYPE
+    <string name="temperatre_type_armpit">Armpit</string>
+    <string name="temperatre_type_body">Body (general)</string>
+    <string name="temperatre_type_ear">Ear (usually ear lobe)</string>
+    <string name="temperatre_type_finger">Finger</string>
+    <string name="temperatre_type_gastro">Gastro-intestinal Tract</string>
+    <string name="temperatre_type_mouth">Mouth</string>
+    <string name="temperatre_type_rectum">Rectum</string>
+    <string name="temperatre_type_toe">Toe</string>
+    <string name="temperatre_type_typanum">Tympanum (ear drum)</string>
+
+    // GLUCOSE CARBOHYDRATE
+    <string name="glucose_carbohydrate_breakfast">Breakfast</string>
+    <string name="glucose_carbohydrate_lunch">Lunch</string>
+    <string name="glucose_carbohydrate_dinner">Dinner</string>
+    <string name="glucose_carbohydrate_snakck">Snack</string>
+    <string name="glucose_carbohydrate_drink">Drink</string>
+    <string name="glucose_carbohydrate_supper">Supper</string>
+    <string name="glucose_carbohydrate_brunch">Brunch</string>
+
+    // GLUCOSE MEAL
+    <string name="glucose_meal_preprandial">Preprandial (before meal)</string>
+    <string name="glucose_meal_postprandial">Postprandial (after meal)</string>
+    <string name="glucose_meal_fasting">Fasting</string>
+    <string name="glucose_meal_casual">Casual (snacks, drinks, etc.)"</string>
+    <string name="glucose_meal_bedtime">Bedtime</string>
+
+    // GLUCOSE STATUS ANNUNCIATION
+    <string name="glucose_status_annunciation_battery_low">Device battery low at time of measurement</string>
+    <string name="glucose_status_annunciation_sensor_malfunction">Sensor malfunction or faulting at time of measurement</string>
+    <string name="glucose_status_annunciation_sample_size_insufficient">Sample size for blood or control solution insufficient at time of measurement</string>
+    <string name="glucose_status_annunciation_strip_insertion_error">Strip insertion error</string>
+    <string name="glucose_status_annunciation_strip_incorrect">Strip typeId incorrect for device</string>
+    <string name="glucose_status_annunciation_result_high">Sensor result higher than the device can process</string>
+    <string name="glucose_status_annunciation_result_lower">Sensor result lower than the device can process</string>
+    <string name="glucose_status_annunciation_sensor_temperature_high">Sensor temperature too high for valid test/result at time of measurement</string>
+    <string name="glucose_status_annunciation_sensor_temperature_lower">Sensor temperature too low for valid test/result at time of measurement</string>
+    <string name="glucose_status_annunciation_sensor_read_interrupted">Sensor read interrupted because strip was pulled too soon at time of measurement</string>
+    <string name="glucose_status_annunciation_general_device_fault">General device fault has occurred in the sensor</string>
+    <string name="glucose_status_annunciation_sensor_time_fault">Time fault has occurred in the sensor and time may be inaccurate</string>
+
+    // GLUCOSE LOCATION
+    <string name="glucose_location_finger">Finger</string>
+    <string name="glucose_location_alternate">Alternate Site Test (AST)</string>
+    <string name="glucose_location_earlobe">Earlobe</string>
+    <string name="glucose_location_control_solution">Contril solution</string>
+    <string name="glucose_location_sample_not_available">Sample Location valueId not available</string>
+
+    // GLUCOSE TYPE
+    <string name="glucose_type_capillary_whole">Capillary Whole blood</string>
+    <string name="glucose_type_capillary_plasma">Capillary Plasma</string>
+    <string name="glucose_type_venous_whole">Venous Whole blood</string>
+    <string name="glucose_type_venous_plasma">Venous Plasma</string>
+    <string name="glucose_type_arterial_whole">Arterial Whole blood</string>
+    <string name="glucose_type_arterial_plama">Arterial Plasma</string>
+    <string name="glucose_type_undertermined_whole">Undetermined Whole blood</string>
+    <string name="glucose_type_undertermined_plasma">Undetermined Plasma</string>
+    <string name="glucose_type_interstitial">Interstitial Fluid (ISF)</string>
+    <string name="glucose_type_control_solution">Control Solution</string>
+
+    <!--LOGIN-->
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="password_confirm">Confirm password</string>
+    <string name="login">Sign in</string>
+    <string name="no_account_yet">No account yet? Create one</string>
+
+    <!--SIGNUP-->
+    <string name="name">Name</string>
+    <string name="gender">Gender</string>
+    <string name="gender_male">Male</string>
+    <string name="gender_female">Female</string>
+    <string name="date_of_birth">Date of birth</string>
+    <string name="height">Height in cm</string>
+    <string name="cm">cm</string>
+    <string name="create_account">Create Account</string>
+    <string name="already_account">Already have an account? Login</string>
+    <string name="new_account">New Account</string>
+    <string name="update_account">Update Account</string>
+    <string name="update_data">Update data</string>
+    <string name="register_success">Data registered successfully!</string>
+    <string name="update_success">Data updated successfully!</string>
+    <string name="register_error">There was an error inserting user...</string>
+    <string name="update_error">There was an error updating the data...</string>
+    <string name="change_password">Change password</string>
+    <string name="current_password">Current password</string>
+    <string name="new_password">New password</string>
+    <string name="confirm_password">Confirm password</string>
+
+    <!--VALIDATE MESSAGES-->
+    <string name="validate_name">At least 3 characters</string>
+    <string name="validate_not_null">Field can not be empty</string>
+    <string name="validate_email">Enter a valid email address</string>
+    <string name="validate_passoword">Between 4 and 10 alphanumeric characters</string>
+    <string name="validate_height">Minimum height 60cm and maximum 250cm</string>
+    <string name="validate_invalid_email_or_password">Invalid email or password...</string>
+    <string name="validate_password_not_match_current">Current password does not match!</string>
+    <string name="validate_password_not_match_new">New password and confirmation do not match!</string>
+    <string name="validate_register_user_not_duplicate">Already registered user with email provided...</string>
+    <string name="validate_unauthorized_access">Unauthorized access! Please contact support...</string>
+
+    <string name="back_confirm">Are you sure you want to return without completing the registration?</string>
+
+    <!--ERROR-->
+    <string name="error_sign_out">There was an error while trying to quit...</string>
+    <string name="error_500">Could not complete request! Please try again later...</string>
+    <string name="error_internal_device">Could not complete request! Please try again later...</string>
+    <string name="error_connectivity">There was an error communicating with our servers.\nPlease, check your phone connectivity and try again later.</string>
+    <string name="connect_network_try_again">Connect to a network and try again...</string>
+
+    <!--SETTINGS-->
+    <string name="settings_your_data">Your Data</string>
+    <string name="settings_server">Server</string>
+    <string name="settings_server_address">Server address</string>
+    <string name="settings_devices">Devices</string>
+    <string name="settings_signout">Sign Out</string>
+    <string name="settings_account">Account</string>
+    <string name="settings_about">About</string>
+    <string name="settings_send_feedback">Send Feedback</string>
+    <string name="settings_close_account">Close account</string>
+    <string name="settings_summary_your_data">View and edit your registered data</string>
+    <string name="settings_summary_server_address">Enter the server address for sending data.</string>
+    <string name="settings_summary_full_server_address">Enter the address.\nExample: http://192.168.31.113:8080/api/v1</string>
+    <string name="settings_summary_signout">You will be logged out of the application and redirected to login screen.</string>
+    <string name="settings_summary_support">Got any queries? We are happy to help!</string>
+    <string name="settings_summary_close_account">Delete the registered account and application settings.</string>
+    <string name="settings_summary_about">NUTES is a reference center for the development of technologies to be applied to the health domain, composed of professors, researchers and students of grad and post grad level from the areas of Computer Science, Odontology and Phisioterapy.</string>
+    <string name="settings_version">Version</string>
+    <string name="key_your_data">key_your_data</string>
+    <string name="key_send_feedback">key_send_feedback</string>
+    <string name="key_url_server">key_url_server</string>
+    <string name="key_signout">key_signout</string>
+    <string name="key_close_account">key_close_account</string>
+    <string name="key_about">key_about</string>
+    <string name="url_about">http://en.nutes.uepb.edu.br/about-us/</string>
+    <string name="choose_email_client">Choose email client</string>
+    <string name="email_contact">contact@nutes.uepb.edu.br</string>
+    <string name="message_not_remove">Please don\'t remove this information</string>
+
+    <!--DIALOGS-->
+    <string name="confirm_sign_out">Do you really want to quit the application?\nYou will be redirected to login screen...</string>
+    <string name="bt_ok">Ok</string>
+    <string name="bt_cancel">Cancel</string>
+    <string name="bt_discard">Discard</string>
+    <string name="bt_save">Save</string>
+    <string name="title_save_captured_data">Save data...</string>
+    <string name="message_save_captured_data">Do you want to save the captured data?</string>
+    <string name="message_save_captured_heart_rate">Do you want to save the captured heart rate?</string>
+
+    <string name="no_data_available">No data to display...</string>
+    <string name="unit_kg">kg</string>
+    <string name="unit_percentage">%</string>
+    <string name="unit_celsius">°C</string>
+    <string name="unit_pressure">mmHg</string>
+    <string name="unit_pulse">bpm</string>
+    <string name="unit_glucose_mg_dL">mg/dL</string>
+    <string name="unit_glucose_kg_L">kg/L</string>
+
+    <!--SYNCHRONIZATION-->
+    <string name="synchronization_failed">Data synchronization failed!</string>
+    <string name="synchronization_success">Successful data synchronization!</string>
+    <string name="synchronization_data">Synchronizing data...</string>
+    <string name="synchronization_no_data_to_send">There is no data to send...</string>
+
+    <string name="other">Other</string>
+
+    <!--TYPES AND GROUPS-->
+    <string-array name="device_types_array">
+        <item>Thermometer</item>
+        <item>Glucometer</item>
+        <item>Scale</item>
+        <item>Blood Pressure</item>
+        <item>Heart Rate</item>
+        <item>Smart Watch</item>
+    </string-array>
+
+    <string-array name="measurement_types_array">
+        <item>Temperature</item>
+        <item>Blood Glucose</item>
+        <item>Body Weight</item>
+        <item>Body Fat</item>
+        <item>Blood Pressure</item>
+        <item>Heart Rate</item>
+        <item>BMI - Body Mass Index</item>
+        <item>RMR - Resting Metabolic Rate</item>
+        <item>BMR - Basal Metabolic Rate</item>
+        <item>Muscle Mass</item>
+        <item>Visceral Fat</item>
+        <item>Body Age</item>
+    </string-array>
+    .
+
+    <string-array name="measurement_context_types_array">
+        <item>Glucose Carbohydrate</item>
+        <item>Glucose Meal</item>
+        <item>Glucose Location</item>
+        <item>Glucose Type</item>
+        <item>Temperature Type</item>
+    </string-array>
+
+    <string-array name="measurement_values_context_types_array">
+        <item>@string/other</item>
+        <!--GLUCOSE CARBOHYDRATE (2-8)-->
+        <item>@string/glucose_carbohydrate_breakfast</item>
+        <item>@string/glucose_carbohydrate_lunch</item>
+        <item>@string/glucose_carbohydrate_dinner</item>
+        <item>@string/glucose_carbohydrate_snakck</item>
+        <item>@string/glucose_carbohydrate_drink</item>
+        <item>@string/glucose_carbohydrate_supper</item>
+        <item>@string/glucose_carbohydrate_brunch</item>
+        <!--GLUCOSE MEAL (9-13)-->
+        <item>@string/glucose_meal_preprandial</item>
+        <item>@string/glucose_meal_postprandial</item>
+        <item>@string/glucose_meal_fasting</item>
+        <item>@string/glucose_meal_casual</item>
+        <item>@string/glucose_meal_bedtime</item>
+        <!--GLUCOSE LOCATION (14-18)-->
+        <item>@string/glucose_location_finger</item>
+        <item>@string/glucose_location_alternate</item>
+        <item>@string/glucose_location_earlobe</item>
+        <item>@string/glucose_location_control_solution</item>
+        <item>@string/glucose_location_sample_not_available</item>
+        <!--GLUCOSE TYPE (19-28)-->
+        <item>@string/glucose_type_capillary_whole</item>
+        <item>@string/glucose_type_capillary_plasma</item>
+        <item>@string/glucose_type_venous_whole</item>
+        <item>@string/glucose_type_venous_plasma</item>
+        <item>@string/glucose_type_arterial_whole</item>
+        <item>@string/glucose_type_arterial_plama</item>
+        <item>@string/glucose_type_undertermined_whole</item>
+        <item>@string/glucose_type_undertermined_plasma</item>
+        <item>@string/glucose_type_interstitial</item>
+        <item>@string/glucose_type_control_solution</item>
+        <!--TEMPERATURE TYPE (29-37)-->
+        <item>@string/temperatre_type_armpit</item>
+        <item>@string/temperatre_type_body</item>
+        <item>@string/temperatre_type_ear</item>
+        <item>@string/temperatre_type_finger</item>
+        <item>@string/temperatre_type_gastro</item>
+        <item>@string/temperatre_type_mouth</item>
+        <item>@string/temperatre_type_rectum</item>
+        <item>@string/temperatre_type_toe</item>
+        <item>@string/temperatre_type_typanum</item>
+    </string-array>
+
+    <string-array name="training_types_array">
+        <item>Walking</item>
+        <item>Running</item>
+        <item>Cycling</item>
+    </string-array>
+
+    <string-array name="user_group_array">
+        <item>Super</item>
+        <item>Common</item>
+    </string-array>
+
+    <string-array name="months_array">
+        <item>Jan</item>
+        <item>Feb</item>
+        <item>Mar</item>
+        <item>Apr</item>
+        <item>May</item>
+        <item>Jun</item>
+        <item>Jul</item>
+        <item>Aug</item>
+        <item>Sep</item>
+        <item>Oct</item>
+        <item>Nov</item>
+        <item>Dec</item>
+    </string-array>
+
+</resources>

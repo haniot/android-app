@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#009b8a</color>
+    <color name="colorPrimaryDark">#17806E</color>
+    <color name="colorAccent">#53cdba</color>
+
+    <color name="colorCard">#EBF6F4</color>
+    <color name="colorTextDark">#FFF</color>
+    <color name="colorAlertDanger">#a94442</color>
+    <color name="colorItemSeparator">#E0E0E0</color>
+
+    <!--COLORS BUTTONS-->
+    <color name="colorButtonPrimary">@color/colorAccent</color>
+    <color name="colorButtonSuccess">#8BC34A</color>
+    <color name="colorButtonWarning">#FF9800</color>
+    <color name="colorButtonDanger">#d32f2f</color>
+
+    <color name="colorButtonPrimaryPressed">#45bba9</color>
+    <color name="colorButtonSuccessPressed">#689F38</color>
+    <color name="colorButtonWarningPressed">#F57C00</color>
+    <color name="colorButtonDangerPressed">#b71c1c</color>
+
+</resources>
