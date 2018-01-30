@@ -639,7 +639,6 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
     private boolean tryingConnect() {
         Log.i(TAG, "tryingConnect()");
         if (mBluetoothLeService != null) {
-            Log.i(TAG, "tryingConnect -- entrou()");
             return mBluetoothLeService.connect(mDeviceAddress);
         }
 

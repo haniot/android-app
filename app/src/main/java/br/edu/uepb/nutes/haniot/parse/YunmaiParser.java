@@ -82,13 +82,13 @@ public class YunmaiParser {
                  * USER ID
                  * 09-12: recognized userID - BE uint32
                  */
-                Integer userID = Integer.valueOf(String.format("%02X", data[9]) +
-                        String.format("%02X", data[10]) +
-                        String.format("%02X", data[11]) +
-                        String.format("%02X", data[12]), 32
-                );
-
-                result.put("userID", userID);
+//                Integer userID = Integer.valueOf(String.format("%02X", data[9]) +
+//                        String.format("%02X", data[10]) +
+//                        String.format("%02X", data[11]) +
+//                        String.format("%02X", data[12]), 32
+//                );
+//
+//                result.put("userID", userID);
             }
         }
 

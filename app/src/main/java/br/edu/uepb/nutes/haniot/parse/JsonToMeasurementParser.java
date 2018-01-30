@@ -20,6 +20,8 @@ import br.edu.uepb.nutes.haniot.model.MeasurementType;
 public class JsonToMeasurementParser {
 
     /**
+     * Parse for all supported measurements.
+     *
      * @param data
      * @return List<Measurement>
      * @throws JSONException
@@ -106,6 +108,24 @@ public class JsonToMeasurementParser {
 
             if (o.has("bodyAge")) {
                 item = bodyAge(json);
+                if (!result.contains(item)) result.add(item);
+                continue;
+            }
+
+            if (o.has("steps")) {
+                item = steps(json);
+                if (!result.contains(item)) result.add(item);
+                continue;
+            }
+
+            if (o.has("distance")) {
+                item = distance(json);
+                if (!result.contains(item)) result.add(item);
+                continue;
+            }
+
+            if (o.has("calories")) {
+                item = calories(json);
                 if (!result.contains(item)) result.add(item);
                 continue;
             }
@@ -356,6 +376,63 @@ public class JsonToMeasurementParser {
                 o.getString("bodyAgeUnit"),
                 o.getLong("timestamp"),
                 MeasurementType.BODY_AGE);
+
+        return measurement;
+    }
+
+    /**
+     * Convert json to Steps Measurement.
+     *
+     * @param json String
+     * @return Measurement
+     * @throws JSONException
+     */
+    public static Measurement steps(String json) throws JSONException {
+        JSONObject o = new JSONObject(json);
+
+        Measurement measurement = measurement = new Measurement(
+                o.getInt("steps"),
+                o.getString("stepsUnit"),
+                o.getLong("timestamp"),
+                MeasurementType.STEPS);
+
+        return measurement;
+    }
+
+    /**
+     * Convert json to Distance Measurement.
+     *
+     * @param json String
+     * @return Measurement
+     * @throws JSONException
+     */
+    public static Measurement distance(String json) throws JSONException {
+        JSONObject o = new JSONObject(json);
+
+        Measurement measurement = measurement = new Measurement(
+                o.getInt("distance"),
+                o.getString("distanceUnit"),
+                o.getLong("timestamp"),
+                MeasurementType.DISTANCE);
+
+        return measurement;
+    }
+
+    /**
+     * Convert json to Calories Burned Measurement.
+     *
+     * @param json String
+     * @return Measurement
+     * @throws JSONException
+     */
+    public static Measurement calories(String json) throws JSONException {
+        JSONObject o = new JSONObject(json);
+
+        Measurement measurement = measurement = new Measurement(
+                o.getInt("calories"),
+                o.getString("caloriesUnit"),
+                o.getLong("timestamp"),
+                MeasurementType.CALORIES_BURNED);
 
         return measurement;
     }

@@ -115,6 +115,9 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
     @BindView(R.id.view_circle)
     CircularProgressBar mCircularProgressBar;
 
+    @BindView(R.id.view_heart_rate)
+    CircularProgressBar mHeartRateProgressBar;
+
     @BindView(R.id.collapsi_toolbar)
     CollapsingToolbarLayout mCollapsingToolbarLayout;
 
@@ -139,7 +142,7 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
         // synchronization with server
         synchronizeWithServer();
 
-        mDeviceAddress = "1C:87:74:01:73:10";
+        mDeviceAddress = "FB:28:60:91:99:36";
         session = new Session(this);
         measurementDAO = MeasurementDAO.getInstance(this);
         deviceDAO = DeviceDAO.getInstance(this);
@@ -463,13 +466,19 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
             public void run() {
                 mCircularProgressBar.setProgress(0);
                 mCircularProgressBar.setProgressWithAnimation(100); // Default animate duration = 1500ms
+                mHeartRateProgressBar.setProgress(0);
+                mHeartRateProgressBar.setProgressWithAnimation(100); // Default animate duration = 1500ms
 
                 if (isConnected) {
                     mCircularProgressBar.setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
                     mCircularProgressBar.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAlertDanger));
+                    mHeartRateProgressBar.setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
+                    mHeartRateProgressBar.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAlertDanger));
                 } else {
                     mCircularProgressBar.setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAlertDanger));
                     mCircularProgressBar.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
+                    mHeartRateProgressBar.setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAlertDanger));
+                    mHeartRateProgressBar.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
                 }
             }
         });
@@ -516,7 +525,7 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
                 finish();
             }
             // Conecta-se automaticamente ao dispositivo após a inicialização bem-sucedida.
-            mBluetoothLeService.connect(mDeviceAddress);
+            tryingConnect();
         }
 
         @Override
@@ -539,10 +548,15 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
             final String action = intent.getAction();
 
             if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
+                Log.i(TAG, "ACTION_GATT_CONNECTED");
                 updateConnectionState(true);
             } else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
+                Log.i(TAG, "ACTION_GATT_DISCONNECTED");
                 updateConnectionState(false);
+
+                tryingConnect();
             } else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
+
                 BluetoothGattService gattService = mBluetoothLeService.getGattService(UUID.fromString(GattAttributes.SERVICE_HEALTH_THERMOMETER));
 
                 if (gattService != null) {
@@ -578,6 +592,26 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
         }
     };
 
+    public void listenHeartRate() {
+        BluetoothGattService gattService = mBluetoothLeService.getGattService(UUID.fromString(GattAttributes.SERVICE_STEPS_DISTANCE_CALORIES));
+
+        if (gattService != null) {
+            BluetoothGattCharacteristic characteristic = gattService.getCharacteristic(UUID.fromString(GattAttributes.CHARACTERISTIC_STEPS_DISTANCE_CALORIES));
+            if (characteristic != null)
+                setCharacteristicNotification(characteristic);
+        }
+    }
+
+    public void listenStepsCalorieDistance(){
+        BluetoothGattService gattService = mBluetoothLeService.getGattService(UUID.fromString(GattAttributes.SERVICE_HEART_RATE));
+
+        if (gattService != null) {
+            BluetoothGattCharacteristic characteristic = gattService.getCharacteristic(UUID.fromString(GattAttributes.CHARACTERISTIC_HEART_RATE_MEASUREMENT));
+            if (characteristic != null)
+                setCharacteristicNotification(characteristic);
+        }
+    }
+
     /**
      * updateOrSave the UI with the last measurement.
      *
@@ -595,6 +629,21 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
                 if (applyAnimation) mStepsTextView.startAnimation(animation);
             }
         });
+    }
+
+
+    /**
+     * Connect to device.
+     *
+     * @return boolean
+     */
+    private boolean tryingConnect() {
+        Log.i(TAG, "tryingConnect()");
+        if (mBluetoothLeService != null) {
+            return mBluetoothLeService.connect(mDeviceAddress);
+        }
+
+        return false;
     }
 
     /**
