@@ -69,6 +69,7 @@
     <string name="blood_pressure">Blood Pressure</string>
     <string name="body_composition">Body Composition</string>
     <string name="body_composition_measurement">Body Composition Measurement</string>
+    <string name="smart_band">Smart Band</string>
 
     <string name="all_records">All</string>
     <string name="first_record">First</string>
@@ -272,6 +273,7 @@
         <item>Blood Pressure</item>
         <item>Heart Rate</item>
         <item>Smart Watch</item>
+        <item>Smart Band</item>
     </string-array>
 
     <string-array name="measurement_types_array">
@@ -287,6 +289,9 @@
         <item>Muscle Mass</item>
         <item>Visceral Fat</item>
         <item>Body Age</item>
+        <item>Steps</item>
+        <item>Distance</item>
+        <item>Calories Burned</item>
     </string-array>
     .
 

@@ -1,51 +1,231 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="20dp"
-    tools:context="br.edu.uepb.nutes.haniot.devices.smartband.miband.SmartBandActivity">
+    tools:context=".devices.SmartBandActivity">
 
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/box_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsi_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:fitsSystemWindows="true"
+            app:contentScrim="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+            <RelativeLayout
+                android:id="@+id/box_measurement"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                app:layout_collapseMode="parallax">
+
+                <com.mikhaellopez.circularprogressbar.CircularProgressBar
+                    android:id="@+id/view_circle"
+                    android:layout_width="180dp"
+                    android:layout_height="180dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="35dp"
+                    app:cpb_background_progressbar_color="@color/colorAlertDanger"
+                    app:cpb_background_progressbar_width="6dp"
+                    app:cpb_progressbar_color="@color/colorAccent"
+                    app:cpb_progressbar_width="6dp" />
+
+                <RelativeLayout
+                    android:id="@+id/box_smartband"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/view_circle"
+                    android:layout_alignEnd="@+id/view_circle"
+                    android:layout_alignStart="@+id/view_circle"
+                    android:layout_alignTop="@+id/view_circle">
+
+                    <TextView
+                        android:id="@+id/steps_textview"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginTop="35dp"
+                        android:gravity="center"
+                        android:text="5"
+                        android:textColor="@color/colorTextDark"
+                        android:textSize="50sp"
+                        tools:ignore="HardcodedText" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignTop="@+id/steps_textview"
+                        android:layout_marginTop="55dp"
+                        android:gravity="center">
+
+                        <TextView
+                            android:id="@+id/distance_textview"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentTop="true"
+                            android:layout_marginStart="0dp"
+                            android:text="50m" />
+
+                        <TextView
+                            android:id="@+id/separator_textview"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignBottom="@+id/distance_textview"
+                            android:layout_marginStart="5dp"
+                            android:layout_toEndOf="@+id/distance_textview"
+                            android:text="|" />
+
+                        <TextView
+                            android:id="@+id/calories_textview"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentTop="true"
+                            android:layout_marginStart="15dp"
+                            android:layout_toEndOf="@+id/distance_textview"
+                            android:text="1cal" />
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/date_last_measurement_textView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_below="@+id/steps_textview"
+                        android:layout_marginTop="20dp"
+                        android:gravity="center"
+                        android:text="20 July 2017"
+                        android:textSize="14sp" />
+
+                </RelativeLayout>
+
+
+                <com.mikhaellopez.circularprogressbar.CircularProgressBar
+                    android:id="@+id/view_pulse"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_alignTop="@+id/view_circle"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_toEndOf="@+id/view_circle"
+                    app:cpb_background_progressbar_color="@color/colorAlertDanger"
+                    app:cpb_background_progressbar_width="6dp"
+                    app:cpb_progressbar_color="@color/colorAccent"
+                    app:cpb_progressbar_width="6dp" />
+
+                <RelativeLayout
+                    android:id="@+id/relativeLayout3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/view_pulse"
+                    android:layout_alignEnd="@+id/view_pulse"
+                    android:layout_alignStart="@+id/view_pulse"
+                    android:layout_alignTop="@+id/view_pulse">
+
+                    <TextView
+                        android:id="@+id/heart_rate_textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_above="@+id/unit_pulse_textview"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentStart="true"
+                        android:gravity="bottom|center"
+                        android:text="78"
+                        android:textColor="@color/colorTextDark"
+                        android:textSize="30sp" />
+
+                    <TextView
+                        android:id="@+id/unit_pulse_textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginBottom="20dp"
+                        android:gravity="center"
+                        android:text="@string/unit_pulse"
+                        android:textSize="16sp" />
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:layout_alignParentEnd="true"
+                android:layout_alignTop="@+id/view_circle"
+                android:layout_marginEnd="9dp"
+                android:title=""
+                app:layout_collapseMode="pin"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                tools:ignore="HardcodedText" />
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/chart_floating_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/fab_margin"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@drawable/ic_action_show_chart"
+        app:layout_anchor="@id/box_bar_layout"
+        app:layout_anchorGravity="bottom|right|end" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-
-        android:orientation="vertical">
-
-
-        <TextView
-            android:id="@+id/name_device"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="MI BAND"
-            android:textSize="16sp"
-            tools:ignore="MissingConstraints" />
+        android:clipToPadding="false"
+        android:orientation="vertical"
+        android:padding="@dimen/activity_horizontal_margin"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <TextView
-            android:id="@+id/batery"
-            android:layout_width="match_parent"
+            android:id="@+id/text_view_title_history"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="as"
-            android:textSize="30sp"
-            tools:ignore="MissingConstraints" />
+            android:orientation="vertical"
+            android:text="@string/most_recent_entries"
+            android:textAllCaps="false"
+            android:textColor="@color/colorPrimary" />
 
         <TextView
-            android:id="@+id/steps"
+            android:id="@+id/no_data_textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:gravity="center"
-            android:text="TextView"
-            android:textSize="40sp"
-            tools:ignore="MissingConstraints"/>
+            android:text="@string/no_data_available"
+            android:visibility="gone" />
 
-        <Button
-            android:id="@+id/connect_toggle"
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/data_swiperefresh"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Button" />
+            android:layout_height="match_parent"
+            android:paddingTop="10dp">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/smartband_recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbarSize="3sp"
+                android:scrollbarThumbVertical="@color/colorAccent"
+                android:scrollbars="vertical" />
+
+        </android.support.v4.widget.SwipeRefreshLayout>
     </LinearLayout>
-</android.support.constraint.ConstraintLayout>
+</android.support.design.widget.CoordinatorLayout>
