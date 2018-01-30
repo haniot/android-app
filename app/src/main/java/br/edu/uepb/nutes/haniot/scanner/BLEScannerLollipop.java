@@ -11,7 +11,6 @@ import android.bluetooth.le.ScanSettings;
 import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.RequiresPermission;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,8 +24,10 @@ import java.util.List;
  */
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class BLEScannerLollipop extends BLEScanner {
+
     private BluetoothAdapter mBluetoothAdapter;
     private ScanCallback mScanCallback;
+    private BluetoothLeScanner mScanner;
 
     BLEScannerLollipop() {
         super();
@@ -35,14 +36,13 @@ public class BLEScannerLollipop extends BLEScanner {
 
     @Override
     @RequiresPermission(allOf = {Manifest.permission.BLUETOOTH_ADMIN, Manifest.permission.BLUETOOTH})
-    void startScanInternal(long scanPeriod, List<ScanFilter> filters, ScanSettings settings, ScanCallback callback) {
-        Log.w("BLEScannerLollipop", "startScan()");
-        final BluetoothLeScanner scanner = mBluetoothAdapter.getBluetoothLeScanner();
-        if (scanner == null) throw new NullPointerException("BT le scanner not available");
+    void startScanInternal(long scanPeriod, List<ScannerFilter> filters, ScanSettings settings, ScanCallback callback) {
+        mScanner = mBluetoothAdapter.getBluetoothLeScanner();
+        if (mScanner == null) throw new IllegalArgumentException("BT le scanner not available");
 
         this.mScanCallback = callback;
-        if (filters == null && settings == null) scanner.startScan(bleScanCallback);
-        else scanner.startScan(filters, settings, bleScanCallback);
+        if (filters == null && settings == null) mScanner.startScan(bleScanCallback);
+        else mScanner.startScan(uuidToScanFilter(filters), settings, bleScanCallback);
 
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -55,10 +55,12 @@ public class BLEScannerLollipop extends BLEScanner {
     @Override
     @RequiresPermission(Manifest.permission.BLUETOOTH)
     public void stopScan(ScanCallback callback) {
-        final BluetoothLeScanner scanner = mBluetoothAdapter.getBluetoothLeScanner();
-        if (scanner == null) return;
+        mScanner = mBluetoothAdapter.getBluetoothLeScanner();
+        if (mScanner == null) return;
 
-        scanner.stopScan(bleScanCallback);
+        mScanner.stopScan(bleScanCallback);
+        mScanCallback = null;
+        mScanner = null;
     }
 
     final android.bluetooth.le.ScanCallback bleScanCallback = new android.bluetooth.le.ScanCallback() {
@@ -84,4 +86,21 @@ public class BLEScannerLollipop extends BLEScanner {
             mScanCallback.onScanFailed(errorCode);
         }
     };
+
+    /**
+     * Convert List<UUID> in List<ScannerFilter>.
+     *
+     * @param filtersServices List<ScannerFilter>
+     * @return List<ScanFilter>
+     */
+    private List<ScanFilter> uuidToScanFilter(List<ScannerFilter> filtersServices) {
+        List<ScanFilter> filters = new ArrayList<>();
+
+        for (ScannerFilter f : filtersServices) {
+            ScanFilter filter = f.getScanFilter();
+            if (filter != null) filters.add(filter);
+        }
+
+        return filters;
+    }
 }

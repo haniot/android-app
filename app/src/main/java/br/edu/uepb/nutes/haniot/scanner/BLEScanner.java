@@ -1,18 +1,16 @@
 package br.edu.uepb.nutes.haniot.scanner;
 
 import android.Manifest;
-import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanSettings;
-import android.content.Context;
 import android.os.Build;
 import android.support.annotation.RequiresPermission;
-import android.support.v4.app.ActivityCompat;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Class provides methods to perform scan related operations for Bluetooth LE devices.
- * An application can scan for a particular type of Bluetooth LE devices using {@link ScanFilter}.
+ * An application can scan for a particular type of Bluetooth LE devices using {@link ScannerFilter}.
  * <p>
  * Use {@link BLEScanner#getScanner()} to get an instance of the scanner.
  *
@@ -46,13 +44,12 @@ public abstract class BLEScanner {
      *
      * @param scanPeriod To the scanner after the set period.
      * @param callback   {@link ScanCallback} Callback used to deliver scan results.
-     * @throws NullPointerException If {@code callback} is null.
+     * @throws IllegalArgumentException If {@code callback} is null.
      */
     @RequiresPermission(allOf = {Manifest.permission.BLUETOOTH_ADMIN, Manifest.permission.BLUETOOTH})
     public void startScan(final long scanPeriod, final ScanCallback callback) {
         if (callback == null)
-            throw new NullPointerException("Callback is null");
-
+            throw new IllegalArgumentException("Callback is null");
 
         startScanInternal(scanPeriod, null, null, callback);
     }
@@ -61,15 +58,16 @@ public abstract class BLEScanner {
      * Start Bluetooth LE scan. The scan results will be delivered through {@code callback}.
      *
      * @param scanPeriod To the scanner after the set period
-     * @param filters    {@link ScanFilter} for finding exact BLE devices.
+     * @param filters    {@link List<UUID>} for find exact BLE devices and according to the UUID of the service.
      * @param settings   {@link ScanSettings} Settings for the scan.
      * @param callback   {@link ScanCallback} Callback used to deliver scan results.
-     * @throws NullPointerException If {@code settings} or {@code callback} is null.
+     * @throws IllegalArgumentException If {@code settings} or {@code callback} is null.
      */
     @RequiresPermission(allOf = {Manifest.permission.BLUETOOTH_ADMIN, Manifest.permission.BLUETOOTH})
-    public void startScan(final long scanPeriod, final List<ScanFilter> filters, final ScanSettings settings, final ScanCallback callback) {
-        if (settings == null || callback == null)
-            throw new NullPointerException("settings or callback is null");
+    public void startScan(final long scanPeriod, final List<ScannerFilter> filters, ScanSettings settings, final ScanCallback callback) {
+        if (!(mInstance instanceof BLEScannerJellyBean) && settings == null)
+            throw new IllegalArgumentException("settings is null");
+        if (callback == null) throw new IllegalArgumentException("Callback is null");
 
         startScanInternal(scanPeriod, filters, settings, callback);
     }
@@ -78,13 +76,13 @@ public abstract class BLEScanner {
      * Start BLE Scanner according to the Android version.
      *
      * @param scanPeriod To the scanner after the set period
-     * @param filters    {@link ScanFilter} for finding exact BLE devices.
+     * @param filters    {@link List<UUID>} for find exact BLE devices and according to the UUID of the service.
      * @param settings   {@link ScanSettings} Settings for the scan.
      * @param callback   {@link ScanCallback} Callback used to deliver scan results.
      * @throws NullPointerException If {@code settings} or {@code callback} is null.
      */
     @RequiresPermission(allOf = {Manifest.permission.BLUETOOTH_ADMIN, Manifest.permission.BLUETOOTH})
-    abstract void startScanInternal(final long scanPeriod, final List<ScanFilter> filters, final ScanSettings settings, final ScanCallback callback);
+    abstract void startScanInternal(final long scanPeriod, final List<ScannerFilter> filters, final ScanSettings settings, final ScanCallback callback);
 
     /**
      * Stop the BLE scanner.

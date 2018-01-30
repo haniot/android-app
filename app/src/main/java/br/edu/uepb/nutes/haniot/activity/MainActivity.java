@@ -3,14 +3,10 @@ package br.edu.uepb.nutes.haniot.activity;
 import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.le.ScanFilter;
-import android.bluetooth.le.ScanSettings;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.ParcelUuid;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
@@ -21,7 +17,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,18 +27,12 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.account.LoginActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.activity.settings.SettingsActivity;
 import br.edu.uepb.nutes.haniot.fragment.ConnectDeviceFragment;
 import br.edu.uepb.nutes.haniot.fragment.ScanDeviceFragment;
-import br.edu.uepb.nutes.haniot.scanner.BLEScanner;
-import br.edu.uepb.nutes.haniot.scanner.ScanCallback;
 import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
@@ -105,6 +94,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         openFragment(fragment);
     }
 
+    /**
+     * Checks if you have permission to use.
+     * Required bluetooth ble and location.
+     *
+     * @return boolean
+     */
     private boolean hasPermissions() {
         if (!ConnectionUtils.bluetoothIsEnabled()) {
             requestBluetoothEnable();
@@ -116,21 +111,31 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
+    /**
+     * Request Bluetooth permission
+     */
     private void requestBluetoothEnable() {
-        // Request Bluetooth permission
         if (!ConnectionUtils.bluetoothIsEnabled())
             startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE), REQUEST_ENABLE_BLUETOOTH);
     }
 
-    private void requestLocationPermission() {
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_ENABLE_LOCATION);
-    }
-
+    /**
+     * Checks whether the location permission was given.
+     *
+     * @return boolean
+     */
     private boolean hasLocationPermissions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
             return checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
 
-        return false;
+        return true;
+    }
+
+    /**
+     * Request Location permission.
+     */
+    private void requestLocationPermission() {
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_ENABLE_LOCATION);
     }
 
     @Override

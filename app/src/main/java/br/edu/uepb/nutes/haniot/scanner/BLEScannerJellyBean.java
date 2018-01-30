@@ -3,13 +3,12 @@ package br.edu.uepb.nutes.haniot.scanner;
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanSettings;
 import android.os.Handler;
 import android.support.annotation.RequiresPermission;
-import android.util.Log;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * BLE Scanner implementation JellyBean.
@@ -30,9 +29,12 @@ public class BLEScannerJellyBean extends BLEScanner implements BluetoothAdapter.
 
     @Override
     @RequiresPermission(allOf = {Manifest.permission.BLUETOOTH_ADMIN, Manifest.permission.BLUETOOTH})
-    void startScanInternal(long scanPeriod, List<ScanFilter> filters, ScanSettings settings, ScanCallback callback) {
+    void startScanInternal(long scanPeriod, List<ScannerFilter> filters, ScanSettings settings, ScanCallback callback) {
         this.mScanCallback = callback;
-        mBluetoothAdapter.startLeScan(null,BLEScannerJellyBean.this);
+
+        if (filters != null) mBluetoothAdapter.startLeScan(
+                filtersToUUID(filters), BLEScannerJellyBean.this);
+        else mBluetoothAdapter.startLeScan(BLEScannerJellyBean.this);
 
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -48,11 +50,28 @@ public class BLEScannerJellyBean extends BLEScanner implements BluetoothAdapter.
         if (mBluetoothAdapter == null) return;
 
         mBluetoothAdapter.stopLeScan(this);
+        mScanCallback = null;
     }
 
     @Override
     public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
-        Log.i("BLEScannerJellyBean", "onLeScan()" + device.getName());
-        mScanCallback.onScanResult(1, device);
+        mScanCallback.onScanResult(ScanSettings.CALLBACK_TYPE_ALL_MATCHES, device);
+    }
+
+    /**
+     * Convert List<UUID> in UUID[].
+     *
+     * @param filtersSevices List<UUID>
+     * @return UUID[]
+     */
+    private UUID[] filtersToUUID(List<ScannerFilter> filtersSevices) {
+        UUID[] uuids = new UUID[filtersSevices.size()];
+
+        for (int i = 0; i < filtersSevices.size(); i++) {
+            UUID uuid = filtersSevices.get(i).getUUID();
+            if (uuid != null) uuids[i] = uuid;
+        }
+
+        return uuids;
     }
 }
