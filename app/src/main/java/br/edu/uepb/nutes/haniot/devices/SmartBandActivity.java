@@ -426,7 +426,7 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
 
         if (mDevice == null) {
             mDevice = new Device(mDeviceAddress, "MI BAND 2", "XIAOMI", "", DeviceType.SMARTBAND, session.getUserLogged());
-            mDevice.set_id("5a62c0d6d6f33400146c9b65");
+            mDevice.set_id("5a713bce7c210900147a4eda");
             if (!deviceDAO.save(mDevice)) finish();
             mDevice = deviceDAO.get(mDeviceAddress, session.getIdLogged());
         }
