@@ -270,8 +270,8 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
             updateUILastMeasurement(mAdapter.getFirstItem(), false);
         } else {
             toggleNoDataMessage(true); // Enable message no data
-            toggleLoading(false);
         }
+        toggleLoading(false);
     }
 
     /**

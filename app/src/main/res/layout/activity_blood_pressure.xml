@@ -111,9 +111,9 @@
                     android:layout_marginTop="25dp"
                     android:layout_toEndOf="@+id/view_circle"
                     app:cpb_background_progressbar_color="@color/colorAlertDanger"
-                    app:cpb_background_progressbar_width="6dp"
+                    app:cpb_background_progressbar_width="4dp"
                     app:cpb_progressbar_color="@color/colorAccent"
-                    app:cpb_progressbar_width="6dp" />
+                    app:cpb_progressbar_width="4dp" />
 
                 <RelativeLayout
                     android:id="@+id/relativeLayout3"

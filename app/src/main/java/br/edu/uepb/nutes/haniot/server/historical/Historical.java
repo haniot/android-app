@@ -49,6 +49,7 @@ public final class Historical<T> {
         callback.onBeforeSend();
 
         String path = this.urn.concat(this.queryStrings);
+        Log.i("HISTORICAL", path);
 
         Server.getInstance(context).get(path, new Server.Callback() {
             @Override

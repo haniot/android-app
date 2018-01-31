@@ -55,7 +55,7 @@ public class SmartBandAdapter extends BaseAdapter<Measurement> {
             final Measurement m = itemsList.get(position);
             ViewHolder h = (ViewHolder) holder;
 
-            h.steps.setText((int) m.getValue());
+            h.steps.setText(String.valueOf((int) m.getValue()));
             h.dayWeek.setText(DateUtils.formatDate(m.getRegistrationDate(), "EEEE"));
             h.date.setText(DateUtils.formatDate(m.getRegistrationDate(),
                     context.getString(R.string.datetime_format)));
@@ -105,9 +105,6 @@ public class SmartBandAdapter extends BaseAdapter<Measurement> {
 
         @BindView(R.id.calories_textview)
         TextView calories;
-
-        @BindView(R.id.heart_rate_textview)
-        TextView heartRate;
 
         @BindView(R.id.date_measurement_textview)
         TextView date;

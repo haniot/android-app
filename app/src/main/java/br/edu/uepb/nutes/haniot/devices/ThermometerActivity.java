@@ -254,8 +254,8 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
             updateUILastMeasurement(mAdapter.getFirstItem(), false);
         } else {
             toggleNoDataMessage(true); // Enable message no data
-            toggleLoading(false);
         }
+        toggleLoading(false);
     }
 
     /**

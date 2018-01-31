@@ -1,5 +1,7 @@
 package br.edu.uepb.nutes.haniot.devices;
 
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
@@ -46,6 +48,7 @@ import br.edu.uepb.nutes.haniot.model.Device;
 import br.edu.uepb.nutes.haniot.model.DeviceType;
 import br.edu.uepb.nutes.haniot.model.Measurement;
 import br.edu.uepb.nutes.haniot.model.MeasurementType;
+import br.edu.uepb.nutes.haniot.model.User;
 import br.edu.uepb.nutes.haniot.model.dao.DeviceDAO;
 import br.edu.uepb.nutes.haniot.model.dao.MeasurementDAO;
 import br.edu.uepb.nutes.haniot.parse.JsonToMeasurementParser;
@@ -79,12 +82,14 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
 
     private String mDeviceAddress;
     private Animation animation;
+    private ObjectAnimator heartAnimation;
     private Device mDevice;
     private Session session;
     private MeasurementDAO measurementDAO;
     private DeviceDAO deviceDAO;
     private SmartBandAdapter mAdapter;
     private Params params;
+    private boolean gattServiceDiscovered = false;
 
     /**
      * We need this variable to lock and unlock loading more.
@@ -147,7 +152,7 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
         // synchronization with server
         synchronizeWithServer();
 
-        mDeviceAddress = "FB:28:60:91:99:36";
+        mDeviceAddress = "EB:B3:8D:0B:EB:4C";
         session = new Session(this);
         measurementDAO = MeasurementDAO.getInstance(this);
         deviceDAO = DeviceDAO.getInstance(this);
@@ -156,6 +161,7 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
         animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
         mChartButton.setOnClickListener(this);
         mHeartRateButton.setOnClickListener(this);
+        mCircularProgressBar.setOnClickListener(this);
 
         Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
@@ -168,9 +174,25 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
      */
     private void initComponents() {
         initToolBar();
+        iniAnimationHeart();
         initRecyclerView();
         initDataSwipeRefresh();
         loadData();
+    }
+
+    /**
+     * Animation for heart
+     */
+    private void iniAnimationHeart() {
+        /**
+         * Setting heartAnimation in heart imageview
+         */
+        heartAnimation = ObjectAnimator.ofPropertyValuesHolder(mHeartRateButton,
+                PropertyValuesHolder.ofFloat("scaleX", 1.2f),
+                PropertyValuesHolder.ofFloat("scaleY", 1.2f));
+        heartAnimation.setDuration(500);
+        heartAnimation.setRepeatCount(ObjectAnimator.INFINITE);
+        heartAnimation.setRepeatMode(ObjectAnimator.REVERSE);
     }
 
     /**
@@ -263,8 +285,8 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
             updateUILastMeasurement(mAdapter.getFirstItem(), false);
         } else {
             toggleNoDataMessage(true); // Enable message no data
-            toggleLoading(false);
         }
+        toggleLoading(false);
     }
 
     /**
@@ -565,41 +587,60 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
                 tryingConnect();
             } else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
                 Log.w(TAG, "ACTION_GATT_SERVICES_DISCOVERED");
-
+                gattServiceDiscovered = true;
                 listenHeartRate();
                 listenStepsDistanceCalories();
             } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
                 String jsonData = intent.getStringExtra(BluetoothLeService.EXTRA_DATA);
 
                 try {
-                    List<Measurement> measurements = JsonToMeasurementParser.parse(jsonData);
+                    Measurement heartRate = JsonToMeasurementParser.heartRate(jsonData);
+                    Measurement steps = JsonToMeasurementParser.steps(jsonData);
+                    Measurement distance = JsonToMeasurementParser.distance(jsonData);
+                    Measurement calories = JsonToMeasurementParser.calories(jsonData);
+                    User user = session.getUserLogged();
 
-                    for (Measurement m : measurements) {
-                        Log.w(TAG, "RESULT: " + m.toString());
+                    /**
+                     * Update UI
+                     * Save in local
+                     * Send to server saved successfully
+                     */
+                    if (heartRate != null) {
+                        heartAnimation.pause();
+                        heartRate.setDevice(mDevice);
+                        heartRate.setUser(user);
+
+                        updateUILastMeasurement(heartRate, true);
+                        if (heartRate.getValue() > 0d && measurementDAO.save(heartRate))
+                            synchronizeWithServer();
+                    } else if (steps != null) {
+                        steps.setDevice(mDevice);
+                        steps.setUser(user);
+
+                        if (distance != null) {
+                            distance.setDevice(mDevice);
+                            distance.setUser(user);
+                            steps.addMeasurement(distance);
+                        }
+
+                        if (calories != null) {
+                            calories.setDevice(mDevice);
+                            calories.setUser(user);
+                            steps.addMeasurement(calories);
+                        }
+
+                        updateUILastMeasurement(steps, true);
+                        if (measurementDAO.save(steps)) {
+                            synchronizeWithServer();
+                            loadData();
+                        }
                     }
-//                    measurement.setDevice(mDevice);
-//                    measurement.setUser(session.getUserLogged());
-//
-//                    /**
-//                     * Update UI
-//                     */
-//                    updateUILastMeasurement(measurement, true);
-//
-//                    /**
-//                     * Save in local
-//                     * Send to server saved successfully
-//                     */
-//                    if (measurementDAO.save(measurement)) {
-//                        synchronizeWithServer();
-//                        loadData();
-//                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
         }
     };
-
 
     /**
      * Heart Rate Characteristic Notification.
@@ -615,8 +656,6 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
         BluetoothGattDescriptor descriptor = bchar.getDescriptor(UUID.fromString(GattAttributes.CLIENT_CHARACTERISTIC_CONFIG));
         descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
         mBluetoothGatt.writeDescriptor(descriptor);
-
-        Log.w(TAG, "listenHeartRate()" + bchar.toString() + " | " + descriptor.toString());
     }
 
     /**
@@ -633,19 +672,19 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
         BluetoothGattDescriptor descriptor = bchar.getDescriptor(UUID.fromString(GattAttributes.CLIENT_CHARACTERISTIC_CONFIG));
         descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
         mBluetoothGatt.writeDescriptor(descriptor);
-
-        Log.w(TAG, "listenStepsDistanceCalories()" + bchar.toString() + " | " + descriptor.toString());
     }
 
+    /**
+     * Request new heart rate measurement.
+     */
     public void startScanHeartRate() {
         BluetoothGattService gattService = mBluetoothLeService.getGattService(UUID.fromString(GattAttributes.SERVICE_HEART_RATE));
         if (gattService == null) return;
 
+        heartAnimation.start(); // Animation heart button
         BluetoothGattCharacteristic characteristic = gattService.getCharacteristic(UUID.fromString(GattAttributes.CHARACTERISTIC_HEART_RATE_CONTROL_POINT));
         characteristic.setValue(new byte[]{21, 2, 1});
         mBluetoothLeService.writeCharacteristic(characteristic);
-
-        Log.w(TAG, "startScanHeartRate()" + characteristic.toString());
     }
 
     /**
@@ -659,14 +698,35 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mDateLastMeasurement.setText(DateUtils.abbreviatedDate(
-                        getApplicationContext(), m.getRegistrationDate()));
+                Log.w(TAG, "updateUILastMeasurement() - " + m.toString());
+                if (m.getTypeId() == MeasurementType.HEART_RATE) {
+                    String heartRate = m.getValue() <= 0d ? "X" : String.valueOf((int) m.getValue());
+                    mHeartRateTextView.setText(heartRate);
+                    if (applyAnimation) mHeartRateTextView.startAnimation(animation);
+                } else if (m.getTypeId() == MeasurementType.STEPS) {
+                    mDateLastMeasurement.setText(DateUtils.abbreviatedDate(
+                            getApplicationContext(), m.getRegistrationDate()));
+                    mStepsTextView.setText(String.valueOf((int) m.getValue()));
 
-                if (applyAnimation) mStepsTextView.startAnimation(animation);
+                    /**
+                     * Ralations
+                     */
+                    for (Measurement parent : m.getMeasurements()) {
+                        if (parent.getTypeId() == MeasurementType.DISTANCE) {
+                            mDistanceTextView.setText(String.valueOf((int) parent.getValue())
+                                    .concat(parent.getUnit()));
+                        }
+
+                        if (parent.getTypeId() == MeasurementType.CALORIES_BURNED) {
+                            mCaloriesTextView.setText(String.valueOf((int) parent.getValue())
+                                    .concat(parent.getUnit()));
+                        }
+                    }
+                    if (applyAnimation) mStepsTextView.startAnimation(animation);
+                }
             }
         });
     }
-
 
     /**
      * Connect to device.
@@ -696,6 +756,9 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
                 break;
             case R.id.heart_rate_floating_button:
                 startScanHeartRate();
+                break;
+            case R.id.view_circle:
+                if (gattServiceDiscovered) listenStepsDistanceCalories();
                 break;
             default:
                 break;

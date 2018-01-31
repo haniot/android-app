@@ -114,6 +114,12 @@ public class BluetoothLeService extends Service {
             Log.i(LOG, "onCharacteristicChanged()");
             broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
         }
+
+        @Override
+        public void onDescriptorRead(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
+            super.onDescriptorRead(gatt, descriptor, status);
+            Log.i(LOG, "onDescriptorRead() " + descriptor.getCharacteristic().getUuid());
+        }
     };
 
     private void broadcastUpdate(final String action, final BluetoothGattCharacteristic characteristic) {
