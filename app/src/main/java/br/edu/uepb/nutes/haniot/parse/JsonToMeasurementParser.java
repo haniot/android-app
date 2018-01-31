@@ -1,5 +1,8 @@
 package br.edu.uepb.nutes.haniot.parse;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -20,6 +23,8 @@ import br.edu.uepb.nutes.haniot.model.MeasurementType;
 public class JsonToMeasurementParser {
 
     /**
+     * Parse for all supported measurements.
+     *
      * @param data
      * @return List<Measurement>
      * @throws JSONException
@@ -109,6 +114,24 @@ public class JsonToMeasurementParser {
                 if (!result.contains(item)) result.add(item);
                 continue;
             }
+
+            if (o.has("steps")) {
+                item = steps(json);
+                if (!result.contains(item)) result.add(item);
+                continue;
+            }
+
+            if (o.has("distance")) {
+                item = distance(json);
+                if (!result.contains(item)) result.add(item);
+                continue;
+            }
+
+            if (o.has("calories")) {
+                item = calories(json);
+                if (!result.contains(item)) result.add(item);
+                continue;
+            }
         }
 
         return result;
@@ -159,8 +182,10 @@ public class JsonToMeasurementParser {
      * @return Measurement
      * @throws JSONException
      */
-    public static Measurement heartRate(String json) throws JSONException {
+    public static Measurement heartRate(@NonNull String json) throws JSONException {
         JSONObject o = new JSONObject(json);
+
+        if (!o.has("heartRate")) return null;
 
         Measurement measurement = new Measurement(
                 o.getDouble("heartRate"),
@@ -331,6 +356,7 @@ public class JsonToMeasurementParser {
      */
     public static Measurement visceralFat(String json) throws JSONException {
         JSONObject o = new JSONObject(json);
+        if (!o.has("visceralFat")) return null;
 
         Measurement measurement = measurement = new Measurement(
                 o.getDouble("visceralFat"),
@@ -348,14 +374,75 @@ public class JsonToMeasurementParser {
      * @return Measurement
      * @throws JSONException
      */
-    public static Measurement bodyAge(String json) throws JSONException {
+    public static Measurement bodyAge(@NonNull String json) throws JSONException {
         JSONObject o = new JSONObject(json);
+        if (!o.has("bodyAge")) return null;
 
         Measurement measurement = measurement = new Measurement(
                 o.getDouble("bodyAge"),
                 o.getString("bodyAgeUnit"),
                 o.getLong("timestamp"),
                 MeasurementType.BODY_AGE);
+
+        return measurement;
+    }
+
+    /**
+     * Convert json to Steps Measurement.
+     *
+     * @param json String
+     * @return Measurement
+     * @throws JSONException
+     */
+    public static Measurement steps(@NonNull String json) throws JSONException {
+        JSONObject o = new JSONObject(json);
+        if (!o.has("steps")) return null;
+
+        Measurement measurement = measurement = new Measurement(
+                o.getDouble("steps"),
+                o.getString("stepsUnit"),
+                o.getLong("timestamp"),
+                MeasurementType.STEPS);
+
+        return measurement;
+    }
+
+    /**
+     * Convert json to Distance Measurement.
+     *
+     * @param json String
+     * @return Measurement
+     * @throws JSONException
+     */
+    public static Measurement distance(@NonNull String json) throws JSONException {
+        JSONObject o = new JSONObject(json);
+        if (!o.has("distance")) return null;
+
+        Measurement measurement = measurement = new Measurement(
+                o.getDouble("distance"),
+                o.getString("distanceUnit"),
+                o.getLong("timestamp"),
+                MeasurementType.DISTANCE);
+
+        return measurement;
+    }
+
+    /**
+     * Convert json to Calories Burned Measurement.
+     *
+     * @param json String
+     * @return Measurement
+     * @throws JSONException
+     */
+    public static Measurement calories(@NonNull String json) throws JSONException {
+        JSONObject o = new JSONObject(json);
+        if (!o.has("calories")) return null;
+
+        Measurement measurement = measurement = new Measurement(
+                o.getDouble("calories"),
+                o.getString("caloriesUnit"),
+                o.getLong("timestamp"),
+                MeasurementType.CALORIES_BURNED);
 
         return measurement;
     }

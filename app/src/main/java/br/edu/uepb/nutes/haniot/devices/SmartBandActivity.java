@@ -1,5 +1,8 @@
 package br.edu.uepb.nutes.haniot.devices;
 
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
+import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
@@ -34,16 +37,12 @@ import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.List;
-import java.util.Locale;
 import java.util.UUID;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.activity.graphs.BodyCompositionGraphActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
-import br.edu.uepb.nutes.haniot.adapter.BodyCompositionAdapter;
+import br.edu.uepb.nutes.haniot.adapter.SmartBandAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
 import br.edu.uepb.nutes.haniot.model.Device;
 import br.edu.uepb.nutes.haniot.model.DeviceType;
@@ -66,30 +65,31 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Activity to capture the balance data.
+ * Activity to capture the smartband data.
  *
  * @author Douglas Rafael <douglas.rafael@nutes.uepb.edu.br>
  * @version 1.0
  * @copyright Copyright (c) 2017, NUTES UEPB
  */
-public class ScaleActivity extends AppCompatActivity implements View.OnClickListener {
-    private final String TAG = "ScaleActivity";
+public class SmartBandActivity extends AppCompatActivity implements View.OnClickListener {
+    private final String TAG = "SmartBandActivity";
     private final int LIMIT_PER_PAGE = 20;
 
     private BluetoothLeService mBluetoothLeService;
     private boolean mConnected = false;
-    private boolean showAnimation = true;
-    private BluetoothGattCharacteristic mNotifyCharacteristic;
+    private BluetoothGattCharacteristic mNotifyCharacteristic, mNotifyCharacteristicHeartRate;
+    private BluetoothGattService mGattService;
 
     private String mDeviceAddress;
     private Animation animation;
+    private ObjectAnimator heartAnimation;
     private Device mDevice;
     private Session session;
     private MeasurementDAO measurementDAO;
     private DeviceDAO deviceDAO;
-    private DecimalFormat decimalFormat;
-    private BodyCompositionAdapter mAdapter;
+    private SmartBandAdapter mAdapter;
     private Params params;
+    private boolean gattServiceDiscovered = false;
 
     /**
      * We need this variable to lock and unlock loading more.
@@ -101,26 +101,17 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
 
-    @BindView(R.id.body_mass_textview)
-    TextView bodyMassTextView;
+    @BindView(R.id.steps_textview)
+    TextView mStepsTextView;
 
-    @BindView(R.id.unit_body_mass_textview)
-    TextView bodyMassUnitTextView;
+    @BindView(R.id.distance_textview)
+    TextView mDistanceTextView;
 
-    @BindView(R.id.title_body_fat_textview)
-    TextView titleBodyFatTextView;
+    @BindView(R.id.calories_textview)
+    TextView mCaloriesTextView;
 
-    @BindView(R.id.body_fat_textview)
-    TextView bodyFatTextView;
-
-    @BindView(R.id.unit_body_fat_textview)
-    TextView unitBodyFatTextView;
-
-    @BindView(R.id.title_bmi_fat_textview)
-    TextView titleBmiTextView;
-
-    @BindView(R.id.bmi_textview)
-    TextView bmiTextView;
+    @BindView(R.id.heart_rate_textview)
+    TextView mHeartRateTextView;
 
     @BindView(R.id.date_last_measurement_textView)
     TextView mDateLastMeasurement;
@@ -131,13 +122,16 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
     @BindView(R.id.view_circle)
     CircularProgressBar mCircularProgressBar;
 
+    @BindView(R.id.view_heart_rate)
+    CircularProgressBar mHeartRateProgressBar;
+
     @BindView(R.id.collapsi_toolbar)
     CollapsingToolbarLayout mCollapsingToolbarLayout;
 
     @BindView(R.id.box_bar_layout)
     AppBarLayout mAppBarLayout;
 
-    @BindView(R.id.body_composition_recyclerview)
+    @BindView(R.id.smartband_recyclerview)
     RecyclerView mRecyclerView;
 
     @BindView(R.id.data_swiperefresh)
@@ -146,24 +140,28 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
     @BindView(R.id.chart_floating_button)
     FloatingActionButton mChartButton;
 
+    @BindView(R.id.heart_rate_floating_button)
+    FloatingActionButton mHeartRateButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_body_composition);
+        setContentView(R.layout.activity_smart_band);
         ButterKnife.bind(this);
 
         // synchronization with server
         synchronizeWithServer();
 
-        mDeviceAddress = "D4:36:39:91:75:71";
+        mDeviceAddress = "EB:B3:8D:0B:EB:4C";
         session = new Session(this);
         measurementDAO = MeasurementDAO.getInstance(this);
         deviceDAO = DeviceDAO.getInstance(this);
-        decimalFormat = new DecimalFormat(getString(R.string.format_number2), new DecimalFormatSymbols(Locale.US));
-        params = new Params(session.get_idLogged(), MeasurementType.BODY_MASS);
+        params = new Params(session.get_idLogged(), MeasurementType.STEPS);
 
         animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
         mChartButton.setOnClickListener(this);
+        mHeartRateButton.setOnClickListener(this);
+        mCircularProgressBar.setOnClickListener(this);
 
         Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
@@ -176,12 +174,30 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
      */
     private void initComponents() {
         initToolBar();
+        iniAnimationHeart();
         initRecyclerView();
         initDataSwipeRefresh();
         loadData();
     }
 
+    /**
+     * Animation for heart
+     */
+    private void iniAnimationHeart() {
+        /**
+         * Setting heartAnimation in heart imageview
+         */
+        heartAnimation = ObjectAnimator.ofPropertyValuesHolder(mHeartRateButton,
+                PropertyValuesHolder.ofFloat("scaleX", 1.2f),
+                PropertyValuesHolder.ofFloat("scaleY", 1.2f));
+        heartAnimation.setDuration(500);
+        heartAnimation.setRepeatCount(ObjectAnimator.INFINITE);
+        heartAnimation.setRepeatMode(ObjectAnimator.REVERSE);
+    }
 
+    /**
+     * Initialize ToolBar
+     */
     private void initToolBar() {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -196,11 +212,11 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
 
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if (scrollRange == -1) {
+                if (scrollRange == -1)
                     scrollRange = appBarLayout.getTotalScrollRange();
-                }
+
                 if (scrollRange + verticalOffset == 0) {
-                    mCollapsingToolbarLayout.setTitle(getString(R.string.body_weight_scale));
+                    mCollapsingToolbarLayout.setTitle(getString(R.string.smart_band));
                     isShow = true;
                 } else if (isShow) {
                     mCollapsingToolbarLayout.setTitle("");
@@ -214,7 +230,7 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
      * Init RecyclerView
      */
     private void initRecyclerView() {
-        mAdapter = new BodyCompositionAdapter(this);
+        mAdapter = new SmartBandAdapter(this);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -252,8 +268,7 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
         mDataSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if (itShouldLoadMore)
-                    loadData();
+                if (itShouldLoadMore) loadData();
             }
         });
     }
@@ -264,7 +279,7 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
      * when an error occurs on the first request with the server.
      */
     private void loadDataLocal() {
-        mAdapter.addItems(measurementDAO.list(MeasurementType.BODY_MASS, session.getIdLogged(), 0, 100));
+        mAdapter.addItems(measurementDAO.list(MeasurementType.STEPS, session.getIdLogged(), 0, 100));
 
         if (!mAdapter.itemsIsEmpty()) {
             updateUILastMeasurement(mAdapter.getFirstItem(), false);
@@ -280,14 +295,14 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
      * Otherwise it displays from the remote server.
      */
     private void loadData() {
-        mAdapter.clearItems();
+        mAdapter.clearItems(); // clear list
 
         if (!ConnectionUtils.internetIsEnabled(this)) {
             loadDataLocal();
         } else {
             Historical historical = new Historical.Query()
                     .type(HistoricalType.MEASUREMENTS_TYPE_USER)
-                    .params(params) // Measurements of the body mass type, associated to the user
+                    .params(params) // Measurements of the steps type, associated to the user
                     .pagination(0, LIMIT_PER_PAGE)
                     .build();
 
@@ -302,7 +317,7 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
                 @Override
                 public void onError(JSONObject result) {
                     Log.w(TAG, "loadData - onError()");
-                    if (!mAdapter.itemsIsEmpty()) printMessage(getString(R.string.error_500));
+                    if (mAdapter.itemsIsEmpty()) printMessage(getString(R.string.error_500));
                     else loadDataLocal();
                 }
 
@@ -311,7 +326,7 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
                     Log.w(TAG, "loadData - onResult()");
                     if (result != null && result.size() > 0) {
                         mAdapter.addItems(result);
-                        updateUILastMeasurement(mAdapter.getItems().get(0), false);
+                        updateUILastMeasurement(mAdapter.getFirstItem(), false);
                     } else {
                         toggleNoDataMessage(true); // Enable message no data
                     }
@@ -335,7 +350,7 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
 
         Historical historical = new Historical.Query()
                 .type(HistoricalType.MEASUREMENTS_TYPE_USER)
-                .params(params) // Measurements of the body mass type, associated to the user
+                .params(params) // Measurements of the steps type, associated to the user
                 .pagination(mAdapter.getItemCount(), LIMIT_PER_PAGE)
                 .build();
 
@@ -432,8 +447,8 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
         mDevice = deviceDAO.get(mDeviceAddress, session.getIdLogged());
 
         if (mDevice == null) {
-            mDevice = new Device(mDeviceAddress, "YUNMAI SCALE", "YUNMAI", "5031", DeviceType.BODY_COMPOSITION, session.getUserLogged());
-            mDevice.set_id("5a62bf80d6f33400146c9b64");
+            mDevice = new Device(mDeviceAddress, "MI BAND 2", "XIAOMI", "", DeviceType.SMARTBAND, session.getUserLogged());
+            mDevice.set_id("5a713bce7c210900147a4eda");
             if (!deviceDAO.save(mDevice)) finish();
             mDevice = deviceDAO.get(mDeviceAddress, session.getIdLogged());
         }
@@ -469,8 +484,6 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
                 mBluetoothLeService.disconnect();
                 super.onBackPressed();
                 break;
-            default:
-                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -481,13 +494,19 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
             public void run() {
                 mCircularProgressBar.setProgress(0);
                 mCircularProgressBar.setProgressWithAnimation(100); // Default animate duration = 1500ms
+                mHeartRateProgressBar.setProgress(0);
+                mHeartRateProgressBar.setProgressWithAnimation(100); // Default animate duration = 1500ms
 
                 if (isConnected) {
                     mCircularProgressBar.setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
                     mCircularProgressBar.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAlertDanger));
+                    mHeartRateProgressBar.setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
+                    mHeartRateProgressBar.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAlertDanger));
                 } else {
                     mCircularProgressBar.setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAlertDanger));
                     mCircularProgressBar.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
+                    mHeartRateProgressBar.setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAlertDanger));
+                    mHeartRateProgressBar.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
                 }
             }
         });
@@ -504,26 +523,27 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
     }
 
     public boolean setCharacteristicNotification(BluetoothGattCharacteristic characteristic) {
-        Log.w(TAG, "setCharacteristicNotification() " + characteristic.getUuid());
         if (characteristic != null) {
             final int charaProp = characteristic.getProperties();
             if ((charaProp | BluetoothGattCharacteristic.PROPERTY_READ) > 0) {
+                // Se houver uma notificação ativa sobre uma característica, primeiro limpe-a,
+                // caso contrário não atualiza o campo de dados na interface do usuário.
                 if (mNotifyCharacteristic != null) {
-                    Log.w(TAG, "PROPERTY_READ");
-                    mBluetoothLeService.setCharacteristicNotification(mNotifyCharacteristic, BluetoothGattDescriptor.ENABLE_INDICATION_VALUE, false);
+                    mBluetoothLeService.setCharacteristicNotification(mNotifyCharacteristic, BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE, false);
                     mNotifyCharacteristic = null;
                 }
                 mBluetoothLeService.readCharacteristic(characteristic);
             }
             if ((charaProp | BluetoothGattCharacteristic.PROPERTY_NOTIFY) > 0) {
-                Log.w(TAG, "PROPERTY_NOTIFY");
                 mNotifyCharacteristic = characteristic;
-                mBluetoothLeService.setCharacteristicNotification(characteristic, BluetoothGattDescriptor.ENABLE_INDICATION_VALUE, true);
+                mBluetoothLeService.setCharacteristicNotification(characteristic, BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE, true);
             }
             return true;
         }
+
         return false;
     }
+
 
     // Code to manage Service lifecycle.
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -534,7 +554,7 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
                 Log.e(TAG, "Unable to initialize Bluetooth");
                 finish();
             }
-            // Tenta conecta-se automaticamente ao dispositivo após a inicialização bem-sucedida do service.
+            // Conecta-se automaticamente ao dispositivo após a inicialização bem-sucedida.
             tryingConnect();
         }
 
@@ -566,76 +586,153 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
 
                 tryingConnect();
             } else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
-                Log.i(TAG, "ACTION_GATT_SERVICES_DISCOVERED");
-                BluetoothGattService gattService = mBluetoothLeService.getGattService(UUID.fromString(GattAttributes.SERVICE_SCALE));
-
-                if (gattService != null) {
-                    BluetoothGattCharacteristic characteristic = gattService.getCharacteristic(UUID.fromString(GattAttributes.CHARACTERISTIC_SCALE_MEASUREMENT));
-                    if (characteristic != null)
-                        setCharacteristicNotification(characteristic);
-                }
+                Log.w(TAG, "ACTION_GATT_SERVICES_DISCOVERED");
+                gattServiceDiscovered = true;
+                listenHeartRate();
+                listenStepsDistanceCalories();
             } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            JSONObject jsonData = new JSONObject(intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
+                String jsonData = intent.getStringExtra(BluetoothLeService.EXTRA_DATA);
 
-                            final boolean isFinalized = jsonData.getBoolean("isFinalized");
-                            final String bodyMassMeasurement = formatNumber(jsonData.getDouble("bodyMass"));
-                            final String bodyMassUnit = jsonData.getString("bodyMassUnit");
+                try {
+                    Measurement heartRate = JsonToMeasurementParser.heartRate(jsonData);
+                    Measurement steps = JsonToMeasurementParser.steps(jsonData);
+                    Measurement distance = JsonToMeasurementParser.distance(jsonData);
+                    Measurement calories = JsonToMeasurementParser.calories(jsonData);
+                    User user = session.getUserLogged();
 
-                            bodyMassTextView.setText(bodyMassMeasurement);
-                            bodyMassUnitTextView.setText(bodyMassUnit);
+                    /**
+                     * Update UI
+                     * Save in local
+                     * Send to server saved successfully
+                     */
+                    if (heartRate != null) {
+                        heartAnimation.pause();
+                        heartRate.setDevice(mDevice);
+                        heartRate.setUser(user);
 
-                            if (isFinalized && showAnimation) {
-                                showAnimation = false;
+                        updateUILastMeasurement(heartRate, true);
+                        if (heartRate.getValue() > 0d && measurementDAO.save(heartRate))
+                            synchronizeWithServer();
+                    } else if (steps != null) {
+                        steps.setDevice(mDevice);
+                        steps.setUser(user);
 
-                                User user = session.getUserLogged();
+                        if (distance != null) {
+                            distance.setDevice(mDevice);
+                            distance.setUser(user);
+                            steps.addMeasurement(distance);
+                        }
 
-                                Measurement bodyMass = JsonToMeasurementParser.bodyMass(jsonData.toString());
-                                bodyMass.setUser(user);
-                                bodyMass.setDevice(mDevice);
+                        if (calories != null) {
+                            calories.setDevice(mDevice);
+                            calories.setUser(user);
+                            steps.addMeasurement(calories);
+                        }
 
-                                Measurement bmi = new Measurement(calcBMI(bodyMass.getValue()),
-                                        "kg/m2", bodyMass.getRegistrationDate(), MeasurementType.BMI);
-                                bmi.setUser(user);
-                                bmi.setDevice(mDevice);
-
-                                Measurement bodyFat = JsonToMeasurementParser.bodyFat(jsonData.toString());
-                                bodyFat.setUser(user);
-                                bodyFat.setDevice(mDevice);
-
-                                /**
-                                 * Add relationships
-                                 */
-                                bodyMass.addMeasurement(bmi, bodyFat);
-
-                                /**
-                                 * Update UI
-                                 */
-                                updateUILastMeasurement(bodyMass, true);
-
-                                /**
-                                 * Save in local
-                                 * Send to server saved successfully
-                                 */
-                                if (measurementDAO.save(bodyMass)) {
-                                    synchronizeWithServer();
-                                    loadData();
-                                }
-                            } else {
-                                showAnimation = true;
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                        updateUILastMeasurement(steps, true);
+                        if (measurementDAO.save(steps)) {
+                            synchronizeWithServer();
+                            loadData();
                         }
                     }
-                });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         }
     };
 
+    /**
+     * Heart Rate Characteristic Notification.
+     */
+    public void listenHeartRate() {
+        BluetoothGatt mBluetoothGatt = mBluetoothLeService.getBluetoothGatt();
+        if (mBluetoothGatt == null) return;
+
+        BluetoothGattCharacteristic bchar = mBluetoothGatt.getService(UUID.fromString(GattAttributes.SERVICE_HEART_RATE))
+                .getCharacteristic(UUID.fromString(GattAttributes.CHARACTERISTIC_HEART_RATE_MEASUREMENT));
+
+        mBluetoothGatt.setCharacteristicNotification(bchar, true);
+        BluetoothGattDescriptor descriptor = bchar.getDescriptor(UUID.fromString(GattAttributes.CLIENT_CHARACTERISTIC_CONFIG));
+        descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+        mBluetoothGatt.writeDescriptor(descriptor);
+    }
+
+    /**
+     * Steps, Distance and Calories Characteristic Notification.
+     */
+    public void listenStepsDistanceCalories() {
+        BluetoothGatt mBluetoothGatt = mBluetoothLeService.getBluetoothGatt();
+        if (mBluetoothGatt == null) return;
+
+        BluetoothGattCharacteristic bchar = mBluetoothGatt.getService(UUID.fromString(GattAttributes.SERVICE_STEPS_DISTANCE_CALORIES))
+                .getCharacteristic(UUID.fromString(GattAttributes.CHARACTERISTIC_STEPS_DISTANCE_CALORIES));
+
+        mBluetoothGatt.setCharacteristicNotification(bchar, true);
+        BluetoothGattDescriptor descriptor = bchar.getDescriptor(UUID.fromString(GattAttributes.CLIENT_CHARACTERISTIC_CONFIG));
+        descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+        mBluetoothGatt.writeDescriptor(descriptor);
+    }
+
+    /**
+     * Request new heart rate measurement.
+     */
+    public void startScanHeartRate() {
+        BluetoothGattService gattService = mBluetoothLeService.getGattService(UUID.fromString(GattAttributes.SERVICE_HEART_RATE));
+        if (gattService == null) return;
+
+        heartAnimation.start(); // Animation heart button
+        BluetoothGattCharacteristic characteristic = gattService.getCharacteristic(UUID.fromString(GattAttributes.CHARACTERISTIC_HEART_RATE_CONTROL_POINT));
+        characteristic.setValue(new byte[]{21, 2, 1});
+        mBluetoothLeService.writeCharacteristic(characteristic);
+    }
+
+    /**
+     * updateOrSave the UI with the last measurement.
+     *
+     * @param m {@link Measurement}
+     */
+    private void updateUILastMeasurement(Measurement m, boolean applyAnimation) {
+        if (m == null) return;
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Log.w(TAG, "updateUILastMeasurement() - " + m.toString());
+                if (m.getTypeId() == MeasurementType.HEART_RATE) {
+                    String heartRate = m.getValue() <= 0d ? "X" : String.valueOf((int) m.getValue());
+                    mHeartRateTextView.setText(heartRate);
+                    if (applyAnimation) mHeartRateTextView.startAnimation(animation);
+                } else if (m.getTypeId() == MeasurementType.STEPS) {
+                    mDateLastMeasurement.setText(DateUtils.abbreviatedDate(
+                            getApplicationContext(), m.getRegistrationDate()));
+                    mStepsTextView.setText(String.valueOf((int) m.getValue()));
+
+                    /**
+                     * Ralations
+                     */
+                    for (Measurement parent : m.getMeasurements()) {
+                        if (parent.getTypeId() == MeasurementType.DISTANCE) {
+                            mDistanceTextView.setText(String.valueOf((int) parent.getValue())
+                                    .concat(parent.getUnit()));
+                        }
+
+                        if (parent.getTypeId() == MeasurementType.CALORIES_BURNED) {
+                            mCaloriesTextView.setText(String.valueOf((int) parent.getValue())
+                                    .concat(parent.getUnit()));
+                        }
+                    }
+                    if (applyAnimation) mStepsTextView.startAnimation(animation);
+                }
+            }
+        });
+    }
+
+    /**
+     * Connect to device.
+     *
+     * @return boolean
+     */
     private boolean tryingConnect() {
         Log.i(TAG, "tryingConnect()");
         if (mBluetoothLeService != null) {
@@ -643,64 +740,6 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
         }
 
         return false;
-    }
-
-    /**
-     * Return value of BMI.
-     * formula: bodyMass(kg)/height(m)^2
-     *
-     * @param bodyMass double
-     * @return double
-     */
-    private double calcBMI(double bodyMass) {
-        double height = (session.getUserLogged().getHeight()) / 100D;
-        return bodyMass / (Math.pow(height, 2));
-    }
-
-    /**
-     * Format value for XX.X
-     *
-     * @param value double
-     * @return String
-     */
-    private String formatNumber(double value) {
-        String result = decimalFormat.format(value);
-        return result.equals(".0") ? "00.0" : result;
-    }
-
-    /**
-     * updateOrSave the UI with the last measurement.
-     *
-     * @param measurement {@link Measurement}
-     */
-    private void updateUILastMeasurement(Measurement measurement, boolean applyAnimation) {
-        if (measurement == null) return;
-
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                bodyMassTextView.setText(formatNumber(measurement.getValue()));
-                bodyMassUnitTextView.setText(measurement.getUnit());
-                mDateLastMeasurement.setText(DateUtils.abbreviatedDate(
-                        getApplicationContext(), measurement.getRegistrationDate()));
-
-                /**
-                 * Relations
-                 */
-                for (Measurement m : measurement.getMeasurements()) {
-                    if (m.getTypeId() == MeasurementType.BMI) {
-                        bmiTextView.setText(formatNumber(m.getValue()));
-                        titleBmiTextView.setVisibility(View.VISIBLE);
-                    } else if (m.getTypeId() == MeasurementType.BODY_FAT) {
-                        bodyFatTextView.setText(formatNumber(m.getValue()));
-                        unitBodyFatTextView.setText(m.getUnit());
-                        titleBodyFatTextView.setVisibility(View.VISIBLE);
-                    }
-                }
-
-                if (applyAnimation) bodyMassTextView.startAnimation(animation);
-            }
-        });
     }
 
     /**
@@ -714,7 +753,12 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.chart_floating_button:
-                startActivity(new Intent(getApplicationContext(), BodyCompositionGraphActivity.class));
+                break;
+            case R.id.heart_rate_floating_button:
+                startScanHeartRate();
+                break;
+            case R.id.view_circle:
+                if (gattServiceDiscovered) listenStepsDistanceCalories();
                 break;
             default:
                 break;
