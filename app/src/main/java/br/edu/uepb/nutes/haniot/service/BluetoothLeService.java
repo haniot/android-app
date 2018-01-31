@@ -39,6 +39,7 @@ import java.util.UUID;
 import br.edu.uepb.nutes.haniot.parse.GattGlucoseParser;
 import br.edu.uepb.nutes.haniot.parse.GattHRParser;
 import br.edu.uepb.nutes.haniot.parse.GattHTParser;
+import br.edu.uepb.nutes.haniot.parse.MiBand2Parser;
 import br.edu.uepb.nutes.haniot.parse.YunmaiParser;
 import br.edu.uepb.nutes.haniot.utils.GattAttributes;
 
@@ -147,6 +148,13 @@ public class BluetoothLeService extends Service {
         } else if (characteristic.getUuid().equals(UUID.fromString(GattAttributes.CHARACTERISTIC_HEART_RATE_MEASUREMENT))) {
             try {
                 intent.putExtra(EXTRA_DATA, GattHRParser.parse(characteristic).toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        } else if (characteristic.getUuid().equals(UUID.fromString(GattAttributes.CHARACTERISTIC_STEPS_DISTANCE_CALORIES))) {
+            Log.i(LOG, "broadcastUpdate() - CHARACTERISTIC_STEPS_DISTANCE_CALORIES");
+            try {
+                intent.putExtra(EXTRA_DATA, MiBand2Parser.parse(characteristic).toString());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -337,5 +345,10 @@ public class BluetoothLeService extends Service {
             }
         }
         return null;
+    }
+
+
+    public BluetoothGatt getBluetoothGatt() {
+        return mBluetoothGatt;
     }
 }

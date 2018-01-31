@@ -1,5 +1,6 @@
 package br.edu.uepb.nutes.haniot.devices;
 
+import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
@@ -73,7 +74,8 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
 
     private BluetoothLeService mBluetoothLeService;
     private boolean mConnected = false;
-    private BluetoothGattCharacteristic mNotifyCharacteristic;
+    private BluetoothGattCharacteristic mNotifyCharacteristic, mNotifyCharacteristicHeartRate;
+    private BluetoothGattService mGattService;
 
     private String mDeviceAddress;
     private Animation animation;
@@ -133,6 +135,9 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
     @BindView(R.id.chart_floating_button)
     FloatingActionButton mChartButton;
 
+    @BindView(R.id.heart_rate_floating_button)
+    FloatingActionButton mHeartRateButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -150,6 +155,7 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
 
         animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
         mChartButton.setOnClickListener(this);
+        mHeartRateButton.setOnClickListener(this);
 
         Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
@@ -501,19 +507,21 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
                 // Se houver uma notificação ativa sobre uma característica, primeiro limpe-a,
                 // caso contrário não atualiza o campo de dados na interface do usuário.
                 if (mNotifyCharacteristic != null) {
-                    mBluetoothLeService.setCharacteristicNotification(mNotifyCharacteristic, BluetoothGattDescriptor.ENABLE_INDICATION_VALUE, false);
+                    mBluetoothLeService.setCharacteristicNotification(mNotifyCharacteristic, BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE, false);
                     mNotifyCharacteristic = null;
                 }
                 mBluetoothLeService.readCharacteristic(characteristic);
             }
             if ((charaProp | BluetoothGattCharacteristic.PROPERTY_NOTIFY) > 0) {
                 mNotifyCharacteristic = characteristic;
-                mBluetoothLeService.setCharacteristicNotification(characteristic, BluetoothGattDescriptor.ENABLE_INDICATION_VALUE, true);
+                mBluetoothLeService.setCharacteristicNotification(characteristic, BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE, true);
             }
             return true;
         }
+
         return false;
     }
+
 
     // Code to manage Service lifecycle.
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -556,35 +564,35 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
 
                 tryingConnect();
             } else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
+                Log.w(TAG, "ACTION_GATT_SERVICES_DISCOVERED");
 
-                BluetoothGattService gattService = mBluetoothLeService.getGattService(UUID.fromString(GattAttributes.SERVICE_HEALTH_THERMOMETER));
-
-                if (gattService != null) {
-                    BluetoothGattCharacteristic characteristic = gattService.getCharacteristic(UUID.fromString(GattAttributes.CHARACTERISTIC_TEMPERATURE_MEASUREMENT));
-                    if (characteristic != null)
-                        setCharacteristicNotification(characteristic);
-                }
+                listenHeartRate();
+                listenStepsDistanceCalories();
             } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
                 String jsonData = intent.getStringExtra(BluetoothLeService.EXTRA_DATA);
 
                 try {
-                    Measurement measurement = JsonToMeasurementParser.temperature(jsonData);
-                    measurement.setDevice(mDevice);
-                    measurement.setUser(session.getUserLogged());
+                    List<Measurement> measurements = JsonToMeasurementParser.parse(jsonData);
 
-                    /**
-                     * Update UI
-                     */
-                    updateUILastMeasurement(measurement, true);
-
-                    /**
-                     * Save in local
-                     * Send to server saved successfully
-                     */
-                    if (measurementDAO.save(measurement)) {
-                        synchronizeWithServer();
-                        loadData();
+                    for (Measurement m : measurements) {
+                        Log.w(TAG, "RESULT: " + m.toString());
                     }
+//                    measurement.setDevice(mDevice);
+//                    measurement.setUser(session.getUserLogged());
+//
+//                    /**
+//                     * Update UI
+//                     */
+//                    updateUILastMeasurement(measurement, true);
+//
+//                    /**
+//                     * Save in local
+//                     * Send to server saved successfully
+//                     */
+//                    if (measurementDAO.save(measurement)) {
+//                        synchronizeWithServer();
+//                        loadData();
+//                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -592,24 +600,52 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
         }
     };
 
-    public void listenHeartRate() {
-        BluetoothGattService gattService = mBluetoothLeService.getGattService(UUID.fromString(GattAttributes.SERVICE_STEPS_DISTANCE_CALORIES));
 
-        if (gattService != null) {
-            BluetoothGattCharacteristic characteristic = gattService.getCharacteristic(UUID.fromString(GattAttributes.CHARACTERISTIC_STEPS_DISTANCE_CALORIES));
-            if (characteristic != null)
-                setCharacteristicNotification(characteristic);
-        }
+    /**
+     * Heart Rate Characteristic Notification.
+     */
+    public void listenHeartRate() {
+        BluetoothGatt mBluetoothGatt = mBluetoothLeService.getBluetoothGatt();
+        if (mBluetoothGatt == null) return;
+
+        BluetoothGattCharacteristic bchar = mBluetoothGatt.getService(UUID.fromString(GattAttributes.SERVICE_HEART_RATE))
+                .getCharacteristic(UUID.fromString(GattAttributes.CHARACTERISTIC_HEART_RATE_MEASUREMENT));
+
+        mBluetoothGatt.setCharacteristicNotification(bchar, true);
+        BluetoothGattDescriptor descriptor = bchar.getDescriptor(UUID.fromString(GattAttributes.CLIENT_CHARACTERISTIC_CONFIG));
+        descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+        mBluetoothGatt.writeDescriptor(descriptor);
+
+        Log.w(TAG, "listenHeartRate()" + bchar.toString() + " | " + descriptor.toString());
     }
 
-    public void listenStepsCalorieDistance(){
-        BluetoothGattService gattService = mBluetoothLeService.getGattService(UUID.fromString(GattAttributes.SERVICE_HEART_RATE));
+    /**
+     * Steps, Distance and Calories Characteristic Notification.
+     */
+    public void listenStepsDistanceCalories() {
+        BluetoothGatt mBluetoothGatt = mBluetoothLeService.getBluetoothGatt();
+        if (mBluetoothGatt == null) return;
 
-        if (gattService != null) {
-            BluetoothGattCharacteristic characteristic = gattService.getCharacteristic(UUID.fromString(GattAttributes.CHARACTERISTIC_HEART_RATE_MEASUREMENT));
-            if (characteristic != null)
-                setCharacteristicNotification(characteristic);
-        }
+        BluetoothGattCharacteristic bchar = mBluetoothGatt.getService(UUID.fromString(GattAttributes.SERVICE_STEPS_DISTANCE_CALORIES))
+                .getCharacteristic(UUID.fromString(GattAttributes.CHARACTERISTIC_STEPS_DISTANCE_CALORIES));
+
+        mBluetoothGatt.setCharacteristicNotification(bchar, true);
+        BluetoothGattDescriptor descriptor = bchar.getDescriptor(UUID.fromString(GattAttributes.CLIENT_CHARACTERISTIC_CONFIG));
+        descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+        mBluetoothGatt.writeDescriptor(descriptor);
+
+        Log.w(TAG, "listenStepsDistanceCalories()" + bchar.toString() + " | " + descriptor.toString());
+    }
+
+    public void startScanHeartRate() {
+        BluetoothGattService gattService = mBluetoothLeService.getGattService(UUID.fromString(GattAttributes.SERVICE_HEART_RATE));
+        if (gattService == null) return;
+
+        BluetoothGattCharacteristic characteristic = gattService.getCharacteristic(UUID.fromString(GattAttributes.CHARACTERISTIC_HEART_RATE_CONTROL_POINT));
+        characteristic.setValue(new byte[]{21, 2, 1});
+        mBluetoothLeService.writeCharacteristic(characteristic);
+
+        Log.w(TAG, "startScanHeartRate()" + characteristic.toString());
     }
 
     /**
@@ -657,6 +693,9 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.chart_floating_button:
+                break;
+            case R.id.heart_rate_floating_button:
+                startScanHeartRate();
                 break;
             default:
                 break;

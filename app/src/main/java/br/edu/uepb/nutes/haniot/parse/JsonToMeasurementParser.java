@@ -391,7 +391,7 @@ public class JsonToMeasurementParser {
         JSONObject o = new JSONObject(json);
 
         Measurement measurement = measurement = new Measurement(
-                o.getInt("steps"),
+                o.getDouble("steps"),
                 o.getString("stepsUnit"),
                 o.getLong("timestamp"),
                 MeasurementType.STEPS);
@@ -410,7 +410,7 @@ public class JsonToMeasurementParser {
         JSONObject o = new JSONObject(json);
 
         Measurement measurement = measurement = new Measurement(
-                o.getInt("distance"),
+                o.getDouble("distance"),
                 o.getString("distanceUnit"),
                 o.getLong("timestamp"),
                 MeasurementType.DISTANCE);
@@ -429,7 +429,7 @@ public class JsonToMeasurementParser {
         JSONObject o = new JSONObject(json);
 
         Measurement measurement = measurement = new Measurement(
-                o.getInt("calories"),
+                o.getDouble("calories"),
                 o.getString("caloriesUnit"),
                 o.getLong("timestamp"),
                 MeasurementType.CALORIES_BURNED);

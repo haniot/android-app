@@ -31,9 +31,9 @@ public class MiBand2Parser {
         byte[] data = characteristic.getValue();
 
         /* Parse data */
-        int stepsValue = ((((data[1] & 255) | ((data[2] & 255) << 8))));
-        int distanceValue = ((((data[5] & 255) | ((data[6] & 255) << 8)) | (data[7] & 16711680)) | ((data[8] & 255) << 24));
-        int caloriesValue = ((((data[9] & 255) | ((data[10] & 255) << 8)) | (data[11] & 16711680)) | ((data[12] & 255) << 24));
+        double stepsValue = (double) (((data[1] & 255) | ((data[2] & 255) << 8)));
+        double distanceValue = (double) ((((data[5] & 255) | ((data[6] & 255) << 8)) | (data[7] & 16711680)) | ((data[8] & 255) << 24));
+        double caloriesValue = (double) ((((data[9] & 255) | ((data[10] & 255) << 8)) | (data[11] & 16711680)) | ((data[12] & 255) << 24));
 
         /**
          * Populating the JSON

@@ -57,9 +57,8 @@ public class SmartBandAdapter extends BaseAdapter<Measurement> {
 
             h.steps.setText((int) m.getValue());
             h.dayWeek.setText(DateUtils.formatDate(m.getRegistrationDate(), "EEEE"));
-            h.date.setText(DateUtils.formatDate(
-                    m.getRegistrationDate(), context.getString(R.string.datetime_format))
-            );
+            h.date.setText(DateUtils.formatDate(m.getRegistrationDate(),
+                    context.getString(R.string.datetime_format)));
 
             /**
              * Relations
@@ -67,7 +66,7 @@ public class SmartBandAdapter extends BaseAdapter<Measurement> {
             for (Measurement parent : m.getMeasurements()) {
                 if (parent.getTypeId() == MeasurementType.DISTANCE)
                     h.distance.setText(String.valueOf((int) parent.getValue()).concat(parent.getUnit()));
-                else if (parent.getTypeId() == MeasurementType.DISTANCE)
+                else if (parent.getTypeId() == MeasurementType.CALORIES_BURNED)
                     h.calories.setText(String.valueOf((int) parent.getValue()).concat(parent.getUnit()));
             }
 
