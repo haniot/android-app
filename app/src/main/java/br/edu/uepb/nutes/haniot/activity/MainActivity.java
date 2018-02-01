@@ -12,7 +12,6 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -49,6 +48,7 @@ import butterknife.ButterKnife;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private final String TAG = "MainActivity";
     private final int REQUEST_ENABLE_BLUETOOTH = 1;
+    private final int REQUEST_ENABLE_LOCATION = 2;
 
     @BindView(R.id.drawer_layout)
     DrawerLayout mDrawer;
@@ -82,7 +82,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onResume() {
         super.onResume();
-        requestDependencies();
 
         /**
          * User not logged
@@ -95,11 +94,59 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         openFragment(fragment);
     }
 
-    private void requestDependencies() {
-        // Request Bluetooth permission
+    /**
+     * Checks if you have permission to use.
+     * Required bluetooth ble and location.
+     *
+     * @return boolean
+     */
+    private boolean hasPermissions() {
+        if (!ConnectionUtils.bluetoothIsEnabled()) {
+            requestBluetoothEnable();
+            return false;
+        } else if (!hasLocationPermissions()) {
+            requestLocationPermission();
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Request Bluetooth permission
+     */
+    private void requestBluetoothEnable() {
         if (!ConnectionUtils.bluetoothIsEnabled())
-            startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE),
-                    REQUEST_ENABLE_BLUETOOTH);
+            startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE), REQUEST_ENABLE_BLUETOOTH);
+    }
+
+    /**
+     * Checks whether the location permission was given.
+     *
+     * @return boolean
+     */
+    private boolean hasLocationPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            return checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+
+        return true;
+    }
+
+    /**
+     * Request Location permission.
+     */
+    private void requestLocationPermission() {
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_ENABLE_LOCATION);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        // If request is cancelled, the result arrays are empty.
+        if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(this, R.string.permission_location, Toast.LENGTH_LONG).show();
+            finish();
+        }
     }
 
     @Override

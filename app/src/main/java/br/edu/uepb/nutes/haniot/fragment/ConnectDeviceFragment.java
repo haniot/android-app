@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.devices.SmartBandActivity;
 import br.edu.uepb.nutes.haniot.devices.hdp.BloodPressureHDPActivity;
 import br.edu.uepb.nutes.haniot.devices.hdp.BodyCompositionHDPActivity;
 import br.edu.uepb.nutes.haniot.devices.GlucoseActivity;
@@ -50,6 +51,9 @@ public class ConnectDeviceFragment extends Fragment implements View.OnClickListe
     @BindView(R.id.device_heart_rate_h7)
     ImageView btHeartRateH7;
 
+    @BindView(R.id.device_miband2)
+    ImageView btMiBand2;
+
     public ConnectDeviceFragment() {
         // Required empty public constructor
     }
@@ -79,6 +83,7 @@ public class ConnectDeviceFragment extends Fragment implements View.OnClickListe
         btScaleBle.setOnClickListener(this);
         btHeartRateH10.setOnClickListener(this);
         btHeartRateH7.setOnClickListener(this);
+        btMiBand2.setOnClickListener(this);
 
         return view;
     }
@@ -112,6 +117,9 @@ public class ConnectDeviceFragment extends Fragment implements View.OnClickListe
                 it.putExtra(HeartRateActivity.EXTRA_DEVICE_ADDRESS, "00:22:D0:BA:95:80");
                 it.putExtra(HeartRateActivity.EXTRA_DEVICE_INFORMATIONS, new String[]{"POLAR", "H7"});
                 startActivity(it);
+                break;
+            case R.id.device_miband2:
+                startActivity(new Intent(getContext(), SmartBandActivity.class));
                 break;
             default:
                 break;

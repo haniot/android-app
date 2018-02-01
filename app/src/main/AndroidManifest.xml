@@ -77,13 +77,15 @@
             android:name=".activity.settings.SettingsActivity"
             android:label="@string/action_settings"
             android:theme="@style/AppTheme.Settings" />
+        <activity
+            android:name=".devices.SmartBandActivity"
+            android:screenOrientation="portrait" />
         <activity android:name=".activity.account.ChangePasswordActivity" />
         <activity android:name=".activity.graphs.BodyCompositionGraphActivity" />
         <activity android:name=".activity.graphs.TemperatureGraphActivity" />
         <activity android:name=".activity.graphs.HeartRateGraphActivity" />
         <activity android:name=".activity.graphs.GlucoseGraphActivity" />
         <activity android:name=".activity.graphs.BloodPresssureGraphActivity" />
-        <activity android:name=".devices.smartband.miband.SmartBandActivity" />
 
         <!-- SERVICES -->
         <service
@@ -100,7 +102,6 @@
             </intent-filter>
         </service>
         <service android:name="com.signove.health.service.BluetoothHDPService" />
-
     </application>
 
 </manifest>

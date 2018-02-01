@@ -221,37 +221,6 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
             }
         });
     }
-//
-//    private void initializeToolBar() {
-//        setSupportActionBar(mToolbar);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//        getSupportActionBar().setDisplayShowTitleEnabled(false);
-//
-//        mCollapsingToolbarLayout.setExpandedTitleColor(ContextCompat.getColor(getApplicationContext(), android.R.color.transparent));
-//        mCollapsingToolbarLayout.setCollapsedTitleTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorTextDark));
-//
-//        mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-//            boolean isShow = false;
-//            int scrollRange = -1;
-//
-//            @Override
-//            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-//                if (scrollRange == -1) {
-//                    scrollRange = appBarLayout.getTotalScrollRange();
-//                }
-//                if (scrollRange + verticalOffset == 0) {
-//                    mCollapsingToolbarLayout.setTitle(getString(R.string.heart_rate));
-//                    mRecordHeartRateButton.setVisibility(View.GONE);
-//                    isShow = true;
-//                } else if (isShow) {
-//                    mRecordHeartRateButton.setVisibility(View.VISIBLE);
-//                    mCollapsingToolbarLayout.setTitle("");
-//                    isShow = false;
-//                }
-//            }
-//        });
-//    }
-
 
     /**
      * Init RecyclerView
@@ -312,8 +281,8 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
             updateUILastMeasurement(mAdapter.getFirstItem(), false);
         } else {
             toggleNoDataMessage(true); // Enable message no data
-            toggleLoading(false);
         }
+        toggleLoading(false);
     }
 
     /**

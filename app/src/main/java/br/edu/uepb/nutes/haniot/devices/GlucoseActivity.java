@@ -258,8 +258,8 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
             updateUILastMeasurement(mAdapter.getFirstItem(), false);
         } else {
             toggleNoDataMessage(true); // Enable message no data
-            toggleLoading(false);
         }
+        toggleLoading(false);
     }
 
     /**
@@ -413,7 +413,6 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     /**
-     *
      * @param isConnected
      */
     private void updateConnectionState(final boolean isConnected) {

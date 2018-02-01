@@ -25,6 +25,9 @@ public class MeasurementType {
     public static final int MUSCLE_MASS = 11;
     public static final int VISCERAL_FAT = 12;
     public static final int BODY_AGE = 13;
+    public static final int STEPS = 14;
+    public static final int DISTANCE = 15;
+    public static final int CALORIES_BURNED = 16;
 
     public static int[] SUPPORTED_TYPES = {
             TEMPERATURE,

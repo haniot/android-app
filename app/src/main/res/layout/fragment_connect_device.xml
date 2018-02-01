@@ -60,6 +60,16 @@
             android:scaleType="centerInside"
             app:srcCompat="@drawable/device_heart_rate_sensor_h7" />
 
+        <ImageView
+            android:id="@+id/device_miband2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/smart_band"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/device_smart_band" />
+
         <!--<ImageView-->
         <!--android:id="@+id/device_blood_pressure"-->
         <!--android:layout_width="wrap_content"-->

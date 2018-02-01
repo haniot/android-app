@@ -17,7 +17,8 @@ public class DeviceType {
     public static final int BODY_COMPOSITION = 3;
     public static final int BLOOD_PRESSURE = 4;
     public static final int HEART_RATE = 5;
-    public static final int SMART_WATCH = 6;
+    public static final int SMARTWATCH = 6;
+    public static final int SMARTBAND = 7;
 
     /**
      * Retrieve the mapped type name in resources.
