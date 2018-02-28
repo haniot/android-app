@@ -1,6 +1,7 @@
 package br.edu.uepb.nutes.haniot.activity.account;
 
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -52,7 +54,7 @@ import butterknife.ButterKnife;
  */
 public class SignupActivity extends AppCompatActivity implements View.OnClickListener, DatePickerDialog.OnDateSetListener, GenericDialogFragment.OnClickDialogListener {
     public final int DIALOG_HAS_CHANGE = 1;
-    public static final String EXTRA_ID = "extra__id";
+    public static final String EXTRA_ID = "extra_id";
 
     private final String TAG = "SignupActivity";
 
@@ -225,14 +227,20 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
 
         user.setDateOfBirth(calendar.getTimeInMillis());
         dateOfBirthEditText.setText(DateUtils.calendarToString(calendar, getString(R.string.date_format)));
+
+        /**
+         * open keyboard
+         */
+        ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
+                .showSoftInput(heightEditText, InputMethodManager.SHOW_IMPLICIT);
+        requestFocus(heightEditText);
     }
 
     @Override
     public void onClickDialog(int id, int button) {
         if (id == DIALOG_HAS_CHANGE) {
-            if (button == DialogInterface.BUTTON_POSITIVE) {
+            if (button == DialogInterface.BUTTON_POSITIVE)
                 super.onBackPressed();
-            }
         }
     }
 
@@ -252,6 +260,12 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         }
         datePickerDialog = new DatePickerDialog(SignupActivity.this, this, year, month, day);
         datePickerDialog.show();
+
+        /**
+         * Close keyboard
+         */
+        ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
+                .hideSoftInputFromWindow(dateOfBirthEditText.getWindowToken(), 0);
     }
 
     /**
