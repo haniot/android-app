@@ -53,10 +53,9 @@ public class User {
     public User() {
     }
 
-    public User(String name, String email, String password, int gender, long dateOfBirth, int height, int groupId) {
+    public User(String name, String email, int gender, long dateOfBirth, int height, int groupId) {
         this.name = name;
         this.email = email;
-        this.password = password;
         this.gender = gender;
         this.dateOfBirth = dateOfBirth;
         this.height = height;

@@ -54,7 +54,6 @@ import butterknife.ButterKnife;
  */
 public class SignupActivity extends AppCompatActivity implements View.OnClickListener, DatePickerDialog.OnDateSetListener, GenericDialogFragment.OnClickDialogListener {
     public final int DIALOG_HAS_CHANGE = 1;
-    public static final String EXTRA_ID = "extra_id";
 
     private final String TAG = "SignupActivity";
 
@@ -116,7 +115,6 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
     private DatePickerDialog datePickerDialog;
     private Menu menu;
     private boolean isUpdate = false;
-    private boolean openDialog = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -213,7 +211,6 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
             case R.id.btn_change_passsword:
                 if (user != null) {
                     Intent intent = new Intent(this, ChangePasswordActivity.class);
-                    intent.putExtra(EXTRA_ID, user.get_id());
                     startActivity(intent);
                 }
             default:
@@ -310,7 +307,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                 try {
                     user = new Gson().fromJson(result.getString("user"), User.class);
 
-                    if (user.get_id() != null) {
+                    if (user.getEmail() != null) {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -353,7 +350,6 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
      * Authenticates the user on the remote server
      */
     private void signUpInServer() {
-        Log.i(TAG, "signup in remote server");
         loading(true);
 
         // Send for remote server /users/signup
@@ -387,7 +383,6 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
      * Update user in server
      */
     private void update() {
-        Log.i(TAG, "update in remote server");
         if (user == null)
             return;
 
@@ -406,7 +401,6 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                     public void onSuccess(JSONObject result) {
                         try {
                             final User userUpdate = new Gson().fromJson(result.getString("user"), User.class);
-
                             if (userUpdate.getEmail() != null)
                                 userDAO.update(user); // save in local
                         } catch (JSONException e) {
@@ -478,7 +472,6 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
      * @return boolean
      */
     public boolean validate() {
-        openDialog = true;
         String name = nameEditText.getText().toString();
         String dateBirth = dateOfBirthEditText.getText().toString();
         String height = heightEditText.getText().toString();
@@ -545,15 +538,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
      * Opens the dialog to confirm that you really want to come back and rule changes.
      */
     private void closeActivity() {
-        if (openDialog) {
-            GenericDialogFragment dialogHasChange = GenericDialogFragment.newDialog(DIALOG_HAS_CHANGE,
-                    R.string.back_confirm,
-                    new int[]{R.string.bt_ok, R.string.bt_cancel},
-                    null);
-            dialogHasChange.show(getSupportFragmentManager());
-        } else {
-            super.onBackPressed();
-        }
+        super.onBackPressed();
     }
 
     /**

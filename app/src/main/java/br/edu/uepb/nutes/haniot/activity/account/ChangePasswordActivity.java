@@ -91,10 +91,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        Intent intent = getIntent();
-        String uuid = intent.getStringExtra(SignupActivity.EXTRA_ID);
-
-        user = uuid != null ? userDAO.get(uuid) : null;
+        user = session.getUserLogged();
         if (user == null) {
             Toast.makeText(getApplicationContext(), R.string.error_connectivity, Toast.LENGTH_LONG).show();
             finish();
@@ -214,9 +211,8 @@ public class ChangePasswordActivity extends AppCompatActivity {
                     public void onSuccess(JSONObject result) {
                         try {
                             final User userUpdate = new Gson().fromJson(result.getString("user"), User.class);
-                            Log.i("USER UPDATE", userUpdate.toString());
 
-                            if (userUpdate.getPassword() != null && userDAO.update(userUpdate)) {
+                            if (userUpdate != null) {
                                 /**
                                  * Remove user from session and redirect to login screen.
                                  */

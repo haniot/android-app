@@ -200,8 +200,6 @@
     <string name="validate_register_user_not_duplicate">Already registered user with email provided...</string>
     <string name="validate_unauthorized_access">Unauthorized access! Please contact support...</string>
 
-    <string name="back_confirm">Are you sure you want to return without completing the registration?</string>
-
     <!--ERROR-->
     <string name="error_sign_out">There was an error while trying to quit...</string>
     <string name="error_500">Could not complete request! Please try again later...</string>

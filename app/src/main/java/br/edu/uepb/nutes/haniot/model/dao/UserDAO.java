@@ -87,6 +87,7 @@ public class UserDAO {
             if (userUp == null) return false;
 
             user.setId(userUp.getId());
+            if (user.get_id() == null) user.set_id(userUp.get_id());
         }
 
         return save(user); // update
