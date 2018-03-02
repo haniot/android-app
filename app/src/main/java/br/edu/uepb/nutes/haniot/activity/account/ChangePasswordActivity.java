@@ -137,7 +137,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
         String newPassword = newPasswordEditText.getText().toString();
         String confirmPassword = confirmPasswordEditText.getText().toString();
 
-        if (currentPassword.isEmpty() || currentPassword.length() < 4 || currentPassword.length() > 10) {
+        if (currentPassword.isEmpty() || currentPassword.length() < 6) {
             currentPasswordEditText.setError(getString(R.string.validate_passoword));
             requestFocus(currentPasswordEditText);
             return false;
@@ -145,7 +145,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
             currentPasswordEditText.setError(null);
         }
 
-        if (newPassword.isEmpty() || newPassword.length() < 4 || newPassword.length() > 10) {
+        if (newPassword.isEmpty() || newPassword.length() < 6) {
             newPasswordEditText.setError(getString(R.string.validate_passoword));
             requestFocus(newPasswordEditText);
             return false;
@@ -153,7 +153,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
             currentPasswordEditText.setError(null);
         }
 
-        if (confirmPassword.isEmpty() || confirmPassword.length() < 4 || confirmPassword.length() > 10) {
+        if (confirmPassword.isEmpty() || confirmPassword.length() < 6) {
             confirmPasswordEditText.setError(getString(R.string.validate_passoword));
             requestFocus(confirmPasswordEditText);
             return false;

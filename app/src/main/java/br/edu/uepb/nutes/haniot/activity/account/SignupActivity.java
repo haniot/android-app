@@ -466,8 +466,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
 
     /**
      * Validade form.
-     * <p>
-     * Note: "name" and "password" are not checked in the update
+     * Note: "email" is not validated in the update. Because it should not be updated.
      *
      * @return boolean
      */
@@ -476,8 +475,6 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         String dateBirth = dateOfBirthEditText.getText().toString();
         String height = heightEditText.getText().toString();
         String email = emailEditText.getText().toString();
-        String password = passwordEditText.getText().toString();
-        String passwordConfirm = passwordConfirmEditText.getText().toString();
 
         if (name.isEmpty() || name.length() < 3) {
             nameEditText.setError(getString(R.string.validate_name));
@@ -513,8 +510,22 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
             }
         }
 
+        return validatePassword();
+    }
+
+    /**
+     * Validate EditText password.
+     * Note: "password" is not validated in the update.
+     * Because it has a specific screen for updating.
+     *
+     * @return boolean
+     */
+    public boolean validatePassword() {
         if (!isUpdate) {
-            if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
+            String password = passwordEditText.getText().toString();
+            String passwordConfirm = passwordConfirmEditText.getText().toString();
+
+            if (password.isEmpty() || password.length() < 6) {
                 passwordEditText.setError(getString(R.string.validate_passoword));
                 requestFocus(passwordEditText);
                 return false;
