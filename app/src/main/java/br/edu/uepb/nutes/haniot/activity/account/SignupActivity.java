@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,6 +31,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Calendar;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
@@ -525,8 +526,22 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
             String password = passwordEditText.getText().toString();
             String passwordConfirm = passwordConfirmEditText.getText().toString();
 
-            if (password.isEmpty() || password.length() < 6) {
-                passwordEditText.setError(getString(R.string.validate_passoword));
+            /**
+             * Regular expression to check if the password contains the default:
+             *   - at least 1 number
+             *   - At least 1 letter
+             *   - At least 1 special character among the allowed: @#$%*<space>!?._+-
+             *   - At least 6 characters
+             */
+            Pattern check1 = Pattern.compile("((?=.*[a-zA-Z0-9])(?=.*[@#$%* !?._+-]).{6,})");
+
+            /**
+             * Regular expression to check
+             */
+            Pattern check2 = Pattern.compile("([^a-zA-Z0-9@#$%&* !?._+-])");
+
+            if (!check1.matcher(password).matches() || check2.matcher(password).find()) {
+                passwordEditText.setError(getString(R.string.validate_password));
                 requestFocus(passwordEditText);
                 return false;
             } else {

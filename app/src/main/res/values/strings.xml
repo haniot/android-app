@@ -192,7 +192,7 @@
     <string name="validate_name">At least 3 characters</string>
     <string name="validate_not_null">Field can not be empty</string>
     <string name="validate_email">Enter a valid email address</string>
-    <string name="validate_passoword">At least 6 characters, with at least one number, one letter and a special character being allowed: @ # $ % &amp; * ! ? . _ + - space.</string>
+    <string name="validate_password">The password must contain at least 6 characters, with at least one number, one letter and one special character among the allowed characters: @ # $ % &amp; * ! ? . _ + - space.</string>
     <string name="validate_height">Minimum height 60cm and maximum 250cm</string>
     <string name="validate_invalid_email_or_password">Invalid email or password...</string>
     <string name="validate_password_not_match_current">Current password does not match!</string>

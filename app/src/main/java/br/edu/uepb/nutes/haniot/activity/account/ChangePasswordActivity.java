@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,6 +19,8 @@ import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.regex.Pattern;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
@@ -137,27 +138,37 @@ public class ChangePasswordActivity extends AppCompatActivity {
         String newPassword = newPasswordEditText.getText().toString();
         String confirmPassword = confirmPasswordEditText.getText().toString();
 
-        if (currentPassword.isEmpty() || currentPassword.length() < 6) {
-            currentPasswordEditText.setError(getString(R.string.validate_passoword));
+        /**
+         * Regular expression to check if the password contains the default:
+         *   - at least 1 number
+         *   - At least 1 letter
+         *   - At least 1 special character among the allowed: @#$%*<space>!?._+-
+         *   - At least 6 characters
+         */
+        Pattern check1 = Pattern.compile("((?=.*[a-zA-Z0-9])(?=.*[@#$%* !?._+-]).{6,})");
+
+        /**
+         * Regular expression to check
+         */
+        Pattern check2 = Pattern.compile("([^a-zA-Z0-9@#$%&* !?._+-])");
+
+        if (!check1.matcher(currentPassword).matches() || check2.matcher(currentPassword).find()) {
+            currentPasswordEditText.setError(getString(R.string.validate_password));
             requestFocus(currentPasswordEditText);
             return false;
         } else {
             currentPasswordEditText.setError(null);
         }
 
-        if (newPassword.isEmpty() || newPassword.length() < 6) {
-            newPasswordEditText.setError(getString(R.string.validate_passoword));
+        if (!check1.matcher(newPassword).matches() || check2.matcher(newPassword).find()) {
+            newPasswordEditText.setError(getString(R.string.validate_password));
             requestFocus(newPasswordEditText);
             return false;
         } else {
-            currentPasswordEditText.setError(null);
+            newPasswordEditText.setError(null);
         }
 
-        if (confirmPassword.isEmpty() || confirmPassword.length() < 6) {
-            confirmPasswordEditText.setError(getString(R.string.validate_passoword));
-            requestFocus(confirmPasswordEditText);
-            return false;
-        } else if (!newPassword.isEmpty() && !confirmPassword.equals(newPassword)) {
+        if (!newPassword.equals(confirmPassword)) {
             confirmPasswordEditText.setError(getString(R.string.validate_password_not_match_new));
             requestFocus(confirmPasswordEditText);
             return false;
