@@ -213,13 +213,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             emailEditText.setError(null);
         }
 
-        if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
-            passwordEditText.setError(getString(R.string.validate_password));
-            valid = false;
-        } else {
-            passwordEditText.setError(null);
-        }
-
         return valid;
     }
 

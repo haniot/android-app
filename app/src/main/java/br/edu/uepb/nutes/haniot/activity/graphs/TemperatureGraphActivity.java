@@ -153,7 +153,6 @@ public class TemperatureGraphActivity extends AppCompatActivity implements View.
         return super.onOptionsItemSelected(item);
     }
 
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
