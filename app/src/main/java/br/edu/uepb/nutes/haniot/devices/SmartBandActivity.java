@@ -152,7 +152,7 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
         // synchronization with server
         synchronizeWithServer();
 
-        mDeviceAddress = "EB:B3:8D:0B:EB:4C";
+        mDeviceAddress = "C7:22:95:E8:84:5E";
         session = new Session(this);
         measurementDAO = MeasurementDAO.getInstance(this);
         deviceDAO = DeviceDAO.getInstance(this);
