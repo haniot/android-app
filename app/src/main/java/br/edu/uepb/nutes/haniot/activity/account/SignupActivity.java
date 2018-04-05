@@ -1,18 +1,19 @@
 package br.edu.uepb.nutes.haniot.activity.account;
 
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -30,6 +31,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Calendar;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
@@ -52,7 +55,6 @@ import butterknife.ButterKnife;
  */
 public class SignupActivity extends AppCompatActivity implements View.OnClickListener, DatePickerDialog.OnDateSetListener, GenericDialogFragment.OnClickDialogListener {
     public final int DIALOG_HAS_CHANGE = 1;
-    public static final String EXTRA_ID = "extra__id";
 
     private final String TAG = "SignupActivity";
 
@@ -114,7 +116,6 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
     private DatePickerDialog datePickerDialog;
     private Menu menu;
     private boolean isUpdate = false;
-    private boolean openDialog = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -211,7 +212,6 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
             case R.id.btn_change_passsword:
                 if (user != null) {
                     Intent intent = new Intent(this, ChangePasswordActivity.class);
-                    intent.putExtra(EXTRA_ID, user.get_id());
                     startActivity(intent);
                 }
             default:
@@ -225,14 +225,20 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
 
         user.setDateOfBirth(calendar.getTimeInMillis());
         dateOfBirthEditText.setText(DateUtils.calendarToString(calendar, getString(R.string.date_format)));
+
+        /**
+         * open keyboard
+         */
+        ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
+                .showSoftInput(heightEditText, InputMethodManager.SHOW_IMPLICIT);
+        requestFocus(heightEditText);
     }
 
     @Override
     public void onClickDialog(int id, int button) {
         if (id == DIALOG_HAS_CHANGE) {
-            if (button == DialogInterface.BUTTON_POSITIVE) {
+            if (button == DialogInterface.BUTTON_POSITIVE)
                 super.onBackPressed();
-            }
         }
     }
 
@@ -252,6 +258,12 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         }
         datePickerDialog = new DatePickerDialog(SignupActivity.this, this, year, month, day);
         datePickerDialog.show();
+
+        /**
+         * Close keyboard
+         */
+        ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
+                .hideSoftInputFromWindow(dateOfBirthEditText.getWindowToken(), 0);
     }
 
     /**
@@ -296,7 +308,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                 try {
                     user = new Gson().fromJson(result.getString("user"), User.class);
 
-                    if (user.get_id() != null) {
+                    if (user.getEmail() != null) {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -339,7 +351,6 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
      * Authenticates the user on the remote server
      */
     private void signUpInServer() {
-        Log.i(TAG, "signup in remote server");
         loading(true);
 
         // Send for remote server /users/signup
@@ -373,7 +384,6 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
      * Update user in server
      */
     private void update() {
-        Log.i(TAG, "update in remote server");
         if (user == null)
             return;
 
@@ -392,7 +402,6 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                     public void onSuccess(JSONObject result) {
                         try {
                             final User userUpdate = new Gson().fromJson(result.getString("user"), User.class);
-
                             if (userUpdate.getEmail() != null)
                                 userDAO.update(user); // save in local
                         } catch (JSONException e) {
@@ -458,19 +467,15 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
 
     /**
      * Validade form.
-     * <p>
-     * Note: "name" and "password" are not checked in the update
+     * Note: "email" is not validated in the update. Because it should not be updated.
      *
      * @return boolean
      */
     public boolean validate() {
-        openDialog = true;
         String name = nameEditText.getText().toString();
         String dateBirth = dateOfBirthEditText.getText().toString();
         String height = heightEditText.getText().toString();
         String email = emailEditText.getText().toString();
-        String password = passwordEditText.getText().toString();
-        String passwordConfirm = passwordConfirmEditText.getText().toString();
 
         if (name.isEmpty() || name.length() < 3) {
             nameEditText.setError(getString(R.string.validate_name));
@@ -506,9 +511,37 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
             }
         }
 
+        return validatePassword();
+    }
+
+    /**
+     * Validate EditText password.
+     * Note: "password" is not validated in the update.
+     * Because it has a specific screen for updating.
+     *
+     * @return boolean
+     */
+    public boolean validatePassword() {
         if (!isUpdate) {
-            if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
-                passwordEditText.setError(getString(R.string.validate_passoword));
+            String password = passwordEditText.getText().toString();
+            String passwordConfirm = passwordConfirmEditText.getText().toString();
+
+            /**
+             * Regular expression to check if the password contains the default:
+             *   - at least 1 number
+             *   - At least 1 letter
+             *   - At least 1 special character among the allowed: @#$%*<space>!?._+-
+             *   - At least 6 characters
+             */
+            Pattern check1 = Pattern.compile("((?=.*[a-zA-Z0-9])(?=.*[@#$%* !?._+-]).{6,})");
+
+            /**
+             * Regular expression to check
+             */
+            Pattern check2 = Pattern.compile("([^a-zA-Z0-9@#$%&* !?._+-])");
+
+            if (!check1.matcher(password).matches() || check2.matcher(password).find()) {
+                passwordEditText.setError(getString(R.string.validate_password));
                 requestFocus(passwordEditText);
                 return false;
             } else {
@@ -531,15 +564,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
      * Opens the dialog to confirm that you really want to come back and rule changes.
      */
     private void closeActivity() {
-        if (openDialog) {
-            GenericDialogFragment dialogHasChange = GenericDialogFragment.newDialog(DIALOG_HAS_CHANGE,
-                    R.string.back_confirm,
-                    new int[]{R.string.bt_ok, R.string.bt_cancel},
-                    null);
-            dialogHasChange.show(getSupportFragmentManager());
-        } else {
-            super.onBackPressed();
-        }
+        super.onBackPressed();
     }
 
     /**
