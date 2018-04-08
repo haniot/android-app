@@ -1,5 +1,7 @@
 package br.edu.uepb.nutes.haniot.model;
 
+import java.util.List;
+
 import io.objectbox.annotation.Backlink;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
@@ -44,6 +46,9 @@ public class User {
      */
     @Backlink(to = "user")
     private ToMany<Measurement> measurements;
+
+    @Backlink(to = "user")
+    public ToMany<Elderly> monitoredElderly;
 
     /**
      * {@link UserGroup()}
@@ -146,6 +151,18 @@ public class User {
         return measurements;
     }
 
+    public ToMany<Elderly> getMonitoredElderly() {
+        return monitoredElderly;
+    }
+
+    public boolean addMonitoredElderly(Elderly monitoredElderly) {
+        return this.getMonitoredElderly().add(monitoredElderly);
+    }
+
+    public boolean addMonitoredElderly(List<Elderly> monitoredElderly) {
+        return this.getMonitoredElderly().addAll(monitoredElderly);
+    }
+
     public void setMeasurements(ToMany<Measurement> measurements) {
         this.measurements = measurements;
     }
@@ -172,8 +189,9 @@ public class User {
                 ", dateOfBirth=" + dateOfBirth +
                 ", height=" + height +
                 ", token='" + token + '\'' +
-                ", groupId=" + groupId +
                 ", measurements=" + measurements +
+                ", monitoredElderly=" + monitoredElderly +
+                ", groupId=" + groupId +
                 '}';
     }
 }

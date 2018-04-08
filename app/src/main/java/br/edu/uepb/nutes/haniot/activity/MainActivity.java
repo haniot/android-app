@@ -29,6 +29,7 @@ import org.json.JSONObject;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.account.LoginActivity;
+import br.edu.uepb.nutes.haniot.activity.elderly.ElderlyMonitoredActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.activity.settings.SettingsActivity;
 import br.edu.uepb.nutes.haniot.fragment.ConnectDeviceFragment;
@@ -183,6 +184,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.action_scanner_devices:
                 fragment = new ScanDeviceFragment();
+                break;
+            case R.id.action_monitored_elderly:
+                startActivity(new Intent(this, ElderlyMonitoredActivity.class));
                 break;
             case R.id.action_settings:
                 startActivity(new Intent(this, SettingsActivity.class));

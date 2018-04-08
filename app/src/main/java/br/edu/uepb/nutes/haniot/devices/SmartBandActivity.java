@@ -235,7 +235,7 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
-        mAdapter.setListener(new OnRecyclerViewListener() {
+        mAdapter.setListener(new OnRecyclerViewListener<Measurement>() {
             @Override
             public void onItemClick(Measurement item) {
                 Log.w(TAG, "onItemClick()");

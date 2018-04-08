@@ -64,7 +64,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class BodyCompositionHDPActivity extends AppCompatActivity implements View.OnClickListener {
-    private final String TAG = "BodyCompositionHDPActivity";
+    private final String TAG = "BodyCompositionHDP";
     private final int LIMIT_PER_PAGE = 20;
 
     private Animation animation;
@@ -212,7 +212,7 @@ public class BodyCompositionHDPActivity extends AppCompatActivity implements Vie
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
-        mAdapter.setListener(new OnRecyclerViewListener() {
+        mAdapter.setListener(new OnRecyclerViewListener<Measurement>() {
             @Override
             public void onItemClick(Measurement item) {
                 Log.w(TAG, "onItemClick()");

@@ -199,6 +199,7 @@
     <string name="validate_password_not_match_new">New password and confirmation do not match!</string>
     <string name="validate_register_user_not_duplicate">Already registered user with email provided...</string>
     <string name="validate_unauthorized_access">Unauthorized access! Please contact support...</string>
+    <string name="required_field">Required field!</string>
 
     <!--ERROR-->
     <string name="error_sign_out">There was an error while trying to quit...</string>
@@ -255,11 +256,19 @@
     <string name="unit_glucose_mg_dL">mg/dL</string>
     <string name="unit_glucose_kg_L">kg/L</string>
 
-    <!--SYNCHRONIZATION-->
+    <!-- SYNCHRONIZATION -->
     <string name="synchronization_failed">Data synchronization failed!</string>
     <string name="synchronization_success">Successful data synchronization!</string>
     <string name="synchronization_data">Synchronizing data...</string>
     <string name="synchronization_no_data_to_send">There is no data to send...</string>
+
+    <!-- ELDERLY -->
+    <string name="elderly_monitored">Monitored Elderly</string>
+    <string name="elderly_add">Add Elderly</string>
+    <string name="elderly_add_success">Elderly successfully added!</string>
+    <string name="elderly_pin">PIN</string>
+    <string name="elderly_name">Elderly Name</string>
+    <string name="elderly_not_register">Could not register elderly...</string>
 
     <string name="other">Other</string>
 
@@ -291,7 +300,6 @@
         <item>Distance</item>
         <item>Calories Burned</item>
     </string-array>
-    .
 
     <string-array name="measurement_context_types_array">
         <item>Glucose Carbohydrate</item>
@@ -370,6 +378,33 @@
         <item>Oct</item>
         <item>Nov</item>
         <item>Dec</item>
+    </string-array>
+
+    <!-- MARITAL STATUS TYPES -->
+    <string-array name="marital_status_types_array">
+        <item>Single</item>
+        <item>Married</item>
+        <item>Separated</item>
+        <item>Divorced</item>
+        <item>Widowed</item>
+    </string-array>
+
+    <!-- DEGREE EDUCATION TYPES -->
+    <string-array name="degree_education_types_array">
+        <item>Basic School</item>
+        <item>Elementary School</item>
+        <item>Middle School</item>
+        <item>High School</item>
+    </string-array>
+
+    <!-- ELDERLY USER OF ACCESSORIES -->
+    <string-array name="elderly_accessories_array">
+        <item>Crutches</item>
+        <item>Walking</item>
+        <item>Sticks</item>
+        <item>Walkers</item>
+        <item>Glasses</item>
+        <item>Hearing aid</item>
     </string-array>
 
 </resources>
