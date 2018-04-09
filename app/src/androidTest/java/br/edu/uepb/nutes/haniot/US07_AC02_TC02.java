@@ -6,6 +6,7 @@ import android.support.test.espresso.UiController;
 import android.support.test.espresso.ViewAction;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import android.util.Log;
 import android.view.View;
 
 import org.hamcrest.Matcher;
@@ -30,8 +31,14 @@ import br.edu.uepb.nutes.haniot.server.historical.Params;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.swipeDown;
+import static android.support.test.espresso.action.ViewActions.swipeUp;
+import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayingAtLeast;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
 /**
@@ -131,13 +138,14 @@ public class US07_AC02_TC02 {
 
             loadData();
 
-            if(c == todaasMedicoes.size()){
+            if(mAdapter.getItems().size() == todaasMedicoes.size()){
                 break;
             } else {
+                Log.i("Aquiu" , "Rolarrrr");
                 onView(withId(R.id.data_swiperefresh))
-                        .perform(withCustomConstraints(swipeDown(), isDisplayingAtLeast(85)));
+                        .perform(withCustomConstraints(swipeUp(), isDisplayingAtLeast(85)));
             }
-        } while (c == todaasMedicoes.size());
+        } while (true);
         // Condição de parada até aparecer "No more" , já que a aplicação está sendo carregada e mostrando 20 vezes
 
 

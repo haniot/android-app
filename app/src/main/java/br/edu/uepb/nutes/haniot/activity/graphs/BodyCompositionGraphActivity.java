@@ -169,7 +169,7 @@ public class BodyCompositionGraphActivity extends AppCompatActivity implements V
         IAxisValueFormatter formatter = new IAxisValueFormatter() {
             @Override
             public String getFormattedValue(float value, AxisBase axis) {
-                if (value >= quarters.length) return "";
+                if (value >= quarters.length || value < 0) return "";
                 return quarters[(int) value];
             }
         };
