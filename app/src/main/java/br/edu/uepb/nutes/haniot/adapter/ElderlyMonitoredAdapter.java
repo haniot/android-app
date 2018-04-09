@@ -4,7 +4,11 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.amulyakhare.textdrawable.TextDrawable;
+import com.amulyakhare.textdrawable.util.ColorGenerator;
 
 import java.util.List;
 
@@ -63,6 +67,17 @@ public class ElderlyMonitoredAdapter extends BaseAdapter<Elderly> {
                 }
             });
 
+            ColorGenerator generator = ColorGenerator.MATERIAL;
+            int color = generator.getColor(e.getName());
+
+            TextDrawable drawable = TextDrawable.builder()
+                    .beginConfig()
+                    .toUpperCase()
+                    .endConfig()
+                    .buildRoundRect(e.getName().substring(0, 1), color, 10);
+
+            h.image.setImageDrawable(drawable);
+
             // call Animation function
             setAnimation(h.mView, position);
         }
@@ -81,6 +96,15 @@ public class ElderlyMonitoredAdapter extends BaseAdapter<Elderly> {
 
         @BindView(R.id.elderly_name_textview)
         TextView name;
+
+        @BindView(R.id.elderly_imageView)
+        ImageView image;
+
+        @BindView(R.id.elderly_fall_records_textView)
+        TextView fallRecords;
+
+        @BindView(R.id.elderly_fall_risk_textView)
+        TextView fallRisk;
 
         public ViewHolder(View view) {
             super(view);

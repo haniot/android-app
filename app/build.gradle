@@ -50,6 +50,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-core:11.8.0'
     implementation 'com.google.firebase:firebase-messaging:11.8.0'
 
+    // TEXT DRAWABLE
+    implementation 'com.github.amulyakhare:TextDrawable:master'
+
     // TEST
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'

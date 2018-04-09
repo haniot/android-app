@@ -7,10 +7,7 @@
         android:id="@+id/toolbar"
         style="@style/ToolbarStyle"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
-        android:minHeight="?attr/actionBarSize">
-        <!-- Color is Brown 500 -->
+        android:layout_height="wrap_content">
 
         <ProgressBar
             android:id="@+id/progressBarToolbar"

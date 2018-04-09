@@ -4,7 +4,12 @@
     <color name="colorPrimaryDark">#17806E</color>
     <color name="colorAccent">#53cdba</color>
 
+    <color name="colorPrimarySecondary">#03A9F4</color>
+    <color name="colorPrimaryDarkSecondary">#0288D1</color>
+    <color name="colorAccentSecondary">#4FC3F7</color>
+
     <color name="colorCard">#EBF6F4</color>
+    <color name="colorCardSecondary">#E3F2FD</color>
     <color name="colorTextDark">#FFF</color>
     <color name="colorAlertDanger">#a94442</color>
     <color name="colorItemSeparator">#E0E0E0</color>

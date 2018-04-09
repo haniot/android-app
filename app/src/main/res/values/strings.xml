@@ -269,6 +269,7 @@
     <string name="elderly_pin">PIN</string>
     <string name="elderly_name">Elderly Name</string>
     <string name="elderly_not_register">Could not register elderly...</string>
+    <string name="elderly_fall_register">Fall Records: %d</string>
 
     <string name="other">Other</string>
 

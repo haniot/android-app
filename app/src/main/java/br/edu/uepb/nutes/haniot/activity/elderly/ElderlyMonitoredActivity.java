@@ -1,10 +1,14 @@
 package br.edu.uepb.nutes.haniot.activity.elderly;
 
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,9 +17,13 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -74,12 +82,12 @@ public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRec
 
         session = new Session(this);
         params = new Params(session.get_idLogged(), MeasurementType.TEMPERATURE);
+        initComponents();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        initComponents();
         loadData();
     }
 
@@ -98,8 +106,20 @@ public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRec
 
     private void initToolBar() {
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(getString(R.string.elderly_monitored));
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle(getString(R.string.elderly_monitored));
+        actionBar.setDisplayShowTitleEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
+        actionBar.setBackgroundDrawable(new ColorDrawable(
+                ContextCompat.getColor(this, R.color.colorPrimarySecondary)));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(ContextCompat.getColor(this,
+                    R.color.colorPrimaryDarkSecondary));
+        }
     }
 
     private void initRecyclerView() {
@@ -172,7 +192,19 @@ public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRec
     // TODO IMPLEMENTAR NO MODULO HISTORICAL
     private List<Elderly> transform(JSONObject json) {
         List<Elderly> result = new ArrayList<>();
+        try {
+            JSONArray arrayData = json.getJSONArray("externalData");
 
+            for (int i = 0; i < arrayData.length(); i++) {
+                JSONObject o = arrayData.getJSONObject(i);
+
+                Elderly e = new Elderly();
+                e.setName(o.getString("name"));
+                result.add(e);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         return result;
     }
 

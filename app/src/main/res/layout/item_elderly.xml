@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -10,28 +11,68 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:foreground="?android:attr/selectableItemBackground"
-        card_view:cardBackgroundColor="@color/colorCard"
+        card_view:cardBackgroundColor="@color/colorCardSecondary"
         card_view:cardCornerRadius="2dp"
         card_view:cardElevation="2dp"
         card_view:cardPreventCornerOverlap="false"
         card_view:cardUseCompatPadding="true">
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/elderly_name_textview"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:text="@null"
-                android:textSize="16sp" />
+                android:orientation="vertical"
+                android:padding="16dp">
 
-        </RelativeLayout>
+                <ImageView
+                    android:id="@+id/elderly_imageView"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginRight="10dp"
+                    app:srcCompat="@null" />
+
+                <TextView
+                    android:id="@+id/elderly_name_textview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@+id/elderly_imageView"
+                    android:layout_toEndOf="@+id/elderly_imageView"
+                    android:text="Elvis P. da Silva"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/elderly_fall_records_textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignStart="@+id/elderly_name_textview"
+                    android:layout_below="@+id/elderly_name_textview"
+                    android:text="@string/elderly_fall_register"
+                    android:textSize="11sp" />
+
+
+                <TextView
+                    android:id="@+id/elderly_fall_risk_textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/elderly_imageView"
+                    android:layout_alignEnd="@+id/elderly_name_textview"
+                    android:background="@color/colorButtonSuccess"
+                    android:paddingBottom="2dp"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:paddingTop="2dp"
+                    android:text="Risco de queda baixo"
+                    android:textColor="@color/colorTextDark"
+                    android:textSize="11sp" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
 
     </android.support.v7.widget.CardView>
 
