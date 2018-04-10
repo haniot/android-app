@@ -1,4 +1,4 @@
-package br.edu.uepb.nutes.haniot.activity.elderly;
+package br.edu.uepb.nutes.haniot.elderly;
 
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
@@ -99,7 +99,7 @@ public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRec
         mAddPatientButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), ElderlyFormActivity.class));
+                startActivity(new Intent(getApplicationContext(), ElderlyRegisterActivity.class));
             }
         });
     }

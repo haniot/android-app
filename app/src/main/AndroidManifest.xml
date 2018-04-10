@@ -86,8 +86,8 @@
         <activity android:name=".activity.graphs.HeartRateGraphActivity" />
         <activity android:name=".activity.graphs.GlucoseGraphActivity" />
         <activity android:name=".activity.graphs.BloodPresssureGraphActivity" />
-        <activity android:name=".activity.elderly.ElderlyMonitoredActivity" />
-        <activity android:name=".activity.elderly.ElderlyFormActivity" />
+        <activity android:name=".elderly.ElderlyMonitoredActivity" />
+        <activity android:name=".elderly.ElderlyRegisterActivity" />
 
         <!-- SERVICES -->
         <service

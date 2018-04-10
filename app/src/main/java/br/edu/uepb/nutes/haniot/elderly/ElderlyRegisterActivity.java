@@ -1,23 +1,23 @@
-package br.edu.uepb.nutes.haniot.activity.elderly;
+package br.edu.uepb.nutes.haniot.elderly;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.transition.Slide;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
+import android.view.Gravity;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -26,47 +26,42 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.model.Elderly;
-import br.edu.uepb.nutes.haniot.server.Server;
+import br.edu.uepb.nutes.haniot.utils.Log;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ElderlyFormActivity extends AppCompatActivity {
-    private final String TAG = "ElderlyFormActivity";
-
-    private Session session;
-    private Menu menu;
+public class ElderlyRegisterActivity extends AppCompatActivity implements ElderlyPinFragment.OnNextPageSelectedListener {
+    private final String TAG = "ElderlyRegisterActivity";
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
 
-    @BindView(R.id.progressBarToolbar)
-    ProgressBar mProgressBar;
-
-    @BindView(R.id.edit_text_encodedId)
-    EditText encodedIdEditText;
-
-    @BindView(R.id.edit_text_name)
-    EditText nameEditText;
-
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_elderly_form);
+        setContentView(R.layout.activity_elderly_register);
         ButterKnife.bind(this);
 
-        setSupportActionBar(mToolbar);
-        getSupportActionBar().setTitle(R.string.elderly_add);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        session = new Session(this);
         initComponents();
     }
 
     private void initComponents() {
         initToolBar();
+        openFragment(ElderlyPinFragment.newInstance());
+    }
+
+    /**
+     * Open fragment.
+     *
+     * @param fragment {@link Fragment}
+     */
+    private void openFragment(Fragment fragment) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        if (fragment instanceof ElderlyFormFragment)
+            transaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left);
+        transaction.replace(R.id.content_form_elderly, fragment).commit();
+//        transaction.replace(R.id.content_form_elderly, fragment).addToBackStack(null).commit();
     }
 
     private void initToolBar() {
@@ -85,14 +80,6 @@ public class ElderlyFormActivity extends AppCompatActivity {
             window.setStatusBarColor(ContextCompat.getColor(this,
                     R.color.colorPrimaryDarkSecondary));
         }
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_options_toolbar, menu);
-        this.menu = menu;
-
-        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
@@ -122,22 +109,22 @@ public class ElderlyFormActivity extends AppCompatActivity {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), 0);
 
-        String path = "users/".concat(session.get_idLogged()).concat("/external");
-        Server.getInstance(this).post(path,
-                getJsonDataView(), new Server.Callback() {
-                    @Override
-                    public void onError(JSONObject result) {
-                        printMessage(result);
-                        loading(false);
-                    }
-
-                    @Override
-                    public void onSuccess(JSONObject result) {
-                        loading(false);
-                        printMessage(result);
-                        finish();
-                    }
-                });
+//        String path = "users/".concat(session.get_idLogged()).concat("/external");
+//        Server.getInstance(this).post(path,
+//                getJsonDataView(), new Server.Callback() {
+//                    @Override
+//                    public void onError(JSONObject result) {
+//                        printMessage(result);
+//                        loading(false);
+//                    }
+//
+//                    @Override
+//                    public void onSuccess(JSONObject result) {
+//                        loading(false);
+//                        printMessage(result);
+//                        finish();
+//                    }
+//                });
     }
 
     private void printMessage(final JSONObject response) {
@@ -171,38 +158,38 @@ public class ElderlyFormActivity extends AppCompatActivity {
      * @param enabled
      */
     private void loading(final boolean enabled) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (menu != null) {
-                    final MenuItem menuItem = menu.findItem(R.id.action_save);
-                    menuItem.setEnabled(!enabled);
-                }
-                if (enabled) mProgressBar.setVisibility(View.VISIBLE);
-                else mProgressBar.setVisibility(View.GONE);
-            }
-        });
+//        runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                if (menu != null) {
+//                    final MenuItem menuItem = menu.findItem(R.id.action_save);
+//                    menuItem.setEnabled(!enabled);
+//                }
+//                if (enabled) mProgressBar.setVisibility(View.VISIBLE);
+//                else mProgressBar.setVisibility(View.GONE);
+//            }
+//        });
     }
 
     public boolean validate() {
-        String encodedId = encodedIdEditText.getText().toString();
-        String name = nameEditText.getText().toString();
-
-        if (encodedId.isEmpty()) {
-            encodedIdEditText.setError(getString(R.string.required_field));
-            requestFocus(encodedIdEditText);
-            return false;
-        } else {
-            encodedIdEditText.setError(null);
-        }
-
-        if (name.isEmpty() || name.length() < 3) {
-            nameEditText.setError(getString(R.string.validate_name));
-            requestFocus(nameEditText);
-            return false;
-        } else {
-            nameEditText.setError(null);
-        }
+//        String encodedId = encodedIdEditText.getText().toString();
+//        String name = nameEditText.getText().toString();
+//
+//        if (encodedId.isEmpty()) {
+//            encodedIdEditText.setError(getString(R.string.required_field));
+//            requestFocus(encodedIdEditText);
+//            return false;
+//        } else {
+//            encodedIdEditText.setError(null);
+//        }
+//
+//        if (name.isEmpty() || name.length() < 3) {
+//            nameEditText.setError(getString(R.string.validate_name));
+//            requestFocus(nameEditText);
+//            return false;
+//        } else {
+//            nameEditText.setError(null);
+//        }
 
         return true;
     }
@@ -220,5 +207,12 @@ public class ElderlyFormActivity extends AppCompatActivity {
     public String getJsonDataView() {
         Elderly elderly = new Elderly();
         return new Gson().toJson(elderly);
+    }
+
+    @Override
+    public void onNextPageSelected() {
+        Log.d(TAG, "onNextPageSelected()");
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
+        openFragment(ElderlyFormFragment.newInstance());
     }
 }

@@ -29,7 +29,7 @@ import org.json.JSONObject;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.account.LoginActivity;
-import br.edu.uepb.nutes.haniot.activity.elderly.ElderlyMonitoredActivity;
+import br.edu.uepb.nutes.haniot.elderly.ElderlyMonitoredActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.activity.settings.SettingsActivity;
 import br.edu.uepb.nutes.haniot.fragment.ConnectDeviceFragment;
