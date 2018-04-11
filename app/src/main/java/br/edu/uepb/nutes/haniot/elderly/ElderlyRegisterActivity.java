@@ -5,14 +5,12 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.transition.Slide;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
@@ -72,13 +70,13 @@ public class ElderlyRegisterActivity extends AppCompatActivity implements Elderl
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         actionBar.setBackgroundDrawable(new ColorDrawable(
-                ContextCompat.getColor(this, R.color.colorPrimarySecondary)));
+                ContextCompat.getColor(this, R.color.colorSecondary)));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(ContextCompat.getColor(this,
-                    R.color.colorPrimaryDarkSecondary));
+                    R.color.colorSecondaryDark));
         }
     }
 

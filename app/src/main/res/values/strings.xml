@@ -33,6 +33,8 @@
     <string name="week_text">Week</string>
     <string name="month_text">Month</string>
     <string name="today_text">Today</string>
+    <string name="yes_text">Yes</string>
+    <string name="no_text">No</string>
 
     <!--ACTIONS-->
     <string name="action_settings">Settings</string>
@@ -271,6 +273,30 @@
     <string name="elderly_not_register">Could not register elderly...</string>
     <string name="elderly_fall_register">Fall Records: %d</string>
 
+    <!-- ELDERLY FORM -->
+    <string name="elderly_input_title_name">Name</string>
+    <string name="elderly_input_title_date_birth">Birth of Date</string>
+    <string name="elderly_input_title_sex">Sex</string>
+    <string name="elderly_input_title_weight">Weight</string>
+    <string name="elderly_input_title_height">Height</string>
+    <string name="elderly_input_title_marital_status">Marital status</string>
+    <string name="elderly_input_title_degree_education">Education</string>
+    <string name="elderly_input_title_live_alone">Live alone?</string>
+    <string name="elderly_input_title_medications">Medications</string>
+    <string name="elderly_input_title_accessories">Accessories</string>
+    <string name="elderly_input_name">Name of the elderly</string>
+    <string name="elderly_input_date_birth">Birth of date</string>
+    <string name="elderly_input_sex">Sex</string>
+    <string name="elderly_input_weight">Weight in kg</string>
+    <string name="elderly_input_height">Height in cm</string>
+    <string name="elderly_input_marital_status">Marital status</string>
+    <string name="elderly_input_degree_education">Degree of education</string>
+    <string name="elderly_input_live_alone">Live alone?</string>
+    <string name="elderly_input_medications">Name of medicines the elderly use</string>
+    <string name="elderly_input_accessories">Accessories that the elderly use</string>
+    <string name="elderly_add_medications">Add new medication</string>
+    <string name="elderly_add_accessories">Add new accessory</string>
+
     <string name="other">Other</string>
 
     <!--TYPES AND GROUPS-->
@@ -407,8 +433,5 @@
         <item>Glasses</item>
         <item>Hearing aid</item>
     </string-array>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

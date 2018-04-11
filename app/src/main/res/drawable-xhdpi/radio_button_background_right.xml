@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_checked="true">
+        <shape>
+            <corners android:bottomRightRadius="@dimen/button_radius" android:topRightRadius="@dimen/button_radius" />
+            <solid android:color="@color/colorAccentSecondary" />
+            <padding android:bottom="@dimen/button_padding" android:left="@dimen/radio_button_horizontal_padding" android:right="@dimen/radio_button_horizontal_padding" android:top="@dimen/button_padding" />
+        </shape>
+    </item>
+
+    <item android:state_pressed="true">
+        <shape>
+            <corners android:bottomRightRadius="@dimen/button_radius" android:topRightRadius="@dimen/button_radius" />
+            <solid android:color="@color/colorBackRadiogroup" />
+            <stroke android:width="2dp" android:color="@color/colorAccentSecondary" />
+            <padding android:bottom="@dimen/button_padding" android:left="@dimen/radio_button_horizontal_padding" android:right="@dimen/radio_button_horizontal_padding" android:top="@dimen/button_padding" />
+        </shape>
+    </item>
+
+    <item>
+        <shape>
+            <corners android:bottomRightRadius="@dimen/button_radius" android:topRightRadius="@dimen/button_radius" />
+            <stroke android:width="2dp" android:color="@color/colorAccentSecondary" />
+            <padding android:bottom="@dimen/button_padding" android:left="@dimen/radio_button_horizontal_padding" android:right="@dimen/radio_button_horizontal_padding" android:top="@dimen/button_padding" />
+        </shape>
+    </item>
+</selector>

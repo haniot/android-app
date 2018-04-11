@@ -212,7 +212,7 @@
     },
     {
       "id": "6:5242814007400955158",
-      "lastPropertyId": "11:2523896613177716078",
+      "lastPropertyId": "12:4624722436505221820",
       "name": "Elderly",
       "properties": [
         {
@@ -258,13 +258,18 @@
         {
           "id": "11:2523896613177716078",
           "name": "accessories"
+        },
+        {
+          "id": "12:4624722436505221820",
+          "indexId": "11:3753956096958752027",
+          "name": "userId"
         }
       ],
       "relations": []
     }
   ],
   "lastEntityId": "6:5242814007400955158",
-  "lastIndexId": "10:370150258736358813",
+  "lastIndexId": "11:3753956096958752027",
   "lastRelationId": "1:1383549914051348559",
   "lastSequenceId": "0:0",
   "modelVersion": 4,

@@ -2,6 +2,8 @@ package br.edu.uepb.nutes.haniot.model;
 
 import android.content.Context;
 
+import java.util.Arrays;
+
 import br.edu.uepb.nutes.haniot.R;
 
 /**
@@ -20,8 +22,13 @@ public class DegreeEducationType {
     public static String getString(Context context, int type) {
         String types[] = context.getResources().getStringArray(R.array.marital_status_types_array);
 
-        if (types.length > type && types.length < type) return types[type];
+        if (type < 1 || type > types.length) return "";
 
-        return "";
+        return types[type - 1];
+    }
+
+    public static int getId(Context context, String value) {
+        String types[] = context.getResources().getStringArray(R.array.marital_status_types_array);
+        return Arrays.asList(types).indexOf(value);
     }
 }

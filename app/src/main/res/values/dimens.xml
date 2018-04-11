@@ -12,4 +12,7 @@
     <dimen name="profile_height">75dp</dimen>
 
     <dimen name="height_logo_drawer">90dp</dimen>
+    <dimen name="button_radius">10dp</dimen>
+    <dimen name="button_padding">10dp</dimen>
+    <dimen name="radio_button_horizontal_padding">20dp</dimen>
 </resources>

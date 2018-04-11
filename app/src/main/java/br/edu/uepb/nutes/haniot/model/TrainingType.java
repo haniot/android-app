@@ -26,8 +26,8 @@ public class TrainingType {
     public static String getString(Context context, int type) {
         String types[] = context.getResources().getStringArray(R.array.training_types_array);
 
-        if (types.length > type && types.length < type) return types[type];
+        if (type < 1 || type > types.length) return "";
 
-        return "";
+        return types[type - 1];
     }
 }
