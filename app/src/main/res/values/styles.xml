@@ -19,4 +19,10 @@
         <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
         <item name="theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
     </style>
+
+    <style name="SecondaryButton" parent="Theme.AppCompat">
+        <item name="colorButtonNormal">@color/colorSecondary</item>
+        <item name="colorControlHighlight">@color/colorAccentSecondary</item>
+        <item name="android:textColor">@color/colorTextDark</item>
+    </style>
 </resources>

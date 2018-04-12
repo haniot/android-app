@@ -296,6 +296,8 @@
     <string name="elderly_input_accessories">Accessories that the elderly use</string>
     <string name="elderly_add_medications">Add new medication</string>
     <string name="elderly_add_accessories">Add new accessory</string>
+    <string name="elderly_select_accessories">Select the accessories</string>
+    <string name="elderly_select_medications">Select the medications</string>
 
     <string name="other">Other</string>
 
@@ -426,6 +428,16 @@
 
     <!-- ELDERLY USER OF ACCESSORIES -->
     <string-array name="elderly_accessories_array">
+        <item>Crutches</item>
+        <item>Walking</item>
+        <item>Sticks</item>
+        <item>Walkers</item>
+        <item>Glasses</item>
+        <item>Hearing aid</item>
+    </string-array>
+
+    <!-- ELDERLY MEDICATIONS -->
+    <string-array name="medications_array">
         <item>Crutches</item>
         <item>Walking</item>
         <item>Sticks</item>

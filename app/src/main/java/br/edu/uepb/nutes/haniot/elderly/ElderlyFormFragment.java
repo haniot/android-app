@@ -13,6 +13,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.ui.MultiSelectSpinner;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -24,6 +25,12 @@ public class ElderlyFormFragment extends Fragment {
     @BindView(R.id.education_spinner)
     Spinner educationSpinner;
 
+    @BindView(R.id.medications_multiSelectSpinner)
+    MultiSelectSpinner medicationsSpinner;
+
+    @BindView(R.id.accessories_multiSelectSpinner)
+    MultiSelectSpinner accessoriesSpinner;
+
     public ElderlyFormFragment() {
         // Required empty public constructor
     }
@@ -34,24 +41,27 @@ public class ElderlyFormFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-//        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, categories);
-//
-//        // Drop down layout style - list view with radio button
-//        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//
-//        // attaching data adapter to spinner
-//        spinner.setAdapter(dataAdapter);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_elderly_form, container, false);
         ButterKnife.bind(this, view);
         return view;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        initUI();
+    }
+
+    private void initUI() {
+        // MultiSpinner medications
+        medicationsSpinner.setSelectionEmpty(getResources().getString(R.string.elderly_select_medications));
+
+        // MultiSpinner accessories
+        accessoriesSpinner.setItems(getResources().getStringArray(R.array.elderly_accessories_array));
+        accessoriesSpinner.setSelectionEmpty(getResources().getString(R.string.elderly_select_accessories));
     }
 
     @Override

@@ -4,17 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F5F5"
-
     tools:context=".elderly.ElderlyFormFragment">
 
+    <!-- LAYOUT GENERAL -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:padding="@dimen/activity_horizontal_margin">
 
-        <!-- BOX DATA 1 -->
+        <!-- DATA BOX 1 -->
         <android.support.v7.widget.CardView
             android:id="@+id/card_view_personal"
             android:layout_width="match_parent"
@@ -22,16 +21,18 @@
             android:layout_gravity="center"
             card_view:cardBackgroundColor="@color/colorTextDark"
             card_view:cardCornerRadius="5dp"
-            card_view:cardElevation="5dp"
+            card_view:cardElevation="4dp"
             card_view:cardPreventCornerOverlap="false"
             card_view:cardUseCompatPadding="true">
 
+            <!-- LAYOUT GENERAL DATA BOX 1 -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
                 android:padding="@dimen/activity_horizontal_margin">
 
+                <!-- LAYOUT LINE 1 -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -57,13 +58,16 @@
                         android:imeOptions="actionNext"
                         android:inputType="textCapSentences" />
                 </LinearLayout>
+                <!-- END LAYOUT LINE 1 -->
 
+                <!-- LAYOUT LINE 2 -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/activity_horizontal_margin"
                     android:orientation="horizontal">
 
+                    <!-- LAYOUT BOX WEIGHT -->
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -88,9 +92,10 @@
                             android:hint="@string/elderly_input_weight"
                             android:imeOptions="actionNext"
                             android:inputType="number" />
-
                     </LinearLayout>
+                    <!-- END LAYOUT BOX WEIGHT -->
 
+                    <!-- LAYOUT BOX HEIGHT -->
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -115,16 +120,19 @@
                             android:hint="@string/elderly_input_height"
                             android:imeOptions="actionNext"
                             android:inputType="number" />
-
                     </LinearLayout>
+                    <!-- END LAYOUT BOX HEIGHT -->
                 </LinearLayout>
+                <!-- END LAYOUT LINE 2 -->
 
+                <!-- LAYOUT LINE 3 -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/activity_horizontal_margin"
                     android:orientation="horizontal">
 
+                    <!-- LAYOUT BOX BIRTH DATE -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -151,7 +159,9 @@
                             android:imeOptions="actionNext"
                             android:inputType="textAutoComplete" />
                     </LinearLayout>
+                    <!-- END LAYOUT BOX BIRTH DATE -->
 
+                    <!-- LAYOUT BOX SEX -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -193,15 +203,16 @@
                                 android:textColor="@drawable/radio_button_text"
                                 android:textSize="11sp" />
                         </RadioGroup>
-
                     </LinearLayout>
+                    <!-- END LAYOUT BOX SEX -->
                 </LinearLayout>
-
+                <!-- END LAYOUT LINE 3 -->
             </LinearLayout>
+            <!-- END LAYOUT GENERAL DATA BOX 1 -->
         </android.support.v7.widget.CardView>
-        <!-- END BOX DATA 1 -->
+        <!-- END DATA BOX 1 -->
 
-        <!-- BOX DATA 2 -->
+        <!-- BOX DATA BOX 2 -->
         <android.support.v7.widget.CardView
             android:id="@+id/card_view_general"
             android:layout_width="match_parent"
@@ -209,16 +220,18 @@
             android:layout_gravity="center"
             card_view:cardBackgroundColor="@color/colorTextDark"
             card_view:cardCornerRadius="5dp"
-            card_view:cardElevation="5dp"
+            card_view:cardElevation="4dp"
             card_view:cardPreventCornerOverlap="false"
             card_view:cardUseCompatPadding="true">
 
+            <!-- LAYOUT GENERAL DATA BOX 2 -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
                 android:padding="@dimen/activity_horizontal_margin">
 
+                <!-- LAYOUT LINE 1 -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -238,7 +251,9 @@
                         android:layout_marginTop="10dp"
                         android:entries="@array/marital_status_types_array" />
                 </LinearLayout>
+                <!-- END LAYOUT LINE 1 -->
 
+                <!-- LAYOUT LINE 2 -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -258,7 +273,9 @@
                         android:layout_marginTop="10dp"
                         android:entries="@array/degree_education_types_array" />
                 </LinearLayout>
+                <!-- END LAYOUT LINE 2 -->
 
+                <!-- LAYOUT LINE 3 -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -302,11 +319,13 @@
                             android:textSize="11sp" />
                     </RadioGroup>
                 </LinearLayout>
+                <!-- END LAYOUT LINE 3 -->
             </LinearLayout>
+            <!-- END LAYOUT GENERAL DATA BOX 2  -->
         </android.support.v7.widget.CardView>
-        <!-- END BOX DATA 2 -->
+        <!-- END DATA BOX 2 -->
 
-        <!-- BOX DATA 3 -->
+        <!-- DATA BOX 3 -->
         <android.support.v7.widget.CardView
             android:id="@+id/card_view_extra"
             android:layout_width="match_parent"
@@ -314,108 +333,137 @@
             android:layout_gravity="center"
             card_view:cardBackgroundColor="@color/colorTextDark"
             card_view:cardCornerRadius="5dp"
-            card_view:cardElevation="5dp"
+            card_view:cardElevation="4dp"
             card_view:cardPreventCornerOverlap="false"
             card_view:cardUseCompatPadding="true">
 
+            <!-- LAYOUT GENERAL DATA BOX 3 -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
                 android:padding="@dimen/activity_horizontal_margin">
 
-                <TextView
-                    android:id="@+id/medications_textView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/elderly_input_title_medications" />
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/activity_horizontal_margin"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
-
-                    <br.edu.uepb.nutes.haniot.ui.MultiSelectSpinner
-                        android:id="@+id/medications_multiSelectSpinner"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignParentStart="true"
-                        android:layout_weight="4" />
-
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/activity_horizontal_margin"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
-
-                    <ImageButton
-                        android:id="@+id/new_medication_imageButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_weight="1"
-                        android:background="@android:color/transparent"
-                        android:backgroundTint="@color/colorSecondary"
-                        android:contentDescription="@string/elderly_add_medications"
-                        android:src="@drawable/ic_add"
-                        android:tint="@color/colorSecondary" />
-
-                </LinearLayout>
-
-
+                <!-- LAYOUT LINE 1 -->
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="@dimen/activity_horizontal_margin"
-                    android:orientation="vertical">
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
-                    <TextView
-                        android:id="@+id/accessories_textView"
+                    <!-- LAYOUT DATA LINE MEDICATIONS -->
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/elderly_input_title_accessories" />
+                        android:layout_weight="1"
+                        android:orientation="vertical">
 
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        <TextView
+                            android:id="@+id/medications_textView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/elderly_input_title_medications" />
 
-                        <EditText
-                            android:id="@+id/accessories_editText"
+                        <br.edu.uepb.nutes.haniot.ui.MultiSelectSpinner
+                            android:id="@+id/medications_multiSelectSpinner"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
                             android:layout_alignParentLeft="true"
                             android:layout_alignParentRight="true"
-                            android:layout_alignParentStart="true"
-                            android:hint="@string/elderly_input_accessories"
-                            android:imeOptions="actionNext"
-                            android:inputType="textAutoComplete" />
+                            android:layout_alignParentStart="true" />
+                    </LinearLayout>
+                    <!-- END LAYOUT DATA LINE MEDICATIONS -->
+
+                    <!-- LAYOUT DATA LINE MEDICATIONS BUTTON -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <ImageButton
+                            android:id="@+id/new_medications_imageButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginTop="15dp"
+                            android:background="@android:color/transparent"
+                            android:backgroundTint="@color/colorSecondary"
+                            android:contentDescription="@string/elderly_add_medications"
+                            android:src="@drawable/ic_add"
+                            android:tint="@color/colorSecondary"
+                            android:tooltipText="@string/elderly_add_medications" />
+                    </LinearLayout>
+                    <!-- END LAYOUT DATA LINE MEDICATIONS BUTTON -->
+                </LinearLayout>
+                <!-- END LAYOUT LINE 1 -->
+
+                <!-- LAYOUT LINE 2 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <!-- LAYOUT DATA LINE ACCESSORIES -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/accessories_textView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/elderly_input_title_accessories" />
+
+                        <br.edu.uepb.nutes.haniot.ui.MultiSelectSpinner
+                            android:id="@+id/accessories_multiSelectSpinner"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignParentStart="true" />
+                    </LinearLayout>
+                    <!-- END LAYOUT DATA LINE ACCESSORIES -->
+
+                    <!-- LAYOUT DATA LINE ACCESSORIES BUTTON -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
 
                         <ImageButton
                             android:id="@+id/new_accessories_imageButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentRight="true"
+                            android:layout_marginTop="15dp"
                             android:background="@android:color/transparent"
                             android:backgroundTint="@color/colorSecondary"
                             android:contentDescription="@string/elderly_add_accessories"
                             android:src="@drawable/ic_add"
-                            android:tint="@color/colorSecondary" />
-                    </RelativeLayout>
+                            android:tint="@color/colorSecondary"
+                            android:tooltipText="@string/elderly_add_accessories" />
+                    </LinearLayout>
+                    <!-- END LAYOUT DATA LINE ACCESSORIES BUTTON -->
                 </LinearLayout>
-
+                <!-- END LAYOUT LINE 2 -->
             </LinearLayout>
+            <!-- END LAYOUT GENERAL DATA BOX 3 -->
         </android.support.v7.widget.CardView>
         <!-- END BOX DATA 3 -->
-    </LinearLayout>
-</ScrollView>
 
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/save_button"
+            android:theme="@style/SecondaryButton"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/action_save"
+            android:layout_marginBottom="20dp"/>
+    </LinearLayout>
+    <!-- END GENERAL LAYOUT -->
+
+</ScrollView>
