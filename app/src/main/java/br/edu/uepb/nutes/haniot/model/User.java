@@ -47,8 +47,8 @@ public class User {
     @Backlink(to = "user")
     private ToMany<Measurement> measurements;
 
-    @Backlink(to = "user")
-    public ToMany<Elderly> monitoredElderly;
+//    @Backlink(to = "user")
+//    public ToMany<Elderly> monitoredElderly;
 
     /**
      * {@link UserGroup()}
@@ -151,17 +151,17 @@ public class User {
         return measurements;
     }
 
-    public ToMany<Elderly> getMonitoredElderly() {
-        return monitoredElderly;
-    }
+//    public ToMany<Elderly> getMonitoredElderly() {
+//        return monitoredElderly;
+//    }
 
-    public boolean addMonitoredElderly(Elderly monitoredElderly) {
-        return this.getMonitoredElderly().add(monitoredElderly);
-    }
-
-    public boolean addMonitoredElderly(List<Elderly> monitoredElderly) {
-        return this.getMonitoredElderly().addAll(monitoredElderly);
-    }
+//    public boolean addMonitoredElderly(Elderly monitoredElderly) {
+//        return this.getMonitoredElderly().add(monitoredElderly);
+//    }
+//
+//    public boolean addMonitoredElderly(List<Elderly> monitoredElderly) {
+//        return this.getMonitoredElderly().addAll(monitoredElderly);
+//    }
 
     public void setMeasurements(ToMany<Measurement> measurements) {
         this.measurements = measurements;
@@ -190,7 +190,7 @@ public class User {
                 ", height=" + height +
                 ", token='" + token + '\'' +
                 ", measurements=" + measurements +
-                ", monitoredElderly=" + monitoredElderly +
+//                ", monitoredElderly=" + monitoredElderly +
                 ", groupId=" + groupId +
                 '}';
     }

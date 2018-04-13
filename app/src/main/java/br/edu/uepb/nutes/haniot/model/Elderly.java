@@ -1,5 +1,7 @@
 package br.edu.uepb.nutes.haniot.model;
 
+import java.util.List;
+
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.relation.ToOne;
@@ -11,9 +13,7 @@ import io.objectbox.relation.ToOne;
  * @version 1.0
  * @copyright Copyright (c) 2017, NUTES UEPB
  */
-@Entity
 public class Elderly {
-    @Id
     private long id;
     private String name;
     private long dateOfBirth;
@@ -40,21 +40,21 @@ public class Elderly {
     /**
      * medication 1, medication 2...
      */
-    private String medications;
+    private List<String> medications;
 
     /**
      * Crutches, walking sticks, walkers, glasses, hearing aid, other ...
      */
-    private String accessories;
+    private List<String> accessories;
 
-    public ToOne<User> user;
+//    public ToOne<User> user;
 
     public Elderly() {
     }
 
     public Elderly(String name, long dateOfBirth, double weight, int height, char sex,
                    int maritalStatus, int degreeOfEducation, int liveAlone,
-                   String medications, String accessories) {
+                   List<String> medications, List<String> accessories) {
         this.name = name;
         this.dateOfBirth = dateOfBirth;
         this.weight = weight;
@@ -139,21 +139,29 @@ public class Elderly {
         this.liveAlone = liveAlone;
     }
 
-    public String getMedications() {
+    public List<String> getMedications() {
         return medications;
     }
 
-    public void setMedications(String medications) {
+    public void setMedications(List<String> medications) {
         this.medications = medications;
     }
 
-    public String getAccessories() {
+    public List<String> getAccessories() {
         return accessories;
     }
 
-    public void setAccessories(String accessories) {
+    public void setAccessories(List<String> accessories) {
         this.accessories = accessories;
     }
+//
+//    public ToOne<User> getUser() {
+//        return user;
+//    }
+//
+//    public void setUser(ToOne<User> user) {
+//        this.user = user;
+//    }
 
     @Override
     public String toString() {
@@ -167,8 +175,9 @@ public class Elderly {
                 ", maritalStatus=" + maritalStatus +
                 ", DegreeOfEducation=" + DegreeOfEducation +
                 ", liveAlone=" + liveAlone +
-                ", medications='" + medications + '\'' +
-                ", accessories='" + accessories + '\'' +
+                ", medications=" + medications +
+                ", accessories=" + accessories +
+//                ", user=" + user +
                 '}';
     }
 }

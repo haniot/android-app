@@ -295,7 +295,9 @@
     <string name="elderly_input_medications">Name of medicines the elderly use</string>
     <string name="elderly_input_accessories">Accessories that the elderly use</string>
     <string name="elderly_add_medications">Add new medication</string>
+    <string name="elderly_please_add_medications">Please, add a new medication</string>
     <string name="elderly_add_accessories">Add new accessory</string>
+    <string name="elderly_please_add_accessories">Please, add a new accessory</string>
     <string name="elderly_select_accessories">Select the accessories</string>
     <string name="elderly_select_medications">Select the medications</string>
 
