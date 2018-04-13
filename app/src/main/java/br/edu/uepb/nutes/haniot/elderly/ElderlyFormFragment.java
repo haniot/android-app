@@ -9,11 +9,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.ui.MultiSelectSpinner;
+import br.edu.uepb.nutes.haniot.utils.Log;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -30,6 +32,12 @@ public class ElderlyFormFragment extends Fragment {
 
     @BindView(R.id.accessories_multiSelectSpinner)
     MultiSelectSpinner accessoriesSpinner;
+
+    @BindView(R.id.new_medications_imageButton)
+    ImageButton medicationsButton;
+
+    @BindView(R.id.new_accessories_imageButton)
+    ImageButton accessoriesButton;
 
     public ElderlyFormFragment() {
         // Required empty public constructor
@@ -57,11 +65,26 @@ public class ElderlyFormFragment extends Fragment {
 
     private void initUI() {
         // MultiSpinner medications
-        medicationsSpinner.setSelectionEmpty(getResources().getString(R.string.elderly_select_medications));
+        medicationsSpinner
+                .title(getString(R.string.elderly_select_medications))
+                .hint(getResources().getString(R.string.elderly_select_medications))
+                .messageEmpty("Nenhuma medicamento foi criado ainda...")
+                .build();
 
         // MultiSpinner accessories
-        accessoriesSpinner.setItems(getResources().getStringArray(R.array.elderly_accessories_array));
-        accessoriesSpinner.setSelectionEmpty(getResources().getString(R.string.elderly_select_accessories));
+        accessoriesSpinner
+                .title(getString(R.string.elderly_select_accessories))
+                .hint(getString(R.string.elderly_select_accessories))
+                .items(getResources().getStringArray(R.array.elderly_accessories_array))
+                .build();
+
+        medicationsButton.setOnClickListener(e -> {
+            medicationsSpinner.item(new String("Novo Item adicionado"));
+        });
+
+        Log.d("TEST", medicationsSpinner.isEmpty() + "");
+
+
     }
 
     @Override

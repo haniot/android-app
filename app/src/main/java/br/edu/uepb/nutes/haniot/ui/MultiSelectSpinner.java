@@ -6,11 +6,13 @@ import android.content.DialogInterface;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatSpinner;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.SpinnerAdapter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -23,11 +25,13 @@ import java.util.List;
  */
 public class MultiSelectSpinner extends AppCompatSpinner implements DialogInterface.OnMultiChoiceClickListener {
     private List<String> _items = null;
-    private boolean[] mSelection = null;
+    private List<Boolean> _itemsSelected = null;
     private Context context;
-    AlertDialog.Builder dialogBuilder;
-
-    ArrayAdapter<String> mAdapter;
+    private AlertDialog.Builder dialogBuilder;
+    private ArrayAdapter<String> mAdapter;
+    private String messageDialogEmpty = "";
+    private String hintMessage = null;
+    private String title = null;
 
     /**
      * Constructor for use when instantiating directly.
@@ -37,10 +41,7 @@ public class MultiSelectSpinner extends AppCompatSpinner implements DialogInterf
     public MultiSelectSpinner(Context context) {
         super(context);
         this.context = context;
-
-        mAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item);
-        dialogBuilder = new AlertDialog.Builder(getContext());
-        super.setAdapter(mAdapter);
+        init();
     }
 
     /**
@@ -52,18 +53,30 @@ public class MultiSelectSpinner extends AppCompatSpinner implements DialogInterf
     public MultiSelectSpinner(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
+        init();
+    }
 
+    public void init() {
+        dialogBuilder = new AlertDialog.Builder(context);
         mAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item);
+        _items = new ArrayList<>();
+        _itemsSelected = new ArrayList<>();
+
         super.setAdapter(mAdapter);
     }
 
     @Override
     public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-        if (mSelection != null && which < mSelection.length) {
-            mSelection[which] = isChecked;
+        Log.d("TETING", "which is value: " + which);
+        if (_itemsSelected != null && which < _itemsSelected.size()) {
+            _itemsSelected.set(which, isChecked);
 
             mAdapter.clear();
-            mAdapter.add(buildSelectedItemString());
+            String result = buildSelectedItemString();
+            if (result.isEmpty()) build();
+            else mAdapter.add(result);
+
+            Log.d("TEST", this.isEmpty() + "");
         } else {
             throw new IllegalArgumentException("Argument 'which' is out of bounds.");
         }
@@ -71,13 +84,12 @@ public class MultiSelectSpinner extends AppCompatSpinner implements DialogInterf
 
     @Override
     public boolean performClick() {
+        if (_items.isEmpty())
+            dialogBuilder.setMessage(messageDialogEmpty);
 
-        if (_items == null) {
-            _items = new ArrayList<>();
-            dialogBuilder.setMessage("Ops teste");
-        }
-        String[] _array = _items.toArray(new String[_items.size()]);
-        dialogBuilder.setMultiChoiceItems(_array, mSelection, this);
+        String[] _arrayItems = _items.toArray(new String[_items.size()]);
+        boolean[] _arraySelectItems = itemsSelectedToArray();
+        dialogBuilder.setMultiChoiceItems(_arrayItems, _arraySelectItems, this);
         dialogBuilder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -88,100 +100,192 @@ public class MultiSelectSpinner extends AppCompatSpinner implements DialogInterf
         return true;
     }
 
+    /**
+     * Items selected List to Array.
+     *
+     * @return boolean[]
+     */
+    private boolean[] itemsSelectedToArray() {
+        boolean[] result = new boolean[_itemsSelected.size()];
+        Log.d("DDD", "RE " + Arrays.toString(_itemsSelected.toArray()));
+        for (int i = 0; i < result.length; i++) {
+            Log.d("DDD", "RE " + _itemsSelected.get(0));
+            result[i] = _itemsSelected.get(i);
+        }
+
+        return result;
+    }
+
     @Override
     public void setAdapter(SpinnerAdapter adapter) {
         throw new RuntimeException("setAdapter is not supported by MultiSelectSpinner.");
     }
 
-    public void setItems(String[] items) {
-        setItems(Arrays.asList(items));
-    }
-
-    public void addItem(String item) {
+    /**
+     * Add new item.
+     *
+     * @param item {@link String}
+     * @return MultiSelectSpinner
+     */
+    public MultiSelectSpinner item(String item) {
         if (item == null) throw new IllegalArgumentException("Item is null");
 
-        if (_items == null)
-            _items = new ArrayList<>();
         _items.add(item);
+        return this;
     }
 
-    public void setItems(List<String> items) {
+    /**
+     * Add items.
+     *
+     * @param items {@link List<String>}
+     * @return MultiSelectSpinner
+     */
+    public MultiSelectSpinner items(List<String> items) {
         _items = items;
-        mSelection = new boolean[_items.size()];
-        mAdapter.clear();
-        Arrays.fill(mSelection, false);
+        _itemsSelected = new ArrayList<>();
+        Collections.fill(_itemsSelected, false);
+        return this;
     }
 
-    public void setSelectionEmpty(@Nullable String strEmpty) {
-        mAdapter.clear();
-        if (strEmpty != null) mAdapter.add(strEmpty);
+    /**
+     * Add items.
+     *
+     * @param items {@link String[]}
+     * @return MultiSelectSpinner
+     */
+    public MultiSelectSpinner items(String[] items) {
+        items(Arrays.asList(items));
+        return this;
     }
 
-    public void setSelection(int index) {
-        for (int i = 0; i < mSelection.length; i++) {
-            mSelection[i] = false;
-        }
-        if (index >= 0 && index < mSelection.length) {
-            mSelection[index] = true;
-        } else {
-            throw new IllegalArgumentException("Index " + index
-                    + " is out of bounds.");
-        }
+    /**
+     * Add message hint.
+     *
+     * @param hintMessage {@link String}
+     * @return MultiSelectSpinner
+     */
+    public MultiSelectSpinner hint(@Nullable String hintMessage) {
+        this.hintMessage = hintMessage;
+        return this;
+    }
+
+    /**
+     * Add message empty dialog.
+     *
+     * @param message {@link String}
+     * @return MultiSelectSpinner
+     */
+    public MultiSelectSpinner messageEmpty(String message) {
+        this.messageDialogEmpty = message;
+        return this;
+    }
+
+    /**
+     * Add title in dialog.
+     *
+     * @param title {@link String}
+     * @return MultiSelectSpinner
+     */
+    public MultiSelectSpinner title(String title) {
+        this.title = title;
+        return this;
+    }
+
+    public void build() {
+        mAdapter.clear();
+        if (hintMessage != null) mAdapter.add(hintMessage);
+
+        if (title != null) dialogBuilder.setTitle(title);
+    }
+
+    /**
+     * Spinner is empty?
+     *
+     * @return boolean
+     */
+    public boolean isEmpty() {
+        if (_items == null) return true;
+
+        return _items.isEmpty();
+    }
+
+    /**
+     * Select item in list.
+     *
+     * @param index
+     */
+    public void selection(int index) {
+        for (int i = 0; i < _itemsSelected.size(); i++)
+            _itemsSelected.set(i, false);
+
+        if (index >= 0 && index < _itemsSelected.size()) _itemsSelected.set(index, true);
+        else throw new IllegalArgumentException("Index index is out of bounds.");
+
         mAdapter.clear();
         mAdapter.add(buildSelectedItemString());
     }
 
-    public void setSelection(int[] selectedIndicies) {
-        for (int i = 0; i < mSelection.length; i++) {
-            mSelection[i] = false;
-        }
+    /**
+     * Select array items in list.
+     *
+     * @param selectedIndicies
+     */
+    public void selection(int[] selectedIndicies) {
+        for (int i = 0; i < _itemsSelected.size(); i++)
+            _itemsSelected.set(i, false);
+
         for (int index : selectedIndicies) {
-            if (index >= 0 && index < mSelection.length) {
-                mSelection[index] = true;
-            } else {
-                throw new IllegalArgumentException("Index " + index
-                        + " is out of bounds.");
-            }
+            if (index >= 0 && index < _itemsSelected.size()) _itemsSelected.set(index, true);
+            else throw new IllegalArgumentException("Index index is out of bounds.");
         }
+
         mAdapter.clear();
         mAdapter.add(buildSelectedItemString());
     }
 
+    /**
+     * Get {@link List<String>} items selected.
+     *
+     * @return List {@link List<String>}
+     */
     public List<String> getSelectedStrings() {
         List<String> selection = new LinkedList<>();
-        for (int i = 0; i < _items.size(); ++i) {
-            if (mSelection[i]) {
-                selection.add(_items.get(i));
-            }
-        }
+        for (int i = 0; i < _items.size(); ++i)
+            if (_itemsSelected.get(i)) selection.add(_items.get(i));
+
         return selection;
     }
 
+    /**
+     * Get indexes of selected items.
+     *
+     * @return {@link List<Integer>}
+     */
     public List<Integer> getSelectedIndicies() {
-        List<Integer> selection = new LinkedList<Integer>();
-        for (int i = 0; i < _items.size(); ++i) {
-            if (mSelection[i]) {
-                selection.add(i);
-            }
-        }
+        List<Integer> selection = new LinkedList<>();
+        for (int i = 0; i < _items.size(); ++i)
+            if (_itemsSelected.get(i)) selection.add(i);
+
         return selection;
     }
 
+    /**
+     * Build string items selected.
+     *
+     * @return {@link String}
+     */
     private String buildSelectedItemString() {
         StringBuilder sb = new StringBuilder();
         boolean foundOne = false;
 
         for (int i = 0; i < _items.size(); ++i) {
-            if (mSelection[i]) {
-                if (foundOne) {
-                    sb.append(", ");
-                }
-                foundOne = true;
+            if (_itemsSelected.get(i)) {
+                if (foundOne) sb.append(", ");
 
+                foundOne = true;
                 sb.append(_items.get(i));
             }
         }
         return sb.toString();
     }
-
 }
