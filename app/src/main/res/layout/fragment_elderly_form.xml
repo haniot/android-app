@@ -2,14 +2,17 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    style="@style/AppThemeSecondaty"
     android:layout_width="match_parent"
+    android:scrollbarSize="2dp"
+    android:scrollbarThumbVertical="@color/colorAccentSecondary"
     android:layout_height="match_parent"
     tools:context=".elderly.ElderlyFormFragment">
 
     <!-- LAYOUT GENERAL -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="@dimen/activity_horizontal_margin">
 
@@ -41,7 +44,7 @@
                     <TextView
                         android:id="@+id/name_textView"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="0dp"
                         android:layout_weight="1"
                         android:text="@string/elderly_input_title_name" />
 
@@ -49,11 +52,6 @@
                         android:id="@+id/name_editText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignParentStart="true"
-                        android:layout_below="@+id/text_title"
                         android:hint="@string/elderly_input_name"
                         android:imeOptions="actionNext"
                         android:inputType="textCapSentences" />
@@ -65,6 +63,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/activity_horizontal_margin"
+                    android:baselineAligned="false"
                     android:orientation="horizontal">
 
                     <!-- LAYOUT BOX WEIGHT -->
@@ -84,11 +83,6 @@
                             android:id="@+id/weight_editText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"
-                            android:layout_alignParentLeft="true"
-                            android:layout_alignParentRight="true"
-                            android:layout_alignParentStart="true"
-                            android:layout_below="@+id/text_title"
                             android:hint="@string/elderly_input_weight"
                             android:imeOptions="actionNext"
                             android:inputType="number" />
@@ -112,11 +106,6 @@
                             android:id="@+id/height_editText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"
-                            android:layout_alignParentLeft="true"
-                            android:layout_alignParentRight="true"
-                            android:layout_alignParentStart="true"
-                            android:layout_below="@+id/text_title"
                             android:hint="@string/elderly_input_height"
                             android:imeOptions="actionNext"
                             android:inputType="number" />
@@ -130,6 +119,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/activity_horizontal_margin"
+                    android:baselineAligned="false"
                     android:orientation="horizontal">
 
                     <!-- LAYOUT BOX BIRTH DATE -->
@@ -149,15 +139,10 @@
                             android:id="@+id/date_birth_editText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"
-                            android:layout_alignParentLeft="true"
-                            android:layout_alignParentRight="true"
-                            android:layout_alignParentStart="true"
-                            android:layout_below="@+id/text_title"
                             android:enabled="false"
                             android:hint="@string/elderly_input_date_birth"
                             android:imeOptions="actionNext"
-                            android:inputType="textAutoComplete" />
+                            android:inputType="date" />
                     </LinearLayout>
                     <!-- END LAYOUT BOX BIRTH DATE -->
 
@@ -190,7 +175,7 @@
                                 android:checked="true"
                                 android:text="@string/gender_male"
                                 android:textColor="@drawable/radio_button_text"
-                                android:textSize="11sp" />
+                                android:textSize="12sp" />
 
                             <RadioButton
                                 android:id="@+id/gender_female_radioButton"
@@ -240,7 +225,7 @@
                     <TextView
                         android:id="@+id/names_textView"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="0dp"
                         android:layout_weight="1"
                         android:text="@string/elderly_input_title_marital_status" />
 
@@ -285,7 +270,7 @@
                     <TextView
                         android:id="@+id/live_alone_textView"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="0dp"
                         android:layout_weight="1"
                         android:text="@string/elderly_input_title_live_alone" />
 
@@ -305,7 +290,7 @@
                             android:checked="true"
                             android:text="@string/yes_text"
                             android:textColor="@drawable/radio_button_text"
-                            android:textSize="11sp" />
+                            android:textSize="12sp" />
 
                         <RadioButton
                             android:id="@+id/live_alone_no_radioButton"
@@ -316,7 +301,7 @@
                             android:checked="false"
                             android:text="@string/no_text"
                             android:textColor="@drawable/radio_button_text"
-                            android:textSize="11sp" />
+                            android:textSize="12sp" />
                     </RadioGroup>
                 </LinearLayout>
                 <!-- END LAYOUT LINE 3 -->
@@ -348,11 +333,12 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:baselineAligned="false"
                     android:orientation="horizontal">
 
                     <!-- LAYOUT DATA LINE MEDICATIONS -->
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:orientation="vertical">
@@ -367,10 +353,8 @@
                             android:id="@+id/medications_multiSelectSpinner"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"
-                            android:layout_alignParentLeft="true"
-                            android:layout_alignParentRight="true"
-                            android:layout_alignParentStart="true" />
+                            android:layout_marginBottom="@dimen/activity_horizontal_margin"
+                            android:layout_marginTop="10dp" />
                     </LinearLayout>
                     <!-- END LAYOUT DATA LINE MEDICATIONS -->
 
@@ -384,14 +368,11 @@
                             android:id="@+id/new_medications_imageButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentRight="true"
-                            android:layout_marginTop="15dp"
+                            android:layout_marginTop="25dp"
                             android:background="@android:color/transparent"
-                            android:backgroundTint="@color/colorSecondary"
                             android:contentDescription="@string/elderly_add_medications"
                             android:src="@drawable/ic_add"
-                            android:tint="@color/colorSecondary"
-                            android:tooltipText="@string/elderly_add_medications" />
+                            android:tint="@color/colorSecondary" />
                     </LinearLayout>
                     <!-- END LAYOUT DATA LINE MEDICATIONS BUTTON -->
                 </LinearLayout>
@@ -401,11 +382,12 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:baselineAligned="false"
                     android:orientation="horizontal">
 
                     <!-- LAYOUT DATA LINE ACCESSORIES -->
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:orientation="vertical">
@@ -420,10 +402,7 @@
                             android:id="@+id/accessories_multiSelectSpinner"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"
-                            android:layout_alignParentLeft="true"
-                            android:layout_alignParentRight="true"
-                            android:layout_alignParentStart="true" />
+                            android:layout_marginTop="10dp" />
                     </LinearLayout>
                     <!-- END LAYOUT DATA LINE ACCESSORIES -->
 
@@ -437,14 +416,11 @@
                             android:id="@+id/new_accessories_imageButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentRight="true"
-                            android:layout_marginTop="15dp"
+                            android:layout_marginTop="23dp"
                             android:background="@android:color/transparent"
-                            android:backgroundTint="@color/colorSecondary"
                             android:contentDescription="@string/elderly_add_accessories"
                             android:src="@drawable/ic_add"
-                            android:tint="@color/colorSecondary"
-                            android:tooltipText="@string/elderly_add_accessories" />
+                            android:tint="@color/colorSecondary" />
                     </LinearLayout>
                     <!-- END LAYOUT DATA LINE ACCESSORIES BUTTON -->
                 </LinearLayout>
@@ -456,13 +432,13 @@
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/save_button"
-            android:theme="@style/SecondaryButton"
-
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/action_save"
-            android:layout_marginBottom="20dp"/>
+            android:padding="20dp"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_marginBottom="16dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/action_save" />
     </LinearLayout>
     <!-- END GENERAL LAYOUT -->
 

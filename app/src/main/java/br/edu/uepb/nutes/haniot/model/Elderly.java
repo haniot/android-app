@@ -2,8 +2,10 @@ package br.edu.uepb.nutes.haniot.model;
 
 import java.util.List;
 
+import io.objectbox.annotation.Backlink;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
+import io.objectbox.relation.ToMany;
 import io.objectbox.relation.ToOne;
 
 /**
@@ -13,7 +15,9 @@ import io.objectbox.relation.ToOne;
  * @version 1.0
  * @copyright Copyright (c) 2017, NUTES UEPB
  */
+@Entity
 public class Elderly {
+    @Id
     private long id;
     private String name;
     private long dateOfBirth;
@@ -38,23 +42,26 @@ public class Elderly {
     private int liveAlone;
 
     /**
-     * medication 1, medication 2...
+     * {@link Medication}
      */
-    private List<String> medications;
+    @Backlink(to = "elderly")
+    public ToMany<Medication> medications;
 
     /**
-     * Crutches, walking sticks, walkers, glasses, hearing aid, other ...
+     * Crutches, walking sticks, walkers, glasses, hearing aid...
+     * <p>
+     * {@link Medication}
      */
-    private List<String> accessories;
+    @Backlink(to = "elderly")
+    public ToMany<Accessory> accessories;
 
-//    public ToOne<User> user;
+    public ToOne<User> user;
 
     public Elderly() {
     }
 
     public Elderly(String name, long dateOfBirth, double weight, int height, char sex,
-                   int maritalStatus, int degreeOfEducation, int liveAlone,
-                   List<String> medications, List<String> accessories) {
+                   int maritalStatus, int degreeOfEducation, int liveAlone) {
         this.name = name;
         this.dateOfBirth = dateOfBirth;
         this.weight = weight;
@@ -63,8 +70,6 @@ public class Elderly {
         this.maritalStatus = maritalStatus;
         DegreeOfEducation = degreeOfEducation;
         this.liveAlone = liveAlone;
-        this.medications = medications;
-        this.accessories = accessories;
     }
 
     public long getId() {
@@ -139,29 +144,37 @@ public class Elderly {
         this.liveAlone = liveAlone;
     }
 
-    public List<String> getMedications() {
+    public ToOne<User> getUser() {
+        return user;
+    }
+
+    public void setUser(ToOne<User> user) {
+        this.user = user;
+    }
+
+    public ToMany<Medication> getMedications() {
         return medications;
     }
 
-    public void setMedications(List<String> medications) {
-        this.medications = medications;
+    public boolean addElderly(Medication medication) {
+        return this.getMedications().add(medication);
     }
 
-    public List<String> getAccessories() {
+    public boolean addMedications(List<Medication> medications) {
+        return this.getMedications().addAll(medications);
+    }
+
+    public ToMany<Accessory> getAccessories() {
         return accessories;
     }
 
-    public void setAccessories(List<String> accessories) {
-        this.accessories = accessories;
+    public boolean addAccessory(Accessory accessory) {
+        return this.getAccessories().add(accessory);
     }
-//
-//    public ToOne<User> getUser() {
-//        return user;
-//    }
-//
-//    public void setUser(ToOne<User> user) {
-//        this.user = user;
-//    }
+
+    public boolean addAccessories(List<Accessory> accessories) {
+        return this.getAccessories().addAll(accessories);
+    }
 
     @Override
     public String toString() {
@@ -177,7 +190,7 @@ public class Elderly {
                 ", liveAlone=" + liveAlone +
                 ", medications=" + medications +
                 ", accessories=" + accessories +
-//                ", user=" + user +
+                ", user=" + user +
                 '}';
     }
 }

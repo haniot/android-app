@@ -110,16 +110,6 @@ public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRec
         actionBar.setTitle(getString(R.string.elderly_monitored));
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
-
-        actionBar.setBackgroundDrawable(new ColorDrawable(
-                ContextCompat.getColor(this, R.color.colorSecondary)));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getWindow();
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(ContextCompat.getColor(this,
-                    R.color.colorSecondaryDark));
-        }
     }
 
     private void initRecyclerView() {

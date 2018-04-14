@@ -86,8 +86,12 @@
         <activity android:name=".activity.graphs.HeartRateGraphActivity" />
         <activity android:name=".activity.graphs.GlucoseGraphActivity" />
         <activity android:name=".activity.graphs.BloodPresssureGraphActivity" />
-        <activity android:name=".elderly.ElderlyMonitoredActivity" />
-        <activity android:name=".elderly.ElderlyRegisterActivity" />
+        <activity
+            android:name=".elderly.ElderlyMonitoredActivity"
+            android:theme="@style/AppThemeSecondaty" />
+        <activity
+            android:name=".elderly.ElderlyRegisterActivity"
+            android:theme="@style/AppThemeSecondaty" />
 
         <!-- SERVICES -->
         <service
