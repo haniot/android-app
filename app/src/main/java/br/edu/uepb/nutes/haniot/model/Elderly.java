@@ -23,8 +23,13 @@ public class Elderly {
     private long dateOfBirth;
     private double weight;
     private int height;
-    private char sex;
+    private String phone;
 
+    /**
+     * 0 - male
+     * 1 - female
+     */
+    private int sex;
     /**
      * {@link MaritalStatusType}
      */
@@ -36,10 +41,10 @@ public class Elderly {
     private int DegreeOfEducation;
 
     /**
-     * 0 - NÃO
-     * 1 - SIM
+     * false - NÃO
+     * true - SIM
      */
-    private int liveAlone;
+    private boolean liveAlone;
 
     /**
      * {@link Medication}
@@ -60,8 +65,8 @@ public class Elderly {
     public Elderly() {
     }
 
-    public Elderly(String name, long dateOfBirth, double weight, int height, char sex,
-                   int maritalStatus, int degreeOfEducation, int liveAlone) {
+    public Elderly(String name, long dateOfBirth, double weight, int height, int sex,
+                   int maritalStatus, int degreeOfEducation, boolean liveAlone) {
         this.name = name;
         this.dateOfBirth = dateOfBirth;
         this.weight = weight;
@@ -112,11 +117,11 @@ public class Elderly {
         this.height = height;
     }
 
-    public char getSex() {
+    public int getSex() {
         return sex;
     }
 
-    public void setSex(char sex) {
+    public void setSex(int sex) {
         this.sex = sex;
     }
 
@@ -136,11 +141,11 @@ public class Elderly {
         DegreeOfEducation = degreeOfEducation;
     }
 
-    public int getLiveAlone() {
+    public boolean getLiveAlone() {
         return liveAlone;
     }
 
-    public void setLiveAlone(int liveAlone) {
+    public void setLiveAlone(boolean liveAlone) {
         this.liveAlone = liveAlone;
     }
 
@@ -148,8 +153,8 @@ public class Elderly {
         return user;
     }
 
-    public void setUser(ToOne<User> user) {
-        this.user = user;
+    public void setUser(User user) {
+        this.user.setTarget(user);
     }
 
     public ToMany<Medication> getMedications() {
@@ -164,6 +169,10 @@ public class Elderly {
         return this.getMedications().addAll(medications);
     }
 
+    public boolean addMedication(Medication medication) {
+        return this.getMedications().add(medication);
+    }
+
     public ToMany<Accessory> getAccessories() {
         return accessories;
     }
@@ -176,6 +185,14 @@ public class Elderly {
         return this.getAccessories().addAll(accessories);
     }
 
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
     @Override
     public String toString() {
         return "Elderly{" +
@@ -184,6 +201,7 @@ public class Elderly {
                 ", dateOfBirth=" + dateOfBirth +
                 ", weight=" + weight +
                 ", height=" + height +
+                ", phone='" + phone + '\'' +
                 ", sex=" + sex +
                 ", maritalStatus=" + maritalStatus +
                 ", DegreeOfEducation=" + DegreeOfEducation +

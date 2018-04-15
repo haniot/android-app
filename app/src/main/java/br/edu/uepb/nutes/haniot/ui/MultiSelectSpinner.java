@@ -229,17 +229,14 @@ public class MultiSelectSpinner extends AppCompatSpinner implements DialogInterf
     }
 
     /**
-     * Checks if the component has at least one selected item
+     * Spinner is empty?
      *
      * @return boolean
      */
-    public boolean isSelectedItem() {
-        if (_itemsSelected == null) return false;
+    public boolean isEmpty() {
+        if (_items == null) return true;
 
-        for (Boolean selected : _itemsSelected)
-            if (selected) return true;
-
-        return false;
+        return _items.isEmpty();
     }
 
     /**
@@ -355,9 +352,9 @@ public class MultiSelectSpinner extends AppCompatSpinner implements DialogInterf
         FrameLayout layout = new FrameLayout(context);
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.leftMargin = 70;
-        params.rightMargin = 70;
-        params.topMargin = 30;
+        params.leftMargin = 40;
+        params.rightMargin = 40;
+        params.topMargin = 20;
         input.setLayoutParams(params);
         layout.addView(input);
 

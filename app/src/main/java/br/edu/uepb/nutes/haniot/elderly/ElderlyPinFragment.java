@@ -12,6 +12,13 @@ import br.edu.uepb.nutes.haniot.R;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * ElderlyPinFragment implementation.
+ *
+ * @author Douglas Rafael <douglas.rafael@nutes.uepb.edu.br>
+ * @version 1.5
+ * @copyright Copyright (c) 2017, NUTES UEPB
+ */
 public class ElderlyPinFragment extends Fragment {
 
     private OnNextPageSelectedListener mListener;

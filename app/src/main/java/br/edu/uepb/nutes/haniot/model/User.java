@@ -190,7 +190,7 @@ public class User {
                 ", height=" + height +
                 ", token='" + token + '\'' +
                 ", measurements=" + measurements +
-//                ", monitoredElderly=" + monitoredElderly +
+                ", elderlies=" + elderlies +
                 ", groupId=" + groupId +
                 '}';
     }

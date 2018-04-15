@@ -14,17 +14,17 @@ import br.edu.uepb.nutes.haniot.R;
  * @copyright Copyright (c) 2017, NUTES UEPB
  */
 public class DegreeEducationType {
-    public static final int BASIC = 1;
-    public static final int ELEMENTARY = 2;
-    public static final int MIDDLE = 3;
-    public static final int HIGH = 4;
+    public static final int BASIC = 0;
+    public static final int ELEMENTARY = 1;
+    public static final int MIDDLE = 2;
+    public static final int HIGH = 3;
 
     public static String getString(Context context, int type) {
         String types[] = context.getResources().getStringArray(R.array.marital_status_types_array);
 
-        if (type < 1 || type > types.length) return "";
+        if (type < 0 || type >= types.length) return "";
 
-        return types[type - 1];
+        return types[type];
     }
 
     public static int getId(Context context, String value) {

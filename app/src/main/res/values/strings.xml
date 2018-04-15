@@ -191,17 +191,20 @@
     <string name="confirm_password">Confirm password</string>
 
     <!--VALIDATE MESSAGES-->
+    <string name="required_field">Required field!</string>
     <string name="validate_name">At least 3 characters</string>
     <string name="validate_not_null">Field can not be empty</string>
     <string name="validate_email">Enter a valid email address</string>
     <string name="validate_password">The password must contain at least 6 characters, with at least one number, one letter and one special character among the allowed characters: @ # $ % &amp; * ! ? . _ + - space.</string>
-    <string name="validate_height">Minimum height 60cm and maximum 250cm</string>
+    <string name="validate_height">Provide a valid height!</string>
+    <string name="validate_date_birth">Provide a valid date of birth!</string>
+    <string name="validate_phone">Provide a valid phone number!</string>
     <string name="validate_invalid_email_or_password">Invalid email or password...</string>
     <string name="validate_password_not_match_current">Current password does not match!</string>
     <string name="validate_password_not_match_new">New password and confirmation do not match!</string>
     <string name="validate_register_user_not_duplicate">Already registered user with email provided...</string>
     <string name="validate_unauthorized_access">Unauthorized access! Please contact support...</string>
-    <string name="required_field">Required field!</string>
+    <string name="validate_weight">Provide a valid weight!</string>
 
     <!--ERROR-->
     <string name="error_sign_out">There was an error while trying to quit...</string>
@@ -267,10 +270,8 @@
     <!-- ELDERLY -->
     <string name="elderly_monitored">Monitored Elderly</string>
     <string name="elderly_add">Add Elderly</string>
-    <string name="elderly_add_success">Elderly successfully added!</string>
     <string name="elderly_pin">PIN</string>
     <string name="elderly_name">Elderly Name</string>
-    <string name="elderly_not_register">Could not register elderly...</string>
     <string name="elderly_fall_register">Fall Records: %d</string>
 
     <!-- ELDERLY FORM -->
@@ -279,6 +280,7 @@
     <string name="elderly_input_title_sex">Sex</string>
     <string name="elderly_input_title_weight">Weight</string>
     <string name="elderly_input_title_height">Height</string>
+    <string name="elderly_input_title_phone">Contact phone</string>
     <string name="elderly_input_title_marital_status">Marital status</string>
     <string name="elderly_input_title_degree_education">Education</string>
     <string name="elderly_input_title_live_alone">Live alone?</string>
@@ -289,6 +291,7 @@
     <string name="elderly_input_sex">Sex</string>
     <string name="elderly_input_weight">Weight in kg</string>
     <string name="elderly_input_height">Height in cm</string>
+    <string name="elderly_input_phone">Elderly phone number for contact</string>
     <string name="elderly_input_marital_status">Marital status</string>
     <string name="elderly_input_degree_education">Degree of education</string>
     <string name="elderly_input_live_alone">Live alone?</string>
@@ -298,8 +301,10 @@
     <string name="elderly_please_add_medications">Please, add a new medication</string>
     <string name="elderly_add_accessories">Add new accessory</string>
     <string name="elderly_please_add_accessories">Please, add a new accessory</string>
-        <string name="elderly_select_accessories">Select the accessories</string>
+    <string name="elderly_select_accessories">Select the accessories</string>
     <string name="elderly_select_medications">Select the medications</string>
+    <string name="elderly_register_success">Data saved successfully!\nDo you want to respond now to an assessment to identify the risk of falling?</string>
+    <string name="elderly_assessment_risk_falling">Do you want to respond now to an assessment to identify the risk of falling?</string>
 
     <string name="other">Other</string>
 

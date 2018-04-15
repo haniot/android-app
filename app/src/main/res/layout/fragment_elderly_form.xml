@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/AppThemeSecondaty"
     android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:scrollbarSize="2dp"
     android:scrollbarThumbVertical="@color/colorAccentSecondary"
-    android:layout_height="match_parent"
     tools:context=".elderly.ElderlyFormFragment">
 
     <!-- LAYOUT GENERAL -->
@@ -54,7 +54,7 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/elderly_input_name"
                         android:imeOptions="actionNext"
-                        android:inputType="textCapSentences" />
+                        android:inputType="textPersonName|textCapWords" />
                 </LinearLayout>
                 <!-- END LAYOUT LINE 1 -->
 
@@ -85,7 +85,7 @@
                             android:layout_height="wrap_content"
                             android:hint="@string/elderly_input_weight"
                             android:imeOptions="actionNext"
-                            android:inputType="number" />
+                            android:inputType="numberDecimal" />
                     </LinearLayout>
                     <!-- END LAYOUT BOX WEIGHT -->
 
@@ -139,7 +139,8 @@
                             android:id="@+id/date_birth_editText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:enabled="false"
+                            android:clickable="false"
+                            android:focusable="false"
                             android:hint="@string/elderly_input_date_birth"
                             android:imeOptions="actionNext"
                             android:inputType="date" />
@@ -160,9 +161,11 @@
                             android:text="@string/elderly_input_title_sex" />
 
                         <RadioGroup
-                            android:layout_width="match_parent"
+                            android:id="@+id/sex_radioGroup"
+                            android:layout_width="wrap_content"
+                            android:layout_marginLeft="5dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
+                            android:layout_marginTop="9dp"
                             android:gravity="center"
                             android:orientation="horizontal">
 
@@ -186,12 +189,38 @@
                                 android:checked="false"
                                 android:text="@string/gender_female"
                                 android:textColor="@drawable/radio_button_text"
-                                android:textSize="11sp" />
+                                android:textSize="12sp" />
                         </RadioGroup>
                     </LinearLayout>
                     <!-- END LAYOUT BOX SEX -->
                 </LinearLayout>
                 <!-- END LAYOUT LINE 3 -->
+
+                <!-- LAYOUT LINE 4 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/activity_horizontal_margin"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/phone_textView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:text="@string/elderly_input_title_phone" />
+
+                    <EditText
+                        android:id="@+id/phone_editText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/elderly_input_phone"
+                        android:imeOptions="actionNext"
+                        android:inputType="phone" />.
+
+                </LinearLayout>
+                <!-- END LAYOUT LINE 4 -->
+
             </LinearLayout>
             <!-- END LAYOUT GENERAL DATA BOX 1 -->
         </android.support.v7.widget.CardView>
@@ -275,9 +304,10 @@
                         android:text="@string/elderly_input_title_live_alone" />
 
                     <RadioGroup
+                        android:id="@+id/live_alone_radioGroup"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
+                        android:layout_marginTop="9dp"
                         android:gravity="center"
                         android:orientation="horizontal">
 
@@ -432,13 +462,21 @@
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/save_button"
+            style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="20dp"
-            style="@style/Widget.AppCompat.Button.Colored"
             android:layout_marginBottom="16dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="16dp"
+            android:padding="20dp"
             android:text="@string/action_save" />
+
+        <ProgressBar
+            android:id="@+id/loading_save_progressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:visibility="gone" />
     </LinearLayout>
     <!-- END GENERAL LAYOUT -->
 

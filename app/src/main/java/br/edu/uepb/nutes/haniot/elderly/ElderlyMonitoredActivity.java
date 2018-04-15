@@ -1,12 +1,9 @@
 package br.edu.uepb.nutes.haniot.elderly;
 
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -17,8 +14,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +22,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
@@ -35,12 +31,20 @@ import br.edu.uepb.nutes.haniot.adapter.ElderlyMonitoredAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
 import br.edu.uepb.nutes.haniot.model.Elderly;
 import br.edu.uepb.nutes.haniot.model.MeasurementType;
+import br.edu.uepb.nutes.haniot.model.dao.ElderlyDAO;
 import br.edu.uepb.nutes.haniot.server.Server;
 import br.edu.uepb.nutes.haniot.server.historical.Params;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * ElderlyMonitoredActivity implementation.
+ *
+ * @author Douglas Rafael <douglas.rafael@nutes.uepb.edu.br>
+ * @version 1.5
+ * @copyright Copyright (c) 2017, NUTES UEPB
+ */
 public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRecyclerViewListener<Elderly> {
     private final String TAG = "PatientsMonitoredFrag";
     private final int LIMIT_PER_PAGE = 20;
@@ -83,6 +87,9 @@ public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRec
         session = new Session(this);
         params = new Params(session.get_idLogged(), MeasurementType.TEMPERATURE);
         initComponents();
+
+        ElderlyDAO dao = ElderlyDAO.getInstance(this);
+        Log.d(TAG, "Elderlies()" + Arrays.toString(dao.list(new Session(this).getUserLogged().getId()).toArray()));
     }
 
     @Override

@@ -92,6 +92,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             finish();
         }
 
+        mNavigationView.setCheckedItem(R.id.action_connect_devices);
         openFragment(fragment);
     }
 
