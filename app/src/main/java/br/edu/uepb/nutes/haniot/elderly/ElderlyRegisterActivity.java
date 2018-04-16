@@ -23,7 +23,7 @@ import butterknife.ButterKnife;
  * ElderlyRegisterActivity implementation.
  *
  * @author Douglas Rafael <douglas.rafael@nutes.uepb.edu.br>
- * @version 1.5
+ * @version 1.0
  * @copyright Copyright (c) 2017, NUTES UEPB
  */
 public class ElderlyRegisterActivity extends AppCompatActivity implements

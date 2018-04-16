@@ -306,6 +306,12 @@
     <string name="elderly_register_success">Data saved successfully!\nDo you want to respond now to an assessment to identify the risk of falling?</string>
     <string name="elderly_assessment_risk_falling">Do you want to respond now to an assessment to identify the risk of falling?</string>
 
+    <!-- ELDERLY ASSESSMENT RISK FALL -->
+    <string name="risk_fall_title_q1">Falls</string>
+    <string name="risk_fall_description_q1">Has the elderly person dropped in the last 12 months?</string>
+    <string name="risk_fall_title_q2">Use of device to help with walking</string>
+    <string name="risk_fall_description_q2">Does the elderly person use any walking aid?</string>
+
     <string name="other">Other</string>
 
     <!--TYPES AND GROUPS-->

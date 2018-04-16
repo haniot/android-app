@@ -13,7 +13,7 @@
 
     <dimen name="height_logo_drawer">90dp</dimen>
 
-    <dimen name="button_radius">5dp</dimen>
-    <dimen name="button_padding">8dp</dimen>
-    <dimen name="radio_button_horizontal_padding">18dp</dimen>
+    <dimen name="button_radius">7dp</dimen>
+    <dimen name="button_padding">7dp</dimen>
+    <dimen name="radio_button_horizontal_padding">15dp</dimen>
 </resources>

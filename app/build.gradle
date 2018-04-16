@@ -53,6 +53,9 @@ dependencies {
     // TEXT DRAWABLE
     implementation 'com.github.amulyakhare:TextDrawable:master'
 
+    // APP INTRO
+    implementation 'com.github.apl-devs:appintro:v4.2.3'
+
     // TEST
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'

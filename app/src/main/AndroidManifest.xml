@@ -92,6 +92,9 @@
         <activity
             android:name=".elderly.ElderlyRegisterActivity"
             android:theme="@style/AppThemeSecondaty" />
+        <activity
+            android:name=".elderly.assessment.FallRiskActivity"
+            android:theme="@style/AppThemeSecondaty" />
 
         <!-- SERVICES -->
         <service
