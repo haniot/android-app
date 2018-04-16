@@ -16,4 +16,8 @@
     <dimen name="button_radius">7dp</dimen>
     <dimen name="button_padding">7dp</dimen>
     <dimen name="radio_button_horizontal_padding">15dp</dimen>
+
+    <dimen name="button_assessment_radius">50dp</dimen>
+    <dimen name="button_assessment_padding">15dp</dimen>
+    <dimen name="radio_button_assessment_horizontal_padding">40dp</dimen>
 </resources>

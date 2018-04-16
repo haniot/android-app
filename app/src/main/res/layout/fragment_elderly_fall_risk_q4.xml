@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPurple"
+    android:background="@color/colorLightBlue"
     android:orientation="vertical"
     android:paddingBottom="@dimen/appIntroBottomBarHeight">
 
@@ -17,7 +16,7 @@
         android:gravity="center"
         android:paddingLeft="32dp"
         android:paddingRight="32dp"
-        android:text="@string/risk_fall_title_group1"
+        android:text="@string/risk_fall_title_group3"
         android:textColor="@android:color/white"
         android:textSize="28sp"
         android:textStyle="bold" />
@@ -36,7 +35,6 @@
             android:layout_gravity="center"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
-            app:srcCompat="@drawable/fall_elderly"
             tools:ignore="ContentDescription" />
     </LinearLayout>
 
@@ -55,7 +53,7 @@
             android:layout_gravity="center"
             android:layout_weight="0.9"
             android:gravity="center"
-            android:text="@string/risk_fall_description_q1"
+            android:text="@string/risk_fall_description_q4"
             android:textColor="@android:color/white"
             android:textSize="18sp" />
 
@@ -94,7 +92,7 @@
                 android:button="@android:color/transparent"
                 android:checked="false"
                 android:text="@string/no_text"
-                android:textColor="@drawable/radio_button_assessment_text"/>
+                android:textColor="@drawable/radio_button_assessment_text" />
         </RadioGroup>
     </LinearLayout>
 </LinearLayout>

@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">HANIoT</string>
-    <string name="copyright">Ⓒ 2017 NUTES</string>
+    <string name="copyright">© 2017 NUTES</string>
     <string name="app_version">1.0</string>
     <string name="start_scan">Start scan</string>
     <string name="start_synchronization">Start Synchronization</string>
@@ -271,8 +271,8 @@
     <string name="elderly_monitored">Monitored Elderly</string>
     <string name="elderly_add">Add Elderly</string>
     <string name="elderly_pin">PIN</string>
-    <string name="elderly_name">Elderly Name</string>
     <string name="elderly_fall_register">Fall Records: %d</string>
+    <!-- END ELDERLY -->
 
     <!-- ELDERLY FORM -->
     <string name="elderly_input_title_name">Name</string>
@@ -301,16 +301,32 @@
     <string name="elderly_please_add_medications">Please, add a new medication</string>
     <string name="elderly_add_accessories">Add new accessory</string>
     <string name="elderly_please_add_accessories">Please, add a new accessory</string>
-    <string name="elderly_select_accessories">Select the accessories</string>
     <string name="elderly_select_medications">Select the medications</string>
+    <string name="elderly_select_accessories">Select the accessories</string>
     <string name="elderly_register_success">Data saved successfully!\nDo you want to respond now to an assessment to identify the risk of falling?</string>
     <string name="elderly_assessment_risk_falling">Do you want to respond now to an assessment to identify the risk of falling?</string>
+    <!-- END ELDERLY FORM -->
 
     <!-- ELDERLY ASSESSMENT RISK FALL -->
-    <string name="risk_fall_title_q1">Falls</string>
-    <string name="risk_fall_description_q1">Has the elderly person dropped in the last 12 months?</string>
-    <string name="risk_fall_title_q2">Use of device to help with walking</string>
-    <string name="risk_fall_description_q2">Does the elderly person use any walking aid?</string>
+    <string name="risk_fall_title_group1">Falls</string>
+    <string name="risk_fall_title_group2">Use of device to help with walking</string>
+    <string name="risk_fall_title_group3">Use of medicines</string>
+    <string name="risk_fall_title_group4">Muscle strength/balance</string>
+    <string name="risk_fall_title_group5">Activity of daily living</string>
+    <string name="risk_fall_title_group6">Vision/Hearing</string>
+    <string name="risk_fall_title_group7">Physical activity</string>
+    <string name="risk_fall_title_group8">Environmental factors (Conduct inspection at the home of the elderly)</string>
+    <string name="risk_fall_description_q1">1. Has the elderly person dropped in the last 12 months?</string>
+    <string name="risk_fall_description_q2">2. Does the elderly person use any walking aid?</string>
+    <string name="risk_fall_description_q3">3. The elderly uses 4 or more medications per day?</string>
+    <string name="risk_fall_description_q4">4. Uses psychotropic medications?</string>
+    <string name="risk_fall_description_q5">5. Has difficulties to descend or climb a hill?</string>
+    <string name="risk_fall_description_q6">6. Need help to walk 100 meters?</string>
+    <string name="risk_fall_description_q7">7. It has difficulty seeing (considering the use of lenses)?</string>
+    <string name="risk_fall_description_q8">8. Has difficulty to hear what other people speak?</string>
+    <string name="risk_fall_description_q9">9. Does exercises during the week?</string>
+    <string name="risk_fall_description_q10">10. Dimly lit environment (When lying down, have to raise to turn light switch; away from the bed or of difficult visualization; there is no lampshade, do not let the light of the hallway lit during the night)?</string>
+    <!-- END ELDERLY ASSESSMENT RISK FALL -->
 
     <string name="other">Other</string>
 

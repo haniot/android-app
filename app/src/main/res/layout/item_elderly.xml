@@ -42,7 +42,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignTop="@+id/elderly_imageView"
                     android:layout_toEndOf="@+id/elderly_imageView"
-                    android:text="Elvis P. da Silva"
+                    android:text="@null"
                     android:textSize="16sp" />
 
                 <TextView
@@ -66,7 +66,7 @@
                     android:paddingLeft="8dp"
                     android:paddingRight="8dp"
                     android:paddingTop="2dp"
-                    android:text="Risco de queda baixo"
+                    android:text="@null"
                     android:textColor="@color/colorTextDark"
                     android:textSize="11sp" />
 

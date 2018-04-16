@@ -10,10 +10,11 @@
 
     <color name="colorCard">#EBF6F4</color>
     <color name="colorCardSecondary">#E3F2FD</color>
-    <color name="colorTextDark">#FFF</color>
+    <color name="colorTextDark">#FFFFFF</color>
     <color name="colorAlertDanger">#a94442</color>
     <color name="colorItemSeparator">#E0E0E0</color>
     <color name="colorBackRadiogroup">#f0f0f0</color>
+    <color name="colorRadiogroupAssessmentPressedText">#424242</color>
 
     <!--COLORS BUTTONS-->
     <color name="colorButtonPrimary">@color/colorAccent</color>
@@ -26,4 +27,20 @@
     <color name="colorButtonWarningPressed">#F57C00</color>
     <color name="colorButtonDangerPressed">#aa201d</color>
 
+
+    <!-- COLORS USED IN ASSESSMENT -->
+    <color name="colorPink">#E91E63</color>
+    <color name="colorPurple">#673AB7</color>
+    <color name="colorIndigo">#3F51B5</color>
+    <color name="colorBlue">#2196F3</color>
+    <color name="colorLightBlue">#03A9F4</color>
+    <color name="colorCyan">#00BCD4</color>
+    <color name="colorTeal">#009688</color>
+    <color name="colorGreen">#4CAF50</color>
+    <color name="colorYellow">#FFEB3B</color>
+    <color name="colorAmber">#FFC107</color>
+    <color name="colorOrange">#FF5722</color>
+    <color name="colorBrown">#795548</color>
+    <color name="colorGrey">#9E9E9E</color>
+    <color name="colorBlueGrey">#607D8B</color>
 </resources>
