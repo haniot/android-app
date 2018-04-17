@@ -233,7 +233,7 @@ public class Server {
                     } else {
                         serverCallback.onSuccess(result);
                     }
-                    Log.i("SERVER - onResponse()", result.toString());
+                    Log.i("SERVER - onAnswer()", result.toString());
                 } catch (JSONException err) {
                     err.printStackTrace();
                 }

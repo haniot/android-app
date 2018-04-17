@@ -37,6 +37,7 @@
     <color name="colorCyan">#00BCD4</color>
     <color name="colorTeal">#009688</color>
     <color name="colorGreen">#4CAF50</color>
+    <color name="colorLightGreen">#8BC34A</color>
     <color name="colorYellow">#FFEB3B</color>
     <color name="colorAmber">#FFC107</color>
     <color name="colorOrange">#FF5722</color>

@@ -1,16 +1,17 @@
 package br.edu.uepb.nutes.haniot.elderly.assessment;
 
-import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
-import android.view.View;
 
 import com.github.paolorotolo.appintro.AppIntro;
-import com.github.paolorotolo.appintro.AppIntroViewPager;
+
+import java.util.Arrays;
 
 import br.edu.uepb.nutes.haniot.R;
 
@@ -21,45 +22,117 @@ import br.edu.uepb.nutes.haniot.R;
  * @version 1.0
  * @copyright Copyright (c) 2017, NUTES UEPB
  */
-public class FallRiskActivity extends AppIntro implements SliderPagerFragment.OnResponseListener {
+public class FallRiskActivity extends AppIntro implements SliderPageFragment.OnResponseListener {
     private final String TAG = "FallRiskActivity";
-    private Boolean responseQ1;
-    private Boolean responseQ2;
-    private Boolean responseQ3;
-    private Boolean responseQ4;
-    private Boolean responseQ5;
-    private Boolean responseQ6;
-    private Boolean responseQ7;
-    private Boolean responseQ8;
-    private Boolean responseQ9;
-    private Boolean responseQ10;
-    private int currentQuestion;
+    private final int PAGE_1 = 0;
+    private final int PAGE_2 = 2;
+    private final int PAGE_3 = 3;
+    private final int PAGE_4 = 4;
+    private final int PAGE_5 = 5;
+    private final int PAGE_6 = 6;
+    private final int PAGE_7 = 7;
+    private final int PAGE_8 = 8;
+    private final int PAGE_9 = 9;
+    private final int PAGE_10 = 10;
+    private final int PAGE_RES = 11;
+
+    private boolean[] answers;
+    private String[] questions;
 
     SharedPreferences preferences;
     SharedPreferences.Editor preferencesEditor;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        answers = new boolean[10];
+        questions = new String[10];
+
         setColorTransitionsEnabled(true);
         setFadeAnimation();
         showSeparator(false);
         showSkipButton(false);
-
-        setScrollDurationFactor(3);
         setNextPageSwipeLock(true);
+
         setImmersiveMode(true);
-        addSlide(SliderPagerFragment.newInstance(this, R.layout.fragment_elderly_fall_risk_q1));
-        addSlide(SliderPagerFragment.newInstance(this, R.layout.fragment_elderly_fall_risk_q2));
-        addSlide(SliderPagerFragment.newInstance(this, R.layout.fragment_elderly_fall_risk_q3));
-        addSlide(SliderPagerFragment.newInstance(this, R.layout.fragment_elderly_fall_risk_q4));
-        addSlide(SliderPagerFragment.newInstance(this, R.layout.fragment_elderly_fall_risk_q4));
-        addSlide(SliderPagerFragment.newInstance(this, R.layout.fragment_elderly_fall_risk_q4));
 
-        initSharedPreferences();
+        addSlide(SliderPageFragment.newInstance(
+                R.layout.fragment_elderly_fall_risk,
+                getString(R.string.risk_fall_title_group1),
+                getString(R.string.risk_fall_description_q1),
+                R.drawable.fall_elderly,
+                ContextCompat.getColor(this, R.color.colorPink),
+                PAGE_1));
+
+        addSlide(SliderPageFragment.newInstance(
+                R.layout.fragment_elderly_fall_risk,
+                getString(R.string.risk_fall_title_group2),
+                getString(R.string.risk_fall_description_q2),
+                R.drawable.walker,
+                ContextCompat.getColor(this, R.color.colorPurple),
+                PAGE_2));
+
+        addSlide(SliderPageFragment.newInstance(
+                R.layout.fragment_elderly_fall_risk,
+                getString(R.string.risk_fall_title_group3),
+                getString(R.string.risk_fall_description_q3),
+                ContextCompat.getColor(this, R.color.colorLightBlue),
+                PAGE_3));
+
+        addSlide(SliderPageFragment.newInstance(
+                R.layout.fragment_elderly_fall_risk,
+                getString(R.string.risk_fall_title_group3),
+                getString(R.string.risk_fall_description_q4),
+                ContextCompat.getColor(this, R.color.colorLightBlue),
+                PAGE_4));
+
+        addSlide(SliderPageFragment.newInstance(
+                R.layout.fragment_elderly_fall_risk,
+                getString(R.string.risk_fall_title_group4),
+                getString(R.string.risk_fall_description_q5),
+                ContextCompat.getColor(this, R.color.colorLightGreen),
+                PAGE_5));
+
+        addSlide(SliderPageFragment.newInstance(
+                R.layout.fragment_elderly_fall_risk,
+                getString(R.string.risk_fall_title_group5),
+                getString(R.string.risk_fall_description_q6),
+                ContextCompat.getColor(this, R.color.colorOrange),
+                PAGE_6));
+
+        addSlide(SliderPageFragment.newInstance(
+                R.layout.fragment_elderly_fall_risk,
+                getString(R.string.risk_fall_title_group6),
+                getString(R.string.risk_fall_description_q7),
+                ContextCompat.getColor(this, R.color.colorBlueGrey),
+                PAGE_7));
+
+        addSlide(SliderPageFragment.newInstance(
+                R.layout.fragment_elderly_fall_risk,
+                getString(R.string.risk_fall_title_group6),
+                getString(R.string.risk_fall_description_q8),
+                ContextCompat.getColor(this, R.color.colorBlueGrey),
+                PAGE_8));
+
+        addSlide(SliderPageFragment.newInstance(
+                R.layout.fragment_elderly_fall_risk,
+                getString(R.string.risk_fall_title_group7),
+                getString(R.string.risk_fall_description_q9),
+                ContextCompat.getColor(this, R.color.colorIndigo),
+                PAGE_9));
+
+        addSlide(SliderPageFragment.newInstance(
+                R.layout.fragment_elderly_fall_risk,
+                getString(R.string.risk_fall_title_group8),
+                getString(R.string.risk_fall_description_q10),
+                ContextCompat.getColor(this, R.color.colorCyan),
+                PAGE_10));
+
+        addSlide(SliderPageResultFragment.newInstance(
+                R.layout.fragment_elderly_fall_risk_end,
+                ContextCompat.getColor(this, R.color.colorPurple),
+                PAGE_RES));
     }
-
 
     @Override
     protected void onDestroy() {
@@ -82,67 +155,62 @@ public class FallRiskActivity extends AppIntro implements SliderPagerFragment.On
     @Override
     public void onSlideChanged(@Nullable Fragment oldFragment, @Nullable Fragment newFragment) {
         super.onSlideChanged(oldFragment, newFragment);
-        if (oldFragment != null) {
-            SliderPagerFragment page = (SliderPagerFragment) oldFragment;
-//            Log.d(TAG, "currentQuestion " + currentQuestion + " values: " + responseQ1 + " | " + responseQ2);
-        }
-        Log.d(TAG, "onSlideChanged(): isBlocked: " + preferences.getBoolean("isBlocked", true));
-//        if (getPager().isNextPagingEnabled()) {
-//            setNextPageSwipeLock(true);
-//        } else {
-//            setNextPageSwipeLock(false);
-//        }
-    }
+        if (newFragment instanceof SliderPageFragment) {
+            SliderPageFragment currentPage = (SliderPageFragment) newFragment;
 
-    @Override
-    public void onResponse(boolean response, int layoutResId) {
-        Log.d(TAG, "onResponse()");
-        switch (layoutResId) {
-            case R.layout.fragment_elderly_fall_risk_q1:
-                Log.d(TAG, "onResponse() - page1: " + response);
-                currentQuestion = 1;
-                responseQ1 = response;
-                break;
-            case R.layout.fragment_elderly_fall_risk_q2:
-                Log.d(TAG, "onResponse() - page2: " + response);
-                currentQuestion = 2;
-                responseQ2 = response;
-                break;
-            case R.layout.fragment_elderly_fall_risk_q3:
-                Log.d(TAG, "onResponse() - page3: " + response);
-                currentQuestion = 3;
-                responseQ3 = response;
-                break;
-            default:
-                break;
+            if (currentPage.isBlocked()) setNextPageSwipeLock(true);
+            else setNextPageSwipeLock(false);
+
+            if (currentPage.getOldCheckedRadio() == 0) {
+                currentPage.getRadioGroup().check(R.id.no_radioButton);
+            } else if (currentPage.getOldCheckedRadio() == 1) {
+                currentPage.getRadioGroup().check(R.id.yes_radioButton);
+            }
+            Log.d("RESULT", Arrays.toString(answers));
         }
     }
 
     @Override
-    public void nextBlockPage(boolean block) {
-//        setNextPageSwipeLock(block);
-    }
+    public void onAnswer(boolean value, int layoutResId, int pageNumber) {
+        Log.d(TAG, "onAnswer()");
+        if (pageNumber != PAGE_RES) {
+            answers[pageNumber] = value;
+            return;
+        }
 
-    // TODO TESTAR!!!
-    public void toggleNextPageSwipeLock(View v) {
-        AppIntroViewPager pager = getPager();
-        boolean pagingState = pager.isNextPagingEnabled();
-        setNextPageSwipeLock(pagingState);
-    }
+        // End result
+        if (value) {
 
-    private void initSharedPreferences() {
-        if (preferences == null) {
-            preferences = getSharedPreferences("assessment_pref", Context.MODE_PRIVATE);
-            preferencesEditor = preferences.edit();
+        } else {
+
         }
     }
 
-    private void nextPage() {
-        setNextPageSwipeLock(false);
-        final AppIntroViewPager page = getPager();
-        new Handler().post(() -> {
-            page.goToNextSlide();
-            setNextPageSwipeLock(true);
+    /**
+     * Open the cancellation message.
+     */
+    private void openCancelMessage() {
+        runOnUiThread(() -> {
+            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+            dialog.setMessage(getResources().getString(R.string.elderly_register_success));
+
+            dialog.setPositiveButton(R.string.yes_text, (dialogInterface, which) -> {
+            });
+
+            dialog.setNegativeButton(R.string.no_text, (dialogInterface, which) -> {
+            });
+
+            dialog.setOnCancelListener((dialogInterface) -> {
+            });
+
+            dialog.create().show();
         });
+    }
+
+    /**
+     *
+     */
+    private void processAssessment(int layoutResId) {
+
     }
 }

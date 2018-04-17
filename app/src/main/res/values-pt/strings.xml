@@ -149,5 +149,21 @@
     <string name="risk_fall_description_q8">8. Tem dificuldade para ouvir o que as outras pessoas falam?</string>
     <string name="risk_fall_description_q9">9. Faz exercícios durante a semana?</string>
     <string name="risk_fall_description_q10">10. Ambiente mal iluminado? (Quando deitado, tem que levantar para acender a luz; interruptor longe da cama ou de difícil visualização; não há abajur; não deixa a luz do corredor acesa durante a noite)?</string>
+    <string name="cancel_text">Cancelar</string>
     <!-- END ELDERLY ASSESSMENT RISK FALL -->
+
+    <!-- ARRAY QUESTIONS RISK FALL -->
+    <string-array name="risk_questions_array">
+        <item>@string/risk_fall_description_q1</item>
+        <item>@string/risk_fall_description_q2</item>
+        <item>@string/risk_fall_description_q3</item>
+        <item>@string/risk_fall_description_q4</item>
+        <item>@string/risk_fall_description_q5</item>
+        <item>@string/risk_fall_description_q6</item>
+        <item>@string/risk_fall_description_q7</item>
+        <item>@string/risk_fall_description_q8</item>
+        <item>@string/risk_fall_description_q9</item>
+        <item>@string/risk_fall_description_q10</item>
+    </string-array>
+    <!-- END ARRAY QUESTIONS RISK FALL -->
 </resources>

@@ -107,8 +107,7 @@ public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRec
         mAddPatientButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                startActivity(new Intent(getApplicationContext(), ElderlyRegisterActivity.class));
-                startActivity(new Intent(getApplicationContext(), FallRiskActivity.class));
+                startActivity(new Intent(getApplicationContext(), ElderlyRegisterActivity.class));
             }
         });
     }
@@ -318,5 +317,6 @@ public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRec
     @Override
     public void onItemClick(Elderly item) {
         Log.w(TAG, "onItemClick()");
+        startActivity(new Intent(getApplicationContext(), FallRiskActivity.class));
     }
 }

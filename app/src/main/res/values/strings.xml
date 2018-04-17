@@ -35,6 +35,7 @@
     <string name="today_text">Today</string>
     <string name="yes_text">Yes</string>
     <string name="no_text">No</string>
+    <string name="cancel_text">Cancel</string>
 
     <!--ACTIONS-->
     <string name="action_settings">Settings</string>
@@ -308,6 +309,7 @@
     <!-- END ELDERLY FORM -->
 
     <!-- ELDERLY ASSESSMENT RISK FALL -->
+    <string name="risk_fall_answer_question">Answer the question to go to next!</string>
     <string name="risk_fall_title_group1">Falls</string>
     <string name="risk_fall_title_group2">Use of device to help with walking</string>
     <string name="risk_fall_title_group3">Use of medicines</string>
@@ -326,7 +328,23 @@
     <string name="risk_fall_description_q8">8. Has difficulty to hear what other people speak?</string>
     <string name="risk_fall_description_q9">9. Does exercises during the week?</string>
     <string name="risk_fall_description_q10">10. Dimly lit environment (When lying down, have to raise to turn light switch; away from the bed or of difficult visualization; there is no lampshade, do not let the light of the hallway lit during the night)?</string>
+    <string name="risk_fall_description_end">Dimly lit environment (When lying down, have to raise to turn light switch; away from the bed or of difficult visualization; there is no lampshade, do not let the light of the hallway lit during the night)?</string>
     <!-- END ELDERLY ASSESSMENT RISK FALL -->
+
+    <!-- ARRAY QUESTIONS RISK FALL -->
+    <string-array name="risk_questions_array">
+        <item>@string/risk_fall_description_q1</item>
+        <item>@string/risk_fall_description_q2</item>
+        <item>@string/risk_fall_description_q3</item>
+        <item>@string/risk_fall_description_q4</item>
+        <item>@string/risk_fall_description_q5</item>
+        <item>@string/risk_fall_description_q6</item>
+        <item>@string/risk_fall_description_q7</item>
+        <item>@string/risk_fall_description_q8</item>
+        <item>@string/risk_fall_description_q9</item>
+        <item>@string/risk_fall_description_q10</item>
+    </string-array>
+    <!-- END ARRAY QUESTIONS RISK FALL -->
 
     <string name="other">Other</string>
 
