@@ -1,6 +1,7 @@
 package br.edu.uepb.nutes.haniot.elderly.assessment;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -12,7 +13,6 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.github.paolorotolo.appintro.AppIntro;
-import com.github.paolorotolo.appintro.AppIntroBase;
 import com.github.paolorotolo.appintro.AppIntroViewPager;
 import com.github.paolorotolo.appintro.ISlideBackgroundColorHolder;
 
@@ -32,13 +32,17 @@ public class SliderPagerFragment extends Fragment implements ISlideBackgroundCol
     private final String TAG = "SliderPagerFragment";
     private static final String ARG_LAYOUT_RES_ID = "arg_layout_id";
     private static final String ARG_BACK_COLOR_RES_ID = "arg_back_color_id";
+    private static final String ARG_IS_BLOCKED = "arg_is_blocked";
     private static Context mContext;
 
+    private int currenValue;
     private int layoutResId;
     private int backColorResId;
     private OnResponseListener mListener;
     private View view;
-    private boolean isBlocked;
+
+    SharedPreferences preferences;
+    SharedPreferences.Editor preferencesEditor;
 
     @BindView(R.id.question_radioGroup)
     RadioGroup radioGroup;
@@ -59,14 +63,16 @@ public class SliderPagerFragment extends Fragment implements ISlideBackgroundCol
      * @return SliderPagerFragment
      */
     public static SliderPagerFragment newInstance(Context context, int layoutResId) {
-        SliderPagerFragment sampleSlide = new SliderPagerFragment();
+        Log.d("TEST", "SliderPagerFragment()");
+        SliderPagerFragment sliderPager = new SliderPagerFragment();
         mContext = context;
 
         Bundle args = new Bundle();
         args.putInt(ARG_LAYOUT_RES_ID, layoutResId);
-        sampleSlide.setArguments(args);
+        args.putBoolean(ARG_IS_BLOCKED, false);
+        sliderPager.setArguments(args);
 
-        return sampleSlide;
+        return sliderPager;
     }
 
     /**
@@ -77,23 +83,25 @@ public class SliderPagerFragment extends Fragment implements ISlideBackgroundCol
      * @return SliderPagerFragment
      */
     public static SliderPagerFragment newInstance(Context context, int layoutResId, int backColorResId) {
-        SliderPagerFragment sampleSlide = new SliderPagerFragment();
+        SliderPagerFragment sliderPager = new SliderPagerFragment();
         mContext = context;
 
         Bundle args = new Bundle();
         args.putInt(ARG_LAYOUT_RES_ID, layoutResId);
         args.putInt(ARG_BACK_COLOR_RES_ID, backColorResId);
-        sampleSlide.setArguments(args);
+        args.putBoolean(ARG_IS_BLOCKED, false);
+        sliderPager.setArguments(args);
 
-        return sampleSlide;
+        return sliderPager;
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("TEST", "onCreate() isBlocked: " + isBlocked);
-        nextPageBlock(true);
+//        initSharedPreferences();
+        currenValue = -1;
 
+        Log.d("TEST", "onCreate()");
         if (getArguments() != null) {
             if (getArguments().containsKey(ARG_LAYOUT_RES_ID))
                 layoutResId = getArguments().getInt(ARG_LAYOUT_RES_ID);
@@ -108,12 +116,7 @@ public class SliderPagerFragment extends Fragment implements ISlideBackgroundCol
                              @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(layoutResId, container, false);
         ButterKnife.bind(this, view);
-        Log.d("TEST", "onCreateView()" + "isBlockeed:" + isBlocked);
-
-        if (radioGroup.getCheckedRadioButtonId() == -1) // no checked
-            nextPageBlock(true);
-        else
-            nextPageBlock(false);
+        Log.d("TEST", "onCreateView()");
 
         return view;
     }
@@ -121,34 +124,50 @@ public class SliderPagerFragment extends Fragment implements ISlideBackgroundCol
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
-            Log.d(TAG, "setOnCheckedChangeListener()");
-            switch (checkedId) {
-                case R.id.yes_radioButton:
-                    Log.d(TAG, "yes_radioButton()" + layoutResId);
-                    mListener.onResponse(true, layoutResId);
-                    break;
-                case R.id.no_radioButton:
-                    Log.d(TAG, "no_radioButton()" + layoutResId);
-                    mListener.onResponse(false, layoutResId);
-                    break;
-                default:
-                    Log.d(TAG, "default()" + layoutResId);
-                    break;
-            }
-            nextPageBlock(false);
-        });
-    }
+        Log.d("TEST", "onActivityCreated()");
 
-    private void nextPage() {
-        final AppIntroViewPager page = ((AppIntro) mContext).getPager();
-        new Handler().post(() -> {
-            page.goToNextSlide();
+        radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            if (checkedId == R.id.yes_radioButton && currenValue != 1) {
+                currenValue = 1;
+                mListener.onResponse(true, layoutResId);
+                nextPage();
+            } else if (checkedId == R.id.no_radioButton && currenValue != 0) {
+                currenValue = 0;
+                mListener.onResponse(false, layoutResId);
+                nextPage();
+            }
+
+//                switch (checkedId) {
+//                    case R.id.yes_radioButton:
+//                        Log.d(TAG, "yes_radioButton()" + layoutResId);
+//                        mListener.onResponse(true, layoutResId);
+//                        break;
+//                    case R.id.no_radioButton:
+//                        Log.d(TAG, "no_radioButton()" + layoutResId);
+//                        mListener.onResponse(false, layoutResId);
+//                        break;
+//                    default:
+//                        Log.d(TAG, "default()" + layoutResId);
+//                        break;
+//                }
+            /**
+             * Save in shared preferences as answered question
+             */
+//            preferencesEditor.putBoolean(String.valueOf(layoutResId), true).commit();
+
         });
     }
 
     @Override
+    public void onDestroyView() {
+        Log.d("TEST", "onDestroyView()");
+        super.onDestroyView();
+        radioGroup.setOnCheckedChangeListener(null);
+    }
+
+    @Override
     public void onAttach(Context context) {
+        Log.d("TEST", "onAttach()");
         super.onAttach(context);
         if (context instanceof OnResponseListener) {
             mListener = (OnResponseListener) context;
@@ -159,15 +178,9 @@ public class SliderPagerFragment extends Fragment implements ISlideBackgroundCol
 
     @Override
     public void onDetach() {
+        Log.d("TEST", "onDetach()");
         super.onDetach();
         mListener = null;
-        Log.d("TEST", "onDetach()");
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.d("TEST", "onDestroy()");
     }
 
     @Override
@@ -177,6 +190,7 @@ public class SliderPagerFragment extends Fragment implements ISlideBackgroundCol
 
     @Override
     public void setBackgroundColor(int backgroundColor) {
+        Log.d("TEST", "setBackgroundColor()");
         if (backColorResId != 0)
             view.setBackgroundColor(backColorResId);
     }
@@ -187,13 +201,33 @@ public class SliderPagerFragment extends Fragment implements ISlideBackgroundCol
         void nextBlockPage(boolean block);
     }
 
-    public void nextPageBlock(boolean block) {
-        mListener.nextBlockPage(block);
-        isBlocked = block;
-        if (mContext instanceof AppIntro) {
-            AppIntro appIntro = (AppIntro) mContext;
-            appIntro.setNextPageSwipeLock(block);
-//            appIntro.setBackButtonVisibilityWithDone(block);
+//    public void nextPageBlock(boolean block) {
+//        mListener.nextBlockPage(block);
+//        if (mContext instanceof AppIntro) {
+//            AppIntro appIntro = (AppIntro) mContext;
+//            appIntro.onSlideChanged(this, null);
+//            appIntro.setSwipeLock(block);
+//            appIntro.setNextPageSwipeLock(block);
+//        }
+//    }
+
+    private void nextPage() {
+        final AppIntro appIntro = (AppIntro) mContext;
+        final AppIntroViewPager page = ((AppIntro) mContext).getPager();
+
+        appIntro.setNextPageSwipeLock(false);
+        new Handler().post(() -> {
+            page.goToNextSlide();
+            appIntro.setNextPageSwipeLock(true);
+        });
+    }
+
+    private void initSharedPreferences() {
+        if (preferences == null) {
+            preferences = this.getActivity().getSharedPreferences("assessment_pref", Context.MODE_PRIVATE);
+        } else {
+            preferencesEditor.clear().commit();
         }
+        preferencesEditor = preferences.edit();
     }
 }
