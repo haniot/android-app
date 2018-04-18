@@ -1,9 +1,7 @@
 package br.edu.uepb.nutes.haniot.elderly;
 
 import android.app.DatePickerDialog;
-import android.app.DialogFragment;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -36,7 +34,7 @@ import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
-import br.edu.uepb.nutes.haniot.elderly.assessment.FallRiskActivity;
+import br.edu.uepb.nutes.haniot.elderly.assessment.FallRiskAssessmentActivity;
 import br.edu.uepb.nutes.haniot.model.Accessory;
 import br.edu.uepb.nutes.haniot.model.Elderly;
 import br.edu.uepb.nutes.haniot.model.Medication;
@@ -462,7 +460,7 @@ public class ElderlyFormFragment extends Fragment {
 
             dialog.setPositiveButton(R.string.yes_text, (dialogInterface, which) -> {
                 mListener.onFormAssessment(elderly);
-                startActivity(new Intent(getActivity(), FallRiskActivity.class));
+                startActivity(new Intent(getActivity(), FallRiskAssessmentActivity.class));
             });
 
             dialog.setNegativeButton(R.string.no_text, (dialogInterface, which) -> {

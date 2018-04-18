@@ -36,6 +36,7 @@
     <string name="yes_text">Yes</string>
     <string name="no_text">No</string>
     <string name="cancel_text">Cancel</string>
+    <string name="black_space_4">\t\t\t\t\t\</string>
 
     <!--ACTIONS-->
     <string name="action_settings">Settings</string>
@@ -328,7 +329,10 @@
     <string name="risk_fall_description_q8">8. Has difficulty to hear what other people speak?</string>
     <string name="risk_fall_description_q9">9. Does exercises during the week?</string>
     <string name="risk_fall_description_q10">10. Dimly lit environment (When lying down, have to raise to turn light switch; away from the bed or of difficult visualization; there is no lampshade, do not let the light of the hallway lit during the night)?</string>
-    <string name="risk_fall_description_end">Dimly lit environment (When lying down, have to raise to turn light switch; away from the bed or of difficult visualization; there is no lampshade, do not let the light of the hallway lit during the night)?</string>
+    <string name="risk_fall_title_end">Based on the answers obtained the risk of the elderly suffering a fall will be classified in:</string>
+    <string name="risk_fall_title_low">Low risk of falls</string>
+    <string name="risk_fall_title_moderate">Moderate falls risk</string>
+    <string name="risk_fall_title_high">High risk of falls</string>
     <!-- END ELDERLY ASSESSMENT RISK FALL -->
 
     <!-- ARRAY QUESTIONS RISK FALL -->

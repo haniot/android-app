@@ -1,6 +1,7 @@
 package br.edu.uepb.nutes.haniot.elderly.assessment;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.ColorInt;
@@ -42,8 +43,7 @@ public class SliderPageFragment extends Fragment implements ISlideBackgroundColo
     protected static final String ARG_DESC_COLOR = "arg_desc_color";
     protected static final String ARG_PAGE_NUMBER = "arg_page_number";
 
-    private View view;
-    private OnResponseListener mListener;
+    private OnAnswerListener mListener;
     private boolean isBlocked, answerValue;
 
     private int drawable, bgColor, titleColor, descColor, layoutId, pageNumber, oldCheckedRadio;
@@ -146,7 +146,7 @@ public class SliderPageFragment extends Fragment implements ISlideBackgroundColo
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(layoutId, container, false);
+        View view = inflater.inflate(layoutId, container, false);
         ButterKnife.bind(this, view);
 
         titleTextView.setText(title);
@@ -169,13 +169,13 @@ public class SliderPageFragment extends Fragment implements ISlideBackgroundColo
                 oldCheckedRadio = 1;
                 answerValue = true;
 
-                mListener.onAnswer(answerValue, layoutId, pageNumber);
+                mListener.onAnswer(getView(), answerValue, pageNumber);
                 nextPage();
             } else if (checkedId == R.id.no_radioButton && oldCheckedRadio != 0) {
                 oldCheckedRadio = 0;
                 answerValue = false;
 
-                mListener.onAnswer(answerValue, layoutId, pageNumber);
+                mListener.onAnswer(getView(), answerValue, pageNumber);
                 nextPage();
             }
         });
@@ -190,8 +190,8 @@ public class SliderPageFragment extends Fragment implements ISlideBackgroundColo
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnResponseListener) {
-            mListener = (OnResponseListener) context;
+        if (context instanceof OnAnswerListener) {
+            mListener = (OnAnswerListener) context;
         } else {
             throw new ClassCastException();
         }
@@ -205,13 +205,13 @@ public class SliderPageFragment extends Fragment implements ISlideBackgroundColo
 
     @Override
     public int getDefaultBackgroundColor() {
-        return bgColor;
+        return Color.parseColor("#000000");
     }
 
     @Override
     public void setBackgroundColor(int backgroundColor) {
         if (bgColor != 0)
-            view.setBackgroundColor(bgColor);
+            getView().setBackgroundColor(bgColor);
     }
 
     private void nextPage() {
@@ -230,18 +230,6 @@ public class SliderPageFragment extends Fragment implements ISlideBackgroundColo
         return isBlocked;
     }
 
-    public interface OnResponseListener {
-        void onAnswer(boolean value, int layoutResId, int page);
-    }
-
-    public boolean getAnswerValue() {
-        return answerValue;
-    }
-
-    public void setAnswerValue(boolean answerValue) {
-        this.answerValue = answerValue;
-    }
-
     public RadioGroup getRadioGroup() {
         return radioGroup;
     }
@@ -249,4 +237,6 @@ public class SliderPageFragment extends Fragment implements ISlideBackgroundColo
     public int getOldCheckedRadio() {
         return oldCheckedRadio;
     }
+
+
 }

@@ -1,6 +1,5 @@
 package br.edu.uepb.nutes.haniot.elderly.assessment;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.View;
 
 import com.github.paolorotolo.appintro.AppIntro;
 
@@ -16,25 +16,25 @@ import java.util.Arrays;
 import br.edu.uepb.nutes.haniot.R;
 
 /**
- * FallRiskActivity implementation.
+ * FallRiskAssessmentActivity implementation.
  *
  * @author Douglas Rafael <douglas.rafael@nutes.uepb.edu.br>
  * @version 1.0
  * @copyright Copyright (c) 2017, NUTES UEPB
  */
-public class FallRiskActivity extends AppIntro implements SliderPageFragment.OnResponseListener {
-    private final String TAG = "FallRiskActivity";
+public class FallRiskAssessmentActivity extends AppIntro implements OnAnswerListener {
+    private final String TAG = "FallRiskAssessmentActivity";
     private final int PAGE_1 = 0;
-    private final int PAGE_2 = 2;
-    private final int PAGE_3 = 3;
-    private final int PAGE_4 = 4;
-    private final int PAGE_5 = 5;
-    private final int PAGE_6 = 6;
-    private final int PAGE_7 = 7;
-    private final int PAGE_8 = 8;
-    private final int PAGE_9 = 9;
-    private final int PAGE_10 = 10;
-    private final int PAGE_RES = 11;
+    private final int PAGE_2 = 1;
+    private final int PAGE_3 = 2;
+    private final int PAGE_4 = 3;
+    private final int PAGE_5 = 4;
+    private final int PAGE_6 = 5;
+    private final int PAGE_7 = 6;
+    private final int PAGE_8 = 7;
+    private final int PAGE_9 = 8;
+    private final int PAGE_10 = 9;
+    private final int PAGE_RES = 10;
 
     private boolean[] answers;
     private String[] questions;
@@ -50,8 +50,9 @@ public class FallRiskActivity extends AppIntro implements SliderPageFragment.OnR
 
         setColorTransitionsEnabled(true);
         setFadeAnimation();
-        showSeparator(false);
-        showSkipButton(false);
+        showSeparator(true);
+        showSkipButton(true);
+        setSkipText(getString(R.string.cancel_text));
         setNextPageSwipeLock(true);
 
         setImmersiveMode(true);
@@ -130,14 +131,13 @@ public class FallRiskActivity extends AppIntro implements SliderPageFragment.OnR
 
         addSlide(SliderPageResultFragment.newInstance(
                 R.layout.fragment_elderly_fall_risk_end,
-                ContextCompat.getColor(this, R.color.colorPurple),
+                ContextCompat.getColor(this, R.color.colorDeepPurple),
                 PAGE_RES));
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        preferencesEditor.clear().commit();
     }
 
     @Override
@@ -170,22 +170,6 @@ public class FallRiskActivity extends AppIntro implements SliderPageFragment.OnR
         }
     }
 
-    @Override
-    public void onAnswer(boolean value, int layoutResId, int pageNumber) {
-        Log.d(TAG, "onAnswer()");
-        if (pageNumber != PAGE_RES) {
-            answers[pageNumber] = value;
-            return;
-        }
-
-        // End result
-        if (value) {
-
-        } else {
-
-        }
-    }
-
     /**
      * Open the cancellation message.
      */
@@ -212,5 +196,21 @@ public class FallRiskActivity extends AppIntro implements SliderPageFragment.OnR
      */
     private void processAssessment(int layoutResId) {
 
+    }
+
+    @Override
+    public void onAnswer(View view, boolean value, int page) {
+        if (page < PAGE_RES) {
+            Log.d(TAG, "onAnswer() NOT END");
+            answers[page] = value;
+            return;
+        }
+
+        // End result
+        if (value) {
+            Log.d(TAG, "onAnswer() END - OK");
+        }else {
+            Log.d(TAG, "onAnswer() END - CANCEL");
+        }
     }
 }

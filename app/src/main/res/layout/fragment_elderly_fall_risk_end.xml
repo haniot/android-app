@@ -1,96 +1,127 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPink"
-    android:orientation="vertical"
-    android:paddingBottom="@dimen/appIntroBottomBarHeight">
+    android:background="@color/colorDeepPurple"
+    android:orientation="vertical">
 
     <TextView
-        android:id="@+id/question_title"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_gravity="center"
-        android:layout_weight="3"
+        android:layout_weight="2"
         android:gravity="center"
         android:paddingLeft="32dp"
         android:paddingRight="32dp"
-        android:text="Deseja visualizar o resultado da avaliação para risco de queda?"
+        android:text="@string/risk_fall_title_end"
         android:textColor="@android:color/white"
         android:textSize="28sp"
         android:textStyle="bold" />
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0"
-        android:gravity="center"
-        android:orientation="vertical">
-        <ImageView
-            android:id="@+id/question_image"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_gravity="center"
-            tools:ignore="ContentDescription" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="3"
-        android:gravity="center_horizontal"
-        android:orientation="horizontal"
-        android:weightSum="1">
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal">
 
         <TextView
-            android:id="@+id/question_description"
-            android:layout_width="0dp"
+            android:id="@+id/low_textView"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="0.9"
-            android:gravity="center"
-            android:text="Deseja calcular o resultado agora?"
-            android:textColor="@android:color/white"
-            android:textSize="18sp" />
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:text="@string/risk_fall_title_low"
+            android:textColor="@color/colorTextDark" />
 
-    </LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="5dp"
+            android:layout_toEndOf="@+id/low_textView"
+            android:background="@drawable/background_rounded_corner"
+            android:backgroundTint="@color/colorGreen"
+            android:paddingLeft="50dp"
+            android:text="@null"
+            android:textColor="@color/colorTextDark" />
+
+        <TextView
+            android:id="@+id/moderate_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="27dp"
+            android:text="@string/risk_fall_title_moderate"
+            android:textColor="@color/colorTextDark" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/moderate_textView"
+            android:layout_marginStart="5dp"
+            android:layout_toEndOf="@+id/moderate_textView"
+            android:background="@drawable/background_rounded_corner"
+            android:backgroundTint="@color/colorAmber"
+            android:paddingLeft="50dp"
+            android:text="@null"
+            android:textColor="@color/colorTextDark" />
+
+        <TextView
+            android:id="@+id/high_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignStart="@+id/low_textView"
+            android:layout_marginTop="53dp"
+            android:text="@string/risk_fall_title_high"
+            android:textColor="@color/colorTextDark" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/high_textView"
+            android:layout_marginStart="5dp"
+            android:layout_toEndOf="@+id/high_textView"
+            android:background="@drawable/background_rounded_corner"
+            android:backgroundTint="@color/colorRed"
+            android:paddingRight="50dp"
+            android:text="@null"
+            android:textColor="@color/colorTextDark" />
+
+    </RelativeLayout>
+
+    <ProgressBar
+        android:id="@+id/fall_risk_end_progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center"
+        android:layout_marginTop="70dp"
+        android:indeterminate="true" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="3"
+        android:layout_weight="2"
         android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:padding="30dp">
 
-        <RadioGroup
-            android:id="@+id/question_radioGroup"
-            android:layout_width="wrap_content"
+        <Button
+            android:id="@+id/cancel_button"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="20dp"
-            android:orientation="horizontal">
+            android:layout_weight="1"
+            android:background="@drawable/button_assessment_background_left"
+            android:text="@string/bt_cancel"
+            android:textColor="@drawable/button_assessment_text" />
 
-            <RadioButton
-                android:id="@+id/no_radioButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/radio_button_assessment_background_left"
-                android:button="@android:color/transparent"
-                android:checked="false"
-                android:text="@string/cancel_text"
-                android:textColor="@drawable/radio_button_assessment_text" />
-
-            <RadioButton
-                android:id="@+id/yes_radioButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/radio_button_assessment_background_right"
-                android:button="@android:color/transparent"
-                android:checked="false"
-                android:text="@string/yes_text"
-                android:textColor="@drawable/radio_button_assessment_text"/>
-        </RadioGroup>
+        <Button
+            android:id="@+id/ok_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/button_assessment_background_right"
+            android:text="@string/bt_ok"
+            android:textColor="@drawable/button_assessment_text" />
     </LinearLayout>
 </LinearLayout>

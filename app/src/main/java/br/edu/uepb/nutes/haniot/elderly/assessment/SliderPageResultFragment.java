@@ -6,10 +6,12 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RadioGroup;
+import android.widget.Button;
+import android.widget.ProgressBar;
 
 import com.github.paolorotolo.appintro.ISlideBackgroundColorHolder;
 
@@ -32,14 +34,17 @@ public class SliderPageResultFragment extends Fragment implements ISlideBackgrou
     protected static final String ARG_BG_COLOR = "arg_bg_color";
     protected static final String ARG_PAGE_NUMBER = "arg_page_number";
 
-    private View view;
-    private OnResponseListener mListener;
-    private boolean answerValue;
+    private OnAnswerListener mListener;
+    private int bgColor, layoutId, pageNumber;
 
-    private int bgColor, layoutId, pageNumber, oldCheckedRadio;
+    @BindView(R.id.cancel_button)
+    Button cancelButton;
 
-    @BindView(R.id.question_radioGroup)
-    RadioGroup radioGroup;
+    @BindView(R.id.ok_button)
+    Button okButton;
+
+    @BindView(R.id.fall_risk_end_progressBar)
+    ProgressBar progressBar;
 
     public SliderPageResultFragment() {
     }
@@ -59,10 +64,6 @@ public class SliderPageResultFragment extends Fragment implements ISlideBackgrou
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Setting default values
-        oldCheckedRadio = -1;
-        answerValue = false;
-
         if (getArguments() != null && getArguments().size() != 0) {
             layoutId = getArguments().getInt(ARG_LAYOUT);
             bgColor = getArguments().getInt(ARG_BG_COLOR);
@@ -74,7 +75,7 @@ public class SliderPageResultFragment extends Fragment implements ISlideBackgrou
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(layoutId, container, false);
+        View view = inflater.inflate(layoutId, container, false);
         ButterKnife.bind(this, view);
 
         return view;
@@ -84,32 +85,27 @@ public class SliderPageResultFragment extends Fragment implements ISlideBackgrou
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
-            if (checkedId == R.id.yes_radioButton && oldCheckedRadio != 1) {
-                oldCheckedRadio = 1;
-                answerValue = true;
+        cancelButton.setOnClickListener((v)-> {
+            mListener.onAnswer(getView(), false, pageNumber);
+        });
 
-                mListener.onAnswer(answerValue, layoutId, pageNumber);
-            } else if (checkedId == R.id.no_radioButton && oldCheckedRadio != 0) {
-                oldCheckedRadio = 0;
-                answerValue = false;
-
-                mListener.onAnswer(answerValue, layoutId, pageNumber);
-            }
+        okButton.setOnClickListener((v)-> {
+            mListener.onAnswer(getView(), true, pageNumber);
         });
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        radioGroup.setOnCheckedChangeListener(null);
+        cancelButton.setOnClickListener(null);
+        okButton.setOnClickListener(null);
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnResponseListener) {
-            mListener = (OnResponseListener) context;
+        if (context instanceof OnAnswerListener) {
+            mListener = (OnAnswerListener) context;
         } else {
             throw new ClassCastException();
         }
@@ -129,26 +125,6 @@ public class SliderPageResultFragment extends Fragment implements ISlideBackgrou
     @Override
     public void setBackgroundColor(int backgroundColor) {
         if (bgColor != 0)
-            view.setBackgroundColor(bgColor);
-    }
-
-    public interface OnResponseListener {
-        void onAnswer(boolean value, int layoutResId, int page);
-    }
-
-    public boolean getAnswerValue() {
-        return answerValue;
-    }
-
-    public void setAnswerValue(boolean answerValue) {
-        this.answerValue = answerValue;
-    }
-
-    public RadioGroup getRadioGroup() {
-        return radioGroup;
-    }
-
-    public int getOldCheckedRadio() {
-        return oldCheckedRadio;
+            getView().setBackgroundColor(bgColor);
     }
 }

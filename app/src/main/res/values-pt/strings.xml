@@ -149,8 +149,13 @@
     <string name="risk_fall_description_q8">8. Tem dificuldade para ouvir o que as outras pessoas falam?</string>
     <string name="risk_fall_description_q9">9. Faz exercícios durante a semana?</string>
     <string name="risk_fall_description_q10">10. Ambiente mal iluminado? (Quando deitado, tem que levantar para acender a luz; interruptor longe da cama ou de difícil visualização; não há abajur; não deixa a luz do corredor acesa durante a noite)?</string>
-    <string name="cancel_text">Cancelar</string>
+    <string name="risk_fall_title_end">Com base nas respostas obtidas, o risco do idoso sofrer uma queda será classificado em:</string>
+    <string name="risk_fall_title_low">Baixo risco de quedas</string>
+    <string name="risk_fall_title_moderate">Moderado risco de quedas</string>
+    <string name="risk_fall_title_high">Alto risco de quedas</string>
     <!-- END ELDERLY ASSESSMENT RISK FALL -->
+
+    <string name="cancel_text">Cancelar</string>
 
     <!-- ARRAY QUESTIONS RISK FALL -->
     <string-array name="risk_questions_array">

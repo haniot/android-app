@@ -79,21 +79,21 @@
                 android:id="@+id/yes_radioButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/radio_button_assessment_background_left"
+                android:background="@drawable/button_assessment_background_left"
                 android:button="@android:color/transparent"
                 android:checked="false"
                 android:text="@string/yes_text"
-                android:textColor="@drawable/radio_button_assessment_text" />
+                android:textColor="@drawable/button_assessment_text" />
 
             <RadioButton
                 android:id="@+id/no_radioButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/radio_button_assessment_background_right"
+                android:background="@drawable/button_assessment_background_right"
                 android:button="@android:color/transparent"
                 android:checked="false"
                 android:text="@string/no_text"
-                android:textColor="@drawable/radio_button_assessment_text"/>
+                android:textColor="@drawable/button_assessment_text"/>
         </RadioGroup>
     </LinearLayout>
 </LinearLayout>
