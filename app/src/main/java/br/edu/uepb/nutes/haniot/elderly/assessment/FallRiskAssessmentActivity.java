@@ -23,7 +23,8 @@ import br.edu.uepb.nutes.haniot.R;
  * @copyright Copyright (c) 2017, NUTES UEPB
  */
 public class FallRiskAssessmentActivity extends AppIntro implements OnAnswerListener {
-    private final String TAG = "FallRiskAssessmentActivity";
+    private final String TAG = "FallRiskAssActivity";
+
     private final int PAGE_1 = 0;
     private final int PAGE_2 = 1;
     private final int PAGE_3 = 2;
@@ -46,7 +47,7 @@ public class FallRiskAssessmentActivity extends AppIntro implements OnAnswerList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         answers = new boolean[10];
-        questions = new String[10];
+        questions = getResources().getStringArray(R.array.risk_questions_array);
 
         setColorTransitionsEnabled(true);
         setFadeAnimation();
@@ -69,7 +70,7 @@ public class FallRiskAssessmentActivity extends AppIntro implements OnAnswerList
                 R.layout.fragment_elderly_fall_risk,
                 getString(R.string.risk_fall_title_group2),
                 getString(R.string.risk_fall_description_q2),
-                R.drawable.walker,
+                R.drawable.walker_elderly,
                 ContextCompat.getColor(this, R.color.colorPurple),
                 PAGE_2));
 
@@ -77,6 +78,7 @@ public class FallRiskAssessmentActivity extends AppIntro implements OnAnswerList
                 R.layout.fragment_elderly_fall_risk,
                 getString(R.string.risk_fall_title_group3),
                 getString(R.string.risk_fall_description_q3),
+                R.drawable.medications_elderly,
                 ContextCompat.getColor(this, R.color.colorLightBlue),
                 PAGE_3));
 
@@ -84,6 +86,7 @@ public class FallRiskAssessmentActivity extends AppIntro implements OnAnswerList
                 R.layout.fragment_elderly_fall_risk,
                 getString(R.string.risk_fall_title_group3),
                 getString(R.string.risk_fall_description_q4),
+                R.drawable.medications_elderly,
                 ContextCompat.getColor(this, R.color.colorLightBlue),
                 PAGE_4));
 
@@ -209,7 +212,7 @@ public class FallRiskAssessmentActivity extends AppIntro implements OnAnswerList
         // End result
         if (value) {
             Log.d(TAG, "onAnswer() END - OK");
-        }else {
+        } else {
             Log.d(TAG, "onAnswer() END - CANCEL");
         }
     }
