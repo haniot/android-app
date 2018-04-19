@@ -94,6 +94,7 @@ public class FallRiskAssessmentActivity extends AppIntro implements OnAnswerList
                 R.layout.fragment_elderly_fall_risk,
                 getString(R.string.risk_fall_title_group4),
                 getString(R.string.risk_fall_description_q5),
+                R.drawable.coast_pain_elderly,
                 ContextCompat.getColor(this, R.color.colorLightGreen),
                 PAGE_5));
 
@@ -101,6 +102,7 @@ public class FallRiskAssessmentActivity extends AppIntro implements OnAnswerList
                 R.layout.fragment_elderly_fall_risk,
                 getString(R.string.risk_fall_title_group5),
                 getString(R.string.risk_fall_description_q6),
+                R.drawable.daily_activity_elderly,
                 ContextCompat.getColor(this, R.color.colorOrange),
                 PAGE_6));
 
@@ -108,6 +110,7 @@ public class FallRiskAssessmentActivity extends AppIntro implements OnAnswerList
                 R.layout.fragment_elderly_fall_risk,
                 getString(R.string.risk_fall_title_group6),
                 getString(R.string.risk_fall_description_q7),
+                R.drawable.difficulty_seeing_elderly,
                 ContextCompat.getColor(this, R.color.colorBlueGrey),
                 PAGE_7));
 
@@ -115,6 +118,7 @@ public class FallRiskAssessmentActivity extends AppIntro implements OnAnswerList
                 R.layout.fragment_elderly_fall_risk,
                 getString(R.string.risk_fall_title_group6),
                 getString(R.string.risk_fall_description_q8),
+                R.drawable.hearing_elderly,
                 ContextCompat.getColor(this, R.color.colorBlueGrey),
                 PAGE_8));
 
@@ -122,6 +126,7 @@ public class FallRiskAssessmentActivity extends AppIntro implements OnAnswerList
                 R.layout.fragment_elderly_fall_risk,
                 getString(R.string.risk_fall_title_group7),
                 getString(R.string.risk_fall_description_q9),
+                R.drawable.physical_activity_elderly,
                 ContextCompat.getColor(this, R.color.colorIndigo),
                 PAGE_9));
 
@@ -129,6 +134,7 @@ public class FallRiskAssessmentActivity extends AppIntro implements OnAnswerList
                 R.layout.fragment_elderly_fall_risk,
                 getString(R.string.risk_fall_title_group8),
                 getString(R.string.risk_fall_description_q10),
+                R.drawable.abajur,
                 ContextCompat.getColor(this, R.color.colorCyan),
                 PAGE_10));
 
