@@ -238,5 +238,7 @@ public class SliderPageFragment extends Fragment implements ISlideBackgroundColo
         return oldCheckedRadio;
     }
 
-
+    public int getPageNumber() {
+        return pageNumber;
+    }
 }

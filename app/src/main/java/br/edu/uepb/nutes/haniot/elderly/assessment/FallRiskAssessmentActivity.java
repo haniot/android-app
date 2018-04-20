@@ -3,6 +3,7 @@ package br.edu.uepb.nutes.haniot.elderly.assessment;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -39,6 +40,9 @@ public class FallRiskAssessmentActivity extends AppIntro implements OnAnswerList
 
     private boolean[] answers;
     private String[] questions;
+    private boolean displayMessageBlock;
+    private boolean isComingBackPage;
+
 
     SharedPreferences preferences;
     SharedPreferences.Editor preferencesEditor;
@@ -48,6 +52,8 @@ public class FallRiskAssessmentActivity extends AppIntro implements OnAnswerList
         super.onCreate(savedInstanceState);
         answers = new boolean[10];
         questions = getResources().getStringArray(R.array.risk_questions_array);
+        displayMessageBlock = true;
+        isComingBackPage = true;
 
         setColorTransitionsEnabled(true);
         setFadeAnimation();
@@ -200,11 +206,9 @@ public class FallRiskAssessmentActivity extends AppIntro implements OnAnswerList
         });
     }
 
-    /**
-     *
-     */
-    private void processAssessment(int layoutResId) {
-
+    @Override
+    public boolean onCanRequestNextPage() {
+        return super.onCanRequestNextPage();
     }
 
     @Override
@@ -221,5 +225,24 @@ public class FallRiskAssessmentActivity extends AppIntro implements OnAnswerList
         } else {
             Log.d(TAG, "onAnswer() END - CANCEL");
         }
+    }
+
+    /**
+     *
+     */
+    private void processAssessment(int layoutResId) {
+
+    }
+
+    private void showMessageBlocked() {
+        if (!displayMessageBlock) return;
+
+        final Snackbar snackbar = Snackbar.make(getCurrentFocus(),
+                R.string.error_internal_device,
+                Snackbar.LENGTH_LONG);
+        snackbar.setAction(R.string.bt_ok, (v) -> {
+            snackbar.dismiss();
+        });
+        snackbar.show();
     }
 }
