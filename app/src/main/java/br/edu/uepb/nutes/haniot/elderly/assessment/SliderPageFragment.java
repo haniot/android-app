@@ -23,6 +23,7 @@ import com.github.paolorotolo.appintro.ISlideBackgroundColorHolder;
 import br.edu.uepb.nutes.haniot.R;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 /**
  * SliderPageFragment implementation.
@@ -43,26 +44,49 @@ public class SliderPageFragment extends Fragment implements ISlideBackgroundColo
     protected static final String ARG_DESC_COLOR = "arg_desc_color";
     protected static final String ARG_PAGE_NUMBER = "arg_page_number";
 
+    private Unbinder unbinder;
     private OnAnswerListener mListener;
     private boolean isBlocked, answerValue;
 
     private int drawable, bgColor, titleColor, descColor, layoutId, pageNumber, oldCheckedRadio;
     private String title, description;
 
+    @Nullable
     @BindView(R.id.question_title)
     TextView titleTextView;
 
+    @Nullable
     @BindView(R.id.question_description)
     TextView descTextView;
 
+    @Nullable
     @BindView(R.id.question_image)
     ImageView imgTextView;
 
+    @Nullable
     @BindView(R.id.question_radioGroup)
     RadioGroup radioGroup;
 
     public SliderPageFragment() {
     }
+
+    /**
+     * New instance the {@link SliderPageFragment}.
+     *
+     * @param layoutId
+     * @param numberPage
+     * @return {@link SliderPageFragment}
+     */
+    public static SliderPageFragment newInstance(@LayoutRes int layoutId, int numberPage) {
+        SliderPageFragment sliderPageFragment = new SliderPageFragment();
+        Bundle args = new Bundle();
+        args.putInt(ARG_LAYOUT, layoutId);
+        args.putInt(ARG_PAGE_NUMBER, numberPage);
+        sliderPageFragment.setArguments(args);
+
+        return sliderPageFragment;
+    }
+
 
     /**
      * New instance the {@link SliderPageFragment}.
@@ -147,13 +171,17 @@ public class SliderPageFragment extends Fragment implements ISlideBackgroundColo
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(layoutId, container, false);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
 
-        titleTextView.setText(title);
-        if (titleColor != 0) titleTextView.setTextColor(titleColor);
+        if (titleTextView != null) {
+            titleTextView.setText(title);
+            if (titleColor != 0) titleTextView.setTextColor(titleColor);
+        }
 
-        descTextView.setText(description);
-        if (descColor != 0) descTextView.setTextColor(descColor);
+        if (descTextView != null) {
+            descTextView.setText(description);
+            if (descColor != 0) descTextView.setTextColor(descColor);
+        }
 
         if (drawable != 0) imgTextView.setImageResource(drawable);
 
@@ -163,6 +191,7 @@ public class SliderPageFragment extends Fragment implements ISlideBackgroundColo
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        if (radioGroup == null) return;
 
         radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
             if (checkedId == R.id.yes_radioButton && oldCheckedRadio != 1) {
@@ -184,7 +213,8 @@ public class SliderPageFragment extends Fragment implements ISlideBackgroundColo
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        radioGroup.setOnCheckedChangeListener(null);
+        unbinder.unbind();
+        if (radioGroup != null) radioGroup.setOnCheckedChangeListener(null);
     }
 
     @Override

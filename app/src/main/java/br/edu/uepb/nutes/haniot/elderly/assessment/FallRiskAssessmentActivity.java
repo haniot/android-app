@@ -1,5 +1,6 @@
 package br.edu.uepb.nutes.haniot.elderly.assessment;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,10 +10,9 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 
 import com.github.paolorotolo.appintro.AppIntro;
-
-import java.util.Arrays;
 
 import br.edu.uepb.nutes.haniot.R;
 
@@ -26,6 +26,9 @@ import br.edu.uepb.nutes.haniot.R;
 public class FallRiskAssessmentActivity extends AppIntro implements OnAnswerListener {
     private final String TAG = "FallRiskAssActivity";
 
+    public static final String KEY_QUESTIONS = "key_questions";
+    public static final String KEY_ANSWERS = "key_answers";
+
     private final int PAGE_1 = 0;
     private final int PAGE_2 = 1;
     private final int PAGE_3 = 2;
@@ -36,12 +39,11 @@ public class FallRiskAssessmentActivity extends AppIntro implements OnAnswerList
     private final int PAGE_8 = 7;
     private final int PAGE_9 = 8;
     private final int PAGE_10 = 9;
-    private final int PAGE_RES = 10;
+    private final int PAGE_END = 10;
 
-    private boolean[] answers;
     private String[] questions;
-    private boolean displayMessageBlock;
-    private boolean isComingBackPage;
+    private boolean[] answers;
+    private SliderPageFragment currentPage;
 
 
     SharedPreferences preferences;
@@ -50,10 +52,8 @@ public class FallRiskAssessmentActivity extends AppIntro implements OnAnswerList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        answers = new boolean[10];
         questions = getResources().getStringArray(R.array.risk_questions_array);
-        displayMessageBlock = true;
-        isComingBackPage = true;
+        answers = new boolean[10];
 
         setColorTransitionsEnabled(true);
         setFadeAnimation();
@@ -62,7 +62,8 @@ public class FallRiskAssessmentActivity extends AppIntro implements OnAnswerList
         setSkipText(getString(R.string.cancel_text));
         setNextPageSwipeLock(true);
 
-        setImmersiveMode(true);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         addSlide(SliderPageFragment.newInstance(
                 R.layout.fragment_elderly_fall_risk,
@@ -144,10 +145,7 @@ public class FallRiskAssessmentActivity extends AppIntro implements OnAnswerList
                 ContextCompat.getColor(this, R.color.colorCyan),
                 PAGE_10));
 
-        addSlide(SliderPageResultFragment.newInstance(
-                R.layout.fragment_elderly_fall_risk_end,
-                ContextCompat.getColor(this, R.color.colorDeepPurple),
-                PAGE_RES));
+        addSlide(SliderPageFragment.newInstance(R.layout.fragment_elderly_fall_risk_end, PAGE_END));
     }
 
     @Override
@@ -171,39 +169,18 @@ public class FallRiskAssessmentActivity extends AppIntro implements OnAnswerList
     public void onSlideChanged(@Nullable Fragment oldFragment, @Nullable Fragment newFragment) {
         super.onSlideChanged(oldFragment, newFragment);
         if (newFragment instanceof SliderPageFragment) {
-            SliderPageFragment currentPage = (SliderPageFragment) newFragment;
+            currentPage = (SliderPageFragment) newFragment;
+
+            if (currentPage.getPageNumber() == PAGE_END) return;
 
             if (currentPage.isBlocked()) setNextPageSwipeLock(true);
             else setNextPageSwipeLock(false);
 
-            if (currentPage.getOldCheckedRadio() == 0) {
+            if (currentPage.getOldCheckedRadio() == 0)
                 currentPage.getRadioGroup().check(R.id.no_radioButton);
-            } else if (currentPage.getOldCheckedRadio() == 1) {
+            else if (currentPage.getOldCheckedRadio() == 1)
                 currentPage.getRadioGroup().check(R.id.yes_radioButton);
-            }
-            Log.d("RESULT", Arrays.toString(answers));
         }
-    }
-
-    /**
-     * Open the cancellation message.
-     */
-    private void openCancelMessage() {
-        runOnUiThread(() -> {
-            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-            dialog.setMessage(getResources().getString(R.string.elderly_register_success));
-
-            dialog.setPositiveButton(R.string.yes_text, (dialogInterface, which) -> {
-            });
-
-            dialog.setNegativeButton(R.string.no_text, (dialogInterface, which) -> {
-            });
-
-            dialog.setOnCancelListener((dialogInterface) -> {
-            });
-
-            dialog.create().show();
-        });
     }
 
     @Override
@@ -213,30 +190,53 @@ public class FallRiskAssessmentActivity extends AppIntro implements OnAnswerList
 
     @Override
     public void onAnswer(View view, boolean value, int page) {
-        if (page < PAGE_RES) {
+        if (page < PAGE_END) {
             Log.d(TAG, "onAnswer() NOT END");
             answers[page] = value;
             return;
         }
 
-        // End result
-        if (value) {
-            Log.d(TAG, "onAnswer() END - OK");
-        } else {
-            Log.d(TAG, "onAnswer() END - CANCEL");
-        }
+        if (value) processAssessment();// End result
+        else showMessageCancel();// Cancel result
     }
 
     /**
-     *
+     * Process result assessment.
      */
-    private void processAssessment(int layoutResId) {
+    private void processAssessment() {
+        Intent intent = new Intent(this, FallRiskAssessmentResultActivity.class);
+        intent.putExtra(KEY_ANSWERS, answers);
+        intent.putExtra(KEY_QUESTIONS, questions);
+        startActivity(intent);
 
+        finish();
     }
 
-    private void showMessageBlocked() {
-        if (!displayMessageBlock) return;
+    /**
+     * Show dialog mesage cancel.
+     */
+    private void showMessageCancel() {
+        runOnUiThread(() -> {
+            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+            dialog.setMessage(getString(R.string.risk_fall_title_cancel));
 
+            dialog.setPositiveButton(R.string.yes_text, (dialogInterface, which) -> {
+                finish();
+            });
+
+            dialog.setNegativeButton(R.string.no_text, (dialogInterface, which) -> {
+                if (currentPage != null)
+                    currentPage.getRadioGroup().clearCheck();
+            });
+
+            dialog.create().show();
+        });
+    }
+
+    /**
+     * Show message page blocked.
+     */
+    private void showMessageBlocked() {
         final Snackbar snackbar = Snackbar.make(getCurrentFocus(),
                 R.string.error_internal_device,
                 Snackbar.LENGTH_LONG);
@@ -246,3 +246,4 @@ public class FallRiskAssessmentActivity extends AppIntro implements OnAnswerList
         snackbar.show();
     }
 }
+

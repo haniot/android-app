@@ -80,21 +80,34 @@
         <activity
             android:name=".devices.SmartBandActivity"
             android:screenOrientation="portrait" />
+
+        <!-- ACTIVITIES CHARTS-->
         <activity android:name=".activity.account.ChangePasswordActivity" />
         <activity android:name=".activity.graphs.BodyCompositionGraphActivity" />
         <activity android:name=".activity.graphs.TemperatureGraphActivity" />
         <activity android:name=".activity.graphs.HeartRateGraphActivity" />
         <activity android:name=".activity.graphs.GlucoseGraphActivity" />
         <activity android:name=".activity.graphs.BloodPresssureGraphActivity" />
+        <!-- END ACTIVITIES CHARTS-->
+
+        <!-- ACTIVITIES FALL RISK -->
         <activity
             android:name=".elderly.ElderlyMonitoredActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppThemeSecondaty" />
         <activity
             android:name=".elderly.ElderlyRegisterActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppThemeSecondaty" />
         <activity
             android:name=".elderly.assessment.FallRiskAssessmentActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppThemeSecondaty" />
+        <activity
+            android:name=".elderly.assessment.FallRiskAssessmentResultActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeSecondaty" />
+        <!-- END ACTIVITIES FALL RISK -->
 
         <!-- SERVICES -->
         <service
@@ -111,13 +124,13 @@
             </intent-filter>
         </service>
         <service android:name="com.signove.health.service.BluetoothHDPService" />
-        <!-- [START firebase_service] -->
         <service android:name=".service.FCMService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-        <!-- [END firebase_service] -->
+        <!-- END SERVICES -->
+
     </application>
 
 </manifest>
