@@ -156,6 +156,7 @@
     <string name="risk_fall_title_cancel">Tem certeza de que deseja cancelar?\nAs respostas fornecidas serão perdidas...</string>
     <string name="risk_fall_title_end">Com base nas respostas obtidas, o risco do idoso sofrer uma queda pode ser classificado em:</string>
     <string name="risk_fall_title_end_confirm_result">Deseja visualizar o resultado da avaliação?</string>
+    <string name="risk_fall_message_blocked_page">Responda a pergunta atual para ir para próxima...</string>
     <!-- END ELDERLY ASSESSMENT RISK FALL -->
 
     <string name="cancel_text">Cancelar</string>

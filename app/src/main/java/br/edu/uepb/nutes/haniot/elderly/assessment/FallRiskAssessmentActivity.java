@@ -1,7 +1,7 @@
 package br.edu.uepb.nutes.haniot.elderly.assessment;
 
+import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -9,6 +9,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 
@@ -44,10 +46,6 @@ public class FallRiskAssessmentActivity extends AppIntro implements OnAnswerList
     private String[] questions;
     private boolean[] answers;
     private SliderPageFragment currentPage;
-
-
-    SharedPreferences preferences;
-    SharedPreferences.Editor preferencesEditor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,7 +91,7 @@ public class FallRiskAssessmentActivity extends AppIntro implements OnAnswerList
                 R.layout.fragment_elderly_fall_risk,
                 getString(R.string.risk_fall_title_group3),
                 getString(R.string.risk_fall_description_q4),
-                R.drawable.medications_elderly,
+                R.drawable.medications_2_elderly,
                 ContextCompat.getColor(this, R.color.colorLightBlue),
                 PAGE_4));
 
@@ -156,13 +154,11 @@ public class FallRiskAssessmentActivity extends AppIntro implements OnAnswerList
     @Override
     public void onSkipPressed(Fragment currentFragment) {
         super.onSkipPressed(currentFragment);
-        Log.d(TAG, "onSkipPressed()" + currentFragment.getClass().getName());
     }
 
     @Override
     public void onDonePressed(Fragment currentFragment) {
         super.onDonePressed(currentFragment);
-        Log.d(TAG, "onDonePressed()" + currentFragment.getClass().getName());
     }
 
     @Override
@@ -180,6 +176,15 @@ public class FallRiskAssessmentActivity extends AppIntro implements OnAnswerList
                 currentPage.getRadioGroup().check(R.id.no_radioButton);
             else if (currentPage.getOldCheckedRadio() == 1)
                 currentPage.getRadioGroup().check(R.id.yes_radioButton);
+
+            // Capture event onSwipeLeft
+            currentPage.getView().setOnTouchListener(new OnSwipeTouchListener(this) {
+                @Override
+                public void onSwipeLeft() {
+                    super.onSwipeLeft();
+                    if (currentPage.isBlocked()) showMessageBlocked();
+                }
+            });
         }
     }
 
@@ -191,7 +196,6 @@ public class FallRiskAssessmentActivity extends AppIntro implements OnAnswerList
     @Override
     public void onAnswer(View view, boolean value, int page) {
         if (page < PAGE_END) {
-            Log.d(TAG, "onAnswer() NOT END");
             answers[page] = value;
             return;
         }
@@ -237,13 +241,58 @@ public class FallRiskAssessmentActivity extends AppIntro implements OnAnswerList
      * Show message page blocked.
      */
     private void showMessageBlocked() {
-        final Snackbar snackbar = Snackbar.make(getCurrentFocus(),
-                R.string.error_internal_device,
-                Snackbar.LENGTH_LONG);
-        snackbar.setAction(R.string.bt_ok, (v) -> {
-            snackbar.dismiss();
+        runOnUiThread(() -> {
+            final Snackbar snackbar = Snackbar.make(currentPage.getView(),
+                    R.string.risk_fall_message_blocked_page,
+                    Snackbar.LENGTH_LONG);
+            snackbar.setAction(R.string.bt_ok, (v) -> {
+                snackbar.dismiss();
+            });
+            snackbar.show();
         });
-        snackbar.show();
+    }
+
+    /**
+     * Implementation OnSwipeTouchListener.
+     */
+    public class OnSwipeTouchListener implements View.OnTouchListener {
+        private final GestureDetector gestureDetector;
+
+        public OnSwipeTouchListener(Context context) {
+            gestureDetector = new GestureDetector(context, new GestureListener());
+        }
+
+        public void onSwipeLeft() {
+        }
+
+        public void onSwipeRight() {
+        }
+
+        public boolean onTouch(View v, MotionEvent event) {
+            return gestureDetector.onTouchEvent(event);
+        }
+
+        private final class GestureListener extends GestureDetector.SimpleOnGestureListener {
+            private static final int SWIPE_DISTANCE_THRESHOLD = 100;
+            private static final int SWIPE_VELOCITY_THRESHOLD = 100;
+
+            @Override
+            public boolean onDown(MotionEvent e) {
+                return true;
+            }
+
+            @Override
+            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+                float distanceX = e2.getX() - e1.getX();
+                float distanceY = e2.getY() - e1.getY();
+                if (Math.abs(distanceX) > Math.abs(distanceY) && Math.abs(distanceX) > SWIPE_DISTANCE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
+                    if (distanceX > 0) onSwipeRight();
+                    else onSwipeLeft();
+                    return true;
+                }
+                return false;
+            }
+        }
     }
 }
 

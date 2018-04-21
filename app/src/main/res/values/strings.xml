@@ -336,6 +336,7 @@
     <string name="risk_fall_title_cancel">Are you sure you want to cancel?\nThe answers given will be lost...</string>
     <string name="risk_fall_title_end">Based on the answers obtained the risk of the elderly suffering a fall will be classified in:</string>
     <string name="risk_fall_title_end_confirm_result">Do you want to see the evaluation result?</string>
+    <string name="risk_fall_message_blocked_page">Answer the current question to go to next...</string>
     <!-- END ELDERLY ASSESSMENT RISK FALL -->
 
     <!-- ARRAY QUESTIONS RISK FALL -->

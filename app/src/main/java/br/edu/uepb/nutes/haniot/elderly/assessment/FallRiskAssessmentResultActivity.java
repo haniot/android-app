@@ -22,6 +22,13 @@ import br.edu.uepb.nutes.haniot.R;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * FallRiskAssessmentResultActivity implementation.
+ *
+ * @author Douglas Rafael <douglas.rafael@nutes.uepb.edu.br>
+ * @version 1.0
+ * @copyright Copyright (c) 2017, NUTES UEPB
+ */
 public class FallRiskAssessmentResultActivity extends AppCompatActivity {
     private final String TAG = "FallRiskResultActivity";
 
@@ -147,11 +154,16 @@ public class FallRiskAssessmentResultActivity extends AppCompatActivity {
             mBoxLoading.setVisibility(View.GONE);
             Animation animation = AnimationUtils.loadAnimation(this, android.R.anim.fade_in);
 
-            if (assessmentResult == LOW_RISK)
+            if (assessmentResult == LOW_RISK) {
                 mTitleResult.setText(getString(R.string.risk_fall_title_low));
-            else if (assessmentResult == MODERATE_RISK)
+                mImageResult.setImageResource(R.drawable.elderly_happy);
+            } else if (assessmentResult == MODERATE_RISK) {
                 mTitleResult.setText(getString(R.string.risk_fall_title_moderate));
-            else mTitleResult.setText(getString(R.string.risk_fall_title_high));
+                mImageResult.setImageResource(R.drawable.elderly_normal);
+            } else {
+                mTitleResult.setText(getString(R.string.risk_fall_title_high));
+                mImageResult.setImageResource(R.drawable.elderly_sad);
+            }
 
             mBoxResult.setVisibility(View.VISIBLE);
             mBoxResult.startAnimation(animation);
