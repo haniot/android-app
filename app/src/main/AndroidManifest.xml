@@ -8,9 +8,11 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <!-- Android >= 6 necessita de localização ativa -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <application
         android:name=".App"
@@ -90,11 +92,16 @@
         <activity android:name=".activity.graphs.BloodPresssureGraphActivity" />
         <!-- END ACTIVITIES CHARTS-->
 
-        <!-- ACTIVITIES FALL RISK -->
+        <!-- ACTIVITIES ELDERLY -->
         <activity
             android:name=".elderly.ElderlyMonitoredActivity"
+            android:parentActivityName=".activity.MainActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppThemeSecondaty" />
+            android:theme="@style/AppThemeSecondaty">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activity.MainActivity" />
+        </activity>
         <activity
             android:name=".elderly.ElderlyRegisterActivity"
             android:screenOrientation="portrait"

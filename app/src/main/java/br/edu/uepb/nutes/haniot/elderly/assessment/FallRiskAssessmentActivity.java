@@ -46,22 +46,40 @@ public class FallRiskAssessmentActivity extends AppIntro implements OnAnswerList
     private String[] questions;
     private boolean[] answers;
     private SliderPageFragment currentPage;
+    private Snackbar snackbarMessageBlockedPage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        questions = getResources().getStringArray(R.array.risk_questions_array);
-        answers = new boolean[10];
-
-        setColorTransitionsEnabled(true);
-        setFadeAnimation();
-        showSeparator(true);
-        showSkipButton(true);
-        setSkipText(getString(R.string.cancel_text));
-        setNextPageSwipeLock(true);
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        questions = getResources().getStringArray(R.array.risk_questions_array);
+        answers = new boolean[10];
+        initComponents();
+    }
+
+    /**
+     * Initialize components.
+     */
+    private void initComponents() {
+        addPages();
+    }
+
+    /**
+     * Add the slides.
+     */
+    private void addPages() {
+        /**
+         * Config pages.
+         */
+        setColorTransitionsEnabled(true);
+        setFadeAnimation();
+        showSeparator(true);
+        showSkipButton(false);
+        setNextPageSwipeLock(true);
+        setImmersive(true);
 
         addSlide(SliderPageFragment.newInstance(
                 R.layout.fragment_elderly_fall_risk,
@@ -164,6 +182,10 @@ public class FallRiskAssessmentActivity extends AppIntro implements OnAnswerList
     @Override
     public void onSlideChanged(@Nullable Fragment oldFragment, @Nullable Fragment newFragment) {
         super.onSlideChanged(oldFragment, newFragment);
+
+        if (snackbarMessageBlockedPage != null)
+            snackbarMessageBlockedPage.dismiss();
+
         if (newFragment instanceof SliderPageFragment) {
             currentPage = (SliderPageFragment) newFragment;
 
@@ -186,11 +208,6 @@ public class FallRiskAssessmentActivity extends AppIntro implements OnAnswerList
                 }
             });
         }
-    }
-
-    @Override
-    public boolean onCanRequestNextPage() {
-        return super.onCanRequestNextPage();
     }
 
     @Override
@@ -229,8 +246,11 @@ public class FallRiskAssessmentActivity extends AppIntro implements OnAnswerList
             });
 
             dialog.setNegativeButton(R.string.no_text, (dialogInterface, which) -> {
-                if (currentPage != null)
-                    currentPage.getRadioGroup().clearCheck();
+                currentPage.clearCheck();
+            });
+
+            dialog.setOnCancelListener((dialogInterface) -> {
+                currentPage.clearCheck();
             });
 
             dialog.create().show();
@@ -242,13 +262,16 @@ public class FallRiskAssessmentActivity extends AppIntro implements OnAnswerList
      */
     private void showMessageBlocked() {
         runOnUiThread(() -> {
-            final Snackbar snackbar = Snackbar.make(currentPage.getView(),
+            /**
+             * Create snackbar
+             */
+            snackbarMessageBlockedPage = Snackbar.make(currentPage.getView(),
                     R.string.risk_fall_message_blocked_page,
                     Snackbar.LENGTH_LONG);
-            snackbar.setAction(R.string.bt_ok, (v) -> {
-                snackbar.dismiss();
+            snackbarMessageBlockedPage.setAction(R.string.bt_ok, (v) -> {
+                snackbarMessageBlockedPage.dismiss();
             });
-            snackbar.show();
+            snackbarMessageBlockedPage.show();
         });
     }
 

@@ -81,6 +81,7 @@
     <string name="datetime_format_db">yyyy-MM-dd HH:mm:ss</string>
     <string name="time_format">HH:mm:ss</string>
     <string name="time_format_simple">mm:ss</string>
+    <string name="time_format_simple2">HH\'h\'mm\'m\'</string>
     <string name="format_number1">#.0</string>
     <string name="format_number2">##.0</string>
     <string name="device_not_found">Dispositivo: %1$s não encontrado!</string>
@@ -90,6 +91,11 @@
     <string name="temperatre_type_armpit">Axila</string>
     <string name="temperatre_type_body">Corpo (geral)</string>
     <string name="laoding_result">Carregando resultado...</string>
+    <string name="number_emergency">192</string>
+    <string name="call_emergency_title">Ligar para emergência</string>
+    <string name="call_elderly_title">Ligar para idoso</string>
+    <string name="fall_register_time_title">Queda registrada às %s</string>
+    <string name="alert_register_time_title">Alerta disparada às %s</string>
 
     <!-- ELDERLY -->
     <string name="elderly_monitored">Monitorar Idosos</string>

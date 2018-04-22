@@ -50,7 +50,7 @@
         android:animateLayoutChanges="true"
         android:gravity="center"
         android:orientation="vertical"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/image_fall_risk_result"
@@ -75,8 +75,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="60dp"
             android:background="@drawable/button_background_dark"
-            android:paddingLeft="80dp"
-            android:paddingRight="80dp"
+            android:paddingLeft="70dp"
+            android:paddingRight="70dp"
             android:text="@string/bt_ok"
             android:textColor="@color/colorTextDark" />
     </LinearLayout>

@@ -46,7 +46,7 @@ public class SliderPageFragment extends Fragment implements ISlideBackgroundColo
 
     private Unbinder unbinder;
     private OnAnswerListener mListener;
-    private boolean isBlocked, answerValue;
+    private boolean isBlocked, answerValue, actionClearCheck;
 
     private int drawable, bgColor, titleColor, descColor, layoutId, pageNumber, oldCheckedRadio;
     private String title, description;
@@ -149,6 +149,7 @@ public class SliderPageFragment extends Fragment implements ISlideBackgroundColo
         oldCheckedRadio = -1;
         isBlocked = true;
         answerValue = false;
+        actionClearCheck = false;
 
         // Retrieving arguments
         if (getArguments() != null && getArguments().size() != 0) {
@@ -194,6 +195,8 @@ public class SliderPageFragment extends Fragment implements ISlideBackgroundColo
         if (radioGroup == null) return;
 
         radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            if (actionClearCheck) return;
+
             if (checkedId == R.id.yes_radioButton && oldCheckedRadio != 1) {
                 oldCheckedRadio = 1;
                 answerValue = true;
@@ -262,6 +265,12 @@ public class SliderPageFragment extends Fragment implements ISlideBackgroundColo
 
     public RadioGroup getRadioGroup() {
         return radioGroup;
+    }
+
+    public void clearCheck() {
+        actionClearCheck = true;
+        radioGroup.clearCheck();
+        actionClearCheck = false;
     }
 
     public int getOldCheckedRadio() {
