@@ -146,7 +146,7 @@ public class FCMService extends FirebaseMessagingService {
                         .setVibrate(new long[]{1000, 1000})
                         .setContentIntent(pendingIntent)
                         .setStyle(new NotificationCompat.BigTextStyle().bigText(data.get("message")))
-                        .addAction(R.drawable.ic_action_phone,
+                        .addAction(R.drawable.ic_action_live_help,
                                 getResources().getString(R.string.call_emergency_title), emergencyAction);
 
         /**
