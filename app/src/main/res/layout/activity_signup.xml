@@ -171,7 +171,7 @@
                     android:textColor="@color/colorPrimary" />
             </android.support.design.widget.TextInputLayout>
 
-            <!-- Button create account  -->
+            <!-- Butpainteate account  -->
             <android.support.v7.widget.AppCompatButton
                 android:id="@+id/btn_change_passsword"
                 style="@style/Widget.AppCompat.Button.Colored"

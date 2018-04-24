@@ -41,7 +41,7 @@ import java.util.Locale;
 import java.util.UUID;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.activity.graphs.TemperatureGraphActivity;
+import br.edu.uepb.nutes.haniot.activity.charts.TemperatureChartActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.TemperatureAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
@@ -525,6 +525,9 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
         }
     };
 
+    public String getAction() {
+        return action;
+    }
     /**
      * Manipula vários eventos desencadeados pelo Serviço.
      * <p>
@@ -533,10 +536,12 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
      * ACTION_GATT_SERVICES_DISCOVERED: serviços GATT descobertos.
      * ACTION_DATA_AVAILABLE: recebeu dados do dispositivo. Pode ser resultado de operações de leitura ou notificação.
      */
+
+    String action;
     private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            final String action = intent.getAction();
+            action = intent.getAction();
 
             if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
                 updateConnectionState(true);
@@ -610,7 +615,7 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.chart_floating_button:
-                startActivity(new Intent(getApplicationContext(), TemperatureGraphActivity.class));
+                startActivity(new Intent(getApplicationContext(), TemperatureChartActivity.class));
                 break;
             default:
                 break;

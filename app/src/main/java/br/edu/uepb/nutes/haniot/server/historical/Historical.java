@@ -34,6 +34,7 @@ public final class Historical<T> {
         this.urn = query.urn;
         this.queryStrings = query.queryStrings;
         this.type = query.type;
+
     }
 
     /**
