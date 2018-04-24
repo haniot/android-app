@@ -2,6 +2,7 @@ package br.edu.uepb.nutes.haniot.elderly.assessment;
 
 import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.constraint.ConstraintLayout;
@@ -18,7 +19,12 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import org.json.JSONObject;
+
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.activity.settings.Session;
+import br.edu.uepb.nutes.haniot.elderly.ElderlyMonitoredActivity;
+import br.edu.uepb.nutes.haniot.server.Server;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -53,6 +59,9 @@ public class FallRiskAssessmentResultActivity extends AppCompatActivity {
 
     @BindView(R.id.fall_risk_laoding_status)
     TextView mProgressbarStatus;
+
+    @BindView(R.id.loading_send_progressBar)
+    TextView mProgressbarSend;
 
     @BindView(R.id.image_fall_risk_result)
     ImageView mImageResult;
@@ -89,7 +98,26 @@ public class FallRiskAssessmentResultActivity extends AppCompatActivity {
 
     public void saveAssessment(String[] questions, boolean[] answers) {
         // TODO Relizar proceso de salvar
-        finish();
+        mProgressBar.setVisibility(View.VISIBLE);
+
+        // Save in remote server.
+        Server.getInstance(this).post(
+                "users/".concat(new Session(this).get_idLogged()).concat("/fallRisk"),
+                "{ \"fallRisk\": " + assessmentResult + "}", // json
+                new Server.Callback() {
+                    @Override
+                    public void onError(JSONObject result) {
+                        mProgressBar.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onSuccess(JSONObject result) {
+                        mProgressBar.setVisibility(View.GONE);
+                        finish();
+                        startActivity(new Intent(getApplicationContext(),
+                                ElderlyMonitoredActivity.class));
+                    }
+                });
     }
 
     /**

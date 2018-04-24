@@ -24,6 +24,7 @@ public class Elderly {
     private double weight;
     private int height;
     private String phone;
+    private int fallRisk;
 
     /**
      * 0 - male
@@ -191,6 +192,14 @@ public class Elderly {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public int getFallRisk() {
+        return fallRisk;
+    }
+
+    public void setFallRisk(int fallRisk) {
+        this.fallRisk = fallRisk;
     }
 
     @Override

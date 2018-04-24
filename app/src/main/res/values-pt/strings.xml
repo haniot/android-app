@@ -101,7 +101,7 @@
     <string name="elderly_monitored">Monitorar Idosos</string>
     <string name="elderly_add">Adicionar Idoso</string>
     <string name="elderly_pin">PIN</string>
-    <string name="elderly_fall_register">Fall Records: %d</string>
+    <string name="elderly_fall_register">Quedas registradas: %d</string>
     <!-- END ELDERLY -->
 
     <!-- ELDERLY FORM -->

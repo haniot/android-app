@@ -1,6 +1,7 @@
 package br.edu.uepb.nutes.haniot.adapter;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,6 +56,26 @@ public class ElderlyMonitoredAdapter extends BaseAdapter<Elderly> {
             ViewHolder h = (ViewHolder) holder;
 
             h.name.setText(e.getName());
+            h.fallRecords.setText(String.format(context.getResources().getString(R.string.elderly_fall_register), 0));
+
+            h.fallRisk.setVisibility(View.VISIBLE);
+            switch (e.getFallRisk()) {
+                case 1:
+                    h.fallRisk.setBackgroundColor(ContextCompat.getColor(context, R.color.colorLightGreen));
+                    h.fallRisk.setText(context.getResources().getString(R.string.risk_fall_title_low));
+                    break;
+                case 2:
+                    h.fallRisk.setBackgroundColor(ContextCompat.getColor(context, R.color.colorAmber));
+                    h.fallRisk.setText(context.getResources().getString(R.string.risk_fall_title_moderate));
+                    break;
+                case 3:
+                    h.fallRisk.setBackgroundColor(ContextCompat.getColor(context, R.color.colorRed));
+                    h.fallRisk.setText(context.getResources().getString(R.string.risk_fall_title_high));
+                    break;
+                default:
+                    h.fallRisk.setVisibility(View.GONE);
+                    break;
+            }
 
             /**
              * OnClick Item

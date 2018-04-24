@@ -198,6 +198,7 @@ public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRec
 
                 Elderly e = new Elderly();
                 e.setName(o.getString("name"));
+//                e.setFallRisk(o.getInt("fallRisk"));
                 result.add(e);
             }
         } catch (JSONException e) {
