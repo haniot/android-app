@@ -39,6 +39,7 @@ public final class CreateChart<T> {
     private Chart mChart;
     private List<Entry> entries;
     private List<T> dataList;
+    private LineDataSet set;
 
     /**
      * @param params
@@ -66,11 +67,15 @@ public final class CreateChart<T> {
      * @param item T
      */
     public void paint(T item) {
-        if (dataList == null) dataList = new ArrayList<>();
-
-        this.dataList.add(item);
-        configureChart();
-        mChart.notifyDataSetChanged();
+        if (set == null) set = new LineDataSet(entries, params.label);
+        if (item instanceof Measurement) {
+            Measurement measurement = (Measurement) item;
+            set.addEntry(new Entry((float) data.getEntryCount(), (float) measurement.getValue()));
+            set.notifyDataSetChanged();
+            data.notifyDataChanged();
+            mChart.notifyDataSetChanged();
+            mChart.invalidate();
+        }
     }
 
     /**
@@ -84,7 +89,6 @@ public final class CreateChart<T> {
 
         if (dataList.get(0) instanceof Measurement) {
             List<Measurement> data = (List<Measurement>) dataList;
-            Log.d("TEST 2", Arrays.toString(data.toArray()));
 
             for (int i = 0; i < data.size(); i++) {
                 String date = DateUtils.formatDate(
@@ -112,10 +116,13 @@ public final class CreateChart<T> {
         if (dataList == null) return;
 
         mChart.getXAxis().setValueFormatter(prepareVariablesLineData());
-        ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
-        LineDataSet set = new LineDataSet(entries, params.label);
+        ArrayList<ILineDataSet> dataSets = new ArrayList<>();
+
+        set = new LineDataSet(entries, params.label);
+
         dataSets.add(set);
         data = new LineData(dataSets);
+
 
         mChart.getXAxis().setTextColor(params.colorTextX);
         mChart.getXAxis().setTextColor(params.colorTextY);
@@ -172,6 +179,7 @@ public final class CreateChart<T> {
             mLineChart.setGridBackgroundColor(params.colorBorderGrid);
             mLineChart.getAxisLeft().setTextColor(params.colorTextY);
         }
+
 
         set.setColor(params.lineColor);
         mChart.setData(data);
