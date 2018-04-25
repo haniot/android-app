@@ -380,6 +380,7 @@ public class ElderlyFormFragment extends Fragment {
         result.addProperty("liveAlone", elderly.getLiveAlone());
         result.addProperty("maritalStatus", elderly.getMaritalStatus());
         result.addProperty("degreeOfEducation", elderly.getDegreeOfEducation());
+        result.addProperty("encodedId", "8754"); //  TODO PIN - Avaliar se eh a entidade idoso
 
         JsonArray arrayMedications = new JsonArray();
         for (Medication medication : elderly.getMedications())

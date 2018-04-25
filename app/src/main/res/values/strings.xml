@@ -490,8 +490,7 @@
     <!-- ELDERLY USER OF ACCESSORIES -->
     <string-array name="elderly_accessories_array">
         <item>Crutches</item>
-        <item>Walking</item>
-        <item>Sticks</item>
+        <item>Walking stick</item>
         <item>Walkers</item>
         <item>Glasses</item>
         <item>Hearing aid</item>
@@ -499,12 +498,6 @@
 
     <!-- ELDERLY MEDICATIONS -->
     <string-array name="medications_array">
-        <item>Crutches</item>
-        <item>Walking</item>
-        <item>Sticks</item>
-        <item>Walkers</item>
-        <item>Glasses</item>
-        <item>Hearing aid</item>
     </string-array>
 
 </resources>

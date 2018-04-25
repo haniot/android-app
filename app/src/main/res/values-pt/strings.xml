@@ -132,7 +132,7 @@
     <string name="elderly_add_accessories">Adicionar novo acessório</string>
     <string name="elderly_please_add_accessories">Por favor, adicione um acessório</string>
     <string name="elderly_select_medications">Selecionar medicações</string>
-    <string name="elderly_select_accessories">Selcionar acessórios</string>
+    <string name="elderly_select_accessories">Selecionar acessórios</string>
     <string name="elderly_register_success">Dados salvos com sucesso!\nVocê deseja responder agora a uma avaliação para identificar o risco de queda?</string>
     <string name="elderly_assessment_risk_falling">Você deseja responder agora a uma avaliação para identificar o risco de queda?</string>
     <!-- END ELDERLY FORM -->
@@ -181,4 +181,35 @@
         <item>@string/risk_fall_description_q10</item>
     </string-array>
     <!-- END ARRAY QUESTIONS RISK FALL -->
+
+    <!-- MARITAL STATUS TYPES -->
+    <string-array name="marital_status_types_array">
+        <item>Solteiro</item>
+        <item>Casado</item>
+        <item>Separado</item>
+        <item>Divorciado</item>
+        <item>Viúvo</item>
+    </string-array>
+
+    <!-- DEGREE EDUCATION TYPES -->
+    <string-array name="degree_education_types_array">
+        <item>Ensino básico</item>
+        <item>Ensino fundamental</item>
+        <item>Ensino médio</item>
+        <item>Ensino superior</item>
+    </string-array>
+
+    <!-- ELDERLY USER OF ACCESSORIES -->
+    <string-array name="elderly_accessories_array">
+        <item>Muletas</item>
+        <item>Bengala</item>
+        <item>Andadores</item>
+        <item>Óculos</item>
+        <item>Aparelho auditivo</item>
+    </string-array>
+
+    <!-- ELDERLY MEDICATIONS -->
+    <string-array name="medications_array">
+    </string-array>
+
 </resources>

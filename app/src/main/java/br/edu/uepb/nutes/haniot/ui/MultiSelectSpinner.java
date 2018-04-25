@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatSpinner;
+import android.text.InputType;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -348,6 +349,7 @@ public class MultiSelectSpinner extends AppCompatSpinner implements DialogInterf
          * Creating EditText
          */
         final EditText input = new EditText(context);
+        input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         input.setSingleLine();
         FrameLayout layout = new FrameLayout(context);
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
