@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -20,8 +21,10 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -106,8 +109,12 @@ public class ElderlyFormFragment extends Fragment {
     @BindView(R.id.loading_save_progressBar)
     ProgressBar loadingProgressBar;
 
+    @BindView(R.id.elderly_form_ScrollView)
+    ScrollView formScrollView;
+
     private OnFormListener mListener;
     private Session session;
+    private Server server;
     private Calendar calendar;
     private DatePickerDialog datePickerDialog;
     private Elderly elderly;
@@ -128,6 +135,7 @@ public class ElderlyFormFragment extends Fragment {
         ButterKnife.bind(this, view);
 
         session = new Session(getContext());
+        server = Server.getInstance(getContext());
         calendar = Calendar.getInstance();
         elderly = new Elderly();
         return view;
@@ -156,6 +164,11 @@ public class ElderlyFormFragment extends Fragment {
         mListener = null;
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        server.cancelAllResquest();
+    }
 
     /**
      * Initializes the UI elements.
@@ -396,8 +409,7 @@ public class ElderlyFormFragment extends Fragment {
             final Elderly elderlySaved = dao.save(elderly); // save in local
             if (elderlySaved != null && elderlySaved.getId() > 0) {
                 // Save in remote server.
-                Server.getInstance(getActivity()).post(
-                        "users/".concat(session.get_idLogged()).concat("/external"),
+                server.post("users/".concat(session.get_idLogged()).concat("/external"),
                         elderlyToJson(elderlySaved), // json
                         new Server.Callback() {
                             @Override
@@ -410,7 +422,8 @@ public class ElderlyFormFragment extends Fragment {
                             @Override
                             public void onSuccess(JSONObject result) {
                                 loading(false);
-                                openMessageSuccess(elderlySaved);
+                                final Elderly e = new Gson().fromJson(result.toString(), Elderly.class);
+                                mListener.onFormAssessment(elderly);
                             }
                         });
             }
@@ -423,14 +436,22 @@ public class ElderlyFormFragment extends Fragment {
      * @param enabled boolean
      */
     private void loading(boolean enabled) {
+        if (getActivity() == null) return;
+
+        // Force "ScrollView" to bottom page
+        formScrollView.post(() -> formScrollView.fullScroll(View.FOCUS_DOWN));
+
         getActivity().runOnUiThread(() -> {
-            loadingProgressBar.requestFocus();
             if (enabled) {
+                getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
                 loadingProgressBar.setVisibility(View.VISIBLE);
                 saveButton.setEnabled(false);
             } else {
                 loadingProgressBar.setVisibility(View.GONE);
                 saveButton.setEnabled(true);
+                getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             }
         });
     }
@@ -439,42 +460,18 @@ public class ElderlyFormFragment extends Fragment {
      * Open Snackbar message error in remote save.
      */
     private void openMessageError() {
-        final Snackbar snackbar = Snackbar.make(getView(),
-                R.string.error_internal_device,
-                Snackbar.LENGTH_LONG);
-        snackbar.setAction(R.string.bt_ok, (v) -> {
-            snackbar.dismiss();
-        });
-        snackbar.show();
-    }
+        if (getActivity() == null) return;
 
-    /**
-     * Open dialog message success.
-     *
-     * @param elderly {@link Elderly}
-     */
-    private void openMessageSuccess(Elderly elderly) {
         getActivity().runOnUiThread(() -> {
-            AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
-            dialog.setMessage(getResources().getString(R.string.elderly_register_success));
-
-            dialog.setPositiveButton(R.string.yes_text, (dialogInterface, which) -> {
-                mListener.onFormAssessment(elderly);
-                startActivity(new Intent(getActivity(), FallRiskAssessmentActivity.class));
+            final Snackbar snackbar = Snackbar.make(getView(),
+                    R.string.error_internal_device,
+                    Snackbar.LENGTH_LONG);
+            snackbar.setAction(R.string.bt_ok, (v) -> {
+                snackbar.dismiss();
             });
-
-            dialog.setNegativeButton(R.string.no_text, (dialogInterface, which) -> {
-                mListener.onFormClose();
-            });
-
-            dialog.setOnCancelListener((dialogInterface) -> {
-                mListener.onFormClose();
-            });
-
-            dialog.create().show();
+            snackbar.show();
         });
     }
-
 
     /**
      * Validate Elderly from data form.

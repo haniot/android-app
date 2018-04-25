@@ -72,6 +72,7 @@ public class FallRiskAssessmentResultActivity extends AppCompatActivity {
     private int progressStatus = 0;
     private Handler handler = new Handler();
     private int assessmentResult;
+    private Server server;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +84,8 @@ public class FallRiskAssessmentResultActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_fall_risk_assessment_result);
         ButterKnife.bind(this);
+
+        server = Server.getInstance(this);
 
         /**
          * Get data
@@ -101,9 +104,8 @@ public class FallRiskAssessmentResultActivity extends AppCompatActivity {
         mProgressBar.setVisibility(View.VISIBLE);
 
         // Save in remote server.
-        Server.getInstance(this).post(
-                "users/".concat(new Session(this).get_idLogged()).concat("/fallRisk"),
-                "{ \"fallRisk\": " + assessmentResult + "}", // json
+        server.post("users/".concat(new Session(this).get_idLogged()).concat("/fall-risk"),
+                "{ \"value\": " + assessmentResult + "}", // json
                 new Server.Callback() {
                     @Override
                     public void onError(JSONObject result) {

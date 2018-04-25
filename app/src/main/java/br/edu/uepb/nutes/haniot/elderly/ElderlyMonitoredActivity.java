@@ -60,6 +60,7 @@ public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRec
     private boolean itShouldLoadMore = true;
     private Params params;
     private Session session;
+    private Server server;
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -86,11 +87,10 @@ public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRec
         ButterKnife.bind(this);
 
         session = new Session(this);
+        server = Server.getInstance(this);
         params = new Params(session.get_idLogged(), MeasurementType.TEMPERATURE);
-        initComponents();
 
-        ElderlyDAO dao = ElderlyDAO.getInstance(this);
-        Log.d(TAG, "Elderlies()" + Arrays.toString(dao.list(new Session(this).getUserLogged().getId()).toArray()));
+        initComponents();
     }
 
     @Override
@@ -104,11 +104,9 @@ public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRec
         initRecyclerView();
         initDataSwipeRefresh();
 
-        mAddPatientButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), ElderlyRegisterActivity.class));
-            }
+        mAddPatientButton.setOnClickListener((v) -> {
+            startActivity(new Intent(getApplicationContext(), ElderlyRegisterActivity.class));
+            server.cancelAllResquest();
         });
     }
 
@@ -127,22 +125,6 @@ public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRec
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
         mAdapter.setListener(this);
-        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                if (dy > 0) {
-                    // Recycle view scrolling downwards...
-                    // this if statement detects when user reaches the end of recyclerView, this is only time we should load more
-                    if (!recyclerView.canScrollVertically(RecyclerView.FOCUS_DOWN)) {
-                        // here we are now allowed to load more, but we need to be careful
-                        // we must check if itShouldLoadMore variable is true [unlocked]
-                        if (itShouldLoadMore) loadMoreData();
-                    }
-                }
-            }
-        });
-
         mRecyclerView.setAdapter(mAdapter);
     }
 
@@ -166,7 +148,7 @@ public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRec
         toggleLoading(true); // Enable loading
         if (ConnectionUtils.internetIsEnabled(this)) {
             String path = "/users/".concat(session.get_idLogged()).concat("/external");
-            Server.getInstance(this).get(path, new Server.Callback() {
+            server.get(path, new Server.Callback() {
                 @Override
                 public void onError(JSONObject result) {
                     Log.w(TAG, "loadData - onError()");
@@ -187,6 +169,12 @@ public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRec
         }
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        server.cancelAllResquest();
+    }
+
     // TODO IMPLEMENTAR NO MODULO HISTORICAL
     private List<Elderly> transform(JSONObject json) {
         List<Elderly> result = new ArrayList<>();
@@ -205,47 +193,6 @@ public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRec
             e.printStackTrace();
         }
         return result;
-    }
-
-    /**
-     * List more itemsList from the remote server.
-     */
-    private void loadMoreData() {
-        if (!ConnectionUtils.internetIsEnabled(this))
-            return;
-//
-//        Historical historical = new Historical.Query()
-//                .type(HistoricalType.MEASUREMENTS_TYPE_USER)
-//                .params(params) // Measurements of the temperature type, associated to the user
-//                .pagination(mAdapter.getItemCount(), LIMIT_PER_PAGE)
-//                .build();
-//
-//        historical.request(context, new CallbackHistorical<ExternalData>() {
-//            @Override
-//            public void onBeforeSend() {
-//                Log.w(TAG, "loadMoreData - onBeforeSend()");
-//                toggleLoading(true); // Enable loading
-//            }
-//
-//            @Override
-//            public void onError(JSONObject result) {
-//                Log.w(TAG, "loadMoreData - onError()");
-//                printMessage(getString(R.string.error_500));
-//            }
-//
-//            @Override
-//            public void onResult(List<ExternalData> result) {
-//                Log.w(TAG, "loadMoreData - onResult()");
-//                if (result != null && result.size() > 0) mAdapter.addItems(result);
-//                else printMessage(getString(R.string.no_more_data));
-//            }
-//
-//            @Override
-//            public void onAfterSend() {
-//                Log.w(TAG, "loadMoreData - onAfterSend()");
-//                toggleLoading(false); // Disable loading
-//            }
-//        });
     }
 
     /**
