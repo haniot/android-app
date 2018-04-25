@@ -1,19 +1,18 @@
 package br.edu.uepb.nutes.haniot.elderly;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Spinner;
-import android.widget.TextView;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.elderly.assessment.FallRiskAssessmentActivity;
 import br.edu.uepb.nutes.haniot.model.Elderly;
 import br.edu.uepb.nutes.haniot.utils.Log;
 import butterknife.BindView;
@@ -29,6 +28,7 @@ import butterknife.ButterKnife;
 public class ElderlyRegisterActivity extends AppCompatActivity implements
         ElderlyPinFragment.OnNextPageSelectedListener, ElderlyFormFragment.OnFormListener {
     private final String TAG = "ElderlyRegisterActivity";
+    public static final String EXTRA_ELDERLY_ID = "extra_elderly_id";
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -91,13 +91,28 @@ public class ElderlyRegisterActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onFormClose() {
-        Log.d(TAG, "onFormClose() ");
-        finish();
+    public void onFormResult(Elderly elderly) {
+        Log.d(TAG, "onFormResult() ".concat(elderly.toString()));
+        runOnUiThread(() -> {
+            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+            dialog.setMessage(getResources().getString(R.string.elderly_register_success));
+
+            dialog.setPositiveButton(R.string.yes_text, (dialogInterface, which) -> {
+                Intent it = new Intent(this, FallRiskAssessmentActivity.class);
+                it.putExtra(EXTRA_ELDERLY_ID, elderly.get_id());
+                startActivity(it);
+            });
+
+            dialog.setNegativeButton(R.string.no_text, (dialogInterface, which) -> {
+                finish();
+            });
+
+            dialog.setOnCancelListener((dialogInterface) -> {
+                finish();
+            });
+
+            dialog.create().show();
+        });
     }
 
-    @Override
-    public void onFormAssessment(Elderly elderly) {
-        Log.d(TAG, "onFormAssessment() ".concat(elderly.toString()));
-    }
 }

@@ -2,13 +2,11 @@ package br.edu.uepb.nutes.haniot.elderly;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +26,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -37,7 +37,6 @@ import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
-import br.edu.uepb.nutes.haniot.elderly.assessment.FallRiskAssessmentActivity;
 import br.edu.uepb.nutes.haniot.model.Accessory;
 import br.edu.uepb.nutes.haniot.model.Elderly;
 import br.edu.uepb.nutes.haniot.model.Medication;
@@ -422,8 +421,14 @@ public class ElderlyFormFragment extends Fragment {
                             @Override
                             public void onSuccess(JSONObject result) {
                                 loading(false);
-                                final Elderly e = new Gson().fromJson(result.toString(), Elderly.class);
-                                mListener.onFormAssessment(elderly);
+
+                                try {
+                                    elderly.set_id(result.getString("_id"));
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+
+                                mListener.onFormResult(elderly);
                             }
                         });
             }
@@ -536,8 +541,6 @@ public class ElderlyFormFragment extends Fragment {
     }
 
     public interface OnFormListener {
-        void onFormClose();
-
-        void onFormAssessment(Elderly elderly);
+        void onFormResult(Elderly elderly);
     }
 }

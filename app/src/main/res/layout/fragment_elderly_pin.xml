@@ -52,7 +52,7 @@
                     android:gravity="center"
                     android:hint="@string/elderly_pin"
                     android:inputType="number"
-                    android:imeOptions="actionGo"
+                    android:imeOptions="actionSend"
                     android:textSize="26sp" />
             </android.support.design.widget.TextInputLayout>
 

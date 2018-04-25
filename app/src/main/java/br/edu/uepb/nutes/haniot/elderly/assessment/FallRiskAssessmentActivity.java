@@ -17,6 +17,7 @@ import android.view.WindowManager;
 import com.github.paolorotolo.appintro.AppIntro;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.elderly.ElderlyRegisterActivity;
 
 /**
  * FallRiskAssessmentActivity implementation.
@@ -28,8 +29,9 @@ import br.edu.uepb.nutes.haniot.R;
 public class FallRiskAssessmentActivity extends AppIntro implements OnAnswerListener {
     private final String TAG = "FallRiskAssActivity";
 
-    public static final String KEY_QUESTIONS = "key_questions";
-    public static final String KEY_ANSWERS = "key_answers";
+    public static final String EXTRA_QUESTIONS = "extra_questions";
+    public static final String EXTRA_ANSWERS = "extra_answers";
+    public static final String EXTRA_ELDERLY_ID = "extra_elderly_id";
 
     private final int PAGE_1 = 0;
     private final int PAGE_2 = 1;
@@ -47,6 +49,7 @@ public class FallRiskAssessmentActivity extends AppIntro implements OnAnswerList
     private boolean[] answers;
     private SliderPageFragment currentPage;
     private Snackbar snackbarMessageBlockedPage;
+    private String elderlyId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +60,10 @@ public class FallRiskAssessmentActivity extends AppIntro implements OnAnswerList
 
         questions = getResources().getStringArray(R.array.risk_questions_array);
         answers = new boolean[10];
+
+        Intent it = getIntent();
+        elderlyId = it.getStringExtra(ElderlyRegisterActivity.EXTRA_ELDERLY_ID);
+
         initComponents();
     }
 
@@ -226,8 +233,10 @@ public class FallRiskAssessmentActivity extends AppIntro implements OnAnswerList
      */
     private void processAssessment() {
         Intent intent = new Intent(this, FallRiskAssessmentResultActivity.class);
-        intent.putExtra(KEY_ANSWERS, answers);
-        intent.putExtra(KEY_QUESTIONS, questions);
+        intent.putExtra(EXTRA_ANSWERS, answers);
+        intent.putExtra(EXTRA_QUESTIONS, questions);
+        intent.putExtra(EXTRA_ELDERLY_ID, elderlyId);
+        Log.d("TEST", "ij " + elderlyId);
         startActivity(intent);
 
         finish();

@@ -5,6 +5,7 @@ import java.util.List;
 import io.objectbox.annotation.Backlink;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
+import io.objectbox.annotation.Index;
 import io.objectbox.relation.ToMany;
 import io.objectbox.relation.ToOne;
 
@@ -19,6 +20,10 @@ import io.objectbox.relation.ToOne;
 public class Elderly {
     @Id
     private long id;
+
+    @Index
+    private String _id; // _id in server remote (UUID)
+
     private String name;
     private long dateOfBirth;
     private double weight;
@@ -202,15 +207,25 @@ public class Elderly {
         this.fallRisk = fallRisk;
     }
 
+    public String get_id() {
+        return _id;
+    }
+
+    public void set_id(String _id) {
+        this._id = _id;
+    }
+
     @Override
     public String toString() {
         return "Elderly{" +
                 "id=" + id +
+                ", _id='" + _id + '\'' +
                 ", name='" + name + '\'' +
                 ", dateOfBirth=" + dateOfBirth +
                 ", weight=" + weight +
                 ", height=" + height +
                 ", phone='" + phone + '\'' +
+                ", fallRisk=" + fallRisk +
                 ", sex=" + sex +
                 ", maritalStatus=" + maritalStatus +
                 ", DegreeOfEducation=" + DegreeOfEducation +

@@ -48,6 +48,9 @@ public class FallRiskAssessmentResultActivity extends AppCompatActivity {
     @BindView(R.id.fall_risk_result_progressBar)
     ProgressBar mProgressBar;
 
+    @BindView(R.id.loading_send_progressBar)
+    ProgressBar mProgressbarBarSend;
+
     @BindView(R.id.box_layout_fall_risk)
     ConstraintLayout mBoxFallRisk;
 
@@ -60,9 +63,6 @@ public class FallRiskAssessmentResultActivity extends AppCompatActivity {
     @BindView(R.id.fall_risk_laoding_status)
     TextView mProgressbarStatus;
 
-    @BindView(R.id.loading_send_progressBar)
-    TextView mProgressbarSend;
-
     @BindView(R.id.image_fall_risk_result)
     ImageView mImageResult;
 
@@ -73,6 +73,7 @@ public class FallRiskAssessmentResultActivity extends AppCompatActivity {
     private Handler handler = new Handler();
     private int assessmentResult;
     private Server server;
+    private String elderlyId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,8 +91,11 @@ public class FallRiskAssessmentResultActivity extends AppCompatActivity {
         /**
          * Get data
          */
-        String questions[] = getIntent().getStringArrayExtra(FallRiskAssessmentActivity.KEY_QUESTIONS);
-        boolean answers[] = getIntent().getBooleanArrayExtra(FallRiskAssessmentActivity.KEY_ANSWERS);
+        Intent it = getIntent();
+        String questions[] = it.getStringArrayExtra(FallRiskAssessmentActivity.EXTRA_QUESTIONS);
+        boolean answers[] = it.getBooleanArrayExtra(FallRiskAssessmentActivity.EXTRA_ANSWERS);
+        elderlyId = it.getStringExtra(FallRiskAssessmentActivity.EXTRA_ELDERLY_ID);
+
         assessmentResult = calculateResult(answers); // calculate result
 
         mButton.setOnClickListener((v) -> saveAssessment(questions, answers));
@@ -99,25 +103,39 @@ public class FallRiskAssessmentResultActivity extends AppCompatActivity {
         loading();
     }
 
+    /**
+     * Save in server and close actividty.
+     *
+     * @param questions
+     * @param answers
+     */
     public void saveAssessment(String[] questions, boolean[] answers) {
-        // TODO Relizar proceso de salvar
+        // TODO Relizar proceso de salvar - PERGUNTAS, RESPOSTAS E RESULTADO
+        if (elderlyId == null) {
+            startActivity(new Intent(getApplicationContext(), ElderlyMonitoredActivity.class));
+            finish();
+            return;
+        }
+
         mProgressBar.setVisibility(View.VISIBLE);
 
         // Save in remote server.
-        server.post("users/".concat(new Session(this).get_idLogged()).concat("/fall-risk"),
-                "{ \"value\": " + assessmentResult + "}", // json
+        String path = "users/"
+                .concat(new Session(this).get_idLogged())
+                .concat("/elderlies/")
+                .concat(elderlyId)
+                .concat("/assessments");
+        server.post(path, "{ \"value\": " + assessmentResult + "}", // json
                 new Server.Callback() {
                     @Override
                     public void onError(JSONObject result) {
-                        mProgressBar.setVisibility(View.GONE);
+                        runOnUiThread(() -> mProgressBar.setVisibility(View.GONE));
                     }
 
                     @Override
                     public void onSuccess(JSONObject result) {
-                        mProgressBar.setVisibility(View.GONE);
+                        startActivity(new Intent(getApplicationContext(), ElderlyMonitoredActivity.class));
                         finish();
-                        startActivity(new Intent(getApplicationContext(),
-                                ElderlyMonitoredActivity.class));
                     }
                 });
     }
