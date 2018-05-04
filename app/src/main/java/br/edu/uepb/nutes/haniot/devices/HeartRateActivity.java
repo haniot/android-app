@@ -656,7 +656,7 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
 
                 break;
             case R.id.chart_floating_button:
-                startActivity(new Intent(getApplicationContext(), HeartRateChartActivity.class));
+                startActivity(new Intent(getApplicationContext(), RecordHeartRateActivity.class));
                 break;
             default:
                 break;

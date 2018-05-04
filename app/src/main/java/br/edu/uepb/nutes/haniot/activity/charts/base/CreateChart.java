@@ -2,6 +2,7 @@ package br.edu.uepb.nutes.haniot.activity.charts.base;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -11,6 +12,7 @@ import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
@@ -67,6 +69,11 @@ public final class CreateChart<T> {
      * @param item T
      */
     public void paint(T item) {
+        if (dataList == null) {
+            dataList = new ArrayList<T>();
+            dataList.add(item);
+            configureChart();
+        }
         if (set == null) set = new LineDataSet(entries, params.label);
         if (item instanceof Measurement) {
             Measurement measurement = (Measurement) item;
@@ -75,6 +82,9 @@ public final class CreateChart<T> {
             data.notifyDataChanged();
             mChart.notifyDataSetChanged();
             mChart.invalidate();
+            ((LineChart) mChart).setVisibleXRangeMaximum(params.visibiltyXMax);
+            ((LineChart) mChart).setVisibleXRangeMinimum(params.visibiltyXMin);
+            ((LineChart) mChart).moveViewToX(data.getXMax());
         }
     }
 
@@ -114,7 +124,8 @@ public final class CreateChart<T> {
      */
     public void configureChart() {
         if (dataList == null) return;
-
+        mChart.setNoDataText("");
+        mChart.invalidate();
         mChart.getXAxis().setValueFormatter(prepareVariablesLineData());
         ArrayList<ILineDataSet> dataSets = new ArrayList<>();
 
@@ -166,7 +177,11 @@ public final class CreateChart<T> {
         set.setCircleHoleRadius(params.circleHoleValueRadius);
         set.setLineWidth(params.lineWidth);
         set.setHighlightLineWidth(params.highlightLineWidth);
+        mChart.setNoDataTextColor(Color.WHITE);
+        LineChart mLineChart2 = (LineChart) mChart;
+        mLineChart2.getAxisLeft().setEnabled(params.yAxisEnabled);
 
+        ((LineChart) mChart).setDrawGridBackground(false);
         if (mChart instanceof LineChart) {
             LineChart mLineChart = (LineChart) mChart;
             mLineChart.getAxisLeft().setEnabled(params.yAxisEnabled);
@@ -178,16 +193,27 @@ public final class CreateChart<T> {
             mLineChart.setBorderColor(params.colorBorderGrid);
             mLineChart.setGridBackgroundColor(params.colorBorderGrid);
             mLineChart.getAxisLeft().setTextColor(params.colorTextY);
+            mLineChart.getAxisRight().setEnabled(false);
+
+            mLineChart.getAxisRight().setAxisMinimum(10f);
+            mLineChart.getAxisRight().setAxisMaximum(12f);
+
+            ((LineChart) mChart).zoom(1.1f, 1f,0, 0);
+            // limit the number of visible entries
+            mLineChart.setPinchZoom(true);
         }
 
+        set.setMode(params.typeLine);
+        set.setDrawFilled(params.filledLine);
+        set.setFillColor(params.lineFilledColor);
 
+        ((LineChart) mChart).setAutoScaleMinMaxEnabled(false);
         set.setColor(params.lineColor);
         mChart.setData(data);
         mChart.animate();
         mChart.setEnabled(true);
         mChart.invalidate();
         mChart.animateX(200);
-
     }
 
     /**
@@ -231,6 +257,11 @@ public final class CreateChart<T> {
         private String label;
         private String formatDate;
         private XAxis.XAxisPosition xAxisPosition;
+        private LineDataSet.Mode typeLine;
+        private boolean filledLine;
+        private int lineFilledColor;
+        private float visibiltyXMax;
+        private float visibiltyXMin;
 
         /**
          * Constructor.
@@ -276,6 +307,12 @@ public final class CreateChart<T> {
             this.xAxisEnabled = true;
             this.yAxisEnabled = true;
             this.colorLegend = Color.BLACK;
+            this.typeLine = LineDataSet.Mode.CUBIC_BEZIER;
+            this.filledLine = false;
+            this.lineFilledColor = lineColor;
+            this.visibiltyXMax = 20;
+            this.visibiltyXMin = 20;
+
         }
 
         /**
@@ -289,6 +326,17 @@ public final class CreateChart<T> {
         }
 
         /**
+         * Enable/Disable filled line and color.
+         * @param filledLine
+         * @return
+         */
+        public Params setStyleFilledLine(boolean filledLine, int lineFilledColor){
+            this.filledLine = filledLine;
+            this.lineFilledColor = lineFilledColor;
+            return this;
+        }
+
+        /**
          * Sets the format date.
          *
          * @param backgroundDrawableMarker {@link Drawable}
@@ -298,6 +346,29 @@ public final class CreateChart<T> {
         public Params setStyleMarker(Drawable backgroundDrawableMarker, int colorText) {
             this.backgroundDrawableMarker = backgroundDrawableMarker;
             this.colorTextMarker = colorText;
+            return this;
+        }
+
+        /**
+         * set type of line.
+         * @param typeLine
+         * @return
+         */
+        public Params setTypeLine(LineDataSet.Mode typeLine){
+            this.typeLine = typeLine;
+            return this;
+        }
+
+        /**
+         *
+         * set Max/Min visibility of X.
+         * @param visibiltyXMax
+         * @param visibiltyXMin
+         * @return
+         */
+        public Params setMaxVisibility(float visibiltyXMax, float visibiltyXMin){
+            this.visibiltyXMax = visibiltyXMax;
+            this.visibiltyXMin = visibiltyXMin;
             return this;
         }
 

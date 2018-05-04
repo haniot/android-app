@@ -2,6 +2,8 @@ package br.edu.uepb.nutes.haniot.devices;
 
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
@@ -12,30 +14,42 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Chronometer;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.github.mikephil.charting.charts.Chart;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
 import org.json.JSONException;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.activity.charts.base.CreateChart;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.fragment.GenericDialogFragment;
+import br.edu.uepb.nutes.haniot.fragment.RealTimeFragment;
 import br.edu.uepb.nutes.haniot.model.Device;
-import br.edu.uepb.nutes.haniot.model.DeviceType;
 import br.edu.uepb.nutes.haniot.model.Measurement;
 import br.edu.uepb.nutes.haniot.model.dao.DeviceDAO;
 import br.edu.uepb.nutes.haniot.model.dao.MeasurementDAO;
@@ -65,7 +79,7 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
     private BluetoothGattCharacteristic mNotifyCharacteristic;
 
     private Device mDevice;
-    private String mDeviceAddress;
+    private String mDeviceAddress = "Aghata lixo";
     private String[] deviceInformations;
     private ObjectAnimator heartAnimation;
     private boolean isChronometerRunnig;
@@ -74,10 +88,9 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
     private DeviceDAO deviceDAO;
     private int fcMinimum, fcMaximum, fcAccumulate, fcTotal;
     private long registrationTimeStart, durationRegistration;
+    boolean recordEnabled = true;
 
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
-
+    List<Measurement> data = new ArrayList<>();
     @BindView(R.id.heart_rate_textview)
     TextView mHeartRateTextView;
 
@@ -95,17 +108,14 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
 
     @BindView(R.id.floating_button_record_stop)
     FloatingActionButton mButtonRecordStop;
-
+    Chart lineChart;
+    CreateChart mChart;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_heart_rate_record);
 
         ButterKnife.bind(this);
-
-        setSupportActionBar(mToolbar);
-        getSupportActionBar().setTitle(R.string.heart_rate);
-
         mButtonRecordPausePlay.setOnClickListener(this);
         mButtonRecordStop.setOnClickListener(this);
 
@@ -131,23 +141,37 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
 
         mDeviceAddress = getIntent().getStringExtra(HeartRateActivity.EXTRA_DEVICE_ADDRESS);
         deviceInformations = getIntent().getStringArrayExtra(HeartRateActivity.EXTRA_DEVICE_INFORMATIONS);
+
+        lineChart = (LineChart) findViewById(R.id.real_time_chart);
+        mChart = new CreateChart.Params(this, lineChart)
+                .drawValues(false)
+                .yAxisEnabled(false)
+                .xAxisEnabled(false)
+                .drawValues(false)
+                .colorFont(Color.WHITE)
+                .setMaxVisibility(20,20)
+                .setStyleFilledLine(true, getResources().getColor(R.color.colorAccent))
+                .setTypeLine(LineDataSet.Mode.CUBIC_BEZIER)
+                .colorGridChart(0,0)
+                .drawCircleStyle(0,0)
+                .build();
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        // TODO REMOVER!!! Pois o cadastro do device deverá ser no processo de emparelhamento
-        mDevice = deviceDAO.get(mDeviceAddress, session.getIdLogged());
-
-        if (mDevice == null) {
-            mDevice = new Device(mDeviceAddress, "HEART RATE SENSOR", deviceInformations[0], deviceInformations[1], DeviceType.HEART_RATE, session.getUserLogged());
-            if(deviceInformations[1].equals("H10")) mDevice.set_id("5a62c149d6f33400146c9b66");
-            else mDevice.set_id("5a62c161d6f33400146c9b67");
-
-            if (!deviceDAO.save(mDevice)) finish();
-        }
-    }
+//    @Override
+//    protected void onStart() {
+//        super.onStart();
+//
+//        // TODO REMOVER!!! Pois o cadastro do device deverá ser no processo de emparelhamento
+//        mDevice = deviceDAO.get(mDeviceAddress, session.getIdLogged());
+//
+//        if (mDevice == null) {
+//            mDevice = new Device(mDeviceAddress, "HEART RATE SENSOR", deviceInformations[0], deviceInformations[1], DeviceType.HEART_RATE, session.getUserLogged());
+//            if(deviceInformations[1].equals("H10")) mDevice.set_id("5a62c149d6f33400146c9b66");
+//            else mDevice.set_id("5a62c161d6f33400146c9b67");
+//
+//            if (!deviceDAO.save(mDevice)) finish();
+//        }
+//    }
 
     @Override
     protected void onResume() {
@@ -182,7 +206,9 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
                 } else {
                     mButtonRecordPausePlay.setImageResource(R.drawable.ic_action_pause);
                     startChronometer();
+                    //sendMeasurements(); //For tests
                 }
+
                 break;
             case R.id.floating_button_record_stop:
                 stopChronometer();
@@ -202,6 +228,7 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
      * Stop Chronometer
      */
     private void stopChronometer() {
+        recordEnabled = false; //For tests.
         lastPause = SystemClock.elapsedRealtime() - mChronometer.getBase();
         isChronometerRunnig = false;
         mChronometer.stop();
@@ -210,6 +237,7 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
     }
 
     private void pauseChronometer() {
+        recordEnabled = false; //For tests.
         isChronometerRunnig = false;
         mChronometer.stop();
     }
@@ -218,6 +246,7 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
      * Start Chronometer
      */
     private void startChronometer() {
+        recordEnabled = true; //For tests.
         mChronometer.setBase(SystemClock.elapsedRealtime() - lastPause);
         isChronometerRunnig = true;
         mChronometer.start();
@@ -333,25 +362,27 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
                     updateConnectionState(mConnected);
                 }
 
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            Measurement measurement = JsonToMeasurementParser.heartRate(intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
-                            Log.i("MeasurementTO", measurement.toString());
+                new Handler().postDelayed(()->{
+                    try {
 
-                            int bpm = (int) measurement.getValue();
-                            mHeartRateTextView.setText(String.format("%03d", (int) measurement.getValue()));
+                        Measurement measurement = JsonToMeasurementParser.heartRate(intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
+                        Log.i("MeasurementTO", measurement.toString());
 
-                            fcAccumulate += bpm;
-                            fcMinimum = (bpm > 0 && bpm < fcMinimum) ? bpm : fcMinimum;
-                            fcMaximum = (bpm > fcMaximum) ? bpm : fcMaximum;
-                            fcTotal++;
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                        sendMeasurements(measurement);
+                        int bpm = (int) measurement.getValue();
+                        mHeartRateTextView.setText(String.format("%03d", (int) measurement.getValue()));
+
+                        fcAccumulate += bpm;
+                        fcMinimum = (bpm > 0 && bpm < fcMinimum) ? bpm : fcMinimum;
+                        fcMaximum = (bpm > fcMaximum) ? bpm : fcMaximum;
+                        fcTotal++;
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                });
+                }, 100);
+
+
+
             }
         }
     };
@@ -371,4 +402,67 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
     private void synchronizeWithServer() {
         SynchronizationServer.getInstance(this).run();
     }
+
+    /**
+     * Send Measurements for chart.
+     * @param measurement
+     */
+    public void sendMeasurements(Measurement measurement) {
+        recordEnabled = true;
+        data.add(measurement);
+        mChart.paint(measurement);
+
+    }
+
+    /**
+     *  Send Measurements for test.
+     */
+    public void sendMeasurements(){
+        final Runnable runnable = new Runnable() {
+
+            @Override
+            public void run() {
+                Random random = new Random();
+                Measurement measurement = new Measurement(random.nextInt(100-80) + 80, "Cº", 1);
+                data.add(measurement);
+                mChart.paint(measurement);
+                int bpm = (int) measurement.getValue();
+
+                mHeartRateTextView.setText(String.format("%03d", (int) measurement.getValue()));
+                fcAccumulate += bpm;
+                fcMinimum = (bpm > 0 && bpm < fcMinimum) ? bpm : fcMinimum;
+                fcMaximum = (bpm > fcMaximum) ? bpm : fcMaximum;
+                fcTotal++;
+
+            }
+        };
+
+        Thread thread = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+
+                while(recordEnabled) {
+                    // Don't generate garbage runnables inside the loop.
+                    runOnUiThread(runnable);
+
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+
+        thread.start();
+
+
+
+
+    }
+
+
+
 }
