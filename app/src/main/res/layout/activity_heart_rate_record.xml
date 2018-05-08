@@ -92,21 +92,18 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/box_bar_layout"
-            android:orientation="horizontal"
-            tools:layout_editor_absoluteY="123dp">
+            android:orientation="horizontal">
 
-            <android.support.v4.widget.NestedScrollView
-                android:layout_width="match_parent"
+            <fragment
+                android:id="@+id/fragment_realtime"
+                class="br.edu.uepb.nutes.haniot.fragment.RealTimeFragment"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:clipToPadding="false"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior">
+                android:layout_marginTop="40dp"
+                tools:layout="@layout/fragment_realtime_linechart" />
 
-                <FrameLayout
-                    android:id="@+id/box_frag_graph"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-            </android.support.v4.widget.NestedScrollView>
         </LinearLayout>
+
     </RelativeLayout>
 
     <android.support.design.widget.FloatingActionButton
@@ -126,7 +123,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="70dp"
         android:clickable="true"
-        android:src="@drawable/ic_action_pause"
+        android:src="@drawable/ic_action_play_arrow"
         app:elevation="6dp"
         app:layout_anchor="@id/box_bar_layout"
         app:layout_anchorGravity="bottom|right|end" />

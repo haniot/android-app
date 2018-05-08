@@ -40,7 +40,7 @@ import java.util.List;
 import java.util.UUID;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.activity.graphs.HeartRateGraphActivity;
+import br.edu.uepb.nutes.haniot.activity.charts.HeartRateChartActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.HeartRateAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
@@ -555,6 +555,10 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
         }
     };
 
+    public String getAction() {
+        return action;
+    }
+
     /**
      * Manipula vários eventos desencadeados pelo Serviço.
      * <p>
@@ -563,10 +567,11 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
      * ACTION_GATT_SERVICES_DISCOVERED: serviços GATT descobertos.
      * ACTION_DATA_AVAILABLE: recebeu dados do dispositivo. Pode ser resultado de operações de leitura ou notificação.
      */
+    String action;
     private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            final String action = intent.getAction();
+            action = intent.getAction();
 
             if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
                 mConnected = true;
@@ -651,7 +656,7 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
 
                 break;
             case R.id.chart_floating_button:
-                startActivity(new Intent(getApplicationContext(), HeartRateGraphActivity.class));
+                startActivity(new Intent(getApplicationContext(), RecordHeartRateActivity.class));
                 break;
             default:
                 break;

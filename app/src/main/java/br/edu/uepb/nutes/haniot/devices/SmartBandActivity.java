@@ -564,6 +564,10 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
         }
     };
 
+    public String getAction() {
+        return action;
+    }
+
     /**
      * Manipula vários eventos desencadeados pelo Serviço.
      * <p>
@@ -572,10 +576,12 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
      * ACTION_GATT_SERVICES_DISCOVERED: serviços GATT descobertos.
      * ACTION_DATA_AVAILABLE: recebeu dados do dispositivo. Pode ser resultado de operações de leitura ou notificação.
      */
+
+    String action;
     private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            final String action = intent.getAction();
+            action = intent.getAction();
 
             if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
                 Log.i(TAG, "ACTION_GATT_CONNECTED");

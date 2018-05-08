@@ -41,7 +41,7 @@ import java.util.Locale;
 import java.util.UUID;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.activity.graphs.BodyCompositionGraphActivity;
+import br.edu.uepb.nutes.haniot.activity.charts.BodyCompositionChartActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.BodyCompositionAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
@@ -544,6 +544,10 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
         }
     };
 
+    public String getAction() {
+        return action;
+    }
+
     /**
      * Manipula vários eventos desencadeados pelo Serviço.
      * <p>
@@ -552,10 +556,12 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
      * ACTION_GATT_SERVICES_DISCOVERED: serviços GATT descobertos.
      * ACTION_DATA_AVAILABLE: recebeu dados do dispositivo. Pode ser resultado de operações de leitura ou notificação.
      */
+
+    String action;
     private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            final String action = intent.getAction();
+            action = intent.getAction();
 
             if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
                 Log.i(TAG, "ACTION_GATT_CONNECTED");
@@ -714,7 +720,7 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.chart_floating_button:
-                startActivity(new Intent(getApplicationContext(), BodyCompositionGraphActivity.class));
+                startActivity(new Intent(getApplicationContext(), BodyCompositionChartActivity.class));
                 break;
             default:
                 break;

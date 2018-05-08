@@ -85,12 +85,11 @@
 
         <!-- ACTIVITIES CHARTS-->
         <activity android:name=".activity.account.ChangePasswordActivity" />
-        <activity android:name=".activity.graphs.BodyCompositionGraphActivity" />
-        <activity android:name=".activity.graphs.TemperatureGraphActivity" />
-        <activity android:name=".activity.graphs.HeartRateGraphActivity" />
-        <activity android:name=".activity.graphs.GlucoseGraphActivity" />
-        <activity android:name=".activity.graphs.BloodPresssureGraphActivity" />
-        <!-- END ACTIVITIES CHARTS-->
+        <activity android:name=".activity.charts.BodyCompositionChartActivity" />
+        <activity android:name=".activity.charts.TemperatureChartActivity" />
+        <activity android:name=".activity.charts.HeartRateChartActivity" />
+        <activity android:name=".activity.charts.GlucoseChartActivity" />
+        <activity android:name=".activity.charts.BloodPresssureChartActivity" />
 
         <!-- ACTIVITIES ELDERLY -->
         <activity

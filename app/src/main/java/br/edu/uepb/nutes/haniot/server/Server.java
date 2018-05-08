@@ -240,7 +240,7 @@ public class Server {
                     } else {
                         serverCallback.onSuccess(result);
                     }
-                    Log.d("SERVER - onAnswer()", result.toString());
+                    Log.i("SERVER - onResponse()", result.toString());
                 } catch (JSONException err) {
                     err.printStackTrace();
                 }

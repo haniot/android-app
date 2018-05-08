@@ -39,7 +39,7 @@ import java.util.List;
 import java.util.UUID;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.activity.graphs.GlucoseGraphActivity;
+import br.edu.uepb.nutes.haniot.activity.charts.GlucoseChartActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.GlucoseAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
@@ -552,6 +552,10 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
         }
     };
 
+    public String getAction() {
+        return action;
+    }
+
     /**
      * Manipula vários eventos desencadeados pelo Serviço.
      * <p>
@@ -560,10 +564,12 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
      * ACTION_GATT_SERVICES_DISCOVERED: serviços GATT descobertos.
      * ACTION_DATA_AVAILABLE: recebeu dados do dispositivo. Pode ser resultado de operações de leitura ou notificação.
      */
+
+    String action;
     private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            final String action = intent.getAction();
+            action = intent.getAction();
 
             if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
                 mConnected = true;
@@ -718,7 +724,7 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.chart_floating_button:
-                startActivity(new Intent(getApplicationContext(), GlucoseGraphActivity.class));
+                startActivity(new Intent(getApplicationContext(), GlucoseChartActivity.class));
                 break;
             default:
                 break;
