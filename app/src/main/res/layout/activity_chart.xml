@@ -44,6 +44,4 @@
             android:layout_gravity="center_horizontal"
             android:text="@string/month_text" />
     </LinearLayout>
-
-
 </LinearLayout>

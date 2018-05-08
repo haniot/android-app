@@ -19,9 +19,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.SystemClock;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
@@ -50,6 +52,7 @@ import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.fragment.GenericDialogFragment;
 import br.edu.uepb.nutes.haniot.fragment.RealTimeFragment;
 import br.edu.uepb.nutes.haniot.model.Device;
+import br.edu.uepb.nutes.haniot.model.DeviceType;
 import br.edu.uepb.nutes.haniot.model.Measurement;
 import br.edu.uepb.nutes.haniot.model.dao.DeviceDAO;
 import br.edu.uepb.nutes.haniot.model.dao.MeasurementDAO;
@@ -79,7 +82,7 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
     private BluetoothGattCharacteristic mNotifyCharacteristic;
 
     private Device mDevice;
-    private String mDeviceAddress = "Aghata lixo";
+    private String mDeviceAddress;
     private String[] deviceInformations;
     private ObjectAnimator heartAnimation;
     private boolean isChronometerRunnig;
@@ -88,7 +91,9 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
     private DeviceDAO deviceDAO;
     private int fcMinimum, fcMaximum, fcAccumulate, fcTotal;
     private long registrationTimeStart, durationRegistration;
-    boolean recordEnabled = true;
+
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
 
     List<Measurement> data = new ArrayList<>();
     @BindView(R.id.heart_rate_textview)
@@ -116,6 +121,8 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
         setContentView(R.layout.activity_heart_rate_record);
 
         ButterKnife.bind(this);
+        initComponents();
+
         mButtonRecordPausePlay.setOnClickListener(this);
         mButtonRecordStop.setOnClickListener(this);
 
@@ -128,7 +135,6 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
         lastPause = 0;
         fcMinimum = Integer.MAX_VALUE;
         fcMaximum = Integer.MIN_VALUE;
-
         /**
          * Setting animation in heart imageview
          */
@@ -157,21 +163,21 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
                 .build();
     }
 
-//    @Override
-//    protected void onStart() {
-//        super.onStart();
-//
-//        // TODO REMOVER!!! Pois o cadastro do device deverá ser no processo de emparelhamento
-//        mDevice = deviceDAO.get(mDeviceAddress, session.getIdLogged());
-//
-//        if (mDevice == null) {
-//            mDevice = new Device(mDeviceAddress, "HEART RATE SENSOR", deviceInformations[0], deviceInformations[1], DeviceType.HEART_RATE, session.getUserLogged());
-//            if(deviceInformations[1].equals("H10")) mDevice.set_id("5a62c149d6f33400146c9b66");
-//            else mDevice.set_id("5a62c161d6f33400146c9b67");
-//
-//            if (!deviceDAO.save(mDevice)) finish();
-//        }
-//    }
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        // TODO REMOVER!!! Pois o cadastro do device deverá ser no processo de emparelhamento
+        mDevice = deviceDAO.get(mDeviceAddress, session.getIdLogged());
+
+        if (mDevice == null) {
+            mDevice = new Device(mDeviceAddress, "HEART RATE SENSOR", deviceInformations[0], deviceInformations[1], DeviceType.HEART_RATE, session.getUserLogged());
+            if(deviceInformations[1].equals("H10")) mDevice.set_id("5a62c149d6f33400146c9b66");
+            else mDevice.set_id("5a62c161d6f33400146c9b67");
+
+            if (!deviceDAO.save(mDevice)) finish();
+        }
+    }
 
     @Override
     protected void onResume() {
@@ -228,7 +234,6 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
      * Stop Chronometer
      */
     private void stopChronometer() {
-        recordEnabled = false; //For tests.
         lastPause = SystemClock.elapsedRealtime() - mChronometer.getBase();
         isChronometerRunnig = false;
         mChronometer.stop();
@@ -237,7 +242,6 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
     }
 
     private void pauseChronometer() {
-        recordEnabled = false; //For tests.
         isChronometerRunnig = false;
         mChronometer.stop();
     }
@@ -246,7 +250,6 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
      * Start Chronometer
      */
     private void startChronometer() {
-        recordEnabled = true; //For tests.
         mChronometer.setBase(SystemClock.elapsedRealtime() - lastPause);
         isChronometerRunnig = true;
         mChronometer.start();
@@ -364,7 +367,6 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
 
                 new Handler().postDelayed(()->{
                     try {
-
                         Measurement measurement = JsonToMeasurementParser.heartRate(intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
                         Log.i("MeasurementTO", measurement.toString());
 
@@ -380,9 +382,6 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
                         e.printStackTrace();
                     }
                 }, 100);
-
-
-
             }
         }
     };
@@ -408,61 +407,23 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
      * @param measurement
      */
     public void sendMeasurements(Measurement measurement) {
-        recordEnabled = true;
         data.add(measurement);
         mChart.paint(measurement);
-
     }
 
     /**
-     *  Send Measurements for test.
+     * Initialize components
      */
-    public void sendMeasurements(){
-        final Runnable runnable = new Runnable() {
-
-            @Override
-            public void run() {
-                Random random = new Random();
-                Measurement measurement = new Measurement(random.nextInt(100-80) + 80, "Cº", 1);
-                data.add(measurement);
-                mChart.paint(measurement);
-                int bpm = (int) measurement.getValue();
-
-                mHeartRateTextView.setText(String.format("%03d", (int) measurement.getValue()));
-                fcAccumulate += bpm;
-                fcMinimum = (bpm > 0 && bpm < fcMinimum) ? bpm : fcMinimum;
-                fcMaximum = (bpm > fcMaximum) ? bpm : fcMaximum;
-                fcTotal++;
-
-            }
-        };
-
-        Thread thread = new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-
-                while(recordEnabled) {
-                    // Don't generate garbage runnables inside the loop.
-                    runOnUiThread(runnable);
-
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
-
-        thread.start();
-
-
-
-
+    private void initComponents() {
+        initToolBar();
     }
 
-
-
+    /**
+     * Initialize ToolBar
+     */
+    private void initToolBar() {
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
+    }
 }

@@ -18,6 +18,7 @@ import br.edu.uepb.nutes.haniot.server.historical.CallbackHistorical;
 import br.edu.uepb.nutes.haniot.server.historical.Historical;
 import br.edu.uepb.nutes.haniot.server.historical.HistoricalType;
 import br.edu.uepb.nutes.haniot.server.historical.Params;
+import br.edu.uepb.nutes.haniot.utils.NameColumnsDB;
 import butterknife.BindView;
 
 /**
@@ -71,6 +72,7 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
                 .type(HistoricalType.MEASUREMENTS_TYPE_USER) // required
                 .params(params) // required
                 .filterDate(period)
+                .ordination(NameColumnsDB.MEASUREMENT_REGISTRATION_DATE, "asc")
                 .build();
 
         hist.request(this, new CallbackHistorical<Measurement>() {

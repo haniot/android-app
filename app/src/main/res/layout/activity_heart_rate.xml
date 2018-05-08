@@ -101,6 +101,7 @@
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
                 tools:ignore="HardcodedText" />
         </android.support.design.widget.CollapsingToolbarLayout>
+
     </android.support.design.widget.AppBarLayout>
 
     <android.support.design.widget.FloatingActionButton
