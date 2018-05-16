@@ -1,14 +1,20 @@
 package br.edu.uepb.nutes.haniot.activity.charts.base;
 
+import android.graphics.Rect;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
+import android.widget.GridView;
 import android.widget.Toast;
+
+import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
@@ -18,6 +24,7 @@ import br.edu.uepb.nutes.haniot.server.historical.CallbackHistorical;
 import br.edu.uepb.nutes.haniot.server.historical.Historical;
 import br.edu.uepb.nutes.haniot.server.historical.HistoricalType;
 import br.edu.uepb.nutes.haniot.server.historical.Params;
+import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import br.edu.uepb.nutes.haniot.utils.NameColumnsDB;
 import butterknife.BindView;
 
@@ -34,6 +41,8 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
     public final int GRAPH_TYPE_DAY = 1;
     public final int GRAPH_TYPE_SEVEN = 2;
     public final int GRAPH_TYPE_MONTH = 3;
+    public final int GRAPH_TYPE_YEAR = 4;
+
 
     public Session session;
     public Params params;
@@ -41,28 +50,45 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
     @BindView(R.id.toolbar)
     public Toolbar mToolbar;
 
-    @BindView(R.id.day_button)
-    public Button mButtonDay;
+    @BindView(R.id.fab_year)
+    public FloatingActionButton fabYear;
 
-    @BindView(R.id.week_button)
-    public Button mButtonWeek;
+    @BindView(R.id.fab_month)
+    public FloatingActionButton fabMonth;
 
-    @BindView(R.id.month_button)
-    public Button mButtonMonth;
+    @BindView(R.id.fab_week)
+    public FloatingActionButton fabWeek;
+
+    @BindView(R.id.fab_day)
+    public FloatingActionButton fabDay;
+
+    @BindView(R.id.menu_period)
+    public FloatingActionMenu fabActionMenu;
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.day_button:
+            case R.id.fab_day:
                 requestData(GRAPH_TYPE_DAY);
+                fabActionMenu.getMenuIconView().setImageDrawable(getResources().getDrawable(R.drawable.ic_day));
+                fabActionMenu.close(true);
                 break;
 
-            case R.id.month_button:
+            case R.id.fab_month:
                 requestData(GRAPH_TYPE_MONTH);
+                fabActionMenu.getMenuIconView().setImageDrawable(getResources().getDrawable(R.drawable.ic_month));
+                fabActionMenu.close(true);
                 break;
 
-            case R.id.week_button:
+            case R.id.fab_week:
                 requestData(GRAPH_TYPE_SEVEN);
+                fabActionMenu.getMenuIconView().setImageDrawable(getResources().getDrawable(R.drawable.ic_week));
+                fabActionMenu.close(true);
+                break;
+            case R.id.fab_year:
+                fabActionMenu.getMenuIconView().setImageDrawable(getResources().getDrawable(R.drawable.ic_year));
+                requestData(GRAPH_TYPE_YEAR);
+                fabActionMenu.close(true);
                 break;
         }
     }
@@ -96,6 +122,8 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
                         @Override
                         public void run() {
                             onUpdateData(result);
+                            createMoreInfo(result);
+
                         }
                     });
                 }
@@ -121,6 +149,8 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
             requestDataInServer("1w");
         else if (type == GRAPH_TYPE_MONTH)
             requestDataInServer("1m");
+        else if(type == GRAPH_TYPE_YEAR)
+            requestDataInServer("1y");
     }
 
     /**
@@ -134,5 +164,93 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
         });
     }
 
+
+    public void createMoreInfo(List<Measurement> measurements){
+
+        ArrayList<InfoMeasurement> infoMeasurements = new ArrayList<>();
+        infoMeasurements.add(getMax(measurements));
+        infoMeasurements.add(getMin(measurements));
+        infoMeasurements.add(getAvarage(measurements));
+        infoMeasurements.add(getPeriod(measurements));
+
+        GridView gridView = (GridView)findViewById(R.id.moreinfo_grid);
+        InfoAdapter infoAdapter = new InfoAdapter(this, infoMeasurements);
+        gridView.setAdapter(infoAdapter);
+    }
+
+    private InfoMeasurement getMax(List<Measurement> measurements){
+
+        if(measurements.isEmpty()) return new InfoMeasurement(getString(R.string.info_max), "-", InfoMeasurement.Risk.Normal);
+        String unit = " " + measurements.get(0).getUnit();
+        double measurementValue = measurements.get(0).getValue();
+        for (Measurement measurement: measurements) {
+            if(measurementValue < measurement.getValue()) {
+                measurementValue = measurement.getValue();
+            }
+        }
+        return new InfoMeasurement(getString(R.string.info_max), (String.format("%.2f", measurementValue))+unit, InfoMeasurement.Risk.Normal);
+    }
+
+    private InfoMeasurement getMin(List<Measurement> measurements){
+
+        if(measurements.isEmpty()) return new InfoMeasurement(getString(R.string.info_min), "-",InfoMeasurement.Risk.Normal);
+        String unit = " " + measurements.get(0).getUnit();
+        double measurementValue = measurements.get(0).getValue();
+        for (Measurement measurement: measurements) {
+            if(measurementValue > measurement.getValue()) {
+                measurementValue = measurement.getValue();
+            }
+        }
+        return new InfoMeasurement(getString(R.string.info_min), (String.format("%.2f", measurementValue))+unit, InfoMeasurement.Risk.Normal);
+    }
+
+    private InfoMeasurement getAvarage(List<Measurement> measurements){
+
+        if(measurements.isEmpty()) return new InfoMeasurement(getString(R.string.info_avarage), "-", InfoMeasurement.Risk.Normal);
+        String unit = " " + measurements.get(0).getUnit();
+        double measurementValue = 0;
+
+        for (Measurement measurement: measurements) {
+                measurementValue += measurement.getValue();
+        }
+        double avarage = measurementValue/measurements.size();
+        return new InfoMeasurement(getString(R.string.info_avarage), (String.format("%.2f", avarage))+unit, InfoMeasurement.Risk.Normal);
+    }
+
+    private InfoMeasurement getPeriod(List<Measurement> measurements){
+
+        if(measurements.isEmpty()) return new InfoMeasurement(getString(R.string.info_period), "-", InfoMeasurement.Risk.Normal);
+        String unit = " " + measurements.get(0).getUnit();
+        String firstMeasurement = DateUtils.formatDate(measurements.get(0).getRegistrationDate(), getString(R.string.date_format));
+        String lastMeasurement = DateUtils.formatDate(measurements.get(measurements.size()-1).getRegistrationDate(), getString(R.string.date_format));
+
+        return new InfoMeasurement(getString(R.string.info_period), firstMeasurement +"\n"+lastMeasurement , InfoMeasurement.Risk.Normal);
+    }
+
     abstract public void onUpdateData(List<Measurement> data);
+
+    public class SpacesItemDecoration extends RecyclerView.ItemDecoration {
+        private int space;
+
+        public SpacesItemDecoration(int space) {
+            this.space = space;
+        }
+
+        @Override
+        public void getItemOffsets(Rect outRect, View view,
+                                   RecyclerView parent, RecyclerView.State state) {
+            outRect.left = space;
+            outRect.right = space;
+            outRect.bottom = space;
+
+            // Add top margin only for the first item to avoid double space between items
+            if (parent.getChildLayoutPosition(view) == 0) {
+                outRect.top = space;
+            } else {
+                outRect.top = 0;
+            }
+        }
+    }
 }
+
+

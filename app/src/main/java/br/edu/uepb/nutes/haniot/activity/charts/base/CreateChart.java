@@ -58,6 +58,8 @@ public final class CreateChart<T> {
      * @param dataList {@link List}
      */
     public void paint(List<T> dataList) {
+        mChart.invalidate();
+        mChart.clear();
         this.dataList = dataList;
         configureChart();
         mChart.notifyDataSetChanged();
@@ -148,9 +150,14 @@ public final class CreateChart<T> {
         marker.getTvContent().setTextColor(params.colorTextMarker);
         if (params.backgroundDrawableMarker != null)
             marker.getLayoutBackground().setBackground(params.backgroundDrawableMarker);
+        marker.getTvContent().setTextColor(Color.WHITE);
 
+
+        marker.setMinimumHeight(30);
         mChart.getLegend().setTextColor(params.colorLegend);
         mChart.setMarker(marker);
+
+        mChart.setNoDataTextColor(Color.WHITE);
         Description description = new Description();
         description.setText(params.description);
         description.setTextColor(params.colorDescription);

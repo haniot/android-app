@@ -1,11 +1,23 @@
 package br.edu.uepb.nutes.haniot.activity.charts;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.text.Layout;
 import android.view.MenuItem;
 
+import com.amulyakhare.textdrawable.TextDrawable;
 import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.XAxis;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
@@ -27,7 +39,8 @@ import butterknife.ButterKnife;
 public class TemperatureChartActivity extends BaseChartActivity {
 
     private CreateChart mChart;
-
+    RecyclerView recyclerView;
+    GridLayoutManager layoutManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,16 +51,28 @@ public class TemperatureChartActivity extends BaseChartActivity {
         getSupportActionBar().setTitle(getString(R.string.temperature));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        mButtonDay.setOnClickListener(this);
-        mButtonMonth.setOnClickListener(this);
-        mButtonWeek.setOnClickListener(this);
+        fabDay.setOnClickListener(this);
+        fabWeek.setOnClickListener(this);
+        fabMonth.setOnClickListener(this);
+        fabYear.setOnClickListener(this);
 
         super.session = new Session(this);
         super.params = new Params(session.get_idLogged(), MeasurementType.TEMPERATURE);
 
         Chart lineChart = (LineChart) findViewById(R.id.chart);
         mChart = new CreateChart.Params(this, lineChart)
+                .lineStyle(2.5f, Color.WHITE)
+                .drawCircleStyle(Color.WHITE, getResources().getColor(R.color.colorPrimary))
+                .yAxisEnabled(false)
+                .xAxisStyle(Color.WHITE, XAxis.XAxisPosition.BOTTOM)
+                .yAxisStyle(Color.WHITE)
+                .setTextValuesColor(Color.WHITE)
+                .colorFont(Color.WHITE)
+                .highlightStyle(Color.TRANSPARENT, 0.7f)
+                .drawCircleRadius(5.0f, 3.0f)
                 .build();
+
+        requestData(GRAPH_TYPE_MONTH);
     }
 
     @Override
