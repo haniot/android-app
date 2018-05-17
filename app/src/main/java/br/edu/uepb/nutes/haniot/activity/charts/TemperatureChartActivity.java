@@ -78,7 +78,7 @@ public class TemperatureChartActivity extends BaseChartActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        requestData(GRAPH_TYPE_DAY);
+        //requestData(GRAPH_TYPE_DAY);
     }
 
     @Override

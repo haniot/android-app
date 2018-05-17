@@ -97,7 +97,9 @@
     <string name="info_avarage">Average</string>
     <string name="info_period">Period</string>
     <string name="more_information">More Information</string>
+    <string name="date_format_info">yyyy/MMM/dd</string>
 
+    <string name="noData">No data</string>
 
     //FLOATING
     <string name="day">Day</string>

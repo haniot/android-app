@@ -39,9 +39,10 @@ public class BodyCompositionChartActivity extends BaseChartActivity {
         getSupportActionBar().setTitle(getString(R.string.body_composition));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-//        mButtonDay.setOnClickListener(this);
-//        mButtonMonth.setOnClickListener(this);
-//        mButtonWeek.setOnClickListener(this);
+        fabDay.setOnClickListener(this);
+        fabWeek.setOnClickListener(this);
+        fabMonth.setOnClickListener(this);
+        fabYear.setOnClickListener(this);
 
         super.session = new Session(this);
         super.params = new Params(session.get_idLogged(), MeasurementType.BODY_MASS);

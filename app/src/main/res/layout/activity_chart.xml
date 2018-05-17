@@ -50,7 +50,10 @@
                     app:cpb_background_progressbar_color="@color/colorAlertDanger"
                     app:cpb_background_progressbar_width="6dp"
                     app:cpb_progressbar_color="@color/colorAccent"
-                    app:cpb_progressbar_width="6dp" />
+                    app:cpb_progressbar_width="6dp"
+                   >
+
+                </com.github.mikephil.charting.charts.LineChart>
 
             </RelativeLayout>
 
@@ -66,7 +69,7 @@
                 fab:menu_colorNormal="@color/colorAccent"
                 fab:menu_colorPressed="@color/colorPrimaryDark"
                 fab:menu_fab_label="@string/period"
-                fab:menu_icon="@drawable/ic_calendar"
+                fab:menu_icon="@drawable/ic_month"
                 fab:menu_labels_colorNormal="@color/cardview_light_background"
                 fab:menu_labels_ellipsize="end"
                 fab:menu_labels_singleLine="true"

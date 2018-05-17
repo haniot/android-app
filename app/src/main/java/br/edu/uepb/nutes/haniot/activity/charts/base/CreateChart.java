@@ -7,12 +7,13 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.View;
 
 import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.components.LimitLine;
 import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
@@ -20,7 +21,6 @@ import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
@@ -58,10 +58,12 @@ public final class CreateChart<T> {
      * @param dataList {@link List}
      */
     public void paint(List<T> dataList) {
-        mChart.invalidate();
-        mChart.clear();
         this.dataList = dataList;
-        configureChart();
+        Paint p = mChart.getPaint(Chart.PAINT_INFO);
+        p.setColor(Color.WHITE);
+        p.setTextSize(32);
+        mChart.setNoDataText(params.context.getString(R.string.noData));
+        configureDataChart();
         mChart.notifyDataSetChanged();
     }
 
@@ -71,10 +73,12 @@ public final class CreateChart<T> {
      * @param item T
      */
     public void paint(T item) {
+
         if (dataList == null) {
             dataList = new ArrayList<T>();
             dataList.add(item);
-            configureChart();
+            //mChart.setEnabled(true);
+            configureDataChart();
         }
         if (set == null) set = new LineDataSet(entries, params.label);
         if (item instanceof Measurement) {
@@ -107,7 +111,7 @@ public final class CreateChart<T> {
                         data.get(i).getRegistrationDate(),
                         params.formatDate);
 
-                float valueMeasurement = (float) data.get(i).getValue(); //.getValue();
+                float valueMeasurement = (float) data.get(i).getValue();
                 entries.add(new Entry((float) i, valueMeasurement));
                 quarters[i] = date;
             }
@@ -121,22 +125,33 @@ public final class CreateChart<T> {
         return formatter;
     }
 
+    public void configureDataChart(){
+
+        if (dataList.isEmpty()) {
+            dataList.clear();
+            mChart.invalidate();
+            mChart.clear();
+            mChart.clearAllViewportJobs();
+            mChart.setVisibility(View.VISIBLE);
+            return;
+        }
+
+        mChart.getXAxis().setValueFormatter(prepareVariablesLineData());
+        ArrayList<ILineDataSet> dataSets = new ArrayList<>();
+        set = new LineDataSet(entries, params.label);
+        configureDesignChart();
+        dataSets.add(set);
+        data = new LineData(dataSets);
+        mChart.setData(data);
+    }
+
     /**
      * Configure proprietes of chart.
      */
-    public void configureChart() {
+    public void configureDesignChart() {
         if (dataList == null) return;
-        mChart.setNoDataText("");
+
         mChart.invalidate();
-        mChart.getXAxis().setValueFormatter(prepareVariablesLineData());
-        ArrayList<ILineDataSet> dataSets = new ArrayList<>();
-
-        set = new LineDataSet(entries, params.label);
-
-        dataSets.add(set);
-        data = new LineData(dataSets);
-
-
         mChart.getXAxis().setTextColor(params.colorTextX);
         mChart.getXAxis().setTextColor(params.colorTextY);
         mChart.getXAxis().setPosition(params.xAxisPosition);
@@ -151,6 +166,7 @@ public final class CreateChart<T> {
         if (params.backgroundDrawableMarker != null)
             marker.getLayoutBackground().setBackground(params.backgroundDrawableMarker);
         marker.getTvContent().setTextColor(Color.WHITE);
+
 
 
         marker.setMinimumHeight(30);
@@ -189,6 +205,7 @@ public final class CreateChart<T> {
         mLineChart2.getAxisLeft().setEnabled(params.yAxisEnabled);
 
         ((LineChart) mChart).setDrawGridBackground(false);
+
         if (mChart instanceof LineChart) {
             LineChart mLineChart = (LineChart) mChart;
             mLineChart.getAxisLeft().setEnabled(params.yAxisEnabled);
@@ -204,8 +221,7 @@ public final class CreateChart<T> {
 
             mLineChart.getAxisRight().setAxisMinimum(10f);
             mLineChart.getAxisRight().setAxisMaximum(12f);
-
-            ((LineChart) mChart).zoom(1.1f, 1f,0, 0);
+            if (data == null)((LineChart) mChart).zoom(1.1f, 1f,0, 0);
             // limit the number of visible entries
             mLineChart.setPinchZoom(true);
         }
@@ -216,11 +232,11 @@ public final class CreateChart<T> {
 
         ((LineChart) mChart).setAutoScaleMinMaxEnabled(false);
         set.setColor(params.lineColor);
-        mChart.setData(data);
         mChart.animate();
         mChart.setEnabled(true);
         mChart.invalidate();
         mChart.animateX(200);
+
     }
 
     /**

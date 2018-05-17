@@ -108,8 +108,8 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
 
     @BindView(R.id.floating_button_record_stop)
     FloatingActionButton mButtonRecordStop;
-    Chart lineChart;
-    CreateChart mChart;
+    RealTimeFragment realTimeFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -143,19 +143,6 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
         mDeviceAddress = getIntent().getStringExtra(HeartRateActivity.EXTRA_DEVICE_ADDRESS);
         deviceInformations = getIntent().getStringArrayExtra(HeartRateActivity.EXTRA_DEVICE_INFORMATIONS);
 
-        lineChart = (LineChart) findViewById(R.id.real_time_chart);
-        mChart = new CreateChart.Params(this, lineChart)
-                .drawValues(false)
-                .yAxisEnabled(false)
-                .xAxisEnabled(false)
-                .drawValues(false)
-                .colorFont(Color.WHITE)
-                .setMaxVisibility(20,20)
-                .setStyleFilledLine(true, getResources().getColor(R.color.colorAccent))
-                .setTypeLine(LineDataSet.Mode.CUBIC_BEZIER)
-                .colorGridChart(0,0)
-                .drawCircleStyle(0,0)
-                .build();
     }
 
     @Override
@@ -413,7 +400,7 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
      */
     public void sendMeasurements(Measurement measurement) {
         data.add(measurement);
-        mChart.paint(measurement);
+        realTimeFragment.sendMeasurement(measurement);
     }
 
     /**
@@ -425,11 +412,9 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
     }
 
     private void initFragments(){
-        Fragment newFragment = new RealTimeFragment();
+        realTimeFragment = RealTimeFragment.newInstance(this);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-
-        transaction.replace(R.id.fragment_realtime, newFragment);
-
+        transaction.replace(R.id.fragment_realtime, realTimeFragment);
         transaction.commit();
     }
     /**

@@ -7,6 +7,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.GridView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
@@ -112,11 +113,21 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
             public void onError(JSONObject result) {
                 Log.w(TAG, "onError()");
                 printMessage(getString(R.string.error_500));
+
             }
 
             @Override
             public void onResult(List<Measurement> result) {
                 Log.w(TAG, "onSuccess()");
+                if (result.isEmpty() && result != null) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            onUpdateData(new ArrayList<>());
+                            createMoreInfo(new ArrayList<>());
+                        }
+                    });
+                }
                 if (result != null && result.size() > 0) {
                     runOnUiThread(new Runnable() {
                         @Override
@@ -221,10 +232,10 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
 
         if(measurements.isEmpty()) return new InfoMeasurement(getString(R.string.info_period), "-", InfoMeasurement.Risk.Normal);
         String unit = " " + measurements.get(0).getUnit();
-        String firstMeasurement = DateUtils.formatDate(measurements.get(0).getRegistrationDate(), getString(R.string.date_format));
-        String lastMeasurement = DateUtils.formatDate(measurements.get(measurements.size()-1).getRegistrationDate(), getString(R.string.date_format));
+        String firstMeasurement = DateUtils.formatDate(measurements.get(0).getRegistrationDate(), getString(R.string.date_format_info));
+        String lastMeasurement = DateUtils.formatDate(measurements.get(measurements.size()-1).getRegistrationDate(), getString(R.string.date_format_info));
 
-        return new InfoMeasurement(getString(R.string.info_period), firstMeasurement +"\n"+lastMeasurement , InfoMeasurement.Risk.Normal);
+        return new InfoMeasurement(getString(R.string.info_period), firstMeasurement +"\n-\n"+lastMeasurement , InfoMeasurement.Risk.Normal);
     }
 
     abstract public void onUpdateData(List<Measurement> data);

@@ -98,6 +98,9 @@
     <string name="alert_register_time_title">Alerta disparada às %s</string>
 
 
+    <string name="noData">Sem dados</string>
+
+
     //FLOATING
     <string name="day">Dia</string>
     <string name="week">Semana</string>
