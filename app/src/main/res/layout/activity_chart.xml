@@ -148,6 +148,7 @@
                 android:id="@+id/moreinfo_grid"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
                 android:background="#e5e5e5"
                 android:horizontalSpacing="1dp"
                 android:numColumns="auto_fit"

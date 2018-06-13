@@ -69,7 +69,7 @@ public class TemperatureChartActivity extends BaseChartActivity {
                 .setTextValuesColor(Color.WHITE)
                 .colorFont(Color.WHITE)
                 .highlightStyle(Color.TRANSPARENT, 0.7f)
-                .drawCircleRadius(5.0f, 3.0f)
+                .createLimit("Fever", 36.0f, getResources().getColor(R.color.colorRed))
                 .build();
 
         requestData(GRAPH_TYPE_MONTH);

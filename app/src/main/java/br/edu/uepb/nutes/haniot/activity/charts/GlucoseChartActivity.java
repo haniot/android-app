@@ -57,7 +57,6 @@ public class GlucoseChartActivity extends BaseChartActivity {
                 .setTextValuesColor(Color.WHITE)
                 .colorFont(Color.WHITE)
                 .highlightStyle(Color.TRANSPARENT, 0.7f)
-                .drawCircleRadius(5.0f, 3.0f)
                 .build();
 
         requestData(GRAPH_TYPE_MONTH);

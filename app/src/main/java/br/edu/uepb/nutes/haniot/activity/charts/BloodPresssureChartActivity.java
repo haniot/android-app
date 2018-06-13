@@ -2,6 +2,7 @@ package br.edu.uepb.nutes.haniot.activity.charts;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.view.MenuItem;
 
 import com.github.mikephil.charting.charts.Chart;
@@ -18,6 +19,8 @@ import br.edu.uepb.nutes.haniot.model.Measurement;
 import br.edu.uepb.nutes.haniot.model.MeasurementType;
 import br.edu.uepb.nutes.haniot.server.historical.Params;
 import butterknife.ButterKnife;
+
+import static br.edu.uepb.nutes.haniot.server.SynchronizationServer.context;
 
 /**
  * BloodPresssureChartActivity implementation.
@@ -50,15 +53,16 @@ public class BloodPresssureChartActivity extends BaseChartActivity {
 
         Chart lineChart = (LineChart) findViewById(R.id.chart);
         mChart = new CreateChart.Params(this, lineChart)
-                .lineStyle(2.5f, Color.WHITE)
-                .drawCircleStyle(Color.WHITE, getResources().getColor(R.color.colorPrimary))
+                .lineStyle(2.5f, ContextCompat.getColor(context, R.color.colorIndigo))
                 .yAxisEnabled(false)
                 .xAxisStyle(Color.WHITE, XAxis.XAxisPosition.BOTTOM)
                 .yAxisStyle(Color.WHITE)
                 .setTextValuesColor(Color.WHITE)
                 .colorFont(Color.WHITE)
+                .drawCircleStyle(ContextCompat.getColor(context, R.color.colorIndigo), ContextCompat.getColor(context, R.color.colorPrimary))
+                .lineStyle(2.5f, ContextCompat.getColor(context, R.color.colorIndigo))
                 .highlightStyle(Color.TRANSPARENT, 0.7f)
-                .drawCircleRadius(5.0f, 3.0f)
+                .createLimit("Limit 1", 135.0f, Color.WHITE)
                 .build();
 
         requestData(GRAPH_TYPE_MONTH);

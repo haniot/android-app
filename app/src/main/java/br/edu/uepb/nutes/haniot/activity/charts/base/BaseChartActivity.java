@@ -7,7 +7,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.GridView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
@@ -96,8 +95,8 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
 
     private void requestDataInServer(String period) {
         Historical hist = new Historical.Query()
-                .type(HistoricalType.MEASUREMENTS_TYPE_USER) // required
-                .params(params) // required
+                .type(HistoricalType.MEASUREMENTS_TYPE_USER)
+                .params(params)
                 .filterDate(period)
                 .ordination(NameColumnsDB.MEASUREMENT_REGISTRATION_DATE, "asc")
                 .build();
@@ -160,7 +159,7 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
             requestDataInServer("1w");
         else if (type == GRAPH_TYPE_MONTH)
             requestDataInServer("1m");
-        else if(type == GRAPH_TYPE_YEAR)
+        else if (type == GRAPH_TYPE_YEAR)
             requestDataInServer("1y");
     }
 
@@ -176,67 +175,56 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
     }
 
 
-    public void createMoreInfo(List<Measurement> measurements){
+    public void createMoreInfo(List<Measurement> measurements) {
 
         ArrayList<InfoMeasurement> infoMeasurements = new ArrayList<>();
-        infoMeasurements.add(getMax(measurements));
-        infoMeasurements.add(getMin(measurements));
-        infoMeasurements.add(getAvarage(measurements));
-        infoMeasurements.add(getPeriod(measurements));
+        infoMeasurements.addAll(getInfosBase(measurements));
 
-        GridView gridView = (GridView)findViewById(R.id.moreinfo_grid);
+        GridView gridView = (GridView) findViewById(R.id.moreinfo_grid);
         InfoAdapter infoAdapter = new InfoAdapter(this, infoMeasurements);
         gridView.setAdapter(infoAdapter);
     }
 
-    private InfoMeasurement getMax(List<Measurement> measurements){
+    private ArrayList<InfoMeasurement> getInfosBase(List<Measurement> measurements) {
 
-        if(measurements.isEmpty()) return new InfoMeasurement(getString(R.string.info_max), "-", InfoMeasurement.Risk.Normal);
-        String unit = " " + measurements.get(0).getUnit();
-        double measurementValue = measurements.get(0).getValue();
-        for (Measurement measurement: measurements) {
-            if(measurementValue < measurement.getValue()) {
-                measurementValue = measurement.getValue();
+        ArrayList<InfoMeasurement> infos = new ArrayList<>();
+
+        if (measurements.isEmpty()) {
+            infos.add(new InfoMeasurement(getString(R.string.info_max), "-"));
+            infos.add(new InfoMeasurement(getString(R.string.info_min), "-"));
+            infos.add(new InfoMeasurement(getString(R.string.info_avarage), "-"));
+            infos.add(new InfoMeasurement(getString(R.string.info_period), " - "));
+        } else {
+            double measurementValueMax = measurements.get(0).getValue();
+            double measurementValueMin = measurements.get(0).getValue();
+            double measurementValueAvarage = 0.0;
+
+            for (Measurement measurement : measurements) {
+                measurementValueAvarage += measurement.getValue();
+                if (measurementValueMax < measurement.getValue()) {
+                    measurementValueMax = measurement.getValue();
+                }
+                if (measurementValueMin > measurement.getValue()) {
+                    measurementValueMin = measurement.getValue();
+                }
+
             }
+            String unit = " " + measurements.get(0).getUnit();
+            String firstMeasurement = DateUtils.formatDate(measurements.get(0).getRegistrationDate(), getString(R.string.date_format));
+            String lastMeasurement = DateUtils.formatDate(measurements.get(measurements.size() - 1).getRegistrationDate(), getString(R.string.date_format));
+
+            infos.add(new InfoMeasurement(getString(R.string.info_max), (String.format("%.1f", measurementValueMax)) + unit));
+            infos.add(new InfoMeasurement(getString(R.string.info_min), (String.format("%.1f", measurementValueMin)) + unit));
+            infos.add(new InfoMeasurement(getString(R.string.info_avarage), (String.format("%.1f", measurementValueAvarage)) + unit));
+            if (firstMeasurement.equals(lastMeasurement))
+                infos.add(new InfoMeasurement(getString(R.string.info_period), firstMeasurement));
+            else
+                infos.add(new InfoMeasurement(getString(R.string.info_period), firstMeasurement + "\n-\n" + lastMeasurement));
         }
-        return new InfoMeasurement(getString(R.string.info_max), (String.format("%.2f", measurementValue))+unit, InfoMeasurement.Risk.Normal);
+
+        return infos;
     }
 
-    private InfoMeasurement getMin(List<Measurement> measurements){
-
-        if(measurements.isEmpty()) return new InfoMeasurement(getString(R.string.info_min), "-",InfoMeasurement.Risk.Normal);
-        String unit = " " + measurements.get(0).getUnit();
-        double measurementValue = measurements.get(0).getValue();
-        for (Measurement measurement: measurements) {
-            if(measurementValue > measurement.getValue()) {
-                measurementValue = measurement.getValue();
-            }
-        }
-        return new InfoMeasurement(getString(R.string.info_min), (String.format("%.2f", measurementValue))+unit, InfoMeasurement.Risk.Normal);
-    }
-
-    private InfoMeasurement getAvarage(List<Measurement> measurements){
-
-        if(measurements.isEmpty()) return new InfoMeasurement(getString(R.string.info_avarage), "-", InfoMeasurement.Risk.Normal);
-        String unit = " " + measurements.get(0).getUnit();
-        double measurementValue = 0;
-
-        for (Measurement measurement: measurements) {
-                measurementValue += measurement.getValue();
-        }
-        double avarage = measurementValue/measurements.size();
-        return new InfoMeasurement(getString(R.string.info_avarage), (String.format("%.2f", avarage))+unit, InfoMeasurement.Risk.Normal);
-    }
-
-    private InfoMeasurement getPeriod(List<Measurement> measurements){
-
-        if(measurements.isEmpty()) return new InfoMeasurement(getString(R.string.info_period), "-", InfoMeasurement.Risk.Normal);
-        String unit = " " + measurements.get(0).getUnit();
-        String firstMeasurement = DateUtils.formatDate(measurements.get(0).getRegistrationDate(), getString(R.string.date_format_info));
-        String lastMeasurement = DateUtils.formatDate(measurements.get(measurements.size()-1).getRegistrationDate(), getString(R.string.date_format_info));
-
-        return new InfoMeasurement(getString(R.string.info_period), firstMeasurement +"\n-\n"+lastMeasurement , InfoMeasurement.Risk.Normal);
-    }
 
     abstract public void onUpdateData(List<Measurement> data);
 
