@@ -55,7 +55,7 @@ public class BodyCompositionChartActivity extends BaseChartActivity {
                 .xAxisStyle(Color.WHITE, XAxis.XAxisPosition.BOTTOM)
                 .yAxisStyle(Color.WHITE)
                 .setTextValuesColor(Color.WHITE)
-                .colorFont(Color.WHITE)
+                .colorFontDescription(Color.WHITE)
                 .highlightStyle(Color.TRANSPARENT, 0.7f)
                 .build();
 

@@ -30,7 +30,6 @@ public class RealTimeFragment extends Fragment {
     static private Context mContext;
 
     public RealTimeFragment() {
-
     }
 
     public static RealTimeFragment newInstance(Context context) {
@@ -38,7 +37,6 @@ public class RealTimeFragment extends Fragment {
         mContext = context;
         return fragment;
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -50,7 +48,6 @@ public class RealTimeFragment extends Fragment {
 
     public void sendMeasurement(Measurement measurement){
         mChart.paint(measurement);
-
     }
 
     @Override
@@ -62,7 +59,7 @@ public class RealTimeFragment extends Fragment {
                 .yAxisEnabled(false)
                 .xAxisEnabled(false)
                 .drawValues(false)
-                .colorFont(Color.WHITE)
+                .colorFontDescription(Color.WHITE)
                 .setMaxVisibility(20,20)
                 .setStyleFilledLine(true, getResources().getColor(R.color.colorAccent))
                 .setTypeLine(LineDataSet.Mode.CUBIC_BEZIER)

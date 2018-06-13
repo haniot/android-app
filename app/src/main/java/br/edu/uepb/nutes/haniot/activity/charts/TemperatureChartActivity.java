@@ -1,23 +1,15 @@
 package br.edu.uepb.nutes.haniot.activity.charts;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Layout;
 import android.view.MenuItem;
 
-import com.amulyakhare.textdrawable.TextDrawable;
 import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
@@ -67,9 +59,10 @@ public class TemperatureChartActivity extends BaseChartActivity {
                 .xAxisStyle(Color.WHITE, XAxis.XAxisPosition.BOTTOM)
                 .yAxisStyle(Color.WHITE)
                 .setTextValuesColor(Color.WHITE)
-                .colorFont(Color.WHITE)
+                .colorFontDescription(Color.WHITE)
                 .highlightStyle(Color.TRANSPARENT, 0.7f)
                 .createLimit("Fever", 36.0f, getResources().getColor(R.color.colorRed))
+                .setRangeY(35,38)
                 .build();
 
         requestData(GRAPH_TYPE_MONTH);

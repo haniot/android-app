@@ -43,7 +43,7 @@ public final class CreateChart<T> {
     private Params params;
     private Chart mChart;
     private List<Entry> entries;
-    private ArrayList<Entry> entries2;
+    private List<Entry> entries2;
     private List<T> dataList;
     private LineDataSet set;
     private LineDataSet set2;
@@ -80,6 +80,7 @@ public final class CreateChart<T> {
 
     /**
      * Configure and draw chart with item.
+     * Util for Real Time.
      *
      * @param item T
      */
@@ -90,7 +91,7 @@ public final class CreateChart<T> {
             dataList.add(item);
             configureDataChart();
         }
-        if (set == null) set = new LineDataSet(entries, params.label);
+        if (set == null) set = new LineDataSet(entries, params.legend[0]);
         if (item instanceof Measurement) {
             Measurement measurement = (Measurement) item;
             set.addEntry(new Entry((float) data.getEntryCount(), (float) measurement.getValue()));
@@ -102,7 +103,6 @@ public final class CreateChart<T> {
             LineChart lineChart = ((LineChart) mChart);
             lineChart.setVisibleXRangeMaximum(params.visibiltyXMax);
             lineChart.setVisibleXRangeMinimum(params.visibiltyXMin);
-
         }
     }
 
@@ -129,8 +129,8 @@ public final class CreateChart<T> {
 
             entries.add(new Entry((float) i, (float) data.get(i).getValue()));
             if (!data.get(i).getMeasurements().isEmpty())
-            if(data.get(i).getMeasurements().get(0).getTypeId() == MeasurementType.BLOOD_PRESSURE_DIASTOLIC)
-                entries2.add(new Entry((float) i, (float) data.get(i).getMeasurements().get(0).getValue()));
+                if (data.get(i).getMeasurements().get(0).getTypeId() == MeasurementType.BLOOD_PRESSURE_DIASTOLIC)
+                    entries2.add(new Entry((float) i, (float) data.get(i).getMeasurements().get(0).getValue()));
 
             quarters[i] = date;
         }
@@ -158,11 +158,11 @@ public final class CreateChart<T> {
 
         mChart.getXAxis().setValueFormatter(prepareVariablesLineData());
         ArrayList<ILineDataSet> dataSets = new ArrayList<>();
-        set = new LineDataSet(entries, params.label);
+        set = new LineDataSet(entries, params.legend[0]);
         set.setValueFormatter(new ValueFormatter(params.context));
         dataSets.add(set);
-        if (!entries2.isEmpty()){
-            set2 = new LineDataSet(entries2, params.label);
+        if (!entries2.isEmpty()) {
+            set2 = new LineDataSet(entries2, params.legend[1]);
             dataSets.add(set2);
         }
         configureDesignChart();
@@ -189,12 +189,10 @@ public final class CreateChart<T> {
         mChart.getXAxis().setDrawGridLines(params.drawGridLinesX);
         mChart.getXAxis().setDrawAxisLine(params.drawLineX);
 
-
         //Legend
-        mChart.getLegend().setTextColor(params.colorLegend);
+        mChart.getLegend().setTextColor(params.colorValuesText);
         mChart.getLegend().setEnabled(false);
-        mChart.getLegend().setTextColor(params.colorLegend);
-        if (!params.label.isEmpty()) mChart.getLegend().setEnabled(true);
+        if (params.legend[0] != null) mChart.getLegend().setEnabled(true);
 
         //Marker
         MarkerViewCustom marker = new MarkerViewCustom(params.context, R.layout.marker_view);
@@ -205,8 +203,6 @@ public final class CreateChart<T> {
         mChart.setMarker(marker);
         marker.setMinimumHeight(30);
 
-
-
         //Description
         Description description = new Description();
         description.setText(params.description);
@@ -214,11 +210,10 @@ public final class CreateChart<T> {
         mChart.setDescription(description);
         mChart.getDescription().setEnabled(true);
 
-
         //Set Proprietes
         set.setColor(params.lineColor);
-        set.setValueTextColor(params.texColor);
-        set.setFillColor(params.texColor);
+        set.setValueTextColor(params.colorValuesText);
+        set.setFillColor(params.lineColor);
         set.setDrawValues(params.drawValues);
         set.setDrawCircles(params.drawCirclesBorderEnabled);
         set.setDrawCircleHole(params.drawCirclesHoleEnabled);
@@ -236,10 +231,10 @@ public final class CreateChart<T> {
         set.setFillColor(params.lineFilledColor);
         set.setColor(params.lineColor);
 
-        if (set2 != null){
+        if (set2 != null) {
             set2.setColor(params.lineColor);
-            set2.setValueTextColor(params.texColor);
-            set2.setFillColor(params.texColor);
+            set2.setValueTextColor(params.colorValuesText);
+            set2.setFillColor(params.lineColor);
             set2.setDrawValues(params.drawValues);
             set2.setDrawCircles(params.drawCirclesBorderEnabled);
             set2.setDrawCircleHole(params.drawCirclesHoleEnabled);
@@ -257,8 +252,6 @@ public final class CreateChart<T> {
             set2.setFillColor(params.lineFilledColor);
             set2.setColor(ContextCompat.getColor(context, R.color.colorOrange));
         }
-
-
 
         //LineChart
         if (mChart instanceof LineChart) {
@@ -282,12 +275,9 @@ public final class CreateChart<T> {
             mLineChart.getAxisLeft().setGridColor(Color.TRANSPARENT);
             mLineChart.getAxisLeft().setTextColor(Color.TRANSPARENT);
             mLineChart.setAutoScaleMinMaxEnabled(false);
+
             mLineChart.getAxisRight().setAxisMinimum(4f);
             mLineChart.getAxisRight().setAxisMaximum(3f);
-
-            //if (data == null) ((LineChart) mChart).zoom(1.1f, 1f, 0, 0);
-            // limit the number of visible entries
-           // mLineChart.setPinchZoom(true);
         }
 
         //Limit
@@ -303,6 +293,13 @@ public final class CreateChart<T> {
             ll1.setLineColor(limit.getColor());
 
             leftAxis.addLimitLine(ll1);
+        }
+
+        //RangeY
+        // TODO Implementar. Não funciona.
+        if (params.YMin > -1 && params.YMax > params.YMin) {
+            leftAxis.setAxisMinValue(params.YMin);
+            leftAxis.setAxisMaxValue(params.YMax);
         }
 
         //General
@@ -321,7 +318,7 @@ public final class CreateChart<T> {
     public static class Params {
         private Chart mChart;
         private Context context;
-        private List<Limit> limits = new ArrayList<>();
+        private List<Limit> limits;
         private int colorTextX;
         private int colorTextY;
         private int lineColor;
@@ -329,12 +326,10 @@ public final class CreateChart<T> {
         private int colorDescription;
         private int colorBorderGrid;
         private int colorGrid;
-        private int texColor;
         private int colorValuesText;
         private int colorCircleBorderValue;
         private int colorCircleHoleValue;
         private int colorHighLight;
-        private int colorLegend;
         private Drawable backgroundDrawableMarker;
         private int colorTextMarker;
         private boolean xAxisEnabled;
@@ -354,7 +349,7 @@ public final class CreateChart<T> {
         private float lineWidth;
         private float highlightLineWidth;
         private String description;
-        private String label;
+        private String[] legend;
         private String formatDate;
         private XAxis.XAxisPosition xAxisPosition;
         private LineDataSet.Mode typeLine;
@@ -362,6 +357,8 @@ public final class CreateChart<T> {
         private int lineFilledColor;
         private float visibiltyXMax;
         private float visibiltyXMin;
+        private float YMax;
+        private float YMin;
 
         /**
          * Constructor.
@@ -378,8 +375,7 @@ public final class CreateChart<T> {
             this.colorGrid = Color.TRANSPARENT;
             this.drawBorder = false;
             this.drawValues = false;
-            this.label = "";
-            this.texColor = Color.BLACK;
+            this.legend = new String[2];
             this.colorValuesText = Color.BLACK;
             this.colorCircleBorderValue = ContextCompat.getColor(context, R.color.colorPrimary);
             this.colorCircleHoleValue = ContextCompat.getColor(context, R.color.colorPrimary);
@@ -406,12 +402,14 @@ public final class CreateChart<T> {
             this.colorTextY = Color.BLACK;
             this.xAxisEnabled = true;
             this.yAxisEnabled = true;
-            this.colorLegend = Color.BLACK;
             this.typeLine = LineDataSet.Mode.CUBIC_BEZIER;
             this.filledLine = false;
             this.lineFilledColor = lineColor;
             this.visibiltyXMax = 40;
             this.visibiltyXMin = 10;
+            this.limits = new ArrayList<>();
+            this.YMin = -1;
+            this.YMax = -1;
         }
 
         /**
@@ -480,6 +478,19 @@ public final class CreateChart<T> {
         public Params setMaxVisibility(float visibiltyXMax, float visibiltyXMin) {
             this.visibiltyXMax = visibiltyXMax;
             this.visibiltyXMin = visibiltyXMin;
+            return this;
+        }
+
+        /**
+         * set range of Y.
+         *
+         * @param YMax
+         * @param YMin
+         * @return
+         */
+        public Params setRangeY(float YMax, float YMin) {
+            this.YMax = YMax;
+            this.YMin = YMin;
             return this;
         }
 
@@ -621,17 +632,6 @@ public final class CreateChart<T> {
         }
 
         /**
-         * Set text color lengend and description.
-         *
-         * @param texColor
-         * @return {@link Params}
-         */
-        public Params setTextColor(int texColor) {
-            this.texColor = texColor;
-            return this;
-        }
-
-        /**
          * Set color values.
          *
          * @param colorValuesText
@@ -643,15 +643,15 @@ public final class CreateChart<T> {
         }
 
         /**
-         * set label of chart.
+         * add legend of chart.
          *
-         * @param label
-         * @param color
+         * @param legends
          * @return {@link Params}
          */
-        public Params setLabel(@Nullable String label, int color) {
-            this.colorLegend = color;
-            this.label = label == null ? "" : label;
+        public Params addLegend(@Nullable String... legends) {
+            this.legend[0] = legends[0];
+
+            if (legends.length > 1) this.legend[1] = legends[1];
             return this;
         }
 
@@ -681,7 +681,7 @@ public final class CreateChart<T> {
          *
          * @param color
          */
-        public Params colorFont(int color) {
+        public Params colorFontDescription(int color) {
             colorDescription = color;
             return this;
         }

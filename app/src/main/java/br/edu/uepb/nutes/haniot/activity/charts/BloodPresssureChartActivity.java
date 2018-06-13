@@ -53,16 +53,15 @@ public class BloodPresssureChartActivity extends BaseChartActivity {
 
         Chart lineChart = (LineChart) findViewById(R.id.chart);
         mChart = new CreateChart.Params(this, lineChart)
-                .lineStyle(2.5f, ContextCompat.getColor(context, R.color.colorIndigo))
                 .yAxisEnabled(false)
                 .xAxisStyle(Color.WHITE, XAxis.XAxisPosition.BOTTOM)
                 .yAxisStyle(Color.WHITE)
                 .setTextValuesColor(Color.WHITE)
-                .colorFont(Color.WHITE)
                 .drawCircleStyle(ContextCompat.getColor(context, R.color.colorIndigo), ContextCompat.getColor(context, R.color.colorPrimary))
                 .lineStyle(2.5f, ContextCompat.getColor(context, R.color.colorIndigo))
                 .highlightStyle(Color.TRANSPARENT, 0.7f)
                 .createLimit("Limit 1", 135.0f, Color.WHITE)
+                .addLegend("Sistólica", "Diastólica") //Strings
                 .build();
 
         requestData(GRAPH_TYPE_MONTH);

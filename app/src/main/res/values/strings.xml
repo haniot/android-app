@@ -122,6 +122,7 @@
     <string name="format_number1">#.0</string>
     <string name="format_number2">##.0</string>
 
+
     // EXCEPTIONS LOGS
     <string name="device_not_found">"Device: %1$s not found!"</string>
     <string name="not_save_object_empty">"You cannot save an object as empty!"</string>
