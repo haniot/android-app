@@ -106,6 +106,11 @@ public final class CreateChart<T> {
         }
     }
 
+
+    public void paintBar(List<Measurement> data) {
+
+    }
+
     /**
      * Format data for chart.
      *

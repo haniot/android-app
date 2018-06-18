@@ -27,6 +27,8 @@ import butterknife.ButterKnife;
  * @copyright Copyright (c) 2017, NUTES UEPB
  */
 public class GlucoseChartActivity extends BaseChartActivity {
+
+    private final float PRE_DIABETES = 100;
     private CreateChart mChart;
 
     @Override
@@ -57,15 +59,15 @@ public class GlucoseChartActivity extends BaseChartActivity {
                 .setTextValuesColor(Color.WHITE)
                 .colorFontDescription(Color.WHITE)
                 .highlightStyle(Color.TRANSPARENT, 0.7f)
+                .createLimit(getString(R.string.limit_glucose), PRE_DIABETES, Color.RED)
                 .build();
 
-        requestData(GRAPH_TYPE_MONTH);
+        requestData(CHART_TYPE_MONTH);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        requestData(GRAPH_TYPE_DAY);
     }
 
     @Override
@@ -79,7 +81,7 @@ public class GlucoseChartActivity extends BaseChartActivity {
     }
 
     @Override
-    public void onUpdateData(List<Measurement> data) {
+    public void onUpdateData(List<Measurement> data, int currentChartType) {
         mChart.paint(data);
     }
 }

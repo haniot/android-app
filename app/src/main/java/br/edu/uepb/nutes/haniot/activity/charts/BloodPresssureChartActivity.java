@@ -60,17 +60,15 @@ public class BloodPresssureChartActivity extends BaseChartActivity {
                 .drawCircleStyle(ContextCompat.getColor(context, R.color.colorIndigo), ContextCompat.getColor(context, R.color.colorPrimary))
                 .lineStyle(2.5f, ContextCompat.getColor(context, R.color.colorIndigo))
                 .highlightStyle(Color.TRANSPARENT, 0.7f)
-                .createLimit("Limit 1", 135.0f, Color.WHITE)
-                .addLegend("Sistólica", "Diastólica") //Strings
+                .addLegend(getString(R.string.systolic), getString(R.string.diastolic))
                 .build();
 
-        requestData(GRAPH_TYPE_MONTH);
+        requestData(CHART_TYPE_MONTH);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        requestData(GRAPH_TYPE_DAY);
     }
 
     @Override
@@ -84,7 +82,7 @@ public class BloodPresssureChartActivity extends BaseChartActivity {
     }
 
     @Override
-    public void onUpdateData(List<Measurement> data) {
+    public void onUpdateData(List<Measurement> data, int currentChartType) {
         mChart.paint(data);
     }
 }

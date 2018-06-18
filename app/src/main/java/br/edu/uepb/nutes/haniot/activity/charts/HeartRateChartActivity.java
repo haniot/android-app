@@ -27,6 +27,8 @@ import butterknife.ButterKnife;
  * @copyright Copyright (c) 2017, NUTES UEPB
  */
 public class HeartRateChartActivity extends BaseChartActivity {
+
+    private final float TACHYCARDIA = 110;
     private CreateChart mChart;
 
     @Override
@@ -57,15 +59,16 @@ public class HeartRateChartActivity extends BaseChartActivity {
                 .setTextValuesColor(Color.WHITE)
                 .colorFontDescription(Color.WHITE)
                 .highlightStyle(Color.TRANSPARENT, 0.7f)
+                .createLimit(getString(R.string.limit_heart_rate), TACHYCARDIA, Color.RED)
                 .build();
 
-        requestData(GRAPH_TYPE_MONTH);
+        requestData(CHART_TYPE_MONTH);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        requestData(GRAPH_TYPE_DAY);
+        requestData(CHART_TYPE_DAY);
     }
 
     @Override
@@ -79,7 +82,7 @@ public class HeartRateChartActivity extends BaseChartActivity {
     }
 
     @Override
-    public void onUpdateData(List<Measurement> data) {
+    public void onUpdateData(List<Measurement> data, int currentChartType) {
         mChart.paint(data);
     }
 }

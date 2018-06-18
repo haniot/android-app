@@ -2,8 +2,6 @@ package br.edu.uepb.nutes.haniot.activity.charts;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 
 import com.github.mikephil.charting.charts.Chart;
@@ -30,9 +28,9 @@ import butterknife.ButterKnife;
  */
 public class TemperatureChartActivity extends BaseChartActivity {
 
+    private final float FEVER = 37;
     private CreateChart mChart;
-    RecyclerView recyclerView;
-    GridLayoutManager layoutManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,17 +59,16 @@ public class TemperatureChartActivity extends BaseChartActivity {
                 .setTextValuesColor(Color.WHITE)
                 .colorFontDescription(Color.WHITE)
                 .highlightStyle(Color.TRANSPARENT, 0.7f)
-                .createLimit("Fever", 36.0f, getResources().getColor(R.color.colorRed))
+                .createLimit(getString(R.string.limit_temperature), FEVER, getResources().getColor(R.color.colorRed))
                 .setRangeY(35,38)
                 .build();
 
-        requestData(GRAPH_TYPE_MONTH);
+        requestData(CHART_TYPE_MONTH);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        //requestData(GRAPH_TYPE_DAY);
     }
 
     @Override
@@ -85,7 +82,7 @@ public class TemperatureChartActivity extends BaseChartActivity {
     }
 
     @Override
-    public void onUpdateData(List<Measurement> data) {
+    public void onUpdateData(List<Measurement> data, int currentChartType) {
         mChart.paint(data);
     }
 }

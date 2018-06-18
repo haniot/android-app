@@ -36,14 +36,14 @@ import butterknife.BindView;
  * @copyright Copyright (c) 2017, NUTES UEPB
  */
 abstract public class BaseChartActivity extends AppCompatActivity implements View.OnClickListener {
-    private final String TAG = "FragmentActivity";
+    private final String TAG = "ChartActivity";
 
-    public final int GRAPH_TYPE_DAY = 1;
-    public final int GRAPH_TYPE_SEVEN = 2;
-    public final int GRAPH_TYPE_MONTH = 3;
-    public final int GRAPH_TYPE_YEAR = 4;
+    public final int CHART_TYPE_DAY = 1;
+    public final int CHART_TYPE_SEVEN = 2;
+    public final int CHART_TYPE_MONTH = 3;
+    public final int CHART_TYPE_YEAR = 4;
 
-
+    private int currentChartType;
     public Session session;
     public Params params;
 
@@ -65,29 +65,33 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
     @BindView(R.id.menu_period)
     public FloatingActionMenu fabActionMenu;
 
+    public BaseChartActivity() {
+        this.currentChartType = CHART_TYPE_MONTH;
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.fab_day:
-                requestData(GRAPH_TYPE_DAY);
+                requestData(CHART_TYPE_DAY);
                 fabActionMenu.getMenuIconView().setImageDrawable(getResources().getDrawable(R.drawable.ic_day));
                 fabActionMenu.close(true);
                 break;
 
             case R.id.fab_month:
-                requestData(GRAPH_TYPE_MONTH);
+                requestData(CHART_TYPE_MONTH);
                 fabActionMenu.getMenuIconView().setImageDrawable(getResources().getDrawable(R.drawable.ic_month));
                 fabActionMenu.close(true);
                 break;
 
             case R.id.fab_week:
-                requestData(GRAPH_TYPE_SEVEN);
+                requestData(CHART_TYPE_SEVEN);
                 fabActionMenu.getMenuIconView().setImageDrawable(getResources().getDrawable(R.drawable.ic_week));
                 fabActionMenu.close(true);
                 break;
             case R.id.fab_year:
                 fabActionMenu.getMenuIconView().setImageDrawable(getResources().getDrawable(R.drawable.ic_year));
-                requestData(GRAPH_TYPE_YEAR);
+                requestData(CHART_TYPE_YEAR);
                 fabActionMenu.close(true);
                 break;
         }
@@ -122,7 +126,7 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            onUpdateData(new ArrayList<>());
+                            onUpdateData(new ArrayList<>(), currentChartType);
                             createMoreInfo(new ArrayList<>());
                         }
                     });
@@ -131,9 +135,8 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            onUpdateData(result);
+                            onUpdateData(result, currentChartType);
                             createMoreInfo(result);
-
                         }
                     });
                 }
@@ -153,14 +156,19 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
      * @param type
      */
     protected void requestData(int type) {
-        if (type == GRAPH_TYPE_DAY)
+        if (type == CHART_TYPE_DAY) {
+            currentChartType = CHART_TYPE_DAY;
             requestDataInServer("1d");
-        else if (type == GRAPH_TYPE_SEVEN)
+        } else if (type == CHART_TYPE_SEVEN) {
+            currentChartType = CHART_TYPE_SEVEN;
             requestDataInServer("1w");
-        else if (type == GRAPH_TYPE_MONTH)
+        } else if (type == CHART_TYPE_MONTH) {
+            currentChartType = CHART_TYPE_MONTH;
             requestDataInServer("1m");
-        else if (type == GRAPH_TYPE_YEAR)
+        } else if (type == CHART_TYPE_YEAR) {
+            currentChartType = CHART_TYPE_YEAR;
             requestDataInServer("1y");
+        }
     }
 
     /**
@@ -226,7 +234,7 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
     }
 
 
-    abstract public void onUpdateData(List<Measurement> data);
+    abstract public void onUpdateData(List<Measurement> data, int currentChartType);
 
     public class SpacesItemDecoration extends RecyclerView.ItemDecoration {
         private int space;

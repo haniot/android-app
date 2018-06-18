@@ -98,8 +98,16 @@
     <string name="info_period">Period</string>
     <string name="more_information">More Information</string>
     <string name="date_format_info">yyyy/MMM/dd</string>
-
     <string name="noData">No data</string>
+
+    //Limit and Lines of Chart
+    <string name="diastolic">Diastolic</string>
+    <string name="systolic">Systolic</string>
+    <string name="limit_blood_pressure">Limit 1</string>
+    <string name="limit_heart_rate">Limit 1</string>
+    <string name="limit_glucose">Limit 1</string>
+    <string name="limit_temperature">Limit 1</string>
+    <string name="limit_body_composition">Overweight</string>
 
     //FLOATING
     <string name="day">Day</string>
