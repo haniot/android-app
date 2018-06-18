@@ -247,7 +247,7 @@ public class SliderPageFragment extends Fragment implements ISlideBackgroundColo
             getView().setBackgroundColor(bgColor);
     }
 
-    private void nextPage() {
+    public void nextPage() {
         final AppIntro appIntro = (AppIntro) getContext();
         final AppIntroViewPager page = ((AppIntro) getContext()).getPager();
 

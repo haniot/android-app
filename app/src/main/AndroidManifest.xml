@@ -113,7 +113,11 @@
             android:name=".elderly.assessment.FallRiskAssessmentResultActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeSecondaty" />
-        <!-- END ACTIVITIES FALL RISK -->
+        <activity
+                android:name=".elderly.assessment.FallCharacterizationActivity"
+                android:screenOrientation="portrait"
+                android:theme="@style/AppThemeSecondaty" />
+        <!-- END ELDERLY -->
 
         <!-- SERVICES -->
         <service
