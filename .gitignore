@@ -34,6 +34,7 @@ captures/
 
 # IntelliJ
 *.iml
+*.imldle.xml
 .idea/workspace.xml
 .idea/tasks.xml
 .idea/gradle.xml
@@ -49,6 +50,7 @@ captures/
 .idea/modules.xml
 .idea/scopes/scope_settings.xml
 .idea/vcs.xml
+.idea/codeStyles/codeStyleConfig.xml
 
 # External native build folder generated in Android Studio 2.2 and later
 .externalNativeBuild
@@ -62,4 +64,11 @@ local.properties
 
 # ObjectBox: native libs, model backups
 objectbox-models/
+
+# OS files
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 

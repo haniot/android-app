@@ -2,7 +2,6 @@ package br.edu.uepb.nutes.haniot.activity.settings;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-
 import br.edu.uepb.nutes.haniot.model.User;
 import br.edu.uepb.nutes.haniot.model.dao.UserDAO;
 
