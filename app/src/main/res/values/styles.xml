@@ -20,7 +20,7 @@
         <item name="theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
     </style>
 
-    <style name="AppThemeSecondaty" parent="Theme.AppCompat.DayNight.NoActionBar">
+    <style name="AppThemeSecondary" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="colorPrimary">@color/colorSecondary</item>
         <item name="colorPrimaryDark">@color/colorSecondaryDark</item>
         <item name="colorAccent">@color/colorAccentSecondary</item>

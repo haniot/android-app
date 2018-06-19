@@ -96,7 +96,7 @@
             android:name=".elderly.ElderlyMonitoredActivity"
             android:parentActivityName=".activity.MainActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppThemeSecondaty">
+            android:theme="@style/AppThemeSecondary">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activity.MainActivity" />
@@ -104,19 +104,19 @@
         <activity
             android:name=".elderly.ElderlyRegisterActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppThemeSecondaty" />
+            android:theme="@style/AppThemeSecondary" />
         <activity
             android:name=".elderly.assessment.FallRiskAssessmentActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppThemeSecondaty" />
+            android:theme="@style/AppThemeSecondary" />
         <activity
             android:name=".elderly.assessment.FallRiskAssessmentResultActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppThemeSecondaty" />
+            android:theme="@style/AppThemeSecondary" />
         <activity
                 android:name=".elderly.assessment.FallCharacterizationActivity"
                 android:screenOrientation="portrait"
-                android:theme="@style/AppThemeSecondaty" />
+                android:theme="@style/AppThemeSecondary" />
         <!-- END ELDERLY -->
 
         <!-- SERVICES -->

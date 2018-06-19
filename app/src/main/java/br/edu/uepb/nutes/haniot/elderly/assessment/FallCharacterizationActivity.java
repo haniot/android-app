@@ -58,9 +58,6 @@ public class FallCharacterizationActivity extends AppIntro implements OnAnswerLi
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        questions = getResources().getStringArray(R.array.risk_questions_array);
-        answers = new boolean[10];
-
         Intent it = getIntent();
         elderlyId = it.getStringExtra(ElderlyRegisterActivity.EXTRA_ELDERLY_ID);
 
