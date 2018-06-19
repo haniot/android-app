@@ -13,8 +13,10 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.elderly.ElderlyRegisterActivity;
+
 import com.github.paolorotolo.appintro.AppIntro;
 
 /**
@@ -83,8 +85,11 @@ public class FallCharacterizationActivity extends AppIntro implements OnAnswerLi
         setFadeAnimation();
         showSeparator(false);
         showSkipButton(false);
-        setNextPageSwipeLock(false);
+        showPagerIndicator(false);
+        setNextPageSwipeLock(true);
         setImmersive(true);
+
+        // TODO ADICIONAR Botao/Iteracao para passar pagina apos pergunta.
 
         addSlide(SliderPageFragment.newInstance(
                 R.layout.fragment_elderly_fall_characterization1, PAGE_1));
@@ -117,12 +122,15 @@ public class FallCharacterizationActivity extends AppIntro implements OnAnswerLi
         if (newFragment instanceof SliderPageFragment) {
             currentPage = (SliderPageFragment) newFragment;
         }
+
+        if (currentPage.isBlocked()) setNextPageSwipeLock(true);
+        else setNextPageSwipeLock(false);
     }
 
     @Override
     public void onAnswer(View view, boolean value, int page) {
         Log.w(TAG, "onAnswer() " + " page: " + page + " answer: " + value);
-        if(page == 1 && value == false) {
+        if (page == 1 && value == false) {
             addSlide(SliderPageFragment.newInstance(
                     R.layout.fragment_elderly_fall_characterization1, PAGE_3));
             Log.w(TAG, "entrou next()");

@@ -102,7 +102,8 @@ public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRec
         initDataSwipeRefresh();
 
         mAddPatientButton.setOnClickListener((v) -> {
-            startActivity(new Intent(getApplicationContext(), ElderlyRegisterActivity.class));
+//            startActivity(new Intent(getApplicationContext(), ElderlyRegisterActivity.class));
+            startActivity(new Intent(getApplicationContext(), FallCharacterizationActivity.class));
             server.cancelAllResquest();
         });
     }
@@ -262,7 +263,6 @@ public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRec
     @Override
     public void onItemClick(Elderly item) {
         Log.w(TAG, "onItemClick()");
-//        startActivity(new Intent(getApplicationContext(), FallRiskAssessmentActivity.class));
-        startActivity(new Intent(getApplicationContext(), FallCharacterizationActivity.class));
+        startActivity(new Intent(getApplicationContext(), FallRiskAssessmentActivity.class));
     }
 }
