@@ -1,7 +1,7 @@
 package br.edu.uepb.nutes.haniot.elderly.assessment;
 
-import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -9,14 +9,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
-
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.elderly.ElderlyRegisterActivity;
-
 import com.github.paolorotolo.appintro.AppIntro;
 
 /**
@@ -27,7 +23,7 @@ import com.github.paolorotolo.appintro.AppIntro;
  * @copyright Copyright (c) 2017, NUTES UEPB
  */
 public class FallCharacterizationActivity extends AppIntro implements OnAnswerListener {
-    private final String TAG = "FallCharacterization";
+    private final String TAG = "FallRiskAssActivity";
 
     public static final String EXTRA_QUESTIONS = "extra_questions";
     public static final String EXTRA_ANSWERS = "extra_answers";
@@ -47,7 +43,7 @@ public class FallCharacterizationActivity extends AppIntro implements OnAnswerLi
 
     private String[] questions;
     private boolean[] answers;
-    private SliderPageFragment currentPage;
+    private PageRadioFragment currentPage;
     private Snackbar snackbarMessageBlockedPage;
     private String elderlyId;
 
@@ -57,6 +53,9 @@ public class FallCharacterizationActivity extends AppIntro implements OnAnswerLi
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        questions = getResources().getStringArray(R.array.risk_questions_array);
+        answers = new boolean[10];
 
         Intent it = getIntent();
         elderlyId = it.getStringExtra(ElderlyRegisterActivity.EXTRA_ELDERLY_ID);
@@ -86,13 +85,21 @@ public class FallCharacterizationActivity extends AppIntro implements OnAnswerLi
         setNextPageSwipeLock(true);
         setImmersive(true);
 
-        // TODO ADICIONAR Botao/Iteracao para passar pagina apos pergunta.
+        addSlide(PageRadioFragment.newInstance(
+                R.layout.fragment_radio_question_simple,
+                "O idoso precisou de assitência médica?",
+                R.drawable.fall_elderly,
+                Color.WHITE,
+                PAGE_1));
 
-        addSlide(SliderPageFragment.newInstance(
-                R.layout.fragment_elderly_fall_characterization1, PAGE_1));
+        addSlide(PageRadioFragment.newInstance(
+                R.layout.fragment_radio_question_simple,
+                "O idoso ficou internado?",
+                R.drawable.fall_elderly,
+                Color.WHITE,
+                PAGE_1));
 
-        addSlide(SliderPageFragment.newInstance(
-                R.layout.fragment_elderly_fall_characterization2, PAGE_2));
+        addSlide(PageRadioFragment.newInstance(R.layout.fragment_elderly_fall_risk_end, PAGE_END));
     }
 
     @Override
@@ -114,25 +121,80 @@ public class FallCharacterizationActivity extends AppIntro implements OnAnswerLi
     public void onSlideChanged(@Nullable Fragment oldFragment, @Nullable Fragment newFragment) {
         super.onSlideChanged(oldFragment, newFragment);
 
-        Log.d(TAG, "onSlideChanged() " + newFragment.getContext().getClass().getName());
+        if (snackbarMessageBlockedPage != null)
+            snackbarMessageBlockedPage.dismiss();
 
-        if (newFragment instanceof SliderPageFragment) {
-            currentPage = (SliderPageFragment) newFragment;
+        if (newFragment instanceof PageRadioFragment) {
+            currentPage = (PageRadioFragment) newFragment;
+
+            if (currentPage.getPageNumber() == PAGE_END) return;
+
+            if (currentPage.isBlocked()) setNextPageSwipeLock(true);
+            else setNextPageSwipeLock(false);
+
+            if (currentPage.getOldCheckedRadio() == 0)
+                currentPage.selectAnswerFalse();
+            else if (currentPage.getOldCheckedRadio() == 1)
+                currentPage.selectAnswerTrue();
+
+            // Capture event onSwipeLeft
+            currentPage.getView().setOnTouchListener(new OnSwipeTouchListener(this) {
+                @Override
+                public void onSwipeLeft() {
+                    super.onSwipeLeft();
+                    if (currentPage.isBlocked()) showMessageBlocked();
+                }
+            });
         }
-
-        if (currentPage.isBlocked()) setNextPageSwipeLock(true);
-        else setNextPageSwipeLock(false);
     }
 
     @Override
     public void onAnswer(View view, boolean value, int page) {
-        Log.w(TAG, "onAnswer() " + " page: " + page + " answer: " + value);
-        if (page == 1 && value == false) {
-            addSlide(SliderPageFragment.newInstance(
-                    R.layout.fragment_elderly_fall_characterization1, PAGE_3));
-            Log.w(TAG, "entrou next()");
-            currentPage.nextPage();
+        if (page < PAGE_END) {
+            answers[page] = value;
+            return;
         }
+
+        if (value) processAssessment();// End result
+        else showMessageCancel();// Cancel result
+    }
+
+    /**
+     * Process result assessment.
+     */
+    private void processAssessment() {
+        Intent intent = new Intent(this, FallRiskAssessmentResultActivity.class);
+        intent.putExtra(EXTRA_ANSWERS, answers);
+        intent.putExtra(EXTRA_QUESTIONS, questions);
+        intent.putExtra(EXTRA_ELDERLY_ID, elderlyId);
+        Log.d("TEST", "ij " + elderlyId);
+        startActivity(intent);
+
+        finish();
+    }
+
+    /**
+     * Show dialog mesage cancel.
+     */
+    private void showMessageCancel() {
+        runOnUiThread(() -> {
+            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+            dialog.setMessage(getString(R.string.risk_fall_title_cancel));
+
+            dialog.setPositiveButton(R.string.yes_text, (dialogInterface, which) -> {
+                finish();
+            });
+
+            dialog.setNegativeButton(R.string.no_text, (dialogInterface, which) -> {
+                currentPage.clearCheck();
+            });
+
+            dialog.setOnCancelListener((dialogInterface) -> {
+                currentPage.clearCheck();
+            });
+
+            dialog.create().show();
+        });
     }
 
     /**
@@ -153,4 +215,6 @@ public class FallCharacterizationActivity extends AppIntro implements OnAnswerLi
         });
     }
 }
+
+
 

@@ -15,25 +15,23 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-
-import com.github.paolorotolo.appintro.AppIntro;
-import com.github.paolorotolo.appintro.AppIntroViewPager;
-import com.github.paolorotolo.appintro.ISlideBackgroundColorHolder;
-
 import br.edu.uepb.nutes.haniot.R;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import com.github.paolorotolo.appintro.AppIntro;
+import com.github.paolorotolo.appintro.AppIntroViewPager;
+import com.github.paolorotolo.appintro.ISlideBackgroundColorHolder;
 
 /**
- * SliderPageFragment implementation.
+ * PageRadioFragment implementation.
  *
  * @author Douglas Rafael <douglas.rafael@nutes.uepb.edu.br>
  * @version 1.0
  * @copyright Copyright (c) 2017, NUTES UEPB
  */
-public class SliderPageFragment extends Fragment implements ISlideBackgroundColorHolder {
-    private final String TAG = "SliderPageFragment";
+public class PageRadioFragment extends Fragment implements ISlideBackgroundColorHolder {
+    private final String TAG = "PageRadioFragment";
 
     protected static final String ARG_LAYOUT = "arg_layout";
     protected static final String ARG_TITLE = "arg_title";
@@ -45,7 +43,7 @@ public class SliderPageFragment extends Fragment implements ISlideBackgroundColo
     protected static final String ARG_PAGE_NUMBER = "arg_page_number";
 
     private Unbinder unbinder;
-    private OnAnswerListener mListener;
+    private OnAnswerRadioListener mListener;
     private boolean isBlocked, answerValue, actionClearCheck;
 
     private int drawable, bgColor, titleColor, descColor, layoutId, pageNumber, oldCheckedRadio;
@@ -67,18 +65,18 @@ public class SliderPageFragment extends Fragment implements ISlideBackgroundColo
     @BindView(R.id.question_radioGroup)
     RadioGroup radioGroup;
 
-    public SliderPageFragment() {
+    public PageRadioFragment() {
     }
 
     /**
-     * New instance the {@link SliderPageFragment}.
+     * New instance the {@link PageRadioFragment}.
      *
      * @param layoutId
      * @param numberPage
-     * @return {@link SliderPageFragment}
+     * @return {@link PageRadioFragment}
      */
-    public static SliderPageFragment newInstance(@LayoutRes int layoutId, int numberPage) {
-        SliderPageFragment sliderPageFragment = new SliderPageFragment();
+    public static PageRadioFragment newInstance(@LayoutRes int layoutId, int numberPage) {
+        PageRadioFragment sliderPageFragment = new PageRadioFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_LAYOUT, layoutId);
         args.putInt(ARG_PAGE_NUMBER, numberPage);
@@ -87,25 +85,23 @@ public class SliderPageFragment extends Fragment implements ISlideBackgroundColo
         return sliderPageFragment;
     }
 
-
     /**
-     * New instance the {@link SliderPageFragment}.
+     * New instance the {@link PageRadioFragment}.
      *
-     * @param layoutId
      * @param title
      * @param description
      * @param imageDrawable
      * @param bgColor
      * @param numberPage
-     * @return {@link SliderPageFragment}
+     * @return {@link PageRadioFragment}
      */
-    public static SliderPageFragment newInstance(@LayoutRes int layoutId,
-                                                 String title, String description,
-                                                 @DrawableRes int imageDrawable,
-                                                 @ColorInt int bgColor, int numberPage) {
-        SliderPageFragment sliderPageFragment = new SliderPageFragment();
+    public static PageRadioFragment newInstance(String title,
+                                                String description,
+                                                @DrawableRes int imageDrawable,
+                                                @ColorInt int bgColor,
+                                                int numberPage) {
+        PageRadioFragment sliderPageFragment = new PageRadioFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_LAYOUT, layoutId);
         args.putString(ARG_TITLE, title);
         args.putString(ARG_DESC, description);
         args.putInt(ARG_DRAWABLE, imageDrawable);
@@ -117,23 +113,24 @@ public class SliderPageFragment extends Fragment implements ISlideBackgroundColo
     }
 
     /**
-     * New instance the {@link SliderPageFragment}.
+     * New instance the {@link PageRadioFragment}.
      *
      * @param layoutId
-     * @param title
      * @param description
      * @param bgColor
      * @param numberPage
-     * @return {@link SliderPageFragment}
+     * @return {@link PageRadioFragment}
      */
-    public static SliderPageFragment newInstance(@LayoutRes int layoutId,
-                                                 String title, String description,
-                                                 @ColorInt int bgColor, int numberPage) {
-        SliderPageFragment sliderPageFragment = new SliderPageFragment();
+    public static PageRadioFragment newInstance(@LayoutRes int layoutId,
+                                                String description,
+                                                @DrawableRes int imageDrawable,
+                                                @ColorInt int bgColor,
+                                                int numberPage) {
+        PageRadioFragment sliderPageFragment = new PageRadioFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_LAYOUT, layoutId);
-        args.putString(ARG_TITLE, title);
         args.putString(ARG_DESC, description);
+        args.putInt(ARG_DRAWABLE, imageDrawable);
         args.putInt(ARG_BG_COLOR, bgColor);
         args.putInt(ARG_PAGE_NUMBER, numberPage);
         sliderPageFragment.setArguments(args);
@@ -153,16 +150,14 @@ public class SliderPageFragment extends Fragment implements ISlideBackgroundColo
 
         // Retrieving arguments
         if (getArguments() != null && getArguments().size() != 0) {
-            layoutId = getArguments().getInt(ARG_LAYOUT);
-            title = getArguments().getString(ARG_TITLE);
-            description = getArguments().getString(ARG_DESC);
+            layoutId = getArguments().containsKey(ARG_LAYOUT) ? getArguments().getInt(ARG_LAYOUT) :
+                    R.layout.fragment_radio_question;
+            title = getArguments().containsKey(ARG_TITLE) ? getArguments().getString(ARG_TITLE) : "";
+            description = getArguments().containsKey(ARG_DESC) ? getArguments().getString(ARG_DESC) : "";
             bgColor = getArguments().getInt(ARG_BG_COLOR);
-            titleColor = getArguments().containsKey(ARG_TITLE_COLOR) ?
-                    getArguments().getInt(ARG_TITLE_COLOR) : 0;
-            descColor = getArguments().containsKey(ARG_DESC_COLOR) ?
-                    getArguments().getInt(ARG_DESC_COLOR) : 0;
-            drawable = getArguments().containsKey(ARG_DRAWABLE) ?
-                    getArguments().getInt(ARG_DRAWABLE) : 0;
+            titleColor = getArguments().containsKey(ARG_TITLE_COLOR) ? getArguments().getInt(ARG_TITLE_COLOR) : 0;
+            descColor = getArguments().containsKey(ARG_DESC_COLOR) ? getArguments().getInt(ARG_DESC_COLOR) : 0;
+            drawable = getArguments().containsKey(ARG_DRAWABLE) ? getArguments().getInt(ARG_DRAWABLE) : 0;
             pageNumber = getArguments().getInt(ARG_PAGE_NUMBER);
         }
     }
@@ -184,7 +179,7 @@ public class SliderPageFragment extends Fragment implements ISlideBackgroundColo
             if (descColor != 0) descTextView.setTextColor(descColor);
         }
 
-        if (drawable != 0) imgTextView.setImageResource(drawable);
+        if (imgTextView != null && drawable != 0) imgTextView.setImageResource(drawable);
 
         return view;
     }
@@ -223,8 +218,8 @@ public class SliderPageFragment extends Fragment implements ISlideBackgroundColo
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnAnswerListener) {
-            mListener = (OnAnswerListener) context;
+        if (context instanceof OnAnswerRadioListener) {
+            mListener = (OnAnswerRadioListener) context;
         } else {
             throw new ClassCastException();
         }
@@ -267,6 +262,14 @@ public class SliderPageFragment extends Fragment implements ISlideBackgroundColo
         return radioGroup;
     }
 
+    public void selectAnswerTrue() {
+        getRadioGroup().check(R.id.yes_radioButton);
+    }
+
+    public void selectAnswerFalse() {
+        getRadioGroup().check(R.id.no_radioButton);
+    }
+
     public void clearCheck() {
         actionClearCheck = true;
         radioGroup.clearCheck();
@@ -279,5 +282,16 @@ public class SliderPageFragment extends Fragment implements ISlideBackgroundColo
 
     public int getPageNumber() {
         return pageNumber;
+    }
+
+    /**
+     * Interface OnAnswerRadioListener.
+     *
+     * @author Douglas Rafael <douglas.rafael@nutes.uepb.edu.br>
+     * @version 1.0
+     * @copyright Copyright (c) 2017, NUTES UEPB
+     */
+    public interface OnAnswerRadioListener {
+        void onAnswer(View view, boolean value, int page);
     }
 }

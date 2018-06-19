@@ -20,7 +20,7 @@
     <item>
         <shape>
             <corners android:topLeftRadius="@dimen/button_assessment_radius" android:bottomLeftRadius="@dimen/button_assessment_radius" />
-            <stroke android:width="1dp" android:color="@android:color/primary_text_light" />
+            <stroke android:width="1dp" android:color="@color/colorBlackGrey" />
             <padding android:bottom="@dimen/button_assessment_padding" android:left="@dimen/radio_button_assessment_horizontal_padding" android:right="@dimen/radio_button_assessment_horizontal_padding" android:top="@dimen/button_assessment_padding" />
         </shape>
     </item>

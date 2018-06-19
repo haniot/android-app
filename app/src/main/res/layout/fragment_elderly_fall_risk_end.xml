@@ -19,7 +19,7 @@
             android:padding="32dp"
             android:text="@string/risk_fall_title_end"
             android:textColor="@android:color/white"
-            android:textSize="28sp"
+            android:textAppearance="@android:style/TextAppearance.Large"
             android:textStyle="bold" />
 
         <RelativeLayout

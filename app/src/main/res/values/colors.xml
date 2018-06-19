@@ -46,4 +46,5 @@
     <color name="colorGrey">#9E9E9E</color>
     <color name="colorBlueGrey">#607D8B</color>
     <color name="colorRed">#C62828</color>
+    <color name="colorBlackGrey">#5e5c5c</color>
 </resources>
