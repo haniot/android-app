@@ -43,7 +43,7 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
     public final int CHART_TYPE_MONTH = 3;
     public final int CHART_TYPE_YEAR = 4;
 
-    private int currentChartType;
+    protected int currentChartType;
     public Session session;
     public Params params;
 
@@ -97,13 +97,16 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
         }
     }
 
-    private void requestDataInServer(String period) {
-        Historical hist = new Historical.Query()
+    protected void requestDataInServer(String period) {
+        Historical.Query query = new Historical.Query()
                 .type(HistoricalType.MEASUREMENTS_TYPE_USER)
                 .params(params)
-                .filterDate(period)
-                .ordination(NameColumnsDB.MEASUREMENT_REGISTRATION_DATE, "asc")
-                .build();
+                .ordination(NameColumnsDB.MEASUREMENT_REGISTRATION_DATE, "asc");
+
+        if (!period.isEmpty()) query.filterDate(period);
+
+
+        Historical hist = query.build();
 
         hist.request(this, new CallbackHistorical<Measurement>() {
             @Override

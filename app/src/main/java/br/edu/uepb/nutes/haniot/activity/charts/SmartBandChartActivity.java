@@ -5,12 +5,11 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.MenuItem;
 
+import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.Chart;
-import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
@@ -41,7 +40,7 @@ public class SmartBandChartActivity extends BaseChartActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_chart);
+        setContentView(R.layout.activity_bar_chart);
         ButterKnife.bind(this);
 
         setSupportActionBar(mToolbar);
@@ -56,8 +55,8 @@ public class SmartBandChartActivity extends BaseChartActivity {
         super.session = new Session(this);
         super.params = new Params(session.get_idLogged(), MeasurementType.STEPS);
 
-        Chart lineChart = (LineChart) findViewById(R.id.chart);
-        mChart = new CreateChart.Params(this, lineChart)
+        Chart barChart = (BarChart) findViewById(R.id.barChart);
+        mChart = new CreateChart.Params(this, barChart)
                 .yAxisEnabled(false)
                 .xAxisStyle(Color.WHITE, XAxis.XAxisPosition.BOTTOM)
                 .yAxisStyle(Color.WHITE)
@@ -85,8 +84,8 @@ public class SmartBandChartActivity extends BaseChartActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onUpdateData(List<Measurement> data, int currentChartType) {
+
+    public void onUpdateData2(List<Measurement> data, int currentChartType) {
 
         List<Measurement> points = new ArrayList<>();
         Calendar c = Calendar.getInstance();
@@ -119,15 +118,19 @@ public class SmartBandChartActivity extends BaseChartActivity {
 //                }
                 for (int i = data.size()-1; i >= 0; i--) {
                     c.setTimeInMillis(data.get(i).getRegistrationDate());
-                    int current = c.get(Calendar.WEEK_OF_MONTH);
+                    int current = c.get(Calendar.MONTH);
                     c.setTimeInMillis(points.get(points.size()-1).getRegistrationDate());
-                    int compare = c.get(Calendar.WEEK_OF_MONTH);
+                    int compare = c.get(Calendar.MONTH);
 
-                    if (current != compare) points.add(data.get(i));
+                    if (current == compare)
+
+                        points.add(data.get(i));
                 }
                 break;
             case CHART_TYPE_YEAR:
+                points.add(data.get(data.size()-1));
                 for (int i = data.size()-1; i >= 0; i--) {
+
                     c.setTimeInMillis(data.get(i).getRegistrationDate());
                     int current = c.get(Calendar.MONTH);
                     c.setTimeInMillis(points.get(points.size()-1).getRegistrationDate());
@@ -137,11 +140,104 @@ public class SmartBandChartActivity extends BaseChartActivity {
                 }
                 break;
         }
-//        mChart.paintBar(points);
+
+
+        mChart.paintBar(points);
         for (Measurement measurement : data) Log.d("A", DateUtils.formatDate(measurement.getRegistrationDate(), getString(R.string.date_format)));
         for (Measurement measurement : points) Log.d("B", DateUtils.formatDate(measurement.getRegistrationDate(), getString(R.string.date_format)));
 
 
 
+    }
+
+
+    @Override
+    public void onUpdateData(List<Measurement> data, int currentChartType) {
+
+        List<Measurement> points = agroupDay(data, Calendar.DATE);
+        Calendar c = Calendar.getInstance();
+
+        switch (currentChartType){
+            case CHART_TYPE_DAY:
+                break;
+            case CHART_TYPE_SEVEN:
+                points = agroup(points, Calendar.WEEK_OF_YEAR);
+                break;
+            case CHART_TYPE_MONTH:
+                points = agroup(points, Calendar.MONTH);
+                break;
+            case CHART_TYPE_YEAR:
+                points = agroup(points, Calendar.YEAR);
+                break;
+        }
+
+
+        mChart.paintBar(points);
+        for (Measurement measurement : data) Log.d("A", DateUtils.formatDate(measurement.getRegistrationDate(), getString(R.string.date_format))+" - " + measurement.getValue());
+        for (Measurement measurement : points) Log.d("B", DateUtils.formatDate(measurement.getRegistrationDate(), getString(R.string.date_format))+" - " + measurement.getValue());
+
+
+
+    }
+
+    public List<Measurement> agroupDay(List<Measurement> data, int type){
+        List<Measurement> points = new ArrayList<>();
+        Calendar c = Calendar.getInstance();
+
+        points.add(data.get(data.size()-1));
+        for (int i = data.size()-1; i >= 0; i--) {
+            c.setTimeInMillis(data.get(i).getRegistrationDate());
+            int current = c.get(type);
+
+            c.setTimeInMillis(points.get(points.size()-1).getRegistrationDate());
+            int compare = c.get(type);
+
+            if (current != compare) points.add(data.get(i));
+        }
+
+        return points;
+    }
+
+    public List<Measurement> agroup(List<Measurement> data, int type){
+        List<Measurement> points = new ArrayList<>();
+        Calendar c = Calendar.getInstance();
+
+        points.add(data.get(data.size()-1));
+        int count = 0;
+        int total = 0;
+        long date = 0;
+        for (int i = data.size()-1; i >= 0; i--) {
+            c.setTimeInMillis(data.get(i).getRegistrationDate());
+            int current = c.get(type);
+
+            c.setTimeInMillis(points.get(points.size()-1).getRegistrationDate());
+            int compare = c.get(type);
+
+            date = data.get(i).getRegistrationDate();
+
+            if (current != compare) {
+                points.add(new Measurement(total, data.get(0).getUnit(), date, data.get(0).getTypeId()));
+                count++;
+                total = 0;
+            }
+
+            total += data.get(i).getValue();
+        }
+
+        return points;
+    }
+
+    @Override
+    protected void requestData(int type) {
+        if (type == CHART_TYPE_DAY) {
+            currentChartType = CHART_TYPE_DAY;
+        } else if (type == CHART_TYPE_SEVEN) {
+            currentChartType = CHART_TYPE_SEVEN;
+        } else if (type == CHART_TYPE_MONTH) {
+            currentChartType = CHART_TYPE_MONTH;
+        } else if (type == CHART_TYPE_YEAR) {
+            currentChartType = CHART_TYPE_YEAR;
+        }
+        requestDataInServer("");
     }
 }

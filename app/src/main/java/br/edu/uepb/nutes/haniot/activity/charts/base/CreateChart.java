@@ -14,16 +14,21 @@ import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.LimitLine;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.activity.charts.SmartBandChartActivity;
 import br.edu.uepb.nutes.haniot.model.Measurement;
 import br.edu.uepb.nutes.haniot.model.MeasurementType;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
@@ -40,12 +45,15 @@ import static br.edu.uepb.nutes.haniot.server.SynchronizationServer.context;
 public final class CreateChart<T> {
 
     private LineData data;
+    private BarData dataBar;
     private Params params;
     private Chart mChart;
     private List<Entry> entries;
+    private List<BarEntry> entriesBar;
     private List<Entry> entries2;
     private List<T> dataList;
     private LineDataSet set;
+    BarDataSet setBar;
     private LineDataSet set2;
 
     /**
@@ -107,8 +115,45 @@ public final class CreateChart<T> {
     }
 
 
-    public void paintBar(List<Measurement> data) {
+    public void paintBar(List<T> data) {
+        this.dataList = data;
+        configureDataChart();
+        mChart.notifyDataSetChanged();
+    }
 
+    /**
+     * Format data for chart.
+     *
+     * @return formatter
+     */
+    public IAxisValueFormatter prepareVariablesBarData() {
+        entriesBar = new ArrayList<>();
+        final String[] quarters = new String[dataList.size()];
+
+
+        if (dataList.get(0) instanceof Measurement) {
+
+        }
+        List<Measurement> data = (List<Measurement>) dataList;
+
+        for (int i = 0; i < data.size(); i++) {
+            String date = DateUtils.formatDate(
+                    data.get(i).getRegistrationDate(),
+                    params.formatDate);
+
+            entriesBar.add(new BarEntry((float) i, (float) data.get(i).getValue()));
+
+            quarters[i] = date;
+        }
+
+
+        IAxisValueFormatter formatter = ((value, axis) -> {
+            if (value >= quarters.length || value < 0) return "";
+            return quarters[(int) value];
+
+        });
+
+        return formatter;
     }
 
     /**
@@ -161,19 +206,39 @@ public final class CreateChart<T> {
             return;
         }
 
-        mChart.getXAxis().setValueFormatter(prepareVariablesLineData());
-        ArrayList<ILineDataSet> dataSets = new ArrayList<>();
-        set = new LineDataSet(entries, params.legend[0]);
-        set.setValueFormatter(new ValueFormatter(params.context));
-        dataSets.add(set);
-        if (!entries2.isEmpty()) {
-            set2 = new LineDataSet(entries2, params.legend[1]);
-            dataSets.add(set2);
+
+        if (params.context instanceof SmartBandChartActivity) {
+
+            mChart.getXAxis().setValueFormatter(prepareVariablesBarData());
+
+            ArrayList<IBarDataSet> dataSetsBar = new ArrayList<>();
+            setBar = new BarDataSet(entriesBar, params.legend[0]);
+            setBar.setValueFormatter(new ValueFormatter(params.context));
+            dataSetsBar.add(setBar);
+
+            configureDesignChart();
+            dataBar = new BarData(dataSetsBar);
+            mChart.setData(dataBar);
+        } else {
+
+            mChart.getXAxis().setValueFormatter(prepareVariablesLineData());
+
+            ArrayList<ILineDataSet> dataSets = new ArrayList<>();
+            set = new LineDataSet(entries, params.legend[0]);
+            set.setValueFormatter(new ValueFormatter(params.context));
+            dataSets.add(set);
+            if (!entries2.isEmpty()) {
+                set2 = new LineDataSet(entries2, params.legend[1]);
+                dataSets.add(set2);
+            }
+
+            configureDesignChart();
+            data = new LineData(dataSets);
+            mChart.setData(data);
+
+            ((LineChart) mChart).moveViewToX(set.getXMax());
         }
-        configureDesignChart();
-        data = new LineData(dataSets);
-        mChart.setData(data);
-        ((LineChart) mChart).moveViewToX(set.getXMax());
+
 
     }
 
@@ -215,51 +280,32 @@ public final class CreateChart<T> {
         mChart.setDescription(description);
         mChart.getDescription().setEnabled(true);
 
-        //Set Proprietes
-        set.setColor(params.lineColor);
-        set.setValueTextColor(params.colorValuesText);
-        set.setFillColor(params.lineColor);
-        set.setDrawValues(params.drawValues);
-        set.setDrawCircles(params.drawCirclesBorderEnabled);
-        set.setDrawCircleHole(params.drawCirclesHoleEnabled);
-        set.setHighlightEnabled(params.highlightEnabled);
-        set.setHighLightColor(params.colorHighLight);
-        set.setCircleColor(params.colorCircleBorderValue);
-        set.setCircleColorHole(params.colorCircleHoleValue);
-        set.setValueTextColor(params.colorValuesText);
-        set.setCircleRadius(params.circleValueRadius);
-        set.setCircleHoleRadius(params.circleHoleValueRadius);
-        set.setLineWidth(params.lineWidth);
-        set.setHighlightLineWidth(params.highlightLineWidth);
-        set.setMode(params.typeLine);
-        set.setDrawFilled(params.filledLine);
-        set.setFillColor(params.lineFilledColor);
-        set.setColor(params.lineColor);
-
-        if (set2 != null) {
-            set2.setColor(params.lineColor);
-            set2.setValueTextColor(params.colorValuesText);
-            set2.setFillColor(params.lineColor);
-            set2.setDrawValues(params.drawValues);
-            set2.setDrawCircles(params.drawCirclesBorderEnabled);
-            set2.setDrawCircleHole(params.drawCirclesHoleEnabled);
-            set2.setHighlightEnabled(params.highlightEnabled);
-            set2.setHighLightColor(params.colorHighLight);
-            set2.setCircleColor(ContextCompat.getColor(context, R.color.colorOrange));
-            set2.setCircleColorHole(ContextCompat.getColor(context, R.color.colorPrimary));
-            set2.setValueTextColor(params.colorValuesText);
-            set2.setCircleRadius(params.circleValueRadius);
-            set2.setCircleHoleRadius(params.circleHoleValueRadius);
-            set2.setLineWidth(params.lineWidth);
-            set2.setHighlightLineWidth(params.highlightLineWidth);
-            set2.setMode(params.typeLine);
-            set2.setDrawFilled(params.filledLine);
-            set2.setFillColor(params.lineFilledColor);
-            set2.setColor(ContextCompat.getColor(context, R.color.colorOrange));
-        }
 
         //LineChart
         if (mChart instanceof LineChart) {
+
+            if (set2 != null) {
+                set2.setColor(params.lineColor);
+                set2.setValueTextColor(params.colorValuesText);
+                set2.setFillColor(params.lineColor);
+                set2.setDrawValues(params.drawValues);
+                set2.setDrawCircles(params.drawCirclesBorderEnabled);
+                set2.setDrawCircleHole(params.drawCirclesHoleEnabled);
+                set2.setHighlightEnabled(params.highlightEnabled);
+                set2.setHighLightColor(params.colorHighLight);
+                set2.setCircleColor(ContextCompat.getColor(context, R.color.colorOrange));
+                set2.setCircleColorHole(ContextCompat.getColor(context, R.color.colorPrimary));
+                set2.setValueTextColor(params.colorValuesText);
+                set2.setCircleRadius(params.circleValueRadius);
+                set2.setCircleHoleRadius(params.circleHoleValueRadius);
+                set2.setLineWidth(params.lineWidth);
+                set2.setHighlightLineWidth(params.highlightLineWidth);
+                set2.setMode(params.typeLine);
+                set2.setDrawFilled(params.filledLine);
+                set2.setFillColor(params.lineFilledColor);
+                set2.setColor(ContextCompat.getColor(context, R.color.colorOrange));
+            }
+
             LineChart mLineChart = (LineChart) mChart;
             mLineChart.setDrawGridBackground(false);
             mLineChart.getAxisLeft().setEnabled(params.yAxisEnabled);
@@ -283,29 +329,52 @@ public final class CreateChart<T> {
 
             mLineChart.getAxisRight().setAxisMinimum(4f);
             mLineChart.getAxisRight().setAxisMaximum(3f);
+
+
+            //Set Proprietes
+            set.setColor(params.lineColor);
+            set.setValueTextColor(params.colorValuesText);
+            set.setFillColor(params.lineColor);
+            set.setDrawValues(params.drawValues);
+            set.setDrawCircles(params.drawCirclesBorderEnabled);
+            set.setDrawCircleHole(params.drawCirclesHoleEnabled);
+            set.setHighlightEnabled(params.highlightEnabled);
+            set.setHighLightColor(params.colorHighLight);
+            set.setCircleColor(params.colorCircleBorderValue);
+            set.setCircleColorHole(params.colorCircleHoleValue);
+            set.setValueTextColor(params.colorValuesText);
+            set.setCircleRadius(params.circleValueRadius);
+            set.setCircleHoleRadius(params.circleHoleValueRadius);
+            set.setLineWidth(params.lineWidth);
+            set.setHighlightLineWidth(params.highlightLineWidth);
+            set.setMode(params.typeLine);
+            set.setDrawFilled(params.filledLine);
+            set.setFillColor(params.lineFilledColor);
+            set.setColor(params.lineColor);
+
+            //Limit
+            YAxis leftAxis = ((LineChart) mChart).getAxisLeft();
+            leftAxis.removeAllLimitLines();
+            for (Limit limit : params.limits) {
+                LimitLine ll1 = new LimitLine(limit.getValue(), limit.getName());
+                ll1.setLineWidth(1.4f);
+                ll1.enableDashedLine(3f, 10f, 1f);
+                ll1.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_TOP);
+                ll1.setTextSize(10f);
+                ll1.setTextColor(Color.WHITE);
+                ll1.setLineColor(limit.getColor());
+
+                leftAxis.addLimitLine(ll1);
+            }
+
+            //RangeY
+            // TODO Implementar. Não funciona.
+            if (params.YMin > -1 && params.YMax > params.YMin) {
+                leftAxis.setAxisMinValue(params.YMin);
+                leftAxis.setAxisMaxValue(params.YMax);
+            }
         }
 
-        //Limit
-        YAxis leftAxis = ((LineChart) mChart).getAxisLeft();
-        leftAxis.removeAllLimitLines();
-        for (Limit limit : params.limits) {
-            LimitLine ll1 = new LimitLine(limit.getValue(), limit.getName());
-            ll1.setLineWidth(1.4f);
-            ll1.enableDashedLine(3f, 10f, 1f);
-            ll1.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_TOP);
-            ll1.setTextSize(10f);
-            ll1.setTextColor(Color.WHITE);
-            ll1.setLineColor(limit.getColor());
-
-            leftAxis.addLimitLine(ll1);
-        }
-
-        //RangeY
-        // TODO Implementar. Não funciona.
-        if (params.YMin > -1 && params.YMax > params.YMin) {
-            leftAxis.setAxisMinValue(params.YMin);
-            leftAxis.setAxisMaxValue(params.YMax);
-        }
 
         //General
         mChart.setNoDataTextColor(Color.WHITE);

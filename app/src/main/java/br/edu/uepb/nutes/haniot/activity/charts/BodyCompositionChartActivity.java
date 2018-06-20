@@ -34,7 +34,7 @@ public class BodyCompositionChartActivity extends BaseChartActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_chart);
+        setContentView(R.layout.activity_line_chart);
         ButterKnife.bind(this);
 
         setSupportActionBar(mToolbar);
