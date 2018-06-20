@@ -115,8 +115,9 @@ public final class CreateChart<T> {
     }
 
 
-    public void paintBar(List<T> data) {
+    public void paintBar(List<T> data, String dateFormat) {
         this.dataList = data;
+        params.formatDate(dateFormat);
         configureDataChart();
         mChart.notifyDataSetChanged();
     }
@@ -258,7 +259,7 @@ public final class CreateChart<T> {
         mChart.getXAxis().setEnabled(params.xAxisEnabled);
         mChart.getXAxis().setDrawGridLines(params.drawGridLinesX);
         mChart.getXAxis().setDrawAxisLine(params.drawLineX);
-
+        mChart.getXAxis().setGranularity(1f);
         //Legend
         mChart.getLegend().setTextColor(params.colorValuesText);
         mChart.getLegend().setEnabled(false);

@@ -61,6 +61,7 @@ public class SmartBandChartActivity extends BaseChartActivity {
                 .xAxisStyle(Color.WHITE, XAxis.XAxisPosition.BOTTOM)
                 .yAxisStyle(Color.WHITE)
                 .setTextValuesColor(Color.WHITE)
+                .formatDate(getString(R.string.date_format_month_day))
                 .drawCircleStyle(ContextCompat.getColor(context, R.color.colorIndigo), ContextCompat.getColor(context, R.color.colorPrimary))
                 .lineStyle(2.5f, ContextCompat.getColor(context, R.color.colorIndigo))
                 .highlightStyle(Color.TRANSPARENT, 0.7f)
@@ -84,95 +85,33 @@ public class SmartBandChartActivity extends BaseChartActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
-    public void onUpdateData2(List<Measurement> data, int currentChartType) {
-
-        List<Measurement> points = new ArrayList<>();
-        Calendar c = Calendar.getInstance();
-
-        switch (currentChartType){
-            case CHART_TYPE_DAY:
-                points.add(data.get(data.size()-1));
-                break;
-            case CHART_TYPE_SEVEN:
-                points.add(data.get(data.size()-1));
-//                for (Measurement measurement : data){
-//                    if (DateUtils.formatDate(points.get(points.size()-1).getRegistrationDate(), getString(R.string.date_format)) != DateUtils.formatDate(measurement.getRegistrationDate(), getString(R.string.date_format)))
-//                        points.add(measurement);
-//                }
-                for (int i = data.size()-1; i >= 0; i--) {
-                    c.setTimeInMillis(data.get(i).getRegistrationDate());
-                    int current = c.get(Calendar.DAY_OF_MONTH);
-
-                    c.setTimeInMillis(points.get(points.size()-1).getRegistrationDate());
-                    int compare = c.get(Calendar.DAY_OF_MONTH);
-
-                    if (current != compare) points.add(data.get(i));
-                }
-                break;
-            case CHART_TYPE_MONTH:
-                points.add(data.get(data.size()-1));
-//                for (Measurement measurement : data){
-//                    if (DateUtils.getDayWeek(this, points.get(points.size()-1).getRegistrationDate()) != DateUtils.getDayWeek(this, measurement.getRegistrationDate()))
-//                        points.add(measurement);
-//                }
-                for (int i = data.size()-1; i >= 0; i--) {
-                    c.setTimeInMillis(data.get(i).getRegistrationDate());
-                    int current = c.get(Calendar.MONTH);
-                    c.setTimeInMillis(points.get(points.size()-1).getRegistrationDate());
-                    int compare = c.get(Calendar.MONTH);
-
-                    if (current == compare)
-
-                        points.add(data.get(i));
-                }
-                break;
-            case CHART_TYPE_YEAR:
-                points.add(data.get(data.size()-1));
-                for (int i = data.size()-1; i >= 0; i--) {
-
-                    c.setTimeInMillis(data.get(i).getRegistrationDate());
-                    int current = c.get(Calendar.MONTH);
-                    c.setTimeInMillis(points.get(points.size()-1).getRegistrationDate());
-                    int compare = c.get(Calendar.MONTH);
-
-                    if (current != compare) points.add(data.get(i));
-                }
-                break;
-        }
-
-
-        mChart.paintBar(points);
-        for (Measurement measurement : data) Log.d("A", DateUtils.formatDate(measurement.getRegistrationDate(), getString(R.string.date_format)));
-        for (Measurement measurement : points) Log.d("B", DateUtils.formatDate(measurement.getRegistrationDate(), getString(R.string.date_format)));
-
-
-
-    }
-
-
     @Override
     public void onUpdateData(List<Measurement> data, int currentChartType) {
 
         List<Measurement> points = agroupDay(data, Calendar.DATE);
         Calendar c = Calendar.getInstance();
+        String dateFormat = "";
 
         switch (currentChartType){
             case CHART_TYPE_DAY:
+                dateFormat = getString(R.string.date_format);
                 break;
             case CHART_TYPE_SEVEN:
                 points = agroup(points, Calendar.WEEK_OF_YEAR);
+                dateFormat = getString(R.string.date_format);
                 break;
             case CHART_TYPE_MONTH:
                 points = agroup(points, Calendar.MONTH);
+                dateFormat = getString(R.string.month);
                 break;
             case CHART_TYPE_YEAR:
                 points = agroup(points, Calendar.YEAR);
+                dateFormat = getString(R.string.year);
                 break;
         }
 
 
-        mChart.paintBar(points);
+        mChart.paintBar(points, dateFormat);
         for (Measurement measurement : data) Log.d("A", DateUtils.formatDate(measurement.getRegistrationDate(), getString(R.string.date_format))+" - " + measurement.getValue());
         for (Measurement measurement : points) Log.d("B", DateUtils.formatDate(measurement.getRegistrationDate(), getString(R.string.date_format))+" - " + measurement.getValue());
 
