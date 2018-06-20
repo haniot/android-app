@@ -81,7 +81,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:background="@drawable/button_background_dark"
+            android:background="@drawable/button_background_white"
             android:paddingLeft="70dp"
             android:paddingRight="70dp"
             android:text="@string/bt_ok"

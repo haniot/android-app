@@ -10,8 +10,11 @@ import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.elderly.ElderlyRegisterActivity;
+import br.edu.uepb.nutes.haniot.elderly.assessment.pages.PageRadio;
+
 import com.github.paolorotolo.appintro.AppIntro;
 
 /**
@@ -21,7 +24,7 @@ import com.github.paolorotolo.appintro.AppIntro;
  * @version 1.0
  * @copyright Copyright (c) 2017, NUTES UEPB
  */
-public class FallRiskAssessmentActivity extends AppIntro implements PageRadioFragment.OnAnswerRadioListener {
+public class FallRiskAssessmentActivity extends AppIntro implements PageRadio.OnAnswerRadioListener {
     private final String TAG = "FallRiskAssActivity";
 
     public static final String EXTRA_QUESTIONS = "extra_questions";
@@ -42,7 +45,7 @@ public class FallRiskAssessmentActivity extends AppIntro implements PageRadioFra
 
     private String[] questions;
     private boolean[] answers;
-    private PageRadioFragment currentPage;
+    private PageRadio currentPage;
     private Snackbar snackbarMessageBlockedPage;
     private String elderlyId;
 
@@ -83,77 +86,101 @@ public class FallRiskAssessmentActivity extends AppIntro implements PageRadioFra
         setNextPageSwipeLock(true);
         setImmersive(true);
 
-        addSlide(PageRadioFragment.newInstance(
-                getString(R.string.risk_fall_title_group1),
-                getString(R.string.risk_fall_description_q1),
-                R.drawable.fall_elderly,
-                ContextCompat.getColor(this, R.color.colorPink),
-                PAGE_1));
+        // page 1
+        addSlide(new PageRadio.ConfigPage()
+                .title(R.string.risk_fall_title_group1)
+                .description(R.string.risk_fall_description_q1)
+                .drawable(R.drawable.fall_elderly)
+                .backgroundColor(ContextCompat.getColor(this, R.color.colorPink))
+                .pageNumber(PAGE_2)
+                .build());
 
-        addSlide(PageRadioFragment.newInstance(
-                getString(R.string.risk_fall_title_group2),
-                getString(R.string.risk_fall_description_q2),
-                R.drawable.walker_elderly,
-                ContextCompat.getColor(this, R.color.colorPurple),
-                PAGE_2));
+        // page 2
+        addSlide(new PageRadio.ConfigPage()
+                .title(R.string.risk_fall_title_group2)
+                .description(R.string.risk_fall_description_q2)
+                .drawable(R.drawable.walker_elderly)
+                .backgroundColor(ContextCompat.getColor(this, R.color.colorPurple))
+                .pageNumber(PAGE_2)
+                .build());
 
-        addSlide(PageRadioFragment.newInstance(
-                getString(R.string.risk_fall_title_group3),
-                getString(R.string.risk_fall_description_q3),
-                R.drawable.medications_elderly,
-                ContextCompat.getColor(this, R.color.colorLightBlue),
-                PAGE_3));
+        // page 3
+        addSlide(new PageRadio.ConfigPage()
+                .title(R.string.risk_fall_title_group3)
+                .description(R.string.risk_fall_description_q3)
+                .drawable(R.drawable.medications_elderly)
+                .backgroundColor(ContextCompat.getColor(this, R.color.colorLightBlue))
+                .pageNumber(PAGE_3)
+                .build());
 
-        addSlide(PageRadioFragment.newInstance(
-                getString(R.string.risk_fall_title_group3),
-                getString(R.string.risk_fall_description_q4),
-                R.drawable.medications_2_elderly,
-                ContextCompat.getColor(this, R.color.colorLightBlue),
-                PAGE_4));
+        // page 4
+        addSlide(new PageRadio.ConfigPage()
+                .title(R.string.risk_fall_title_group3)
+                .description(R.string.risk_fall_description_q4)
+                .drawable(R.drawable.medications_2_elderly)
+                .backgroundColor(ContextCompat.getColor(this, R.color.colorLightBlue))
+                .pageNumber(PAGE_4)
+                .build());
 
-        addSlide(PageRadioFragment.newInstance(
-                getString(R.string.risk_fall_title_group4),
-                getString(R.string.risk_fall_description_q5),
-                R.drawable.coast_pain_elderly,
-                ContextCompat.getColor(this, R.color.colorLightGreen),
-                PAGE_5));
+        // page 5
+        addSlide(new PageRadio.ConfigPage()
+                .title(R.string.risk_fall_title_group4)
+                .description(R.string.risk_fall_description_q5)
+                .drawable(R.drawable.coast_pain_elderly)
+                .backgroundColor(ContextCompat.getColor(this, R.color.colorLightGreen))
+                .pageNumber(PAGE_5)
+                .build());
 
-        addSlide(PageRadioFragment.newInstance(
-                getString(R.string.risk_fall_title_group5),
-                getString(R.string.risk_fall_description_q6),
-                R.drawable.daily_activity_elderly,
-                ContextCompat.getColor(this, R.color.colorOrange),
-                PAGE_6));
+        // page 6
+        addSlide(new PageRadio.ConfigPage()
+                .title(R.string.risk_fall_title_group5)
+                .description(R.string.risk_fall_description_q6)
+                .drawable(R.drawable.daily_activity_elderly)
+                .backgroundColor(ContextCompat.getColor(this, R.color.colorOrange))
+                .pageNumber(PAGE_6)
+                .build());
 
-        addSlide(PageRadioFragment.newInstance(
-                getString(R.string.risk_fall_title_group6),
-                getString(R.string.risk_fall_description_q7),
-                R.drawable.difficulty_seeing_elderly,
-                ContextCompat.getColor(this, R.color.colorBlueGrey),
-                PAGE_7));
+        // page 7
+        addSlide(new PageRadio.ConfigPage()
+                .title(R.string.risk_fall_title_group6)
+                .description(R.string.risk_fall_description_q7)
+                .drawable(R.drawable.difficulty_seeing_elderly)
+                .backgroundColor(ContextCompat.getColor(this, R.color.colorBlueGrey))
+                .pageNumber(PAGE_7)
+                .build());
 
-        addSlide(PageRadioFragment.newInstance(
-                getString(R.string.risk_fall_title_group6),
-                getString(R.string.risk_fall_description_q8),
-                R.drawable.hearing_elderly,
-                ContextCompat.getColor(this, R.color.colorBlueGrey),
-                PAGE_8));
+        // page 8
+        addSlide(new PageRadio.ConfigPage()
+                .title(R.string.risk_fall_title_group6)
+                .description(R.string.risk_fall_description_q8)
+                .drawable(R.drawable.hearing_elderly)
+                .backgroundColor(ContextCompat.getColor(this, R.color.colorBlueGrey))
+                .pageNumber(PAGE_8)
+                .build());
 
-        addSlide(PageRadioFragment.newInstance(
-                getString(R.string.risk_fall_title_group7),
-                getString(R.string.risk_fall_description_q9),
-                R.drawable.physical_activity_elderly,
-                ContextCompat.getColor(this, R.color.colorIndigo),
-                PAGE_9));
+        // page 9
+        addSlide(new PageRadio.ConfigPage()
+                .title(R.string.risk_fall_title_group7)
+                .description(R.string.risk_fall_description_q9)
+                .drawable(R.drawable.physical_activity_elderly)
+                .backgroundColor(ContextCompat.getColor(this, R.color.colorIndigo))
+                .pageNumber(PAGE_9)
+                .build());
 
-        addSlide(PageRadioFragment.newInstance(
-                getString(R.string.risk_fall_title_group8),
-                getString(R.string.risk_fall_description_q10),
-                R.drawable.abajur,
-                ContextCompat.getColor(this, R.color.colorCyan),
-                PAGE_10));
+        // page 10
+        addSlide(new PageRadio.ConfigPage()
+                .title(R.string.risk_fall_title_group8)
+                .description(R.string.risk_fall_description_q10)
+                .drawable(R.drawable.abajur)
+                .backgroundColor(ContextCompat.getColor(this, R.color.colorCyan))
+                .pageNumber(PAGE_10)
+                .build());
 
-        addSlide(PageRadioFragment.newInstance(R.layout.fragment_elderly_fall_risk_end, PAGE_END));
+        // page end
+        addSlide(new PageRadio.ConfigPage()
+                .layout(R.layout.fragment_elderly_fall_risk_end)
+                .pageNumber(PAGE_END)
+                .build());
     }
 
     @Override
@@ -178,18 +205,17 @@ public class FallRiskAssessmentActivity extends AppIntro implements PageRadioFra
         if (snackbarMessageBlockedPage != null)
             snackbarMessageBlockedPage.dismiss();
 
-        if (newFragment instanceof PageRadioFragment) {
-            currentPage = (PageRadioFragment) newFragment;
+        if (newFragment instanceof PageRadio) {
+            currentPage = (PageRadio) newFragment;
 
             if (currentPage.getPageNumber() == PAGE_END) return;
 
             if (currentPage.isBlocked()) setNextPageSwipeLock(true);
             else setNextPageSwipeLock(false);
 
-            if (currentPage.getOldCheckedRadio() == 0)
-                currentPage.getRadioGroup().check(R.id.no_radioButton);
-            else if (currentPage.getOldCheckedRadio() == 1)
-                currentPage.getRadioGroup().check(R.id.yes_radioButton);
+            // Selects the last response of the current page
+            if(currentPage.getOldCheckedRadio() != -1)
+                currentPage.setAnswer(currentPage.getOldCheckedRadio() != 0);
 
             // Capture event onSwipeLeft
             currentPage.getView().setOnTouchListener(new OnSwipeTouchListener(this) {
@@ -203,7 +229,7 @@ public class FallRiskAssessmentActivity extends AppIntro implements PageRadioFra
     }
 
     @Override
-    public void onAnswer(View view, boolean value, int page) {
+    public void onAnswerRadio(View view, boolean value, int page) {
         if (page < PAGE_END) {
             answers[page] = value;
             return;
@@ -221,7 +247,6 @@ public class FallRiskAssessmentActivity extends AppIntro implements PageRadioFra
         intent.putExtra(EXTRA_ANSWERS, answers);
         intent.putExtra(EXTRA_QUESTIONS, questions);
         intent.putExtra(EXTRA_ELDERLY_ID, elderlyId);
-        Log.d("TEST", "ij " + elderlyId);
         startActivity(intent);
 
         finish();

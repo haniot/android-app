@@ -120,24 +120,24 @@
             android:orientation="horizontal">
 
             <RadioButton
-                android:id="@+id/no_radioButton"
+                android:id="@+id/left_radioButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/button_assessment_background_left"
+                android:background="@drawable/button_background_white_left"
                 android:button="@android:color/transparent"
                 android:checked="false"
                 android:text="@string/cancel_text"
-                android:textColor="@drawable/button_assessment_text" />
+                android:textColor="@drawable/button_white_text" />
 
             <RadioButton
-                android:id="@+id/yes_radioButton"
+                android:id="@+id/right_radioButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/button_assessment_background_right"
+                android:background="@drawable/button_background_white_right"
                 android:button="@android:color/transparent"
                 android:checked="false"
                 android:text="@string/yes_text"
-                android:textColor="@drawable/button_assessment_text" />
+                android:textColor="@drawable/button_white_text" />
         </RadioGroup>
     </LinearLayout>
 </LinearLayout>

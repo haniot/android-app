@@ -174,22 +174,22 @@
                                 android:id="@+id/gender_male_radioButton"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:background="@drawable/button_background_left"
+                                android:background="@drawable/button_background_light_blue_left"
                                 android:button="@android:color/transparent"
                                 android:checked="true"
                                 android:text="@string/gender_male"
-                                android:textColor="@drawable/button_text"
+                                android:textColor="@drawable/button_black_text"
                                 android:textSize="12sp" />
 
                             <RadioButton
                                 android:id="@+id/gender_female_radioButton"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:background="@drawable/button_background_right"
+                                android:background="@drawable/button_background_light_blue_right"
                                 android:button="@android:color/transparent"
                                 android:checked="false"
                                 android:text="@string/gender_female"
-                                android:textColor="@drawable/button_text"
+                                android:textColor="@drawable/button_black_text"
                                 android:textSize="12sp" />
                         </RadioGroup>
                     </LinearLayout>
@@ -316,22 +316,22 @@
                             android:id="@+id/live_alone_yes_radioButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/button_background_left"
+                            android:background="@drawable/button_background_light_blue_left"
                             android:button="@android:color/transparent"
                             android:checked="true"
                             android:text="@string/yes_text"
-                            android:textColor="@drawable/button_text"
+                            android:textColor="@drawable/button_black_text"
                             android:textSize="12sp" />
 
                         <RadioButton
                             android:id="@+id/live_alone_no_radioButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/button_background_right"
+                            android:background="@drawable/button_background_light_blue_right"
                             android:button="@android:color/transparent"
                             android:checked="false"
                             android:text="@string/no_text"
-                            android:textColor="@drawable/button_text"
+                            android:textColor="@drawable/button_black_text"
                             android:textSize="12sp" />
                     </RadioGroup>
                 </LinearLayout>

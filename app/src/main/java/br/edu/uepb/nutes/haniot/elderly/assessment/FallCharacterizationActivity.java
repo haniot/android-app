@@ -1,19 +1,20 @@
 package br.edu.uepb.nutes.haniot.elderly.assessment;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+
+import com.github.paolorotolo.appintro.AppIntro;
+
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.elderly.ElderlyRegisterActivity;
-import com.github.paolorotolo.appintro.AppIntro;
+import br.edu.uepb.nutes.haniot.elderly.assessment.pages.PageRadio;
 
 /**
  * FallCharacterizationActivity implementation.
@@ -22,7 +23,7 @@ import com.github.paolorotolo.appintro.AppIntro;
  * @version 1.0
  * @copyright Copyright (c) 2017, NUTES UEPB
  */
-public class FallCharacterizationActivity extends AppIntro implements OnAnswerListener {
+public class FallCharacterizationActivity extends AppIntro implements PageRadio.OnAnswerRadioListener {
     private final String TAG = "FallRiskAssActivity";
 
     public static final String EXTRA_QUESTIONS = "extra_questions";
@@ -43,7 +44,7 @@ public class FallCharacterizationActivity extends AppIntro implements OnAnswerLi
 
     private String[] questions;
     private boolean[] answers;
-    private PageRadioFragment currentPage;
+    private PageRadio currentPage;
     private Snackbar snackbarMessageBlockedPage;
     private String elderlyId;
 
@@ -85,21 +86,21 @@ public class FallCharacterizationActivity extends AppIntro implements OnAnswerLi
         setNextPageSwipeLock(true);
         setImmersive(true);
 
-        addSlide(PageRadioFragment.newInstance(
-                R.layout.fragment_radio_question_simple,
-                "O idoso precisou de assitência médica?",
-                R.drawable.fall_elderly,
-                Color.WHITE,
-                PAGE_1));
-
-        addSlide(PageRadioFragment.newInstance(
-                R.layout.fragment_radio_question_simple,
-                "O idoso ficou internado?",
-                R.drawable.fall_elderly,
-                Color.WHITE,
-                PAGE_1));
-
-        addSlide(PageRadioFragment.newInstance(R.layout.fragment_elderly_fall_risk_end, PAGE_END));
+//        addSlide(PageRadio.newInstance(
+//                R.layout.fragment_radio_question_simple,
+//                "O idoso precisou de assitência médica?",
+//                R.drawable.fall_elderly,
+//                Color.WHITE,
+//                PAGE_1));
+//
+//        addSlide(PageRadio.newInstance(
+//                R.layout.fragment_radio_question_simple,
+//                "O idoso ficou internado?",
+//                R.drawable.fall_elderly,
+//                Color.WHITE,
+//                PAGE_1));
+//
+//        addSlide(PageRadio.newInstance(R.layout.fragment_elderly_fall_risk_end, PAGE_END));
     }
 
     @Override
@@ -124,18 +125,18 @@ public class FallCharacterizationActivity extends AppIntro implements OnAnswerLi
         if (snackbarMessageBlockedPage != null)
             snackbarMessageBlockedPage.dismiss();
 
-        if (newFragment instanceof PageRadioFragment) {
-            currentPage = (PageRadioFragment) newFragment;
+        if (newFragment instanceof PageRadio) {
+            currentPage = (PageRadio) newFragment;
 
             if (currentPage.getPageNumber() == PAGE_END) return;
 
             if (currentPage.isBlocked()) setNextPageSwipeLock(true);
             else setNextPageSwipeLock(false);
 
-            if (currentPage.getOldCheckedRadio() == 0)
-                currentPage.selectAnswerFalse();
-            else if (currentPage.getOldCheckedRadio() == 1)
-                currentPage.selectAnswerTrue();
+//            if (currentPage.getOldCheckedRadio() == 0)
+//                currentPage.selectAnswerFalse();
+//            else if (currentPage.getOldCheckedRadio() == 1)
+//                currentPage.selectAnswerTrue();
 
             // Capture event onSwipeLeft
             currentPage.getView().setOnTouchListener(new OnSwipeTouchListener(this) {
@@ -146,17 +147,6 @@ public class FallCharacterizationActivity extends AppIntro implements OnAnswerLi
                 }
             });
         }
-    }
-
-    @Override
-    public void onAnswer(View view, boolean value, int page) {
-        if (page < PAGE_END) {
-            answers[page] = value;
-            return;
-        }
-
-        if (value) processAssessment();// End result
-        else showMessageCancel();// Cancel result
     }
 
     /**
@@ -213,6 +203,11 @@ public class FallCharacterizationActivity extends AppIntro implements OnAnswerLi
             });
             snackbarMessageBlockedPage.show();
         });
+    }
+
+    @Override
+    public void onAnswerRadio(View view, boolean value, int page) {
+
     }
 }
 
