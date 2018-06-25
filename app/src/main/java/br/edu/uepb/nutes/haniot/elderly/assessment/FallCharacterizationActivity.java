@@ -1,29 +1,35 @@
 package br.edu.uepb.nutes.haniot.elderly.assessment;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
-import android.view.View;
 import android.view.WindowManager;
 
 import com.github.paolorotolo.appintro.AppIntro;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.elderly.ElderlyRegisterActivity;
+import br.edu.uepb.nutes.haniot.elderly.assessment.pages.OnSwipeTouchListener;
 import br.edu.uepb.nutes.haniot.elderly.assessment.pages.PageRadio;
+import br.edu.uepb.nutes.haniot.elderly.assessment.pages.PageSpinner;
 
 /**
  * FallCharacterizationActivity implementation.
  *
  * @author Douglas Rafael <douglas.rafael@nutes.uepb.edu.br>
  * @version 1.0
- * @copyright Copyright (c) 2017, NUTES UEPB
+ * @copyright Copyright (c) 2018, NUTES UEPB
  */
-public class FallCharacterizationActivity extends AppIntro implements PageRadio.OnAnswerRadioListener {
+public class FallCharacterizationActivity extends AppIntro implements PageRadio.OnAnswerRadioListener, PageSpinner.OnAnswerSpinnerListener {
     private final String TAG = "FallRiskAssActivity";
 
     public static final String EXTRA_QUESTIONS = "extra_questions";
@@ -86,21 +92,41 @@ public class FallCharacterizationActivity extends AppIntro implements PageRadio.
         setNextPageSwipeLock(true);
         setImmersive(true);
 
-//        addSlide(PageRadio.newInstance(
-//                R.layout.fragment_radio_question_simple,
-//                "O idoso precisou de assitência médica?",
-//                R.drawable.fall_elderly,
-//                Color.WHITE,
-//                PAGE_1));
-//
-//        addSlide(PageRadio.newInstance(
-//                R.layout.fragment_radio_question_simple,
-//                "O idoso ficou internado?",
-//                R.drawable.fall_elderly,
-//                Color.WHITE,
-//                PAGE_1));
-//
-//        addSlide(PageRadio.newInstance(R.layout.fragment_elderly_fall_risk_end, PAGE_END));
+        // page 1
+        addSlide(new PageRadio.ConfigPage()
+                .layout(R.layout.question_radio_simple)
+                .description(R.string.risk_fall_description_q1)
+                .pageNumber(PAGE_1)
+                .build());
+
+        // page 1
+        addSlide(new PageRadio.ConfigPage()
+                .layout(R.layout.question_radio_simple)
+                .drawableButtonClose(R.drawable.ic_action_close)
+                .description(R.string.risk_fall_description_q2, Color.WHITE)
+                .backgroundColor(ContextCompat.getColor(this, R.color.colorPurple))
+                .leftRadioText(R.string.action_bond)
+                .radioStyle(R.drawable.button_background_white_left,
+                        R.drawable.button_background_white_right,
+                        Color.WHITE, Color.BLACK)
+                .pageNumber(PAGE_2)
+                .build());
+
+        addSlide(new PageSpinner.ConfigPage()
+                .layout(R.layout.question_spinner_simple)
+                .description(R.string.risk_fall_description_q3)
+                .addItems(new ArrayList(Arrays.asList(new String[]{"Estacada", "Banheiro", "Cozinha", "Sala de Estar", "Varanda"})))
+                .pageNumber(PAGE_3)
+                .build());
+
+        addSlide(new PageSpinner.ConfigPage()
+                .title(R.string.title_save_captured_data)
+                .description(R.string.risk_fall_description_q2)
+                .backgroundColor(ContextCompat.getColor(this, R.color.colorBlackGrey))
+                .addItems(new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.elderly_accessories_array))))
+                .pageNumber(PAGE_4)
+                .build());
+
     }
 
     @Override
@@ -206,7 +232,16 @@ public class FallCharacterizationActivity extends AppIntro implements PageRadio.
     }
 
     @Override
-    public void onAnswerRadio(View view, boolean value, int page) {
+    public void onAnswerRadio(int page, boolean value) {
+    }
+
+    @Override
+    public void onPageClose() {
+        Log.d(TAG, "onPageClose");
+    }
+
+    @Override
+    public void onAnswerSpinner(int page, boolean value) {
 
     }
 }

@@ -86,7 +86,7 @@ public class ElderlyRegisterActivity extends AppCompatActivity implements
 
     @Override
     public void onNextPageSelected() {
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_action_close_light);
         openFragment(ElderlyFormFragment.newInstance());
     }
 

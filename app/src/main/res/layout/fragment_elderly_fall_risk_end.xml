@@ -112,7 +112,7 @@
         android:orientation="vertical">
 
         <RadioGroup
-            android:id="@+id/question_radioGroup"
+            android:id="@+id/answer_radioGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

@@ -7,22 +7,21 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
-import android.view.View;
 import android.view.WindowManager;
+
+import com.github.paolorotolo.appintro.AppIntro;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.elderly.ElderlyRegisterActivity;
+import br.edu.uepb.nutes.haniot.elderly.assessment.pages.OnSwipeTouchListener;
 import br.edu.uepb.nutes.haniot.elderly.assessment.pages.PageRadio;
-
-import com.github.paolorotolo.appintro.AppIntro;
 
 /**
  * FallRiskAssessmentActivity implementation.
  *
  * @author Douglas Rafael <douglas.rafael@nutes.uepb.edu.br>
  * @version 1.0
- * @copyright Copyright (c) 2017, NUTES UEPB
+ * @copyright Copyright (c) 2018, NUTES UEPB
  */
 public class FallRiskAssessmentActivity extends AppIntro implements PageRadio.OnAnswerRadioListener {
     private final String TAG = "FallRiskAssActivity";
@@ -79,108 +78,118 @@ public class FallRiskAssessmentActivity extends AppIntro implements PageRadio.On
         /**
          * Config pages.
          */
-        setColorTransitionsEnabled(true);
-        setFadeAnimation();
-        showSeparator(true);
-        showSkipButton(false);
-        setNextPageSwipeLock(true);
-        setImmersive(true);
-
-        // page 1
-        addSlide(new PageRadio.ConfigPage()
-                .title(R.string.risk_fall_title_group1)
-                .description(R.string.risk_fall_description_q1)
-                .drawable(R.drawable.fall_elderly)
-                .backgroundColor(ContextCompat.getColor(this, R.color.colorPink))
-                .pageNumber(PAGE_2)
-                .build());
-
-        // page 2
-        addSlide(new PageRadio.ConfigPage()
-                .title(R.string.risk_fall_title_group2)
-                .description(R.string.risk_fall_description_q2)
-                .drawable(R.drawable.walker_elderly)
-                .backgroundColor(ContextCompat.getColor(this, R.color.colorPurple))
-                .pageNumber(PAGE_2)
-                .build());
-
-        // page 3
-        addSlide(new PageRadio.ConfigPage()
-                .title(R.string.risk_fall_title_group3)
-                .description(R.string.risk_fall_description_q3)
-                .drawable(R.drawable.medications_elderly)
-                .backgroundColor(ContextCompat.getColor(this, R.color.colorLightBlue))
-                .pageNumber(PAGE_3)
-                .build());
-
-        // page 4
-        addSlide(new PageRadio.ConfigPage()
-                .title(R.string.risk_fall_title_group3)
-                .description(R.string.risk_fall_description_q4)
-                .drawable(R.drawable.medications_2_elderly)
-                .backgroundColor(ContextCompat.getColor(this, R.color.colorLightBlue))
-                .pageNumber(PAGE_4)
-                .build());
-
-        // page 5
-        addSlide(new PageRadio.ConfigPage()
-                .title(R.string.risk_fall_title_group4)
-                .description(R.string.risk_fall_description_q5)
-                .drawable(R.drawable.coast_pain_elderly)
-                .backgroundColor(ContextCompat.getColor(this, R.color.colorLightGreen))
-                .pageNumber(PAGE_5)
-                .build());
-
-        // page 6
-        addSlide(new PageRadio.ConfigPage()
-                .title(R.string.risk_fall_title_group5)
-                .description(R.string.risk_fall_description_q6)
-                .drawable(R.drawable.daily_activity_elderly)
-                .backgroundColor(ContextCompat.getColor(this, R.color.colorOrange))
-                .pageNumber(PAGE_6)
-                .build());
-
-        // page 7
-        addSlide(new PageRadio.ConfigPage()
-                .title(R.string.risk_fall_title_group6)
-                .description(R.string.risk_fall_description_q7)
-                .drawable(R.drawable.difficulty_seeing_elderly)
-                .backgroundColor(ContextCompat.getColor(this, R.color.colorBlueGrey))
-                .pageNumber(PAGE_7)
-                .build());
-
-        // page 8
-        addSlide(new PageRadio.ConfigPage()
-                .title(R.string.risk_fall_title_group6)
-                .description(R.string.risk_fall_description_q8)
-                .drawable(R.drawable.hearing_elderly)
-                .backgroundColor(ContextCompat.getColor(this, R.color.colorBlueGrey))
-                .pageNumber(PAGE_8)
-                .build());
-
-        // page 9
-        addSlide(new PageRadio.ConfigPage()
-                .title(R.string.risk_fall_title_group7)
-                .description(R.string.risk_fall_description_q9)
-                .drawable(R.drawable.physical_activity_elderly)
-                .backgroundColor(ContextCompat.getColor(this, R.color.colorIndigo))
-                .pageNumber(PAGE_9)
-                .build());
-
-        // page 10
-        addSlide(new PageRadio.ConfigPage()
-                .title(R.string.risk_fall_title_group8)
-                .description(R.string.risk_fall_description_q10)
-                .drawable(R.drawable.abajur)
-                .backgroundColor(ContextCompat.getColor(this, R.color.colorCyan))
-                .pageNumber(PAGE_10)
-                .build());
-
-        // page end
-        addSlide(new PageRadio.ConfigPage()
-                .layout(R.layout.fragment_elderly_fall_risk_end)
-                .pageNumber(PAGE_END)
-                .build());
+//        setColorTransitionsEnabled(true);
+//        setFadeAnimation();
+//        showSeparator(true);
+//        showSkipButton(false);
+//        setNextPageSwipeLock(true);
+//        setImmersive(true);
+//
+//        // page 1
+//        addSlide(new PageRadio.ConfigPage()
+//                .title(R.string.risk_fall_title_group1)
+//                .description(R.string.risk_fall_description_q1)
+//                .drawable(R.drawable.fall_elderly)
+//                .backgroundColor(ContextCompat.getColor(this, R.color.colorPink))
+//                .drawableButtonClose(R.drawable.ic_action_close)
+//                .pageNumber(PAGE_2)
+//                .build());
+//
+//        // page 2
+//        addSlide(new PageRadio.ConfigPage()
+//                .title(R.string.risk_fall_title_group2)
+//                .description(R.string.risk_fall_description_q2)
+//                .drawable(R.drawable.walker_elderly)
+//                .backgroundColor(ContextCompat.getColor(this, R.color.colorPurple))
+//                .drawableButtonClose(R.drawable.ic_action_close)
+//                .pageNumber(PAGE_2)
+//                .build());
+//
+//        // page 3
+//        addSlide(new PageRadio.ConfigPage()
+//                .title(R.string.risk_fall_title_group3)
+//                .description(R.string.risk_fall_description_q3)
+//                .drawable(R.drawable.medications_elderly)
+//                .backgroundColor(ContextCompat.getColor(this, R.color.colorLightBlue))
+//                .drawableButtonClose(R.drawable.ic_action_close)
+//                .pageNumber(PAGE_3)
+//                .build());
+//
+//        // page 4
+//        addSlide(new PageRadio.ConfigPage()
+//                .title(R.string.risk_fall_title_group3)
+//                .description(R.string.risk_fall_description_q4)
+//                .drawable(R.drawable.medications_2_elderly)
+//                .backgroundColor(ContextCompat.getColor(this, R.color.colorLightBlue))
+//                .drawableButtonClose(R.drawable.ic_action_close)
+//                .pageNumber(PAGE_4)
+//                .build());
+//
+//        // page 5
+//        addSlide(new PageRadio.ConfigPage()
+//                .title(R.string.risk_fall_title_group4)
+//                .description(R.string.risk_fall_description_q5)
+//                .drawable(R.drawable.coast_pain_elderly)
+//                .backgroundColor(ContextCompat.getColor(this, R.color.colorLightGreen))
+//                .drawableButtonClose(R.drawable.ic_action_close)
+//                .pageNumber(PAGE_5)
+//                .build());
+//
+//        // page 6
+//        addSlide(new PageRadio.ConfigPage()
+//                .title(R.string.risk_fall_title_group5)
+//                .description(R.string.risk_fall_description_q6)
+//                .drawable(R.drawable.daily_activity_elderly)
+//                .backgroundColor(ContextCompat.getColor(this, R.color.colorOrange))
+//                .drawableButtonClose(R.drawable.ic_action_close)
+//                .pageNumber(PAGE_6)
+//                .build());
+//
+//        // page 7
+//        addSlide(new PageRadio.ConfigPage()
+//                .title(R.string.risk_fall_title_group6)
+//                .description(R.string.risk_fall_description_q7)
+//                .drawable(R.drawable.difficulty_seeing_elderly)
+//                .backgroundColor(ContextCompat.getColor(this, R.color.colorBlueGrey))
+//                .drawableButtonClose(R.drawable.ic_action_close)
+//                .pageNumber(PAGE_7)
+//                .build());
+//
+//        // page 8
+//        addSlide(new PageRadio.ConfigPage()
+//                .title(R.string.risk_fall_title_group6)
+//                .description(R.string.risk_fall_description_q8)
+//                .drawable(R.drawable.hearing_elderly)
+//                .backgroundColor(ContextCompat.getColor(this, R.color.colorBlueGrey))
+//                .drawableButtonClose(R.drawable.ic_action_close)
+//                .pageNumber(PAGE_8)
+//                .build());
+//
+//        // page 9
+//        addSlide(new PageRadio.ConfigPage()
+//                .title(R.string.risk_fall_title_group7)
+//                .description(R.string.risk_fall_description_q9)
+//                .drawable(R.drawable.physical_activity_elderly)
+//                .backgroundColor(ContextCompat.getColor(this, R.color.colorIndigo))
+//                .drawableButtonClose(R.drawable.ic_action_close)
+//                .pageNumber(PAGE_9)
+//                .build());
+//
+//        // page 10
+//        addSlide(new PageRadio.ConfigPage()
+//                .title(R.string.risk_fall_title_group8)
+//                .description(R.string.risk_fall_description_q10)
+//                .drawable(R.drawable.abajur)
+//                .backgroundColor(ContextCompat.getColor(this, R.color.colorCyan))
+//                .drawableButtonClose(R.drawable.ic_action_close)
+//                .pageNumber(PAGE_10)
+//                .build());
+//
+//        // page end
+//        addSlide(new PageRadio.ConfigPage()
+//                .layout(R.layout.fragment_elderly_fall_risk_end)
+//                .pageNumber(PAGE_END)
+//                .build());
     }
 
     @Override
@@ -214,7 +223,7 @@ public class FallRiskAssessmentActivity extends AppIntro implements PageRadio.On
             else setNextPageSwipeLock(false);
 
             // Selects the last response of the current page
-            if(currentPage.getOldCheckedRadio() != -1)
+            if (currentPage.getOldCheckedRadio() != -1)
                 currentPage.setAnswer(currentPage.getOldCheckedRadio() != 0);
 
             // Capture event onSwipeLeft
@@ -229,7 +238,7 @@ public class FallRiskAssessmentActivity extends AppIntro implements PageRadio.On
     }
 
     @Override
-    public void onAnswerRadio(View view, boolean value, int page) {
+    public void onAnswerRadio(int page, boolean value) {
         if (page < PAGE_END) {
             answers[page] = value;
             return;
@@ -237,6 +246,11 @@ public class FallRiskAssessmentActivity extends AppIntro implements PageRadio.On
 
         if (value) processAssessment();// End result
         else showMessageCancel();// Cancel result
+    }
+
+    @Override
+    public void onPageClose() {
+        showMessageCancel();
     }
 
     /**

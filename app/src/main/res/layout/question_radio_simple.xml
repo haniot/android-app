@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/background_light"
@@ -10,6 +11,16 @@
         android:layout_height="match_parent"
         android:animateLayoutChanges="true"
         android:orientation="vertical">
+
+        <ImageButton
+            android:id="@+id/close_imageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginRight="@dimen/activity_vertical_margin"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:background="@android:color/transparent"
+            app:srcCompat="@drawable/ic_action_close_light" />
 
         <!-- BOX DESCRIPTION -->
         <LinearLayout
@@ -31,6 +42,7 @@
                 android:textAppearance="@android:style/TextAppearance.Large"
                 android:textColor="@color/colorBlackGrey"
                 android:textStyle="bold" />
+
         </LinearLayout>
         <!-- END BOX DESCRIPTION -->
 
@@ -45,7 +57,7 @@
             android:orientation="vertical">
 
             <RadioGroup
-                android:id="@+id/question_radioGroup"
+                android:id="@+id/answer_radioGroup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"

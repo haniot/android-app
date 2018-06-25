@@ -10,18 +10,26 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
+import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
 import com.github.paolorotolo.appintro.AppIntro;
 import com.github.paolorotolo.appintro.AppIntroViewPager;
 import com.github.paolorotolo.appintro.ISlideBackgroundColorHolder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
 import butterknife.BindView;
@@ -29,14 +37,14 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 /**
- * PageRadio implementation.
+ * PageSpinner implementation.
  *
  * @author Douglas Rafael <douglas.rafael@nutes.uepb.edu.br>
  * @version 1.0
  * @copyright Copyright (c) 2018, NUTES UEPB
  */
-public class PageRadio extends Fragment implements ISlideBackgroundColorHolder {
-    private final String TAG = "PageRadio";
+public class PageSpinner extends Fragment implements ISlideBackgroundColorHolder {
+    private final String TAG = "PageSpinner";
 
     protected static final String ARG_LAYOUT = "arg_layout";
     protected static final String ARG_TITLE = "arg_title";
@@ -45,33 +53,26 @@ public class PageRadio extends Fragment implements ISlideBackgroundColorHolder {
     protected static final String ARG_BG_COLOR = "arg_bg_color";
     protected static final String ARG_TITLE_COLOR = "arg_title_color";
     protected static final String ARG_DESC_COLOR = "arg_desc_color";
-    protected static final String ARG_TEXT_LEFT_RADIO = "arg_text_left_radio";
-    protected static final String ARG_TEXT_RIGHT_RADIO = "arg_text_right_radio";
-    protected static final String ARG_TEXT_COLOR_RADIO_NORMAL = "arg_text_color_radio_normal";
-    protected static final String ARG_TEXT_COLOR_RADIO_CHECKED = "arg_text_color_radio_checked";
-    protected static final String ARG_BG_LEFT_RADIO = "arg_bg_color_left_radio";
-    protected static final String ARG_BG_RIGHT_RADIO = "arg_bg_color_right_radio";
     protected static final String ARG_PAGE_NUMBER = "arg_page_number";
     protected static final String ARG_DRAWABLE_CLOSE = "arg_drawable_close";
+    protected static final String ARG_ITEM_LAYOUT = "arg_item_layout";
+    protected static final String ARG_ITEMS = "arg_items";
 
     private Unbinder unbinder;
-    private OnAnswerRadioListener mListener;
-    private boolean isBlocked, answerValue, actionClearCheck;
+    private OnAnswerSpinnerListener mListener;
+    private boolean isBlocked;
+    private String answerValue;
+    private int answerValueIndex;
 
     private int layout,
+            itemLayout,
             drawable,
             backgroundColor,
             titleColor,
             descriptionColor,
-            leftRadioText,
-            rightRadioText,
-            textColorRadioNormal,
-            textColorRadioChecked,
-            backgroundLeftRadio,
-            backgroundRightRadio,
-            oldCheckedRadio,
             drawableClose,
             pageNumber;
+    private List<String> items;
 
     private String title, description;
 
@@ -91,16 +92,10 @@ public class PageRadio extends Fragment implements ISlideBackgroundColorHolder {
     @BindView(R.id.close_imageButton)
     ImageButton closeImageButton;
 
-    @BindView(R.id.answer_radioGroup)
-    RadioGroup radioGroup;
+    @BindView(R.id.answer_spinner)
+    Spinner answerSpinner;
 
-    @BindView(R.id.left_radioButton)
-    RadioButton radioLeft;
-
-    @BindView(R.id.right_radioButton)
-    RadioButton radioRight;
-
-    public PageRadio() {
+    public PageSpinner() {
     }
 
     /**
@@ -109,25 +104,21 @@ public class PageRadio extends Fragment implements ISlideBackgroundColorHolder {
      * @param ConfigPage
      * @return PageRadio
      */
-    private static PageRadio newInstance(ConfigPage ConfigPage) {
-        PageRadio pageFragment = new PageRadio();
+    private static PageSpinner newInstance(ConfigPage ConfigPage) {
+        PageSpinner pageFragment = new PageSpinner();
         Bundle args = new Bundle();
 
         args.putInt(ARG_LAYOUT, ConfigPage.layout);
+        args.putInt(ARG_ITEM_LAYOUT, ConfigPage.itemLayout);
         args.putInt(ARG_TITLE, ConfigPage.title);
         args.putInt(ARG_DESC, ConfigPage.description);
         args.putInt(ARG_DRAWABLE, ConfigPage.drawable);
         args.putInt(ARG_BG_COLOR, ConfigPage.backgroundColor);
         args.putInt(ARG_TITLE_COLOR, ConfigPage.titleColor);
         args.putInt(ARG_DESC_COLOR, ConfigPage.descriptionColor);
-        args.putInt(ARG_TEXT_LEFT_RADIO, ConfigPage.leftRadioText);
-        args.putInt(ARG_TEXT_RIGHT_RADIO, ConfigPage.rightRadioText);
-        args.putInt(ARG_TEXT_COLOR_RADIO_NORMAL, ConfigPage.textColorRadioNormal);
-        args.putInt(ARG_TEXT_COLOR_RADIO_CHECKED, ConfigPage.textColorRadioChecked);
-        args.putInt(ARG_BG_LEFT_RADIO, ConfigPage.backgroundLeftRadio);
-        args.putInt(ARG_BG_RIGHT_RADIO, ConfigPage.backgroundRightRadio);
         args.putInt(ARG_DRAWABLE_CLOSE, ConfigPage.drawableClose);
         args.putInt(ARG_PAGE_NUMBER, ConfigPage.pageNumber);
+        args.putStringArrayList(ARG_ITEMS, (ArrayList<String>) ConfigPage.items);
         pageFragment.setArguments(args);
 
         return pageFragment;
@@ -138,10 +129,7 @@ public class PageRadio extends Fragment implements ISlideBackgroundColorHolder {
         super.onCreate(savedInstanceState);
 
         // Setting default values
-        oldCheckedRadio = -1;
         isBlocked = true;
-        answerValue = false;
-        actionClearCheck = false;
 
         // Retrieving arguments
         if (getArguments() != null && getArguments().size() != 0) {
@@ -154,14 +142,10 @@ public class PageRadio extends Fragment implements ISlideBackgroundColorHolder {
             backgroundColor = getArguments().getInt(ARG_BG_COLOR);
             titleColor = getArguments().getInt(ARG_TITLE_COLOR);
             descriptionColor = getArguments().getInt(ARG_DESC_COLOR);
-            leftRadioText = getArguments().getInt(ARG_TEXT_LEFT_RADIO);
-            rightRadioText = getArguments().getInt(ARG_TEXT_RIGHT_RADIO);
-            textColorRadioNormal = getArguments().getInt(ARG_TEXT_COLOR_RADIO_NORMAL);
-            textColorRadioChecked = getArguments().getInt(ARG_TEXT_COLOR_RADIO_CHECKED);
-            backgroundLeftRadio = getArguments().getInt(ARG_BG_LEFT_RADIO);
-            backgroundRightRadio = getArguments().getInt(ARG_BG_RIGHT_RADIO);
             drawableClose = getArguments().getInt(ARG_DRAWABLE_CLOSE);
+            itemLayout = getArguments().getInt(ARG_ITEM_LAYOUT);
             pageNumber = getArguments().getInt(ARG_PAGE_NUMBER);
+            items = getArguments().getStringArrayList(ARG_ITEMS);
         }
     }
 
@@ -171,6 +155,17 @@ public class PageRadio extends Fragment implements ISlideBackgroundColorHolder {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(layout, container, false);
         unbinder = ButterKnife.bind(this, view);
+
+        if (items != null) {
+//            ArrayAdapter<String> mAdapter = new ArrayAdapter(getContext(), android.R.layout.simple_spinner_item, items);
+//            // Drop down layout style - list view with radio button
+//            mAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//            answerSpinner.setAdapter(mAdapter);
+
+
+            CustomSpinnerAdapter customSpinnerAdapter = new CustomSpinnerAdapter(getContext(), items);
+            answerSpinner.setAdapter(customSpinnerAdapter);
+        }
 
         if (titleTextView != null) {
             titleTextView.setText(title);
@@ -189,24 +184,6 @@ public class PageRadio extends Fragment implements ISlideBackgroundColorHolder {
 
         if (imgTextView != null && this.drawable != 0) imgTextView.setImageResource(drawable);
 
-        if (radioGroup != null) {
-            if (leftRadioText != 0)
-                radioLeft.setText(getContext().getResources().getString(leftRadioText));
-
-            if (rightRadioText != 0)
-                radioRight.setText(getContext().getResources().getString(rightRadioText));
-
-            if (backgroundLeftRadio != 0)
-                radioLeft.setBackgroundResource(backgroundLeftRadio);
-
-            if (backgroundRightRadio != 0)
-                radioRight.setBackgroundResource(backgroundRightRadio);
-
-            if (textColorRadioNormal != 0) {
-                radioLeft.setTextColor(textColorRadioNormal);
-                radioRight.setTextColor(textColorRadioNormal);
-            }
-        }
 
         return view;
     }
@@ -214,36 +191,17 @@ public class PageRadio extends Fragment implements ISlideBackgroundColorHolder {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (radioGroup == null) return;
 
-        if (closeImageButton != null)
-            closeImageButton.setOnClickListener(e -> mListener.onPageClose());
 
-        radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
-            if (actionClearCheck) return;
+        answerSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View view, int pos, long id) {
+                Log.d(TAG, "value: " + parentView.getItemAtPosition(pos) + " pos: " + pos);
+            }
 
-            if (checkedId == R.id.left_radioButton && oldCheckedRadio != 0) {
-                if (textColorRadioNormal != 0 && textColorRadioChecked != 0) {
-                    radioLeft.setTextColor(textColorRadioChecked);
-                    radioRight.setTextColor(textColorRadioNormal);
-                }
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
 
-                oldCheckedRadio = 0;
-                answerValue = false;
-
-                mListener.onAnswerRadio(pageNumber, answerValue);
-                nextPage();
-            } else if (checkedId == R.id.right_radioButton && oldCheckedRadio != 1) {
-                if (textColorRadioNormal != 0 && textColorRadioChecked != 0) {
-                    radioRight.setTextColor(textColorRadioChecked);
-                    radioLeft.setTextColor(textColorRadioNormal);
-                }
-
-                oldCheckedRadio = 1;
-                answerValue = true;
-
-                mListener.onAnswerRadio(pageNumber, answerValue);
-                nextPage();
             }
         });
     }
@@ -252,14 +210,13 @@ public class PageRadio extends Fragment implements ISlideBackgroundColorHolder {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
-        if (radioGroup != null) radioGroup.setOnCheckedChangeListener(null);
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnAnswerRadioListener) {
-            mListener = (OnAnswerRadioListener) context;
+        if (context instanceof OnAnswerSpinnerListener) {
+            mListener = (OnAnswerSpinnerListener) context;
         } else {
             throw new ClassCastException();
         }
@@ -307,42 +264,18 @@ public class PageRadio extends Fragment implements ISlideBackgroundColorHolder {
     }
 
     /**
-     * Get component radiogroup.
-     *
-     * @return
-     */
-    public RadioGroup getRadioGroup() {
-        return radioGroup;
-    }
-
-    /**
      * Set Answer.
      *
      * @param value boolean
      */
     public void setAnswer(boolean value) {
-        if (value) radioRight.setChecked(true);
-        else radioLeft.setChecked(true);
+
     }
 
     /**
      * Clear radiogroup checked.
      */
-    public void clearCheck() {
-        actionClearCheck = true;
-        radioGroup.clearCheck();
-        actionClearCheck = false;
-        oldCheckedRadio = -1;
-    }
-
-    /**
-     * Radio selected in response.
-     * Default: -1
-     *
-     * @return
-     */
-    public int getOldCheckedRadio() {
-        return oldCheckedRadio;
+    public void clearAnswer() {
     }
 
     /**
@@ -368,36 +301,29 @@ public class PageRadio extends Fragment implements ISlideBackgroundColorHolder {
      */
     public static class ConfigPage {
         private int layout,
+                itemLayout,
                 title,
                 description,
                 drawable,
                 backgroundColor,
                 titleColor,
                 descriptionColor,
-                leftRadioText,
-                rightRadioText,
-                textColorRadioNormal,
-                textColorRadioChecked,
-                backgroundLeftRadio,
-                backgroundRightRadio,
                 pageNumber,
                 drawableClose;
 
+        private List<String> items;
+
         public ConfigPage() {
-            this.layout = R.layout.question_radio_default;
+            this.layout = R.layout.question_spinner_default;
+            this.itemLayout = R.layout.item_spinner_white;
             this.title = 0;
             this.description = 0;
             this.drawable = 0;
             this.backgroundColor = 0;
             this.titleColor = 0;
             this.descriptionColor = 0;
-            this.leftRadioText = 0;
-            this.rightRadioText = 0;
-            this.textColorRadioNormal = 0;
-            this.textColorRadioChecked = 0;
-            this.backgroundLeftRadio = 0;
-            this.backgroundRightRadio = 0;
             this.drawableClose = 0;
+            this.items = null;
         }
 
         /**
@@ -410,6 +336,18 @@ public class PageRadio extends Fragment implements ISlideBackgroundColorHolder {
             this.layout = layout;
             return this;
         }
+
+        /**
+         * Set layout item.
+         *
+         * @param itemLayout
+         * @return ConfigPage
+         */
+        public ConfigPage itemLayout(int itemLayout) {
+            this.itemLayout = itemLayout;
+            return this;
+        }
+
 
         /**
          * Set title.
@@ -504,48 +442,6 @@ public class PageRadio extends Fragment implements ISlideBackgroundColorHolder {
         }
 
         /**
-         * Set left radio text.
-         *
-         * @param leftRadioText
-         * @return ConfigPage
-         */
-        public ConfigPage leftRadioText(@StringRes int leftRadioText) {
-            this.leftRadioText = leftRadioText;
-            return this;
-        }
-
-        /**
-         * Set right radio text.
-         *
-         * @param rightRadioText
-         * @return ConfigPage
-         */
-        public ConfigPage rightRadioText(@StringRes int rightRadioText) {
-            this.rightRadioText = rightRadioText;
-            return this;
-        }
-
-        /**
-         * Set style radio.
-         *
-         * @param backgroundLeftRadio
-         * @param backgroundRightRadio
-         * @param textColorRadioNormal
-         * @param textColorRadioChecked
-         * @return ConfigPage
-         */
-        public ConfigPage radioStyle(@DrawableRes int backgroundLeftRadio,
-                                     @DrawableRes int backgroundRightRadio,
-                                     @ColorInt int textColorRadioNormal,
-                                     @ColorInt int textColorRadioChecked) {
-            this.backgroundLeftRadio = backgroundLeftRadio;
-            this.backgroundRightRadio = backgroundRightRadio;
-            this.textColorRadioNormal = textColorRadioNormal;
-            this.textColorRadioChecked = textColorRadioChecked;
-            return this;
-        }
-
-        /**
          * Set page number.
          *
          * @param pageNumber
@@ -567,10 +463,68 @@ public class PageRadio extends Fragment implements ISlideBackgroundColorHolder {
             return this;
         }
 
+        /**
+         * Set list items.
+         *
+         * @param items
+         * @return ConfigPage
+         */
+        public ConfigPage addItems(List<String> items) {
+            this.items = items;
+            return this;
+        }
+
         public Fragment build() {
-            return PageRadio.newInstance(this);
+            return PageSpinner.newInstance(this);
         }
     }
+
+    public class CustomSpinnerAdapter extends BaseAdapter implements SpinnerAdapter {
+
+        private final Context context;
+        private List<String> asr;
+
+        public CustomSpinnerAdapter(Context context, List<String> asr) {
+            this.asr = asr;
+            this.context = context;
+        }
+
+        public int getCount() {
+            return asr.size();
+        }
+
+        public Object getItem(int i) {
+            return asr.get(i);
+        }
+
+        public long getItemId(int i) {
+            return (long) i;
+        }
+
+        @Override
+        public View getDropDownView(int position, View convertView, ViewGroup parent) {
+            TextView txt = new TextView(context);
+            txt.setPadding(25, 25, 25, 25);
+            txt.setTextSize(16);
+            txt.setGravity(Gravity.CENTER_VERTICAL);
+            txt.setText(asr.get(position));
+            txt.setTextColor(Color.BLACK);
+            return txt;
+        }
+
+        public View getView(int i, View view, ViewGroup viewgroup) {
+            TextView txt = new TextView(context);
+            txt.setGravity(Gravity.CENTER);
+            txt.setPadding(25, 25, 25, 25);
+            txt.setTextSize(16);
+            txt.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_action_next_down, 0);
+            txt.setText(asr.get(i));
+            txt.setTextColor(Color.BLACK);
+            return txt;
+        }
+
+    }
+
 
     /**
      * Interface OnAnswerRadioListener.
@@ -579,7 +533,7 @@ public class PageRadio extends Fragment implements ISlideBackgroundColorHolder {
      * @version 1.0
      * @copyright Copyright (c) 2017, NUTES UEPB
      */
-    public interface OnAnswerRadioListener extends OnPageCloseListener {
-        void onAnswerRadio(int page, boolean value);
+    public interface OnAnswerSpinnerListener extends OnPageCloseListener {
+        void onAnswerSpinner(int page, boolean value);
     }
 }

@@ -1,4 +1,4 @@
-package br.edu.uepb.nutes.haniot.elderly.assessment;
+package br.edu.uepb.nutes.haniot.elderly.assessment.pages;
 
 import android.content.Context;
 import android.view.GestureDetector;

@@ -33,7 +33,7 @@ import butterknife.ButterKnife;
  *
  * @author Douglas Rafael <douglas.rafael@nutes.uepb.edu.br>
  * @version 1.0
- * @copyright Copyright (c) 2017, NUTES UEPB
+ * @copyright Copyright (c) 2018, NUTES UEPB
  */
 public class FallRiskAssessmentResultActivity extends AppCompatActivity {
     private final String TAG = "FallRiskResultActivity";
