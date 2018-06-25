@@ -6,18 +6,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.ColorInt;
 import android.support.annotation.DrawableRes;
-import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.TextView;
+import android.widget.*;
 
 import com.github.paolorotolo.appintro.AppIntro;
 import com.github.paolorotolo.appintro.AppIntroViewPager;
@@ -26,7 +21,8 @@ import com.github.paolorotolo.appintro.ISlideBackgroundColorHolder;
 import br.edu.uepb.nutes.haniot.R;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.Unbinder;
+
+import java.io.Serializable;
 
 /**
  * PageRadio implementation.
@@ -35,61 +31,15 @@ import butterknife.Unbinder;
  * @version 1.0
  * @copyright Copyright (c) 2018, NUTES UEPB
  */
-public class PageRadio extends Fragment implements ISlideBackgroundColorHolder {
+public class PageRadio extends BasePage implements ISlideBackgroundColorHolder {
     private final String TAG = "PageRadio";
 
-    protected static final String ARG_LAYOUT = "arg_layout";
-    protected static final String ARG_TITLE = "arg_title";
-    protected static final String ARG_DESC = "arg_desc";
-    protected static final String ARG_DRAWABLE = "arg_drawable";
-    protected static final String ARG_BG_COLOR = "arg_bg_color";
-    protected static final String ARG_TITLE_COLOR = "arg_title_color";
-    protected static final String ARG_DESC_COLOR = "arg_desc_color";
-    protected static final String ARG_TEXT_LEFT_RADIO = "arg_text_left_radio";
-    protected static final String ARG_TEXT_RIGHT_RADIO = "arg_text_right_radio";
-    protected static final String ARG_TEXT_COLOR_RADIO_NORMAL = "arg_text_color_radio_normal";
-    protected static final String ARG_TEXT_COLOR_RADIO_CHECKED = "arg_text_color_radio_checked";
-    protected static final String ARG_BG_LEFT_RADIO = "arg_bg_color_left_radio";
-    protected static final String ARG_BG_RIGHT_RADIO = "arg_bg_color_right_radio";
-    protected static final String ARG_PAGE_NUMBER = "arg_page_number";
-    protected static final String ARG_DRAWABLE_CLOSE = "arg_drawable_close";
+    protected static final String ARG_CONFIGS_PAGE = "arg_configs_page";
 
-    private Unbinder unbinder;
     private OnAnswerRadioListener mListener;
-    private boolean isBlocked, answerValue, actionClearCheck;
-
-    private int layout,
-            drawable,
-            backgroundColor,
-            titleColor,
-            descriptionColor,
-            leftRadioText,
-            rightRadioText,
-            textColorRadioNormal,
-            textColorRadioChecked,
-            backgroundLeftRadio,
-            backgroundRightRadio,
-            oldCheckedRadio,
-            drawableClose,
-            pageNumber;
-
-    private String title, description;
-
-    @Nullable
-    @BindView(R.id.question_title)
-    TextView titleTextView;
-
-    @Nullable
-    @BindView(R.id.question_description)
-    TextView descTextView;
-
-    @Nullable
-    @BindView(R.id.question_image)
-    ImageView imgTextView;
-
-    @Nullable
-    @BindView(R.id.close_imageButton)
-    ImageButton closeImageButton;
+    private boolean answerValue, actionClearCheck;
+    private int oldAnswer;
+    private ConfigPage configPage;
 
     @BindView(R.id.answer_radioGroup)
     RadioGroup radioGroup;
@@ -106,30 +56,15 @@ public class PageRadio extends Fragment implements ISlideBackgroundColorHolder {
     /**
      * New PageRadio instance.
      *
-     * @param ConfigPage
+     * @param configPage
      * @return PageRadio
      */
-    private static PageRadio newInstance(ConfigPage ConfigPage) {
+    private static PageRadio newInstance(ConfigPage configPage) {
         PageRadio pageFragment = new PageRadio();
         Bundle args = new Bundle();
+        args.putSerializable(ARG_CONFIGS_PAGE, configPage);
 
-        args.putInt(ARG_LAYOUT, ConfigPage.layout);
-        args.putInt(ARG_TITLE, ConfigPage.title);
-        args.putInt(ARG_DESC, ConfigPage.description);
-        args.putInt(ARG_DRAWABLE, ConfigPage.drawable);
-        args.putInt(ARG_BG_COLOR, ConfigPage.backgroundColor);
-        args.putInt(ARG_TITLE_COLOR, ConfigPage.titleColor);
-        args.putInt(ARG_DESC_COLOR, ConfigPage.descriptionColor);
-        args.putInt(ARG_TEXT_LEFT_RADIO, ConfigPage.leftRadioText);
-        args.putInt(ARG_TEXT_RIGHT_RADIO, ConfigPage.rightRadioText);
-        args.putInt(ARG_TEXT_COLOR_RADIO_NORMAL, ConfigPage.textColorRadioNormal);
-        args.putInt(ARG_TEXT_COLOR_RADIO_CHECKED, ConfigPage.textColorRadioChecked);
-        args.putInt(ARG_BG_LEFT_RADIO, ConfigPage.backgroundLeftRadio);
-        args.putInt(ARG_BG_RIGHT_RADIO, ConfigPage.backgroundRightRadio);
-        args.putInt(ARG_DRAWABLE_CLOSE, ConfigPage.drawableClose);
-        args.putInt(ARG_PAGE_NUMBER, ConfigPage.pageNumber);
         pageFragment.setArguments(args);
-
         return pageFragment;
     }
 
@@ -138,73 +73,68 @@ public class PageRadio extends Fragment implements ISlideBackgroundColorHolder {
         super.onCreate(savedInstanceState);
 
         // Setting default values
-        oldCheckedRadio = -1;
+        oldAnswer = -1;
         isBlocked = true;
         answerValue = false;
         actionClearCheck = false;
 
         // Retrieving arguments
         if (getArguments() != null && getArguments().size() != 0) {
-            layout = getArguments().getInt(ARG_LAYOUT);
-            title = getArguments().getInt(ARG_TITLE) != 0 ?
-                    getContext().getResources().getString(getArguments().getInt(ARG_TITLE)) : "";
-            description = getArguments().getInt(ARG_DESC) != 0 ?
-                    getContext().getResources().getString(getArguments().getInt(ARG_DESC)) : "";
-            drawable = getArguments().getInt(ARG_DRAWABLE);
-            backgroundColor = getArguments().getInt(ARG_BG_COLOR);
-            titleColor = getArguments().getInt(ARG_TITLE_COLOR);
-            descriptionColor = getArguments().getInt(ARG_DESC_COLOR);
-            leftRadioText = getArguments().getInt(ARG_TEXT_LEFT_RADIO);
-            rightRadioText = getArguments().getInt(ARG_TEXT_RIGHT_RADIO);
-            textColorRadioNormal = getArguments().getInt(ARG_TEXT_COLOR_RADIO_NORMAL);
-            textColorRadioChecked = getArguments().getInt(ARG_TEXT_COLOR_RADIO_CHECKED);
-            backgroundLeftRadio = getArguments().getInt(ARG_BG_LEFT_RADIO);
-            backgroundRightRadio = getArguments().getInt(ARG_BG_RIGHT_RADIO);
-            drawableClose = getArguments().getInt(ARG_DRAWABLE_CLOSE);
-            pageNumber = getArguments().getInt(ARG_PAGE_NUMBER);
+            configPage = (ConfigPage) getArguments().getSerializable(ARG_CONFIGS_PAGE);
         }
     }
 
-    @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(layout, container, false);
+        int layoutView = configPage.layout != 0 ? configPage.layout : R.layout.question_radio_theme_dark;
+        View view = inflater.inflate(layoutView, container, false);
         unbinder = ButterKnife.bind(this, view);
 
-        if (titleTextView != null) {
-            titleTextView.setText(title);
-            if (titleColor != 0) titleTextView.setTextColor(titleColor);
+        if (boxTitle != null && titleTextView != null) {
+            if (configPage.title != 0) {
+                titleTextView.setText(configPage.title);
+                if (configPage.titleColor != 0) titleTextView.setTextColor(configPage.titleColor);
+            } else {
+                boxTitle.setVisibility(View.GONE);
+            }
         }
 
-        if (descTextView != null) {
-            descTextView.setText(description);
-            if (descriptionColor != 0) descTextView.setTextColor(descriptionColor);
+        if (boxDescription != null && descTextView != null) {
+            if (configPage.description != 0) {
+                descTextView.setText(configPage.description);
+                if (configPage.descriptionColor != 0) descTextView.setTextColor(configPage.descriptionColor);
+            } else {
+                boxDescription.setVisibility(View.GONE);
+            }
         }
 
         if (closeImageButton != null) {
-            if (drawableClose != 0) closeImageButton.setImageResource(drawableClose);
+            if (configPage.drawableClose != 0) closeImageButton.setImageResource(configPage.drawableClose);
             else closeImageButton.setVisibility(View.GONE);
         }
 
-        if (imgTextView != null && this.drawable != 0) imgTextView.setImageResource(drawable);
+        if (boxImage != null && imgTextView != null) {
+            if (configPage.image != 0) imgTextView.setImageResource(configPage.image);
+            else boxImage.setVisibility(View.GONE);
+        }
 
         if (radioGroup != null) {
-            if (leftRadioText != 0)
-                radioLeft.setText(getContext().getResources().getString(leftRadioText));
+            if (configPage.radioLeftText != 0)
+                radioLeft.setText(configPage.radioLeftText);
 
-            if (rightRadioText != 0)
-                radioRight.setText(getContext().getResources().getString(rightRadioText));
+            if (configPage.radioRightText != 0)
+                radioRight.setText(configPage.radioRightText);
 
-            if (backgroundLeftRadio != 0)
-                radioLeft.setBackgroundResource(backgroundLeftRadio);
+            if (configPage.radioLeftBackground != 0)
+                radioLeft.setBackgroundResource(configPage.radioLeftBackground);
 
-            if (backgroundRightRadio != 0)
-                radioRight.setBackgroundResource(backgroundRightRadio);
+            if (configPage.radioRightBackground != 0)
+                radioRight.setBackgroundResource(configPage.radioRightBackground);
 
-            if (textColorRadioNormal != 0) {
-                radioLeft.setTextColor(textColorRadioNormal);
-                radioRight.setTextColor(textColorRadioNormal);
+            if (configPage.radioColorTextNormal != 0) {
+                radioLeft.setTextColor(configPage.radioColorTextNormal);
+                radioRight.setTextColor(configPage.radioColorTextNormal);
             }
         }
 
@@ -222,24 +152,24 @@ public class PageRadio extends Fragment implements ISlideBackgroundColorHolder {
         radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
             if (actionClearCheck) return;
 
-            if (checkedId == R.id.left_radioButton && oldCheckedRadio != 0) {
-                if (textColorRadioNormal != 0 && textColorRadioChecked != 0) {
-                    radioLeft.setTextColor(textColorRadioChecked);
-                    radioRight.setTextColor(textColorRadioNormal);
+            if (checkedId == R.id.left_radioButton && oldAnswer != 0) {
+                if (configPage.radioColorTextNormal != 0 && configPage.radioColorTextChecked != 0) {
+                    radioLeft.setTextColor(configPage.radioColorTextChecked);
+                    radioRight.setTextColor(configPage.radioColorTextNormal);
                 }
 
-                oldCheckedRadio = 0;
+                oldAnswer = 0;
                 answerValue = false;
 
                 mListener.onAnswerRadio(pageNumber, answerValue);
                 nextPage();
-            } else if (checkedId == R.id.right_radioButton && oldCheckedRadio != 1) {
-                if (textColorRadioNormal != 0 && textColorRadioChecked != 0) {
-                    radioRight.setTextColor(textColorRadioChecked);
-                    radioLeft.setTextColor(textColorRadioNormal);
+            } else if (checkedId == R.id.right_radioButton && oldAnswer != 1) {
+                if (configPage.radioColorTextNormal != 0 && configPage.radioColorTextChecked != 0) {
+                    radioRight.setTextColor(configPage.radioColorTextChecked);
+                    radioLeft.setTextColor(configPage.radioColorTextNormal);
                 }
 
-                oldCheckedRadio = 1;
+                oldAnswer = 1;
                 answerValue = true;
 
                 mListener.onAnswerRadio(pageNumber, answerValue);
@@ -253,6 +183,7 @@ public class PageRadio extends Fragment implements ISlideBackgroundColorHolder {
         super.onDestroyView();
         unbinder.unbind();
         if (radioGroup != null) radioGroup.setOnCheckedChangeListener(null);
+        if (closeImageButton != null) closeImageButton.setOnClickListener(null);
     }
 
     @Override
@@ -278,8 +209,8 @@ public class PageRadio extends Fragment implements ISlideBackgroundColorHolder {
 
     @Override
     public void setBackgroundColor(int backgroundColor) {
-        if (this.backgroundColor != 0)
-            getView().setBackgroundColor(this.backgroundColor);
+        if (configPage.backgroundColor != 0)
+            getView().setBackgroundColor(configPage.backgroundColor);
     }
 
     /**
@@ -332,17 +263,17 @@ public class PageRadio extends Fragment implements ISlideBackgroundColorHolder {
         actionClearCheck = true;
         radioGroup.clearCheck();
         actionClearCheck = false;
-        oldCheckedRadio = -1;
+        oldAnswer = -1;
     }
 
     /**
-     * Radio selected in response.
+     * Radio selected in response old.
      * Default: -1
      *
      * @return
      */
-    public int getOldCheckedRadio() {
-        return oldCheckedRadio;
+    public int getOldAnswer() {
+        return oldAnswer;
     }
 
     /**
@@ -355,173 +286,44 @@ public class PageRadio extends Fragment implements ISlideBackgroundColorHolder {
     }
 
     /**
-     * Remove button close.
-     */
-    public void removeButtonClose() {
-        if (closeImageButton != null) {
-            closeImageButton.setVisibility(View.GONE);
-        }
-    }
-
-    /**
      * Class config page.
      */
-    public static class ConfigPage {
-        private int layout,
-                title,
-                description,
-                drawable,
-                backgroundColor,
-                titleColor,
-                descriptionColor,
-                leftRadioText,
-                rightRadioText,
-                textColorRadioNormal,
-                textColorRadioChecked,
-                backgroundLeftRadio,
-                backgroundRightRadio,
-                pageNumber,
-                drawableClose;
+    public static class ConfigPage extends BaseConfigPage<ConfigPage> implements Serializable {
+        protected int radioLeftText,
+                radioRightText,
+                radioColorTextNormal,
+                radioColorTextChecked,
+                radioLeftBackground,
+                radioRightBackground;
 
         public ConfigPage() {
-            this.layout = R.layout.question_radio_default;
-            this.title = 0;
-            this.description = 0;
-            this.drawable = 0;
-            this.backgroundColor = 0;
-            this.titleColor = 0;
-            this.descriptionColor = 0;
-            this.leftRadioText = 0;
-            this.rightRadioText = 0;
-            this.textColorRadioNormal = 0;
-            this.textColorRadioChecked = 0;
-            this.backgroundLeftRadio = 0;
-            this.backgroundRightRadio = 0;
-            this.drawableClose = 0;
-        }
-
-        /**
-         * Set resource layout.
-         *
-         * @param layout
-         * @return ConfigPage
-         */
-        public ConfigPage layout(@LayoutRes int layout) {
-            this.layout = layout;
-            return this;
-        }
-
-        /**
-         * Set title.
-         *
-         * @param title
-         * @return ConfigPage
-         */
-        public ConfigPage title(@StringRes int title) {
-            this.title = title;
-            return this;
-        }
-
-        /**
-         * Set description.
-         *
-         * @param description
-         * @return ConfigPage
-         */
-        public ConfigPage description(@StringRes int description) {
-            this.description = description;
-            return this;
-        }
-
-        /**
-         * Set title and color.
-         *
-         * @param title
-         * @param titleColor
-         * @return ConfigPage
-         */
-        public ConfigPage title(@StringRes int title, @ColorInt int titleColor) {
-            this.title = title;
-            this.titleColor = titleColor;
-            return this;
-        }
-
-        /**
-         * Set description and color.
-         *
-         * @param description
-         * @param descriptionColor
-         * @return ConfigPage
-         */
-        public ConfigPage description(@StringRes int description, @ColorInt int descriptionColor) {
-            this.description = description;
-            this.descriptionColor = descriptionColor;
-            return this;
-        }
-
-        /**
-         * Set drawable image.
-         *
-         * @param drawable
-         * @return ConfigPage
-         */
-        public ConfigPage drawable(@DrawableRes int drawable) {
-            this.drawable = drawable;
-            return this;
-        }
-
-        /**
-         * Set background color
-         *
-         * @param backgroundColor
-         * @return
-         */
-        public ConfigPage backgroundColor(@ColorInt int backgroundColor) {
-            this.backgroundColor = backgroundColor;
-            return this;
-        }
-
-        /**
-         * Set title color.
-         *
-         * @param titleColor
-         * @return ConfigPage
-         */
-        public ConfigPage titleColor(@ColorInt int titleColor) {
-            this.titleColor = titleColor;
-            return this;
-        }
-
-        /**
-         * Set description color.
-         *
-         * @param descriptionColor
-         * @return ConfigPage
-         */
-        public ConfigPage descriptionColor(@ColorInt int descriptionColor) {
-            this.descriptionColor = descriptionColor;
-            return this;
+            this.radioLeftText = 0;
+            this.radioRightText = 0;
+            this.radioColorTextNormal = 0;
+            this.radioColorTextChecked = 0;
+            this.radioLeftBackground = 0;
+            this.radioRightBackground = 0;
         }
 
         /**
          * Set left radio text.
          *
-         * @param leftRadioText
+         * @param radioLeftText
          * @return ConfigPage
          */
-        public ConfigPage leftRadioText(@StringRes int leftRadioText) {
-            this.leftRadioText = leftRadioText;
+        public ConfigPage radioLeftText(@StringRes int radioLeftText) {
+            this.radioLeftText = radioLeftText;
             return this;
         }
 
         /**
          * Set right radio text.
          *
-         * @param rightRadioText
+         * @param radioRightText
          * @return ConfigPage
          */
-        public ConfigPage rightRadioText(@StringRes int rightRadioText) {
-            this.rightRadioText = rightRadioText;
+        public ConfigPage radioRightText(@StringRes int radioRightText) {
+            this.radioRightText = radioRightText;
             return this;
         }
 
@@ -538,35 +340,14 @@ public class PageRadio extends Fragment implements ISlideBackgroundColorHolder {
                                      @DrawableRes int backgroundRightRadio,
                                      @ColorInt int textColorRadioNormal,
                                      @ColorInt int textColorRadioChecked) {
-            this.backgroundLeftRadio = backgroundLeftRadio;
-            this.backgroundRightRadio = backgroundRightRadio;
-            this.textColorRadioNormal = textColorRadioNormal;
-            this.textColorRadioChecked = textColorRadioChecked;
+            this.radioLeftBackground = backgroundLeftRadio;
+            this.radioRightBackground = backgroundRightRadio;
+            this.radioColorTextNormal = textColorRadioNormal;
+            this.radioColorTextChecked = textColorRadioChecked;
             return this;
         }
 
-        /**
-         * Set page number.
-         *
-         * @param pageNumber
-         * @return ConfigPage
-         */
-        public ConfigPage pageNumber(int pageNumber) {
-            this.pageNumber = pageNumber;
-            return this;
-        }
-
-        /**
-         * Set drawable button close.
-         *
-         * @param drawableClose
-         * @return ConfigPage
-         */
-        public ConfigPage drawableButtonClose(int drawableClose) {
-            this.drawableClose = drawableClose;
-            return this;
-        }
-
+        @Override
         public Fragment build() {
             return PageRadio.newInstance(this);
         }

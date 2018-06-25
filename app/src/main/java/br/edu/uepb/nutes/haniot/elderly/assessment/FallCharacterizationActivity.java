@@ -11,6 +11,7 @@ import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.WindowManager;
 
+import br.edu.uepb.nutes.haniot.elderly.assessment.pages.PageSpinner;
 import com.github.paolorotolo.appintro.AppIntro;
 
 import java.util.ArrayList;
@@ -20,7 +21,6 @@ import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.elderly.ElderlyRegisterActivity;
 import br.edu.uepb.nutes.haniot.elderly.assessment.pages.OnSwipeTouchListener;
 import br.edu.uepb.nutes.haniot.elderly.assessment.pages.PageRadio;
-import br.edu.uepb.nutes.haniot.elderly.assessment.pages.PageSpinner;
 
 /**
  * FallCharacterizationActivity implementation.
@@ -94,28 +94,30 @@ public class FallCharacterizationActivity extends AppIntro implements PageRadio.
 
         // page 1
         addSlide(new PageRadio.ConfigPage()
-                .layout(R.layout.question_radio_simple)
-                .description(R.string.risk_fall_description_q1)
+                .title(R.string.risk_fall_description_q1)
+                .description(R.string.risk_fall_description_q5)
+                .image(R.drawable.elderly_happy)
+                .buttonClose(R.drawable.ic_action_close)
+                .backgroundColor(ContextCompat.getColor(this, R.color.colorPurple))
                 .pageNumber(PAGE_1)
                 .build());
 
         // page 1
         addSlide(new PageRadio.ConfigPage()
-                .layout(R.layout.question_radio_simple)
-                .drawableButtonClose(R.drawable.ic_action_close)
+                .buttonClose(R.drawable.ic_action_close)
                 .description(R.string.risk_fall_description_q2, Color.WHITE)
                 .backgroundColor(ContextCompat.getColor(this, R.color.colorPurple))
-                .leftRadioText(R.string.action_bond)
-                .radioStyle(R.drawable.button_background_white_left,
-                        R.drawable.button_background_white_right,
-                        Color.WHITE, Color.BLACK)
+                .radioLeftText(R.string.cancel_text)
+//                .leftRadioText(R.string.action_bond);
+//                .radioStyle(R.drawable.button_background_white_left,
+//                        R.drawable.button_background_white_right, Color.WHITE, Color.BLACK)
                 .pageNumber(PAGE_2)
                 .build());
 
         addSlide(new PageSpinner.ConfigPage()
                 .layout(R.layout.question_spinner_simple)
                 .description(R.string.risk_fall_description_q3)
-                .addItems(new ArrayList(Arrays.asList(new String[]{"Estacada", "Banheiro", "Cozinha", "Sala de Estar", "Varanda"})))
+                .items(new ArrayList(Arrays.asList(new String[]{"Estacada", "Banheiro", "Cozinha", "Sala de Estar", "Varanda"})))
                 .pageNumber(PAGE_3)
                 .build());
 
@@ -123,7 +125,7 @@ public class FallCharacterizationActivity extends AppIntro implements PageRadio.
                 .title(R.string.title_save_captured_data)
                 .description(R.string.risk_fall_description_q2)
                 .backgroundColor(ContextCompat.getColor(this, R.color.colorBlackGrey))
-                .addItems(new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.elderly_accessories_array))))
+                .items(new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.elderly_accessories_array))))
                 .pageNumber(PAGE_4)
                 .build());
 
@@ -159,9 +161,9 @@ public class FallCharacterizationActivity extends AppIntro implements PageRadio.
             if (currentPage.isBlocked()) setNextPageSwipeLock(true);
             else setNextPageSwipeLock(false);
 
-//            if (currentPage.getOldCheckedRadio() == 0)
+//            if (currentPage.getOldAnswer() == 0)
 //                currentPage.selectAnswerFalse();
-//            else if (currentPage.getOldCheckedRadio() == 1)
+//            else if (currentPage.getOldAnswer() == 1)
 //                currentPage.selectAnswerTrue();
 
             // Capture event onSwipeLeft
@@ -233,6 +235,7 @@ public class FallCharacterizationActivity extends AppIntro implements PageRadio.
 
     @Override
     public void onAnswerRadio(int page, boolean value) {
+        Log.d(TAG, "onAnswerRadio() " + "PAGE: " + page + " | value: " + value);
     }
 
     @Override
@@ -240,9 +243,10 @@ public class FallCharacterizationActivity extends AppIntro implements PageRadio.
         Log.d(TAG, "onPageClose");
     }
 
-    @Override
-    public void onAnswerSpinner(int page, boolean value) {
 
+    @Override
+    public void onAnswerSpinner(int page, String value, int indexValue) {
+        Log.d(TAG, "onAnswerSpinner() " + "PAGE: " + page + " | value: " + value + " index: " + indexValue);
     }
 }
 
