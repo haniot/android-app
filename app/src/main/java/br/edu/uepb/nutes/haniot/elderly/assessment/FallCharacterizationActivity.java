@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.WindowManager;
 
 import br.edu.uepb.nutes.haniot.elderly.assessment.pages.PageSpinner;
+
 import com.github.paolorotolo.appintro.AppIntro;
 
 import java.util.ArrayList;
@@ -102,32 +103,25 @@ public class FallCharacterizationActivity extends AppIntro implements PageRadio.
                 .pageNumber(PAGE_1)
                 .build());
 
-        // page 1
-        addSlide(new PageRadio.ConfigPage()
-                .buttonClose(R.drawable.ic_action_close)
-                .description(R.string.risk_fall_description_q2, Color.WHITE)
-                .backgroundColor(ContextCompat.getColor(this, R.color.colorPurple))
-                .radioLeftText(R.string.cancel_text)
-//                .leftRadioText(R.string.action_bond);
-//                .radioStyle(R.drawable.button_background_white_left,
-//                        R.drawable.button_background_white_right, Color.WHITE, Color.BLACK)
-                .pageNumber(PAGE_2)
-                .build());
-
-        addSlide(new PageSpinner.ConfigPage()
-                .layout(R.layout.question_spinner_simple)
-                .description(R.string.risk_fall_description_q3)
-                .items(new ArrayList(Arrays.asList(new String[]{"Estacada", "Banheiro", "Cozinha", "Sala de Estar", "Varanda"})))
-                .pageNumber(PAGE_3)
-                .build());
-
         addSlide(new PageSpinner.ConfigPage()
                 .title(R.string.title_save_captured_data)
                 .description(R.string.risk_fall_description_q2)
                 .backgroundColor(ContextCompat.getColor(this, R.color.colorBlackGrey))
                 .items(new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.elderly_accessories_array))))
+                .colorTextItemSelected(ContextCompat.getColor(this, R.color.colorTextDark))
                 .pageNumber(PAGE_4)
                 .build());
+
+        addSlide(new PageSpinner.ConfigPage()
+                .layout(R.layout.question_spinner_theme_light)
+                .title(R.string.risk_fall_description_q9)
+                .image(R.drawable.fall_elderly)
+                .description(R.string.risk_fall_description_q3)
+                .items(new ArrayList(Arrays.asList(new String[]{"Estacada", "Banheiro", "Cozinha", "Sala de Estar", "Varanda"})))
+                .colorTextItemSelected(ContextCompat.getColor(this, R.color.colorPurple))
+                .pageNumber(PAGE_3)
+                .build());
+
 
     }
 

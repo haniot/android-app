@@ -44,7 +44,7 @@
                 android:layout_toEndOf="@+id/low_textView"
                 android:background="@drawable/background_rounded_corner"
                 android:backgroundTint="@color/colorGreen"
-                android:paddingLeft="50dp"
+                android:paddingStart="50dp"
                 android:text="@null"
                 android:textColor="@color/colorTextDark" />
 
@@ -139,5 +139,7 @@
                 android:text="@string/yes_text"
                 android:textColor="@drawable/button_white_text" />
         </RadioGroup>
+
+
     </LinearLayout>
 </LinearLayout>

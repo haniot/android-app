@@ -3,23 +3,26 @@ package br.edu.uepb.nutes.haniot.elderly.assessment.pages;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.TextViewCompat;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Spinner;
-import br.edu.uepb.nutes.haniot.R;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import com.github.paolorotolo.appintro.AppIntro;
-import com.github.paolorotolo.appintro.AppIntroViewPager;
+import android.widget.SpinnerAdapter;
+import android.widget.TextView;
+
 import com.github.paolorotolo.appintro.ISlideBackgroundColorHolder;
 
 import java.io.Serializable;
 import java.util.List;
+
+import br.edu.uepb.nutes.haniot.R;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * PageSpinner implementation.
@@ -37,7 +40,7 @@ public class PageSpinner extends BasePage implements ISlideBackgroundColorHolder
     private String answerValue;
     private int indexAnswerValue, indexOldAnswer;
     private ConfigPage configPage;
-    private ArrayAdapter<String> mAdapter;
+    private CustomSpinnerAdapter mAdapter;
 
     @BindView(R.id.answer_spinner)
     Spinner answerSpinner;
@@ -73,6 +76,7 @@ public class PageSpinner extends BasePage implements ISlideBackgroundColorHolder
         // Retrieving arguments
         if (getArguments() != null && getArguments().size() != 0) {
             configPage = (ConfigPage) getArguments().getSerializable(ARG_CONFIGS_PAGE);
+            pageNumber = configPage.pageNumber;
         }
     }
 
@@ -96,14 +100,16 @@ public class PageSpinner extends BasePage implements ISlideBackgroundColorHolder
         if (boxDescription != null && descTextView != null) {
             if (configPage.description != 0) {
                 descTextView.setText(configPage.description);
-                if (configPage.descriptionColor != 0) descTextView.setTextColor(configPage.descriptionColor);
+                if (configPage.descriptionColor != 0)
+                    descTextView.setTextColor(configPage.descriptionColor);
             } else {
                 boxDescription.setVisibility(View.GONE);
             }
         }
 
         if (closeImageButton != null) {
-            if (configPage.drawableClose != 0) closeImageButton.setImageResource(configPage.drawableClose);
+            if (configPage.drawableClose != 0)
+                closeImageButton.setImageResource(configPage.drawableClose);
             else closeImageButton.setVisibility(View.GONE);
         }
 
@@ -113,7 +119,8 @@ public class PageSpinner extends BasePage implements ISlideBackgroundColorHolder
         }
 
         if (answerSpinner != null) {
-            mAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, configPage.items);
+            mAdapter = new CustomSpinnerAdapter(getContext(), configPage.items, configPage);
+            answerSpinner.setAdapter(mAdapter);
         }
 
         return view;
@@ -155,46 +162,13 @@ public class PageSpinner extends BasePage implements ISlideBackgroundColorHolder
 
     @Override
     public int getDefaultBackgroundColor() {
-        return Color.parseColor("#000000");
+        return (configPage.backgroundColor != 0) ? configPage.backgroundColor : Color.BLACK;
     }
 
     @Override
     public void setBackgroundColor(int backgroundColor) {
         if (configPage.backgroundColor != 0)
             getView().setBackgroundColor(configPage.backgroundColor);
-    }
-
-    /**
-     * Next page.
-     */
-    public void nextPage() {
-        final AppIntro appIntro = (AppIntro) getContext();
-        final AppIntroViewPager page = ((AppIntro) getContext()).getPager();
-
-        isBlocked = false;
-        appIntro.setNextPageSwipeLock(isBlocked);
-        new Handler().post(() -> {
-            page.goToNextSlide();
-            appIntro.setNextPageSwipeLock(!isBlocked);
-        });
-    }
-
-    /**
-     * Check if page is blocked.
-     *
-     * @return
-     */
-    public boolean isBlocked() {
-        return isBlocked;
-    }
-
-    /**
-     * Get component spinner.
-     *
-     * @return
-     */
-    public Spinner getSpinner() {
-        return answerSpinner;
     }
 
     /**
@@ -226,20 +200,12 @@ public class PageSpinner extends BasePage implements ISlideBackgroundColorHolder
     }
 
     /**
-     * Select page number.
-     *
-     * @return
-     */
-    public int getPageNumber() {
-        return pageNumber;
-    }
-
-    /**
      * Class config page.
      */
     public static class ConfigPage extends BaseConfigPage<ConfigPage> implements Serializable {
 
         protected List<String> items;
+        protected int colorTextItemSelected;
 
         public ConfigPage() {
         }
@@ -255,11 +221,70 @@ public class PageSpinner extends BasePage implements ISlideBackgroundColorHolder
             return this;
         }
 
+        /**
+         * Set color item selected.
+         *
+         * @param colorTextItemSelected
+         * @return ConfigPage
+         */
+        public PageSpinner.ConfigPage colorTextItemSelected(int colorTextItemSelected) {
+            this.colorTextItemSelected = colorTextItemSelected;
+            return this;
+        }
+
+
         @Override
         public Fragment build() {
             return PageSpinner.newInstance(this);
         }
     }
+
+    /**
+     *
+     */
+    public class CustomSpinnerAdapter extends BaseAdapter implements SpinnerAdapter {
+
+        private final Context context;
+        private List<String> asr;
+        private ConfigPage configPage;
+
+        public CustomSpinnerAdapter(Context context, List<String> asr, ConfigPage configPage) {
+            this.asr = asr;
+            this.context = context;
+            this.configPage = configPage;
+        }
+
+        public int getCount() {
+            return asr.size();
+        }
+
+        public Object getItem(int i) {
+            return asr.get(i);
+        }
+
+        public long getItemId(int i) {
+            return (long) i;
+        }
+
+        @Override
+        public View getDropDownView(int position, View convertView, ViewGroup parent) {
+            TextView txt = new TextView(context);
+            txt.setPadding(35, 35, 35, 35);
+            txt.setGravity(Gravity.CENTER_VERTICAL);
+            txt.setText(asr.get(position));
+            return txt;
+        }
+
+        public View getView(int i, View view, ViewGroup viewgroup) {
+            TextView txt = new TextView(context);
+            txt.setGravity(Gravity.CENTER);
+            TextViewCompat.setTextAppearance(txt, android.R.style.TextAppearance_Medium);
+            txt.setText(asr.get(i));
+            txt.setTextColor(configPage.colorTextItemSelected != 0 ? configPage.colorTextItemSelected : Color.BLACK);
+            return txt;
+        }
+    }
+
 
     /**
      * Interface OnAnswerSpinnerListener.

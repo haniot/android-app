@@ -15,6 +15,7 @@ import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.elderly.ElderlyRegisterActivity;
 import br.edu.uepb.nutes.haniot.elderly.assessment.pages.OnSwipeTouchListener;
 import br.edu.uepb.nutes.haniot.elderly.assessment.pages.PageRadio;
+import br.edu.uepb.nutes.haniot.utils.Log;
 
 /**
  * FallRiskAssessmentActivity implementation.
@@ -241,6 +242,8 @@ public class FallRiskAssessmentActivity extends AppIntro implements PageRadio.On
 
     @Override
     public void onAnswerRadio(int page, boolean value) {
+        Log.d(TAG, "onAnswerRadio() | value: " + value + " page: " + page) ;
+
         if (page < PAGE_END) {
             answers[page] = value;
             return;

@@ -43,6 +43,7 @@
     <string name="call_elderly_title">Call elderly</string>
     <string name="fall_register_time_title">Fall was recorded at %s</string>
     <string name="alert_register_time_title">Alert was triggered at %s</string>
+    <string name="image">Image</string>
 
     <!--ACTIONS-->
     <string name="action_settings">Settings</string>

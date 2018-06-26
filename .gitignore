@@ -62,9 +62,6 @@ captures/
 build.properties
 local.properties
 
-# ObjectBox: native libs, model backups
-objectbox-models/
-
 # OS files
 .DS_Store
 ._*

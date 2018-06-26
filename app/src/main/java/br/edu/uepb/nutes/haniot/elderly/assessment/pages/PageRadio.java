@@ -81,6 +81,7 @@ public class PageRadio extends BasePage implements ISlideBackgroundColorHolder {
         // Retrieving arguments
         if (getArguments() != null && getArguments().size() != 0) {
             configPage = (ConfigPage) getArguments().getSerializable(ARG_CONFIGS_PAGE);
+            pageNumber = configPage.pageNumber;
         }
     }
 
@@ -103,14 +104,16 @@ public class PageRadio extends BasePage implements ISlideBackgroundColorHolder {
         if (boxDescription != null && descTextView != null) {
             if (configPage.description != 0) {
                 descTextView.setText(configPage.description);
-                if (configPage.descriptionColor != 0) descTextView.setTextColor(configPage.descriptionColor);
+                if (configPage.descriptionColor != 0)
+                    descTextView.setTextColor(configPage.descriptionColor);
             } else {
                 boxDescription.setVisibility(View.GONE);
             }
         }
 
         if (closeImageButton != null) {
-            if (configPage.drawableClose != 0) closeImageButton.setImageResource(configPage.drawableClose);
+            if (configPage.drawableClose != 0)
+                closeImageButton.setImageResource(configPage.drawableClose);
             else closeImageButton.setVisibility(View.GONE);
         }
 
@@ -204,46 +207,13 @@ public class PageRadio extends BasePage implements ISlideBackgroundColorHolder {
 
     @Override
     public int getDefaultBackgroundColor() {
-        return Color.parseColor("#000000");
+        return (configPage.backgroundColor != 0) ? configPage.backgroundColor : Color.BLACK;
     }
 
     @Override
     public void setBackgroundColor(int backgroundColor) {
         if (configPage.backgroundColor != 0)
             getView().setBackgroundColor(configPage.backgroundColor);
-    }
-
-    /**
-     * Next page.
-     */
-    public void nextPage() {
-        final AppIntro appIntro = (AppIntro) getContext();
-        final AppIntroViewPager page = ((AppIntro) getContext()).getPager();
-
-        isBlocked = false;
-        appIntro.setNextPageSwipeLock(isBlocked);
-        new Handler().post(() -> {
-            page.goToNextSlide();
-            appIntro.setNextPageSwipeLock(!isBlocked);
-        });
-    }
-
-    /**
-     * Check if page is blocked.
-     *
-     * @return
-     */
-    public boolean isBlocked() {
-        return isBlocked;
-    }
-
-    /**
-     * Get component radiogroup.
-     *
-     * @return
-     */
-    public RadioGroup getRadioGroup() {
-        return radioGroup;
     }
 
     /**
@@ -274,15 +244,6 @@ public class PageRadio extends BasePage implements ISlideBackgroundColorHolder {
      */
     public int getOldAnswer() {
         return oldAnswer;
-    }
-
-    /**
-     * Select page number.
-     *
-     * @return
-     */
-    public int getPageNumber() {
-        return pageNumber;
     }
 
     /**
