@@ -11,13 +11,12 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
-
-import com.github.paolorotolo.appintro.ISlideBackgroundColorHolder;
-
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import br.edu.uepb.nutes.haniot.R;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import com.github.paolorotolo.appintro.ISlideBackgroundColorHolder;
 
 import java.io.Serializable;
 
@@ -70,8 +69,8 @@ public class RadioPage extends BasePage implements ISlideBackgroundColorHolder {
         super.onCreate(savedInstanceState);
 
         // Setting default values
+        super.isBlocked = true;
         oldAnswer = -1;
-        isBlocked = true;
         answerValue = false;
         actionClearCheck = false;
 
@@ -218,19 +217,10 @@ public class RadioPage extends BasePage implements ISlideBackgroundColorHolder {
      *
      * @param value boolean
      */
-    public void setAnswer(boolean value) {
+    public void setAnswerRadio(boolean value) {
+        super.isBlocked = false;
         if (value) radioRight.setChecked(true);
         else radioLeft.setChecked(true);
-    }
-
-    /**
-     * Clear radiogroup checked.
-     */
-    public void clearCheck() {
-        actionClearCheck = true;
-        radioGroup.clearCheck();
-        actionClearCheck = false;
-        oldAnswer = -1;
     }
 
     /**
@@ -239,14 +229,25 @@ public class RadioPage extends BasePage implements ISlideBackgroundColorHolder {
      *
      * @return
      */
-    public int getOldAnswer() {
-        return oldAnswer;
+    public boolean getAnswerRadio() {
+        return answerValue;
+    }
+
+    /**
+     * Clear radiogroup checked.
+     */
+    public void clearAnswer() {
+        super.isBlocked = true;
+        actionClearCheck = true;
+        radioGroup.clearCheck();
+        actionClearCheck = false;
+        oldAnswer = -1;
     }
 
     /**
      * Class config page.
      */
-    public static class ConfigPage extends BaseConfigPage<ConfigPage> implements Serializable {
+    public static class ConfigPage extends BaseConfigPage<RadioPage.ConfigPage> implements Serializable {
         protected int radioLeftText,
                 radioRightText,
                 radioColorTextNormal,
@@ -306,7 +307,7 @@ public class RadioPage extends BasePage implements ISlideBackgroundColorHolder {
         }
 
         @Override
-        public Fragment build() {
+        public RadioPage build() {
             return RadioPage.newInstance(this);
         }
     }

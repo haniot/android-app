@@ -56,12 +56,6 @@ public class BasePage extends Fragment {
     LinearLayout boxImage;
 
     /**
-     * Constructor
-     */
-    public BasePage() {
-    }
-
-    /**
      * Next page.
      */
     public void nextPage() {

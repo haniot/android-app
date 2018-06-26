@@ -1,23 +1,29 @@
 package br.edu.uepb.nutes.haniot.elderly.assessment.pages;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.ColorInt;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.TextViewCompat;
+import android.support.v4.view.ViewCompat;
+import android.support.v7.widget.AppCompatSpinner;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
-import android.widget.TextView;
+import android.widget.*;
 
 import com.github.paolorotolo.appintro.ISlideBackgroundColorHolder;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
@@ -38,12 +44,12 @@ public class SpinnerPage extends BasePage implements ISlideBackgroundColorHolder
 
     private OnAnswerSpinnerListener mListener;
     private String answerValue;
-    private int indexAnswerValue, indexOldAnswer;
+    private int indexAnswerValue;
     private ConfigPage configPage;
     private CustomSpinnerAdapter mAdapter;
 
     @BindView(R.id.answer_spinner)
-    Spinner answerSpinner;
+    AppCompatSpinner answerSpinner;
 
     public SpinnerPage() {
     }
@@ -68,10 +74,9 @@ public class SpinnerPage extends BasePage implements ISlideBackgroundColorHolder
         super.onCreate(savedInstanceState);
 
         // Setting default values
-        isBlocked = true;
+        super.isBlocked = true;
+        answerValue = "";
         indexAnswerValue = -1;
-        indexOldAnswer = -1;
-        answerValue = null;
 
         // Retrieving arguments
         if (getArguments() != null && getArguments().size() != 0) {
@@ -118,10 +123,20 @@ public class SpinnerPage extends BasePage implements ISlideBackgroundColorHolder
             else boxImage.setVisibility(View.GONE);
         }
 
-        if (answerSpinner != null) {
-            mAdapter = new CustomSpinnerAdapter(getContext(), configPage.items, configPage);
-            answerSpinner.setAdapter(mAdapter);
+        // Config spinner
+        if (configPage.colorTextItemSelected != 0)
+            ViewCompat.setBackgroundTintList(answerSpinner, ColorStateList.valueOf(configPage.colorTextItemSelected));
+
+        List<String> items_temp = new ArrayList<>();
+        if (indexAnswerValue == -1 && configPage.hint != 0) { // set hint
+            items_temp.add(getContext().getResources().getString(configPage.hint));
+            items_temp.addAll(configPage.items);
+        } else {
+            items_temp = configPage.items;
         }
+
+        mAdapter = new CustomSpinnerAdapter(getContext(), android.R.layout.simple_spinner_item, items_temp);
+        answerSpinner.setAdapter(mAdapter);
 
         return view;
     }
@@ -134,6 +149,26 @@ public class SpinnerPage extends BasePage implements ISlideBackgroundColorHolder
         if (closeImageButton != null)
             closeImageButton.setOnClickListener(e -> mListener.onClosePage());
 
+        answerSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                answerValue = String.valueOf(parent.getItemAtPosition(position));
+
+                // If have hint, it means that the first spinner item should be disregarded. Therefore, -1.
+                if (configPage.hint != 0) indexAnswerValue = position - 1;
+                else indexAnswerValue = position;
+
+                mListener.onAnswerSpinner(pageNumber, answerValue, indexAnswerValue);
+
+                // It only goes to the next page if the selected item is valid.
+                if (indexAnswerValue != -1) nextPage();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
     @Override
@@ -172,42 +207,51 @@ public class SpinnerPage extends BasePage implements ISlideBackgroundColorHolder
     }
 
     /**
-     * Select value on Spinner.
+     * Set answer.
      *
-     * @param value {@link String}
+     * @param value
      */
     public void setAnswer(String value) {
-
+        super.isBlocked = false;
+        int index = mAdapter.getPosition(value);
+        if (index != -1) {
+            indexAnswerValue = index;
+            answerSpinner.setSelection(indexAnswerValue);
+        }
     }
 
     /**
-     * Select the value in the spinner according to the index.
-     *
-     * @param index int
-     */
-    public void setAnswer(int index) {
-
-    }
-
-    /**
-     * Old selected value index.
-     * Default: -1
+     * Get answer.
      *
      * @return
      */
-    public int getOldAnswer() {
-        return indexOldAnswer;
+    public String getAnswer() {
+        return answerValue;
+    }
+
+    /**
+     * Clear radiogroup checked.
+     */
+    public void clearAnswer() {
+        super.isBlocked = true;
+        answerValue = "";
+        indexAnswerValue = -1;
+
+        answerSpinner.setSelection(0);
     }
 
     /**
      * Class config page.
      */
-    public static class ConfigPage extends BaseConfigPage<ConfigPage> implements Serializable {
+    public static class ConfigPage extends BaseConfigPage<SpinnerPage.ConfigPage> implements Serializable {
 
         protected List<String> items;
         protected int colorTextItemSelected;
+        protected int hint;
 
         public ConfigPage() {
+            this.colorTextItemSelected = 0;
+            this.hint = 0;
         }
 
         /**
@@ -227,39 +271,57 @@ public class SpinnerPage extends BasePage implements ISlideBackgroundColorHolder
          * @param colorTextItemSelected
          * @return ConfigPage
          */
-        public SpinnerPage.ConfigPage colorTextItemSelected(int colorTextItemSelected) {
+        public SpinnerPage.ConfigPage colorTextItemSelected(@ColorInt int colorTextItemSelected) {
             this.colorTextItemSelected = colorTextItemSelected;
             return this;
         }
 
+        /**
+         * Set hint message.
+         *
+         * @param hint
+         * @return ConfigPage
+         */
+        public SpinnerPage.ConfigPage hint(@ColorInt int hint) {
+            this.hint = hint;
+            return this;
+        }
 
         @Override
-        public Fragment build() {
+        public String toString() {
+            return "ConfigPage{" +
+                    "items=" + items +
+                    ", colorTextItemSelected=" + colorTextItemSelected +
+                    ", hint=" + hint +
+                    "} " + super.toString();
+        }
+
+        @Override
+        public BasePage build() {
             return SpinnerPage.newInstance(this);
         }
     }
 
     /**
-     *
+     * Class Custom SpinnerAdapter.
      */
-    public class CustomSpinnerAdapter extends BaseAdapter implements SpinnerAdapter {
+    public class CustomSpinnerAdapter extends ArrayAdapter<String> implements SpinnerAdapter {
 
         private final Context context;
-        private List<String> asr;
-        private ConfigPage configPage;
+        private List<String> _items;
 
-        public CustomSpinnerAdapter(Context context, List<String> asr, ConfigPage configPage) {
-            this.asr = asr;
+        public CustomSpinnerAdapter(@NonNull Context context, int textViewResourceId, List<String> _items) {
+            super(context, textViewResourceId, _items);
             this.context = context;
-            this.configPage = configPage;
+            this._items = _items;
         }
 
         public int getCount() {
-            return asr.size();
+            return _items.size();
         }
 
-        public Object getItem(int i) {
-            return asr.get(i);
+        public String getItem(int i) {
+            return _items.get(i);
         }
 
         public long getItemId(int i) {
@@ -268,23 +330,41 @@ public class SpinnerPage extends BasePage implements ISlideBackgroundColorHolder
 
         @Override
         public View getDropDownView(int position, View convertView, ViewGroup parent) {
+
             TextView txt = new TextView(context);
-            txt.setPadding(35, 35, 35, 35);
             txt.setGravity(Gravity.CENTER_VERTICAL);
-            txt.setText(asr.get(position));
+            txt.setPadding(35, 30, 35, 30);
+            txt.setTextSize(15);
+            txt.setText(_items.get(position));
+            txt.setTextColor(Color.BLACK);
+
+            // Set color hint message
+            if (configPage.hint != 0 && position == 0) {
+                txt.setPadding(25, 30, 35, 0);
+                txt.setTextColor(Color.GRAY);
+                ViewCompat.setBackgroundTintList(txt, ColorStateList.valueOf(Color.BLACK));
+            }
+
             return txt;
         }
 
-        public View getView(int i, View view, ViewGroup viewgroup) {
+        @Override
+        public View getView(int position, View view, ViewGroup viewgroup) {
             TextView txt = new TextView(context);
             txt.setGravity(Gravity.CENTER);
-            TextViewCompat.setTextAppearance(txt, android.R.style.TextAppearance_Medium);
-            txt.setText(asr.get(i));
+            txt.setText(_items.get(position));
+            txt.setTextSize(16);
             txt.setTextColor(configPage.colorTextItemSelected != 0 ? configPage.colorTextItemSelected : Color.BLACK);
+
             return txt;
         }
-    }
 
+        @Override
+        public boolean isEnabled(int position) {
+            // If the spinner has hint, disable it
+            return (configPage.hint != 0 && position == 0) ? false : true;
+        }
+    }
 
     /**
      * Interface OnAnswerSpinnerListener.

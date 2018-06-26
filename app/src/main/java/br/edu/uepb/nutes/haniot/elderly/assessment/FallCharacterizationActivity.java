@@ -10,7 +10,7 @@ import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.WindowManager;
 
-import br.edu.uepb.nutes.haniot.elderly.assessment.pages.SpinnerPage;
+import br.edu.uepb.nutes.haniot.elderly.assessment.pages.*;
 
 import com.github.paolorotolo.appintro.AppIntro;
 
@@ -19,8 +19,6 @@ import java.util.Arrays;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.elderly.ElderlyRegisterActivity;
-import br.edu.uepb.nutes.haniot.elderly.assessment.pages.OnSwipeTouchListener;
-import br.edu.uepb.nutes.haniot.elderly.assessment.pages.RadioPage;
 
 /**
  * FallCharacterizationActivity implementation.
@@ -29,7 +27,9 @@ import br.edu.uepb.nutes.haniot.elderly.assessment.pages.RadioPage;
  * @version 1.0
  * @copyright Copyright (c) 2018, NUTES UEPB
  */
-public class FallCharacterizationActivity extends AppIntro implements RadioPage.OnAnswerRadioListener, SpinnerPage.OnAnswerSpinnerListener {
+public class FallCharacterizationActivity extends AppIntro implements RadioPage.OnAnswerRadioListener,
+        SpinnerPage.OnAnswerSpinnerListener {
+
     private final String TAG = "FallRiskAssActivity";
 
     public static final String EXTRA_QUESTIONS = "extra_questions";
@@ -50,7 +50,7 @@ public class FallCharacterizationActivity extends AppIntro implements RadioPage.
 
     private String[] questions;
     private boolean[] answers;
-    private RadioPage currentPage;
+    private BasePage currentPage;
     private Snackbar snackbarMessageBlockedPage;
     private String elderlyId;
 
@@ -93,35 +93,37 @@ public class FallCharacterizationActivity extends AppIntro implements RadioPage.
         setImmersive(true);
 
         // page 1
-        addSlide(new RadioPage.ConfigPage()
+        RadioPage page1 = new RadioPage.ConfigPage()
                 .title(R.string.risk_fall_description_q1)
                 .description(R.string.risk_fall_description_q5)
                 .image(R.drawable.elderly_happy)
                 .buttonClose(R.drawable.ic_action_close)
                 .backgroundColor(ContextCompat.getColor(this, R.color.colorPurple))
                 .pageNumber(PAGE_1)
-                .build());
+                .build();
+
+        // page 2
+        addSlide(page1);
+
 
         addSlide(new SpinnerPage.ConfigPage()
                 .title(R.string.title_save_captured_data)
                 .description(R.string.risk_fall_description_q2)
                 .backgroundColor(ContextCompat.getColor(this, R.color.colorBlackGrey))
+                .hint(R.string.elderly_select_accessories)
                 .items(new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.elderly_accessories_array))))
                 .colorTextItemSelected(ContextCompat.getColor(this, R.color.colorTextDark))
-                .pageNumber(PAGE_4)
+                .pageNumber(PAGE_2)
                 .build());
 
         addSlide(new SpinnerPage.ConfigPage()
                 .layout(R.layout.question_spinner_theme_light)
                 .title(R.string.risk_fall_description_q9)
-                .image(R.drawable.fall_elderly)
-                .description(R.string.risk_fall_description_q3)
+                .hint(R.string.elderly_select_medications)
                 .items(new ArrayList(Arrays.asList(new String[]{"Estacada", "Banheiro", "Cozinha", "Sala de Estar", "Varanda"})))
                 .colorTextItemSelected(ContextCompat.getColor(this, R.color.colorPurple))
-                .pageNumber(PAGE_3)
+                .pageNumber(PAGE_END)
                 .build());
-
-
     }
 
     @Override
@@ -146,18 +148,14 @@ public class FallCharacterizationActivity extends AppIntro implements RadioPage.
         if (snackbarMessageBlockedPage != null)
             snackbarMessageBlockedPage.dismiss();
 
-        if (newFragment instanceof RadioPage) {
-            currentPage = (RadioPage) newFragment;
+        if (newFragment instanceof BasePage) {
+            currentPage = (BasePage) newFragment;
+            Log.d(TAG, "onSlideChanged() " + currentPage.getClass().getName());
 
             if (currentPage.getPageNumber() == PAGE_END) return;
 
             if (currentPage.isBlocked()) setNextPageSwipeLock(true);
             else setNextPageSwipeLock(false);
-
-//            if (currentPage.getOldAnswer() == 0)
-//                currentPage.selectAnswerFalse();
-//            else if (currentPage.getOldAnswer() == 1)
-//                currentPage.selectAnswerTrue();
 
             // Capture event onSwipeLeft
             currentPage.getView().setOnTouchListener(new OnSwipeTouchListener(this) {
@@ -197,11 +195,9 @@ public class FallCharacterizationActivity extends AppIntro implements RadioPage.
             });
 
             dialog.setNegativeButton(R.string.no_text, (dialogInterface, which) -> {
-                currentPage.clearCheck();
             });
 
             dialog.setOnCancelListener((dialogInterface) -> {
-                currentPage.clearCheck();
             });
 
             dialog.create().show();

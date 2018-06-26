@@ -9,6 +9,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.view.WindowManager;
 
+import br.edu.uepb.nutes.haniot.elderly.assessment.pages.AssessmentPage;
 import com.github.paolorotolo.appintro.AppIntro;
 
 import br.edu.uepb.nutes.haniot.R;
@@ -45,7 +46,7 @@ public class FallRiskAssessmentActivity extends AppIntro implements RadioPage.On
 
     private String[] questions;
     private boolean[] answers;
-    private RadioPage currentPage;
+    private AssessmentPage currentPage;
     private Snackbar snackbarMessageBlockedPage;
     private String elderlyId;
 
@@ -81,7 +82,7 @@ public class FallRiskAssessmentActivity extends AppIntro implements RadioPage.On
          */
         setColorTransitionsEnabled(true);
         setFadeAnimation();
-        showSeparator(true);
+        showSeparator(false);
         showSkipButton(false);
         setNextPageSwipeLock(true);
         setImmersive(true);
@@ -217,17 +218,13 @@ public class FallRiskAssessmentActivity extends AppIntro implements RadioPage.On
         if (snackbarMessageBlockedPage != null)
             snackbarMessageBlockedPage.dismiss();
 
-        if (newFragment instanceof RadioPage) {
-            currentPage = (RadioPage) newFragment;
+        if (newFragment instanceof AssessmentPage) {
+            currentPage = (AssessmentPage) newFragment;
 
             if (currentPage.getPageNumber() == PAGE_END) return;
 
             if (currentPage.isBlocked()) setNextPageSwipeLock(true);
             else setNextPageSwipeLock(false);
-
-            // Selects the last response of the current page
-            if (currentPage.getOldAnswer() != -1)
-                currentPage.setAnswer(currentPage.getOldAnswer() != 0);
 
             // Capture event onSwipeLeft
             currentPage.getView().setOnTouchListener(new OnSwipeTouchListener(this) {
@@ -242,7 +239,7 @@ public class FallRiskAssessmentActivity extends AppIntro implements RadioPage.On
 
     @Override
     public void onAnswerRadio(int page, boolean value) {
-        Log.d(TAG, "onAnswerRadio() | value: " + value + " page: " + page) ;
+        Log.d(TAG, "onAnswerRadio() | value: " + value + " page: " + page);
 
         if (page < PAGE_END) {
             answers[page] = value;
@@ -284,11 +281,11 @@ public class FallRiskAssessmentActivity extends AppIntro implements RadioPage.On
             });
 
             dialog.setNegativeButton(R.string.no_text, (dialogInterface, which) -> {
-                currentPage.clearCheck();
+                currentPage.clearAnswer();
             });
 
             dialog.setOnCancelListener((dialogInterface) -> {
-                currentPage.clearCheck();
+                currentPage.clearAnswer();
             });
 
             dialog.create().show();

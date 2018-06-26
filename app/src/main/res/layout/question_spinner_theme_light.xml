@@ -1,116 +1,115 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@android:color/white"
-    android:orientation="vertical">
+                                             xmlns:app="http://schemas.android.com/apk/res-auto"
+                                             xmlns:tools="http://schemas.android.com/tools"
+                                             android:layout_width="match_parent"
+                                             android:layout_height="match_parent"
+                                             android:background="@android:color/white"
+                                             android:orientation="vertical">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:animateLayoutChanges="true"
-        android:orientation="vertical">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:animateLayoutChanges="true"
+            android:orientation="vertical">
 
         <ImageButton
-            android:id="@+id/close_imageButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_marginEnd="@dimen/activity_vertical_margin"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:background="@android:color/transparent"
-            android:contentDescription="@string/bt_cancel"
-            app:srcCompat="@drawable/ic_action_close_light" />
+                android:id="@+id/close_imageButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginEnd="@dimen/activity_vertical_margin"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:background="@android:color/transparent"
+                android:contentDescription="@string/bt_cancel"
+                app:srcCompat="@drawable/ic_action_close_light"/>
 
         <!-- BOX TITLE -->
         <LinearLayout
-            android:id="@+id/box_title"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:padding="25dp">
+                android:id="@+id/box_title"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="25dp">
 
             <TextView
-                android:id="@+id/question_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:text="@string/risk_fall_title_group1"
-                android:textAppearance="@android:style/TextAppearance.Large"
-                android:textColor="@color/colorBlackGrey"
-                android:textStyle="bold" />
+                    android:id="@+id/question_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="@string/risk_fall_title_group1"
+                    android:textAppearance="@android:style/TextAppearance.Large"
+                    android:textColor="@color/colorBlackGrey"
+                    android:textStyle="bold"/>
 
         </LinearLayout>
         <!-- END BOX TITLE -->
 
         <!-- BOX IMAGE -->
         <LinearLayout
-            android:id="@+id/box_image"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:padding="@dimen/activity_horizontal_margin">
+                android:id="@+id/box_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="@dimen/activity_horizontal_margin">
 
             <ImageView
-                android:id="@+id/question_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:contentDescription="@string/image"
-                app:srcCompat="@drawable/coast_pain_elderly"
-                tools:ignore="ContentDescription" />
+                    android:id="@+id/question_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/image"
+                    app:srcCompat="@drawable/coast_pain_elderly"
+                    tools:ignore="ContentDescription"/>
 
         </LinearLayout>
         <!-- END BOX IMAGE -->
 
         <!-- BOX DESCRIPTION -->
         <LinearLayout
-            android:id="@+id/box_description"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:padding="25dp">
+                android:id="@+id/box_description"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="25dp">
 
             <TextView
-                android:id="@+id/question_description"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:text="@string/risk_fall_description_q1"
-                android:textAppearance="@android:style/TextAppearance.Medium"
-                android:textColor="@color/colorBlackGrey" />
+                    android:id="@+id/question_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="@string/risk_fall_description_q1"
+                    android:textAppearance="@android:style/TextAppearance.Medium"
+                    android:textColor="@color/colorBlackGrey"/>
         </LinearLayout>
         <!-- END BOX DESCRIPTION -->
 
         <!-- BOX INPUT -->
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="70dp"
-            android:orientation="vertical"
-            android:padding="@dimen/activity_vertical_margin">
-
-            <android.support.v7.widget.AppCompatSpinner
-                android:id="@+id/answer_spinner"
-                style="@style/Widget.AppCompat.Spinner.Underlined"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:entries="@array/measurement_types_array"
-                android:padding="@dimen/activity_vertical_margin"
-                app:backgroundTint="@color/colorBlackGrey" />
+                android:layout_marginBottom="70dp"
+                android:orientation="vertical"
+                android:padding="@dimen/spinner_answer_margin">
+
+            <android.support.v7.widget.AppCompatSpinner
+                    android:id="@+id/answer_spinner"
+                    style="@style/Widget.AppCompat.Spinner.Underlined"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:entries="@array/measurement_types_array"
+                    android:padding="@dimen/activity_vertical_margin"
+                    app:backgroundTint="@color/colorBlackGrey"/>
 
         </LinearLayout>
-
         <!-- END BOX INPUT -->
 
     </LinearLayout>

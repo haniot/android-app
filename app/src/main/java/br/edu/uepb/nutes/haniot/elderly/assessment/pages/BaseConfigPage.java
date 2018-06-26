@@ -161,5 +161,20 @@ public abstract class BaseConfigPage<T> {
         return (T) this;
     }
 
+    @Override
+    public String toString() {
+        return "BaseConfigPage{" +
+                "layout=" + layout +
+                ", title=" + title +
+                ", description=" + description +
+                ", image=" + image +
+                ", backgroundColor=" + backgroundColor +
+                ", titleColor=" + titleColor +
+                ", descriptionColor=" + descriptionColor +
+                ", pageNumber=" + pageNumber +
+                ", drawableClose=" + drawableClose +
+                '}';
+    }
+
     public abstract Fragment build();
 }
