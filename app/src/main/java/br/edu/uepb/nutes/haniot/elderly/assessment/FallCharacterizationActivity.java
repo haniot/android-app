@@ -1,7 +1,6 @@
 package br.edu.uepb.nutes.haniot.elderly.assessment;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -11,7 +10,7 @@ import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.WindowManager;
 
-import br.edu.uepb.nutes.haniot.elderly.assessment.pages.PageSpinner;
+import br.edu.uepb.nutes.haniot.elderly.assessment.pages.SpinnerPage;
 
 import com.github.paolorotolo.appintro.AppIntro;
 
@@ -21,7 +20,7 @@ import java.util.Arrays;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.elderly.ElderlyRegisterActivity;
 import br.edu.uepb.nutes.haniot.elderly.assessment.pages.OnSwipeTouchListener;
-import br.edu.uepb.nutes.haniot.elderly.assessment.pages.PageRadio;
+import br.edu.uepb.nutes.haniot.elderly.assessment.pages.RadioPage;
 
 /**
  * FallCharacterizationActivity implementation.
@@ -30,7 +29,7 @@ import br.edu.uepb.nutes.haniot.elderly.assessment.pages.PageRadio;
  * @version 1.0
  * @copyright Copyright (c) 2018, NUTES UEPB
  */
-public class FallCharacterizationActivity extends AppIntro implements PageRadio.OnAnswerRadioListener, PageSpinner.OnAnswerSpinnerListener {
+public class FallCharacterizationActivity extends AppIntro implements RadioPage.OnAnswerRadioListener, SpinnerPage.OnAnswerSpinnerListener {
     private final String TAG = "FallRiskAssActivity";
 
     public static final String EXTRA_QUESTIONS = "extra_questions";
@@ -51,7 +50,7 @@ public class FallCharacterizationActivity extends AppIntro implements PageRadio.
 
     private String[] questions;
     private boolean[] answers;
-    private PageRadio currentPage;
+    private RadioPage currentPage;
     private Snackbar snackbarMessageBlockedPage;
     private String elderlyId;
 
@@ -94,7 +93,7 @@ public class FallCharacterizationActivity extends AppIntro implements PageRadio.
         setImmersive(true);
 
         // page 1
-        addSlide(new PageRadio.ConfigPage()
+        addSlide(new RadioPage.ConfigPage()
                 .title(R.string.risk_fall_description_q1)
                 .description(R.string.risk_fall_description_q5)
                 .image(R.drawable.elderly_happy)
@@ -103,7 +102,7 @@ public class FallCharacterizationActivity extends AppIntro implements PageRadio.
                 .pageNumber(PAGE_1)
                 .build());
 
-        addSlide(new PageSpinner.ConfigPage()
+        addSlide(new SpinnerPage.ConfigPage()
                 .title(R.string.title_save_captured_data)
                 .description(R.string.risk_fall_description_q2)
                 .backgroundColor(ContextCompat.getColor(this, R.color.colorBlackGrey))
@@ -112,7 +111,7 @@ public class FallCharacterizationActivity extends AppIntro implements PageRadio.
                 .pageNumber(PAGE_4)
                 .build());
 
-        addSlide(new PageSpinner.ConfigPage()
+        addSlide(new SpinnerPage.ConfigPage()
                 .layout(R.layout.question_spinner_theme_light)
                 .title(R.string.risk_fall_description_q9)
                 .image(R.drawable.fall_elderly)
@@ -147,8 +146,8 @@ public class FallCharacterizationActivity extends AppIntro implements PageRadio.
         if (snackbarMessageBlockedPage != null)
             snackbarMessageBlockedPage.dismiss();
 
-        if (newFragment instanceof PageRadio) {
-            currentPage = (PageRadio) newFragment;
+        if (newFragment instanceof RadioPage) {
+            currentPage = (RadioPage) newFragment;
 
             if (currentPage.getPageNumber() == PAGE_END) return;
 
@@ -233,8 +232,8 @@ public class FallCharacterizationActivity extends AppIntro implements PageRadio.
     }
 
     @Override
-    public void onPageClose() {
-        Log.d(TAG, "onPageClose");
+    public void onClosePage() {
+        Log.d(TAG, "onClosePage");
     }
 
 

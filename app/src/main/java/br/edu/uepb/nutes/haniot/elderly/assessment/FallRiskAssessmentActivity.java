@@ -14,7 +14,7 @@ import com.github.paolorotolo.appintro.AppIntro;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.elderly.ElderlyRegisterActivity;
 import br.edu.uepb.nutes.haniot.elderly.assessment.pages.OnSwipeTouchListener;
-import br.edu.uepb.nutes.haniot.elderly.assessment.pages.PageRadio;
+import br.edu.uepb.nutes.haniot.elderly.assessment.pages.RadioPage;
 import br.edu.uepb.nutes.haniot.utils.Log;
 
 /**
@@ -24,7 +24,7 @@ import br.edu.uepb.nutes.haniot.utils.Log;
  * @version 1.0
  * @copyright Copyright (c) 2018, NUTES UEPB
  */
-public class FallRiskAssessmentActivity extends AppIntro implements PageRadio.OnAnswerRadioListener {
+public class FallRiskAssessmentActivity extends AppIntro implements RadioPage.OnAnswerRadioListener {
     private final String TAG = "FallRiskAssActivity";
 
     public static final String EXTRA_QUESTIONS = "extra_questions";
@@ -45,7 +45,7 @@ public class FallRiskAssessmentActivity extends AppIntro implements PageRadio.On
 
     private String[] questions;
     private boolean[] answers;
-    private PageRadio currentPage;
+    private RadioPage currentPage;
     private Snackbar snackbarMessageBlockedPage;
     private String elderlyId;
 
@@ -89,7 +89,7 @@ public class FallRiskAssessmentActivity extends AppIntro implements PageRadio.On
         // PAGES THEME DARK /layout/question_radio_theme_dark.xml
 
         // page 1
-        addSlide(new PageRadio.ConfigPage()
+        addSlide(new RadioPage.ConfigPage()
                 .title(R.string.risk_fall_title_group1)
                 .description(R.string.risk_fall_description_q1)
                 .image(R.drawable.fall_elderly)
@@ -99,7 +99,7 @@ public class FallRiskAssessmentActivity extends AppIntro implements PageRadio.On
                 .build());
 
         // page 2
-        addSlide(new PageRadio.ConfigPage()
+        addSlide(new RadioPage.ConfigPage()
                 .title(R.string.risk_fall_title_group2)
                 .description(R.string.risk_fall_description_q2)
                 .image(R.drawable.walker_elderly)
@@ -109,7 +109,7 @@ public class FallRiskAssessmentActivity extends AppIntro implements PageRadio.On
                 .build());
 
         // page 3
-        addSlide(new PageRadio.ConfigPage()
+        addSlide(new RadioPage.ConfigPage()
                 .title(R.string.risk_fall_title_group3)
                 .description(R.string.risk_fall_description_q3)
                 .image(R.drawable.medications_elderly)
@@ -119,7 +119,7 @@ public class FallRiskAssessmentActivity extends AppIntro implements PageRadio.On
                 .build());
 
         // page 4
-        addSlide(new PageRadio.ConfigPage()
+        addSlide(new RadioPage.ConfigPage()
                 .title(R.string.risk_fall_title_group3)
                 .description(R.string.risk_fall_description_q4)
                 .image(R.drawable.medications_2_elderly)
@@ -129,7 +129,7 @@ public class FallRiskAssessmentActivity extends AppIntro implements PageRadio.On
                 .build());
 
         // page 5
-        addSlide(new PageRadio.ConfigPage()
+        addSlide(new RadioPage.ConfigPage()
                 .title(R.string.risk_fall_title_group4)
                 .description(R.string.risk_fall_description_q5)
                 .image(R.drawable.coast_pain_elderly)
@@ -139,7 +139,7 @@ public class FallRiskAssessmentActivity extends AppIntro implements PageRadio.On
                 .build());
 
         // page 6
-        addSlide(new PageRadio.ConfigPage()
+        addSlide(new RadioPage.ConfigPage()
                 .title(R.string.risk_fall_title_group5)
                 .description(R.string.risk_fall_description_q6)
                 .image(R.drawable.daily_activity_elderly)
@@ -149,7 +149,7 @@ public class FallRiskAssessmentActivity extends AppIntro implements PageRadio.On
                 .build());
 
         // page 7
-        addSlide(new PageRadio.ConfigPage()
+        addSlide(new RadioPage.ConfigPage()
                 .title(R.string.risk_fall_title_group6)
                 .description(R.string.risk_fall_description_q7)
                 .image(R.drawable.difficulty_seeing_elderly)
@@ -159,7 +159,7 @@ public class FallRiskAssessmentActivity extends AppIntro implements PageRadio.On
                 .build());
 
         // page 8
-        addSlide(new PageRadio.ConfigPage()
+        addSlide(new RadioPage.ConfigPage()
                 .title(R.string.risk_fall_title_group6)
                 .description(R.string.risk_fall_description_q8)
                 .image(R.drawable.hearing_elderly)
@@ -169,7 +169,7 @@ public class FallRiskAssessmentActivity extends AppIntro implements PageRadio.On
                 .build());
 
         // page 9
-        addSlide(new PageRadio.ConfigPage()
+        addSlide(new RadioPage.ConfigPage()
                 .title(R.string.risk_fall_title_group7)
                 .description(R.string.risk_fall_description_q9)
                 .image(R.drawable.physical_activity_elderly)
@@ -179,7 +179,7 @@ public class FallRiskAssessmentActivity extends AppIntro implements PageRadio.On
                 .build());
 
         // page 10
-        addSlide(new PageRadio.ConfigPage()
+        addSlide(new RadioPage.ConfigPage()
                 .title(R.string.risk_fall_title_group8)
                 .description(R.string.risk_fall_description_q10)
                 .image(R.drawable.abajur)
@@ -189,7 +189,7 @@ public class FallRiskAssessmentActivity extends AppIntro implements PageRadio.On
                 .build());
 
         // page end
-        addSlide(new PageRadio.ConfigPage()
+        addSlide(new RadioPage.ConfigPage()
                 .layout(R.layout.fragment_elderly_fall_risk_end)
                 .pageNumber(PAGE_END)
                 .build());
@@ -217,8 +217,8 @@ public class FallRiskAssessmentActivity extends AppIntro implements PageRadio.On
         if (snackbarMessageBlockedPage != null)
             snackbarMessageBlockedPage.dismiss();
 
-        if (newFragment instanceof PageRadio) {
-            currentPage = (PageRadio) newFragment;
+        if (newFragment instanceof RadioPage) {
+            currentPage = (RadioPage) newFragment;
 
             if (currentPage.getPageNumber() == PAGE_END) return;
 
@@ -254,7 +254,7 @@ public class FallRiskAssessmentActivity extends AppIntro implements PageRadio.On
     }
 
     @Override
-    public void onPageClose() {
+    public void onClosePage() {
         showMessageCancel();
     }
 

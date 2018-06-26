@@ -25,14 +25,14 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * PageSpinner implementation.
+ * SpinnerPage implementation.
  *
  * @author Douglas Rafael <douglas.rafael@nutes.uepb.edu.br>
  * @version 1.0
  * @copyright Copyright (c) 2018, NUTES UEPB
  */
-public class PageSpinner extends BasePage implements ISlideBackgroundColorHolder {
-    private final String TAG = "PageSpinner";
+public class SpinnerPage extends BasePage implements ISlideBackgroundColorHolder {
+    private final String TAG = "SpinnerPage";
 
     protected static final String ARG_CONFIGS_PAGE = "arg_configs_page";
 
@@ -45,17 +45,17 @@ public class PageSpinner extends BasePage implements ISlideBackgroundColorHolder
     @BindView(R.id.answer_spinner)
     Spinner answerSpinner;
 
-    public PageSpinner() {
+    public SpinnerPage() {
     }
 
     /**
-     * New PageRadio instance.
+     * New RadioPage instance.
      *
      * @param configPage
-     * @return PageSpinner
+     * @return SpinnerPage
      */
-    private static PageSpinner newInstance(ConfigPage configPage) {
-        PageSpinner pageFragment = new PageSpinner();
+    private static SpinnerPage newInstance(ConfigPage configPage) {
+        SpinnerPage pageFragment = new SpinnerPage();
         Bundle args = new Bundle();
         args.putSerializable(ARG_CONFIGS_PAGE, configPage);
 
@@ -132,7 +132,7 @@ public class PageSpinner extends BasePage implements ISlideBackgroundColorHolder
         if (answerSpinner == null) return;
 
         if (closeImageButton != null)
-            closeImageButton.setOnClickListener(e -> mListener.onPageClose());
+            closeImageButton.setOnClickListener(e -> mListener.onClosePage());
 
     }
 
@@ -216,7 +216,7 @@ public class PageSpinner extends BasePage implements ISlideBackgroundColorHolder
          * @param items {@link List<String>}
          * @return ConfigPage
          */
-        public PageSpinner.ConfigPage items(List<String> items) {
+        public SpinnerPage.ConfigPage items(List<String> items) {
             this.items = items;
             return this;
         }
@@ -227,7 +227,7 @@ public class PageSpinner extends BasePage implements ISlideBackgroundColorHolder
          * @param colorTextItemSelected
          * @return ConfigPage
          */
-        public PageSpinner.ConfigPage colorTextItemSelected(int colorTextItemSelected) {
+        public SpinnerPage.ConfigPage colorTextItemSelected(int colorTextItemSelected) {
             this.colorTextItemSelected = colorTextItemSelected;
             return this;
         }
@@ -235,7 +235,7 @@ public class PageSpinner extends BasePage implements ISlideBackgroundColorHolder
 
         @Override
         public Fragment build() {
-            return PageSpinner.newInstance(this);
+            return SpinnerPage.newInstance(this);
         }
     }
 
@@ -293,7 +293,7 @@ public class PageSpinner extends BasePage implements ISlideBackgroundColorHolder
      * @version 1.0
      * @copyright Copyright (c) 2017, NUTES UEPB
      */
-    public interface OnAnswerSpinnerListener extends OnPageCloseListener {
+    public interface OnAnswerSpinnerListener extends OnClosePageListener {
         void onAnswerSpinner(int page, String value, int indexValue);
     }
 }

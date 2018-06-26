@@ -3,7 +3,6 @@ package br.edu.uepb.nutes.haniot.elderly.assessment.pages;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.ColorInt;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
@@ -14,8 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 
-import com.github.paolorotolo.appintro.AppIntro;
-import com.github.paolorotolo.appintro.AppIntroViewPager;
 import com.github.paolorotolo.appintro.ISlideBackgroundColorHolder;
 
 import br.edu.uepb.nutes.haniot.R;
@@ -25,14 +22,14 @@ import butterknife.ButterKnife;
 import java.io.Serializable;
 
 /**
- * PageRadio implementation.
+ * RadioPage implementation.
  *
  * @author Douglas Rafael <douglas.rafael@nutes.uepb.edu.br>
  * @version 1.0
  * @copyright Copyright (c) 2018, NUTES UEPB
  */
-public class PageRadio extends BasePage implements ISlideBackgroundColorHolder {
-    private final String TAG = "PageRadio";
+public class RadioPage extends BasePage implements ISlideBackgroundColorHolder {
+    private final String TAG = "RadioPage";
 
     protected static final String ARG_CONFIGS_PAGE = "arg_configs_page";
 
@@ -50,17 +47,17 @@ public class PageRadio extends BasePage implements ISlideBackgroundColorHolder {
     @BindView(R.id.right_radioButton)
     RadioButton radioRight;
 
-    public PageRadio() {
+    public RadioPage() {
     }
 
     /**
-     * New PageRadio instance.
+     * New RadioPage instance.
      *
      * @param configPage
-     * @return PageRadio
+     * @return RadioPage
      */
-    private static PageRadio newInstance(ConfigPage configPage) {
-        PageRadio pageFragment = new PageRadio();
+    private static RadioPage newInstance(ConfigPage configPage) {
+        RadioPage pageFragment = new RadioPage();
         Bundle args = new Bundle();
         args.putSerializable(ARG_CONFIGS_PAGE, configPage);
 
@@ -150,7 +147,7 @@ public class PageRadio extends BasePage implements ISlideBackgroundColorHolder {
         if (radioGroup == null) return;
 
         if (closeImageButton != null)
-            closeImageButton.setOnClickListener(e -> mListener.onPageClose());
+            closeImageButton.setOnClickListener(e -> mListener.onClosePage());
 
         radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
             if (actionClearCheck) return;
@@ -310,7 +307,7 @@ public class PageRadio extends BasePage implements ISlideBackgroundColorHolder {
 
         @Override
         public Fragment build() {
-            return PageRadio.newInstance(this);
+            return RadioPage.newInstance(this);
         }
     }
 
@@ -321,7 +318,7 @@ public class PageRadio extends BasePage implements ISlideBackgroundColorHolder {
      * @version 1.0
      * @copyright Copyright (c) 2017, NUTES UEPB
      */
-    public interface OnAnswerRadioListener extends OnPageCloseListener {
+    public interface OnAnswerRadioListener extends OnClosePageListener {
         void onAnswerRadio(int page, boolean value);
     }
 }
