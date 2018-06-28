@@ -1,31 +1,21 @@
-package br.edu.uepb.nutes.haniot.elderly.assessment;
+package br.edu.uepb.nutes.haniot.elderly;
 
 import android.content.Intent;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.view.WindowManager;
-
-import br.edu.uepb.nutes.haniot.elderly.assessment.pages.AssessmentPage;
-import com.github.paolorotolo.appintro.AppIntro;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.elderly.ElderlyRegisterActivity;
-import br.edu.uepb.nutes.haniot.elderly.assessment.pages.OnSwipeTouchListener;
-import br.edu.uepb.nutes.haniot.elderly.assessment.pages.RadioPage;
+import br.edu.uepb.nutes.haniot.survey.base.BaseSurvey;
+import br.edu.uepb.nutes.haniot.survey.pages.RadioPage;
 import br.edu.uepb.nutes.haniot.utils.Log;
 
 /**
- * FallRiskAssessmentActivity implementation.
+ * FallRiskActivity implementation.
  *
  * @author Douglas Rafael <douglas.rafael@nutes.uepb.edu.br>
  * @version 1.0
  * @copyright Copyright (c) 2018, NUTES UEPB
  */
-public class FallRiskAssessmentActivity extends AppIntro implements RadioPage.OnAnswerRadioListener {
+public class FallRiskActivity extends BaseSurvey implements RadioPage.OnRadioListener {
     private final String TAG = "FallRiskAssActivity";
 
     public static final String EXTRA_QUESTIONS = "extra_questions";
@@ -42,61 +32,38 @@ public class FallRiskAssessmentActivity extends AppIntro implements RadioPage.On
     private final int PAGE_8 = 7;
     private final int PAGE_9 = 8;
     private final int PAGE_10 = 9;
-    private final int PAGE_END = 10;
 
     private String[] questions;
     private boolean[] answers;
-    private AssessmentPage currentPage;
-    private Snackbar snackbarMessageBlockedPage;
+
     private String elderlyId;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
+    public void initView() {
         questions = getResources().getStringArray(R.array.risk_questions_array);
         answers = new boolean[10];
 
         Intent it = getIntent();
         elderlyId = it.getStringExtra(ElderlyRegisterActivity.EXTRA_ELDERLY_ID);
 
-        initComponents();
-    }
-
-    /**
-     * Initialize components.
-     */
-    private void initComponents() {
         addPages();
     }
 
     /**
      * Add the slides.
+     * <p>
+     * AGES THEME DARK /layout/question_radio_theme_dark.xml
      */
     private void addPages() {
-        /**
-         * Config pages.
-         */
-        setColorTransitionsEnabled(true);
-        setFadeAnimation();
-        showSeparator(false);
-        showSkipButton(false);
-        setNextPageSwipeLock(true);
-        setImmersive(true);
-
-        // PAGES THEME DARK /layout/question_radio_theme_dark.xml
-
         // page 1
         addSlide(new RadioPage.ConfigPage()
                 .title(R.string.risk_fall_title_group1)
                 .description(R.string.risk_fall_description_q1)
                 .image(R.drawable.fall_elderly)
+                .answerInit(true)
                 .backgroundColor(ContextCompat.getColor(this, R.color.colorPink))
                 .buttonClose(R.drawable.ic_action_close)
-                .pageNumber(PAGE_2)
+                .pageNumber(PAGE_1)
                 .build());
 
         // page 2
@@ -106,6 +73,7 @@ public class FallRiskAssessmentActivity extends AppIntro implements RadioPage.On
                 .image(R.drawable.walker_elderly)
                 .backgroundColor(ContextCompat.getColor(this, R.color.colorPurple))
                 .buttonClose(R.drawable.ic_action_close)
+                .answerInit(true)
                 .pageNumber(PAGE_2)
                 .build());
 
@@ -116,6 +84,7 @@ public class FallRiskAssessmentActivity extends AppIntro implements RadioPage.On
                 .image(R.drawable.medications_elderly)
                 .backgroundColor(ContextCompat.getColor(this, R.color.colorLightBlue))
                 .buttonClose(R.drawable.ic_action_close)
+                .answerInit(false)
                 .pageNumber(PAGE_3)
                 .build());
 
@@ -136,6 +105,7 @@ public class FallRiskAssessmentActivity extends AppIntro implements RadioPage.On
                 .image(R.drawable.coast_pain_elderly)
                 .backgroundColor(ContextCompat.getColor(this, R.color.colorLightGreen))
                 .buttonClose(R.drawable.ic_action_close)
+                .answerInit(false)
                 .pageNumber(PAGE_5)
                 .build());
 
@@ -192,74 +162,34 @@ public class FallRiskAssessmentActivity extends AppIntro implements RadioPage.On
         // page end
         addSlide(new RadioPage.ConfigPage()
                 .layout(R.layout.fragment_elderly_fall_risk_end)
-                .pageNumber(PAGE_END)
+                .pageNumber(super.PAGE_END)
                 .build());
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
-    @Override
-    public void onSkipPressed(Fragment currentFragment) {
-        super.onSkipPressed(currentFragment);
-    }
-
-    @Override
-    public void onDonePressed(Fragment currentFragment) {
-        super.onDonePressed(currentFragment);
-    }
-
-    @Override
-    public void onSlideChanged(@Nullable Fragment oldFragment, @Nullable Fragment newFragment) {
-        super.onSlideChanged(oldFragment, newFragment);
-
-        if (snackbarMessageBlockedPage != null)
-            snackbarMessageBlockedPage.dismiss();
-
-        if (newFragment instanceof AssessmentPage) {
-            currentPage = (AssessmentPage) newFragment;
-
-            if (currentPage.getPageNumber() == PAGE_END) return;
-
-            if (currentPage.isBlocked()) setNextPageSwipeLock(true);
-            else setNextPageSwipeLock(false);
-
-            // Capture event onSwipeLeft
-            currentPage.getView().setOnTouchListener(new OnSwipeTouchListener(this) {
-                @Override
-                public void onSwipeLeft() {
-                    super.onSwipeLeft();
-                    if (currentPage.isBlocked()) showMessageBlocked();
-                }
-            });
-        }
     }
 
     @Override
     public void onAnswerRadio(int page, boolean value) {
         Log.d(TAG, "onAnswerRadio() | value: " + value + " page: " + page);
 
-        if (page < PAGE_END) {
+        if (page != super.PAGE_END) {
             answers[page] = value;
+            currentPage.nextPage();
             return;
         }
 
-        if (value) processAssessment();// End result
-        else showMessageCancel();// Cancel result
+        if (value) this.processAssessment();// End result
+        else super.showMessageCancel();// Cancel result
     }
 
     @Override
     public void onClosePage() {
-        showMessageCancel();
+        super.showMessageCancel();
     }
 
     /**
      * Process result assessment.
      */
     private void processAssessment() {
-        Intent intent = new Intent(this, FallRiskAssessmentResultActivity.class);
+        Intent intent = new Intent(this, FallRiskResultActivity.class);
         intent.putExtra(EXTRA_ANSWERS, answers);
         intent.putExtra(EXTRA_QUESTIONS, questions);
         intent.putExtra(EXTRA_ELDERLY_ID, elderlyId);
@@ -268,46 +198,5 @@ public class FallRiskAssessmentActivity extends AppIntro implements RadioPage.On
         finish();
     }
 
-    /**
-     * Show dialog mesage cancel.
-     */
-    private void showMessageCancel() {
-        runOnUiThread(() -> {
-            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-            dialog.setMessage(getString(R.string.risk_fall_title_cancel));
-
-            dialog.setPositiveButton(R.string.yes_text, (dialogInterface, which) -> {
-                finish();
-            });
-
-            dialog.setNegativeButton(R.string.no_text, (dialogInterface, which) -> {
-                currentPage.clearAnswer();
-            });
-
-            dialog.setOnCancelListener((dialogInterface) -> {
-                currentPage.clearAnswer();
-            });
-
-            dialog.create().show();
-        });
-    }
-
-    /**
-     * Show message page blocked.
-     */
-    private void showMessageBlocked() {
-        runOnUiThread(() -> {
-            /**
-             * Create snackbar
-             */
-            snackbarMessageBlockedPage = Snackbar.make(currentPage.getView(),
-                    R.string.risk_fall_message_blocked_page,
-                    Snackbar.LENGTH_LONG);
-            snackbarMessageBlockedPage.setAction(R.string.bt_ok, (v) -> {
-                snackbarMessageBlockedPage.dismiss();
-            });
-            snackbarMessageBlockedPage.show();
-        });
-    }
 }
 

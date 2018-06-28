@@ -20,8 +20,6 @@ import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.ElderlyMonitoredAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
-import br.edu.uepb.nutes.haniot.elderly.assessment.FallCharacterizationActivity;
-import br.edu.uepb.nutes.haniot.elderly.assessment.FallRiskAssessmentActivity;
 import br.edu.uepb.nutes.haniot.model.Elderly;
 import br.edu.uepb.nutes.haniot.model.MeasurementType;
 import br.edu.uepb.nutes.haniot.server.Server;
@@ -263,6 +261,6 @@ public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRec
     @Override
     public void onItemClick(Elderly item) {
         Log.w(TAG, "onItemClick()");
-        startActivity(new Intent(getApplicationContext(), FallRiskAssessmentActivity.class));
+        startActivity(new Intent(getApplicationContext(), FallRiskActivity.class));
     }
 }

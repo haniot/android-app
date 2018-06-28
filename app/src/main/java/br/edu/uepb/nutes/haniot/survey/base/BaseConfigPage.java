@@ -1,4 +1,4 @@
-package br.edu.uepb.nutes.haniot.elderly.assessment.pages;
+package br.edu.uepb.nutes.haniot.survey.base;
 
 import android.support.annotation.ColorInt;
 import android.support.annotation.DrawableRes;
@@ -15,7 +15,7 @@ import android.support.v4.app.Fragment;
  * @copyright Copyright (c) 2018, NUTES UEPB
  */
 public abstract class BaseConfigPage<T> {
-    protected int layout,
+    public int layout,
             title,
             description,
             image,

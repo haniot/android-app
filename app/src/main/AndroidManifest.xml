@@ -105,15 +105,15 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeSecondary" />
         <activity
-            android:name=".elderly.assessment.FallRiskAssessmentActivity"
+            android:name=".elderly.FallRiskActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeSecondary" />
         <activity
-            android:name=".elderly.assessment.FallRiskAssessmentResultActivity"
+            android:name=".elderly.FallRiskResultActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeSecondary" />
         <activity
-                android:name=".elderly.assessment.FallCharacterizationActivity"
+                android:name=".elderly.FallCharacterizationActivity"
                 android:screenOrientation="portrait"
                 android:theme="@style/AppThemeSecondary" />
         <!-- END ELDERLY -->

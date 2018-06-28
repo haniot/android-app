@@ -1,4 +1,4 @@
-package br.edu.uepb.nutes.haniot.elderly.assessment.pages;
+package br.edu.uepb.nutes.haniot.survey.base;
 
 /**
  * OnClosePageListener implementation.

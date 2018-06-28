@@ -12,7 +12,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.elderly.assessment.FallRiskAssessmentActivity;
 import br.edu.uepb.nutes.haniot.model.Elderly;
 import br.edu.uepb.nutes.haniot.utils.Log;
 import butterknife.BindView;
@@ -98,7 +97,7 @@ public class ElderlyRegisterActivity extends AppCompatActivity implements
             dialog.setMessage(getResources().getString(R.string.elderly_register_success));
 
             dialog.setPositiveButton(R.string.yes_text, (dialogInterface, which) -> {
-                Intent it = new Intent(this, FallRiskAssessmentActivity.class);
+                Intent it = new Intent(this, FallRiskActivity.class);
                 it.putExtra(EXTRA_ELDERLY_ID, elderly.get_id());
                 startActivity(it);
             });

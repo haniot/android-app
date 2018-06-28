@@ -1,4 +1,4 @@
-package br.edu.uepb.nutes.haniot.elderly.assessment;
+package br.edu.uepb.nutes.haniot.elderly;
 
 import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
@@ -23,19 +23,18 @@ import org.json.JSONObject;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
-import br.edu.uepb.nutes.haniot.elderly.ElderlyMonitoredActivity;
 import br.edu.uepb.nutes.haniot.server.Server;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * FallRiskAssessmentResultActivity implementation.
+ * FallRiskResultActivity implementation.
  *
  * @author Douglas Rafael <douglas.rafael@nutes.uepb.edu.br>
  * @version 1.0
  * @copyright Copyright (c) 2018, NUTES UEPB
  */
-public class FallRiskAssessmentResultActivity extends AppCompatActivity {
+public class FallRiskResultActivity extends AppCompatActivity {
     private final String TAG = "FallRiskResultActivity";
 
     private final int LOW_RISK = 1;
@@ -83,7 +82,7 @@ public class FallRiskAssessmentResultActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        setContentView(R.layout.activity_fall_risk_assessment_result);
+        setContentView(R.layout.activity_fall_risk_survey_result);
         ButterKnife.bind(this);
 
         server = Server.getInstance(this);
@@ -92,9 +91,9 @@ public class FallRiskAssessmentResultActivity extends AppCompatActivity {
          * Get data
          */
         Intent it = getIntent();
-        String questions[] = it.getStringArrayExtra(FallRiskAssessmentActivity.EXTRA_QUESTIONS);
-        boolean answers[] = it.getBooleanArrayExtra(FallRiskAssessmentActivity.EXTRA_ANSWERS);
-        elderlyId = it.getStringExtra(FallRiskAssessmentActivity.EXTRA_ELDERLY_ID);
+        String questions[] = it.getStringArrayExtra(FallRiskActivity.EXTRA_QUESTIONS);
+        boolean answers[] = it.getBooleanArrayExtra(FallRiskActivity.EXTRA_ANSWERS);
+        elderlyId = it.getStringExtra(FallRiskActivity.EXTRA_ELDERLY_ID);
 
         assessmentResult = calculateResult(answers); // calculate result
 

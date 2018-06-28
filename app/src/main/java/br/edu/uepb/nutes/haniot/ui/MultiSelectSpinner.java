@@ -3,11 +3,15 @@ package br.edu.uepb.nutes.haniot.ui;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
+import android.support.annotation.ColorInt;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatSpinner;
 import android.text.InputType;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -15,8 +19,11 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.SpinnerAdapter;
+import android.widget.TextView;
 
+import java.io.ObjectStreamException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -34,10 +41,12 @@ public class MultiSelectSpinner extends AppCompatSpinner implements DialogInterf
     private List<Boolean> _itemsSelected = null;
     private Context context;
     private AlertDialog.Builder dialogBuilder;
-    private ArrayAdapter<String> mAdapter;
+    private CustomSpinnerAdapter mAdapter;
     private String messageDialogEmpty = "";
     private String hintMessage = null;
     private String title = null;
+    private int colorTextItemSelected = 0;
+    private OnMultiSelectedListener mListener;
 
     /**
      * Constructor for use when instantiating directly.
@@ -65,11 +74,12 @@ public class MultiSelectSpinner extends AppCompatSpinner implements DialogInterf
     public void init() {
         Log.d(TAG, "init() multi spinner");
         dialogBuilder = new AlertDialog.Builder(context);
-        mAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item);
         _items = new ArrayList<>();
         _itemsSelected = new ArrayList<>();
 
+        mAdapter = new CustomSpinnerAdapter(context, android.R.layout.simple_spinner_item, _items);
         super.setAdapter(mAdapter);
+
     }
 
     @Override
@@ -97,11 +107,10 @@ public class MultiSelectSpinner extends AppCompatSpinner implements DialogInterf
         String[] _arrayItems = itemsToArray();
         boolean[] _arraySelectedItems = itemsSelectedToArray();
         dialogBuilder.setMultiChoiceItems(_arrayItems, _arraySelectedItems, this);
-        dialogBuilder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
+        dialogBuilder.setPositiveButton(android.R.string.ok, (dialog, which) -> dialog.cancel());
+        dialogBuilder.setOnDismissListener(dialog -> {
+            if (mListener != null)
+                mListener.onMultiSelectedItems(this.getSelectedItems(), this.getIndexSelectedItems());
         });
         dialogBuilder.show();
         return true;
@@ -133,18 +142,15 @@ public class MultiSelectSpinner extends AppCompatSpinner implements DialogInterf
         return result;
     }
 
-    @Override
-    public void setAdapter(SpinnerAdapter adapter) {
-        throw new RuntimeException("setAdapter is not supported by MultiSelectSpinner.");
-    }
-
     /**
      * Add items.
      *
      * @param items {@link List<String>}
      * @return MultiSelectSpinner
      */
-    public MultiSelectSpinner items(List<String> items) {
+    public MultiSelectSpinner items(@NonNull List<String> items) {
+        if (items == null) throw new IllegalArgumentException("List<String> items is required!");
+
         // Remove string invalid
         items.remove(new String());
         if (items == null || items.isEmpty())
@@ -165,6 +171,8 @@ public class MultiSelectSpinner extends AppCompatSpinner implements DialogInterf
      * @return MultiSelectSpinner
      */
     public MultiSelectSpinner items(String[] items) {
+        if (items == null) throw new IllegalArgumentException("String[] items is required!");
+
         List<String> result = new ArrayList<>(items.length);
         for (String s : items) result.add(s);
 
@@ -211,6 +219,11 @@ public class MultiSelectSpinner extends AppCompatSpinner implements DialogInterf
         return this;
     }
 
+    public MultiSelectSpinner colorTextItemSelected(@ColorInt int colorTextItemSelected) {
+        this.colorTextItemSelected = colorTextItemSelected;
+        return this;
+    }
+
     /**
      * Add title in dialog.
      *
@@ -227,6 +240,13 @@ public class MultiSelectSpinner extends AppCompatSpinner implements DialogInterf
         if (hintMessage != null) mAdapter.add(hintMessage);
 
         if (title != null) dialogBuilder.setTitle(title);
+    }
+
+    /**
+     * Clear
+     */
+    public void clear() {
+        build();
     }
 
     /**
@@ -257,11 +277,29 @@ public class MultiSelectSpinner extends AppCompatSpinner implements DialogInterf
     }
 
     /**
+     * Selects items according to values from list passed as parameter
+     *
+     * @param selections {@link List}
+     */
+    public void selection(List selections) {
+        if (selections != null && selections.size() > 0) {
+            if (selections.get(0) instanceof Integer) {
+                int[] _selections = new int[selections.size()];
+                for (int i = 0; i < selections.size(); i++)
+                    _selections[i] = (int) selections.get(i);
+                internalSelection(_selections);
+            } else if (selections.get(0) instanceof String) {
+                internalSelection(selections);
+            }
+        }
+    }
+
+    /**
      * Select array items in list.
      *
      * @param selectedIndicies
      */
-    public void selection(int[] selectedIndicies) {
+    public void internalSelection(int[] selectedIndicies) {
         for (int i = 0; i < _itemsSelected.size(); i++)
             _itemsSelected.set(i, false);
 
@@ -277,9 +315,9 @@ public class MultiSelectSpinner extends AppCompatSpinner implements DialogInterf
     /**
      * Selects items according to values from list passed as parameter
      *
-     * @param selection {@link List<String>}
+     * @param selection {@link List}
      */
-    public void selection(List<String> selection) {
+    private void internalSelection(List<String> selection) {
         for (int i = 0; i < _itemsSelected.size(); i++)
             _itemsSelected.set(i, false);
 
@@ -289,8 +327,6 @@ public class MultiSelectSpinner extends AppCompatSpinner implements DialogInterf
                     _itemsSelected.set(j, true);
             }
         }
-        mAdapter.clear();
-        mAdapter.add(buildSelectedItemString());
     }
 
     /**
@@ -372,6 +408,8 @@ public class MultiSelectSpinner extends AppCompatSpinner implements DialogInterf
             } else {
                 addItem(valueItem, true);
                 callback.onSuccess(valueItem);
+                if (mListener != null)
+                    mListener.onMultiSelectedItems(this.getSelectedItems(), this.getIndexSelectedItems());
             }
             closeKeyBoard(input);
         });
@@ -397,6 +435,15 @@ public class MultiSelectSpinner extends AppCompatSpinner implements DialogInterf
     }
 
     /**
+     * Set OnMultiSelectedListener.
+     *
+     * @param listener {@link OnMultiSelectedListener}
+     */
+    public void setOnMultiSelectedListener(OnMultiSelectedListener listener) {
+        this.mListener = listener;
+    }
+
+    /**
      * Open Keyboard.
      *
      * @param view
@@ -419,6 +466,47 @@ public class MultiSelectSpinner extends AppCompatSpinner implements DialogInterf
         inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
+
+    /**
+     * Class Custom SpinnerAdapter.
+     */
+    public class CustomSpinnerAdapter extends ArrayAdapter<String> implements SpinnerAdapter {
+
+        private final Context context;
+        private List<String> _items;
+
+        public CustomSpinnerAdapter(@NonNull Context context, int textViewResourceId, List<String> _items) {
+            super(context, textViewResourceId, _items);
+            this.context = context;
+            this._items = _items;
+        }
+
+        public int getCount() {
+            return _items.size();
+        }
+
+        public String getItem(int i) {
+            return _items.get(i);
+        }
+
+        public long getItemId(int i) {
+            return (long) i;
+        }
+
+        @Override
+        public View getView(int position, View view, ViewGroup viewgroup) {
+            TextView txt = new TextView(context);
+            txt.setGravity(Gravity.CENTER);
+            txt.setText(_items.get(position));
+            txt.setTextSize(16);
+
+            if (colorTextItemSelected != 0)
+                txt.setTextColor(colorTextItemSelected);
+
+            return txt;
+        }
+    }
+
     /**
      * Interface callback Dialog add new item.
      */
@@ -426,5 +514,9 @@ public class MultiSelectSpinner extends AppCompatSpinner implements DialogInterf
         void onSuccess(String item);
 
         void onCancel();
+    }
+
+    public interface OnMultiSelectedListener {
+        void onMultiSelectedItems(List<String> items, List<Integer> indexItems);
     }
 }

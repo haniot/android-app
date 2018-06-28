@@ -1,4 +1,4 @@
-package br.edu.uepb.nutes.haniot.elderly.assessment.pages;
+package br.edu.uepb.nutes.haniot.survey.base;
 
 import android.content.Context;
 import android.view.GestureDetector;
@@ -6,16 +6,16 @@ import android.view.MotionEvent;
 import android.view.View;
 
 /**
- * OnSwipeTouchListener implementation.
+ * OnSwipePageTouchListener implementation.
  *
  * @author Douglas Rafael <douglas.rafael@nutes.uepb.edu.br>
  * @version 1.0
  * @copyright Copyright (c) 2018, NUTES UEPB
  */
-public class OnSwipeTouchListener implements View.OnTouchListener {
+public class OnSwipePageTouchListener implements View.OnTouchListener {
     private final GestureDetector gestureDetector;
 
-    public OnSwipeTouchListener(Context context) {
+    public OnSwipePageTouchListener(Context context) {
         gestureDetector = new GestureDetector(context, new GestureListener());
     }
 

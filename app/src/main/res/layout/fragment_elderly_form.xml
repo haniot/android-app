@@ -164,7 +164,7 @@
                         <RadioGroup
                             android:id="@+id/sex_radioGroup"
                             android:layout_width="wrap_content"
-                            android:layout_marginLeft="5dp"
+                            android:layout_marginStart="5dp"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
                             android:gravity="center"
@@ -217,7 +217,7 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/elderly_input_phone"
                         android:imeOptions="actionNext"
-                        android:inputType="phone" />.
+                        android:inputType="phone" />
 
                 </LinearLayout>
                 <!-- END LAYOUT LINE 4 -->
