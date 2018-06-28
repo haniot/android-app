@@ -11,20 +11,19 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-
-import com.github.paolorotolo.appintro.AppIntro;
-import com.github.paolorotolo.appintro.ISlideBackgroundColorHolder;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.survey.base.BaseConfigPage;
 import br.edu.uepb.nutes.haniot.survey.base.BasePage;
 import br.edu.uepb.nutes.haniot.survey.base.OnClosePageListener;
 import br.edu.uepb.nutes.haniot.ui.MultiSelectSpinner;
 import butterknife.BindView;
+import com.github.paolorotolo.appintro.AppIntro;
+import com.github.paolorotolo.appintro.ISlideBackgroundColorHolder;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * SpinnerPage implementation.
@@ -47,7 +46,7 @@ public class MultiSelectSpinnerPage extends BasePage<MultiSelectSpinnerPage.Conf
 
     @Nullable
     @BindView(R.id.new_item_imageButton)
-    ImageButton addItemimageButton;
+    ImageButton addItemImageButton;
 
     @Nullable
     @BindView(R.id.box_add_item)
@@ -74,6 +73,7 @@ public class MultiSelectSpinnerPage extends BasePage<MultiSelectSpinnerPage.Conf
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        super.blockPage();
 
         // Setting default values
         super.isBlocked = true;
@@ -87,6 +87,31 @@ public class MultiSelectSpinnerPage extends BasePage<MultiSelectSpinnerPage.Conf
     }
 
     @Override
+    public void initView() {
+        if (boxAddItem != null && addItemImageButton != null) {
+            if (configPage.disableAddNewItem)
+                boxAddItem.setVisibility(View.GONE);
+        }
+
+        if (configPage.colorTextItemSelected != 0) {
+            ViewCompat.setBackgroundTintList(answerMultiSelectSpinner, ColorStateList.valueOf(configPage.colorTextItemSelected));
+            if (addItemImageButton != null)
+                ViewCompat.setBackgroundTintList(addItemImageButton, ColorStateList.valueOf(configPage.colorTextItemSelected));
+        }
+
+        answerMultiSelectSpinner
+                .title(getString(configPage.hint))
+                .hint(getString(configPage.hint))
+                .items(configPage.items)
+                .colorTextItemSelected(configPage.colorTextItemSelected)
+                .build();
+
+        // init answer
+        if (!configPage.indexAnswerInit.isEmpty())
+            setAnswer(configPage.indexAnswerInit);
+    }
+
+    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if (answerMultiSelectSpinner == null) return;
@@ -94,8 +119,8 @@ public class MultiSelectSpinnerPage extends BasePage<MultiSelectSpinnerPage.Conf
         if (closeImageButton != null)
             closeImageButton.setOnClickListener(e -> mListener.onClosePage());
 
-        if (addItemimageButton != null)
-            addItemimageButton.setOnClickListener(mListenerNewItem);
+        if (addItemImageButton != null)
+            addItemImageButton.setOnClickListener(mListenerNewItem);
 
         answerMultiSelectSpinner.setOnMultiSelectedListener((items, indexItems) -> {
             if (!indexItems.equals(oldIndexAnswerValue)) {
@@ -106,32 +131,8 @@ public class MultiSelectSpinnerPage extends BasePage<MultiSelectSpinnerPage.Conf
     }
 
     @Override
-    public void initView() {
-        if (boxAddItem != null) {
-            if (addItemimageButton != null) {
-
-            } else {
-                boxAddItem.setVisibility(View.GONE);
-            }
-        }
-
-        if (configPage.colorTextItemSelected != 0) {
-            ViewCompat.setBackgroundTintList(answerMultiSelectSpinner, ColorStateList.valueOf(configPage.colorTextItemSelected));
-            if (addItemimageButton != null)
-                ViewCompat.setBackgroundTintList(addItemimageButton, ColorStateList.valueOf(configPage.colorTextItemSelected));
-        }
-
-        answerMultiSelectSpinner
-                .title(getString(configPage.hint))
-                .hint(getString(configPage.hint))
-                .items(configPage.items)
-                .colorTextItemSelected(configPage.colorTextItemSelected)
-                .build();
-    }
-
-    @Override
     public int getLayout() {
-        return configPage.layout != 0 ? configPage.layout : R.layout.question_multi_select_spinner_theme_dark;
+        return configPage.layout != 0 ? configPage.layout : R.layout.question_multi_select_spinner;
     }
 
     @Override
@@ -151,7 +152,7 @@ public class MultiSelectSpinnerPage extends BasePage<MultiSelectSpinnerPage.Conf
         if (answerMultiSelectSpinner != null)
             answerMultiSelectSpinner.setOnItemSelectedListener(null);
         if (closeImageButton != null) closeImageButton.setOnClickListener(null);
-        if (addItemimageButton != null) addItemimageButton.setOnClickListener(null);
+        if (addItemImageButton != null) addItemImageButton.setOnClickListener(null);
     }
 
     @Override
@@ -172,7 +173,7 @@ public class MultiSelectSpinnerPage extends BasePage<MultiSelectSpinnerPage.Conf
 
     @Override
     public int getDefaultBackgroundColor() {
-        return (configPage.backgroundColor != 0) ? configPage.backgroundColor : Color.BLACK;
+        return (configPage.backgroundColor != 0) ? configPage.backgroundColor : Color.GRAY;
     }
 
     @Override
@@ -229,10 +230,14 @@ public class MultiSelectSpinnerPage extends BasePage<MultiSelectSpinnerPage.Conf
         protected List<String> items;
         protected int colorTextItemSelected;
         protected int hint;
+        protected boolean disableAddNewItem;
+        protected List<Integer> indexAnswerInit;
 
         public ConfigPage() {
             this.colorTextItemSelected = 0;
-            this.hint = R.string.survey_select_an_answer;
+            this.hint = R.string.survey_select_the_answers;
+            this.disableAddNewItem = false;
+            this.indexAnswerInit = new ArrayList<>();
         }
 
         /**
@@ -268,12 +273,35 @@ public class MultiSelectSpinnerPage extends BasePage<MultiSelectSpinnerPage.Conf
             return this;
         }
 
+        /**
+         * Disable add new item.
+         * The button to add new item will be removed from the layout.
+         *
+         * @return ConfigPage
+         */
+        public MultiSelectSpinnerPage.ConfigPage disableAddNewItem() {
+            this.disableAddNewItem = true;
+            return this;
+        }
+
+        /**
+         * Set answer init.
+         *
+         * @param indexAnswerInit
+         * @return ConfigPage
+         */
+        public MultiSelectSpinnerPage.ConfigPage answerInit(List<Integer> indexAnswerInit) {
+            this.indexAnswerInit = indexAnswerInit;
+            return this;
+        }
+
         @Override
         public String toString() {
             return "ConfigPage{" +
                     "items=" + items +
                     ", colorTextItemSelected=" + colorTextItemSelected +
                     ", hint=" + hint +
+                    ", indexAnswerInit=" + Arrays.toString(indexAnswerInit.toArray()) +
                     "} " + super.toString();
         }
 

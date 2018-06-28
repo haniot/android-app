@@ -1,0 +1,337 @@
+{
+  "_note1": "KEEP THIS FILE! Check it into a version control system (VCS) like git.",
+  "_note2": "ObjectBox manages crucial IDs for your object model. See docs for details.",
+  "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
+  "entities": [
+    {
+      "id": "1:6351991979841859710",
+      "lastPropertyId": "4:3140226396770465571",
+      "name": "Accessory",
+      "properties": [
+        {
+          "id": "1:2184368193662050568",
+          "name": "id"
+        },
+        {
+          "id": "2:714264082890376790",
+          "name": "name"
+        },
+        {
+          "id": "3:8311374945567388464",
+          "name": "description"
+        },
+        {
+          "id": "4:3140226396770465571",
+          "indexId": "1:2700452485731953814",
+          "name": "elderlyId"
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "2:8221219429062325813",
+      "lastPropertyId": "4:1204623753140230117",
+      "name": "ContextMeasurement",
+      "properties": [
+        {
+          "id": "1:5701003863065073770",
+          "name": "id"
+        },
+        {
+          "id": "2:1635262087266703516",
+          "name": "valueId"
+        },
+        {
+          "id": "3:3015304537848178369",
+          "name": "typeId"
+        },
+        {
+          "id": "4:1204623753140230117",
+          "indexId": "2:7446323312904997801",
+          "name": "measurementId"
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "3:6645853114333739189",
+      "lastPropertyId": "8:2240124984623907797",
+      "name": "Device",
+      "properties": [
+        {
+          "id": "1:4531717335494193569",
+          "name": "id"
+        },
+        {
+          "id": "2:2886483007598705672",
+          "indexId": "3:3131306017511822815",
+          "name": "_id"
+        },
+        {
+          "id": "3:2917440886681401373",
+          "name": "address"
+        },
+        {
+          "id": "4:9104621966616693597",
+          "name": "name"
+        },
+        {
+          "id": "5:3653547357489222535",
+          "name": "manufacturer"
+        },
+        {
+          "id": "6:4547131401982427272",
+          "name": "modelNumber"
+        },
+        {
+          "id": "7:4972297980510836513",
+          "name": "typeId"
+        },
+        {
+          "id": "8:2240124984623907797",
+          "indexId": "4:7312619156879076464",
+          "name": "userId"
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "4:6928582059776850",
+      "lastPropertyId": "13:8189588116827952387",
+      "name": "Elderly",
+      "properties": [
+        {
+          "id": "1:8133897969473050843",
+          "name": "id"
+        },
+        {
+          "id": "2:1657649045252905293",
+          "indexId": "5:2430158573266346515",
+          "name": "_id"
+        },
+        {
+          "id": "3:3868259037071209902",
+          "name": "name"
+        },
+        {
+          "id": "4:5622851623448218818",
+          "name": "dateOfBirth"
+        },
+        {
+          "id": "5:1328547562363770899",
+          "name": "weight"
+        },
+        {
+          "id": "6:7234946093554278569",
+          "name": "height"
+        },
+        {
+          "id": "7:5123879795295385353",
+          "name": "phone"
+        },
+        {
+          "id": "8:1095426640192461828",
+          "name": "fallRisk"
+        },
+        {
+          "id": "9:4067535791092915828",
+          "name": "sex"
+        },
+        {
+          "id": "10:3171691311036224368",
+          "name": "maritalStatus"
+        },
+        {
+          "id": "11:665107807774478799",
+          "name": "DegreeOfEducation"
+        },
+        {
+          "id": "12:3258788127469570775",
+          "name": "liveAlone"
+        },
+        {
+          "id": "13:8189588116827952387",
+          "indexId": "6:6087717481665880633",
+          "name": "userId"
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "5:7302373326731103983",
+      "lastPropertyId": "9:3098785235591605690",
+      "name": "Measurement",
+      "properties": [
+        {
+          "id": "1:8532147993402180233",
+          "name": "id"
+        },
+        {
+          "id": "2:6218238183530668645",
+          "name": "value"
+        },
+        {
+          "id": "3:572060269542371309",
+          "name": "unit"
+        },
+        {
+          "id": "4:8283677560147588071",
+          "name": "registrationDate"
+        },
+        {
+          "id": "5:7943817591945008605",
+          "name": "typeId"
+        },
+        {
+          "id": "6:8655482295531461833",
+          "name": "hasSent"
+        },
+        {
+          "id": "7:5971451792979134765",
+          "indexId": "7:4526707973555560840",
+          "name": "userId"
+        },
+        {
+          "id": "8:6769342419909380134",
+          "indexId": "8:8364187939219908296",
+          "name": "deviceId"
+        },
+        {
+          "id": "9:3098785235591605690",
+          "indexId": "9:5379326341197208006",
+          "name": "trainingId"
+        }
+      ],
+      "relations": [
+        {
+          "id": "1:6471420504852280224",
+          "name": "measurements"
+        }
+      ]
+    },
+    {
+      "id": "6:991768507598501030",
+      "lastPropertyId": "4:115996534654921919",
+      "name": "Medication",
+      "properties": [
+        {
+          "id": "1:2841828184583102555",
+          "name": "id"
+        },
+        {
+          "id": "2:132561176118484344",
+          "name": "name"
+        },
+        {
+          "id": "3:771911169622833653",
+          "name": "description"
+        },
+        {
+          "id": "4:115996534654921919",
+          "indexId": "10:359944731916448226",
+          "name": "elderlyId"
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "7:5384229286593155750",
+      "lastPropertyId": "7:7209028922654231656",
+      "name": "Training",
+      "properties": [
+        {
+          "id": "1:7535073167314314823",
+          "name": "id"
+        },
+        {
+          "id": "2:6509891533582377477",
+          "indexId": "11:3611706633011210835",
+          "name": "_id"
+        },
+        {
+          "id": "3:4474166801954482158",
+          "name": "title"
+        },
+        {
+          "id": "4:638621711259072070",
+          "name": "startDate"
+        },
+        {
+          "id": "5:2930408644400730072",
+          "name": "endDate"
+        },
+        {
+          "id": "6:3850641643062183151",
+          "name": "typeId"
+        },
+        {
+          "id": "7:7209028922654231656",
+          "indexId": "12:3501133640399039773",
+          "name": "userId"
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "8:7183396161579735004",
+      "lastPropertyId": "10:5575000334586525519",
+      "name": "User",
+      "properties": [
+        {
+          "id": "1:691161987146275534",
+          "name": "id"
+        },
+        {
+          "id": "2:3826825746030834636",
+          "indexId": "13:3200550451472866341",
+          "name": "_id"
+        },
+        {
+          "id": "3:3459754812803326826",
+          "name": "name"
+        },
+        {
+          "id": "4:7214242681019568649",
+          "indexId": "14:7732134245948569778",
+          "name": "email"
+        },
+        {
+          "id": "5:7651546108222832304",
+          "name": "password"
+        },
+        {
+          "id": "6:6934315408030294099",
+          "name": "gender"
+        },
+        {
+          "id": "7:4284896750083798848",
+          "name": "dateOfBirth"
+        },
+        {
+          "id": "8:2411657055366624309",
+          "name": "height"
+        },
+        {
+          "id": "9:6670149725138876193",
+          "name": "token"
+        },
+        {
+          "id": "10:5575000334586525519",
+          "name": "groupId"
+        }
+      ],
+      "relations": []
+    }
+  ],
+  "lastEntityId": "8:7183396161579735004",
+  "lastIndexId": "14:7732134245948569778",
+  "lastRelationId": "1:6471420504852280224",
+  "lastSequenceId": "0:0",
+  "modelVersion": 4,
+  "modelVersionParserMinimum": 4,
+  "retiredEntityUids": [],
+  "retiredIndexUids": [],
+  "retiredPropertyUids": [],
+  "retiredRelationUids": [],
+  "version": 1
+}

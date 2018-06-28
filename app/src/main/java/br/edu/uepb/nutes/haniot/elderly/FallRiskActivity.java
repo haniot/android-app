@@ -60,7 +60,6 @@ public class FallRiskActivity extends BaseSurvey implements RadioPage.OnRadioLis
                 .title(R.string.risk_fall_title_group1)
                 .description(R.string.risk_fall_description_q1)
                 .image(R.drawable.fall_elderly)
-                .answerInit(true)
                 .backgroundColor(ContextCompat.getColor(this, R.color.colorPink))
                 .buttonClose(R.drawable.ic_action_close)
                 .pageNumber(PAGE_1)
@@ -73,7 +72,6 @@ public class FallRiskActivity extends BaseSurvey implements RadioPage.OnRadioLis
                 .image(R.drawable.walker_elderly)
                 .backgroundColor(ContextCompat.getColor(this, R.color.colorPurple))
                 .buttonClose(R.drawable.ic_action_close)
-                .answerInit(true)
                 .pageNumber(PAGE_2)
                 .build());
 
@@ -84,7 +82,6 @@ public class FallRiskActivity extends BaseSurvey implements RadioPage.OnRadioLis
                 .image(R.drawable.medications_elderly)
                 .backgroundColor(ContextCompat.getColor(this, R.color.colorLightBlue))
                 .buttonClose(R.drawable.ic_action_close)
-                .answerInit(false)
                 .pageNumber(PAGE_3)
                 .build());
 
@@ -105,7 +102,6 @@ public class FallRiskActivity extends BaseSurvey implements RadioPage.OnRadioLis
                 .image(R.drawable.coast_pain_elderly)
                 .backgroundColor(ContextCompat.getColor(this, R.color.colorLightGreen))
                 .buttonClose(R.drawable.ic_action_close)
-                .answerInit(false)
                 .pageNumber(PAGE_5)
                 .build());
 

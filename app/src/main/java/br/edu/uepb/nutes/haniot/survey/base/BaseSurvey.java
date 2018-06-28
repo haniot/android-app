@@ -8,12 +8,14 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.WindowManager;
 
+import br.edu.uepb.nutes.haniot.utils.Log;
 import com.github.paolorotolo.appintro.AppIntro;
 import com.github.paolorotolo.appintro.AppIntroViewPager;
 
 import br.edu.uepb.nutes.haniot.R;
 
 public abstract class BaseSurvey extends AppIntro implements IBaseSurvey {
+    private final String TAG = "BaseSurvey";
     protected IBasePage currentPage;
     protected Snackbar snackbarMessageBlockedPage;
     protected final int PAGE_END = -1;
@@ -62,11 +64,11 @@ public abstract class BaseSurvey extends AppIntro implements IBaseSurvey {
 
         if (newFragment instanceof IBasePage) {
             currentPage = (IBasePage) newFragment;
+            Log.d(TAG, "onSlideChanged() - isBlocked: " + currentPage.isBlocked() + " |  page: " + currentPage.getPageNumber());
 
             if (currentPage.getPageNumber() == PAGE_END) return;
 
-            if (currentPage.isBlocked()) setNextPageSwipeLock(true);
-            else setNextPageSwipeLock(false);
+            setNextPageSwipeLock(currentPage.isBlocked());
 
             // Capture event onSwipeLeft
             currentPage.getView().setOnTouchListener(new OnSwipePageTouchListener(this) {
@@ -74,6 +76,12 @@ public abstract class BaseSurvey extends AppIntro implements IBaseSurvey {
                 public void onSwipeLeft() {
                     super.onSwipeLeft();
                     if (currentPage.isBlocked()) showMessageBlocked();
+                }
+
+                @Override
+                public void onSwipeRight() {
+                    super.onSwipeRight();
+                    setNextPageSwipeLock(currentPage.isBlocked());
                 }
             });
         }

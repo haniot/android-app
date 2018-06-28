@@ -18,18 +18,16 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
-
-import com.github.paolorotolo.appintro.AppIntro;
-import com.github.paolorotolo.appintro.ISlideBackgroundColorHolder;
-
-import java.io.Serializable;
-import java.util.List;
-
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.survey.base.BaseConfigPage;
 import br.edu.uepb.nutes.haniot.survey.base.BasePage;
 import br.edu.uepb.nutes.haniot.survey.base.OnClosePageListener;
 import butterknife.BindView;
+import com.github.paolorotolo.appintro.AppIntro;
+import com.github.paolorotolo.appintro.ISlideBackgroundColorHolder;
+
+import java.io.Serializable;
+import java.util.List;
 
 /**
  * SpinnerPage implementation.
@@ -73,6 +71,7 @@ public class SpinnerPage extends BasePage<SpinnerPage.ConfigPage> implements ISl
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        super.blockPage();
 
         // Setting default values
         super.isBlocked = true;
@@ -88,6 +87,20 @@ public class SpinnerPage extends BasePage<SpinnerPage.ConfigPage> implements ISl
             // set hint
             configPage.items.add(0, getContext().getResources().getString(configPage.hint));
         }
+    }
+
+    @Override
+    public void initView() {
+        // Config spinner
+        if (configPage.colorTextItemSelected != 0)
+            ViewCompat.setBackgroundTintList(answerSpinner, ColorStateList.valueOf(configPage.colorTextItemSelected));
+
+        mAdapter = new CustomSpinnerAdapter(getContext(), android.R.layout.simple_spinner_item, configPage.items);
+        answerSpinner.setAdapter(mAdapter);
+
+        // init answer
+        if (configPage.indexAnswerInit != -1)
+            setAnswer(configPage.indexAnswerInit);
     }
 
     @Override
@@ -123,18 +136,8 @@ public class SpinnerPage extends BasePage<SpinnerPage.ConfigPage> implements ISl
     }
 
     @Override
-    public void initView() {
-        // Config spinner
-        if (configPage.colorTextItemSelected != 0)
-            ViewCompat.setBackgroundTintList(answerSpinner, ColorStateList.valueOf(configPage.colorTextItemSelected));
-
-        mAdapter = new CustomSpinnerAdapter(getContext(), android.R.layout.simple_spinner_item, configPage.items);
-        answerSpinner.setAdapter(mAdapter);
-    }
-
-    @Override
     public int getLayout() {
-        return configPage.layout != 0 ? configPage.layout : R.layout.question_spinner_theme_dark;
+        return configPage.layout != 0 ? configPage.layout : R.layout.question_spinner;
     }
 
     @Override
@@ -173,7 +176,7 @@ public class SpinnerPage extends BasePage<SpinnerPage.ConfigPage> implements ISl
 
     @Override
     public int getDefaultBackgroundColor() {
-        return (configPage.backgroundColor != 0) ? configPage.backgroundColor : Color.BLACK;
+        return (configPage.backgroundColor != 0) ? configPage.backgroundColor : Color.GRAY;
     }
 
     @Override
@@ -216,10 +219,12 @@ public class SpinnerPage extends BasePage<SpinnerPage.ConfigPage> implements ISl
         protected List<String> items;
         protected int colorTextItemSelected;
         protected int hint;
+        protected int indexAnswerInit;
 
         public ConfigPage() {
             this.colorTextItemSelected = 0;
             this.hint = R.string.survey_select_an_answer;
+            this.indexAnswerInit = -1;
         }
 
         /**
@@ -255,12 +260,24 @@ public class SpinnerPage extends BasePage<SpinnerPage.ConfigPage> implements ISl
             return this;
         }
 
+        /**
+         * Set answer init.
+         *
+         * @param indexAnswerInit
+         * @return ConfigPage
+         */
+        public SpinnerPage.ConfigPage answerInit(int indexAnswerInit) {
+            this.indexAnswerInit = indexAnswerInit;
+            return this;
+        }
+
         @Override
         public String toString() {
             return "ConfigPage{" +
                     "items=" + items +
                     ", colorTextItemSelected=" + colorTextItemSelected +
                     ", hint=" + hint +
+                    ", indexAnswerInit=" + indexAnswerInit +
                     "} " + super.toString();
         }
 
@@ -301,7 +318,7 @@ public class SpinnerPage extends BasePage<SpinnerPage.ConfigPage> implements ISl
 
             TextView txt = new TextView(context);
             txt.setGravity(Gravity.CENTER_VERTICAL);
-            txt.setPadding(55, 40, 40, 40);
+            txt.setPadding(50, 30, 30, 30);
 //            txt.setTextSize(15);
             txt.setText(_items.get(position));
             txt.setTextColor(Color.BLACK);
@@ -309,11 +326,10 @@ public class SpinnerPage extends BasePage<SpinnerPage.ConfigPage> implements ISl
 
             // Set color hint message
             if (configPage.hint != 0 && position == 0) {
-                txt.setPadding(45, 30, 40, 0);
+                txt.setPadding(40, 30, 30, 0);
                 txt.setTextColor(Color.GRAY);
                 ViewCompat.setBackgroundTintList(txt, ColorStateList.valueOf(Color.BLACK));
             }
-
 
             return txt;
         }

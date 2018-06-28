@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import br.edu.uepb.nutes.haniot.utils.Log;
 import com.github.paolorotolo.appintro.ISlideBackgroundColorHolder;
 
 import java.io.Serializable;
@@ -68,6 +69,7 @@ public class RadioPage extends BasePage<RadioPage.ConfigPage> implements ISlideB
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        super.blockPage();
 
         // Setting default values
         oldAnswer = -1;
@@ -78,7 +80,6 @@ public class RadioPage extends BasePage<RadioPage.ConfigPage> implements ISlideB
         if (getArguments() != null && getArguments().size() != 0) {
             configPage = (ConfigPage) getArguments().getSerializable(ARG_CONFIGS_PAGE);
             super.pageNumber = configPage.pageNumber;
-            super.blockPage();
         }
     }
 
@@ -125,9 +126,7 @@ public class RadioPage extends BasePage<RadioPage.ConfigPage> implements ISlideB
                     radioRight.setTextColor(configPage.radioColorTextNormal);
                 }
 
-                oldAnswer = 0;
-                answerValue = false;
-
+                setAnswer(false);
                 mListener.onAnswerRadio(pageNumber, answerValue);
             } else if (checkedId == R.id.right_radioButton && oldAnswer != 1) {
                 if (configPage.radioColorTextNormal != 0 && configPage.radioColorTextChecked != 0) {
@@ -135,17 +134,16 @@ public class RadioPage extends BasePage<RadioPage.ConfigPage> implements ISlideB
                     radioLeft.setTextColor(configPage.radioColorTextNormal);
                 }
 
-                oldAnswer = 1;
-                answerValue = true;
-
+                setAnswer(true);
                 mListener.onAnswerRadio(pageNumber, answerValue);
             }
+            Log.d(TAG, "OnTest() " + oldAnswer + " - " + answerValue);
         });
     }
 
     @Override
     public int getLayout() {
-        return configPage.layout != 0 ? configPage.layout : R.layout.question_radio_theme_dark;
+        return configPage.layout != 0 ? configPage.layout : R.layout.question_radio;
     }
 
     @Override
@@ -184,7 +182,7 @@ public class RadioPage extends BasePage<RadioPage.ConfigPage> implements ISlideB
 
     @Override
     public int getDefaultBackgroundColor() {
-        return (configPage.backgroundColor != 0) ? configPage.backgroundColor : Color.BLACK;
+        return (configPage.backgroundColor != 0) ? configPage.backgroundColor : Color.GRAY;
     }
 
     @Override
@@ -211,6 +209,8 @@ public class RadioPage extends BasePage<RadioPage.ConfigPage> implements ISlideB
      */
     private void setAnswer(boolean value) {
         super.unlockPage();
+        answerValue = value;
+        oldAnswer = !value ? 0 : 1;
 
         if (value) radioRight.setChecked(true);
         else radioLeft.setChecked(true);
@@ -225,8 +225,8 @@ public class RadioPage extends BasePage<RadioPage.ConfigPage> implements ISlideB
                 radioColorTextNormal,
                 radioColorTextChecked,
                 radioLeftBackground,
-                radioRightBackground;
-        protected int answerInit;
+                radioRightBackground,
+                answerInit;
 
         public ConfigPage() {
             this.radioLeftText = 0;
