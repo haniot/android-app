@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.survey.base.BaseSurvey;
 import br.edu.uepb.nutes.haniot.survey.pages.MultiSelectSpinnerPage;
@@ -117,9 +118,10 @@ public class FallCharacterizationActivity extends BaseSurvey implements RadioPag
                 .build();
 
         MultiSelectSpinnerPage page6 = new MultiSelectSpinnerPage.ConfigPage()
-                .title(R.string.risk_fall_title_group6, ContextCompat.getColor(this, R.color.colorBlackGrey))
-                .items(new ArrayList(Arrays.asList(new String[]{"Estacada", "Banheiro", "Cozinha", "Sala de Estar", "Varanda"})))
-                .image(R.drawable.coast_pain_elderly)
+                .layout(R.layout.question_human_body)
+                .title(R.string.risk_fall_description_q1, ContextCompat.getColor(this, R.color.colorBlackGrey))
+                .items(new ArrayList(Arrays.asList(getResources().getStringArray(R.array.human_body_array))))
+                .image(R.drawable.human_body)
                 .backgroundColor(Color.WHITE)
                 .colorTextItemSelected(ContextCompat.getColor(this, R.color.colorBlue))
                 .buttonClose(R.drawable.ic_action_close_light)
@@ -127,8 +129,8 @@ public class FallCharacterizationActivity extends BaseSurvey implements RadioPag
                 .pageNumber(PAGE_6)
                 .build();
 
-        addSlide(page5);
         addSlide(page6);
+        addSlide(page5);
         addSlide(page1);
         addSlide(page2);
         addSlide(page3);

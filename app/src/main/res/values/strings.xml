@@ -540,4 +540,23 @@
     <!-- ELDERLY MEDICATIONS -->
     <string-array name="medications_array"></string-array>
 
+    <!-- HUMAN BODY -->
+    <string-array name="human_body_array">
+        <item>1 - Crânio/Face</item>
+        <item>2 - Costelas/Clavícula</item>
+        <item>3 - Úmero</item>
+        <item>4 - Ulna/Rádio</item>
+        <item>5 - Quadril</item>
+        <item>6 - Carpo/Metacarpo/Falanges</item>
+        <item>7 - Fêmur</item>
+        <item>8 - Joelho</item>
+        <item>8 - Tíbia/Fíbula</item>
+        <item>10 - Tarso/Metatarsos/Falanges</item>
+        <item>11 - Coluna Cervical</item>
+        <item>12 - Coluna Torácica</item>
+        <item>13 - Coluna Lombar</item>
+        <item>14 - Sacro</item>
+    </string-array>
+
+
 </resources>
