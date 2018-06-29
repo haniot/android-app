@@ -275,11 +275,11 @@
     <string name="message_not_remove">Please don\'t remove this information</string>
 
     <!--DIALOGS-->
-    <string name="confirm_sign_out">Do you really want to quit the application?\nYou will be redirected to login
-        screen...
-    </string>
+    <string name="confirm_sign_out">Do you really want to quit the application?\nYou will be redirected to login screen...</string>
     <string name="bt_ok">Ok</string>
     <string name="bt_cancel">Cancel</string>
+    <string name="bt_stop">Stop</string>
+    <string name="bt_pause">Pause</string>
     <string name="bt_discard">Discard</string>
     <string name="bt_save">Save</string>
     <string name="title_save_captured_data">Save data...</string>
@@ -344,60 +344,63 @@
     <string name="elderly_please_add_accessories">Please, add a new accessory</string>
     <string name="elderly_select_medications">Select the medications</string>
     <string name="elderly_select_accessories">Select the accessories</string>
-    <string name="elderly_register_success">Data saved successfully!\nDo you want to respond now to an assessment to
-        identify the risk of falling?
-    </string>
-    <string name="elderly_survey_risk_falling">Do you want to respond now to an assessment to identify the risk of
-        falling?
-    </string>
+    <string name="elderly_register_success">Data saved successfully!\nDo you want to respond now to an assessment to identify the risk of falling?</string>
+    <string name="elderly_survey_risk_falling">Do you want to respond now to an assessment to identify the risk of falling?</string>
     <!-- END ELDERLY FORM -->
 
     <!-- ELDERLY SURVEY RISK FALL -->
-    <string name="risk_fall_answer_question">Answer the question to go to next!</string>
-    <string name="risk_fall_title_group1">Falls</string>
-    <string name="risk_fall_title_group2">Use of device to help with walking</string>
-    <string name="risk_fall_title_group3">Use of medicines</string>
-    <string name="risk_fall_title_group4">Muscle strength/balance</string>
-    <string name="risk_fall_title_group5">Activity of daily living</string>
-    <string name="risk_fall_title_group6">Vision/Hearing</string>
-    <string name="risk_fall_title_group7">Physical activity</string>
-    <string name="risk_fall_title_group8">Environmental factors (Conduct inspection at the home of the elderly)</string>
-    <string name="risk_fall_description_q1">1. Has the elderly person dropped in the last 12 months?</string>
-    <string name="risk_fall_description_q2">2. Does the elderly person use any walking aid?</string>
-    <string name="risk_fall_description_q3">3. The elderly uses 4 or more medications per day?</string>
-    <string name="risk_fall_description_q4">4. Uses psychotropic medications?</string>
-    <string name="risk_fall_description_q5">5. Has difficulties to descend or climb a hill?</string>
-    <string name="risk_fall_description_q6">6. Need help to walk 100 meters?</string>
-    <string name="risk_fall_description_q7">7. It has difficulty seeing (considering the use of lenses)?</string>
-    <string name="risk_fall_description_q8">8. Has difficulty to hear what other people speak?</string>
-    <string name="risk_fall_description_q9">9. Does exercises during the week?</string>
-    <string name="risk_fall_description_q10">10. Dimly lit environment (When lying down, have to raise to turn light
-        switch; away from the bed or of difficult visualization; there is no lampshade, do not let the light of the
-        hallway lit during the night)?
-    </string>
-    <string name="risk_fall_title_low">Low risk of falls</string>
-    <string name="risk_fall_title_moderate">Moderate falls risk</string>
-    <string name="risk_fall_title_high">High risk of falls</string>
-    <string name="risk_fall_title_cancel">Are you sure you want to cancel?\nThe answers given will be lost...</string>
-    <string name="risk_fall_title_end">Based on the answers obtained the risk of the elderly suffering a fall will be
-        classified in:
-    </string>
-    <string name="risk_fall_title_end_confirm_result">Do you want to see the evaluation result?</string>
-    <string name="risk_fall_message_blocked_page">Answer the current question to go to next...</string>
-    <!-- END ELDERLY SURVEY RISK FALL -->
+    <string name="fall_risk_answer_question">Answer the question to go to next!</string>
+    <string name="fall_risk_title_group1">Falls</string>
+    <string name="fall_risk_title_group2">Use of device to help with walking</string>
+    <string name="fall_risk_title_group3">Use of medicines</string>
+    <string name="fall_risk_title_group4">Muscle strength/balance</string>
+    <string name="fall_risk_title_group5">Activity of daily living</string>
+    <string name="fall_risk_title_group6">Vision/Hearing</string>
+    <string name="fall_risk_title_group7">Physical activity</string>
+    <string name="fall_risk_title_group8">Environmental factors (Conduct inspection at the home of the elderly)</string>
+    <string name="fall_risk_description_q1">1. Has the elderly person dropped in the last 12 months?</string>
+    <string name="fall_risk_description_q2">2. Does the elderly person use any walking aid?</string>
+    <string name="fall_risk_description_q3">3. The elderly uses 4 or more medications per day?</string>
+    <string name="fall_risk_description_q4">4. Uses psychotropic medications?</string>
+    <string name="fall_risk_description_q5">5. Has difficulties to descend or climb a hill?</string>
+    <string name="fall_risk_description_q6">6. Need help to walk 100 meters?</string>
+    <string name="fall_risk_description_q7">7. It has difficulty seeing (considering the use of lenses)?</string>
+    <string name="fall_risk_description_q8">8. Has difficulty to hear what other people speak?</string>
+    <string name="fall_risk_description_q9">9. Does exercises during the week?</string>
+    <string name="fall_risk_description_q10">10. Dimly lit environment (When lying down, have to raise to turn light switch; away from the bed or of difficult visualization; there is no lampshade, do not let the light of the hallway lit during the night)?</string>
+    <string name="fall_risk_title_low">Low risk of falls</string>
+    <string name="fall_risk_title_moderate">Moderate falls risk</string>
+    <string name="fall_risk_title_high">High risk of falls</string>
+    <string name="fall_risk_title_cancel">Are you sure you want to cancel?\nThe answers given will be lost...</string>
+    <string name="fall_risk_title_end">Based on the answers obtained the risk of the elderly suffering a fall will be classified in:</string>
+    <string name="fall_risk_title_end_confirm_result">Do you want to see the evaluation result?</string>
+    <string name="fall_risk_message_blocked_page">Answer the current question to go to next...</string>
+    <!-- END ELDERLY SURVEY FALL RISK -->
+
+    <!-- ELDERLY SURVEY CHARACTERIZATION -->
+    <string name="fall_characterization_q1">You confirm that the elderly %s suffered the fall detected on: %s?</string>
+    <string name="fall_characterization_q2">After the fall was there any kind of medical care?</string>
+    <string name="fall_characterization_q3">Was hospitalization necessary?</string>
+    <string name="fall_characterization_q4">What was the average length of hospitalization?</string>
+    <string name="fall_characterization_q5"></string>
+    <string name="fall_characterization_q6"></string>
+    <string name="fall_characterization_q7"></string>
+    <string name="fall_characterization_q8"></string>
+    <string name="fall_characterization_q9"></string>
+    <!-- END ELDERLY SURVEY CHARACTERIZATION -->
 
     <!-- ARRAY QUESTIONS RISK FALL -->
-    <string-array name="risk_questions_array">
-        <item>@string/risk_fall_description_q1</item>
-        <item>@string/risk_fall_description_q2</item>
-        <item>@string/risk_fall_description_q3</item>
-        <item>@string/risk_fall_description_q4</item>
-        <item>@string/risk_fall_description_q5</item>
-        <item>@string/risk_fall_description_q6</item>
-        <item>@string/risk_fall_description_q7</item>
-        <item>@string/risk_fall_description_q8</item>
-        <item>@string/risk_fall_description_q9</item>
-        <item>@string/risk_fall_description_q10</item>
+    <string-array name="fall_risk_questions_array">
+        <item>@string/fall_risk_description_q1</item>
+        <item>@string/fall_risk_description_q2</item>
+        <item>@string/fall_risk_description_q3</item>
+        <item>@string/fall_risk_description_q4</item>
+        <item>@string/fall_risk_description_q5</item>
+        <item>@string/fall_risk_description_q6</item>
+        <item>@string/fall_risk_description_q7</item>
+        <item>@string/fall_risk_description_q8</item>
+        <item>@string/fall_risk_description_q9</item>
+        <item>@string/fall_risk_description_q10</item>
     </string-array>
     <!-- END ARRAY QUESTIONS RISK FALL -->
 

@@ -202,13 +202,13 @@ public class FallRiskResultActivity extends AppCompatActivity {
             Animation animation = AnimationUtils.loadAnimation(this, android.R.anim.fade_in);
 
             if (assessmentResult == LOW_RISK) {
-                mTitleResult.setText(getString(R.string.risk_fall_title_low));
+                mTitleResult.setText(getString(R.string.fall_risk_title_low));
                 mImageResult.setImageResource(R.drawable.elderly_happy);
             } else if (assessmentResult == MODERATE_RISK) {
-                mTitleResult.setText(getString(R.string.risk_fall_title_moderate));
+                mTitleResult.setText(getString(R.string.fall_risk_title_moderate));
                 mImageResult.setImageResource(R.drawable.elderly_normal);
             } else {
-                mTitleResult.setText(getString(R.string.risk_fall_title_high));
+                mTitleResult.setText(getString(R.string.fall_risk_title_high));
                 mImageResult.setImageResource(R.drawable.elderly_sad);
             }
 

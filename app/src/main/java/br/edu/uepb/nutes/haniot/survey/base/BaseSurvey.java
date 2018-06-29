@@ -2,7 +2,6 @@ package br.edu.uepb.nutes.haniot.survey.base;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -10,11 +9,10 @@ import android.view.WindowManager;
 
 import br.edu.uepb.nutes.haniot.utils.Log;
 import com.github.paolorotolo.appintro.AppIntro;
-import com.github.paolorotolo.appintro.AppIntroViewPager;
 
 import br.edu.uepb.nutes.haniot.R;
 
-public abstract class BaseSurvey extends AppIntro implements IBaseSurvey {
+public abstract class BaseSurvey extends AppIntro {
     private final String TAG = "BaseSurvey";
     protected IBasePage currentPage;
     protected Snackbar snackbarMessageBlockedPage;
@@ -37,7 +35,7 @@ public abstract class BaseSurvey extends AppIntro implements IBaseSurvey {
         setNextPageSwipeLock(true);
         setImmersive(true);
 
-        initView();
+        this.initView();
     }
 
     @Override
@@ -93,7 +91,7 @@ public abstract class BaseSurvey extends AppIntro implements IBaseSurvey {
     protected void showMessageCancel() {
         runOnUiThread(() -> {
             AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-            dialog.setMessage(getString(R.string.risk_fall_title_cancel));
+            dialog.setMessage(getString(R.string.fall_risk_title_cancel));
 
             dialog.setPositiveButton(R.string.yes_text, (dialogInterface, which) -> {
                 finish();
@@ -120,7 +118,7 @@ public abstract class BaseSurvey extends AppIntro implements IBaseSurvey {
              * Create snackbar
              */
             snackbarMessageBlockedPage = Snackbar.make(currentPage.getView(),
-                    R.string.risk_fall_message_blocked_page,
+                    R.string.fall_risk_message_blocked_page,
                     Snackbar.LENGTH_LONG);
             snackbarMessageBlockedPage.setAction(R.string.bt_ok, (v) -> {
                 snackbarMessageBlockedPage.dismiss();
@@ -128,4 +126,9 @@ public abstract class BaseSurvey extends AppIntro implements IBaseSurvey {
             snackbarMessageBlockedPage.show();
         });
     }
+
+    /**
+     * Init view
+     */
+    protected abstract void initView();
 }

@@ -10,17 +10,15 @@ import android.support.annotation.StringRes;
 import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-
-import br.edu.uepb.nutes.haniot.utils.Log;
-import com.github.paolorotolo.appintro.ISlideBackgroundColorHolder;
-
-import java.io.Serializable;
-
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.survey.base.BaseConfigPage;
 import br.edu.uepb.nutes.haniot.survey.base.BasePage;
-import br.edu.uepb.nutes.haniot.survey.base.OnClosePageListener;
+import br.edu.uepb.nutes.haniot.survey.base.OnPageListener;
+import br.edu.uepb.nutes.haniot.utils.Log;
 import butterknife.BindView;
+import com.github.paolorotolo.appintro.ISlideBackgroundColorHolder;
+
+import java.io.Serializable;
 
 /**
  * RadioPage implementation.
@@ -114,9 +112,6 @@ public class RadioPage extends BasePage<RadioPage.ConfigPage> implements ISlideB
         super.onActivityCreated(savedInstanceState);
         if (radioGroup == null) return;
 
-        if (closeImageButton != null)
-            closeImageButton.setOnClickListener(e -> mListener.onClosePage());
-
         radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
             if (actionClearCheck) return;
 
@@ -161,7 +156,7 @@ public class RadioPage extends BasePage<RadioPage.ConfigPage> implements ISlideB
         super.onDestroyView();
         unbinder.unbind();
         if (radioGroup != null) radioGroup.setOnCheckedChangeListener(null);
-        if (closeImageButton != null) closeImageButton.setOnClickListener(null);
+        if (super.closeImageButton != null) super.closeImageButton.setOnClickListener(null);
     }
 
     @Override
@@ -169,6 +164,7 @@ public class RadioPage extends BasePage<RadioPage.ConfigPage> implements ISlideB
         super.onAttach(context);
         if (context instanceof OnRadioListener) {
             mListener = (OnRadioListener) context;
+            super.mPageListener = mListener;
         } else {
             throw new ClassCastException("You must implement the RadioPage.OnRadioListener!");
         }
@@ -310,7 +306,7 @@ public class RadioPage extends BasePage<RadioPage.ConfigPage> implements ISlideB
      * @version 1.0
      * @copyright Copyright (c) 2017, NUTES UEPB
      */
-    public interface OnRadioListener extends OnClosePageListener {
+    public interface OnRadioListener extends OnPageListener {
         void onAnswerRadio(int page, boolean value);
     }
 }

@@ -21,7 +21,7 @@ import android.widget.TextView;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.survey.base.BaseConfigPage;
 import br.edu.uepb.nutes.haniot.survey.base.BasePage;
-import br.edu.uepb.nutes.haniot.survey.base.OnClosePageListener;
+import br.edu.uepb.nutes.haniot.survey.base.OnPageListener;
 import butterknife.BindView;
 import com.github.paolorotolo.appintro.AppIntro;
 import com.github.paolorotolo.appintro.ISlideBackgroundColorHolder;
@@ -108,10 +108,6 @@ public class SpinnerPage extends BasePage<SpinnerPage.ConfigPage> implements ISl
         super.onActivityCreated(savedInstanceState);
         if (answerSpinner == null) return;
 
-        if (closeImageButton != null)
-            closeImageButton.setOnClickListener(e -> mListener.onClosePage());
-
-
         answerSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -155,7 +151,7 @@ public class SpinnerPage extends BasePage<SpinnerPage.ConfigPage> implements ISl
         super.onDestroyView();
         unbinder.unbind();
         if (answerSpinner != null) answerSpinner.setOnItemSelectedListener(null);
-        if (closeImageButton != null) closeImageButton.setOnClickListener(null);
+        if (super.closeImageButton != null) super.closeImageButton.setOnClickListener(null);
     }
 
     @Override
@@ -163,6 +159,7 @@ public class SpinnerPage extends BasePage<SpinnerPage.ConfigPage> implements ISl
         super.onAttach(context);
         if (context instanceof OnSpinnerListener) {
             mListener = (OnSpinnerListener) context;
+            super.mPageListener = mListener;
         } else {
             throw new ClassCastException();
         }
@@ -359,7 +356,7 @@ public class SpinnerPage extends BasePage<SpinnerPage.ConfigPage> implements ISl
      * @version 1.0
      * @copyright Copyright (c) 2017, NUTES UEPB
      */
-    public interface OnSpinnerListener extends OnClosePageListener {
+    public interface OnSpinnerListener extends OnPageListener {
         void onAnswerSpinner(int page, String value, int indexValue);
     }
 }

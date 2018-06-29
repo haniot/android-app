@@ -14,7 +14,7 @@ import android.widget.LinearLayout;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.survey.base.BaseConfigPage;
 import br.edu.uepb.nutes.haniot.survey.base.BasePage;
-import br.edu.uepb.nutes.haniot.survey.base.OnClosePageListener;
+import br.edu.uepb.nutes.haniot.survey.base.OnPageListener;
 import br.edu.uepb.nutes.haniot.ui.MultiSelectSpinner;
 import butterknife.BindView;
 import com.github.paolorotolo.appintro.AppIntro;
@@ -116,9 +116,6 @@ public class MultiSelectSpinnerPage extends BasePage<MultiSelectSpinnerPage.Conf
         super.onActivityCreated(savedInstanceState);
         if (answerMultiSelectSpinner == null) return;
 
-        if (closeImageButton != null)
-            closeImageButton.setOnClickListener(e -> mListener.onClosePage());
-
         if (addItemImageButton != null)
             addItemImageButton.setOnClickListener(mListenerNewItem);
 
@@ -151,7 +148,7 @@ public class MultiSelectSpinnerPage extends BasePage<MultiSelectSpinnerPage.Conf
         unbinder.unbind();
         if (answerMultiSelectSpinner != null)
             answerMultiSelectSpinner.setOnItemSelectedListener(null);
-        if (closeImageButton != null) closeImageButton.setOnClickListener(null);
+        if (super.closeImageButton != null) super.closeImageButton.setOnClickListener(null);
         if (addItemImageButton != null) addItemImageButton.setOnClickListener(null);
     }
 
@@ -160,6 +157,7 @@ public class MultiSelectSpinnerPage extends BasePage<MultiSelectSpinnerPage.Conf
         super.onAttach(context);
         if (context instanceof OnMultiSelectSpinnerListener) {
             mListener = (OnMultiSelectSpinnerListener) context;
+            super.mPageListener = mListener;
         } else {
             throw new ClassCastException("You must implement the MultiSelectSpinnerPage.OnMultiSelectSpinnerListener!");
         }
@@ -318,7 +316,7 @@ public class MultiSelectSpinnerPage extends BasePage<MultiSelectSpinnerPage.Conf
      * @version 1.0
      * @copyright Copyright (c) 2017, NUTES UEPB
      */
-    public interface OnMultiSelectSpinnerListener extends OnClosePageListener {
+    public interface OnMultiSelectSpinnerListener extends OnPageListener {
         void onMultiSelectSpinner(int page, List<String> values, List<Integer> indexValues);
     }
 }

@@ -40,7 +40,7 @@ public class FallRiskActivity extends BaseSurvey implements RadioPage.OnRadioLis
 
     @Override
     public void initView() {
-        questions = getResources().getStringArray(R.array.risk_questions_array);
+        questions = getResources().getStringArray(R.array.fall_risk_questions_array);
         answers = new boolean[10];
 
         Intent it = getIntent();
@@ -57,8 +57,8 @@ public class FallRiskActivity extends BaseSurvey implements RadioPage.OnRadioLis
     private void addPages() {
         // page 1
         addSlide(new RadioPage.ConfigPage()
-                .title(R.string.risk_fall_title_group1)
-                .description(R.string.risk_fall_description_q1)
+                .title(R.string.fall_risk_title_group1)
+                .description(R.string.fall_risk_description_q1)
                 .image(R.drawable.fall_elderly)
                 .backgroundColor(ContextCompat.getColor(this, R.color.colorPink))
                 .buttonClose(R.drawable.ic_action_close)
@@ -67,8 +67,8 @@ public class FallRiskActivity extends BaseSurvey implements RadioPage.OnRadioLis
 
         // page 2
         addSlide(new RadioPage.ConfigPage()
-                .title(R.string.risk_fall_title_group2)
-                .description(R.string.risk_fall_description_q2)
+                .title(R.string.fall_risk_title_group2)
+                .description(R.string.fall_risk_description_q2)
                 .image(R.drawable.walker_elderly)
                 .backgroundColor(ContextCompat.getColor(this, R.color.colorPurple))
                 .buttonClose(R.drawable.ic_action_close)
@@ -77,8 +77,8 @@ public class FallRiskActivity extends BaseSurvey implements RadioPage.OnRadioLis
 
         // page 3
         addSlide(new RadioPage.ConfigPage()
-                .title(R.string.risk_fall_title_group3)
-                .description(R.string.risk_fall_description_q3)
+                .title(R.string.fall_risk_title_group3)
+                .description(R.string.fall_risk_description_q3)
                 .image(R.drawable.medications_elderly)
                 .backgroundColor(ContextCompat.getColor(this, R.color.colorLightBlue))
                 .buttonClose(R.drawable.ic_action_close)
@@ -87,8 +87,8 @@ public class FallRiskActivity extends BaseSurvey implements RadioPage.OnRadioLis
 
         // page 4
         addSlide(new RadioPage.ConfigPage()
-                .title(R.string.risk_fall_title_group3)
-                .description(R.string.risk_fall_description_q4)
+                .title(R.string.fall_risk_title_group3)
+                .description(R.string.fall_risk_description_q4)
                 .image(R.drawable.medications_2_elderly)
                 .backgroundColor(ContextCompat.getColor(this, R.color.colorLightBlue))
                 .buttonClose(R.drawable.ic_action_close)
@@ -97,8 +97,8 @@ public class FallRiskActivity extends BaseSurvey implements RadioPage.OnRadioLis
 
         // page 5
         addSlide(new RadioPage.ConfigPage()
-                .title(R.string.risk_fall_title_group4)
-                .description(R.string.risk_fall_description_q5)
+                .title(R.string.fall_risk_title_group4)
+                .description(R.string.fall_risk_description_q5)
                 .image(R.drawable.coast_pain_elderly)
                 .backgroundColor(ContextCompat.getColor(this, R.color.colorLightGreen))
                 .buttonClose(R.drawable.ic_action_close)
@@ -107,8 +107,8 @@ public class FallRiskActivity extends BaseSurvey implements RadioPage.OnRadioLis
 
         // page 6
         addSlide(new RadioPage.ConfigPage()
-                .title(R.string.risk_fall_title_group5)
-                .description(R.string.risk_fall_description_q6)
+                .title(R.string.fall_risk_title_group5)
+                .description(R.string.fall_risk_description_q6)
                 .image(R.drawable.daily_activity_elderly)
                 .backgroundColor(ContextCompat.getColor(this, R.color.colorOrange))
                 .buttonClose(R.drawable.ic_action_close)
@@ -117,8 +117,8 @@ public class FallRiskActivity extends BaseSurvey implements RadioPage.OnRadioLis
 
         // page 7
         addSlide(new RadioPage.ConfigPage()
-                .title(R.string.risk_fall_title_group6)
-                .description(R.string.risk_fall_description_q7)
+                .title(R.string.fall_risk_title_group6)
+                .description(R.string.fall_risk_description_q7)
                 .image(R.drawable.difficulty_seeing_elderly)
                 .backgroundColor(ContextCompat.getColor(this, R.color.colorBlueGrey))
                 .buttonClose(R.drawable.ic_action_close)
@@ -127,8 +127,8 @@ public class FallRiskActivity extends BaseSurvey implements RadioPage.OnRadioLis
 
         // page 8
         addSlide(new RadioPage.ConfigPage()
-                .title(R.string.risk_fall_title_group6)
-                .description(R.string.risk_fall_description_q8)
+                .title(R.string.fall_risk_title_group6)
+                .description(R.string.fall_risk_description_q8)
                 .image(R.drawable.hearing_elderly)
                 .backgroundColor(ContextCompat.getColor(this, R.color.colorBlueGrey))
                 .buttonClose(R.drawable.ic_action_close)
@@ -137,8 +137,8 @@ public class FallRiskActivity extends BaseSurvey implements RadioPage.OnRadioLis
 
         // page 9
         addSlide(new RadioPage.ConfigPage()
-                .title(R.string.risk_fall_title_group7)
-                .description(R.string.risk_fall_description_q9)
+                .title(R.string.fall_risk_title_group7)
+                .description(R.string.fall_risk_description_q9)
                 .image(R.drawable.physical_activity_elderly)
                 .backgroundColor(ContextCompat.getColor(this, R.color.colorIndigo))
                 .buttonClose(R.drawable.ic_action_close)
@@ -147,8 +147,8 @@ public class FallRiskActivity extends BaseSurvey implements RadioPage.OnRadioLis
 
         // page 10
         addSlide(new RadioPage.ConfigPage()
-                .title(R.string.risk_fall_title_group8)
-                .description(R.string.risk_fall_description_q10)
+                .title(R.string.fall_risk_title_group8)
+                .description(R.string.fall_risk_description_q10)
                 .image(R.drawable.abajur)
                 .backgroundColor(ContextCompat.getColor(this, R.color.colorCyan))
                 .buttonClose(R.drawable.ic_action_close)
@@ -174,6 +174,11 @@ public class FallRiskActivity extends BaseSurvey implements RadioPage.OnRadioLis
 
         if (value) this.processAssessment();// End result
         else super.showMessageCancel();// Cancel result
+    }
+
+    @Override
+    public void onQuestionImageClick(int id) {
+
     }
 
     @Override

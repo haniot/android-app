@@ -44,7 +44,7 @@ public class FallCharacterizationActivity extends BaseSurvey implements RadioPag
 
     @Override
     public void initView() {
-        questions = getResources().getStringArray(R.array.risk_questions_array);
+        questions = getResources().getStringArray(R.array.fall_risk_questions_array);
         answers = new boolean[10];
 
         Intent it = getIntent();
@@ -70,8 +70,8 @@ public class FallCharacterizationActivity extends BaseSurvey implements RadioPag
 
         // page 1
         RadioPage page1 = new RadioPage.ConfigPage()
-                .title(R.string.risk_fall_title_group1, ContextCompat.getColor(this, R.color.colorBlackGrey))
-                .description(R.string.risk_fall_description_q1,
+                .title(R.string.fall_risk_title_group1, ContextCompat.getColor(this, R.color.colorBlackGrey))
+                .description(R.string.fall_risk_description_q1,
                         ContextCompat.getColor(this, R.color.colorBlackGrey))
                 .backgroundColor(Color.WHITE)
                 .radioStyle(R.drawable.button_background_blue_left, R.drawable.button_background_blue_right, Color.BLACK, Color.WHITE)
@@ -81,7 +81,7 @@ public class FallCharacterizationActivity extends BaseSurvey implements RadioPag
 
         // page 2
         SpinnerPage page2 = new SpinnerPage.ConfigPage()
-                .title(R.string.risk_fall_description_q9, ContextCompat.getColor(this, R.color.colorBlackGrey))
+                .title(R.string.fall_risk_description_q9, ContextCompat.getColor(this, R.color.colorBlackGrey))
                 .items(new ArrayList(Arrays.asList(new String[]{"Estacada", "Banheiro", "Cozinha", "Sala de Estar", "Varanda"})))
                 .backgroundColor(Color.WHITE)
                 .colorTextItemSelected(ContextCompat.getColor(this, R.color.colorBlue))
@@ -91,7 +91,7 @@ public class FallCharacterizationActivity extends BaseSurvey implements RadioPag
 
         // page 3
         SpinnerPage page3 = new SpinnerPage.ConfigPage()
-                .title(R.string.risk_fall_description_q3)
+                .title(R.string.fall_risk_description_q3)
                 .colorTextItemSelected(Color.WHITE)
                 .items(new ArrayList(Arrays.asList(new String[]{"Estacada", "Banheiro", "Cozinha", "Sala de Estar", "Varanda"})))
                 .buttonClose(R.drawable.ic_action_close_light)
@@ -100,8 +100,8 @@ public class FallCharacterizationActivity extends BaseSurvey implements RadioPag
 
         // page 4
         RadioPage page4 = new RadioPage.ConfigPage()
-                .title(R.string.risk_fall_title_group4)
-                .description(R.string.risk_fall_description_q5)
+                .title(R.string.fall_risk_title_group4)
+                .description(R.string.fall_risk_description_q5)
                 .image(R.drawable.coast_pain_elderly)
                 .backgroundColor(ContextCompat.getColor(this, R.color.colorLightGreen))
                 .buttonClose(R.drawable.ic_action_close_light)
@@ -109,7 +109,7 @@ public class FallCharacterizationActivity extends BaseSurvey implements RadioPag
                 .build();
 
         MultiSelectSpinnerPage page5 = new MultiSelectSpinnerPage.ConfigPage()
-                .description(R.string.risk_fall_description_q6, ContextCompat.getColor(this, R.color.colorBlackGrey))
+                .description(R.string.fall_risk_description_q6, ContextCompat.getColor(this, R.color.colorBlackGrey))
                 .items(new ArrayList(Arrays.asList(new String[]{"Estacada", "Banheiro", "Cozinha", "Sala de Estar", "Varanda"})))
                 .backgroundColor(Color.WHITE)
                 .colorTextItemSelected(ContextCompat.getColor(this, R.color.colorBlue))
@@ -119,7 +119,7 @@ public class FallCharacterizationActivity extends BaseSurvey implements RadioPag
 
         MultiSelectSpinnerPage page6 = new MultiSelectSpinnerPage.ConfigPage()
                 .layout(R.layout.question_human_body)
-                .title(R.string.risk_fall_description_q1, ContextCompat.getColor(this, R.color.colorBlackGrey))
+                .title(R.string.fall_risk_description_q1, ContextCompat.getColor(this, R.color.colorBlackGrey))
                 .items(new ArrayList(Arrays.asList(getResources().getStringArray(R.array.human_body_array))))
                 .image(R.drawable.human_body)
                 .backgroundColor(Color.WHITE)
@@ -141,6 +141,14 @@ public class FallCharacterizationActivity extends BaseSurvey implements RadioPag
                 .layout(R.layout.fragment_elderly_fall_risk_end)
                 .pageNumber(PAGE_END)
                 .build());
+    }
+
+    @Override
+    public void onQuestionImageClick(int id) {
+//        Intent it = new Intent(this, ImagePreviewActivity.class);
+//        it.putExtra(ImagePreviewActivity.IMAGE_PREVIEW, id);
+//        startActivity(it);
+//        overridePendingTransition(R.anim.zoom_in, R.anim.zoom_out);
     }
 
     @Override

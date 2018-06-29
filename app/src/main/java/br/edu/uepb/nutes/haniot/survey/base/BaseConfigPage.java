@@ -23,7 +23,8 @@ public abstract class BaseConfigPage<T> {
             titleColor,
             descriptionColor,
             pageNumber,
-            drawableClose;
+            drawableClose,
+            drawablePause;
 
     public BaseConfigPage() {
         this.layout = 0;
@@ -34,6 +35,7 @@ public abstract class BaseConfigPage<T> {
         this.titleColor = 0;
         this.descriptionColor = 0;
         this.drawableClose = 0;
+        this.drawablePause = 0;
     }
 
     /**
@@ -161,6 +163,17 @@ public abstract class BaseConfigPage<T> {
         return (T) this;
     }
 
+    /**
+     * Set image button pause.
+     *
+     * @param drawablePause
+     * @return T
+     */
+    public T buttonPause(int drawablePause) {
+        this.drawablePause = drawablePause;
+        return (T) this;
+    }
+
     @Override
     public String toString() {
         return "BaseConfigPage{" +
@@ -173,6 +186,7 @@ public abstract class BaseConfigPage<T> {
                 ", descriptionColor=" + descriptionColor +
                 ", pageNumber=" + pageNumber +
                 ", drawableClose=" + drawableClose +
+                ", drawablePause=" + drawablePause +
                 '}';
     }
 

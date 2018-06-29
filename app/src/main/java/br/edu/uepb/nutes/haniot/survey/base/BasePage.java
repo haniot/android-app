@@ -12,14 +12,12 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import com.github.paolorotolo.appintro.AppIntro;
-import com.github.paolorotolo.appintro.AppIntroViewPager;
-
 import br.edu.uepb.nutes.haniot.R;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import com.github.paolorotolo.appintro.AppIntro;
+import com.github.paolorotolo.appintro.AppIntroViewPager;
 
 /**
  * BasePage implementation.
@@ -29,9 +27,10 @@ import butterknife.Unbinder;
  * @copyright Copyright (c) 2018, NUTES UEPB
  */
 public abstract class BasePage<T extends BaseConfigPage> extends Fragment implements IBasePage<T> {
-    public Unbinder unbinder;
-    public boolean isBlocked;
-    public int pageNumber;
+    protected Unbinder unbinder;
+    protected boolean isBlocked;
+    protected int pageNumber;
+    protected OnPageListener mPageListener;
 
     @Nullable
     @BindView(R.id.question_title)
@@ -43,7 +42,7 @@ public abstract class BasePage<T extends BaseConfigPage> extends Fragment implem
 
     @Nullable
     @BindView(R.id.question_image)
-    public ImageView imgTextView;
+    public ImageView questionImageView;
 
     @Nullable
     @BindView(R.id.close_imageButton)
@@ -88,14 +87,17 @@ public abstract class BasePage<T extends BaseConfigPage> extends Fragment implem
         }
 
         if (closeImageButton != null) {
-            if (getConfigsPage().drawableClose != 0)
+            if (getConfigsPage().drawableClose != 0) {
                 closeImageButton.setImageResource(getConfigsPage().drawableClose);
-            else closeImageButton.setVisibility(View.GONE);
+                closeImageButton.setOnClickListener(e -> mPageListener.onClosePage());
+            } else closeImageButton.setVisibility(View.GONE);
         }
 
-        if (boxImage != null && imgTextView != null) {
-            if (getConfigsPage().image != 0) imgTextView.setImageResource(getConfigsPage().image);
-            else boxImage.setVisibility(View.GONE);
+        if (boxImage != null && questionImageView != null) {
+            if (getConfigsPage().image != 0) {
+                questionImageView.setImageResource(getConfigsPage().image);
+                questionImageView.setOnClickListener(v -> mPageListener.onQuestionImageClick(getConfigsPage().image));
+            } else boxImage.setVisibility(View.GONE);
         }
 
         initView();
@@ -103,10 +105,20 @@ public abstract class BasePage<T extends BaseConfigPage> extends Fragment implem
         return view;
     }
 
+    /**
+     * Get instance the library app intro.
+     *
+     * @return AppIntro
+     */
     private AppIntro getAppIntroInstance() {
         return (AppIntro) getContext();
     }
 
+    /**
+     * Get instance current page.
+     *
+     * @return AppIntroViewPager
+     */
     private AppIntroViewPager getPageInstance() {
         return getAppIntroInstance().getPager();
     }
@@ -128,11 +140,8 @@ public abstract class BasePage<T extends BaseConfigPage> extends Fragment implem
      */
     @Override
     public void nextPage() {
-        final AppIntro appIntro = (AppIntro) getContext();
-        final AppIntroViewPager page = appIntro.getPager();
-
         unlockPage();
-        new Handler().post(() -> page.goToNextSlide());
+        new Handler().post(() -> getPageInstance().goToNextSlide());
     }
 
     /**

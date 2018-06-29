@@ -24,8 +24,7 @@
     <string name="device_bonding">Pareando</string>
     <string name="device_not_bonded">Não pareado</string>
     <string name="not_bluetooth">Seu dispositivo não suporta bluetooth!</string>
-    <string name="permission_location">A permissão de localização é obrigatória no utilizar Bluetooth Low Energy!
-    </string>
+    <string name="permission_location">A permissão de localização é obrigatória no utilizar Bluetooth Low Energy!</string>
     <string name="not_bluetooth_le">Seu dispositivo não suporta Bluetooth Low Energy!</string>
     <string name="bluetooth_classic">Bluetooth Clássico</string>
     <string name="bluetooth_le">Bluetooth LE</string>
@@ -98,6 +97,8 @@
     <string name="fall_register_time_title">Queda registrada às %s</string>
     <string name="alert_register_time_title">Alerta disparada às %s</string>
     <string name="image">Imagem</string>
+    <string name="bt_stop">Stop</string>
+    <string name="bt_pause">Pausa </string>
 
     <!-- SURVEY -->
     <string name="survey_select_an_answer">Selcione uma resposta...</string>
@@ -142,63 +143,52 @@
     <string name="elderly_please_add_accessories">Por favor, adicione um acessório</string>
     <string name="elderly_select_medications">Selecionar medicações</string>
     <string name="elderly_select_accessories">Selecionar acessórios</string>
-    <string name="elderly_register_success">Dados salvos com sucesso!\nVocê deseja responder agora a uma avaliação para
-        identificar o risco de queda?
-    </string>
-    <string name="elderly_survey_risk_falling">Você deseja responder agora a uma avaliação para identificar o risco de
-        queda?
-    </string>
+    <string name="elderly_register_success">Dados salvos com sucesso!\nVocê deseja responder agora a uma avaliação para identificar o risco de queda?</string>
+    <string name="elderly_survey_risk_falling">Você deseja responder agora a uma avaliação para identificar o risco de queda?</string>
     <!-- END ELDERLY FORM -->
 
     <!-- ELDERLY SURVEY RISK FALL -->
-    <string name="risk_fall_title_group1">Quedas</string>
-    <string name="risk_fall_title_group2">Uso de dispositivo para auxílio da marcha</string>
-    <string name="risk_fall_title_group3">Uso de medicamentos</string>
-    <string name="risk_fall_title_group4">Força muscular/equilíbrio</string>
-    <string name="risk_fall_title_group5">Atividade de vida diária</string>
-    <string name="risk_fall_title_group6">Visão/Audição</string>
-    <string name="risk_fall_title_group7">Atividade física</string>
-    <string name="risk_fall_title_group8">Fatores ambientais (Realizar inspeção no domicilio do idoso)</string>
-    <string name="risk_fall_description_q1">1. O idoso sofreu alguma queda nos últimos 12 meses?</string>
-    <string name="risk_fall_description_q2">2. O idoso utiliza algum aparelho que ajuda a andar?</string>
-    <string name="risk_fall_description_q3">3. Usa 4 ou mais medicamentos por dia?</string>
-    <string name="risk_fall_description_q4">4. Usa medicamentos psicotrópicos?</string>
-    <string name="risk_fall_description_q5">5. Tem dificuldades para descer ou subir uma ladeira?</string>
-    <string name="risk_fall_description_q6">6. Precisa de ajuda para andar 100 metros?</string>
-    <string name="risk_fall_description_q7">7. Tem dificuldades para enxergar (considerar o uso de lentes)?</string>
-    <string name="risk_fall_description_q8">8. Tem dificuldade para ouvir o que as outras pessoas falam?</string>
-    <string name="risk_fall_description_q9">9. Faz exercícios durante a semana?</string>
-    <string name="risk_fall_description_q10">10. Ambiente mal iluminado? (Quando deitado, tem que levantar para acender
-        a luz; interruptor longe da cama ou de difícil visualização; não há abajur; não deixa a luz do corredor acesa
-        durante a noite)?
-    </string>
-    <string name="risk_fall_title_low">Baixo risco de quedas</string>
-    <string name="risk_fall_title_moderate">Moderado risco de quedas</string>
-    <string name="risk_fall_title_high">Alto risco de quedas</string>
-    <string name="risk_fall_title_cancel">Tem certeza de que deseja cancelar?\nAs respostas fornecidas serão
-        perdidas...
-    </string>
-    <string name="risk_fall_title_end">Com base nas respostas obtidas, o risco do idoso sofrer uma queda pode ser
-        classificado em:
-    </string>
-    <string name="risk_fall_title_end_confirm_result">Deseja visualizar o resultado da avaliação?</string>
-    <string name="risk_fall_message_blocked_page">Responda a pergunta atual para ir para próxima...</string>
+    <string name="fall_risk_title_group1">Quedas</string>
+    <string name="fall_risk_title_group2">Uso de dispositivo para auxílio da marcha</string>
+    <string name="fall_risk_title_group3">Uso de medicamentos</string>
+    <string name="fall_risk_title_group4">Força muscular/equilíbrio</string>
+    <string name="fall_risk_title_group5">Atividade de vida diária</string>
+    <string name="fall_risk_title_group6">Visão/Audição</string>
+    <string name="fall_risk_title_group7">Atividade física</string>
+    <string name="fall_risk_title_group8">Fatores ambientais (Realizar inspeção no domicilio do idoso)</string>
+    <string name="fall_risk_description_q1">1. O idoso sofreu alguma queda nos últimos 12 meses?</string>
+    <string name="fall_risk_description_q2">2. O idoso utiliza algum aparelho que ajuda a andar?</string>
+    <string name="fall_risk_description_q3">3. Usa 4 ou mais medicamentos por dia?</string>
+    <string name="fall_risk_description_q4">4. Usa medicamentos psicotrópicos?</string>
+    <string name="fall_risk_description_q5">5. Tem dificuldades para descer ou subir uma ladeira?</string>
+    <string name="fall_risk_description_q6">6. Precisa de ajuda para andar 100 metros?</string>
+    <string name="fall_risk_description_q7">7. Tem dificuldades para enxergar (considerar o uso de lentes)?</string>
+    <string name="fall_risk_description_q8">8. Tem dificuldade para ouvir o que as outras pessoas falam?</string>
+    <string name="fall_risk_description_q9">9. Faz exercícios durante a semana?</string>
+    <string name="fall_risk_description_q10">10. Ambiente mal iluminado? (Quando deitado, tem que levantar para acender a luz; interruptor longe da cama ou de difícil visualização; não há abajur; não deixa a luz do corredor acesa durante a noite)?</string>
+    <string name="fall_risk_title_low">Baixo risco de quedas</string>
+    <string name="fall_risk_title_moderate">Moderado risco de quedas</string>
+    <string name="fall_risk_title_high">Alto risco de quedas</string>
+    <string name="fall_risk_title_cancel">Tem certeza de que deseja cancelar?\nAs respostas fornecidas serão perdidas...</string>
+    <string name="fall_risk_title_end">Com base nas respostas obtidas, o risco do idoso sofrer uma queda pode ser classificado em:</string>
+    <string name="fall_risk_title_end_confirm_result">Deseja visualizar o resultado da avaliação?</string>
+    <string name="fall_risk_message_blocked_page">Responda a pergunta atual para ir para próxima...</string>
     <!-- END ELDERLY SURVEY RISK FALL -->
 
     <string name="cancel_text">Cancelar</string>
 
     <!-- ARRAY QUESTIONS RISK FALL -->
     <string-array name="risk_questions_array">
-        <item>@string/risk_fall_description_q1</item>
-        <item>@string/risk_fall_description_q2</item>
-        <item>@string/risk_fall_description_q3</item>
-        <item>@string/risk_fall_description_q4</item>
-        <item>@string/risk_fall_description_q5</item>
-        <item>@string/risk_fall_description_q6</item>
-        <item>@string/risk_fall_description_q7</item>
-        <item>@string/risk_fall_description_q8</item>
-        <item>@string/risk_fall_description_q9</item>
-        <item>@string/risk_fall_description_q10</item>
+        <item>@string/fall_risk_description_q1</item>
+        <item>@string/fall_risk_description_q2</item>
+        <item>@string/fall_risk_description_q3</item>
+        <item>@string/fall_risk_description_q4</item>
+        <item>@string/fall_risk_description_q5</item>
+        <item>@string/fall_risk_description_q6</item>
+        <item>@string/fall_risk_description_q7</item>
+        <item>@string/fall_risk_description_q8</item>
+        <item>@string/fall_risk_description_q9</item>
+        <item>@string/fall_risk_description_q10</item>
     </string-array>
     <!-- END ARRAY QUESTIONS RISK FALL -->
 
