@@ -29,7 +29,7 @@
     <string name="bluetooth_classic">Bluetooth Clássico</string>
     <string name="bluetooth_le">Bluetooth LE</string>
     <string name="welcome">Bem-vindo</string>
-    <string name="no_more_data">Não há mais dados disponíveis...</string>
+    <string name="no_more_data">Não há mais dados disponíveis&#8230;</string>
     <string name="day_text">Dia</string>
     <string name="week_text">Semana</string>
     <string name="month_text">Mês</string>
@@ -90,7 +90,7 @@
     <string name="no_data_found">"Nenhum dado encontrado! "</string>
     <string name="temperatre_type_armpit">Axila</string>
     <string name="temperatre_type_body">Corpo (geral)</string>
-    <string name="laoding_result">Carregando resultado...</string>
+    <string name="laoding_result">Carregando resultado&#8230;</string>
     <string name="number_emergency">192</string>
     <string name="call_emergency_title">Ligar para emergência</string>
     <string name="call_elderly_title">Ligar para idoso</string>
@@ -101,9 +101,9 @@
     <string name="bt_pause">Pausa </string>
 
     <!-- SURVEY -->
-    <string name="survey_select_an_answer">Selcione uma resposta...</string>
-    <string name="survey_select_the_answers">Selecione as respostas...</string>
-    <string name="survey_enter_an_answer">Insira uma resposta...</string>
+    <string name="survey_select_an_answer">Selcione uma resposta&#8230;</string>
+    <string name="survey_select_the_answers">Selecione as respostas&#8230;</string>
+    <string name="survey_enter_an_answer">Insira uma resposta&#8230;</string>
     <string name="survey_add_new_answer">Adicionar uma nova resposta</string>
     <!-- END SURVEY -->
 
@@ -169,10 +169,10 @@
     <string name="fall_risk_title_low">Baixo risco de quedas</string>
     <string name="fall_risk_title_moderate">Moderado risco de quedas</string>
     <string name="fall_risk_title_high">Alto risco de quedas</string>
-    <string name="fall_risk_title_cancel">Tem certeza de que deseja cancelar?\nAs respostas fornecidas serão perdidas...</string>
+    <string name="fall_risk_title_cancel">Tem certeza de que deseja cancelar?\nAs respostas fornecidas serão perdidas&#8230;</string>
     <string name="fall_risk_title_end">Com base nas respostas obtidas, o risco do idoso sofrer uma queda pode ser classificado em:</string>
     <string name="fall_risk_title_end_confirm_result">Deseja visualizar o resultado da avaliação?</string>
-    <string name="fall_risk_message_blocked_page">Responda a pergunta atual para ir para próxima...</string>
+    <string name="fall_risk_message_blocked_page">Responda a pergunta atual para ir para próxima&#8230;</string>
     <!-- END ELDERLY SURVEY RISK FALL -->
 
     <string name="cancel_text">Cancelar</string>
@@ -218,10 +218,28 @@
         <item>Aparelho auditivo</item>
     </string-array>
 
-    <!-- ELDERLY MEDICATIONS -->
-    <string-array name="medications_array"></string-array>
+    <!-- ELDERLY FALL CHARACTERIZATION SURVEY -->
+    <string name="fall_characterization_q1">Você confirma que o idoso %s sofreram a queda detectada em: %s?</string>
+    <string name="fall_characterization_q2">Após a queda houve algum tipo de assistência médica?</string>
+    <string name="fall_characterization_q3">Foi necessário hospitalização?</string>
+    <string name="fall_characterization_q4">Quanto tempo durou a hospitalização?</string>
+    <string name="fall_characterization_q5">A queda ocasionou alguma fratura?</string>
+    <string name="fall_characterization_q6">Qual foi o local da fratura?</string>
+    <string name="fall_characterization_q7">O que causou a queda?</string>
+    <string name="fall_characterization_q8">Em que local a queda aconteceu?</string>
+    <string name="fall_characterization_q9">Em que horário ocorreu a queda?</string>
+    <!-- END ELDERLY FALL CHARACTERIZATION SURVEY -->
 
-    <!-- HUMAN BODY -->
+    <!-- ARRAY ALTERNATIVES FALL CHARACTERIZATION SURVEY Q4 -->
+    <string-array name="answers_fall_characterization_q4_array">
+        <item>0&#8211;7 dias</item>
+        <item>7&#8211;15 dias</item>
+        <item>15&#8211;30 dias</item>
+        <item>Mais de 30 dias</item>
+    </string-array>
+    <!-- END ARRAY ALTERNATIVES FALL CHARACTERIZATION SURVEY Q4 -->
+
+    <!-- ARRAY ALTERNATIVES FALL CHARACTERIZATION QUESTION 6 -->
     <string-array name="human_body_array">
         <item>1 - Crânio/Face</item>
         <item>2 - Costelas/Clavícula</item>
@@ -233,10 +251,55 @@
         <item>8 - Joelho</item>
         <item>8 - Tíbia/Fíbula</item>
         <item>10 - Tarso/Metatarsos/Falanges</item>
-        <item>11 - Coluna Cervical</item>
-        <item>12 - Coluna Torácica</item>
-        <item>13 - Coluna Lombar</item>
+        <item>11 - Coluna cervical</item>
+        <item>12 - Coluna torácica</item>
+        <item>13 - Coluna lombar</item>
         <item>14 - Sacro</item>
     </string-array>
+    <!-- END ARRAY ALTERNATIVES FALL CHARACTERIZATION QUESTION 6 -->
+
+    <!-- ARRAY ALTERNATIVES FALL CHARACTERIZATION QUESTION 7 -->
+    <string-array name="answers_fall_characterization_q7_array">
+        <item>Piso molhado</item>
+        <item>Tapete ou obejetos no chão</item>
+        <item>Iluminação inadequada</item>
+        <item>Uso de escadas</item>
+        <item>Falta de corrimão em escada ou banheiro</item>
+        <item>Degraus inadequados</item>
+        <item>Armários ou objetos altos</item>
+        <item>Presença de animal</item>
+        <item>Salto alto</item>
+        <item>Desmaio</item>
+        <item>Tontura</item>
+        <item>Crise convulsiva</item>
+        <item>Fraqueza muscular</item>
+        <item>Aumento da pressão arterial</item>
+        <item>Baixa da pressão arterial</item>
+    </string-array>
+    <!-- END ARRAY ALTERNATIVES FALL CHARACTERIZATION QUESTION 7 -->
+
+    <!-- ARRAY ALTERNATIVES FALL CHARACTERIZATION QUESTION 8 -->
+    <string-array name="answers_fall_characterization_q8_array">
+        <item>Banheiro</item>
+        <item>Quarto</item>
+        <item>Cozinha</item>
+        <item>Sala de estar</item>
+        <item>Jardim</item>
+        <item>Quintal</item>
+        <item>Garagem</item>
+    </string-array>
+    <!-- END ARRAY ALTERNATIVES FALL CHARACTERIZATION QUESTION 8 -->
+
+    <!-- ARRAY ALTERNATIVES FALL CHARACTERIZATION QUESTION 9 -->
+    <string-array name="answers_fall_characterization_q9_array">
+        <item>Início da manhã</item>
+        <item>Fim da manhã</item>
+        <item>Início da tarde</item>
+        <item>Fim da tarde</item>
+        <item>Início da noite</item>
+        <item>Fim da noite</item>
+        <item>Madrugada</item>
+    </string-array>
+    <!-- END ARRAY ALTERNATIVES FALL CHARACTERIZATION QUESTION 9 -->
 
 </resources>

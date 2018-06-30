@@ -28,7 +28,7 @@
     <string name="bluetooth_classic">Bluetooth Classic</string>
     <string name="bluetooth_le">Bluetooth LE</string>
     <string name="welcome">Welcome</string>
-    <string name="no_more_data">No more data available...</string>
+    <string name="no_more_data">No more data available&#8230;</string>
     <string name="day_text">Day</string>
     <string name="week_text">Week</string>
     <string name="month_text">Month</string>
@@ -37,7 +37,7 @@
     <string name="no_text">No</string>
     <string name="cancel_text">Cancel</string>
     <string name="black_space_4">\t\t\t\t\t\</string>
-    <string name="laoding_result">Loading result...</string>
+    <string name="laoding_result">Loading result&#8230;</string>
     <string name="number_emergency">911</string>
     <string name="call_emergency_title">Call emergency</string>
     <string name="call_elderly_title">Call elderly</string>
@@ -206,8 +206,8 @@
     <string name="update_data">Update data</string>
     <string name="register_success">Data registered successfully!</string>
     <string name="update_success">Data updated successfully!</string>
-    <string name="register_error">There was an error inserting user...</string>
-    <string name="update_error">There was an error updating the data...</string>
+    <string name="register_error">There was an error inserting user&#8230;</string>
+    <string name="update_error">There was an error updating the data&#8230;</string>
     <string name="change_password">Change password</string>
     <string name="current_password">Current password</string>
     <string name="new_password">New password</string>
@@ -224,21 +224,21 @@
     <string name="validate_height">Provide a valid height!</string>
     <string name="validate_date_birth">Provide a valid date of birth!</string>
     <string name="validate_phone">Provide a valid phone number!</string>
-    <string name="validate_invalid_email_or_password">Invalid email or password...</string>
+    <string name="validate_invalid_email_or_password">Invalid email or password&#8230;</string>
     <string name="validate_password_not_match_current">Current password does not match!</string>
     <string name="validate_password_not_match_new">New password and confirmation do not match!</string>
-    <string name="validate_register_user_not_duplicate">Already registered user with email provided...</string>
-    <string name="validate_unauthorized_access">Unauthorized access! Please contact support...</string>
+    <string name="validate_register_user_not_duplicate">Already registered user with email provided&#8230;</string>
+    <string name="validate_unauthorized_access">Unauthorized access! Please contact support&#8230;</string>
     <string name="validate_weight">Provide a valid weight!</string>
 
     <!--ERROR-->
-    <string name="error_sign_out">There was an error while trying to quit...</string>
-    <string name="error_500">Could not complete request! Please try again later...</string>
-    <string name="error_internal_device">Could not complete request! Please try again later...</string>
+    <string name="error_sign_out">There was an error while trying to quit&#8230;</string>
+    <string name="error_500">Could not complete request! Please try again later&#8230;</string>
+    <string name="error_internal_device">Could not complete request! Please try again later&#8230;</string>
     <string name="error_connectivity">There was an error communicating with our servers.\nPlease, check your phone
         connectivity and try again later.
     </string>
-    <string name="connect_network_try_again">Connect to a network and try again...</string>
+    <string name="connect_network_try_again">Connect to a network and try again&#8230;</string>
 
     <!--SETTINGS-->
     <string name="settings_your_data">Your Data</string>
@@ -275,18 +275,18 @@
     <string name="message_not_remove">Please don\'t remove this information</string>
 
     <!--DIALOGS-->
-    <string name="confirm_sign_out">Do you really want to quit the application?\nYou will be redirected to login screen...</string>
+    <string name="confirm_sign_out">Do you really want to quit the application?\nYou will be redirected to login screen&#8230;</string>
     <string name="bt_ok">Ok</string>
     <string name="bt_cancel">Cancel</string>
     <string name="bt_stop">Stop</string>
     <string name="bt_pause">Pause</string>
     <string name="bt_discard">Discard</string>
     <string name="bt_save">Save</string>
-    <string name="title_save_captured_data">Save data...</string>
+    <string name="title_save_captured_data">Save data&#8230;</string>
     <string name="message_save_captured_data">Do you want to save the captured data?</string>
     <string name="message_save_captured_heart_rate">Do you want to save the captured heart rate?</string>
 
-    <string name="no_data_available">No data to display...</string>
+    <string name="no_data_available">No data to display&#8230;</string>
     <string name="unit_kg">kg</string>
     <string name="unit_percentage">%</string>
     <string name="unit_celsius">°C</string>
@@ -298,13 +298,13 @@
     <!-- SYNCHRONIZATION -->
     <string name="synchronization_failed">Data synchronization failed!</string>
     <string name="synchronization_success">Successful data synchronization!</string>
-    <string name="synchronization_data">Synchronizing data...</string>
-    <string name="synchronization_no_data_to_send">There is no data to send...</string>
+    <string name="synchronization_data">Synchronizing data&#8230;</string>
+    <string name="synchronization_no_data_to_send">There is no data to send&#8230;</string>
 
     <!-- SURVEY -->
-    <string name="survey_select_an_answer">Select an answer...</string>
-    <string name="survey_select_the_answers">Select the answers...</string>
-    <string name="survey_enter_an_answer">Enter an answer...</string>
+    <string name="survey_select_an_answer">Select an answer&#8230;</string>
+    <string name="survey_select_the_answers">Select the answers&#8230;</string>
+    <string name="survey_enter_an_answer">Enter an answer&#8230;</string>
     <string name="survey_add_new_answer">Add new answer</string>
     <!-- END SURVEY -->
 
@@ -371,23 +371,95 @@
     <string name="fall_risk_title_low">Low risk of falls</string>
     <string name="fall_risk_title_moderate">Moderate falls risk</string>
     <string name="fall_risk_title_high">High risk of falls</string>
-    <string name="fall_risk_title_cancel">Are you sure you want to cancel?\nThe answers given will be lost...</string>
+    <string name="fall_risk_title_cancel">Are you sure you want to cancel?\nThe answers given will be lost&#8230;</string>
     <string name="fall_risk_title_end">Based on the answers obtained the risk of the elderly suffering a fall will be classified in:</string>
     <string name="fall_risk_title_end_confirm_result">Do you want to see the evaluation result?</string>
-    <string name="fall_risk_message_blocked_page">Answer the current question to go to next...</string>
+    <string name="fall_risk_message_blocked_page">Answer the current question to go to next&#8230;</string>
     <!-- END ELDERLY SURVEY FALL RISK -->
 
-    <!-- ELDERLY SURVEY CHARACTERIZATION -->
+    <!-- ELDERLY FALL CHARACTERIZATION SURVEY -->
     <string name="fall_characterization_q1">You confirm that the elderly %s suffered the fall detected on: %s?</string>
     <string name="fall_characterization_q2">After the fall was there any kind of medical care?</string>
     <string name="fall_characterization_q3">Was hospitalization necessary?</string>
     <string name="fall_characterization_q4">What was the average length of hospitalization?</string>
-    <string name="fall_characterization_q5"></string>
-    <string name="fall_characterization_q6"></string>
-    <string name="fall_characterization_q7"></string>
-    <string name="fall_characterization_q8"></string>
-    <string name="fall_characterization_q9"></string>
-    <!-- END ELDERLY SURVEY CHARACTERIZATION -->
+    <string name="fall_characterization_q5">The fall generated any fractures?</string>
+    <string name="fall_characterization_q6">What was the site of the fracture?</string>
+    <string name="fall_characterization_q7">What caused the fall?</string>
+    <string name="fall_characterization_q8">Where the fall happened?</string>
+    <string name="fall_characterization_q9">The fall occurred at what time?</string>
+    <!-- END ELDERLY FALL CHARACTERIZATION SURVEY -->
+
+    <!-- ARRAY ALTERNATIVES FALL CHARACTERIZATION SURVEY Q4 -->
+    <string-array name="answers_fall_characterization_q4_array">
+        <item>0&#8211;7 days</item>
+        <item>7&#8211;15 days</item>
+        <item>15&#8211;30 days</item>
+        <item>Over 30 days</item>
+    </string-array>
+    <!-- END ARRAY ALTERNATIVES FALL CHARACTERIZATION SURVEY Q4 -->
+
+    <!-- ARRAY ALTERNATIVES FALL CHARACTERIZATION QUESTION 6 -->
+    <string-array name="answers_fall_characterization_q6_array">
+        <item>1 - Skull/Face</item>
+        <item>2 - Ribs/Clavicle</item>
+        <item>3 - Humerus</item>
+        <item>4 - Ulna/Radio</item>
+        <item>5 - Hip</item>
+        <item>6 - Carpal/Metacarpal/Phalanges</item>
+        <item>7 - Femur</item>
+        <item>8 - knee</item>
+        <item>8 - Tibia/Fibula</item>
+        <item>10 - Tarsus/Metatarsal/Phalanges</item>
+        <item>11 - Cervical spine</item>
+        <item>12 - Thoracic spine</item>
+        <item>13 - Lumbar spine</item>
+        <item>14 - Sacrum</item>
+    </string-array>
+    <!-- END ARRAY ALTERNATIVES FALL CHARACTERIZATION QUESTION 6 -->
+
+    <!-- ARRAY ALTERNATIVES FALL CHARACTERIZATION QUESTION 7 -->
+    <string-array name="answers_fall_characterization_q7_array">
+        <item>Wet floor</item>
+        <item>Carpet or objects on the floor</item>
+        <item>Illumination inadequate</item>
+        <item>Use of stairs</item>
+        <item>Lack of railings in stairs or bathrooms</item>
+        <item>Inappropriate ladder step</item>
+        <item>Cabinets or high objects</item>
+        <item>Animal presence</item>
+        <item>High heels</item>
+        <item>Fainting</item>
+        <item>Dizziness</item>
+        <item>Convulsive crisis</item>
+        <item>Muscle weakness</item>
+        <item>Increased blood pressure</item>
+        <item>Low blood pressure</item>
+    </string-array>
+    <!-- END ARRAY ALTERNATIVES FALL CHARACTERIZATION QUESTION 7 -->
+
+    <!-- ARRAY ALTERNATIVES FALL CHARACTERIZATION QUESTION 8 -->
+    <string-array name="answers_fall_characterization_q8_array">
+        <item>Bathrooms</item>
+        <item>Bedroom</item>
+        <item>Kitchen</item>
+        <item>Living room</item>
+        <item>Garden</item>
+        <item>Backyard</item>
+        <item>Garage</item>
+    </string-array>
+    <!-- END ARRAY ALTERNATIVES FALL CHARACTERIZATION QUESTION 8 -->
+
+    <!-- ARRAY ALTERNATIVES FALL CHARACTERIZATION QUESTION 9 -->
+    <string-array name="answers_fall_characterization_q9_array">
+        <item>Early morning</item>
+        <item>End of the morning</item>
+        <item>Early afternoon</item>
+        <item>Late afternoon</item>
+        <item>Early evening</item>
+        <item>End of the night</item>
+        <item>Dawn</item>
+    </string-array>
+    <!-- END ARRAY ALTERNATIVES FALL CHARACTERIZATION QUESTION 9 -->
 
     <!-- ARRAY QUESTIONS RISK FALL -->
     <string-array name="fall_risk_questions_array">
@@ -542,24 +614,5 @@
 
     <!-- ELDERLY MEDICATIONS -->
     <string-array name="medications_array"></string-array>
-
-    <!-- HUMAN BODY -->
-    <string-array name="human_body_array">
-        <item>1 - Crânio/Face</item>
-        <item>2 - Costelas/Clavícula</item>
-        <item>3 - Úmero</item>
-        <item>4 - Ulna/Rádio</item>
-        <item>5 - Quadril</item>
-        <item>6 - Carpo/Metacarpo/Falanges</item>
-        <item>7 - Fêmur</item>
-        <item>8 - Joelho</item>
-        <item>8 - Tíbia/Fíbula</item>
-        <item>10 - Tarso/Metatarsos/Falanges</item>
-        <item>11 - Coluna Cervical</item>
-        <item>12 - Coluna Torácica</item>
-        <item>13 - Coluna Lombar</item>
-        <item>14 - Sacro</item>
-    </string-array>
-
 
 </resources>

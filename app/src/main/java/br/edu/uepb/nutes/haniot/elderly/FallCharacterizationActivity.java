@@ -120,7 +120,7 @@ public class FallCharacterizationActivity extends BaseSurvey implements RadioPag
         MultiSelectSpinnerPage page6 = new MultiSelectSpinnerPage.ConfigPage()
                 .layout(R.layout.question_human_body)
                 .title(R.string.fall_risk_description_q1, ContextCompat.getColor(this, R.color.colorBlackGrey))
-                .items(new ArrayList(Arrays.asList(getResources().getStringArray(R.array.human_body_array))))
+                .items(new ArrayList(Arrays.asList(getResources().getStringArray(R.array.answers_fall_characterization_q6_array))))
                 .image(R.drawable.human_body)
                 .backgroundColor(Color.WHITE)
                 .colorTextItemSelected(ContextCompat.getColor(this, R.color.colorBlue))

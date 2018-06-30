@@ -15,20 +15,20 @@
 
         <!-- BOX MENU BAR -->
         <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="@dimen/activity_horizontal_margin"
-                android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:paddingRight="@dimen/activity_horizontal_margin">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_horizontal_margin">
 
             <ImageButton
-                    android:id="@+id/close_imageButton"
-                    android:layout_width="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:layout_height="wrap_content"
-                    android:background="@android:color/transparent"
-                    android:contentDescription="@string/bt_cancel"
-                    app:srcCompat="@drawable/ic_action_close"/>
+                android:id="@+id/close_imageButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:background="@android:color/transparent"
+                android:contentDescription="@string/bt_cancel"
+                app:srcCompat="@drawable/ic_action_close" />
 
         </RelativeLayout>
         <!-- END BOX MENU BAR -->
@@ -106,10 +106,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="70dp"
+            android:baselineAligned="false"
             android:orientation="horizontal"
             android:paddingLeft="@dimen/spinner_answer_margin"
-            android:paddingRight="@dimen/spinner_answer_margin_simple"
-            android:baselineAligned="false">
+            android:paddingRight="@dimen/spinner_answer_margin_simple">
 
             <LinearLayout
                 android:layout_width="0dp"
