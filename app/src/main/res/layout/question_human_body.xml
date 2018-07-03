@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBlackGrey"
     android:orientation="vertical">
 
     <LinearLayout
@@ -37,21 +35,20 @@
         <LinearLayout
             android:id="@+id/box_title"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="25dp">
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:paddingLeft="25dp"
+            android:paddingRight="25dp"
+            android:paddingTop="25dp">
 
             <TextView
                 android:id="@+id/question_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
                 android:gravity="center"
-                android:text="@string/fall_risk_title_group1"
+                android:text="@string/fall_characterization_q6"
                 android:textAppearance="@android:style/TextAppearance.Large"
-                android:textColor="@android:color/white"
                 android:textStyle="bold" />
 
         </LinearLayout>
@@ -62,23 +59,20 @@
             android:id="@+id/box_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="0.6"
+            android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical"
             android:padding="@dimen/activity_horizontal_margin">
 
-            <ImageView
+            <com.github.chrisbanes.photoview.PhotoView
                 android:id="@+id/question_image"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
                 android:contentDescription="@string/image"
-                app:srcCompat="@drawable/human_body"
-                tools:ignore="ContentDescription" />
+                android:src="@drawable/human_body" />
 
         </LinearLayout>
         <!-- END BOX IMAGE -->
-
 
         <!-- BOX INPUT -->
         <LinearLayout
@@ -89,13 +83,13 @@
             android:orientation="horizontal"
             android:padding="@dimen/spinner_answer_margin">
 
-            <br.edu.uepb.nutes.haniot.ui.MultiSelectSpinner
+            <br.edu.uepb.nutes.haniot.ui.CustomMultiSelectSpinner
                 android:id="@+id/answer_multi_select_spinner"
-                style="@style/Widget.AppCompat.Spinner.Underlined"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/activity_vertical_margin"
-                app:backgroundTint="@color/colorTextDark" />
+                android:entries="@array/answers_fall_characterization_q6_array"
+                app:colorSelectedText="@color/colorBlue"
+                android:backgroundTint="@color/colorBlue"
+                android:layout_height="wrap_content" />
 
         </LinearLayout>
         <!-- END BOX INPUT -->

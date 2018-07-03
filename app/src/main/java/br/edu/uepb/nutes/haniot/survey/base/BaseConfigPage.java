@@ -15,27 +15,33 @@ import android.support.v4.app.Fragment;
  * @copyright Copyright (c) 2018, NUTES UEPB
  */
 public abstract class BaseConfigPage<T> {
+    public String titleStr,
+            descriptionStr;
+
     public int layout,
             title,
             description,
             image,
-            backgroundColor,
+            colorBackground,
             titleColor,
             descriptionColor,
             pageNumber,
             drawableClose,
             drawablePause;
 
+    public boolean zoomDisabled;
+
     public BaseConfigPage() {
         this.layout = 0;
         this.title = 0;
         this.description = 0;
         this.image = 0;
-        this.backgroundColor = 0;
+        this.colorBackground = 0;
         this.titleColor = 0;
         this.descriptionColor = 0;
         this.drawableClose = 0;
         this.drawablePause = 0;
+        this.zoomDisabled = true;
     }
 
     /**
@@ -52,7 +58,7 @@ public abstract class BaseConfigPage<T> {
     /**
      * Set title.
      *
-     * @param title
+     * @param title int
      * @return T
      */
     public T title(@StringRes int title) {
@@ -61,13 +67,35 @@ public abstract class BaseConfigPage<T> {
     }
 
     /**
+     * Set title.
+     *
+     * @param title {@link String}
+     * @return T
+     */
+    public T title(String title) {
+        this.titleStr = title;
+        return (T) this;
+    }
+
+    /**
      * Set description.
      *
-     * @param description
+     * @param description int
      * @return T
      */
     public T description(@StringRes int description) {
         this.description = description;
+        return (T) this;
+    }
+
+    /**
+     * Set description.
+     *
+     * @param description {@link String}
+     * @return T
+     */
+    public T description(String description) {
+        this.descriptionStr = description;
         return (T) this;
     }
 
@@ -80,6 +108,19 @@ public abstract class BaseConfigPage<T> {
      */
     public T title(@StringRes int title, @ColorInt int titleColor) {
         this.title = title;
+        this.titleColor = titleColor;
+        return (T) this;
+    }
+
+    /**
+     * Set title and color.
+     *
+     * @param title      {@link String}
+     * @param titleColor int
+     * @return T
+     */
+    public T title(String title, @ColorInt int titleColor) {
+        this.titleStr = title;
         this.titleColor = titleColor;
         return (T) this;
     }
@@ -98,6 +139,19 @@ public abstract class BaseConfigPage<T> {
     }
 
     /**
+     * Set description and color.
+     *
+     * @param description      {@link String}
+     * @param descriptionColor int
+     * @return T
+     */
+    public T description(String description, @ColorInt int descriptionColor) {
+        this.descriptionStr = description;
+        this.descriptionColor = descriptionColor;
+        return (T) this;
+    }
+
+    /**
      * Set image image.
      *
      * @param image
@@ -111,11 +165,11 @@ public abstract class BaseConfigPage<T> {
     /**
      * Set background color
      *
-     * @param backgroundColor
+     * @param colorBackground
      * @return T
      */
-    public T backgroundColor(@ColorInt int backgroundColor) {
-        this.backgroundColor = backgroundColor;
+    public T colorBackground(@ColorInt int colorBackground) {
+        this.colorBackground = colorBackground;
         return (T) this;
     }
 
@@ -174,19 +228,32 @@ public abstract class BaseConfigPage<T> {
         return (T) this;
     }
 
+    /**
+     * Enable zoom in question image.
+     *
+     * @return ConfigPage
+     */
+    public T enableZoomImage() {
+        this.zoomDisabled = false;
+        return (T) this;
+    }
+
     @Override
     public String toString() {
         return "BaseConfigPage{" +
-                "layout=" + layout +
+                "titleStr='" + titleStr + '\'' +
+                ", descriptionStr='" + descriptionStr + '\'' +
+                ", layout=" + layout +
                 ", title=" + title +
                 ", description=" + description +
                 ", image=" + image +
-                ", backgroundColor=" + backgroundColor +
+                ", colorBackground=" + colorBackground +
                 ", titleColor=" + titleColor +
                 ", descriptionColor=" + descriptionColor +
                 ", pageNumber=" + pageNumber +
                 ", drawableClose=" + drawableClose +
                 ", drawablePause=" + drawablePause +
+                ", zoomDisabled=" + zoomDisabled +
                 '}';
     }
 

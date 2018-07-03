@@ -9,15 +9,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.github.chrisbanes.photoview.PhotoView;
+import com.github.paolorotolo.appintro.AppIntro;
+import com.github.paolorotolo.appintro.AppIntroViewPager;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import com.github.paolorotolo.appintro.AppIntro;
-import com.github.paolorotolo.appintro.AppIntroViewPager;
 
 /**
  * BasePage implementation.
@@ -31,6 +38,8 @@ public abstract class BasePage<T extends BaseConfigPage> extends Fragment implem
     protected boolean isBlocked;
     protected int pageNumber;
     protected OnPageListener mPageListener;
+    private Session session;
+    private final String SEPARATOR_ITEMS = "#";
 
     @Nullable
     @BindView(R.id.question_title)
@@ -42,7 +51,7 @@ public abstract class BasePage<T extends BaseConfigPage> extends Fragment implem
 
     @Nullable
     @BindView(R.id.question_image)
-    public ImageView questionImageView;
+    public PhotoView questionImageView;
 
     @Nullable
     @BindView(R.id.close_imageButton)
@@ -61,29 +70,38 @@ public abstract class BasePage<T extends BaseConfigPage> extends Fragment implem
     public LinearLayout boxImage;
 
     @Nullable
+    @BindView(R.id.box_input)
+    public LinearLayout boxInput;
+
+    @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(getLayout(), container, false);
         unbinder = ButterKnife.bind(this, view);
+        session = new Session(getActivity());
 
         if (boxTitle != null && titleTextView != null) {
-            if (getConfigsPage().title != 0) {
+            if (getConfigsPage().title != 0)
                 titleTextView.setText(getConfigsPage().title);
-                if (getConfigsPage().titleColor != 0)
-                    titleTextView.setTextColor(getConfigsPage().titleColor);
-            } else {
+            else if (getConfigsPage().titleStr != null && !getConfigsPage().titleStr.isEmpty())
+                titleTextView.setText(getConfigsPage().titleStr);
+            else
                 boxTitle.setVisibility(View.GONE);
-            }
+
+            if (getConfigsPage().titleColor != 0)
+                titleTextView.setTextColor(getConfigsPage().titleColor);
         }
 
         if (boxDescription != null && descTextView != null) {
-            if (getConfigsPage().description != 0) {
+            if (getConfigsPage().description != 0)
                 descTextView.setText(getConfigsPage().description);
-                if (getConfigsPage().descriptionColor != 0)
-                    descTextView.setTextColor(getConfigsPage().descriptionColor);
-            } else {
+            else if (getConfigsPage().descriptionStr != null && !getConfigsPage().descriptionStr.isEmpty())
+                descTextView.setText(getConfigsPage().descriptionStr);
+            else
                 boxDescription.setVisibility(View.GONE);
-            }
+
+            if (getConfigsPage().descriptionColor != 0)
+                descTextView.setTextColor(getConfigsPage().descriptionColor);
         }
 
         if (closeImageButton != null) {
@@ -96,7 +114,9 @@ public abstract class BasePage<T extends BaseConfigPage> extends Fragment implem
         if (boxImage != null && questionImageView != null) {
             if (getConfigsPage().image != 0) {
                 questionImageView.setImageResource(getConfigsPage().image);
-                questionImageView.setOnClickListener(v -> mPageListener.onQuestionImageClick(getConfigsPage().image));
+
+                // enable/disable zoom
+                questionImageView.setZoomable(!getConfigsPage().zoomDisabled);
             } else boxImage.setVisibility(View.GONE);
         }
 
@@ -162,5 +182,63 @@ public abstract class BasePage<T extends BaseConfigPage> extends Fragment implem
     @Override
     public int getPageNumber() {
         return pageNumber;
+    }
+
+    /**
+     * Retrieve extra items saved in sharedPreferences.
+     *
+     * @param key {@link String}
+     * @return List<String>
+     */
+    public List<String> getItemsExtraSharedPreferences(String key) {
+        String extra = session.getString(key);
+        return Arrays.asList(extra.split(SEPARATOR_ITEMS));
+    }
+
+    /**
+     * Save extra items in sharedPreferences.
+     * Items are saved as {@link String} separated by {@link #SEPARATOR_ITEMS}
+     *
+     * @param key  {@link String}
+     * @param item {@link String}
+     * @return boolean
+     */
+    public boolean saveItemExtraSharedPreferences(String key, String item) {
+        if (getItemsExtraSharedPreferences(key).size() > 0)
+            return session.putString(key, session.getString(key)
+                    .concat(SEPARATOR_ITEMS).concat(item));
+        return session.putString(key, item);
+    }
+
+    /**
+     * Remove all items in sharedPreferences.
+     *
+     * @param key  {@link String}
+     * @param item {@link String}
+     */
+    public void removeItemExtraSharedPreferences(String key, String item) {
+        List<String> _temp = new ArrayList<>(getItemsExtraSharedPreferences(key));
+        if (_temp.size() <= 0) return;
+
+        _temp.remove(new String(item));
+        if (_temp.equals(getItemsExtraSharedPreferences(key))) return;
+
+        /**
+         * Clean items.
+         * Save items without the item removed.
+         */
+        cleanItemsExtraSharedPreferences(key);
+        for (String s : _temp)
+            saveItemExtraSharedPreferences(key, s);
+    }
+
+    /**
+     * Remove all items in sharedPreferences.
+     *
+     * @param key {@link String}
+     * @return boolean
+     */
+    public boolean cleanItemsExtraSharedPreferences(String key) {
+        return session.removeString(key);
     }
 }

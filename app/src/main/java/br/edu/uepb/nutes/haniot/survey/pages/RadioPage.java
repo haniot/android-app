@@ -10,15 +10,16 @@ import android.support.annotation.StringRes;
 import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+
+import com.github.paolorotolo.appintro.ISlideBackgroundColorHolder;
+
+import java.io.Serializable;
+
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.survey.base.BaseConfigPage;
 import br.edu.uepb.nutes.haniot.survey.base.BasePage;
 import br.edu.uepb.nutes.haniot.survey.base.OnPageListener;
-import br.edu.uepb.nutes.haniot.utils.Log;
 import butterknife.BindView;
-import com.github.paolorotolo.appintro.ISlideBackgroundColorHolder;
-
-import java.io.Serializable;
 
 /**
  * RadioPage implementation.
@@ -104,6 +105,8 @@ public class RadioPage extends BasePage<RadioPage.ConfigPage> implements ISlideB
             // init answer
             if (configPage.answerInit != -1)
                 setAnswer(configPage.answerInit != 0);
+
+            refreshStyles();
         }
     }
 
@@ -116,23 +119,12 @@ public class RadioPage extends BasePage<RadioPage.ConfigPage> implements ISlideB
             if (actionClearCheck) return;
 
             if (checkedId == R.id.left_radioButton && oldAnswer != 0) {
-                if (configPage.radioColorTextNormal != 0 && configPage.radioColorTextChecked != 0) {
-                    radioLeft.setTextColor(configPage.radioColorTextChecked);
-                    radioRight.setTextColor(configPage.radioColorTextNormal);
-                }
-
                 setAnswer(false);
-                mListener.onAnswerRadio(pageNumber, answerValue);
+                mListener.onAnswerRadio(pageNumber, false);
             } else if (checkedId == R.id.right_radioButton && oldAnswer != 1) {
-                if (configPage.radioColorTextNormal != 0 && configPage.radioColorTextChecked != 0) {
-                    radioRight.setTextColor(configPage.radioColorTextChecked);
-                    radioLeft.setTextColor(configPage.radioColorTextNormal);
-                }
-
                 setAnswer(true);
-                mListener.onAnswerRadio(pageNumber, answerValue);
+                mListener.onAnswerRadio(pageNumber, true);
             }
-            Log.d(TAG, "OnTest() " + oldAnswer + " - " + answerValue);
         });
     }
 
@@ -178,13 +170,13 @@ public class RadioPage extends BasePage<RadioPage.ConfigPage> implements ISlideB
 
     @Override
     public int getDefaultBackgroundColor() {
-        return (configPage.backgroundColor != 0) ? configPage.backgroundColor : Color.GRAY;
+        return (configPage.colorBackground != 0) ? configPage.colorBackground : Color.GRAY;
     }
 
     @Override
     public void setBackgroundColor(int backgroundColor) {
-        if (configPage.backgroundColor != 0)
-            getView().setBackgroundColor(configPage.backgroundColor);
+        if (configPage.colorBackground != 0)
+            getView().setBackgroundColor(configPage.colorBackground);
     }
 
     @Override
@@ -210,6 +202,17 @@ public class RadioPage extends BasePage<RadioPage.ConfigPage> implements ISlideB
 
         if (value) radioRight.setChecked(true);
         else radioLeft.setChecked(true);
+        refreshStyles();
+    }
+
+    private void refreshStyles() {
+        if (radioRight.isChecked()) {
+            radioRight.setTextColor(configPage.radioColorTextChecked);
+            radioLeft.setTextColor(configPage.radioColorTextNormal);
+        } else if (radioLeft.isChecked()) {
+            radioLeft.setTextColor(configPage.radioColorTextChecked);
+            radioRight.setTextColor(configPage.radioColorTextNormal);
+        }
     }
 
     /**
@@ -227,8 +230,8 @@ public class RadioPage extends BasePage<RadioPage.ConfigPage> implements ISlideB
         public ConfigPage() {
             this.radioLeftText = 0;
             this.radioRightText = 0;
-            this.radioColorTextNormal = 0;
-            this.radioColorTextChecked = 0;
+            this.radioColorTextNormal = Color.BLACK;
+            this.radioColorTextChecked = Color.WHITE;
             this.radioLeftBackground = 0;
             this.radioRightBackground = 0;
             this.answerInit = -1;

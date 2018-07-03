@@ -151,13 +151,11 @@ public class MultiSelectSpinner extends AppCompatSpinner implements DialogInterf
     public MultiSelectSpinner items(@NonNull List<String> items) {
         if (items == null) throw new IllegalArgumentException("List<String> items is required!");
 
-        // Remove string invalid
+        // Remove title invalid
         items.remove(new String());
-        if (items == null || items.isEmpty())
-            return this;
-
         _items = items;
         _itemsSelected = new ArrayList<>(items.size());
+        
         for (int i = 0; i < items.size(); i++)
             _itemsSelected.add(false);
 
@@ -356,7 +354,7 @@ public class MultiSelectSpinner extends AppCompatSpinner implements DialogInterf
     }
 
     /**
-     * Build string items selected.
+     * Build title items selected.
      *
      * @return {@link String}
      */

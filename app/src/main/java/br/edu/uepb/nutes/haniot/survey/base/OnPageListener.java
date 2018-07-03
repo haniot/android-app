@@ -1,8 +1,5 @@
 package br.edu.uepb.nutes.haniot.survey.base;
 
-import android.support.annotation.DrawableRes;
-import android.view.View;
-
 /**
  * Interface OnPageListener.
  *
@@ -11,7 +8,5 @@ import android.view.View;
  * @copyright Copyright (c) 2018, NUTES UEPB
  */
 public interface OnPageListener {
-    void onQuestionImageClick(@DrawableRes int id);
-
     void onClosePage();
 }

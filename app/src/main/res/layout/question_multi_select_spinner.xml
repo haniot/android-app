@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBlackGrey"
     android:orientation="vertical">
 
     <LinearLayout
@@ -51,7 +50,6 @@
                 android:gravity="center"
                 android:text="@string/fall_risk_title_group1"
                 android:textAppearance="@android:style/TextAppearance.Large"
-                android:textColor="@android:color/white"
                 android:textStyle="bold" />
 
         </LinearLayout>
@@ -67,14 +65,12 @@
             android:orientation="vertical"
             android:padding="@dimen/activity_horizontal_margin">
 
-            <ImageView
+            <com.github.chrisbanes.photoview.PhotoView
                 android:id="@+id/question_image"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
                 android:contentDescription="@string/image"
-                app:srcCompat="@drawable/coast_pain_elderly"
-                tools:ignore="ContentDescription" />
+                android:src="@drawable/fall_elderly" />
 
         </LinearLayout>
         <!-- END BOX IMAGE -->
@@ -96,57 +92,30 @@
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:text="@string/fall_risk_description_q1"
-                android:textAppearance="@android:style/TextAppearance.Medium"
-                android:textColor="@android:color/white" />
+                android:textAppearance="@android:style/TextAppearance.Medium" />
         </LinearLayout>
         <!-- END BOX DESCRIPTION -->
 
         <!-- BOX INPUT -->
         <LinearLayout
+            android:id="@+id/box_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="70dp"
-            android:baselineAligned="false"
-            android:orientation="horizontal"
-            android:paddingLeft="@dimen/spinner_answer_margin"
-            android:paddingRight="@dimen/spinner_answer_margin_simple">
+            android:orientation="vertical"
+            android:padding="@dimen/spinner_answer_margin">
 
-            <LinearLayout
-                android:layout_width="0dp"
+            <br.edu.uepb.nutes.haniot.ui.CustomMultiSelectSpinner
+                android:id="@+id/answer_multi_select_spinner"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <br.edu.uepb.nutes.haniot.ui.MultiSelectSpinner
-                    android:id="@+id/answer_multi_select_spinner"
-                    style="@style/Widget.AppCompat.Spinner.Underlined"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="@dimen/activity_vertical_margin"
-                    app:backgroundTint="@color/colorTextDark" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/box_add_item"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <ImageButton
-                    android:id="@+id/new_item_imageButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:background="@android:color/transparent"
-                    android:contentDescription="@string/survey_add_new_answer"
-                    android:src="@drawable/ic_add"
-                    android:tint="@color/colorTextDark" />
-            </LinearLayout>
-
+                app:colorBackgroundTint="@color/colorPurple"
+                android:hint="@string/survey_select_the_answers"
+                android:entries="@array/answers_fall_characterization_q6_array"
+                app:enabledAddNewItem="false" />
         </LinearLayout>
         <!-- END BOX INPUT -->
 
     </LinearLayout>
-
 </android.support.constraint.ConstraintLayout>
 

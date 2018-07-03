@@ -105,6 +105,9 @@
     <string name="survey_select_the_answers">Selecione as respostas&#8230;</string>
     <string name="survey_enter_an_answer">Insira uma resposta&#8230;</string>
     <string name="survey_add_new_answer">Adicionar uma nova resposta</string>
+    <string name="survey_add_new_item">Adicionar um novo item</string>
+    <string name="survey_please_add_new_item">Por favor, adicione novos itens...</string>
+    <string name="survey_dialog_remove_add_new_item">Itens adicionados que não são usados serão removidos.\nTem certeza de que não deseja selecionar o item?</string>
     <!-- END SURVEY -->
 
     <!-- ELDERLY -->
@@ -219,15 +222,16 @@
     </string-array>
 
     <!-- ELDERLY FALL CHARACTERIZATION SURVEY -->
-    <string name="fall_characterization_q1">Você confirma que o idoso %s sofreram a queda detectada em: %s?</string>
+    <string name="fall_characterization_q1">Você confirma que o idoso %s sofreu a queda detectada em: %s?</string>
     <string name="fall_characterization_q2">Após a queda houve algum tipo de assistência médica?</string>
     <string name="fall_characterization_q3">Foi necessário hospitalização?</string>
     <string name="fall_characterization_q4">Quanto tempo durou a hospitalização?</string>
     <string name="fall_characterization_q5">A queda ocasionou alguma fratura?</string>
     <string name="fall_characterization_q6">Qual foi o local da fratura?</string>
-    <string name="fall_characterization_q7">O que causou a queda?</string>
+    <string name="fall_characterization_q7">O que provocou a queda?</string>
     <string name="fall_characterization_q8">Em que local a queda aconteceu?</string>
     <string name="fall_characterization_q9">Em que horário ocorreu a queda?</string>
+    <string name="fall_characterization_add_new_Item_q8">Adicione um novo local de queda</string>
     <!-- END ELDERLY FALL CHARACTERIZATION SURVEY -->
 
     <!-- ARRAY ALTERNATIVES FALL CHARACTERIZATION SURVEY Q4 -->
@@ -249,7 +253,7 @@
         <item>6 - Carpo/Metacarpo/Falanges</item>
         <item>7 - Fêmur</item>
         <item>8 - Joelho</item>
-        <item>8 - Tíbia/Fíbula</item>
+        <item>9 - Tíbia/Fíbula</item>
         <item>10 - Tarso/Metatarsos/Falanges</item>
         <item>11 - Coluna cervical</item>
         <item>12 - Coluna torácica</item>

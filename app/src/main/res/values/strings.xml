@@ -306,6 +306,9 @@
     <string name="survey_select_the_answers">Select the answers&#8230;</string>
     <string name="survey_enter_an_answer">Enter an answer&#8230;</string>
     <string name="survey_add_new_answer">Add new answer</string>
+    <string name="survey_add_new_item">Add new item</string>
+    <string name="survey_please_add_new_item">Please add new items...</string>
+    <string name="survey_dialog_remove_add_new_item">Added items that are not used will be removed.\nAre you sure you do not want to select the item?</string>
     <!-- END SURVEY -->
 
     <!-- ELDERLY -->
@@ -387,6 +390,7 @@
     <string name="fall_characterization_q7">What caused the fall?</string>
     <string name="fall_characterization_q8">Where the fall happened?</string>
     <string name="fall_characterization_q9">The fall occurred at what time?</string>
+    <string name="fall_characterization_add_new_Item_q8">Add a new drop location</string>
     <!-- END ELDERLY FALL CHARACTERIZATION SURVEY -->
 
     <!-- ARRAY ALTERNATIVES FALL CHARACTERIZATION SURVEY Q4 -->
@@ -408,7 +412,7 @@
         <item>6 - Carpal/Metacarpal/Phalanges</item>
         <item>7 - Femur</item>
         <item>8 - knee</item>
-        <item>8 - Tibia/Fibula</item>
+        <item>9 - Tibia/Fibula</item>
         <item>10 - Tarsus/Metatarsal/Phalanges</item>
         <item>11 - Cervical spine</item>
         <item>12 - Thoracic spine</item>

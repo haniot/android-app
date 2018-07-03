@@ -56,6 +56,9 @@ dependencies {
     // APPINTRO
     implementation 'com.github.apl-devs:appintro:v4.2.3'
 
+    // PHOTO VIEW (Zoom in Image)
+    implementation 'com.github.chrisbanes:PhotoView:2.0.0'
+
     // TEST
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
