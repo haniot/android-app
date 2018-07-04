@@ -97,8 +97,21 @@
     <string name="fall_register_time_title">Queda registrada às %s</string>
     <string name="alert_register_time_title">Alerta disparada às %s</string>
     <string name="image">Imagem</string>
-    <string name="bt_stop">Stop</string>
-    <string name="bt_pause">Pausa </string>
+    <string name="warning_title">Atenção!</string>
+
+    <!-- DIALOGS -->
+    <string name="confirm_sign_out">Do you really want to quit the application?\nYou will be redirected to login screen&#8230;</string>
+    <string name="bt_ok">Ok</string>
+    <string name="bt_cancel">Cancelar</string>
+    <string name="bt_stop">Parar</string>
+    <string name="bt_pause">Pausa</string>
+    <string name="bt_discard">Discartar</string>
+    <string name="bt_save">Salvar</string>
+    <string name="bt_remind_me_later">Lembre-me depois</string>
+    <string name="title_save_captured_data">Salvar dados&#8230;</string>
+    <string name="message_save_captured_data">Você deseja salvar os dados capturados?</string>
+    <string name="message_save_captured_heart_rate">Você deseja salvar a frequência cardíaca capturada?</string>
+    <!-- END DIALOGS -->
 
     <!-- SURVEY -->
     <string name="survey_select_an_answer">Selcione uma resposta&#8230;</string>
@@ -232,6 +245,8 @@
     <string name="fall_characterization_q8">Em que local a queda aconteceu?</string>
     <string name="fall_characterization_q9">Em que horário ocorreu a queda?</string>
     <string name="fall_characterization_add_new_Item_q8">Adicione um novo local de queda</string>
+    <string name="fall_characterization_cancel_dialog">Tem certeza de que deseja cancelar a caracterização da queda?\nAs respostas fornecidas serão perdidas&#8230;</string>
+    <string name="fall_characterization_did_not_fall_dialog">Você tem certeza que o idoso não sofreu uma queda no dia %s às %s?</string>
     <!-- END ELDERLY FALL CHARACTERIZATION SURVEY -->
 
     <!-- ARRAY ALTERNATIVES FALL CHARACTERIZATION SURVEY Q4 -->

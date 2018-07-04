@@ -50,7 +50,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:text="@string/fall_risk_title_group1"
+                android:text="@string/fall_risk_title_group3"
                 android:textAppearance="@android:style/TextAppearance.Large"
                 android:textStyle="bold" />
 
@@ -99,41 +99,31 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:gravity="center"
-                    android:text="@string/fall_risk_description_q1"
+                    android:text="@string/fall_risk_description_q10"
                     android:textAppearance="@android:style/TextAppearance.Medium" />
             </ScrollView>
         </LinearLayout>
         <!-- END BOX DESCRIPTION -->
 
         <!-- BOX INPUT -->
-        <RadioGroup
-            android:id="@+id/answer_radioGroup"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/box_input"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginBottom="70dp"
-            android:orientation="horizontal">
+            android:layout_marginBottom="40dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="@dimen/spinner_answer_margin">
 
-            <RadioButton
-                android:id="@+id/left_radioButton"
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/answer_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/button_background_blue_left"
-                android:button="@android:color/transparent"
-                android:checked="false"
-                android:text="@string/no_text"
-                android:textColor="@drawable/button_black_text" />
-
-            <RadioButton
-                android:id="@+id/right_radioButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/button_background_blue_right"
-                android:button="@android:color/transparent"
-                android:checked="false"
-                android:text="@string/yes_text"
-                android:textColor="@drawable/button_black_text" />
-        </RadioGroup>
+                android:background="@drawable/button_background_blue"
+                android:paddingLeft="60dp"
+                android:paddingRight="60dp"
+                android:text="@string/bt_ok" />
+        </LinearLayout>
         <!-- END BOX INPUT -->
 
     </LinearLayout>

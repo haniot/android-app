@@ -3,10 +3,13 @@ package br.edu.uepb.nutes.haniot.survey.pages;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.ColorInt;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import android.util.Log;
 import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -32,6 +35,7 @@ public class RadioPage extends BasePage<RadioPage.ConfigPage> implements ISlideB
     private final String TAG = "RadioPage";
 
     protected static final String ARG_CONFIGS_PAGE = "arg_configs_page";
+    protected static final String KEY_OLD_ANSWER_BUNDLE = "old_answer";
 
     private OnRadioListener mListener;
     private boolean answerValue, actionClearCheck;
@@ -111,9 +115,18 @@ public class RadioPage extends BasePage<RadioPage.ConfigPage> implements ISlideB
     }
 
     @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putInt(KEY_OLD_ANSWER_BUNDLE, oldAnswer);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if (radioGroup == null) return;
+
+        if (savedInstanceState != null)
+            oldAnswer = savedInstanceState.getInt(KEY_OLD_ANSWER_BUNDLE, -1);
 
         radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
             if (actionClearCheck) return;
@@ -148,7 +161,6 @@ public class RadioPage extends BasePage<RadioPage.ConfigPage> implements ISlideB
         super.onDestroyView();
         unbinder.unbind();
         if (radioGroup != null) radioGroup.setOnCheckedChangeListener(null);
-        if (super.closeImageButton != null) super.closeImageButton.setOnClickListener(null);
     }
 
     @Override
@@ -185,6 +197,7 @@ public class RadioPage extends BasePage<RadioPage.ConfigPage> implements ISlideB
         radioGroup.clearCheck();
         actionClearCheck = false;
         oldAnswer = -1;
+        refreshStyles();
 
         // Block page
         super.blockPage();
@@ -206,12 +219,18 @@ public class RadioPage extends BasePage<RadioPage.ConfigPage> implements ISlideB
     }
 
     private void refreshStyles() {
-        if (radioRight.isChecked()) {
-            radioRight.setTextColor(configPage.radioColorTextChecked);
-            radioLeft.setTextColor(configPage.radioColorTextNormal);
-        } else if (radioLeft.isChecked()) {
-            radioLeft.setTextColor(configPage.radioColorTextChecked);
-            radioRight.setTextColor(configPage.radioColorTextNormal);
+        if (this.configPage.radioColorTextNormal == 0 &&
+                this.configPage.radioColorTextChecked == 0) return;
+
+        if (this.oldAnswer == 1) {
+            this.radioRight.setTextColor(this.configPage.radioColorTextChecked);
+            this.radioLeft.setTextColor(this.configPage.radioColorTextNormal);
+        } else if (this.oldAnswer == 0) {
+            this.radioLeft.setTextColor(this.configPage.radioColorTextChecked);
+            this.radioRight.setTextColor(this.configPage.radioColorTextNormal);
+        } else {
+            this.radioLeft.setTextColor(this.configPage.radioColorTextNormal);
+            this.radioRight.setTextColor(this.configPage.radioColorTextNormal);
         }
     }
 
@@ -230,8 +249,8 @@ public class RadioPage extends BasePage<RadioPage.ConfigPage> implements ISlideB
         public ConfigPage() {
             this.radioLeftText = 0;
             this.radioRightText = 0;
-            this.radioColorTextNormal = Color.BLACK;
-            this.radioColorTextChecked = Color.WHITE;
+            this.radioColorTextNormal = 0;
+            this.radioColorTextChecked = 0;
             this.radioLeftBackground = 0;
             this.radioRightBackground = 0;
             this.answerInit = -1;

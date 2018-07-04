@@ -44,7 +44,7 @@ public class SelectSpinnerPage extends BasePage<SelectSpinnerPage.ConfigPage> im
     }
 
     /**
-     * New RadioPage instance.
+     * New SelectSpinnerPage instance.
      *
      * @param configPage
      * @return SelectSpinnerPage
@@ -151,7 +151,7 @@ public class SelectSpinnerPage extends BasePage<SelectSpinnerPage.ConfigPage> im
             this.mListener = (OnSpinnerListener) context;
             super.mPageListener = this.mListener;
         } else {
-            throw new ClassCastException();
+            throw new ClassCastException("You must implement the SelectSpinnerPage.OnSpinnerListener!");
         }
     }
 

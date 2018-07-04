@@ -44,6 +44,7 @@
     <string name="fall_register_time_title">Fall was recorded at %s</string>
     <string name="alert_register_time_title">Alert was triggered at %s</string>
     <string name="image">Image</string>
+    <string name="warning_title">Warning!</string>
 
     <!--ACTIONS-->
     <string name="action_settings">Settings</string>
@@ -274,7 +275,7 @@
     <string name="email_contact">contact@nutes.uepb.edu.br</string>
     <string name="message_not_remove">Please don\'t remove this information</string>
 
-    <!--DIALOGS-->
+    <!-- DIALOGS -->
     <string name="confirm_sign_out">Do you really want to quit the application?\nYou will be redirected to login screen&#8230;</string>
     <string name="bt_ok">Ok</string>
     <string name="bt_cancel">Cancel</string>
@@ -282,9 +283,11 @@
     <string name="bt_pause">Pause</string>
     <string name="bt_discard">Discard</string>
     <string name="bt_save">Save</string>
+    <string name="bt_remind_me_later">Remind me later</string>
     <string name="title_save_captured_data">Save data&#8230;</string>
     <string name="message_save_captured_data">Do you want to save the captured data?</string>
     <string name="message_save_captured_heart_rate">Do you want to save the captured heart rate?</string>
+    <!-- END DIALOGS -->
 
     <string name="no_data_available">No data to display&#8230;</string>
     <string name="unit_kg">kg</string>
@@ -374,7 +377,7 @@
     <string name="fall_risk_title_low">Low risk of falls</string>
     <string name="fall_risk_title_moderate">Moderate falls risk</string>
     <string name="fall_risk_title_high">High risk of falls</string>
-    <string name="fall_risk_title_cancel">Are you sure you want to cancel?\nThe answers given will be lost&#8230;</string>
+    <string name="fall_risk_title_cancel">Are you sure you want to cancel?\nThe answers provide will be lost&#8230;</string>
     <string name="fall_risk_title_end">Based on the answers obtained the risk of the elderly suffering a fall will be classified in:</string>
     <string name="fall_risk_title_end_confirm_result">Do you want to see the evaluation result?</string>
     <string name="fall_risk_message_blocked_page">Answer the current question to go to next&#8230;</string>
@@ -391,6 +394,8 @@
     <string name="fall_characterization_q8">Where the fall happened?</string>
     <string name="fall_characterization_q9">The fall occurred at what time?</string>
     <string name="fall_characterization_add_new_Item_q8">Add a new drop location</string>
+    <string name="fall_characterization_cancel_dialog">Are you sure you want to cancel the fall characterization?\nThe answers provide will be lost&#8230;</string>
+    <string name="fall_characterization_did_not_fall_dialog">Are you sure the elderly did not fall on %s at %s?</string>
     <!-- END ELDERLY FALL CHARACTERIZATION SURVEY -->
 
     <!-- ARRAY ALTERNATIVES FALL CHARACTERIZATION SURVEY Q4 -->

@@ -24,7 +24,7 @@ import br.edu.uepb.nutes.haniot.utils.Log;
 import butterknife.BindView;
 
 /**
- * SelectSpinnerPage implementation.
+ * MultiSelectSpinnerPage implementation.
  *
  * @author Douglas Rafael <douglas.rafael@nutes.uepb.edu.br>
  * @version 1.0
@@ -47,10 +47,10 @@ public class MultiSelectSpinnerPage extends BasePage<MultiSelectSpinnerPage.Conf
     }
 
     /**
-     * New RadioPage instance.
+     * New MultiSelectSpinnerPage instance.
      *
      * @param configPage
-     * @return SelectSpinnerPage
+     * @return MultiSelectSpinnerPage
      */
     private static MultiSelectSpinnerPage newInstance(ConfigPage configPage) {
         MultiSelectSpinnerPage pageFragment = new MultiSelectSpinnerPage();

@@ -39,18 +39,6 @@ public abstract class BaseSurvey extends AppIntro {
         setImmersive(true);
 
         this.initView();
-
-        setCustomTransformer(new ViewPager.PageTransformer() {
-            @Override
-            public void transformPage(@NonNull View page, float position) {
-//                final float rotation = -180f * position;
-//
-//                page.setVisibility(rotation > 90f || rotation < -90f ? View.INVISIBLE : View.VISIBLE);
-//                page.setPivotX(page.getWidth() * 0.5f);
-//                page.setPivotY(page.getHeight() * 0.5f);
-//                page.setRotationX(rotation);
-            }
-        });
     }
 
     @Override
@@ -98,30 +86,6 @@ public abstract class BaseSurvey extends AppIntro {
                 }
             });
         }
-    }
-
-    /**
-     * Show dialog mesage cancel.
-     */
-    protected void showMessageCancel() {
-        runOnUiThread(() -> {
-            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-            dialog.setMessage(getString(R.string.fall_risk_title_cancel));
-
-            dialog.setPositiveButton(R.string.yes_text, (dialogInterface, which) -> {
-                finish();
-            });
-
-            dialog.setNegativeButton(R.string.no_text, (dialogInterface, which) -> {
-                currentPage.clearAnswer();
-            });
-
-            dialog.setOnCancelListener((dialogInterface) -> {
-                currentPage.clearAnswer();
-            });
-
-            dialog.create().show();
-        });
     }
 
     /**
