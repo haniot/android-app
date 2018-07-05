@@ -1,16 +1,21 @@
 package br.edu.uepb.nutes.haniot.activity.charts.base;
 
 import android.graphics.Rect;
+import android.os.Bundle;
+import android.os.PersistableBundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.GridView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
+import com.github.mikephil.charting.charts.Chart;
 
 import org.json.JSONObject;
 
@@ -20,6 +25,7 @@ import java.util.List;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.model.Measurement;
+import br.edu.uepb.nutes.haniot.model.MeasurementType;
 import br.edu.uepb.nutes.haniot.server.historical.CallbackHistorical;
 import br.edu.uepb.nutes.haniot.server.historical.Historical;
 import br.edu.uepb.nutes.haniot.server.historical.HistoricalType;
@@ -27,6 +33,7 @@ import br.edu.uepb.nutes.haniot.server.historical.Params;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import br.edu.uepb.nutes.haniot.utils.NameColumnsDB;
 import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Base Chart implementation.
@@ -50,6 +57,9 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
     @BindView(R.id.toolbar)
     public Toolbar mToolbar;
 
+    @BindView(R.id.chart_progress_bar)
+    public ProgressBar mProgressBar;
+
     @BindView(R.id.fab_year)
     public FloatingActionButton fabYear;
 
@@ -68,6 +78,28 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
     public BaseChartActivity() {
         this.currentChartType = CHART_TYPE_MONTH;
     }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        setContentView(getLayout());
+        ButterKnife.bind(this);
+
+        fabDay.setOnClickListener(this);
+        fabWeek.setOnClickListener(this);
+        fabMonth.setOnClickListener(this);
+        fabYear.setOnClickListener(this);
+
+        session = new Session(this);
+        initView();
+    }
+
+    public abstract void initView();
+    public abstract int getLayout();
+    public abstract Chart getChart();
 
     @Override
     public void onClick(View v) {
@@ -112,7 +144,7 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
             @Override
             public void onBeforeSend() {
                 Log.w(TAG, "onBeforeSend()");
-                // TODO Colocar loading
+
             }
 
             @Override
@@ -185,9 +217,8 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
         });
     }
 
-
     public void createMoreInfo(List<Measurement> measurements) {
-
+        Log.d(TAG, "createMoreInfoOriginal");
         ArrayList<InfoMeasurement> infoMeasurements = new ArrayList<>();
         infoMeasurements.addAll(getInfosBase(measurements));
 
@@ -196,7 +227,7 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
         gridView.setAdapter(infoAdapter);
     }
 
-    private ArrayList<InfoMeasurement> getInfosBase(List<Measurement> measurements) {
+    protected ArrayList<InfoMeasurement> getInfosBase(List<Measurement> measurements) {
 
         ArrayList<InfoMeasurement> infos = new ArrayList<>();
 

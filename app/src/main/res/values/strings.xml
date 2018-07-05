@@ -119,6 +119,9 @@
 
     // DATE/TIME FORMAT
     <string name="date_format">yyyy/MM/dd</string>
+    <string name="date_format_year">yyyy</string>
+    <string name="date_format_month">MMMM</string>
+    <string name="date_format_week">w</string>
     <string name="date_format_month_day">MM/dd</string>
     <string name="datetime_format">yyyy/MM/dd HH:mm:ss</string>
     <string name="datetime_format_db">yyyy-MM-dd HH:mm:ss</string>

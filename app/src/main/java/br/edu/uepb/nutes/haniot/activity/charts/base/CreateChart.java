@@ -3,11 +3,14 @@ package br.edu.uepb.nutes.haniot.activity.charts.base;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 
+import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Description;
@@ -207,7 +210,6 @@ public final class CreateChart<T> {
             return;
         }
 
-
         if (params.context instanceof SmartBandChartActivity) {
 
             mChart.getXAxis().setValueFormatter(prepareVariablesBarData());
@@ -281,6 +283,33 @@ public final class CreateChart<T> {
         mChart.setDescription(description);
         mChart.getDescription().setEnabled(true);
 
+        if (mChart instanceof BarChart){
+            BarChart barChart = (BarChart) mChart;
+            //barChart.setDrawBarShadow(true);
+            //barChart.setFitBars(true);
+            //barChart.setHighlightFullBarEnabled(true);
+
+            barChart.setBackgroundColor(Color.RED);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                barChart.setElevation((float) 5.0);
+            }
+            barChart.setSoundEffectsEnabled(true);
+            barChart.setDoubleTapToZoomEnabled(true);
+
+            setBar.setColor(Color.WHITE);
+            setBar.setBarBorderColor(ContextCompat.getColor(context, R.color.colorPrimaryDark));
+            //setBar.setBarShadowColor(Color.RED);
+            setBar.setValueTextColor(Color.WHITE);
+            setBar.setHighLightColor(ContextCompat.getColor(context, R.color.colorPrimaryDark));
+            setBar.setDrawValues(false);
+
+            barChart.getAxisLeft().setDrawGridLines(false);
+            barChart.getAxisRight().setDrawGridLines(false);
+            barChart.getAxisRight().setEnabled(false);
+            barChart.getAxisLeft().setEnabled(false);
+            barChart.setDrawValueAboveBar(false);
+
+        }
 
         //LineChart
         if (mChart instanceof LineChart) {

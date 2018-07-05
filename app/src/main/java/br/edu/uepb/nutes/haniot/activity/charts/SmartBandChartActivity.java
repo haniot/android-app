@@ -1,9 +1,8 @@
 package br.edu.uepb.nutes.haniot.activity.charts;
 
 import android.graphics.Color;
-import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.view.MenuItem;
+import android.widget.GridView;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.Chart;
@@ -16,15 +15,12 @@ import java.util.List;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.charts.base.BaseChartActivity;
 import br.edu.uepb.nutes.haniot.activity.charts.base.CreateChart;
-import br.edu.uepb.nutes.haniot.activity.settings.Session;
+import br.edu.uepb.nutes.haniot.activity.charts.base.InfoAdapter;
+import br.edu.uepb.nutes.haniot.activity.charts.base.InfoMeasurement;
 import br.edu.uepb.nutes.haniot.model.Measurement;
 import br.edu.uepb.nutes.haniot.model.MeasurementType;
-import br.edu.uepb.nutes.haniot.server.historical.Params;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import br.edu.uepb.nutes.haniot.utils.Log;
-import butterknife.ButterKnife;
-
-import static br.edu.uepb.nutes.haniot.server.SynchronizationServer.context;
 
 /**
  * BloodPresssureChartActivity implementation.
@@ -36,38 +32,37 @@ import static br.edu.uepb.nutes.haniot.server.SynchronizationServer.context;
 public class SmartBandChartActivity extends BaseChartActivity {
 
     private CreateChart mChart;
+    Chart barChart;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_bar_chart);
-        ButterKnife.bind(this);
-
-        setSupportActionBar(mToolbar);
+    public void initView() {
         getSupportActionBar().setTitle(getString(R.string.smart_band));
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        fabDay.setOnClickListener(this);
-        fabWeek.setOnClickListener(this);
-        fabMonth.setOnClickListener(this);
-        fabYear.setOnClickListener(this);
-
-        super.session = new Session(this);
-        super.params = new Params(session.get_idLogged(), MeasurementType.STEPS);
-
-        Chart barChart = (BarChart) findViewById(R.id.barChart);
+        barChart = (BarChart) findViewById(R.id.barChart);
         mChart = new CreateChart.Params(this, barChart)
+                .lineStyle(2.5f, Color.WHITE)
+                .drawCircleStyle(Color.WHITE, getResources().getColor(R.color.colorPrimary))
                 .yAxisEnabled(false)
                 .xAxisStyle(Color.WHITE, XAxis.XAxisPosition.BOTTOM)
                 .yAxisStyle(Color.WHITE)
                 .setTextValuesColor(Color.WHITE)
-                .formatDate(getString(R.string.date_format_month_day))
-                .drawCircleStyle(ContextCompat.getColor(context, R.color.colorIndigo), ContextCompat.getColor(context, R.color.colorPrimary))
-                .lineStyle(2.5f, ContextCompat.getColor(context, R.color.colorIndigo))
+                .colorFontDescription(Color.WHITE)
                 .highlightStyle(Color.TRANSPARENT, 0.7f)
+                .setRangeY(35, 38)
+                .formatDate(getString(R.string.date_format_month_day))
                 .build();
 
         requestData(CHART_TYPE_MONTH);
+    }
+
+    @Override
+    public int getLayout() {
+        return R.layout.activity_bar_chart;
+    }
+
+    @Override
+    public Chart getChart() {
+        return barChart;
     }
 
     @Override
@@ -88,48 +83,47 @@ public class SmartBandChartActivity extends BaseChartActivity {
     @Override
     public void onUpdateData(List<Measurement> data, int currentChartType) {
 
-        List<Measurement> points = agroupDay(data, Calendar.DATE);
+        List<Measurement> points = agroupDay(data);
         Calendar c = Calendar.getInstance();
         String dateFormat = "";
 
-        switch (currentChartType){
+        switch (currentChartType) {
             case CHART_TYPE_DAY:
                 dateFormat = getString(R.string.date_format);
                 break;
             case CHART_TYPE_SEVEN:
                 points = agroup(points, Calendar.WEEK_OF_YEAR);
-                dateFormat = getString(R.string.date_format);
+                dateFormat = getString(R.string.date_format_week);
                 break;
             case CHART_TYPE_MONTH:
                 points = agroup(points, Calendar.MONTH);
-                dateFormat = getString(R.string.month);
+                dateFormat = getString(R.string.date_format_month);
                 break;
             case CHART_TYPE_YEAR:
                 points = agroup(points, Calendar.YEAR);
-                dateFormat = getString(R.string.year);
+                dateFormat = getString(R.string.date_format_year);
                 break;
         }
 
-
         mChart.paintBar(points, dateFormat);
-        for (Measurement measurement : data) Log.d("A", DateUtils.formatDate(measurement.getRegistrationDate(), getString(R.string.date_format))+" - " + measurement.getValue());
-        for (Measurement measurement : points) Log.d("B", DateUtils.formatDate(measurement.getRegistrationDate(), getString(R.string.date_format))+" - " + measurement.getValue());
-
-
+        for (Measurement measurement : data)
+            Log.d("A", DateUtils.formatDate(measurement.getRegistrationDate(), getString(R.string.date_format)) + " - " + measurement.getValue());
+        for (Measurement measurement : points)
+            Log.d("B", DateUtils.formatDate(measurement.getRegistrationDate(), getString(R.string.date_format)) + " - " + measurement.getValue());
 
     }
 
-    public List<Measurement> agroupDay(List<Measurement> data, int type){
+    public List<Measurement> agroupDay(List<Measurement> data) {
         List<Measurement> points = new ArrayList<>();
         Calendar c = Calendar.getInstance();
 
-        points.add(data.get(data.size()-1));
-        for (int i = data.size()-1; i >= 0; i--) {
+        points.add(data.get(data.size() - 1));
+        for (int i = data.size() - 1; i >= 0; i--) {
             c.setTimeInMillis(data.get(i).getRegistrationDate());
-            int current = c.get(type);
+            int current = c.get(Calendar.DATE);
 
-            c.setTimeInMillis(points.get(points.size()-1).getRegistrationDate());
-            int compare = c.get(type);
+            c.setTimeInMillis(points.get(points.size() - 1).getRegistrationDate());
+            int compare = c.get(Calendar.DATE);
 
             if (current != compare) points.add(data.get(i));
         }
@@ -137,30 +131,44 @@ public class SmartBandChartActivity extends BaseChartActivity {
         return points;
     }
 
-    public List<Measurement> agroup(List<Measurement> data, int type){
+    public List<Measurement> agroup(List<Measurement> data, int type) {
         List<Measurement> points = new ArrayList<>();
         Calendar c = Calendar.getInstance();
 
-        points.add(data.get(data.size()-1));
-        int count = 0;
+        points.add(data.get(data.size() - 1));
         int total = 0;
-        long date = 0;
-        for (int i = data.size()-1; i >= 0; i--) {
+        int totalDist = 0;
+        int totalCal = 0;
+
+        for (int i = data.size() - 1; i >= 0; i--) {
             c.setTimeInMillis(data.get(i).getRegistrationDate());
             int current = c.get(type);
 
-            c.setTimeInMillis(points.get(points.size()-1).getRegistrationDate());
+            c.setTimeInMillis(points.get(points.size() - 1).getRegistrationDate());
             int compare = c.get(type);
 
-            date = data.get(i).getRegistrationDate();
-
             if (current != compare) {
-                points.add(new Measurement(total, data.get(0).getUnit(), date, data.get(0).getTypeId()));
-                count++;
+                Measurement measurement = data.get(i + 1);
+                measurement.setValue(total);
+                measurement.addMeasurement(
+                        new Measurement(totalDist, "m", MeasurementType.DISTANCE),
+                        new Measurement(totalCal, "kcal", MeasurementType.CALORIES_BURNED)
+                );
+
+                points.add(measurement);
                 total = 0;
+                totalDist = 0;
+                totalCal = 0;
             }
 
             total += data.get(i).getValue();
+            if (data.get(i).getMeasurements().get(0).getTypeId() == MeasurementType.DISTANCE) {
+                totalCal += data.get(i).getMeasurements().get(0).getValue();
+                totalDist += data.get(i).getMeasurements().get(1).getValue();
+            } else {
+                totalCal += data.get(i).getMeasurements().get(1).getValue();
+                totalDist += data.get(i).getMeasurements().get(0).getValue();
+            }
         }
 
         return points;
@@ -178,5 +186,16 @@ public class SmartBandChartActivity extends BaseChartActivity {
             currentChartType = CHART_TYPE_YEAR;
         }
         requestDataInServer("");
+    }
+
+    @Override
+    public void createMoreInfo(List<Measurement> measurements) {
+        android.util.Log.d("Smart", "createMoreInfo");
+        ArrayList<InfoMeasurement> infoMeasurements = new ArrayList<>();
+        infoMeasurements.addAll(getInfosBase(measurements));
+
+        GridView gridView = (GridView) findViewById(R.id.moreinfo_grid);
+        InfoAdapter infoAdapter = new InfoAdapter(this, infoMeasurements);
+        gridView.setAdapter(infoAdapter);
     }
 }
