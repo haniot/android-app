@@ -1,6 +1,7 @@
 package br.edu.uepb.nutes.haniot.adapter;
 
 import android.content.Context;
+import android.graphics.drawable.GradientDrawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -58,18 +59,21 @@ public class ElderlyMonitoredAdapter extends BaseAdapter<Elderly> {
             h.name.setText(e.getName());
             h.fallRecords.setText(String.format(context.getResources().getString(R.string.elderly_fall_register), 0));
 
+            // textview fall risk
             h.fallRisk.setVisibility(View.VISIBLE);
+            h.fallRisk.setBackgroundResource(R.drawable.rounded_corner);
+            GradientDrawable drawableRisk = (GradientDrawable) h.fallRisk.getBackground();
             switch (e.getFallRisk()) {
                 case 1:
-                    h.fallRisk.setBackgroundColor(ContextCompat.getColor(context, R.color.colorLightGreen));
+                    drawableRisk.setColor(ContextCompat.getColor(context, R.color.colorLightGreen));
                     h.fallRisk.setText(context.getResources().getString(R.string.fall_risk_title_low));
                     break;
                 case 2:
-                    h.fallRisk.setBackgroundColor(ContextCompat.getColor(context, R.color.colorAmber));
+                    drawableRisk.setColor(ContextCompat.getColor(context, R.color.colorAmber));
                     h.fallRisk.setText(context.getResources().getString(R.string.fall_risk_title_moderate));
                     break;
                 case 3:
-                    h.fallRisk.setBackgroundColor(ContextCompat.getColor(context, R.color.colorRed));
+                    drawableRisk.setColor(ContextCompat.getColor(context, R.color.colorRed));
                     h.fallRisk.setText(context.getResources().getString(R.string.fall_risk_title_high));
                     break;
                 default:

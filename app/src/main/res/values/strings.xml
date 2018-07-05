@@ -311,10 +311,13 @@
     <string name="survey_add_new_answer">Add new answer</string>
     <string name="survey_add_new_item">Add new item</string>
     <string name="survey_please_add_new_item">Please add new items...</string>
-    <string name="survey_dialog_remove_add_new_item">Added items that are not used will be removed.\nAre you sure you do not want to select the item?</string>
+    <string name="survey_dialog_remove_add_new_item">Added items that are not used will be removed.\nAre you sure you do
+        not want to select the item?
+    </string>
     <!-- END SURVEY -->
 
     <!-- ELDERLY -->
+    <string name="elderly_monitor">Monitor elderly</string>
     <string name="elderly_monitored">Monitored Elderly</string>
     <string name="elderly_add">Add Elderly</string>
     <string name="elderly_pin">PIN</string>
@@ -350,8 +353,12 @@
     <string name="elderly_please_add_accessories">Please, add a new accessory</string>
     <string name="elderly_select_medications">Select the medications</string>
     <string name="elderly_select_accessories">Select the accessories</string>
-    <string name="elderly_register_success">Data saved successfully!\nDo you want to respond now to an assessment to identify the risk of falling?</string>
-    <string name="elderly_survey_risk_falling">Do you want to respond now to an assessment to identify the risk of falling?</string>
+    <string name="elderly_register_success">Data saved successfully!\nDo you want to respond now to an assessment to
+        identify the risk of falling?
+    </string>
+    <string name="elderly_survey_risk_falling">Do you want to respond now to an assessment to identify the risk of
+        falling?
+    </string>
     <!-- END ELDERLY FORM -->
 
     <!-- ELDERLY SURVEY RISK FALL -->
@@ -373,12 +380,18 @@
     <string name="fall_risk_description_q7">7. It has difficulty seeing (considering the use of lenses)?</string>
     <string name="fall_risk_description_q8">8. Has difficulty to hear what other people speak?</string>
     <string name="fall_risk_description_q9">9. Does exercises during the week?</string>
-    <string name="fall_risk_description_q10">10. Dimly lit environment (When lying down, have to raise to turn light switch; away from the bed or of difficult visualization; there is no lampshade, do not let the light of the hallway lit during the night)?</string>
+    <string name="fall_risk_description_q10">10. Dimly lit environment (When lying down, have to raise to turn light
+        switch; away from the bed or of difficult visualization; there is no lampshade, do not let the light of the
+        hallway lit during the night)?
+    </string>
     <string name="fall_risk_title_low">Low risk of falls</string>
     <string name="fall_risk_title_moderate">Moderate falls risk</string>
     <string name="fall_risk_title_high">High risk of falls</string>
-    <string name="fall_risk_title_cancel">Are you sure you want to cancel?\nThe answers provide will be lost&#8230;</string>
-    <string name="fall_risk_title_end">Based on the answers obtained the risk of the elderly suffering a fall will be classified in:</string>
+    <string name="fall_risk_title_cancel">Are you sure you want to cancel?\nThe answers provide will be lost&#8230;
+    </string>
+    <string name="fall_risk_title_end">Based on the answers obtained the risk of the elderly suffering a fall will be
+        classified in:
+    </string>
     <string name="fall_risk_title_end_confirm_result">Do you want to see the evaluation result?</string>
     <string name="fall_risk_message_blocked_page">Answer the current question to go to next&#8230;</string>
     <!-- END ELDERLY SURVEY FALL RISK -->
@@ -394,7 +407,9 @@
     <string name="fall_characterization_q8">Where the fall happened?</string>
     <string name="fall_characterization_q9">The fall occurred at what time?</string>
     <string name="fall_characterization_add_new_Item_q8">Add a new drop location</string>
-    <string name="fall_characterization_cancel_dialog">Are you sure you want to cancel the fall characterization?\nThe answers provide will be lost&#8230;</string>
+    <string name="fall_characterization_cancel_dialog">Are you sure you want to cancel the fall characterization?\nThe
+        answers provide will be lost&#8230;
+    </string>
     <string name="fall_characterization_did_not_fall_dialog">Are you sure the elderly did not fall on %s at %s?</string>
     <!-- END ELDERLY FALL CHARACTERIZATION SURVEY -->
 

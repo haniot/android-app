@@ -292,7 +292,7 @@ public class FallCharacterizationActivity extends BaseSurvey implements RadioPag
             AlertDialog.Builder mDialog = new AlertDialog.Builder(this);
             mDialog.setTitle(R.string.warning_title)
                     .setIcon(R.drawable.ic_action_warning_light)
-                    .setMessage(R.string.fall_characterization_did_not_fall_dialog)
+                    .setMessage(getResources().getString(R.string.fall_characterization_did_not_fall_dialog, elderlyName, elderlyFallDate))
                     .setPositiveButton(R.string.yes_text, (dialogInterface, which) -> {
                         // TODO implementar o save fall como invalido/falso positivo
                         finish();

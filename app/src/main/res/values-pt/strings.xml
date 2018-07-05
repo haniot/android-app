@@ -24,7 +24,8 @@
     <string name="device_bonding">Pareando</string>
     <string name="device_not_bonded">Não pareado</string>
     <string name="not_bluetooth">Seu dispositivo não suporta bluetooth!</string>
-    <string name="permission_location">A permissão de localização é obrigatória no utilizar Bluetooth Low Energy!</string>
+    <string name="permission_location">A permissão de localização é obrigatória no utilizar Bluetooth Low Energy!
+    </string>
     <string name="not_bluetooth_le">Seu dispositivo não suporta Bluetooth Low Energy!</string>
     <string name="bluetooth_classic">Bluetooth Clássico</string>
     <string name="bluetooth_le">Bluetooth LE</string>
@@ -120,11 +121,14 @@
     <string name="survey_add_new_answer">Adicionar uma nova resposta</string>
     <string name="survey_add_new_item">Adicionar um novo item</string>
     <string name="survey_please_add_new_item">Por favor, adicione novos itens...</string>
-    <string name="survey_dialog_remove_add_new_item">Itens adicionados que não são usados serão removidos.\nTem certeza de que não deseja selecionar o item?</string>
+    <string name="survey_dialog_remove_add_new_item">Itens adicionados que não são usados serão removidos.\nTem certeza
+        de que não deseja selecionar o item?
+    </string>
     <!-- END SURVEY -->
 
     <!-- ELDERLY -->
-    <string name="elderly_monitored">Monitorar Idosos</string>
+    <string name="elderly_monitor">Monitorar Idosos</string>
+    <string name="elderly_monitored">Idosos monitorados</string>
     <string name="elderly_add">Adicionar Idoso</string>
     <string name="elderly_pin">PIN</string>
     <string name="elderly_fall_register">Quedas registradas: %d</string>
@@ -159,8 +163,12 @@
     <string name="elderly_please_add_accessories">Por favor, adicione um acessório</string>
     <string name="elderly_select_medications">Selecionar medicações</string>
     <string name="elderly_select_accessories">Selecionar acessórios</string>
-    <string name="elderly_register_success">Dados salvos com sucesso!\nVocê deseja responder agora a uma avaliação para identificar o risco de queda?</string>
-    <string name="elderly_survey_risk_falling">Você deseja responder agora a uma avaliação para identificar o risco de queda?</string>
+    <string name="elderly_register_success">Dados salvos com sucesso!\nVocê deseja responder agora a uma avaliação para
+        identificar o risco de queda?
+    </string>
+    <string name="elderly_survey_risk_falling">Você deseja responder agora a uma avaliação para identificar o risco de
+        queda?
+    </string>
     <!-- END ELDERLY FORM -->
 
     <!-- ELDERLY SURVEY RISK FALL -->
@@ -181,12 +189,17 @@
     <string name="fall_risk_description_q7">7. Tem dificuldades para enxergar (considerar o uso de lentes)?</string>
     <string name="fall_risk_description_q8">8. Tem dificuldade para ouvir o que as outras pessoas falam?</string>
     <string name="fall_risk_description_q9">9. Faz exercícios durante a semana?</string>
-    <string name="fall_risk_description_q10">10. Ambiente mal iluminado? (Quando deitado, tem que levantar para acender a luz; interruptor longe da cama ou de difícil visualização; não há abajur; não deixa a luz do corredor acesa durante a noite)?</string>
+    <string name="fall_risk_description_q10">10. Ambiente mal iluminado? (Quando deitado, tem que levantar para acender
+        a luz; interruptor longe da cama ou de difícil visualização; não há abajur; não deixa a luz do corredor acesa
+        durante a noite)?
+    </string>
     <string name="fall_risk_title_low">Baixo risco de quedas</string>
     <string name="fall_risk_title_moderate">Moderado risco de quedas</string>
     <string name="fall_risk_title_high">Alto risco de quedas</string>
     <string name="fall_risk_title_cancel">Tem certeza de que deseja cancelar?\nAs respostas fornecidas serão perdidas&#8230;</string>
-    <string name="fall_risk_title_end">Com base nas respostas obtidas, o risco do idoso sofrer uma queda pode ser classificado em:</string>
+    <string name="fall_risk_title_end">Com base nas respostas obtidas, o risco do idoso sofrer uma queda pode ser
+        classificado em:
+    </string>
     <string name="fall_risk_title_end_confirm_result">Deseja visualizar o resultado da avaliação?</string>
     <string name="fall_risk_message_blocked_page">Responda a pergunta atual para ir para próxima&#8230;</string>
     <!-- END ELDERLY SURVEY RISK FALL -->
@@ -245,8 +258,12 @@
     <string name="fall_characterization_q8">Em que local a queda aconteceu?</string>
     <string name="fall_characterization_q9">Em que horário ocorreu a queda?</string>
     <string name="fall_characterization_add_new_Item_q8">Adicione um novo local de queda</string>
-    <string name="fall_characterization_cancel_dialog">Tem certeza de que deseja cancelar a caracterização da queda?\nAs respostas fornecidas serão perdidas&#8230;</string>
-    <string name="fall_characterization_did_not_fall_dialog">Você tem certeza que o idoso não sofreu uma queda no dia %s às %s?</string>
+    <string name="fall_characterization_cancel_dialog">Tem certeza de que deseja cancelar a caracterização da queda?\nAs
+        respostas fornecidas serão perdidas&#8230;
+    </string>
+    <string name="fall_characterization_did_not_fall_dialog">Você tem certeza que o idoso não sofreu uma queda no dia %s
+        às %s?
+    </string>
     <!-- END ELDERLY FALL CHARACTERIZATION SURVEY -->
 
     <!-- ARRAY ALTERNATIVES FALL CHARACTERIZATION SURVEY Q4 -->
