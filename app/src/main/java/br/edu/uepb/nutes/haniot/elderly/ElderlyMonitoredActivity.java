@@ -7,14 +7,9 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.PopupMenu;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.*;
 import android.util.Log;
-import android.view.MenuItem;
-import android.view.View;
+import android.view.*;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -76,6 +71,10 @@ public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRec
     @BindView(R.id.elderly_add_floating_button)
     FloatingActionButton mAddPatientButton;
 
+
+    private ActionMode mActionMode;
+    private ActionBar mActionBar;
+
     public ElderlyMonitoredActivity() {
     }
 
@@ -112,10 +111,10 @@ public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRec
 
     private void initToolBar() {
         setSupportActionBar(mToolbar);
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle(getString(R.string.elderly_monitored));
-        actionBar.setDisplayShowTitleEnabled(true);
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        mActionBar = getSupportActionBar();
+        mActionBar.setTitle(getString(R.string.elderly_monitored));
+        mActionBar.setDisplayShowTitleEnabled(true);
+        mActionBar.setDisplayHomeAsUpEnabled(true);
     }
 
     private void initRecyclerView() {
@@ -268,9 +267,18 @@ public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRec
 //        startActivity(new Intent(getApplicationContext(), FallRiskActivity.class));
     }
 
+
     @Override
     public void onLongItemClick(View v, Elderly item) {
         Log.w(TAG, "onLongItemClick()");
+
+//        mRecyclerView.setOnCreateContextMenuListener((contextMenu, view, contextMenuInfo) -> {
+//            contextMenu.add(Menu.NONE, 1, Menu.NONE, "editar");
+//            contextMenu.add(Menu.NONE, 2, Menu.NONE, "deletar");
+//        });
+//        mActionMode = this.startSupportActionMode(mActionModeCallback);
+        mToolbar.startActionMode(mActionModeCallback);
+        v.setSelected(true);
     }
 
     @Override
@@ -279,9 +287,10 @@ public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRec
     }
 
     private void openDropMenu(View view, Elderly item) {
-        PopupMenu dropDownMenu = new PopupMenu(getApplicationContext(), (ImageButton) view);
-        dropDownMenu.getMenuInflater().inflate(R.menu.menu_drop_down_elderly_list, dropDownMenu.getMenu());
-
+        PopupMenu dropDownMenu = new PopupMenu(this, view);
+        MenuInflater inflater = dropDownMenu.getMenuInflater();
+        inflater.inflate(R.menu.menu_drop_down_elderly_list, dropDownMenu.getMenu());
+        dropDownMenu.show();
         dropDownMenu.setOnMenuItemClickListener(menuItem -> {
             switch (menuItem.getItemId()) {
                 case R.id.action_fall_risk:
@@ -296,6 +305,46 @@ public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRec
             }
             return true;
         });
-        dropDownMenu.show();
     }
+
+    private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
+
+        // Called when the action mode is created; startActionMode() was called
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            // Inflate a menu resource providing context menu items
+            MenuInflater inflater = mode.getMenuInflater();
+            inflater.inflate(R.menu.menu_drop_down_elderly_list, menu);
+
+            return true;
+        }
+
+        // Called each time the action mode is shown. Always called after onCreateActionMode, but
+        // may be called multiple times if the mode is invalidated.
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false; // Return false if nothing is done
+        }
+
+        // Called when the user selects a contextual menu item
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+//            switch (item.getItemId()) {
+//                case R.id.menu_share:
+//                    shareCurrentItem();
+//                    mode.finish(); // Action picked, so close the CAB
+//                    return true;
+//                default:
+//                    return false;
+//            }
+            return true;
+        }
+
+        // Called when the user exits the action mode
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+            mActionMode = null;
+        }
+    };
+
 }

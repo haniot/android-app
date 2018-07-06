@@ -89,7 +89,6 @@ public class ElderlyMonitoredAdapter extends BaseAdapter<Elderly> {
                     ElderlyMonitoredAdapter.super.mListener.onItemClick(elderly);
             });
 
-
             // OnLongClick Item
             h.mView.setOnLongClickListener(v -> {
                 if (ElderlyMonitoredAdapter.super.mListener != null)

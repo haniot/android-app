@@ -47,7 +47,7 @@
                     android:layout_alignTop="@+id/elderly_imageView"
                     android:layout_toEndOf="@+id/elderly_imageView"
                     android:text="Elvis da Silva"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textSize="16sp"
                     android:textColor="@color/colorBlackGrey" />
 
                 <TextView
@@ -57,7 +57,7 @@
                     android:layout_alignStart="@+id/elderly_name_textview"
                     android:layout_below="@+id/elderly_name_textview"
                     android:text="@string/elderly_fall_register"
-                    android:textAppearance="?android:attr/textAppearanceSmall" />
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/elderly_fall_risk_textView"
@@ -68,13 +68,13 @@
                     android:layout_marginTop="5dp"
                     android:background="@drawable/rounded_corner"
                     android:backgroundTint="@color/colorGreen"
-                    android:paddingBottom="3dp"
+                    android:paddingBottom="2dp"
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
-                    android:paddingTop="3dp"
+                    android:paddingTop="2dp"
                     android:text="Baixo risco de quedas"
                     android:textColor="@color/colorTextDark"
-                    android:textSize="13sp" />
+                    android:textSize="12sp" />
 
                 <ImageButton
                     android:id="@+id/menu_context_list_elderly_imageButton"

@@ -38,7 +38,7 @@
                     android:layout_alignTop="@+id/elderly_imageView"
                     android:layout_toEndOf="@+id/elderly_imageView"
                     android:text="12 de Julho às 13:40h"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textSize="16sp"
                     android:textColor="@color/colorBlackGrey" />
 
                 <TextView
@@ -48,7 +48,7 @@
                     android:layout_alignStart="@+id/elderly_name_textview"
                     android:layout_below="@+id/elderly_name_textview"
                     android:text="Queda classificado como positiva"
-                    android:textAppearance="?android:attr/textAppearanceSmall" />
+                    android:textSize="14sp" />
 
                 <ImageButton
                     android:id="@+id/imageButton"

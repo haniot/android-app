@@ -7,6 +7,10 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowActionModeOverlay">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="windowNoTitle">true</item>
+        <item name="actionModeStyle">@style/Custom.Widget.ActionMode</item>
     </style>
 
     <style name="AppTheme.Settings" parent="Theme.AppCompat.DayNight.DarkActionBar">
@@ -25,6 +29,12 @@
         <item name="colorPrimaryDark">@color/colorSecondaryDark</item>
         <item name="colorAccent">@color/colorAccentSecondary</item>
         <item name="android:windowActionModeOverlay">true</item>
+        <item name="windowActionBar">false</item>
+
+        <item name="windowActionModeOverlay">true</item>
     </style>
 
+    <style name="Custom.Widget.ActionMode" parent="Widget.AppCompat.ActionMode">
+        <item name="height">15dp</item>
+    </style>
 </resources>
