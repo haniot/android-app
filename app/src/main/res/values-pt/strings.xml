@@ -37,12 +37,6 @@
     <string name="today_text">Hoje</string>
     <string name="yes_text">Sim</string>
     <string name="no_text">Não</string>
-    <string name="action_settings">Configurações</string>
-    <string name="action_bond">Parear</string>
-    <string name="action_connect_devices">Conectar Dispositivos</string>
-    <string name="action_scanner_devices">Escanear Dispositivos</string>
-    <string name="action_save">Salvar</string>
-    <string name="action_sign_out">Sair</string>
     <string name="unknown">Desconhecido</string>
     <string name="unknown_device">Dispositivo desconhecido</string>
     <string name="unknown_characteristic">Caracteríticas desconhecida</string>
@@ -99,6 +93,19 @@
     <string name="alert_register_time_title">Alerta disparada às %s</string>
     <string name="image">Imagem</string>
     <string name="warning_title">Atenção!</string>
+
+    <!--ACTIONS-->
+    <string name="action_settings">Configurações</string>
+    <string name="action_bond">Parear</string>
+    <string name="action_connect_devices">Conectar Dispositivos</string>
+    <string name="action_scanner_devices">Escanear Dispositivos</string>
+    <string name="action_save">Salvar</string>
+    <string name="action_sign_out">Sair</string>
+    <string name="action_delete">Excluir</string>
+    <string name="action_delete_elderly">Excluir Idoso</string>
+    <string name="action_list_falls">Listar Quedas</string>
+    <string name="action_fall_risk_assessment">Avaliação Risco de Queda</string>
+    <string name="action_characterize_fall">Caracterizar Queda</string>
 
     <!-- DIALOGS -->
     <string name="confirm_sign_out">Do you really want to quit the application?\nYou will be redirected to login screen&#8230;</string>

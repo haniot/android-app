@@ -53,6 +53,11 @@
     <string name="action_scanner_devices">Scanner Devices</string>
     <string name="action_save">Save</string>
     <string name="action_sign_out">Sign out</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_delete_elderly">Delete Elderly</string>
+    <string name="action_list_falls">List Falls</string>
+    <string name="action_fall_risk_assessment">Fall Risk Assessment</string>
+    <string name="action_characterize_fall">Characterize Fall</string>
 
     <string name="unknown">Unknown</string>
     <string name="unknown_device">Unknown device</string>

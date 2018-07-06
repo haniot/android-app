@@ -9,13 +9,23 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.ElderlyMonitoredAdapter;
@@ -27,12 +37,6 @@ import br.edu.uepb.nutes.haniot.server.historical.Params;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * ElderlyMonitoredActivity implementation.
@@ -42,7 +46,7 @@ import java.util.List;
  * @copyright Copyright (c) 2017, NUTES UEPB
  */
 public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRecyclerViewListener<Elderly> {
-    private final String TAG = "PatientsMonitoredFrag";
+    private final String TAG = "ElderlyMonitoredAc";
     private final int LIMIT_PER_PAGE = 20;
 
     private ElderlyMonitoredAdapter mAdapter;
@@ -66,10 +70,10 @@ public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRec
     @BindView(R.id.data_swiperefresh)
     SwipeRefreshLayout mDataSwipeRefresh;
 
-    @BindView(R.id.patients_recyclerview)
+    @BindView(R.id.elderlies_recyclerview)
     RecyclerView mRecyclerView;
 
-    @BindView(R.id.patient_add_floating_button)
+    @BindView(R.id.elderly_add_floating_button)
     FloatingActionButton mAddPatientButton;
 
     public ElderlyMonitoredActivity() {
@@ -261,6 +265,37 @@ public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRec
     @Override
     public void onItemClick(Elderly item) {
         Log.w(TAG, "onItemClick()");
-        startActivity(new Intent(getApplicationContext(), FallRiskActivity.class));
+//        startActivity(new Intent(getApplicationContext(), FallRiskActivity.class));
+    }
+
+    @Override
+    public void onLongItemClick(View v, Elderly item) {
+        Log.w(TAG, "onLongItemClick()");
+    }
+
+    @Override
+    public void onMenuContextClick(View v, Elderly item) {
+        openDropMenu(v, item);
+    }
+
+    private void openDropMenu(View view, Elderly item) {
+        PopupMenu dropDownMenu = new PopupMenu(getApplicationContext(), (ImageButton) view);
+        dropDownMenu.getMenuInflater().inflate(R.menu.menu_drop_down_elderly_list, dropDownMenu.getMenu());
+
+        dropDownMenu.setOnMenuItemClickListener(menuItem -> {
+            switch (menuItem.getItemId()) {
+                case R.id.action_fall_risk:
+                    Toast.makeText(getApplicationContext(), "action_fall_risk " + menuItem.getTitle(), Toast.LENGTH_LONG).show();
+                    break;
+                case R.id.action_fall_list:
+                    Toast.makeText(getApplicationContext(), "action_fall_list " + menuItem.getTitle(), Toast.LENGTH_LONG).show();
+                    break;
+                case R.id.action_elderly_delete:
+                    Toast.makeText(getApplicationContext(), "action_elderly_delete " + menuItem.getTitle(), Toast.LENGTH_LONG).show();
+                    break;
+            }
+            return true;
+        });
+        dropDownMenu.show();
     }
 }

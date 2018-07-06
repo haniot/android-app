@@ -2,10 +2,12 @@ package br.edu.uepb.nutes.haniot.adapter;
 
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -53,17 +55,17 @@ public class ElderlyMonitoredAdapter extends BaseAdapter<Elderly> {
     @Override
     public void showData(RecyclerView.ViewHolder holder, int position, List<Elderly> itemsList) {
         if (holder instanceof ViewHolder) {
-            final Elderly e = itemsList.get(position);
+            final Elderly elderly = itemsList.get(position);
             ViewHolder h = (ViewHolder) holder;
 
-            h.name.setText(e.getName());
+            h.name.setText(elderly.getName());
             h.fallRecords.setText(String.format(context.getResources().getString(R.string.elderly_fall_register), 0));
 
             // textview fall risk
             h.fallRisk.setVisibility(View.VISIBLE);
             h.fallRisk.setBackgroundResource(R.drawable.rounded_corner);
             GradientDrawable drawableRisk = (GradientDrawable) h.fallRisk.getBackground();
-            switch (e.getFallRisk()) {
+            switch (elderly.getFallRisk()) {
                 case 1:
                     drawableRisk.setColor(ContextCompat.getColor(context, R.color.colorLightGreen));
                     h.fallRisk.setText(context.getResources().getString(R.string.fall_risk_title_low));
@@ -81,25 +83,34 @@ public class ElderlyMonitoredAdapter extends BaseAdapter<Elderly> {
                     break;
             }
 
-            /**
-             * OnClick Item
-             */
-            h.mView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (ElderlyMonitoredAdapter.super.mListener != null)
-                        ElderlyMonitoredAdapter.super.mListener.onItemClick(e);
-                }
+            // OnClick Item
+            h.mView.setOnClickListener(v -> {
+                if (ElderlyMonitoredAdapter.super.mListener != null)
+                    ElderlyMonitoredAdapter.super.mListener.onItemClick(elderly);
+            });
+
+
+            // OnLongClick Item
+            h.mView.setOnLongClickListener(v -> {
+                if (ElderlyMonitoredAdapter.super.mListener != null)
+                    ElderlyMonitoredAdapter.super.mListener.onLongItemClick(h.mView, elderly);
+                return false;
+            });
+
+            // OnClick menu icon menu context
+            h.menuContext.setOnClickListener(v -> {
+                if (ElderlyMonitoredAdapter.super.mListener != null)
+                    ElderlyMonitoredAdapter.super.mListener.onMenuContextClick(h.menuContext, elderly);
             });
 
             ColorGenerator generator = ColorGenerator.MATERIAL;
-            int color = generator.getColor(e.getName());
+            int color = generator.getColor(elderly.getName());
 
             TextDrawable drawable = TextDrawable.builder()
                     .beginConfig()
                     .toUpperCase()
                     .endConfig()
-                    .buildRoundRect(e.getName().substring(0, 1), color, 10);
+                    .buildRoundRect(elderly.getName().substring(0, 1), color, 10);
 
             h.image.setImageDrawable(drawable);
 
@@ -107,6 +118,7 @@ public class ElderlyMonitoredAdapter extends BaseAdapter<Elderly> {
             setAnimation(h.mView, position);
         }
     }
+
 
     @Override
     public void clearAnimation(RecyclerView.ViewHolder holder) {
@@ -130,6 +142,10 @@ public class ElderlyMonitoredAdapter extends BaseAdapter<Elderly> {
 
         @BindView(R.id.elderly_fall_risk_textView)
         TextView fallRisk;
+
+        @Nullable
+        @BindView(R.id.menu_context_list_elderly_imageButton)
+        ImageButton menuContext;
 
         public ViewHolder(View view) {
             super(view);

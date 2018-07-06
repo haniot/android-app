@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:theme="@style/AppThemeSecondary"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:theme="@style/AppThemeSecondary">
 
     <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:id="@+id/card_view"
@@ -20,13 +20,16 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:paddingLeft="@dimen/activity_vertical_margin"
+            android:paddingRight="10dp"
+            android:paddingTop="@dimen/activity_vertical_margin">
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/elderly_name_textview"
@@ -34,35 +37,27 @@
                     android:layout_height="wrap_content"
                     android:layout_alignTop="@+id/elderly_imageView"
                     android:layout_toEndOf="@+id/elderly_imageView"
-                    android:textColor="@color/colorBlackGrey"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:text="12 de Julho às 13:40h" />
+                    android:text="12 de Julho às 13:40h"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/colorBlackGrey" />
 
                 <TextView
-                        android:id="@+id/elderly_fall_records_textView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Queda classificado como positiva"
-                        android:textAppearance="?android:attr/textAppearanceSmall"
-                        android:layout_below="@+id/elderly_name_textview"
-                        android:layout_alignStart="@+id/elderly_name_textview"/>
+                    android:id="@+id/elderly_fall_records_textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignStart="@+id/elderly_name_textview"
+                    android:layout_below="@+id/elderly_name_textview"
+                    android:text="Queda classificado como positiva"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
 
-                <TextView
-                        android:id="@+id/elderly_fall_risk_textView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/rounded_corner"
-                        android:backgroundTint="@color/colorGreen"
-                        android:paddingLeft="10dp"
-                        android:paddingRight="10dp"
-                        android:paddingTop="3dp"
-                        android:paddingBottom="3dp"
-                        android:text="Baixo risco de quedas"
-                        android:textSize="13sp"
-                        android:layout_marginTop="5dp"
-                        android:textColor="@color/colorTextDark"
-                        android:layout_below="@+id/elderly_fall_records_textView"
-                        android:layout_alignStart="@+id/elderly_name_textview"/>
+                <ImageButton
+                    android:id="@+id/imageButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentTop="true"
+                    android:background="@android:color/transparent"
+                    app:srcCompat="@drawable/ic_action_more_vert_light" />
 
             </RelativeLayout>
 
