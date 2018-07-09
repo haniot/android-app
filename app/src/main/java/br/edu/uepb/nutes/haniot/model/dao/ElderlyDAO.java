@@ -20,7 +20,7 @@ import io.objectbox.relation.ToMany;
  *
  * @author Douglas Rafael <douglas.rafael@nutes.uepb.edu.br>
  * @version 1.5
- * @copyright Copyright (c) 2017, NUTES UEPB
+ * @copyright Copyright (c) 2018, NUTES UEPB
  */
 public class ElderlyDAO {
     public static ElderlyDAO instance;
@@ -43,7 +43,7 @@ public class ElderlyDAO {
     }
 
     /**
-     * Select a measurement.
+     * Select a Elderly.
      *
      * @param id long
      * @return {@link Elderly}
@@ -51,6 +51,19 @@ public class ElderlyDAO {
     public Elderly get(@NonNull long id) {
         return elderlyBox.query()
                 .equal(Elderly_.id, id)
+                .build()
+                .findFirst();
+    }
+
+    /**
+     * Select a Elderly.
+     *
+     * @param _id String
+     * @return {@link Elderly}
+     */
+    public Elderly get(@NonNull String _id) {
+        return elderlyBox.query()
+                .equal(Elderly_._id, _id)
                 .build()
                 .findFirst();
     }

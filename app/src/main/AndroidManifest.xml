@@ -115,6 +115,12 @@
             android:name=".elderly.FallCharacterizationActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeSecondary" />
+        <activity
+            android:name=".elderly.ElderlyFallActivity"
+            android:theme="@style/AppThemeSecondary" />
+        <activity
+            android:name=".elderly.ElderlyPreviewActivity"
+            android:theme="@style/AppThemeSecondary" />
         <!-- END ELDERLY -->
 
 
@@ -140,8 +146,6 @@
         </service>
         <!-- END SERVICES -->
 
-        <activity android:name=".activity.ImagePreviewActivity"></activity>
-        <activity android:name=".elderly.ElderlyFallActivity"></activity>
     </application>
 
 </manifest>

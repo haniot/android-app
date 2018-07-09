@@ -57,6 +57,7 @@
     <string name="action_delete_elderly">Delete Elderly</string>
     <string name="action_list_falls">List Falls</string>
     <string name="action_fall_risk_assessment">Fall Risk Assessment</string>
+    <string name="action_new_fall_risk_assessment">New Fall Risk Assessment</string>
     <string name="action_characterize_fall">Characterize Fall</string>
 
     <string name="unknown">Unknown</string>
@@ -98,14 +99,17 @@
 
     <string name="value_default">_ _</string>
 
-    // DATE/TIME FORMAT
+    <!-- FORMAT DATES -->
     <string name="date_format">yyyy/MM/dd</string>
+    <string name="date_format2">MMMM dd\', \'yyyy</string>
     <string name="date_format_month_day">MM/dd</string>
     <string name="datetime_format">yyyy/MM/dd HH:mm:ss</string>
+    <string name="datetime_format2">MMMM dd HH:mm:ss</string>
     <string name="datetime_format_db">yyyy-MM-dd HH:mm:ss</string>
     <string name="time_format">HH:mm:ss</string>
     <string name="time_format_simple">HH:mm</string>
     <string name="time_format_simple2">HH\'h\'mm\'m\'</string>
+    <!-- END FORMAT DATES -->
 
     // FORMATS
     <string name="format_number1">#.0</string>
@@ -197,7 +201,7 @@
     <string name="login">Sign in</string>
     <string name="no_account_yet">No account yet? Create one</string>
 
-    <!--SIGNUP-->
+    <!-- SIGNUP -->
     <string name="name">Name</string>
     <string name="gender">Gender</string>
     <string name="gender_male">Male</string>
@@ -218,8 +222,9 @@
     <string name="current_password">Current password</string>
     <string name="new_password">New password</string>
     <string name="confirm_password">Confirm password</string>
+    <!-- END SIGNUP -->
 
-    <!--VALIDATE MESSAGES-->
+    <!-- VALIDATE MESSAGES -->
     <string name="required_field">Required field!</string>
     <string name="validate_name">At least 3 characters</string>
     <string name="validate_not_null">Field can not be empty</string>
@@ -236,8 +241,9 @@
     <string name="validate_register_user_not_duplicate">Already registered user with email provided&#8230;</string>
     <string name="validate_unauthorized_access">Unauthorized access! Please contact support&#8230;</string>
     <string name="validate_weight">Provide a valid weight!</string>
+    <!-- END VALIDATE MESSAGES -->
 
-    <!--ERROR-->
+    <!-- ERROR MESSAGES -->
     <string name="error_sign_out">There was an error while trying to quit&#8230;</string>
     <string name="error_500">Could not complete request! Please try again later&#8230;</string>
     <string name="error_internal_device">Could not complete request! Please try again later&#8230;</string>
@@ -245,8 +251,9 @@
         connectivity and try again later.
     </string>
     <string name="connect_network_try_again">Connect to a network and try again&#8230;</string>
+    <!-- END ERROR MESSAGES -->
 
-    <!--SETTINGS-->
+    <!-- SETTINGS -->
     <string name="settings_your_data">Your Data</string>
     <string name="settings_server">Server</string>
     <string name="settings_server_address">Server address</string>
@@ -279,16 +286,21 @@
     <string name="choose_email_client">Choose email client</string>
     <string name="email_contact">contact@nutes.uepb.edu.br</string>
     <string name="message_not_remove">Please don\'t remove this information</string>
+    <!-- END SETTINGS -->
 
-    <!-- DIALOGS -->
-    <string name="confirm_sign_out">Do you really want to quit the application?\nYou will be redirected to login screen&#8230;</string>
+    <!-- BUTTONS -->
     <string name="bt_ok">Ok</string>
     <string name="bt_cancel">Cancel</string>
     <string name="bt_stop">Stop</string>
     <string name="bt_pause">Pause</string>
     <string name="bt_discard">Discard</string>
     <string name="bt_save">Save</string>
+    <string name="bt_next">Next</string>
     <string name="bt_remind_me_later">Remind me later</string>
+    <!-- END BUTTONS -->
+
+    <!-- DIALOGS -->
+    <string name="confirm_sign_out">Do you really want to quit the application?\nYou will be redirected to login screen&#8230;</string>
     <string name="title_save_captured_data">Save data&#8230;</string>
     <string name="message_save_captured_data">Do you want to save the captured data?</string>
     <string name="message_save_captured_heart_rate">Do you want to save the captured heart rate?</string>
@@ -315,21 +327,29 @@
     <string name="survey_enter_an_answer">Enter an answer&#8230;</string>
     <string name="survey_add_new_answer">Add new answer</string>
     <string name="survey_add_new_item">Add new item</string>
-    <string name="survey_please_add_new_item">Please add new items...</string>
-    <string name="survey_dialog_remove_add_new_item">Added items that are not used will be removed.\nAre you sure you do
-        not want to select the item?
-    </string>
+    <string name="survey_please_add_new_item">Please add new items&#8230;</string>
+    <string name="survey_dialog_remove_add_new_item">Added items that are not used will be removed.\nAre you sure you do not want to select the item?</string>
     <!-- END SURVEY -->
 
     <!-- ELDERLY -->
-    <string name="elderly_monitor">Monitor elderly</string>
+    <string name="elderly_monitor">Monitor Elderly</string>
     <string name="elderly_monitored">Monitored Elderly</string>
     <string name="elderly_add">Add Elderly</string>
     <string name="elderly_pin">PIN</string>
     <string name="elderly_fall_register">Fall Records: %d</string>
+    <string name="elderly_fall_registered">Registered falls</string>
+    <string name="elderly_fall_registered_in">In %s</string>
+    <string name="elderly_fall_registered_current_year">In this year</string>
+    <string name="elderly_latest_fall_records">Latest fall records</string>
+    <string name="elderly_was_not_select">It was not possible to select the data of the elderly. Please try again later&#8230;</string>
     <!-- END ELDERLY -->
 
     <!-- ELDERLY FORM -->
+    <string name="elderly_associate_device_info1">Before going to the elderly register it is necessary to make association of the device responsible for detecting the fall.</string>
+    <string name="elderly_associate_device_info2">Open the fall application installed on the fitbit and provide the 4 digit PIN that is displayed on the smartwatch.</string>
+    <string name="elderly_associate_device">Associate Device</string>
+    <string name="elderly_associated_device">Associated Device</string>
+    <string name="elderly_registration">Elderly Registration</string>
     <string name="elderly_input_title_name">Name</string>
     <string name="elderly_input_title_date_birth">Birth of Date</string>
     <string name="elderly_input_title_sex">Sex</string>
@@ -392,11 +412,8 @@
     <string name="fall_risk_title_low">Low risk of falls</string>
     <string name="fall_risk_title_moderate">Moderate falls risk</string>
     <string name="fall_risk_title_high">High risk of falls</string>
-    <string name="fall_risk_title_cancel">Are you sure you want to cancel?\nThe answers provide will be lost&#8230;
-    </string>
-    <string name="fall_risk_title_end">Based on the answers obtained the risk of the elderly suffering a fall will be
-        classified in:
-    </string>
+    <string name="fall_risk_title_cancel">Are you sure you want to cancel?\nThe answers provide will be lost&#8230;</string>
+    <string name="fall_risk_title_end">Based on the answers obtained the risk of the elderly suffering a fall will be classified in:</string>
     <string name="fall_risk_title_end_confirm_result">Do you want to see the evaluation result?</string>
     <string name="fall_risk_message_blocked_page">Answer the current question to go to next&#8230;</string>
     <!-- END ELDERLY SURVEY FALL RISK -->
@@ -412,10 +429,11 @@
     <string name="fall_characterization_q8">Where the fall happened?</string>
     <string name="fall_characterization_q9">The fall occurred at what time?</string>
     <string name="fall_characterization_add_new_Item_q8">Add a new drop location</string>
-    <string name="fall_characterization_cancel_dialog">Are you sure you want to cancel the fall characterization?\nThe
-        answers provide will be lost&#8230;
-    </string>
+    <string name="fall_characterization_cancel_dialog">Are you sure you want to cancel the fall characterization?\nThe answers provide will be lost&#8230;</string>
     <string name="fall_characterization_did_not_fall_dialog">Are you sure the elderly did not fall on %s at %s?</string>
+    <string name="fall_characterization_positive">Fall characterized as positive.</string>
+    <string name="fall_characterization_negative">Fall characterized as negative.</string>
+    <string name="fall_characterization_not_exist">Characterization does not exist. Click to characterize the fall&#8230;</string>
     <!-- END ELDERLY FALL CHARACTERIZATION SURVEY -->
 
     <!-- ARRAY ALTERNATIVES FALL CHARACTERIZATION SURVEY Q4 -->

@@ -7,7 +7,7 @@
         android:id="@+id/action_fall_risk"
         android:title="@string/action_fall_risk_assessment"
         android:visible="true"
-        android:showAsAction="ifRoom"
+        android:showAsAction="withText"
         tools:ignore="AppCompatResource" />
 
     <item
@@ -15,12 +15,12 @@
         android:title="@string/action_list_falls"
         android:visible="true"
         tools:ignore="AppCompatResource"
-        android:showAsAction="ifRoom|withText" />
+        android:showAsAction="withText" />
 
     <item
         android:id="@+id/action_elderly_delete"
         android:title="@string/action_delete"
         android:visible="true"
-        android:showAsAction="ifRoom|withText"
+        android:showAsAction="withText"
         tools:ignore="AppCompatResource" />
 </menu>

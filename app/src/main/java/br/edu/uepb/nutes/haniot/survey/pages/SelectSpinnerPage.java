@@ -65,7 +65,7 @@ public class SelectSpinnerPage extends BasePage<SelectSpinnerPage.ConfigPage> im
 
         // Setting default values
         super.isBlocked = true;
-        this.oldIndexAnswerValue = 0;
+        this.oldIndexAnswerValue = -1;
 
         // Retrieving arguments
         if (getArguments() != null && getArguments().size() != 0) {
@@ -174,7 +174,7 @@ public class SelectSpinnerPage extends BasePage<SelectSpinnerPage.ConfigPage> im
 
     @Override
     public void clearAnswer() {
-        this.oldIndexAnswerValue = 0;
+        this.oldIndexAnswerValue = -1;
         this.answerSelectSpinner.clear();
 
         // Block page

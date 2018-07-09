@@ -47,7 +47,7 @@ public class FallRiskActivity extends BaseSurvey implements RadioPage.OnRadioLis
         answers = new boolean[10];
 
         Intent it = getIntent();
-        elderlyId = it.getStringExtra(ElderlyRegisterActivity.EXTRA_ELDERLY_ID);
+        elderlyId = it.getStringExtra(FallRiskActivity.EXTRA_ELDERLY_ID);
 
         addPages();
     }
@@ -201,14 +201,19 @@ public class FallRiskActivity extends BaseSurvey implements RadioPage.OnRadioLis
         showMessageCancel();
     }
 
+    @Override
+    public void onBackPressed() {
+        showMessageCancel();
+    }
+
     /**
      * Process result assessment.
      */
     private void processAssessment() {
         Intent intent = new Intent(this, FallRiskResultActivity.class);
-        intent.putExtra(EXTRA_ANSWERS, answers);
-        intent.putExtra(EXTRA_QUESTIONS, questions);
-        intent.putExtra(EXTRA_ELDERLY_ID, elderlyId);
+        intent.putExtra(FallRiskActivity.EXTRA_ANSWERS, answers);
+        intent.putExtra(FallRiskActivity.EXTRA_QUESTIONS, questions);
+        intent.putExtra(FallRiskActivity.EXTRA_ELDERLY_ID, elderlyId);
         startActivity(intent);
 
         finish();

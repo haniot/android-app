@@ -9,6 +9,7 @@
     <color name="colorAccentSecondary">#4fc3f7</color>
 
     <color name="colorCard">#EBF6F4</color>
+    <color name="colorCardSection">#aedbd3</color>
     <color name="colorCardSecondary">#E3F2FD</color>
     <color name="colorTextDark">#FFFFFF</color>
     <color name="colorAlertDanger">#a94442</color>

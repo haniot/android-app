@@ -23,6 +23,8 @@ import org.json.JSONObject;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
+import br.edu.uepb.nutes.haniot.model.Elderly;
+import br.edu.uepb.nutes.haniot.model.dao.ElderlyDAO;
 import br.edu.uepb.nutes.haniot.server.Server;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -111,7 +113,6 @@ public class FallRiskResultActivity extends AppCompatActivity {
     public void saveAssessment(String[] questions, boolean[] answers) {
         // TODO Relizar proceso de salvar - PERGUNTAS, RESPOSTAS E RESULTADO
         if (elderlyId == null) {
-            startActivity(new Intent(getApplicationContext(), ElderlyMonitoredActivity.class));
             finish();
             return;
         }
@@ -133,6 +134,12 @@ public class FallRiskResultActivity extends AppCompatActivity {
 
                     @Override
                     public void onSuccess(JSONObject result) {
+                        // update elderly local
+                        ElderlyDAO dao = ElderlyDAO.getInstance(getApplicationContext());
+                        Elderly elderlyUp = dao.get(elderlyId);
+                        elderlyUp.setFallRisk(assessmentResult);
+                        dao.update(elderlyUp);
+
                         startActivity(new Intent(getApplicationContext(), ElderlyMonitoredActivity.class));
                         finish();
                     }

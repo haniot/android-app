@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".elderly.ElderlyPreviewActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/box_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsi_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="140dp"
+            android:fitsSystemWindows="true"
+            app:contentScrim="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:title=""
+                app:layout_collapseMode="pin"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                tools:ignore="HardcodedText" />
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:orientation="vertical"
+        android:padding="@dimen/activity_horizontal_margin"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:orientation="vertical">
+
+            <!-- ASSOCIATE DEVICE -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/elderly_associated_device"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/elderly_pin_device_textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="5515"
+                android:textIsSelectable="true"
+                android:textSize="16sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:background="@color/colorItemSeparator" />
+            <!-- END ASSOCIATE DEVICE -->
+
+            <!-- WEIGHT -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/elderly_input_title_weight"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/elderly_weight_textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="78kg"
+                android:textIsSelectable="true" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="10dp" />
+            <!-- END WEIGHT -->
+
+            <!-- HEIGHT -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/elderly_input_title_height"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/elderly_height_textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="176 cm" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="10dp" />
+            <!-- END HEIGHT -->
+
+            <!-- SEX -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/elderly_input_title_sex"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/elderly_sex_textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Masculino"
+                android:textIsSelectable="true" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="10dp" />
+            <!-- END SEX -->
+
+            <!-- BIRTH -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/elderly_input_title_date_birth"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/elderly_birth_textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="22/11/1950"
+                android:textIsSelectable="true" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:background="@color/colorItemSeparator" />
+            <!-- END BIRTH -->
+
+            <!-- PHONE -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/elderly_input_title_phone"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/elderly_phone_textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:text="83 98000-0000"
+                android:textIsSelectable="true" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:background="@color/colorItemSeparator" />
+            <!-- END PHONE -->
+
+            <!-- MARITAL STATUS -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/elderly_input_title_marital_status"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/elderly_marital_status_textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:text="Solteiro"
+                android:textIsSelectable="true" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="10dp" />
+            <!-- END MARITAL STATUS -->
+
+            <!-- EDUCATION -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/elderly_input_title_degree_education"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/elderly_education_textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Enisno Medio" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="10dp" />
+            <!-- END EDUCATION -->
+
+            <!-- LIVE ALONE -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/elderly_input_title_live_alone"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/elderly_live_alone_textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="SIM" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:background="@color/colorItemSeparator" />
+            <!-- END LIVE ALONE -->
+
+            <!-- MEDICATIONS -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/elderly_input_title_medications"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/elderly_medications_textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Enisno Medio" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="10dp" />
+            <!-- END MEDICATIONS -->
+
+            <!-- LIVE ACCESSORIES -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/elderly_input_title_accessories"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/elderly_accessories_textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Andaddr, moletas" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:background="@color/colorItemSeparator" />
+            <!-- END ACCESSORIES -->
+
+            <!-- BOX LIST -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="40dp"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/text_view_title_history"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:text="@string/elderly_latest_fall_records"
+                    android:textAllCaps="false" />
+
+                <TextView
+                    android:id="@+id/no_data_textView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:gravity="center"
+                    android:text="@string/no_data_available"
+                    android:visibility="gone" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/latest_falls_recyclerview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingTop="10dp"
+                    android:scrollbarSize="3sp"
+                    android:scrollbarThumbVertical="@color/colorAccent"
+                    android:scrollbars="vertical" />
+            </LinearLayout>
+            <!-- END BOX LIST -->
+
+        </LinearLayout>
+
+
+    </android.support.v4.widget.NestedScrollView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/elderly_edit_floating_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_margin="@dimen/fab_margin"
+        android:backgroundTint="@color/colorAccentSecondary"
+        android:src="@drawable/ic_action_edit"
+        app:borderWidth="0dp" />
+
+</android.support.design.widget.CoordinatorLayout>

@@ -46,7 +46,7 @@ public class Server {
     /**
      * If you set a url it will be used as default and not entered by the user in the application settings
      */
-      /* HEROKU */ private final String URI_DEFAULT = "https://haniot-api.herokuapp.com/api/v1";
+    /* HEROKU */ private final String URI_DEFAULT = "https://haniot-api.herokuapp.com/api/v1";
 //    /* PC HOME */ private final String URI_DEFAULT = "https://192.168.31.113/api/v1";
 //      /* PC WIFI */ private final String URI_DEFAULT = "http://192.168.50.175:8000/api/v1";
 
@@ -77,6 +77,7 @@ public class Server {
                 .get()
                 .url(urlParser(path))
                 .headers(headers)
+                .tag(mContext.getClass().getName())
                 .build();
 
         sendRequest(request, serverCallback);
@@ -108,6 +109,7 @@ public class Server {
                 .post(body)
                 .url(urlParser(path))
                 .headers(headers)
+                .tag(mContext.getClass().getName())
                 .build();
 
         sendRequest(request, serverCallback);
@@ -140,6 +142,7 @@ public class Server {
                 .put(body)
                 .url(urlParser(path))
                 .headers(headers)
+                .tag(mContext.getClass().getName())
                 .build();
 
         sendRequest(request, serverCallback);
@@ -170,6 +173,7 @@ public class Server {
                 .delete()
                 .url(urlParser(path))
                 .headers(headers)
+                .tag(mContext.getClass().getName())
                 .build();
 
         sendRequest(request, serverCallback);
@@ -203,7 +207,7 @@ public class Server {
         client.newCall(request).enqueue(new okhttp3.Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                if (e instanceof SocketException) { // resquest canceled
+                if (e instanceof SocketException) { // request canceled
                     Log.d("SERVER - onFailure()", "Request canceled!");
                     return;
                 }
@@ -245,7 +249,6 @@ public class Server {
                 }
             }
         });
-
     }
 
     /**
@@ -253,6 +256,25 @@ public class Server {
      */
     public void cancelAllResquest() {
         if (client != null) client.dispatcher().cancelAll();
+    }
+
+    /**
+     * Cancels all as requests with a tag passed as parameter.
+     *
+     * @param tag
+     */
+    public void cancelTagRequest(String tag) {
+        // go through the queued calls and cancel if the tag matches
+        for (Call call : client.dispatcher().queuedCalls()) {
+            if (call.request().tag().equals(tag))
+                call.cancel();
+        }
+
+        // go through the running calls and cancel if the tag matches
+        for (Call call : client.dispatcher().runningCalls()) {
+            if (call.request().tag().equals(tag))
+                call.cancel();
+        }
     }
 
     /**

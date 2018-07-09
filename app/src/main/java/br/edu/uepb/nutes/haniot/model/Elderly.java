@@ -1,5 +1,8 @@
 package br.edu.uepb.nutes.haniot.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.List;
 
 import io.objectbox.annotation.Backlink;
@@ -14,7 +17,7 @@ import io.objectbox.relation.ToOne;
  *
  * @author Douglas Rafael <douglas.rafael@nutes.uepb.edu.br>
  * @version 1.0
- * @copyright Copyright (c) 2017, NUTES UEPB
+ * @copyright Copyright (c) 2018, NUTES UEPB
  */
 @Entity
 public class Elderly {
@@ -29,6 +32,12 @@ public class Elderly {
     private double weight;
     private int height;
     private String phone;
+
+    /**
+     * 1 - low risk
+     * 2 - moderate risk
+     * 3 - high risk
+     */
     private int fallRisk;
 
     /**
@@ -52,6 +61,8 @@ public class Elderly {
      */
     private boolean liveAlone;
 
+    private String pin;
+
     /**
      * {@link Medication}
      */
@@ -68,6 +79,14 @@ public class Elderly {
 
     public ToOne<User> user;
 
+    /**
+     * Falls of the elderly.
+     * <p>
+     * {@link Fall}
+     */
+    @Backlink(to = "elderly")
+    public ToMany<Fall> falls;
+
     public Elderly() {
     }
 
@@ -81,6 +100,21 @@ public class Elderly {
         this.maritalStatus = maritalStatus;
         DegreeOfEducation = degreeOfEducation;
         this.liveAlone = liveAlone;
+    }
+
+    protected Elderly(Parcel in) {
+        id = in.readLong();
+        _id = in.readString();
+        name = in.readString();
+        dateOfBirth = in.readLong();
+        weight = in.readDouble();
+        height = in.readInt();
+        phone = in.readString();
+        fallRisk = in.readInt();
+        sex = in.readInt();
+        maritalStatus = in.readInt();
+        DegreeOfEducation = in.readInt();
+        liveAlone = in.readByte() != 0;
     }
 
     public long getId() {
@@ -183,12 +217,24 @@ public class Elderly {
         return accessories;
     }
 
+    public ToMany<Fall> getFalls() {
+        return falls;
+    }
+
     public boolean addAccessory(Accessory accessory) {
         return this.getAccessories().add(accessory);
     }
 
     public boolean addAccessories(List<Accessory> accessories) {
         return this.getAccessories().addAll(accessories);
+    }
+
+    public boolean addFalls(List<Fall> falls) {
+        return this.getFalls().addAll(falls);
+    }
+
+    public boolean addFall(Fall fall) {
+        return this.getFalls().add(fall);
     }
 
     public String getPhone() {
@@ -199,6 +245,21 @@ public class Elderly {
         this.phone = phone;
     }
 
+    public String getPin() {
+        return pin;
+    }
+
+    public void setPin(String pin) {
+        this.pin = pin;
+    }
+
+    /**
+     * 1 - low risk
+     * 2 - moderate risk
+     * 3 - high risk
+     *
+     * @return
+     */
     public int getFallRisk() {
         return fallRisk;
     }
@@ -230,11 +291,11 @@ public class Elderly {
                 ", maritalStatus=" + maritalStatus +
                 ", DegreeOfEducation=" + DegreeOfEducation +
                 ", liveAlone=" + liveAlone +
+                ", pin='" + pin + '\'' +
                 ", medications=" + medications +
                 ", accessories=" + accessories +
                 ", user=" + user +
+                ", falls=" + falls +
                 '}';
     }
 }
-
-

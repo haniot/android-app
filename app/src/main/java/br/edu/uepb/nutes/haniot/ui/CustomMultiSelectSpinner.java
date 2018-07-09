@@ -31,6 +31,7 @@ import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -60,6 +61,7 @@ public class CustomMultiSelectSpinner extends LinearLayout implements DialogInte
     @ColorInt
     protected int colorBackgroundTint;
     protected boolean enabledAddNewItem;
+    protected int textAlign;
 
     public CustomMultiSelectSpinner(Context context) {
         super(context);
@@ -84,6 +86,7 @@ public class CustomMultiSelectSpinner extends LinearLayout implements DialogInte
                 setColorSelectedText(typedArray.getColor(R.styleable.CustomMultiSelectSpinner_colorSelectedText, Color.GRAY));
                 setColorBackgroundTint(typedArray.getColor(R.styleable.CustomMultiSelectSpinner_colorBackgroundTint, Color.GRAY));
                 setEnabledAddNewItem(typedArray.getBoolean(R.styleable.CustomMultiSelectSpinner_colorBackgroundTint, true));
+                setTextAlign(typedArray.getInt(R.styleable.CustomMultiSelectSpinner_textAlign, 0));
             } finally {
                 typedArray.recycle();
             }
@@ -149,6 +152,7 @@ public class CustomMultiSelectSpinner extends LinearLayout implements DialogInte
      * @return true
      */
     public boolean openDialogItems() {
+        Log.d(TAG, "SIZE: " + Arrays.toString(this.items.toArray()));
         if (this.items.isEmpty())
             this.dialogBuilder.setMessage(messageEmpty);
         this.dialogBuilder.setTitle(hint);
@@ -215,7 +219,7 @@ public class CustomMultiSelectSpinner extends LinearLayout implements DialogInte
      */
     private void refreshAdapter() {
         this.mAdapter.clear();
-        this.mAdapter.addAll(getItems());
+        this.mAdapter.add(getHint());
     }
 
     /**
@@ -243,8 +247,6 @@ public class CustomMultiSelectSpinner extends LinearLayout implements DialogInte
     public void setItems(List<String> items) {
         this.items = items;
         initListSelectedItems();
-
-        addHintInItems();
     }
 
     public void setItems(CharSequence[] entries) {
@@ -256,7 +258,6 @@ public class CustomMultiSelectSpinner extends LinearLayout implements DialogInte
             this.items.add(String.valueOf(c));
 
         initListSelectedItems();
-        addHintInItems();
     }
 
     public String getHint() {
@@ -265,7 +266,7 @@ public class CustomMultiSelectSpinner extends LinearLayout implements DialogInte
 
     public void setHint(String hint) {
         if (hint != null) this.hint = hint;
-        addHintInItems();
+        refreshAdapter();
     }
 
     public int getColorSelectedText() {
@@ -300,18 +301,6 @@ public class CustomMultiSelectSpinner extends LinearLayout implements DialogInte
 
     public void setTitleDialogAddNewItem(String titleDialogAddNewItem) {
         if (titleDialogAddNewItem != null) this.titleDialogAddNewItem = titleDialogAddNewItem;
-    }
-
-    /**
-     * Add hint in the list of items.
-     */
-    private void addHintInItems() {
-        if (this.items == null || this.hint == null) return;
-
-        this.items.remove(new String(getHint()));
-        this.items.add(0, getHint());
-
-        refreshComponent();
     }
 
     /**
@@ -354,6 +343,11 @@ public class CustomMultiSelectSpinner extends LinearLayout implements DialogInte
     public void setEnabledAddNewItem(boolean enabled) {
         this.enabledAddNewItem = enabled;
         refreshComponent();
+    }
+
+    public void setTextAlign(int textAlign) {
+        this.textAlign = textAlign;
+        initAdapter();
     }
 
     /**
@@ -483,7 +477,9 @@ public class CustomMultiSelectSpinner extends LinearLayout implements DialogInte
             this.mAdapter.clear();
             this.mAdapter.add(result);
         }
+        this.mAdapter.notifyDataSetChanged();
     }
+
 
     /**
      * Open dialog to add new item.
@@ -632,10 +628,16 @@ public class CustomMultiSelectSpinner extends LinearLayout implements DialogInte
         @Override
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
             TextView txt = new TextView(context);
-            txt.setGravity(Gravity.CENTER);
             txt.setText(_items.get(position));
             txt.setTextSize(16);
             txt.setTextColor(getColorSelectedText());
+            // text align
+            if (textAlign == 1)
+                txt.setGravity(Gravity.CENTER);
+            else if (textAlign == 2)
+                txt.setGravity(Gravity.RIGHT);
+            else
+                txt.setGravity(Gravity.LEFT);
 
             return txt;
         }

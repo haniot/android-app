@@ -1,10 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:theme="@style/AppThemeSecondary">
+
+    <LinearLayout
+        android:id="@+id/box_section"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="5dp"
+        android:paddingTop="10dp"
+        android:visibility="visible">
+
+        <TextView
+            android:id="@+id/section_title_textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="2dp"
+            android:text="@string/elderly_fall_registered_current_year"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+    </LinearLayout>
 
     <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:id="@+id/card_view"
@@ -32,32 +50,23 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/elderly_name_textview"
+                    android:id="@+id/date_fall_textview"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignTop="@+id/elderly_imageView"
                     android:layout_toEndOf="@+id/elderly_imageView"
-                    android:text="12 de Julho às 13:40h"
-                    android:textSize="16sp"
-                    android:textColor="@color/colorBlackGrey" />
+                    android:text="12 de Julho às 13:40h 2018"
+                    android:textColor="@color/colorBlackGrey"
+                    android:textSize="18sp" />
 
                 <TextView
-                    android:id="@+id/elderly_fall_records_textView"
+                    android:id="@+id/status_classification_fall_textView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignStart="@+id/elderly_name_textview"
-                    android:layout_below="@+id/elderly_name_textview"
-                    android:text="Queda classificado como positiva"
+                    android:layout_alignStart="@+id/date_fall_textview"
+                    android:layout_below="@+id/date_fall_textview"
+                    android:text="@string/fall_characterization_not_exist"
                     android:textSize="14sp" />
-
-                <ImageButton
-                    android:id="@+id/imageButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentTop="true"
-                    android:background="@android:color/transparent"
-                    app:srcCompat="@drawable/ic_action_more_vert_light" />
 
             </RelativeLayout>
 

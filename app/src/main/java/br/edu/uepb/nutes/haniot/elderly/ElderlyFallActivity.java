@@ -7,9 +7,15 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.*;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.*;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,9 +28,12 @@ import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
+import br.edu.uepb.nutes.haniot.adapter.ElderlyFallAdapter;
 import br.edu.uepb.nutes.haniot.adapter.ElderlyMonitoredAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
 import br.edu.uepb.nutes.haniot.model.Elderly;
+import br.edu.uepb.nutes.haniot.model.Fall;
+import br.edu.uepb.nutes.haniot.model.FallProfile;
 import br.edu.uepb.nutes.haniot.model.MeasurementType;
 import br.edu.uepb.nutes.haniot.server.Server;
 import br.edu.uepb.nutes.haniot.server.historical.Params;
@@ -33,17 +42,20 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * ElderlyMonitoredActivity implementation.
+ * ElderlyFallActivity implementation.
  *
  * @author Douglas Rafael <douglas.rafael@nutes.uepb.edu.br>
  * @version 1.0
  * @copyright Copyright (c) 2018, NUTES UEPB
  */
-public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRecyclerViewListener<Elderly> {
-    private final String TAG = "ElderlyMonitoredAc";
+public class ElderlyFallActivity extends AppCompatActivity implements OnRecyclerViewListener<Fall> {
+    private final String TAG = "ElderlyFallActivity";
+
+    public static final String EXTRA_ELDERLY_ID = "extra_elderly_id";
+
     private final int LIMIT_PER_PAGE = 20;
 
-    private ElderlyMonitoredAdapter mAdapter;
+    private ElderlyFallAdapter mAdapter;
 
     /**
      * We need this variable to lock and unlock loading more.
@@ -54,6 +66,7 @@ public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRec
     private Params params;
     private Session session;
     private Server server;
+    private String elderlyId;
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -64,31 +77,31 @@ public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRec
     @BindView(R.id.data_swiperefresh)
     SwipeRefreshLayout mDataSwipeRefresh;
 
-    @BindView(R.id.elderlies_recyclerview)
+    @BindView(R.id.falls_recyclerview)
     RecyclerView mRecyclerView;
 
-    @BindView(R.id.elderly_add_floating_button)
-    FloatingActionButton mAddElderlyButton;
-
-    public ElderlyMonitoredActivity() {
+    public ElderlyFallActivity() {
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_elderly_monitored);
+        setContentView(R.layout.activity_elderly_fall);
         ButterKnife.bind(this);
 
         session = new Session(this);
         server = Server.getInstance(this);
         params = new Params(session.get_idLogged(), MeasurementType.TEMPERATURE);
 
+        Intent it = getIntent();
+        elderlyId = it.getStringExtra(ElderlyFallActivity.EXTRA_ELDERLY_ID);
+
         initComponents();
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onResume() {
+        super.onResume();
         loadData();
     }
 
@@ -96,23 +109,19 @@ public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRec
         initToolBar();
         initRecyclerView();
         initDataSwipeRefresh();
-
-        mAddElderlyButton.setOnClickListener((v) -> {
-            startActivity(new Intent(getApplicationContext(), ElderlyRegisterActivity.class));
-            server.cancelTagRequest(this.getClass().getName());
-        });
     }
 
     private void initToolBar() {
         setSupportActionBar(mToolbar);
         ActionBar mActionBar = getSupportActionBar();
-        mActionBar.setTitle(getString(R.string.elderly_monitored));
+        mActionBar.setTitle(getString(R.string.elderly_fall_registered));
         mActionBar.setDisplayShowTitleEnabled(true);
         mActionBar.setDisplayHomeAsUpEnabled(true);
+        mActionBar.setHomeAsUpIndicator(R.drawable.ic_action_close);
     }
 
     private void initRecyclerView() {
-        mAdapter = new ElderlyMonitoredAdapter(this);
+        mAdapter = new ElderlyFallAdapter(this);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -122,6 +131,7 @@ public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRec
     }
 
     private void initDataSwipeRefresh() {
+        mDataSwipeRefresh.setRefreshing(false);
         mDataSwipeRefresh.setOnRefreshListener(() -> {
             if (itShouldLoadMore) loadData();
         });
@@ -135,51 +145,41 @@ public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRec
     private void loadData() {
         mAdapter.clearItems(); // clear list
 
-        toggleLoading(true); // Enable loading
-        if (ConnectionUtils.internetIsEnabled(this)) {
-            String path = "/users/".concat(session.get_idLogged()).concat("/external");
-            server.get(path, new Server.Callback() {
-                @Override
-                public void onError(JSONObject result) {
-                    toggleLoading(false); // Disable loading
-                    printError(result);
-                }
+//        toggleLoading(true); // Enable loading
+//        if (ConnectionUtils.internetIsEnabled(this)) {
+//            String path = "/users/".concat(session.get_idLogged()).concat("/external");
+//            server.get(path, new Server.Callback() {
+//                @Override
+//                public void onError(JSONObject result) {
+//                    Log.w(TAG, "loadData - onError()");
+//                    toggleLoading(false); // Disable loading
+//                    if (mAdapter.itemsIsEmpty()) printMessage(getString(R.string.error_500));
+//                }
+//
+//                @Override
+//                public void onSuccess(JSONObject result) {
+//                    toggleLoading(false); // Disable loading
+//
+//                    if (result != null && result.length() > 0) {
+//                        mAdapter.addItems(transform(result));
+//                    }
+//                    toggleNoDataMessage(true); // Enable message no data
+//                }
+//            });
+//        }
 
-                @Override
-                public void onSuccess(JSONObject result) {
-                    toggleLoading(false); // Disable loading
+        // TODO Apenas para teste. Implementar a busca no servidor
+        List<Fall> falls = new ArrayList<>();
 
-                    if (result != null && result.length() > 0) {
-                        mAdapter.addItems(transform(result));
-                    }
-                    toggleNoDataMessage(true); // Enable message no data
-                }
-            });
-        }
+        falls.add(new Fall(1530993799671L, new FallProfile(false)));
+        falls.add(new Fall(1525741215000L, null));
+        falls.add(new Fall(1484481033000L, new FallProfile(true)));
+        mAdapter.addItems(falls);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        server.cancelTagRequest(this.getClass().getName());
-    }
-
-    /**
-     * Print message error.
-     *
-     * @param result
-     */
-    private void printError(JSONObject result) {
-        try {
-            if (result.has("message")) {
-                if (!result.getString("message").equals("Canceled"))
-                    printMessage(result.getString("message"));
-            } else {
-                printMessage(getString(R.string.error_500));
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
     }
 
     // TODO IMPLEMENTAR NO MODULO HISTORICAL
@@ -190,10 +190,8 @@ public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRec
 
             for (int i = 0; i < arrayData.length(); i++) {
                 JSONObject o = arrayData.getJSONObject(i);
-                Log.d(TAG, "RE_JSON: " + o.toString());
 
                 Elderly e = new Elderly();
-                e.set_id(o.getString("_id"));
                 e.setName(o.getString("name"));
                 e.setFallRisk(o.getInt("fallRisk"));
                 result.add(e);
@@ -272,52 +270,24 @@ public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRec
     }
 
     @Override
-    public void onItemClick(Elderly elderly) {
-        Intent intent = new Intent(this, ElderlyPreviewActivity.class);
-        intent.putExtra(ElderlyPreviewActivity.EXTRA_ELDERLY_ID, elderly.get_id());
-        startActivity(intent);
+    public void onItemClick(Fall fall) {
+        Log.d(TAG, "onItemClick() " + fall.getProfile().getTarget() + "+id " + elderlyId);
+        if (fall.getProfile().getTarget() == null && elderlyId != null) {
+            Intent intent = new Intent(this, FallCharacterizationActivity.class);
+            intent.putExtra(FallCharacterizationActivity.EXTRA_ELDERLY_ID, elderlyId);
+            startActivity(intent);
+        }
     }
 
+
     @Override
-    public void onLongItemClick(View v, Elderly item) {
+    public void onLongItemClick(View v, Fall item) {
         Log.w(TAG, "onLongItemClick()");
     }
 
     @Override
-    public void onMenuContextClick(View v, Elderly elderly) {
-        openDropMenu(v, elderly);
+    public void onMenuContextClick(View v, Fall item) {
+
     }
 
-    private void openDropMenu(View view, Elderly elderly) {
-        Log.d(TAG, "openDropMenu() " + elderly);
-        PopupMenu dropDownMenu = new PopupMenu(this, view);
-        MenuInflater inflater = dropDownMenu.getMenuInflater();
-        inflater.inflate(R.menu.menu_drop_down_elderly_list, dropDownMenu.getMenu());
-
-        if (elderly.getFallRisk() > 0) {
-            dropDownMenu.getMenu().getItem(0).setTitle(R.string.action_new_fall_risk_assessment);
-        }
-
-        dropDownMenu.setOnMenuItemClickListener(menuItem -> {
-            switch (menuItem.getItemId()) {
-                case R.id.action_fall_risk:
-                    Intent intentFallRisk = new Intent(this, FallRiskActivity.class);
-                    intentFallRisk.putExtra(FallRiskActivity.EXTRA_ELDERLY_ID, elderly.get_id());
-                    startActivity(intentFallRisk);
-                    break;
-                case R.id.action_fall_list:
-                    Intent intentFall = new Intent(this, ElderlyFallActivity.class);
-                    intentFall.putExtra(ElderlyFallActivity.EXTRA_ELDERLY_ID, elderly.get_id());
-                    startActivity(intentFall);
-                    break;
-                case R.id.action_elderly_delete:
-                    Toast.makeText(getApplicationContext(), "action_elderly_delete " + menuItem.getTitle(), Toast.LENGTH_LONG).show();
-                    break;
-                default:
-                    break;
-            }
-            return true;
-        });
-        dropDownMenu.show();
-    }
 }

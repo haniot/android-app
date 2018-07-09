@@ -83,13 +83,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             finish();
         }
 
-        passwordEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-                if (actionId == EditorInfo.IME_ACTION_SEND) login();
+        passwordEditText.setOnEditorActionListener((textView, actionId, keyEvent) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEND) login();
 
-                return false;
-            }
+            return false;
         });
     }
 

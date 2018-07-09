@@ -64,7 +64,7 @@ public class FallCharacterizationActivity extends BaseSurvey implements RadioPag
         answers = new boolean[10];
 
         Intent it = getIntent();
-        elderlyId = it.getStringExtra(ElderlyRegisterActivity.EXTRA_ELDERLY_ID);
+        elderlyId = it.getStringExtra(FallCharacterizationActivity.EXTRA_ELDERLY_ID);
         elderlyName = "Elvis da Silva Santos";
         elderlyFallDate = "30/06/2018 as 13:45:11";
 

@@ -19,7 +19,7 @@ public class Session {
 
     public Session(Context context) {
         this.context = context;
-        prefs = context.getSharedPreferences("ocariot", Context.MODE_PRIVATE);
+        prefs = context.getSharedPreferences("haniot", Context.MODE_PRIVATE);
         editor = prefs.edit();
     }
 

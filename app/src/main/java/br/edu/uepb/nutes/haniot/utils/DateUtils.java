@@ -263,4 +263,19 @@ public final class DateUtils {
 
         return false;
     }
+
+    /**
+     * Checks if the date passed as parameter is this year.
+     *
+     * @param dateMills long
+     * @return boolean
+     */
+    public static boolean isYear(long dateMills) {
+        Calendar c1 = GregorianCalendar.getInstance();
+        Calendar c2 = GregorianCalendar.getInstance();
+        c1.setTimeInMillis(dateMills);
+        c2.setTimeInMillis(getCurrentDatetime());
+
+        return (c1.get(Calendar.YEAR) == c2.get(Calendar.YEAR));
+    }
 }

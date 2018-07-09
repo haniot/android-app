@@ -16,17 +16,14 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -42,7 +39,7 @@ import br.edu.uepb.nutes.haniot.model.Elderly;
 import br.edu.uepb.nutes.haniot.model.Medication;
 import br.edu.uepb.nutes.haniot.model.dao.ElderlyDAO;
 import br.edu.uepb.nutes.haniot.server.Server;
-import br.edu.uepb.nutes.haniot.ui.MultiSelectSpinner;
+import br.edu.uepb.nutes.haniot.ui.CustomMultiSelectSpinner;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -58,6 +55,8 @@ import butterknife.ButterKnife;
  */
 public class ElderlyFormFragment extends Fragment {
     private final String TAG = "ElderlyFormFragment";
+
+    protected static final String EXTRA_ELDERLY_PIN = "extra_elderly_pin";
 
     private final String KEY_ITEMS_MEDICATIONS = "key_medications";
     private final String KEY_ITEMS_ACCESSORIES = "key_accessories";
@@ -91,16 +90,10 @@ public class ElderlyFormFragment extends Fragment {
     Spinner educationSpinner;
 
     @BindView(R.id.medications_multiSelectSpinner)
-    MultiSelectSpinner medicationsSpinner;
+    CustomMultiSelectSpinner medicationsSpinner;
 
     @BindView(R.id.accessories_multiSelectSpinner)
-    MultiSelectSpinner accessoriesSpinner;
-
-    @BindView(R.id.new_medications_imageButton)
-    ImageButton medicationsButton;
-
-    @BindView(R.id.new_accessories_imageButton)
-    ImageButton accessoriesButton;
+    CustomMultiSelectSpinner accessoriesSpinner;
 
     @BindView(R.id.save_button)
     Button saveButton;
@@ -117,6 +110,7 @@ public class ElderlyFormFragment extends Fragment {
     private Calendar calendar;
     private DatePickerDialog datePickerDialog;
     private Elderly elderly;
+    private String elderlyPin;
 
     public ElderlyFormFragment() {
         // Required empty public constructor
@@ -137,12 +131,20 @@ public class ElderlyFormFragment extends Fragment {
         server = Server.getInstance(getContext());
         calendar = Calendar.getInstance();
         elderly = new Elderly();
+
         return view;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        if (getArguments() != null) {
+            elderlyPin = getArguments().getString(ElderlyFormFragment.EXTRA_ELDERLY_PIN);
+            Log.d(TAG, "PIN " + elderlyPin);
+        }else {
+            Log.d(TAG, "PIN NOT");
+        }
 
         initUI();
     }
@@ -166,13 +168,14 @@ public class ElderlyFormFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        server.cancelAllResquest();
+        server.cancelTagRequest(this.getClass().getName());
     }
 
     /**
      * Initializes the UI elements.
      */
     private void initUI() {
+        nameEditText.requestFocus();
         initializeMedications();
         initializeAccessories();
         dateBirthEditText.setOnClickListener(mListenerDatePickerDialog);
@@ -186,14 +189,23 @@ public class ElderlyFormFragment extends Fragment {
         List<String> items = new ArrayList<>();
         items.addAll(getItensExtraSharedPreferences(KEY_ITEMS_MEDICATIONS));
 
-        medicationsSpinner
-                .title(getString(R.string.elderly_select_medications))
-                .hint(getResources().getString(R.string.elderly_select_medications))
-                .messageEmpty(getString(R.string.elderly_please_add_medications))
-                .items(items)
-                .build();
+        medicationsSpinner.setItems(items);
+        medicationsSpinner.setOnSpinnerListener(new CustomMultiSelectSpinner.OnSpinnerListener() {
+            @Override
+            public void onMultiItemSelected(@NonNull List<String> items, @NonNull List<Integer> indexItems) {
 
-        medicationsButton.setOnClickListener(mListenerMedications);
+            }
+
+            @Override
+            public void onAddNewItemSuccess(@NonNull String item, @NonNull int indexItem) {
+                saveItensExtraSharedPreferences(KEY_ITEMS_MEDICATIONS, item);
+            }
+
+            @Override
+            public void onAddNewItemCancel() {
+
+            }
+        });
     }
 
     /**
@@ -204,13 +216,23 @@ public class ElderlyFormFragment extends Fragment {
         items.addAll(Arrays.asList(getResources().getStringArray(R.array.elderly_accessories_array)));
         items.addAll(getItensExtraSharedPreferences(KEY_ITEMS_ACCESSORIES));
 
-        accessoriesSpinner
-                .title(getString(R.string.elderly_select_accessories))
-                .hint(getString(R.string.elderly_select_accessories))
-                .items(items)
-                .build();
+        accessoriesSpinner.setItems(items);
+        accessoriesSpinner.setOnSpinnerListener(new CustomMultiSelectSpinner.OnSpinnerListener() {
+            @Override
+            public void onMultiItemSelected(@NonNull List<String> items, @NonNull List<Integer> indexItems) {
 
-        accessoriesButton.setOnClickListener(mListenerAccessories);
+            }
+
+            @Override
+            public void onAddNewItemSuccess(@NonNull String item, @NonNull int indexItem) {
+                saveItensExtraSharedPreferences(KEY_ITEMS_ACCESSORIES, item);
+            }
+
+            @Override
+            public void onAddNewItemCancel() {
+
+            }
+        });
     }
 
     /**
@@ -246,49 +268,9 @@ public class ElderlyFormFragment extends Fragment {
     });
 
     /**
-     * Open dialog to add new item medication,
-     */
-    private View.OnClickListener mListenerMedications = (v -> {
-        medicationsSpinner.addItemDialog(
-                getString(R.string.elderly_add_medications),
-                new MultiSelectSpinner.OnItemAddCallback() {
-                    @Override
-                    public void onSuccess(String item) {
-                        Log.d(TAG, "onSuccess() " + item);
-                        saveItensExtraSharedPreferences(KEY_ITEMS_MEDICATIONS, item);
-                    }
-
-                    @Override
-                    public void onCancel() {
-                        Log.d(TAG, "onCancel()");
-                    }
-                });
-    });
-
-    /**
-     * Open dialog to add new item accessory.
-     */
-    private View.OnClickListener mListenerAccessories = (v -> {
-        accessoriesSpinner.addItemDialog(
-                getString(R.string.elderly_add_accessories),
-                new MultiSelectSpinner.OnItemAddCallback() {
-                    @Override
-                    public void onSuccess(String item) {
-                        Log.d(TAG, "onSuccess() " + item);
-                        saveItensExtraSharedPreferences(KEY_ITEMS_ACCESSORIES, item);
-                    }
-
-                    @Override
-                    public void onCancel() {
-                        Log.d(TAG, "onCancel()");
-                    }
-                });
-    });
-
-    /**
      * Listener for event button click save.
      */
-    private View.OnClickListener mListenerSave = (v -> save(getElderyByForm()));
+    private View.OnClickListener mListenerSave = (v -> save(getElderlyByForm()));
 
     /**
      * Retrieve extra items saved in sharedPreferences.
@@ -298,7 +280,11 @@ public class ElderlyFormFragment extends Fragment {
      */
     public List<String> getItensExtraSharedPreferences(String key) {
         String extra = session.getString(key);
-        return Arrays.asList(extra.split(SEPARATOR_ITEMS));
+        List<String> _result = new ArrayList<>();
+        for (String s : extra.split(SEPARATOR_ITEMS))
+            if (!s.isEmpty()) _result.add(s);
+
+        return _result;
     }
 
     /**
@@ -321,7 +307,7 @@ public class ElderlyFormFragment extends Fragment {
      *
      * @return {@link Elderly}
      */
-    public Elderly getElderyByForm() {
+    public Elderly getElderlyByForm() {
         if (elderly == null) elderly = new Elderly();
 
         elderly.setName(String.valueOf(nameEditText.getText()));
@@ -351,10 +337,18 @@ public class ElderlyFormFragment extends Fragment {
             elderly.addMedication(new Medication(medication));
         }
 
+        List<String> _defaultAccessories = Arrays.asList(getResources().getStringArray(R.array.elderly_accessories_array));
         for (String accessory : accessoriesSpinner.getSelectedItems()) {
-            elderly.addAccessory(new Accessory(accessory));
+            if (_defaultAccessories.contains(accessory)) {
+                int index = _defaultAccessories.indexOf(accessory);
+                Log.d(TAG, "INDEX ACC: " + _defaultAccessories.indexOf(accessory) + " value: " + _defaultAccessories.get(index));
+                elderly.addAccessory(new Accessory(index, _defaultAccessories.get(index))); // no index
+            } else {
+                elderly.addAccessory(new Accessory(-1, accessory)); // no index
+            }
         }
         elderly.setUser(session.getUserLogged());
+        elderly.setPin(elderlyPin);
 
         return elderly;
     }
@@ -380,7 +374,7 @@ public class ElderlyFormFragment extends Fragment {
         result.addProperty("liveAlone", elderly.getLiveAlone());
         result.addProperty("maritalStatus", elderly.getMaritalStatus());
         result.addProperty("degreeOfEducation", elderly.getDegreeOfEducation());
-        result.addProperty("encodedId", "8754"); //  TODO PIN - Avaliar se eh a entidade idoso
+        result.addProperty("encodedId", elderly.getPin()); //  TODO PIN - Avaliar se eh a entidade idoso
 
         JsonArray arrayMedications = new JsonArray();
         for (Medication medication : elderly.getMedications())
@@ -388,8 +382,12 @@ public class ElderlyFormFragment extends Fragment {
         result.add("medications", arrayMedications);
 
         JsonArray arrayAccessories = new JsonArray();
-        for (Accessory accessory : elderly.getAccessories())
-            arrayAccessories.add(accessory.getName());
+        for (Accessory accessory : elderly.getAccessories()) {
+            JsonObject itemAccessory = new JsonObject();
+            itemAccessory.addProperty("index", accessory.getIndex());
+            itemAccessory.addProperty("name", accessory.getName());
+            arrayAccessories.add(itemAccessory);
+        }
         result.add("accessories", arrayAccessories);
 
         return String.valueOf(result);
@@ -405,34 +403,32 @@ public class ElderlyFormFragment extends Fragment {
         if (validate(elderly) && mListener != null) {
             loading(true);
             ElderlyDAO dao = ElderlyDAO.getInstance(getContext());
+            Log.d(TAG, "SAVE ELDERLY: " + elderly);
 
-            final Elderly elderlySaved = dao.save(elderly); // save in local
-            if (elderlySaved != null && elderlySaved.getId() > 0) {
-                // Save in remote server.
-                server.post("users/".concat(session.get_idLogged()).concat("/external"),
-                        elderlyToJson(elderlySaved), // json
-                        new Server.Callback() {
-                            @Override
-                            public void onError(JSONObject result) {
-                                loading(false);
-                                dao.remove(elderlySaved.getId());
-                                openMessageError();
+            // Save in remote server.
+            server.post("users/".concat(session.get_idLogged()).concat("/external"),
+                    elderlyToJson(elderly), // json
+                    new Server.Callback() {
+                        @Override
+                        public void onError(JSONObject result) {
+                            loading(false);
+                            openMessageError();
+                        }
+
+                        @Override
+                        public void onSuccess(JSONObject result) {
+                            loading(false);
+
+                            try {
+                                elderly.set_id(result.getString("_id"));
+                                dao.save(elderly);  // save in local
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
 
-                            @Override
-                            public void onSuccess(JSONObject result) {
-                                loading(false);
-
-                                try {
-                                    elderly.set_id(result.getString("_id"));
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-
-                                mListener.onFormResult(elderly);
-                            }
-                        });
-            }
+                            mListener.onFormResult(elderly);
+                        }
+                    });
         }
     }
 
