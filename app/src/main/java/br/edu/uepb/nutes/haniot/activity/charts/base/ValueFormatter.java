@@ -33,7 +33,8 @@ public class ValueFormatter implements IValueFormatter {
             mFormat = new DecimalFormat(context.getString(R.string.format_number2), new DecimalFormatSymbols(Locale.US));
             return mFormat.format(value);
         }
-        return String.format("%03d", (int) value);
+        //return String.format("%03d", (int) value);
+        return ((int) value) + " ";
     }
 }
 

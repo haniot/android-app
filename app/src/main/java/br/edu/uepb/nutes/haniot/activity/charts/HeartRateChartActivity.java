@@ -3,6 +3,7 @@ package br.edu.uepb.nutes.haniot.activity.charts;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.charts.LineChart;
@@ -30,26 +31,13 @@ public class HeartRateChartActivity extends BaseChartActivity {
 
     private final float TACHYCARDIA = 110;
     private CreateChart mChart;
+    Chart lineChart;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_line_chart);
-        ButterKnife.bind(this);
-
-        setSupportActionBar(mToolbar);
+    public void initView() {
         getSupportActionBar().setTitle(getString(R.string.heart_rate));
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        fabDay.setOnClickListener(this);
-        fabWeek.setOnClickListener(this);
-        fabMonth.setOnClickListener(this);
-        fabYear.setOnClickListener(this);
-
-        super.session = new Session(this);
-        super.params = new Params(session.get_idLogged(), MeasurementType.HEART_RATE);
-
-        Chart lineChart = (LineChart) findViewById(R.id.chart);
+        lineChart = (LineChart) findViewById(R.id.chart);
         mChart = new CreateChart.Params(this, lineChart)
                 .lineStyle(2.5f, Color.WHITE)
                 .drawCircleStyle(Color.WHITE, getResources().getColor(R.color.colorPrimary))
@@ -64,6 +52,22 @@ public class HeartRateChartActivity extends BaseChartActivity {
 
         requestData(CHART_TYPE_MONTH);
     }
+
+    @Override
+    public int getLayout() {
+        return R.layout.activity_line_chart;
+    }
+
+    @Override
+    public int getTypeMeasurement() {
+        return MeasurementType.HEART_RATE;
+    }
+
+    @Override
+    public Chart getChart() {
+        return lineChart;
+    }
+
 
     @Override
     protected void onResume() {
@@ -84,5 +88,7 @@ public class HeartRateChartActivity extends BaseChartActivity {
     @Override
     public void onUpdateData(List<Measurement> data, int currentChartType) {
         mChart.paint(data);
+        mProgressBar.setVisibility(View.INVISIBLE);
+        lineChart.setVisibility(View.VISIBLE);
     }
 }

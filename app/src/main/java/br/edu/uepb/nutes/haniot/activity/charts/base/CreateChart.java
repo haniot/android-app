@@ -26,11 +26,13 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.activity.charts.HeartRateChartActivity;
 import br.edu.uepb.nutes.haniot.activity.charts.SmartBandChartActivity;
 import br.edu.uepb.nutes.haniot.model.Measurement;
 import br.edu.uepb.nutes.haniot.model.MeasurementType;
@@ -181,11 +183,17 @@ public final class CreateChart<T> {
                     data.get(i).getRegistrationDate(),
                     params.formatDate);
 
-            entries.add(new Entry((float) i, (float) data.get(i).getValue()));
-            if (!data.get(i).getMeasurements().isEmpty())
-                if (data.get(i).getMeasurements().get(0).getTypeId() == MeasurementType.BLOOD_PRESSURE_DIASTOLIC)
-                    entries2.add(new Entry((float) i, (float) data.get(i).getMeasurements().get(0).getValue()));
-
+            if (params.context instanceof HeartRateChartActivity ){
+                entries.add(new Entry((int) i, (int) data.get(i).getValue()));
+                if (!data.get(i).getMeasurements().isEmpty())
+                    if (data.get(i).getMeasurements().get(0).getTypeId() == MeasurementType.BLOOD_PRESSURE_DIASTOLIC)
+                        entries2.add(new Entry((float) i, (float) data.get(i).getMeasurements().get(0).getValue()));
+            } else {
+                entries.add(new Entry((float) i, (int) data.get(i).getValue()));
+                if (!data.get(i).getMeasurements().isEmpty())
+                    if (data.get(i).getMeasurements().get(0).getTypeId() == MeasurementType.BLOOD_PRESSURE_DIASTOLIC)
+                        entries2.add(new Entry((float) i, (float) data.get(i).getMeasurements().get(0).getValue()));
+            }
             quarters[i] = date;
         }
 
@@ -228,7 +236,15 @@ public final class CreateChart<T> {
 
             ArrayList<ILineDataSet> dataSets = new ArrayList<>();
             set = new LineDataSet(entries, params.legend[0]);
-            set.setValueFormatter(new ValueFormatter(params.context));
+            ValueFormatter formatter = new ValueFormatter(params.context) {
+                @Override
+                public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
+                    return String.valueOf(value);
+                }
+            };
+            set.setValueFormatter(formatter);
+            //set.setValueFormatter(new ValueFormatter(params.context));
+
             dataSets.add(set);
             if (!entries2.isEmpty()) {
                 set2 = new LineDataSet(entries2, params.legend[1]);

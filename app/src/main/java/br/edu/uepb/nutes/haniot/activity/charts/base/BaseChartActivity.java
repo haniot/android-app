@@ -53,6 +53,7 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
     protected int currentChartType;
     public Session session;
     public Params params;
+    public int typeId;
 
     @BindView(R.id.toolbar)
     public Toolbar mToolbar;
@@ -82,23 +83,26 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(getLayout());
+        ButterKnife.bind(this);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        setContentView(getLayout());
-        ButterKnife.bind(this);
+        session = new Session(this);
+        params = new Params(session.get_idLogged(), getTypeMeasurement());
+
+        initView();
 
         fabDay.setOnClickListener(this);
         fabWeek.setOnClickListener(this);
         fabMonth.setOnClickListener(this);
         fabYear.setOnClickListener(this);
 
-        session = new Session(this);
-        initView();
     }
 
     public abstract void initView();
     public abstract int getLayout();
+    public abstract int getTypeMeasurement();
     public abstract Chart getChart();
 
     @Override
@@ -144,6 +148,8 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
             @Override
             public void onBeforeSend() {
                 Log.w(TAG, "onBeforeSend()");
+                mProgressBar.setVisibility(View.VISIBLE);
+                getChart().setVisibility(View.INVISIBLE);
 
             }
 
@@ -180,7 +186,6 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
             @Override
             public void onAfterSend() {
                 Log.w(TAG, "onAfterSend()");
-                // TODO Remover loading
             }
         });
     }
@@ -255,9 +260,16 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
             String firstMeasurement = DateUtils.formatDate(measurements.get(0).getRegistrationDate(), getString(R.string.date_format));
             String lastMeasurement = DateUtils.formatDate(measurements.get(measurements.size() - 1).getRegistrationDate(), getString(R.string.date_format));
 
-            infos.add(new InfoMeasurement(getString(R.string.info_max), (String.format("%.1f", measurementValueMax)) + unit));
-            infos.add(new InfoMeasurement(getString(R.string.info_min), (String.format("%.1f", measurementValueMin)) + unit));
-            infos.add(new InfoMeasurement(getString(R.string.info_avarage), (String.format("%.1f", measurementValueAvarage)) + unit));
+            if (getTypeMeasurement() == MeasurementType.BLOOD_PRESSURE_DIASTOLIC || getTypeMeasurement() == MeasurementType.HEART_RATE) {
+                infos.add(new InfoMeasurement(getString(R.string.info_max), (int) measurementValueMax + unit));
+                infos.add(new InfoMeasurement(getString(R.string.info_min), (int) measurementValueMin + unit));
+                infos.add(new InfoMeasurement(getString(R.string.info_avarage), (int) measurementValueAvarage + unit));
+            } else {
+                infos.add(new InfoMeasurement(getString(R.string.info_max), (String.format("%.1f", measurementValueMax)) + unit));
+                infos.add(new InfoMeasurement(getString(R.string.info_min), (String.format("%.1f", measurementValueMin)) + unit));
+                infos.add(new InfoMeasurement(getString(R.string.info_avarage), (String.format("%.1f", measurementValueAvarage)) + unit));
+            }
+
             if (firstMeasurement.equals(lastMeasurement))
                 infos.add(new InfoMeasurement(getString(R.string.info_period), firstMeasurement));
             else

@@ -2,11 +2,15 @@ package br.edu.uepb.nutes.haniot.activity.charts;
 
 import android.graphics.Color;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.GridView;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -33,6 +37,7 @@ public class SmartBandChartActivity extends BaseChartActivity {
 
     private CreateChart mChart;
     Chart barChart;
+    List<Measurement> points;
 
     @Override
     public void initView() {
@@ -53,11 +58,40 @@ public class SmartBandChartActivity extends BaseChartActivity {
                 .build();
 
         requestData(CHART_TYPE_MONTH);
+
+        barChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener()
+        {
+            @Override
+            public void onValueSelected(Entry e, Highlight h)
+            {
+  //              Measurement m = (Measurement) e.getData();
+              //  Log.d("TESTE", String.valueOf(points.get(3).getValue()));
+                Log.d("TESTE", String.valueOf(e.getX())+ " - " + String.valueOf(e.getY()));
+
+                ArrayList<Measurement> a = new ArrayList<>();
+                a.add(points.get((int) e.getX()));
+                createMoreInfo(a);
+                float x=e.getX();
+                float y=e.getY();
+            }
+
+            @Override
+            public void onNothingSelected()
+            {
+
+               createMoreInfo(new ArrayList<>());
+            }
+        });
     }
 
     @Override
     public int getLayout() {
         return R.layout.activity_bar_chart;
+    }
+
+    @Override
+    public int getTypeMeasurement() {
+        return MeasurementType.STEPS;
     }
 
     @Override
@@ -83,7 +117,7 @@ public class SmartBandChartActivity extends BaseChartActivity {
     @Override
     public void onUpdateData(List<Measurement> data, int currentChartType) {
 
-        List<Measurement> points = agroupDay(data);
+        points = agroupDay(data);
         Calendar c = Calendar.getInstance();
         String dateFormat = "";
 
@@ -105,7 +139,12 @@ public class SmartBandChartActivity extends BaseChartActivity {
                 break;
         }
 
+
         mChart.paintBar(points, dateFormat);
+        mProgressBar.setVisibility(View.INVISIBLE);
+        barChart.setVisibility(View.VISIBLE);
+
+        //Teste
         for (Measurement measurement : data)
             Log.d("A", DateUtils.formatDate(measurement.getRegistrationDate(), getString(R.string.date_format)) + " - " + measurement.getValue());
         for (Measurement measurement : points)
@@ -197,5 +236,23 @@ public class SmartBandChartActivity extends BaseChartActivity {
         GridView gridView = (GridView) findViewById(R.id.moreinfo_grid);
         InfoAdapter infoAdapter = new InfoAdapter(this, infoMeasurements);
         gridView.setAdapter(infoAdapter);
+    }
+
+    @Override
+    protected ArrayList<InfoMeasurement> getInfosBase(List<Measurement> measurements) {
+        ArrayList<InfoMeasurement> infos = new ArrayList<>();
+
+        if(measurements.isEmpty()){
+            infos.add(new InfoMeasurement("Passos", " - "));
+            infos.add(new InfoMeasurement("Distância", " - "));
+            infos.add(new InfoMeasurement("Calorias", " - "));
+            infos.add(new InfoMeasurement("Período", " - "));
+        } else {
+            infos.add(new InfoMeasurement("Passos", String.valueOf((int) measurements.get(0).getValue())));
+            infos.add(new InfoMeasurement("Distância", String.valueOf((int) (measurements.get(0).getMeasurements().get(0).getValue())) + " m"));
+            infos.add(new InfoMeasurement("Calorias", String.valueOf((int) (measurements.get(0).getMeasurements().get(1).getValue())) + " kcal"));
+            infos.add(new InfoMeasurement("Período", DateUtils.formatDate(measurements.get(0).getRegistrationDate(), getString(R.string.date_format))));
+        }
+        return infos;
     }
 }
