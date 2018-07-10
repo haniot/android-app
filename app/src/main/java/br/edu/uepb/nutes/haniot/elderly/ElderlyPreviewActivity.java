@@ -1,5 +1,6 @@
 package br.edu.uepb.nutes.haniot.elderly;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -110,7 +111,7 @@ public class ElderlyPreviewActivity extends AppCompatActivity {
             finish();
         } else {
             elderly = ElderlyDAO.getInstance(this).get(elderlyId);
-            Log.d(TAG, "elderly: " + elderly);
+            Log.d(TAG,  "ID: " + elderlyId + "elderly: " + elderly);
 
 //            elderly = new Elderly("Elvis da Silva Pereira", -595720800000L, 80.6D, 174, 0, 2, 1, false);
 //            elderly.setPin("5874");
@@ -157,6 +158,9 @@ public class ElderlyPreviewActivity extends AppCompatActivity {
             case R.id.action_elderly_delete:
                 Toast.makeText(getApplicationContext(), "action_elderly_delete ", Toast.LENGTH_LONG).show();
                 break;
+            case R.id.action_elderly_delete_device_association:
+                openDialogConfirmRemoveAssociation();
+                break;
             default:
                 break;
         }
@@ -167,6 +171,17 @@ public class ElderlyPreviewActivity extends AppCompatActivity {
     private void initComponents() {
         initToolBar();
         populateFields();
+
+        /**
+         * Open form to edit elderly data.
+         */
+        editButton.setOnClickListener(v -> {
+            Intent it = new Intent(this, ElderlyRegisterActivity.class);
+            it.putExtra(ElderlyFormFragment.EXTRA_ELDERLY_PIN, elderly.getPin());
+            it.putExtra(ElderlyFormFragment.EXTRA_ELDERLY_ID, elderly.get_id());
+            startActivity(it);
+            finish();
+        });
     }
 
     private void initToolBar() {
@@ -176,44 +191,20 @@ public class ElderlyPreviewActivity extends AppCompatActivity {
         mActionBar.setDisplayShowTitleEnabled(true);
         mActionBar.setDisplayHomeAsUpEnabled(true);
         mActionBar.setHomeAsUpIndicator(R.drawable.ic_action_close);
-
-//        setSupportActionBar(mToolbar);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//        getSupportActionBar().setDisplayShowTitleEnabled(false);
-
-//        mCollapsingToolbarLayout.setExpandedTitleColor(ContextCompat.getColor(getApplicationContext(), android.R.color.transparent));
-//        mCollapsingToolbarLayout.setCollapsedTitleTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorTextDark));
-
-//        mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-//            boolean isShow = false;
-//            int scrollRange = -1;
-//
-//            @Override
-//            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-//                if (scrollRange == -1)
-//                    scrollRange = appBarLayout.getTotalScrollRange();
-//
-//                if (scrollRange + verticalOffset == 0) {
-//                    mCollapsingToolbarLayout.setTitle(getString(R.string.temperature));
-//                    isShow = true;
-//                } else if (isShow) {
-//                    mCollapsingToolbarLayout.setTitle("");
-//                    isShow = false;
-//                }
-//            }
-//        });
     }
 
     private void populateFields() {
         pinDeviceTextView.setText(elderly.getPin());
         weightTextView.setText(String.valueOf(elderly.getWeight()).concat("Kg"));
         heightTextView.setText(String.valueOf(elderly.getHeight()).concat("cm"));
-        dateOfBirthTextView.setText(DateUtils.formatDate(elderly.getDateOfBirth(),
-                getString(R.string.date_format)));
         sexTextView.setText(elderly.getSex() == 0 ? getString(R.string.gender_male) :
                 getString(R.string.gender_female));
+        dateOfBirthTextView.setText(DateUtils.formatDate(elderly.getDateOfBirth(),
+                getString(R.string.date_format)));
+        phoneTextView.setText(elderly.getPhone());
         maritalStatusTextView.setText(MaritalStatusType.getString(this, elderly.getMaritalStatus()));
         educationTextView.setText(DegreeEducationType.getString(this, elderly.getDegreeOfEducation()));
+        liveAloneTextView.setText(elderly.getLiveAlone() ? R.string.yes_text : R.string.no_text);
 
         /**
          * Setting medications
@@ -226,7 +217,8 @@ public class ElderlyPreviewActivity extends AppCompatActivity {
             found = true;
             _strMed.append(m.getName());
         }
-        medicationTextView.setText(String.valueOf(_strMed));
+        if (_strMed.length() > 0) medicationTextView.setText(String.valueOf(_strMed));
+        else medicationTextView.setText(R.string.elderly_not_medications);
 
         /**
          * Setting accessories
@@ -245,7 +237,8 @@ public class ElderlyPreviewActivity extends AppCompatActivity {
                 _strAcc.append(_accessories.get(i).getName());
             }
         }
-        accessoriesTextView.setText(String.valueOf(_strAcc));
+        if (_strAcc.length() != 0) accessoriesTextView.setText(String.valueOf(_strAcc));
+        else accessoriesTextView.setText(R.string.elderly_not_accessories);
 
         // init recyclerview falls
         initFallsRecyclerView();
@@ -280,4 +273,19 @@ public class ElderlyPreviewActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Dialog confirmation to remove association with device.
+     */
+    private void openDialogConfirmRemoveAssociation() {
+        runOnUiThread(() -> {
+            AlertDialog.Builder mDialog = new AlertDialog.Builder(this);
+            mDialog.setTitle(R.string.warning_title)
+                    .setMessage(getResources().getString(R.string.elderly_confirm_delete_device_association, elderly.getName()))
+                    .setPositiveButton(R.string.yes_text, (dialogInterface, which) -> {
+                        // TODO Relizar rotina para remover o pin/atualizar view/atualizar elderly local e remoto.
+                    })
+                    .setNegativeButton(R.string.no_text, null)
+                    .create().show();
+        });
+    }
 }

@@ -119,86 +119,77 @@
                 <!-- LAYOUT LINE 3 -->
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_marginTop="@dimen/activity_horizontal_margin"
-                    android:baselineAligned="false"
-                    android:orientation="horizontal">
+                    android:orientation="vertical">
 
-                    <!-- LAYOUT BOX BIRTH DATE -->
-                    <LinearLayout
+                    <TextView
+                        android:id="@+id/date_birth_textView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/elderly_input_title_date_birth" />
+
+                    <EditText
+                        android:id="@+id/date_birth_editText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/date_birth_textView"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/elderly_input_title_date_birth" />
-
-                        <EditText
-                            android:id="@+id/date_birth_editText"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:clickable="false"
-                            android:focusable="false"
-                            android:hint="@string/elderly_input_date_birth"
-                            android:imeOptions="actionNext"
-                            android:inputType="date" />
-                    </LinearLayout>
-                    <!-- END LAYOUT BOX BIRTH DATE -->
-
-                    <!-- LAYOUT BOX SEX -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/sex_textView"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/elderly_input_title_sex" />
-
-                        <RadioGroup
-                            android:id="@+id/sex_radioGroup"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="5dp"
-                            android:layout_marginTop="4dp"
-                            android:gravity="center"
-                            android:orientation="horizontal">
-
-                            <RadioButton
-                                android:id="@+id/gender_male_radioButton"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:background="@drawable/button_background_small_blue_left"
-                                android:button="@android:color/transparent"
-                                android:checked="true"
-                                android:text="@string/gender_male"
-                                android:textColor="@drawable/button_black_text"
-                                android:textSize="12sp" />
-
-                            <RadioButton
-                                android:id="@+id/gender_female_radioButton"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:background="@drawable/button_background_small_blue_right"
-                                android:button="@android:color/transparent"
-                                android:checked="false"
-                                android:text="@string/gender_female"
-                                android:textColor="@drawable/button_black_text"
-                                android:textSize="12sp" />
-                        </RadioGroup>
-                    </LinearLayout>
-                    <!-- END LAYOUT BOX SEX -->
+                        android:clickable="false"
+                        android:focusable="false"
+                        android:hint="@string/elderly_input_date_birth"
+                        android:imeOptions="actionNext"
+                        android:inputType="date" />
                 </LinearLayout>
                 <!-- END LAYOUT LINE 3 -->
 
                 <!-- LAYOUT LINE 4 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/activity_horizontal_margin"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/sex_textView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/elderly_input_title_sex" />
+
+                    <RadioGroup
+                        android:id="@+id/sex_radioGroup"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginTop="4dp"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <RadioButton
+                            android:id="@+id/gender_male_radioButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/button_background_small_blue_left"
+                            android:button="@android:color/transparent"
+                            android:checked="true"
+                            android:text="@string/gender_male"
+                            android:textColor="@drawable/button_black_text"
+                            android:textSize="13sp" />
+
+                        <RadioButton
+                            android:id="@+id/gender_female_radioButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/button_background_small_blue_right"
+                            android:button="@android:color/transparent"
+                            android:checked="false"
+                            android:text="@string/gender_female"
+                            android:textColor="@drawable/button_black_text"
+                            android:textSize="13sp" />
+                    </RadioGroup>
+
+                </LinearLayout>
+                <!-- END LAYOUT LINE 4 -->
+
+                <!-- LAYOUT LINE 5 -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -221,7 +212,7 @@
                         android:inputType="phone" />
 
                 </LinearLayout>
-                <!-- END LAYOUT LINE 4 -->
+                <!-- END LAYOUT LINE 5 -->
 
             </LinearLayout>
             <!-- END LAYOUT GENERAL DATA BOX 1 -->
@@ -324,7 +315,7 @@
                             android:checked="true"
                             android:text="@string/yes_text"
                             android:textColor="@drawable/button_black_text"
-                            android:textSize="12sp" />
+                            android:textSize="13sp" />
 
                         <RadioButton
                             android:id="@+id/live_alone_no_radioButton"
@@ -335,7 +326,7 @@
                             android:checked="false"
                             android:text="@string/no_text"
                             android:textColor="@drawable/button_black_text"
-                            android:textSize="12sp" />
+                            android:textSize="13sp" />
                     </RadioGroup>
                 </LinearLayout>
                 <!-- END LAYOUT LINE 3 -->
@@ -385,7 +376,7 @@
                         app:enabledAddNewItem="true"
                         app:messageEmpty="@string/elderly_please_add_medications"
                         app:textAlign="left"
-                        app:titleDialogAddNewItem="elderly_add_medications" />
+                        app:titleDialogAddNewItem="@string/elderly_add_medications" />
                 </LinearLayout>
                 <!-- END LAYOUT LINE 1 -->
 
@@ -406,12 +397,12 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/activity_horizontal_margin"
-                        android:hint="@string/elderly_select_medications"
+                        android:hint="@string/elderly_select_accessories"
                         app:colorBackgroundTint="@color/colorSecondary"
                         app:enabledAddNewItem="true"
-                        app:messageEmpty="@string/elderly_please_add_medications"
+                        app:messageEmpty="@string/elderly_please_add_accessories"
                         app:textAlign="left"
-                        app:titleDialogAddNewItem="elderly_add_medications" />
+                        app:titleDialogAddNewItem="@string/elderly_add_accessories" />
                 </LinearLayout>
                 <!-- END LAYOUT LINE 2 -->
 

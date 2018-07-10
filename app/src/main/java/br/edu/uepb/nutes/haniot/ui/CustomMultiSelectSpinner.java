@@ -313,10 +313,13 @@ public class CustomMultiSelectSpinner extends LinearLayout implements DialogInte
             this.itemsSelected.set(i, false);
 
         for (String sel : selection) {
-            for (int j = 0; j < this.items.size(); ++j) {
-                if (this.items.get(j).equals(sel))
-                    this.itemsSelected.set(j, true);
-            }
+            int index = this.items.indexOf(sel);
+            if (index > -1 && index < this.items.size())
+                this.itemsSelected.set(index, true);
+//            for (int j = 0; j < this.items.size(); ++j) {
+//                if (this.items.get(j).equals(sel))
+//                    this.itemsSelected.set(j, true);
+//            }
         }
     }
 
@@ -360,16 +363,33 @@ public class CustomMultiSelectSpinner extends LinearLayout implements DialogInte
     }
 
     /**
-     * Select item in list.
+     * Select item in list by index.
      *
      * @param index
      */
     public void selection(int index) {
-        for (int i = 0; i < this.itemsSelected.size(); i++)
-            this.itemsSelected.set(i, false);
+//        for (int i = 0; i < this.itemsSelected.size(); i++)
+//            this.itemsSelected.set(i, false);
 
         if (index >= 0 && index < this.itemsSelected.size()) this.itemsSelected.set(index, true);
         else throw new IllegalArgumentException("Index index is out of bounds.");
+
+        this.mAdapter.clear();
+        this.mAdapter.add(buildSelectedItemString());
+    }
+
+    /**
+     * Select item in list by item name.
+     *
+     * @param item
+     */
+    public void selection(String item) {
+        for (int i = 0; i < this.items.size(); i++) {
+            if (this.items.get(i).equals(item)) {
+                this.itemsSelected.set(i, true);
+                break;
+            }
+        }
 
         this.mAdapter.clear();
         this.mAdapter.add(buildSelectedItemString());
@@ -410,6 +430,18 @@ public class CustomMultiSelectSpinner extends LinearLayout implements DialogInte
         this.mAdapter.clear();
         this.mAdapter.add(buildSelectedItemString());
     }
+//
+//    private void addSelection(int index) {
+//        if (index >= 0 && index < this.itemsSelected.size()) this.itemsSelected.set(index, true);
+//        else throw new IllegalArgumentException("Index index is out of bounds.");
+//
+//        this.mAdapter.clear();
+//        this.mAdapter.add(buildSelectedItemString());
+//    }
+//
+//    private void addSelection(String index) {
+//
+//    }
 
     private int[] internalGetIndexSelectedItems() {
         List<Integer> _temp = getIndexSelectedItems();

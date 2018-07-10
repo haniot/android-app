@@ -3,11 +3,11 @@ package br.edu.uepb.nutes.haniot.elderly;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.ArrayRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,9 +17,11 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.ScrollView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -41,6 +43,7 @@ import br.edu.uepb.nutes.haniot.model.dao.ElderlyDAO;
 import br.edu.uepb.nutes.haniot.server.Server;
 import br.edu.uepb.nutes.haniot.ui.CustomMultiSelectSpinner;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
+import br.edu.uepb.nutes.haniot.utils.Log;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -57,6 +60,7 @@ public class ElderlyFormFragment extends Fragment {
     private final String TAG = "ElderlyFormFragment";
 
     protected static final String EXTRA_ELDERLY_PIN = "extra_elderly_pin";
+    protected static final String EXTRA_ELDERLY_ID = "extra_elderly_id";
 
     private final String KEY_ITEMS_MEDICATIONS = "key_medications";
     private final String KEY_ITEMS_ACCESSORIES = "key_accessories";
@@ -109,8 +113,10 @@ public class ElderlyFormFragment extends Fragment {
     private Server server;
     private Calendar calendar;
     private DatePickerDialog datePickerDialog;
-    private Elderly elderly;
     private String elderlyPin;
+    private String elderlyId;
+    private ElderlyDAO dao;
+    private Elderly elderly;
 
     public ElderlyFormFragment() {
         // Required empty public constructor
@@ -130,7 +136,7 @@ public class ElderlyFormFragment extends Fragment {
         session = new Session(getContext());
         server = Server.getInstance(getContext());
         calendar = Calendar.getInstance();
-        elderly = new Elderly();
+        dao = ElderlyDAO.getInstance(getContext());
 
         return view;
     }
@@ -141,9 +147,9 @@ public class ElderlyFormFragment extends Fragment {
 
         if (getArguments() != null) {
             elderlyPin = getArguments().getString(ElderlyFormFragment.EXTRA_ELDERLY_PIN);
-            Log.d(TAG, "PIN " + elderlyPin);
-        }else {
-            Log.d(TAG, "PIN NOT");
+            elderlyId = getArguments().getString(ElderlyFormFragment.EXTRA_ELDERLY_ID);
+
+            Log.d(TAG, "PIN: " + elderlyPin + " ID: " + elderlyId);
         }
 
         initUI();
@@ -168,18 +174,70 @@ public class ElderlyFormFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        server.cancelTagRequest(this.getClass().getName());
     }
 
     /**
      * Initializes the UI elements.
      */
     private void initUI() {
-        nameEditText.requestFocus();
         initializeMedications();
         initializeAccessories();
         dateBirthEditText.setOnClickListener(mListenerDatePickerDialog);
         saveButton.setOnClickListener(mListenerSave);
+
+        if (elderlyId != null) {
+            elderly = dao.get(elderlyId);
+            if (elderly != null) {
+                populateForm(elderly);
+            } else {
+                Toast.makeText(getContext(), R.string.elderly_was_not_select, Toast.LENGTH_SHORT).show();
+                mListener.onFormResult(null);
+                return;
+            }
+        } else {
+            elderly = new Elderly();
+        }
+    }
+
+    /**
+     * Populate form with elderly data.
+     *
+     * @param elderlyUp {@link Elderly}
+     */
+    private void populateForm(Elderly elderlyUp) {
+        saveButton.setText(R.string.action_update);
+
+        nameEditText.setText(elderlyUp.getName());
+        dateBirthEditText.setText(DateUtils.formatDate(elderlyUp.getDateOfBirth(),
+                getString(R.string.date_format)));
+        weightEditText.setText(String.valueOf(elderlyUp.getWeight()));
+        heightEditText.setText(String.valueOf(elderlyUp.getHeight()));
+        phoneEditText.setText(elderlyUp.getPhone());
+
+        if (elderlyUp.getSex() == 0) // male
+            ((RadioButton) sexRadioGroup.getChildAt(0)).setChecked(true);
+        else // female
+            ((RadioButton) sexRadioGroup.getChildAt(1)).setChecked(true);
+
+        if (elderlyUp.getLiveAlone())
+            ((RadioButton) liveAloneRadioGroup.getChildAt(0)).setChecked(true);
+        else
+            ((RadioButton) liveAloneRadioGroup.getChildAt(1)).setChecked(true);
+
+        maritalStatusSpinner.setSelection(elderlyUp.getMaritalStatus());
+        educationSpinner.setSelection(elderlyUp.getDegreeOfEducation());
+
+        for (Medication medication : elderlyUp.getMedications()) {
+            medicationsSpinner.selection(medication.getName());
+        }
+
+        int accessoriesTotal = getResources().getStringArray(R.array.elderly_accessories_array).length;
+        for (Accessory accessory : elderlyUp.getAccessories()) {
+            if (accessory.getIndex() > -1 && accessory.getIndex() < accessoriesTotal)
+                accessoriesSpinner.selection(accessory.getIndex());
+            else
+                accessoriesSpinner.selection(accessory.getName());
+        }
     }
 
     /**
@@ -248,13 +306,11 @@ public class ElderlyFormFragment extends Fragment {
             year = dateVelues[0];
             month = dateVelues[1];
             day = dateVelues[2];
-            Log.d(TAG, "elderly.getDateOfBirth() " + elderly.getDateOfBirth());
         }
-        Log.d(TAG, "d: " + day + " m: " + month + " y: " + year);
+
         datePickerDialog = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                Log.d(TAG, "onDateSet() d: " + dayOfMonth + " m: " + month + " y: " + year);
                 calendar.set(year, month, dayOfMonth, 0, 0, 0);
                 elderly.setDateOfBirth(calendar.getTimeInMillis());
                 dateBirthEditText.setText(DateUtils.calendarToString(calendar, getString(R.string.date_format)));
@@ -270,7 +326,12 @@ public class ElderlyFormFragment extends Fragment {
     /**
      * Listener for event button click save.
      */
-    private View.OnClickListener mListenerSave = (v -> save(getElderlyByForm()));
+    private View.OnClickListener mListenerSave = (v -> {
+        Log.d(TAG, "OnClickListener() PIN: " + elderlyPin + " ID: " + elderlyId);
+
+        if (elderlyId == null) save(getElderlyByForm());
+        else update(getElderlyByForm());
+    });
 
     /**
      * Retrieve extra items saved in sharedPreferences.
@@ -308,8 +369,6 @@ public class ElderlyFormFragment extends Fragment {
      * @return {@link Elderly}
      */
     public Elderly getElderlyByForm() {
-        if (elderly == null) elderly = new Elderly();
-
         elderly.setName(String.valueOf(nameEditText.getText()));
 
         String weight = String.valueOf(weightEditText.getText());
@@ -333,24 +392,33 @@ public class ElderlyFormFragment extends Fragment {
         elderly.setMaritalStatus(maritalStatusSpinner.getSelectedItemPosition());
         elderly.setDegreeOfEducation(educationSpinner.getSelectedItemPosition());
 
+        elderly.clearMedications();
         for (String medication : medicationsSpinner.getSelectedItems()) {
             elderly.addMedication(new Medication(medication));
         }
 
-        List<String> _defaultAccessories = Arrays.asList(getResources().getStringArray(R.array.elderly_accessories_array));
+        elderly.clearAccessories();
         for (String accessory : accessoriesSpinner.getSelectedItems()) {
-            if (_defaultAccessories.contains(accessory)) {
-                int index = _defaultAccessories.indexOf(accessory);
-                Log.d(TAG, "INDEX ACC: " + _defaultAccessories.indexOf(accessory) + " value: " + _defaultAccessories.get(index));
-                elderly.addAccessory(new Accessory(index, _defaultAccessories.get(index))); // no index
-            } else {
-                elderly.addAccessory(new Accessory(-1, accessory)); // no index
-            }
+            int indexAccessory = findIndexArrayResource(accessory, R.array.elderly_accessories_array);
+            elderly.addAccessory(new Accessory(indexAccessory, accessory));
         }
+
         elderly.setUser(session.getUserLogged());
         elderly.setPin(elderlyPin);
 
         return elderly;
+    }
+
+    /**
+     * Retrieve the index of the item in an array contained in the resource.
+     *
+     * @param item
+     * @param arrayRes
+     * @return int
+     */
+    private int findIndexArrayResource(String item, @ArrayRes int arrayRes) {
+        List<String> _array = Arrays.asList(getResources().getStringArray(arrayRes));
+        return _array.indexOf(item);
     }
 
     /**
@@ -402,8 +470,6 @@ public class ElderlyFormFragment extends Fragment {
     public void save(@NonNull Elderly elderly) {
         if (validate(elderly) && mListener != null) {
             loading(true);
-            ElderlyDAO dao = ElderlyDAO.getInstance(getContext());
-            Log.d(TAG, "SAVE ELDERLY: " + elderly);
 
             // Save in remote server.
             server.post("users/".concat(session.get_idLogged()).concat("/external"),
@@ -429,6 +495,43 @@ public class ElderlyFormFragment extends Fragment {
                             mListener.onFormResult(elderly);
                         }
                     });
+        }
+    }
+
+    /**
+     * Update in local database elderly and remote server.
+     *
+     * @param elderly {@link Elderly}
+     * @return boolean
+     */
+    public void update(@NonNull Elderly elderly) {
+        if (validate(elderly) && mListener != null) {
+            loading(true);
+
+            // TODO Implementar o update no servidor!!!
+            dao.update(elderly);  // save in local
+            mListener.onFormResult(elderly);
+
+            loading(false);
+
+            // Save in remote server.
+//            server.put("users/".concat(session.get_idLogged()).concat("/external"),
+//                    elderlyToJson(elderly), // json
+//                    new Server.Callback() {
+//                        @Override
+//                        public void onError(JSONObject result) {
+//                            loading(false);
+//                            openMessageError();
+//                        }
+//
+//                        @Override
+//                        public void onSuccess(JSONObject result) {
+//                            loading(false);
+//
+//                            dao.update(elderly);  // save in local
+//                            mListener.onFormResult(elderly);
+//                        }
+//                    });
         }
     }
 

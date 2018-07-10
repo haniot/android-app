@@ -229,6 +229,14 @@ public class Elderly {
         return this.getAccessories().addAll(accessories);
     }
 
+    public void clearAccessories() {
+        this.accessories.clear();
+    }
+
+    public void clearMedications() {
+        this.medications.clear();
+    }
+
     public boolean addFalls(List<Fall> falls) {
         return this.getFalls().addAll(falls);
     }

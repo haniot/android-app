@@ -11,6 +11,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -277,5 +278,26 @@ public final class DateUtils {
         c2.setTimeInMillis(getCurrentDatetime());
 
         return (c1.get(Calendar.YEAR) == c2.get(Calendar.YEAR));
+    }
+
+    /**
+     * Convert date in string format to milliseconds.
+     *
+     * @param date   {@link String}
+     * @param format {@link String}
+     * @return long
+     */
+    public static long getDateStringInMillis(String date, @Nullable String format) {
+        if (format == null || format.length() == 0)
+            format = "yyyy-MM-dd";
+
+        Calendar calendar = Calendar.getInstance();
+        try {
+            DateFormat df = new SimpleDateFormat(format);
+            calendar.setTime(df.parse(date));
+        } catch (ParseException e) {
+        }
+
+        return calendar.getTimeInMillis();
     }
 }

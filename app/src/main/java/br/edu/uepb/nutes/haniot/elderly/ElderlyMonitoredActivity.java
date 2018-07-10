@@ -7,9 +7,15 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.*;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.*;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,7 +50,6 @@ public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRec
     private final int LIMIT_PER_PAGE = 20;
 
     private ElderlyMonitoredAdapter mAdapter;
-
     /**
      * We need this variable to lock and unlock loading more.
      * We should not charge more when a request has already been made.
@@ -54,6 +59,7 @@ public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRec
     private Params params;
     private Session session;
     private Server server;
+    private boolean itemClicked;
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -87,8 +93,9 @@ public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRec
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onResume() {
+        super.onResume();
+        itemClicked = false;
         loadData();
     }
 
@@ -273,9 +280,12 @@ public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRec
 
     @Override
     public void onItemClick(Elderly elderly) {
+        if (itemClicked) return;
+
         Intent intent = new Intent(this, ElderlyPreviewActivity.class);
         intent.putExtra(ElderlyPreviewActivity.EXTRA_ELDERLY_ID, elderly.get_id());
         startActivity(intent);
+        itemClicked = true;
     }
 
     @Override

@@ -90,8 +90,8 @@
     <!-- SIGNUP -->
     <string name="name">Nome</string>
     <string name="gender">Gênero</string>
-    <string name="gender_male">Masc</string>
-    <string name="gender_female">Femi</string>
+    <string name="gender_male">Masculino</string>
+    <string name="gender_female">Feminino</string>
     <string name="date_of_birth">Data de Nascimento</string>
     <string name="height">Altura em cm</string>
     <string name="cm">cm</string>
@@ -126,6 +126,7 @@
     <string name="validate_register_user_not_duplicate">Já existe um usuário cadastrado com email fornecido&#8230;</string>
     <string name="validate_unauthorized_access">Acesso não autorizado! Por favor entre em contato com o suporte&#8230;</string>
     <string name="validate_weight">Forneça um peso válido!</string>
+    <string name="validate_pin">O PIN de 4 digitos é necessário!</string>
     <!-- END VALIDATE MESSAGES -->
 
     <!-- ERROR MESSAGES -->
@@ -179,7 +180,7 @@
     <string name="time_format_simple2">HH\'h\'mm\'m\'</string>
     <!-- END FORMAT DATES -->
 
-    <!--ACTIONS-->
+    <!-- ACTIONS -->
     <string name="action_settings">Configurações</string>
     <string name="action_bond">Parear</string>
     <string name="action_connect_devices">Conectar Dispositivos</string>
@@ -192,6 +193,9 @@
     <string name="action_fall_risk_assessment">Avaliação do Risco de Queda</string>
     <string name="action_new_fall_risk_assessment">Nova Avaliação do Risco de Queda</string>
     <string name="action_characterize_fall">Caracterizar Queda</string>
+    <string name="action_remove_association">Remover Associação</string>
+    <string name="action_update">Atualizar</string>
+    <!-- END ACTIONS -->
 
     <!-- BUTTONS -->
     <string name="bt_ok">Ok</string>
@@ -243,6 +247,7 @@
     <string name="elderly_fall_registered_current_year">Nesse ano</string>
     <string name="elderly_latest_fall_records">Últimos registros de queda</string>
     <string name="elderly_was_not_select">Não foi possível selecionar os dados do idoso. Por favor, tente novamente mais tarde&#8230;</string>
+    <string name="elderly_confirm_delete_device_association">Tem certeza que deseja remover a associação com o dispositivo responsável pela detecção das quedas?\nUma vez removido não será possível receber notificações de queda para o idoso: %s.</string>
     <!-- END ELDERLY -->
 
     <!-- ELDERLY FORM -->
@@ -285,6 +290,8 @@
     <string name="elderly_survey_risk_falling">Você deseja responder agora a uma avaliação para identificar o risco de
         queda?
     </string>
+    <string name="elderly_not_medications">Sem medicamentos</string>
+    <string name="elderly_not_accessories">Sem acessórios</string>
     <!-- END ELDERLY FORM -->
 
     <!-- ELDERLY SURVEY RISK FALL -->

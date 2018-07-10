@@ -20,7 +20,7 @@ public class DegreeEducationType {
     public static final int HIGH = 3;
 
     public static String getString(Context context, int type) {
-        String types[] = context.getResources().getStringArray(R.array.marital_status_types_array);
+        String types[] = context.getResources().getStringArray(R.array.degree_education_types_array);
 
         if (type < 0 || type >= types.length) return "";
 
@@ -28,7 +28,7 @@ public class DegreeEducationType {
     }
 
     public static int getId(Context context, String value) {
-        String types[] = context.getResources().getStringArray(R.array.marital_status_types_array);
+        String types[] = context.getResources().getStringArray(R.array.degree_education_types_array);
         return Arrays.asList(types).indexOf(value);
     }
 }

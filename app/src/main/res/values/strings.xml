@@ -46,7 +46,7 @@
     <string name="image">Image</string>
     <string name="warning_title">Warning!</string>
 
-    <!--ACTIONS-->
+    <!-- ACTIONS -->
     <string name="action_settings">Settings</string>
     <string name="action_bond">Bond</string>
     <string name="action_connect_devices">Connect Devices</string>
@@ -59,6 +59,9 @@
     <string name="action_fall_risk_assessment">Fall Risk Assessment</string>
     <string name="action_new_fall_risk_assessment">New Fall Risk Assessment</string>
     <string name="action_characterize_fall">Characterize Fall</string>
+    <string name="action_remove_association">Remove Association</string>
+    <string name="action_update">Update</string>
+    <!-- END ACTIONS -->
 
     <string name="unknown">Unknown</string>
     <string name="unknown_device">Unknown device</string>
@@ -241,6 +244,7 @@
     <string name="validate_register_user_not_duplicate">Already registered user with email provided&#8230;</string>
     <string name="validate_unauthorized_access">Unauthorized access! Please contact support&#8230;</string>
     <string name="validate_weight">Provide a valid weight!</string>
+    <string name="validate_pin">The 4 digit PIN is required!</string>
     <!-- END VALIDATE MESSAGES -->
 
     <!-- ERROR MESSAGES -->
@@ -342,6 +346,7 @@
     <string name="elderly_fall_registered_current_year">In this year</string>
     <string name="elderly_latest_fall_records">Latest fall records</string>
     <string name="elderly_was_not_select">It was not possible to select the data of the elderly. Please try again later&#8230;</string>
+    <string name="elderly_confirm_delete_device_association">Are you sure you want to remove the association with the device responsible for falls detection?\nOnce removed you will not be able to receive notification of falls for the elderly: %s.</string>
     <!-- END ELDERLY -->
 
     <!-- ELDERLY FORM -->
@@ -378,12 +383,10 @@
     <string name="elderly_please_add_accessories">Please, add a new accessory</string>
     <string name="elderly_select_medications">Select the medications</string>
     <string name="elderly_select_accessories">Select the accessories</string>
-    <string name="elderly_register_success">Data saved successfully!\nDo you want to respond now to an assessment to
-        identify the risk of falling?
-    </string>
-    <string name="elderly_survey_risk_falling">Do you want to respond now to an assessment to identify the risk of
-        falling?
-    </string>
+    <string name="elderly_register_success">Data saved successfully!\nDo you want to respond now to an assessment to identify the risk of falling?</string>
+    <string name="elderly_survey_risk_falling">Do you want to respond now to an assessment to identify the risk of falling?</string>
+    <string name="elderly_not_medications">No medicines</string>
+    <string name="elderly_not_accessories">No accessories</string>
     <!-- END ELDERLY FORM -->
 
     <!-- ELDERLY SURVEY RISK FALL -->

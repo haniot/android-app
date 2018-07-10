@@ -105,6 +105,14 @@ public class ElderlyPinFragment extends Fragment {
             pinEditText.setError(null);
         }
 
+        if (pinEditText.getText().length() != 4) {
+            pinEditText.setError(getResources().getString(R.string.validate_pin));
+            requestFocus(pinEditText);
+            return false;
+        } else {
+            pinEditText.setError(null);
+        }
+
         return true;
     }
 

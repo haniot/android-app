@@ -32,6 +32,7 @@ public class ElderlyRegisterActivity extends AppCompatActivity implements
     Toolbar mToolbar;
 
     private ActionBar actionBar;
+    private String elderlyId;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -39,12 +40,23 @@ public class ElderlyRegisterActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_elderly_register);
         ButterKnife.bind(this);
 
+        Intent it = getIntent();
+        elderlyId = it.getStringExtra(FallRiskActivity.EXTRA_ELDERLY_ID);
+
         initComponents();
     }
 
     private void initComponents() {
         initToolBar();
-        openFragment(ElderlyPinFragment.newInstance());
+        if (elderlyId != null) {
+            Fragment fragment = ElderlyFormFragment.newInstance();
+            Bundle args = new Bundle();
+            args.putString(ElderlyFormFragment.EXTRA_ELDERLY_ID, elderlyId);
+            fragment.setArguments(args);
+            openFragment(fragment);
+        } else {
+            openFragment(ElderlyPinFragment.newInstance());
+        }
     }
 
     /**
@@ -57,7 +69,10 @@ public class ElderlyRegisterActivity extends AppCompatActivity implements
 
         if (fragment instanceof ElderlyFormFragment) {
             actionBar.setTitle(getString(R.string.elderly_registration));
-            transaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left);
+
+            // Come from the ElderlyPinFragment
+            if (fragment.getArguments().getString(ElderlyFormFragment.EXTRA_ELDERLY_ID) == null)
+                transaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left);
         } else {
             actionBar.setTitle(getString(R.string.elderly_associate_device));
         }
@@ -101,7 +116,8 @@ public class ElderlyRegisterActivity extends AppCompatActivity implements
 
     @Override
     public void onFormResult(Elderly elderly) {
-        Log.d(TAG, "onFormResult() ".concat(elderly.toString()));
+        if (elderly == null) finish();
+
         runOnUiThread(() -> {
             AlertDialog.Builder dialog = new AlertDialog.Builder(this);
             dialog.setMessage(getResources().getString(R.string.elderly_register_success));
@@ -123,5 +139,4 @@ public class ElderlyRegisterActivity extends AppCompatActivity implements
             dialog.create().show();
         });
     }
-
 }
