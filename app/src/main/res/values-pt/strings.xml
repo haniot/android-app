@@ -114,6 +114,9 @@
     <string name="info_avarage">Média</string>
     <string name="info_period">Período</string>
     <string name="more_information">Mais Informações</string>
+    <string name="info_steps">Passos</string>
+    <string name="info_distance">Distância</string>
+    <string name="info_calories">Calorias</string>
 
 
     <!-- ELDERLY -->

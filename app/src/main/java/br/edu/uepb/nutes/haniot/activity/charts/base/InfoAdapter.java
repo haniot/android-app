@@ -18,7 +18,6 @@ import br.edu.uepb.nutes.haniot.R;
  * @copyright Copyright (c) 2017, NUTES UEPB
  *
  * **/
-
 public class InfoAdapter extends BaseAdapter {
 
     private final Context mContext;

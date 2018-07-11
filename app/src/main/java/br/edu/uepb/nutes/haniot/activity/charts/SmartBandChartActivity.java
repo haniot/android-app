@@ -64,10 +64,6 @@ public class SmartBandChartActivity extends BaseChartActivity {
             @Override
             public void onValueSelected(Entry e, Highlight h)
             {
-  //              Measurement m = (Measurement) e.getData();
-              //  Log.d("TESTE", String.valueOf(points.get(3).getValue()));
-                Log.d("TESTE", String.valueOf(e.getX())+ " - " + String.valueOf(e.getY()));
-
                 ArrayList<Measurement> a = new ArrayList<>();
                 a.add(points.get((int) e.getX()));
                 createMoreInfo(a);
@@ -78,7 +74,6 @@ public class SmartBandChartActivity extends BaseChartActivity {
             @Override
             public void onNothingSelected()
             {
-
                createMoreInfo(new ArrayList<>());
             }
         });
@@ -144,11 +139,11 @@ public class SmartBandChartActivity extends BaseChartActivity {
         mProgressBar.setVisibility(View.INVISIBLE);
         barChart.setVisibility(View.VISIBLE);
 
-        //Teste
-        for (Measurement measurement : data)
-            Log.d("A", DateUtils.formatDate(measurement.getRegistrationDate(), getString(R.string.date_format)) + " - " + measurement.getValue());
-        for (Measurement measurement : points)
-            Log.d("B", DateUtils.formatDate(measurement.getRegistrationDate(), getString(R.string.date_format)) + " - " + measurement.getValue());
+//        //Teste
+//        for (Measurement measurement : data)
+//            Log.d("A", DateUtils.formatDate(measurement.getRegistrationDate(), getString(R.string.date_format)) + " - " + measurement.getValue());
+//        for (Measurement measurement : points)
+//            Log.d("B", DateUtils.formatDate(measurement.getRegistrationDate(), getString(R.string.date_format)) + " - " + measurement.getValue());
 
     }
 
@@ -190,8 +185,8 @@ public class SmartBandChartActivity extends BaseChartActivity {
                 Measurement measurement = data.get(i + 1);
                 measurement.setValue(total);
                 measurement.addMeasurement(
-                        new Measurement(totalDist, "m", MeasurementType.DISTANCE),
-                        new Measurement(totalCal, "kcal", MeasurementType.CALORIES_BURNED)
+                        new Measurement(totalDist, getString(R.string.unit_meters), MeasurementType.DISTANCE),
+                        new Measurement(totalCal, getString(R.string.unit_kcal), MeasurementType.CALORIES_BURNED)
                 );
 
                 points.add(measurement);
@@ -243,15 +238,15 @@ public class SmartBandChartActivity extends BaseChartActivity {
         ArrayList<InfoMeasurement> infos = new ArrayList<>();
 
         if(measurements.isEmpty()){
-            infos.add(new InfoMeasurement("Passos", " - "));
-            infos.add(new InfoMeasurement("Distância", " - "));
-            infos.add(new InfoMeasurement("Calorias", " - "));
-            infos.add(new InfoMeasurement("Período", " - "));
+            infos.add(new InfoMeasurement(getString(R.string.info_steps), " - "));
+            infos.add(new InfoMeasurement(getString(R.string.info_distance), " - "));
+            infos.add(new InfoMeasurement(getString(R.string.info_calories), " - "));
+            infos.add(new InfoMeasurement(getString(R.string.info_period), " - "));
         } else {
-            infos.add(new InfoMeasurement("Passos", String.valueOf((int) measurements.get(0).getValue())));
-            infos.add(new InfoMeasurement("Distância", String.valueOf((int) (measurements.get(0).getMeasurements().get(0).getValue())) + " m"));
-            infos.add(new InfoMeasurement("Calorias", String.valueOf((int) (measurements.get(0).getMeasurements().get(1).getValue())) + " kcal"));
-            infos.add(new InfoMeasurement("Período", DateUtils.formatDate(measurements.get(0).getRegistrationDate(), getString(R.string.date_format))));
+            infos.add(new InfoMeasurement(getString(R.string.info_steps), String.valueOf((int) measurements.get(0).getValue())));
+            infos.add(new InfoMeasurement(getString(R.string.info_distance), String.valueOf((int) (measurements.get(0).getMeasurements().get(0).getValue())) + " m"));
+            infos.add(new InfoMeasurement(getString(R.string.info_calories), String.valueOf((int) (measurements.get(0).getMeasurements().get(1).getValue())) + " kcal"));
+            infos.add(new InfoMeasurement(getString(R.string.info_period), DateUtils.formatDate(measurements.get(0).getRegistrationDate(), getString(R.string.date_format))));
         }
         return infos;
     }

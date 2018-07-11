@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.activity.charts.BloodPresssureChartActivity;
 import br.edu.uepb.nutes.haniot.activity.charts.HeartRateChartActivity;
 import br.edu.uepb.nutes.haniot.activity.charts.SmartBandChartActivity;
 import br.edu.uepb.nutes.haniot.model.Measurement;
@@ -172,32 +173,24 @@ public final class CreateChart<T> {
         entries2 = new ArrayList<>();
         final String[] quarters = new String[dataList.size()];
 
-
-        if (dataList.get(0) instanceof Measurement) {
-
-        }
         List<Measurement> data = (List<Measurement>) dataList;
 
         for (int i = 0; i < data.size(); i++) {
+
             String date = DateUtils.formatDate(
                     data.get(i).getRegistrationDate(),
                     params.formatDate);
 
-            if (params.context instanceof HeartRateChartActivity ){
-                entries.add(new Entry((int) i, (int) data.get(i).getValue()));
-                if (!data.get(i).getMeasurements().isEmpty())
-                    if (data.get(i).getMeasurements().get(0).getTypeId() == MeasurementType.BLOOD_PRESSURE_DIASTOLIC)
-                        entries2.add(new Entry((float) i, (float) data.get(i).getMeasurements().get(0).getValue()));
-            } else {
                 entries.add(new Entry((float) i, (int) data.get(i).getValue()));
+
                 if (!data.get(i).getMeasurements().isEmpty())
                     if (data.get(i).getMeasurements().get(0).getTypeId() == MeasurementType.BLOOD_PRESSURE_DIASTOLIC)
-                        entries2.add(new Entry((float) i, (float) data.get(i).getMeasurements().get(0).getValue()));
-            }
+                        entries2.add(new Entry(i, (float) data.get(i).getMeasurements().get(0).getValue()));
             quarters[i] = date;
         }
 
 
+        //Format date
         IAxisValueFormatter formatter = ((value, axis) -> {
             if (value >= quarters.length || value < 0) return "";
             return quarters[(int) value];
@@ -232,18 +225,10 @@ public final class CreateChart<T> {
             mChart.setData(dataBar);
         } else {
 
-            mChart.getXAxis().setValueFormatter(prepareVariablesLineData());
+           mChart.getXAxis().setValueFormatter(prepareVariablesLineData());
 
             ArrayList<ILineDataSet> dataSets = new ArrayList<>();
             set = new LineDataSet(entries, params.legend[0]);
-            ValueFormatter formatter = new ValueFormatter(params.context) {
-                @Override
-                public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
-                    return String.valueOf(value);
-                }
-            };
-            set.setValueFormatter(formatter);
-            //set.setValueFormatter(new ValueFormatter(params.context));
 
             dataSets.add(set);
             if (!entries2.isEmpty()) {
@@ -257,6 +242,7 @@ public final class CreateChart<T> {
 
             ((LineChart) mChart).moveViewToX(set.getXMax());
         }
+
 
 
     }
@@ -278,13 +264,22 @@ public final class CreateChart<T> {
         mChart.getXAxis().setDrawGridLines(params.drawGridLinesX);
         mChart.getXAxis().setDrawAxisLine(params.drawLineX);
         mChart.getXAxis().setGranularity(1f);
+
         //Legend
         mChart.getLegend().setTextColor(params.colorValuesText);
         mChart.getLegend().setEnabled(false);
         if (params.legend[0] != null) mChart.getLegend().setEnabled(true);
 
         //Marker
-        MarkerViewCustom marker = new MarkerViewCustom(params.context, R.layout.marker_view);
+        String pattern;
+        if (params.context instanceof SmartBandChartActivity
+                || params.context instanceof HeartRateChartActivity
+                || params.context instanceof BloodPresssureChartActivity)
+            pattern = params.context.getString(R.string.format_number_integer);
+        else
+            pattern = params.context.getString(R.string.format_number_float);
+
+        MarkerViewCustom marker = new MarkerViewCustom(params.context, R.layout.marker_view, pattern);
         marker.getTvContent().setTextColor(params.colorTextMarker);
         if (params.backgroundDrawableMarker != null)
             marker.getLayoutBackground().setBackground(params.backgroundDrawableMarker);
@@ -301,9 +296,6 @@ public final class CreateChart<T> {
 
         if (mChart instanceof BarChart){
             BarChart barChart = (BarChart) mChart;
-            //barChart.setDrawBarShadow(true);
-            //barChart.setFitBars(true);
-            //barChart.setHighlightFullBarEnabled(true);
 
             barChart.setBackgroundColor(Color.RED);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -314,7 +306,6 @@ public final class CreateChart<T> {
 
             setBar.setColor(Color.WHITE);
             setBar.setBarBorderColor(ContextCompat.getColor(context, R.color.colorPrimaryDark));
-            //setBar.setBarShadowColor(Color.RED);
             setBar.setValueTextColor(Color.WHITE);
             setBar.setHighLightColor(ContextCompat.getColor(context, R.color.colorPrimaryDark));
             setBar.setDrawValues(false);
@@ -414,7 +405,6 @@ public final class CreateChart<T> {
             }
 
             //RangeY
-            // TODO Implementar. Não funciona.
             if (params.YMin > -1 && params.YMax > params.YMin) {
                 leftAxis.setAxisMinValue(params.YMin);
                 leftAxis.setAxisMaxValue(params.YMax);
@@ -512,7 +502,7 @@ public final class CreateChart<T> {
             this.drawLineX = false;
             this.drawLineY = false;
             this.xAxisPosition = XAxis.XAxisPosition.BOTTOM;
-            this.formatDate = "dd/MMMM";
+            this.formatDate = context.getString(R.string.date_format_month_day);
             this.backgroundDrawableMarker = null;
             this.colorTextMarker = Color.BLACK;
             this.lineColor = ContextCompat.getColor(context, R.color.colorAccent);

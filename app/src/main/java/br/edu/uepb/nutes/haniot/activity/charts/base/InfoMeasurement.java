@@ -1,11 +1,12 @@
 package br.edu.uepb.nutes.haniot.activity.charts.base;
 
-import br.edu.uepb.nutes.haniot.R;
-
 /**
- * Created by Fabio on 10/05/2018.
+ * Info of Measurement.
+ *
+ * @author Fábio Júnior <fabio.pequeno@nutes.uepb.edu.br>
+ * @version 1.0
+ * @copyright Copyright (c) 2018, NUTES UEPB
  */
-
 public class InfoMeasurement {
 
     private String title;

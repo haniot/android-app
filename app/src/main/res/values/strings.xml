@@ -98,7 +98,14 @@
     <string name="info_period">Period</string>
     <string name="more_information">More Information</string>
     <string name="date_format_info">yyyy/MMM/dd</string>
-    <string name="noData">No data</string>
+    <string name="info_steps">Steps</string>
+    <string name="info_distance">Distance</string>
+    <string name="info_calories">Calories</string>
+
+
+    //UNITS
+    <string name="unit_kcal">cal</string>
+    <string name="unit_meters">m</string>
 
     //Limit and Lines of Chart
     <string name="diastolic">Diastolic</string>
@@ -131,6 +138,8 @@
 
     // FORMATS
     <string name="format_number1">#.0</string>
+    <string name="format_number_float">#.0</string>
+    <string name="format_number_integer">#</string>
     <string name="format_number2">##.0</string>
 
 

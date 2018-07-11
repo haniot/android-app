@@ -15,9 +15,12 @@ import br.edu.uepb.nutes.haniot.activity.charts.BodyCompositionChartActivity;
 import br.edu.uepb.nutes.haniot.activity.charts.TemperatureChartActivity;
 
 /**
- * Created by Fabio on 04/06/2018.
+ * Value Formatter.
+ *
+ * @author Fábio Júnior <fabio.pequeno@nutes.uepb.edu.br>
+ * @version 1.0
+ * @copyright Copyright (c) 2018, NUTES UEPB
  */
-
 public class ValueFormatter implements IValueFormatter {
 
     private Context context;
@@ -33,7 +36,6 @@ public class ValueFormatter implements IValueFormatter {
             mFormat = new DecimalFormat(context.getString(R.string.format_number2), new DecimalFormatSymbols(Locale.US));
             return mFormat.format(value);
         }
-        //return String.format("%03d", (int) value);
         return ((int) value) + " ";
     }
 }

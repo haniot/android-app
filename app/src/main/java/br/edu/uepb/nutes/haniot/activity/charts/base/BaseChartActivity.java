@@ -256,11 +256,14 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
                 }
 
             }
+            measurementValueAvarage /= measurements.size();
             String unit = " " + measurements.get(0).getUnit();
             String firstMeasurement = DateUtils.formatDate(measurements.get(0).getRegistrationDate(), getString(R.string.date_format));
             String lastMeasurement = DateUtils.formatDate(measurements.get(measurements.size() - 1).getRegistrationDate(), getString(R.string.date_format));
 
-            if (getTypeMeasurement() == MeasurementType.BLOOD_PRESSURE_DIASTOLIC || getTypeMeasurement() == MeasurementType.HEART_RATE) {
+            if (getTypeMeasurement() == MeasurementType.BLOOD_PRESSURE_DIASTOLIC
+                    || getTypeMeasurement() == MeasurementType.HEART_RATE
+                    || getTypeMeasurement() == MeasurementType.BLOOD_PRESSURE_SYSTOLIC) {
                 infos.add(new InfoMeasurement(getString(R.string.info_max), (int) measurementValueMax + unit));
                 infos.add(new InfoMeasurement(getString(R.string.info_min), (int) measurementValueMin + unit));
                 infos.add(new InfoMeasurement(getString(R.string.info_avarage), (int) measurementValueAvarage + unit));
