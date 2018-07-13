@@ -65,7 +65,8 @@ public class ElderlyMonitoredAdapter extends BaseAdapter<Elderly> {
             ViewHolder h = (ViewHolder) holder;
 
             h.name.setText(elderly.getName());
-            h.fallRecords.setText(String.format(context.getResources().getString(R.string.elderly_fall_register), 0));
+            h.fallRecords.setText(String.format(context.getResources()
+                    .getString(R.string.elderly_fall_register), 3));
 
             // textview fall risk
             h.fallRisk.setVisibility(View.VISIBLE);

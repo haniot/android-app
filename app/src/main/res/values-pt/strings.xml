@@ -195,6 +195,7 @@
     <string name="action_characterize_fall">Caracterizar Queda</string>
     <string name="action_remove_association">Remover Associação</string>
     <string name="action_update">Atualizar</string>
+    <string name="action_view_information">Visualizar Informações</string>
     <!-- END ACTIONS -->
 
     <!-- BUTTONS -->

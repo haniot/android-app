@@ -3,9 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <item
-        android:id="@+id/action_elderly_view_infor"
+        android:id="@+id/action_elderly_fall_list"
         android:showAsAction="withText"
-        android:title="@string/action_view_information"
+        android:title="@string/action_list_falls"
         android:visible="true"
         tools:ignore="AppCompatResource" />
 

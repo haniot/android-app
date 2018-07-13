@@ -1,5 +1,6 @@
 package br.edu.uepb.nutes.haniot.elderly;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -7,24 +8,13 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.PopupMenu;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.*;
 import android.util.Log;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
@@ -37,6 +27,13 @@ import br.edu.uepb.nutes.haniot.server.historical.Params;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * ElderlyMonitoredActivity implementation.
@@ -282,9 +279,9 @@ public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRec
     public void onItemClick(Elderly elderly) {
         if (itemClicked) return;
 
-        Intent intent = new Intent(this, ElderlyPreviewActivity.class);
-        intent.putExtra(ElderlyPreviewActivity.EXTRA_ELDERLY_ID, elderly.get_id());
-        startActivity(intent);
+        Intent intentFall = new Intent(this, ElderlyFallActivity.class);
+        intentFall.putExtra(ElderlyFallActivity.EXTRA_ELDERLY_ID, elderly.get_id());
+        startActivity(intentFall);
         itemClicked = true;
     }
 
@@ -305,20 +302,23 @@ public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRec
         inflater.inflate(R.menu.menu_drop_down_elderly_list, dropDownMenu.getMenu());
 
         if (elderly.getFallRisk() > 0) {
-            dropDownMenu.getMenu().getItem(0).setTitle(R.string.action_new_fall_risk_assessment);
+            dropDownMenu.getMenu().getItem(1).setTitle(R.string.action_new_fall_risk_assessment);
         }
 
         dropDownMenu.setOnMenuItemClickListener(menuItem -> {
             switch (menuItem.getItemId()) {
-                case R.id.action_fall_risk:
+                case R.id.action_elderly_view_infor:
+                    Intent intent = new Intent(this, ElderlyPreviewActivity.class);
+                    intent.putExtra(ElderlyPreviewActivity.EXTRA_ELDERLY_ID, elderly.get_id());
+                    startActivity(intent);
+                    break;
+                case R.id.action_elderly_fall_risk:
                     Intent intentFallRisk = new Intent(this, FallRiskActivity.class);
                     intentFallRisk.putExtra(FallRiskActivity.EXTRA_ELDERLY_ID, elderly.get_id());
                     startActivity(intentFallRisk);
                     break;
-                case R.id.action_fall_list:
-                    Intent intentFall = new Intent(this, ElderlyFallActivity.class);
-                    intentFall.putExtra(ElderlyFallActivity.EXTRA_ELDERLY_ID, elderly.get_id());
-                    startActivity(intentFall);
+                case R.id.action_elderly_delete_device_association:
+                    openDialogConfirmRemoveAssociation(elderly);
                     break;
                 case R.id.action_elderly_delete:
                     Toast.makeText(getApplicationContext(), "action_elderly_delete " + menuItem.getTitle(), Toast.LENGTH_LONG).show();
@@ -329,5 +329,21 @@ public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRec
             return true;
         });
         dropDownMenu.show();
+    }
+
+    /**
+     * Dialog confirmation to remove association with device.
+     */
+    private void openDialogConfirmRemoveAssociation(Elderly elderly) {
+        runOnUiThread(() -> {
+            AlertDialog.Builder mDialog = new AlertDialog.Builder(this);
+            mDialog.setTitle(R.string.warning_title)
+                    .setMessage(getResources().getString(R.string.elderly_confirm_delete_device_association, elderly.getName()))
+                    .setPositiveButton(R.string.yes_text, (dialogInterface, which) -> {
+                        // TODO Relizar rotina para remover o pin/atualizar view/atualizar elderly local e remoto.
+                    })
+                    .setNegativeButton(R.string.no_text, null)
+                    .create().show();
+        });
     }
 }

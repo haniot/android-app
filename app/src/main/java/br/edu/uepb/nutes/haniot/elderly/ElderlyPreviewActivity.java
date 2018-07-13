@@ -131,7 +131,7 @@ public class ElderlyPreviewActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_drop_down_elderly_list, menu);
+        inflater.inflate(R.menu.menu_drop_down_elderly_view, menu);
 
         if (elderly != null && elderly.getFallRisk() > 0)
             menu.getItem(0).setTitle(R.string.action_new_fall_risk_assessment);
@@ -145,21 +145,21 @@ public class ElderlyPreviewActivity extends AppCompatActivity {
             case android.R.id.home:
                 super.onBackPressed();
                 break;
-            case R.id.action_fall_risk:
-                Intent intentFallRisk = new Intent(this, FallRiskActivity.class);
-                intentFallRisk.putExtra(FallRiskActivity.EXTRA_ELDERLY_ID, elderly.get_id());
-                startActivity(intentFallRisk);
-                break;
-            case R.id.action_fall_list:
+            case R.id.action_elderly_fall_list:
                 Intent intentFall = new Intent(this, ElderlyFallActivity.class);
                 intentFall.putExtra(ElderlyFallActivity.EXTRA_ELDERLY_ID, elderly.get_id());
                 startActivity(intentFall);
                 break;
-            case R.id.action_elderly_delete:
-                Toast.makeText(getApplicationContext(), "action_elderly_delete ", Toast.LENGTH_LONG).show();
+            case R.id.action_elderly_fall_risk:
+                Intent intentFallRisk = new Intent(this, FallRiskActivity.class);
+                intentFallRisk.putExtra(FallRiskActivity.EXTRA_ELDERLY_ID, elderly.get_id());
+                startActivity(intentFallRisk);
                 break;
             case R.id.action_elderly_delete_device_association:
                 openDialogConfirmRemoveAssociation();
+                break;
+            case R.id.action_elderly_delete:
+                Toast.makeText(getApplicationContext(), "action_elderly_delete ", Toast.LENGTH_LONG).show();
                 break;
             default:
                 break;
@@ -253,7 +253,6 @@ public class ElderlyPreviewActivity extends AppCompatActivity {
         if (elderly.getFalls().size() > 0)
             mAdapter.addItems(elderly.getFalls());
         else noDataFallsTextView.setVisibility(View.VISIBLE);
-
 
         mAdapter.setListener(new OnRecyclerViewListener() {
             @Override

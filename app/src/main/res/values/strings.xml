@@ -60,6 +60,7 @@
     <string name="action_new_fall_risk_assessment">New Fall Risk Assessment</string>
     <string name="action_characterize_fall">Characterize Fall</string>
     <string name="action_remove_association">Remove Association</string>
+    <string name="action_view_information">View Informations</string>
     <string name="action_update">Update</string>
     <!-- END ACTIONS -->
 
