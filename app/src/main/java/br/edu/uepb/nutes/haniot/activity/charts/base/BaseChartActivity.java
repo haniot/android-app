@@ -263,7 +263,8 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
 
             if (getTypeMeasurement() == MeasurementType.BLOOD_PRESSURE_DIASTOLIC
                     || getTypeMeasurement() == MeasurementType.HEART_RATE
-                    || getTypeMeasurement() == MeasurementType.BLOOD_PRESSURE_SYSTOLIC) {
+                    || getTypeMeasurement() == MeasurementType.BLOOD_PRESSURE_SYSTOLIC
+                    || getTypeMeasurement() == MeasurementType.BLOOD_GLUCOSE) {
                 infos.add(new InfoMeasurement(getString(R.string.info_max), (int) measurementValueMax + unit));
                 infos.add(new InfoMeasurement(getString(R.string.info_min), (int) measurementValueMin + unit));
                 infos.add(new InfoMeasurement(getString(R.string.info_avarage), (int) measurementValueAvarage + unit));

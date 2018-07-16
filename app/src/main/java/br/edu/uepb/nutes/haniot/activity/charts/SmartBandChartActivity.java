@@ -14,6 +14,8 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
@@ -64,6 +66,10 @@ public class SmartBandChartActivity extends BaseChartActivity {
             @Override
             public void onValueSelected(Entry e, Highlight h)
             {
+  //              Measurement m = (Measurement) e.getData();
+              //  Log.d("TESTE", String.valueOf(points.get(3).getValue()));
+                Log.d("TESTE", String.valueOf(e.getX())+ " - " + String.valueOf(e.getY()));
+
                 ArrayList<Measurement> a = new ArrayList<>();
                 a.add(points.get((int) e.getX()));
                 createMoreInfo(a);
@@ -74,6 +80,7 @@ public class SmartBandChartActivity extends BaseChartActivity {
             @Override
             public void onNothingSelected()
             {
+
                createMoreInfo(new ArrayList<>());
             }
         });
@@ -119,6 +126,7 @@ public class SmartBandChartActivity extends BaseChartActivity {
         switch (currentChartType) {
             case CHART_TYPE_DAY:
                 dateFormat = getString(R.string.date_format);
+                Collections.reverse(points);
                 break;
             case CHART_TYPE_SEVEN:
                 points = agroup(points, Calendar.WEEK_OF_YEAR);
@@ -139,11 +147,11 @@ public class SmartBandChartActivity extends BaseChartActivity {
         mProgressBar.setVisibility(View.INVISIBLE);
         barChart.setVisibility(View.VISIBLE);
 
-//        //Teste
-//        for (Measurement measurement : data)
-//            Log.d("A", DateUtils.formatDate(measurement.getRegistrationDate(), getString(R.string.date_format)) + " - " + measurement.getValue());
-//        for (Measurement measurement : points)
-//            Log.d("B", DateUtils.formatDate(measurement.getRegistrationDate(), getString(R.string.date_format)) + " - " + measurement.getValue());
+        //Teste
+        for (Measurement measurement : data)
+            Log.d("A", DateUtils.formatDate(measurement.getRegistrationDate(), getString(R.string.date_format)) + " - " + measurement.getValue());
+        for (Measurement measurement : points)
+            Log.d("B", DateUtils.formatDate(measurement.getRegistrationDate(), getString(R.string.date_format)) + " - " + measurement.getValue());
 
     }
 
@@ -167,44 +175,66 @@ public class SmartBandChartActivity extends BaseChartActivity {
 
     public List<Measurement> agroup(List<Measurement> data, int type) {
         List<Measurement> points = new ArrayList<>();
-        Calendar c = Calendar.getInstance();
-
-        points.add(data.get(data.size() - 1));
+        Calendar c;
         int total = 0;
         int totalDist = 0;
         int totalCal = 0;
-
-        for (int i = data.size() - 1; i >= 0; i--) {
-            c.setTimeInMillis(data.get(i).getRegistrationDate());
-            int current = c.get(type);
-
-            c.setTimeInMillis(points.get(points.size() - 1).getRegistrationDate());
-            int compare = c.get(type);
-
-            if (current != compare) {
-                Measurement measurement = data.get(i + 1);
-                measurement.setValue(total);
-                measurement.addMeasurement(
-                        new Measurement(totalDist, getString(R.string.unit_meters), MeasurementType.DISTANCE),
-                        new Measurement(totalCal, getString(R.string.unit_kcal), MeasurementType.CALORIES_BURNED)
-                );
-
-                points.add(measurement);
-                total = 0;
-                totalDist = 0;
-                totalCal = 0;
+        if (type == Calendar.YEAR){
+            for (int i = 0; i <= data.size() - 1; i++) {
+                total += data.get(i).getValue();
+                if (data.get(i).getMeasurements().get(0).getTypeId() == MeasurementType.DISTANCE) {
+                    totalCal += data.get(i).getMeasurements().get(0).getValue();
+                    totalDist += data.get(i).getMeasurements().get(1).getValue();
+                } else {
+                    totalCal += data.get(i).getMeasurements().get(1).getValue();
+                    totalDist += data.get(i).getMeasurements().get(0).getValue();
+                }
             }
 
-            total += data.get(i).getValue();
-            if (data.get(i).getMeasurements().get(0).getTypeId() == MeasurementType.DISTANCE) {
-                totalCal += data.get(i).getMeasurements().get(0).getValue();
-                totalDist += data.get(i).getMeasurements().get(1).getValue();
-            } else {
-                totalCal += data.get(i).getMeasurements().get(1).getValue();
-                totalDist += data.get(i).getMeasurements().get(0).getValue();
+            Measurement measurement = data.get(0);
+            measurement.setValue(total);
+            measurement.addMeasurement(
+                    new Measurement(totalDist, getString(R.string.unit_meters), MeasurementType.DISTANCE),
+                    new Measurement(totalCal, getString(R.string.unit_kcal), MeasurementType.CALORIES_BURNED)
+            );
+
+            points.add(measurement);
+        } else {
+            c = Calendar.getInstance();
+            points.add(data.get(data.size() - 1));
+
+            for (int i = data.size() - 1; i >= 0; i--) {
+                c.setTimeInMillis(data.get(i).getRegistrationDate());
+                int current = c.get(type);
+
+                c.setTimeInMillis(points.get(points.size() - 1).getRegistrationDate());
+                int compare = c.get(type);
+
+                total += data.get(i).getValue();
+                if (data.get(i).getMeasurements().get(0).getTypeId() == MeasurementType.DISTANCE) {
+                    totalCal += data.get(i).getMeasurements().get(0).getValue();
+                    totalDist += data.get(i).getMeasurements().get(1).getValue();
+                } else {
+                    totalCal += data.get(i).getMeasurements().get(1).getValue();
+                    totalDist += data.get(i).getMeasurements().get(0).getValue();
+                }
+
+                if (current != compare) {
+                    Measurement measurement = data.get(i);
+                    measurement.setValue(total);
+                    measurement.addMeasurement(
+                            new Measurement(totalDist, "m", MeasurementType.DISTANCE),
+                            new Measurement(totalCal, "kcal", MeasurementType.CALORIES_BURNED)
+                    );
+
+                    points.add(measurement);
+                    total = 0;
+                    totalDist = 0;
+                    totalCal = 0;
+                }
+
             }
         }
-
         return points;
     }
 

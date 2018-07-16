@@ -110,11 +110,11 @@
     //Limit and Lines of Chart
     <string name="diastolic">Diastolic</string>
     <string name="systolic">Systolic</string>
-    <string name="limit_blood_pressure">Limit 1</string>
+    <string name="limit_blood_pressure">High Pressure</string>
     <string name="limit_heart_rate">Limit 1</string>
-    <string name="limit_glucose">Limit 1</string>
-    <string name="limit_temperature">Limit 1</string>
-    <string name="limit_body_composition">Overweight</string>
+    <string name="limit_glucose">Pre Diabetes</string>
+    <string name="limit_temperature">Fever</string>
+    <string name="limit_body_composition">Obesidade</string>
 
     //FLOATING
     <string name="day">Day</string>

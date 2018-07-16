@@ -33,6 +33,7 @@ import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.charts.BloodPresssureChartActivity;
+import br.edu.uepb.nutes.haniot.activity.charts.GlucoseChartActivity;
 import br.edu.uepb.nutes.haniot.activity.charts.HeartRateChartActivity;
 import br.edu.uepb.nutes.haniot.activity.charts.SmartBandChartActivity;
 import br.edu.uepb.nutes.haniot.model.Measurement;
@@ -274,7 +275,8 @@ public final class CreateChart<T> {
         String pattern;
         if (params.context instanceof SmartBandChartActivity
                 || params.context instanceof HeartRateChartActivity
-                || params.context instanceof BloodPresssureChartActivity)
+                || params.context instanceof BloodPresssureChartActivity
+                || params.context instanceof GlucoseChartActivity)
             pattern = params.context.getString(R.string.format_number_integer);
         else
             pattern = params.context.getString(R.string.format_number_float);
