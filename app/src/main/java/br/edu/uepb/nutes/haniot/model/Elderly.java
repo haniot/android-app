@@ -1,8 +1,5 @@
 package br.edu.uepb.nutes.haniot.model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import java.util.List;
 
 import io.objectbox.annotation.Backlink;
@@ -53,7 +50,7 @@ public class Elderly {
     /**
      * {@link DegreeEducationType}
      */
-    private int DegreeOfEducation;
+    private int degreeOfEducation;
 
     /**
      * false - NÃO
@@ -91,30 +88,17 @@ public class Elderly {
     }
 
     public Elderly(String name, long dateOfBirth, double weight, int height, int sex,
-                   int maritalStatus, int degreeOfEducation, boolean liveAlone) {
+                   int maritalStatus, int degreeOfEducation, int fallRisk, String phone, boolean liveAlone) {
         this.name = name;
         this.dateOfBirth = dateOfBirth;
         this.weight = weight;
         this.height = height;
         this.sex = sex;
         this.maritalStatus = maritalStatus;
-        DegreeOfEducation = degreeOfEducation;
+        this.degreeOfEducation = degreeOfEducation;
+        this.fallRisk = fallRisk;
+        this.phone = phone;
         this.liveAlone = liveAlone;
-    }
-
-    protected Elderly(Parcel in) {
-        id = in.readLong();
-        _id = in.readString();
-        name = in.readString();
-        dateOfBirth = in.readLong();
-        weight = in.readDouble();
-        height = in.readInt();
-        phone = in.readString();
-        fallRisk = in.readInt();
-        sex = in.readInt();
-        maritalStatus = in.readInt();
-        DegreeOfEducation = in.readInt();
-        liveAlone = in.readByte() != 0;
     }
 
     public long getId() {
@@ -174,11 +158,11 @@ public class Elderly {
     }
 
     public int getDegreeOfEducation() {
-        return DegreeOfEducation;
+        return degreeOfEducation;
     }
 
     public void setDegreeOfEducation(int degreeOfEducation) {
-        DegreeOfEducation = degreeOfEducation;
+        this.degreeOfEducation = degreeOfEducation;
     }
 
     public boolean getLiveAlone() {
@@ -297,7 +281,7 @@ public class Elderly {
                 ", fallRisk=" + fallRisk +
                 ", sex=" + sex +
                 ", maritalStatus=" + maritalStatus +
-                ", DegreeOfEducation=" + DegreeOfEducation +
+                ", degreeOfEducation=" + degreeOfEducation +
                 ", liveAlone=" + liveAlone +
                 ", pin='" + pin + '\'' +
                 ", medications=" + medications +

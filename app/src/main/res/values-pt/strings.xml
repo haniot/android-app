@@ -403,7 +403,7 @@
     <!-- END ARRAY ALTERNATIVES FALL CHARACTERIZATION SURVEY Q4 -->
 
     <!-- ARRAY ALTERNATIVES FALL CHARACTERIZATION QUESTION 6 -->
-    <string-array name="human_body_array">
+    <string-array name="answers_fall_characterization_q6_array">
         <item>1 - Crânio/Face</item>
         <item>2 - Costelas/Clavícula</item>
         <item>3 - Úmero</item>

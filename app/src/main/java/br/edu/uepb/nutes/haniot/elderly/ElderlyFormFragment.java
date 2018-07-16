@@ -44,6 +44,7 @@ import br.edu.uepb.nutes.haniot.server.Server;
 import br.edu.uepb.nutes.haniot.ui.CustomMultiSelectSpinner;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import br.edu.uepb.nutes.haniot.utils.Log;
+import br.edu.uepb.nutes.haniot.utils.NameColumnsDB;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -394,7 +395,7 @@ public class ElderlyFormFragment extends Fragment {
 
         elderly.clearMedications();
         for (String medication : medicationsSpinner.getSelectedItems()) {
-            elderly.addMedication(new Medication(medication));
+            elderly.addMedication(new Medication(-1, medication));
         }
 
         elderly.clearAccessories();
@@ -433,30 +434,34 @@ public class ElderlyFormFragment extends Fragment {
 
         JsonObject result = new JsonObject();
 
-        result.addProperty("name", elderly.getName());
-        result.addProperty("weight", elderly.getWeight());
-        result.addProperty("height", elderly.getHeight());
-        result.addProperty("dateOfBirth", elderly.getDateOfBirth());
-        result.addProperty("phone", elderly.getPhone());
-        result.addProperty("sex", elderly.getSex());
-        result.addProperty("liveAlone", elderly.getLiveAlone());
-        result.addProperty("maritalStatus", elderly.getMaritalStatus());
-        result.addProperty("degreeOfEducation", elderly.getDegreeOfEducation());
-        result.addProperty("encodedId", elderly.getPin()); //  TODO PIN - Avaliar se eh a entidade idoso
+        result.addProperty(NameColumnsDB.ELDERLY_NAME, elderly.getName());
+        result.addProperty(NameColumnsDB.ELDERLY_WEIGHT, elderly.getWeight());
+        result.addProperty(NameColumnsDB.ELDERLY_HEIGHT, elderly.getHeight());
+        result.addProperty(NameColumnsDB.ELDERLY_DATE_BIRTH, elderly.getDateOfBirth());
+        result.addProperty(NameColumnsDB.ELDERLY_SEX, elderly.getSex());
+        result.addProperty(NameColumnsDB.ELDERLY_PHONE, elderly.getPhone());
+        result.addProperty(NameColumnsDB.ELDERLY_LIVE_ALONE, elderly.getLiveAlone());
+        result.addProperty(NameColumnsDB.ELDERLY_MARITAL_STATUS, elderly.getMaritalStatus());
+        result.addProperty(NameColumnsDB.ELDERLY_DEGREE_EDUCATION, elderly.getDegreeOfEducation());
+        result.addProperty(NameColumnsDB.ELDERLY_DEVICE_PIN, elderly.getPin()); //  TODO PIN - Avaliar se eh a entidade idoso
 
         JsonArray arrayMedications = new JsonArray();
-        for (Medication medication : elderly.getMedications())
-            arrayMedications.add(medication.getName());
-        result.add("medications", arrayMedications);
+        for (Medication medication : elderly.getMedications()) {
+            JsonObject itemMedication = new JsonObject();
+            itemMedication.addProperty(NameColumnsDB.ELDERLY_ITEMS_INDEX, medication.getIndex());
+            itemMedication.addProperty(NameColumnsDB.ELDERLY_ITEMS_NAME, medication.getName());
+            arrayMedications.add(itemMedication);
+        }
+        result.add(NameColumnsDB.ELDERLY_MEDICATIONS, arrayMedications);
 
         JsonArray arrayAccessories = new JsonArray();
         for (Accessory accessory : elderly.getAccessories()) {
             JsonObject itemAccessory = new JsonObject();
-            itemAccessory.addProperty("index", accessory.getIndex());
-            itemAccessory.addProperty("name", accessory.getName());
+            itemAccessory.addProperty(NameColumnsDB.ELDERLY_ITEMS_INDEX, accessory.getIndex());
+            itemAccessory.addProperty(NameColumnsDB.ELDERLY_ITEMS_NAME, accessory.getName());
             arrayAccessories.add(itemAccessory);
         }
-        result.add("accessories", arrayAccessories);
+        result.add(NameColumnsDB.ELDERLY_ACCESSORIES, arrayAccessories);
 
         return String.valueOf(result);
     }

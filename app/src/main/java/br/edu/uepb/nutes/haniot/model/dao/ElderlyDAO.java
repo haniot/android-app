@@ -23,7 +23,7 @@ import io.objectbox.relation.ToMany;
  * @copyright Copyright (c) 2018, NUTES UEPB
  */
 public class ElderlyDAO {
-    public static ElderlyDAO instance;
+    private static ElderlyDAO instance;
     private static Box<Elderly> elderlyBox;
 
     private ElderlyDAO() {

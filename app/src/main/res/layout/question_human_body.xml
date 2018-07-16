@@ -85,10 +85,11 @@
             <br.edu.uepb.nutes.haniot.ui.CustomMultiSelectSpinner
                 android:id="@+id/answer_multi_select_spinner"
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/colorBlue"
                 android:entries="@array/answers_fall_characterization_q6_array"
                 app:colorSelectedText="@color/colorBlue"
-                android:backgroundTint="@color/colorBlue"
-                android:layout_height="wrap_content" />
+                app:textAlign="center" />
 
         </LinearLayout>
         <!-- END BOX INPUT -->

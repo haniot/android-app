@@ -11,8 +11,11 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.edu.uepb.nutes.haniot.model.Accessory;
 import br.edu.uepb.nutes.haniot.model.ContextMeasurement;
+import br.edu.uepb.nutes.haniot.model.Elderly;
 import br.edu.uepb.nutes.haniot.model.Measurement;
+import br.edu.uepb.nutes.haniot.model.Medication;
 import br.edu.uepb.nutes.haniot.server.Server;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import br.edu.uepb.nutes.haniot.utils.NameColumnsDB;
@@ -34,7 +37,6 @@ public final class Historical<T> {
         this.urn = query.urn;
         this.queryStrings = query.queryStrings;
         this.type = query.type;
-
     }
 
     /**
@@ -76,21 +78,23 @@ public final class Historical<T> {
     private List<T> buildObjects(JSONObject data) {
         List<T> result = new ArrayList<>();
 
-        if (type == HistoricalType.MEASUREMENTS_USER ||
-                type == HistoricalType.MEASUREMENTS_TYPE_USER ||
-                type == HistoricalType.MEASUREMENTS_DEVICE_USER) {
-
-            try {
+        try {
+            if (type == HistoricalType.MEASUREMENTS_USER || type == HistoricalType.MEASUREMENTS_TYPE_USER
+                    || type == HistoricalType.MEASUREMENTS_DEVICE_USER) {
                 if (data.has(NameColumnsDB.MEASUREMENT)) {
                     JSONArray arrayData = data.getJSONArray(NameColumnsDB.MEASUREMENT);
-
-                    for (int i = 0; i < arrayData.length(); i++) {
+                    for (int i = 0; i < arrayData.length(); i++)
                         result.add((T) buildMeasurement(arrayData.getJSONObject(i)));
-                    }
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
+            } else if (type == HistoricalType.ELDERLIES_USER) {
+                if (data.has(NameColumnsDB.ELDERLY)) {
+                    JSONArray arrayData = data.getJSONArray(NameColumnsDB.ELDERLY);
+                    for (int i = 0; i < arrayData.length(); i++)
+                        result.add((T) buildElderly(arrayData.getJSONObject(i)));
+                }
             }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
 
         return result;
@@ -158,6 +162,54 @@ public final class Historical<T> {
         }
 
         return result;
+    }
+
+    /**
+     * Construct object of the elderly type from the JSONObject.
+     *
+     * @param o JSONArray
+     * @return Elderly
+     * @throws JSONException
+     */
+    private Elderly buildElderly(JSONObject o) throws JSONException {
+        Elderly e = new Elderly(
+                o.getString(NameColumnsDB.ELDERLY_NAME),
+                o.getLong(NameColumnsDB.ELDERLY_DATE_BIRTH),
+                o.getDouble(NameColumnsDB.ELDERLY_WEIGHT),
+                o.getInt(NameColumnsDB.ELDERLY_HEIGHT),
+                o.getInt(NameColumnsDB.ELDERLY_SEX),
+                o.getInt(NameColumnsDB.ELDERLY_MARITAL_STATUS),
+                o.getInt(NameColumnsDB.ELDERLY_DEGREE_EDUCATION),
+                o.getInt(NameColumnsDB.ELDERLY_FALL_RISK),
+                o.getString(NameColumnsDB.ELDERLY_PHONE),
+                o.getBoolean(NameColumnsDB.ELDERLY_LIVE_ALONE)
+        );
+        e.setPin(o.getString(NameColumnsDB.ELDERLY_DEVICE_PIN));
+        e.set_id(o.getString(NameColumnsDB.ELDERLY_ID));
+
+        if (o.has(NameColumnsDB.ELDERLY_MEDICATIONS)) {
+            JSONArray arrayMedications = o.getJSONArray(NameColumnsDB.ELDERLY_MEDICATIONS);
+            for (int i = 0; i < arrayMedications.length(); i++) {
+                JSONObject objMedication = arrayMedications.getJSONObject(i);
+                Medication m = new Medication(
+                        objMedication.getInt(NameColumnsDB.ELDERLY_ITEMS_INDEX),
+                        objMedication.getString(NameColumnsDB.ELDERLY_ITEMS_NAME));
+                e.addMedication(m);
+            }
+        }
+
+        if (o.has(NameColumnsDB.ELDERLY_ACCESSORIES)) {
+            JSONArray arrayAccessories = o.getJSONArray(NameColumnsDB.ELDERLY_ACCESSORIES);
+            for (int i = 0; i < arrayAccessories.length(); i++) {
+                JSONObject objMedication = arrayAccessories.getJSONObject(i);
+                Accessory a = new Accessory(
+                        objMedication.getInt(NameColumnsDB.ELDERLY_ITEMS_INDEX),
+                        objMedication.getString(NameColumnsDB.ELDERLY_ITEMS_NAME));
+                e.addAccessory(a);
+            }
+        }
+
+        return e;
     }
 
     public static class Query {
@@ -674,6 +726,12 @@ public final class Historical<T> {
                 result = "/measurements/types/:typeId/users/:userId"
                         .replaceAll(":typeId", typeId)
                         .replaceAll(":userId", userId);
+            } else if (type == HistoricalType.ELDERLIES_USER) {
+                String userId = this.params.userId();
+                if (userId == null || userId.length() == 0)
+                    throw new IllegalArgumentException("params userId is required!");
+
+                result = "/users/:userId/external".replaceAll(":userId", userId);
             } else {
                 throw new IllegalArgumentException("type of indeterminate history!");
             }

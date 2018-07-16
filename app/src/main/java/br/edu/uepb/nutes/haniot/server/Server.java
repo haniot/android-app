@@ -6,6 +6,7 @@ import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -216,9 +217,9 @@ public class Server {
                 try {
                     result.put("message", e.getMessage());
                     result.put("code", 500);
-                    Log.d("SERVER - onFailure()", result.toString());
 
                     serverCallback.onError(result);
+                    Log.d("SERVER - onFailure()", result.toString());
                 } catch (JSONException err) {
                     err.printStackTrace();
                 }
@@ -232,19 +233,20 @@ public class Server {
                     if (jsonString.equals("Unauthorized")) {
                         result.put("unauthorized", mContext.getString(R.string.validate_unauthorized_access));
                     } else if (!jsonString.isEmpty()) {
-                        result = new JSONObject(jsonString);
+                        Object json = new JSONTokener(jsonString).nextValue();
+                        if(json instanceof JSONObject)
+                            result = new JSONObject(jsonString);
                     }
 
                     // Adds the HTTP response code to the json object
                     result.put("code", response.code());
 
-                    if (!response.isSuccessful()) {
-                        serverCallback.onError(result);
-                    } else {
-                        serverCallback.onSuccess(result);
-                    }
+                    if (!response.isSuccessful()) serverCallback.onError(result);
+                    else serverCallback.onSuccess(result);
+
                     Log.i("SERVER - onResponse()", result.toString());
                 } catch (JSONException err) {
+                    serverCallback.onError(null);
                     err.printStackTrace();
                 }
             }

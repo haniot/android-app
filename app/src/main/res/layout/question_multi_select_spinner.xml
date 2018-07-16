@@ -121,6 +121,8 @@
                 android:entries="@array/answers_fall_characterization_q6_array"
                 android:hint="@string/survey_select_the_answers"
                 app:colorBackgroundTint="@color/colorPurple"
+                app:textAlign="center"
+                app:colorSelectedText="@android:color/black"
                 app:enabledAddNewItem="false" />
         </LinearLayout>
         <!-- END BOX INPUT -->

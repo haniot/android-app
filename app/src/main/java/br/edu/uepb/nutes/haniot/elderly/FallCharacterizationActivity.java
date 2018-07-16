@@ -65,8 +65,8 @@ public class FallCharacterizationActivity extends BaseSurvey implements RadioPag
 
         Intent it = getIntent();
         elderlyId = it.getStringExtra(FallCharacterizationActivity.EXTRA_ELDERLY_ID);
-        elderlyName = "Elvis da Silva Santos";
-        elderlyFallDate = "30/06/2018 as 13:45:11";
+        elderlyName = "Elvis Aaron Presley";
+        elderlyFallDate = "15/07/2018 às 13:45:11";
 
         addPages();
     }
@@ -194,8 +194,7 @@ public class FallCharacterizationActivity extends BaseSurvey implements RadioPag
 
         pageEnd = new ButtonPage.ConfigPage()
                 .description("Obrigado por concluir o formulário de caracterização da queda.")
-                .image(R.drawable.elderly_happy)
-                .buttonText(R.string.title_save_captured_data)
+                .buttonText(R.string.bt_ok)
                 .buttonColorText(colorItems)
                 .buttonBackground(R.drawable.button_background_blue)
                 .colorBackground(Color.WHITE)

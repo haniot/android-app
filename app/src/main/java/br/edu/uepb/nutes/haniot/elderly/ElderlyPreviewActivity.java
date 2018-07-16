@@ -111,7 +111,7 @@ public class ElderlyPreviewActivity extends AppCompatActivity {
             finish();
         } else {
             elderly = ElderlyDAO.getInstance(this).get(elderlyId);
-            Log.d(TAG,  "ID: " + elderlyId + "elderly: " + elderly);
+            Log.d(TAG, "ID: " + elderlyId + "elderly: " + elderly);
 
 //            elderly = new Elderly("Elvis da Silva Pereira", -595720800000L, 80.6D, 174, 0, 2, 1, false);
 //            elderly.setPin("5874");
@@ -231,11 +231,9 @@ public class ElderlyPreviewActivity extends AppCompatActivity {
             if (found) _strAcc.append(", ");
 
             found = true;
-            if (_accessories.get(i).getId() < _accessoriesArray.length) {
+            if (_accessories.get(i).getId() < _accessoriesArray.length)
                 _strAcc.append(_accessoriesArray[i]);
-            } else {
-                _strAcc.append(_accessories.get(i).getName());
-            }
+            else _strAcc.append(_accessories.get(i).getName());
         }
         if (_strAcc.length() != 0) accessoriesTextView.setText(String.valueOf(_strAcc));
         else accessoriesTextView.setText(R.string.elderly_not_accessories);

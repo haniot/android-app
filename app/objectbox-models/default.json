@@ -147,7 +147,7 @@
         },
         {
           "id": "11:665107807774478799",
-          "name": "DegreeOfEducation"
+          "name": "degreeOfEducation"
         },
         {
           "id": "12:3258788127469570775",
@@ -219,7 +219,7 @@
     },
     {
       "id": "6:991768507598501030",
-      "lastPropertyId": "4:115996534654921919",
+      "lastPropertyId": "5:7872321931771972819",
       "name": "Medication",
       "properties": [
         {
@@ -238,6 +238,10 @@
           "id": "4:115996534654921919",
           "indexId": "10:359944731916448226",
           "name": "elderlyId"
+        },
+        {
+          "id": "5:7872321931771972819",
+          "name": "index"
         }
       ],
       "relations": []

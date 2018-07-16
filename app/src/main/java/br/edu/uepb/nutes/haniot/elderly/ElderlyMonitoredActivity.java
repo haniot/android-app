@@ -8,7 +8,11 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.*;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -16,24 +20,25 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.List;
+
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.ElderlyMonitoredAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
 import br.edu.uepb.nutes.haniot.model.Elderly;
-import br.edu.uepb.nutes.haniot.model.MeasurementType;
+import br.edu.uepb.nutes.haniot.model.dao.ElderlyDAO;
 import br.edu.uepb.nutes.haniot.server.Server;
+import br.edu.uepb.nutes.haniot.server.historical.CallbackHistorical;
+import br.edu.uepb.nutes.haniot.server.historical.Historical;
+import br.edu.uepb.nutes.haniot.server.historical.HistoricalType;
 import br.edu.uepb.nutes.haniot.server.historical.Params;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * ElderlyMonitoredActivity implementation.
@@ -56,6 +61,7 @@ public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRec
     private Params params;
     private Session session;
     private Server server;
+    private ElderlyDAO elderlyDAO;
     private boolean itemClicked;
 
     @BindView(R.id.toolbar)
@@ -84,7 +90,8 @@ public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRec
 
         session = new Session(this);
         server = Server.getInstance(this);
-        params = new Params(session.get_idLogged(), MeasurementType.TEMPERATURE);
+        elderlyDAO = ElderlyDAO.getInstance(this);
+        params = new Params(session.get_idLogged());
 
         initComponents();
     }
@@ -139,27 +146,70 @@ public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRec
     private void loadData() {
         mAdapter.clearItems(); // clear list
 
-        toggleLoading(true); // Enable loading
-        if (ConnectionUtils.internetIsEnabled(this)) {
-            String path = "/users/".concat(session.get_idLogged()).concat("/external");
-            server.get(path, new Server.Callback() {
+        if (!ConnectionUtils.internetIsEnabled(this)) {
+            loadDataLocal();
+        } else {
+            Historical historical = new Historical.Query()
+                    .type(HistoricalType.ELDERLIES_USER)
+                    .params(params)
+                    .build();
+
+            historical.request(this, new CallbackHistorical<Elderly>() {
+
+                @Override
+                public void onBeforeSend() {
+                    toggleLoading(true); // Enable loading
+                    toggleNoDataMessage(false); // Disable message no data
+                }
+
                 @Override
                 public void onError(JSONObject result) {
-                    toggleLoading(false); // Disable loading
                     printError(result);
                 }
 
                 @Override
-                public void onSuccess(JSONObject result) {
-                    toggleLoading(false); // Disable loading
-
-                    if (result != null && result.length() > 0) {
-                        mAdapter.addItems(transform(result));
+                public void onResult(List<Elderly> result) {
+                    if (result != null && result.size() > 0) {
+                        mAdapter.addItems(result);
+                        saveLocal(result);
+                    } else {
+                        toggleNoDataMessage(true);
                     }
-                    toggleNoDataMessage(true); // Enable message no data
+                }
+
+                @Override
+                public void onAfterSend() {
+                    toggleLoading(false); // Disable loading
                 }
             });
         }
+    }
+
+    /**
+     * Load data from the local database.
+     * It should only be called when there is no internet connection or
+     * when an error occurs on the first request with the server.
+     */
+    private void loadDataLocal() {
+        mAdapter.addItems(elderlyDAO.list(session.getIdLogged()));
+
+        if (mAdapter.itemsIsEmpty()) {
+            toggleNoDataMessage(true); // Enable message no data
+        }
+        toggleLoading(false);
+    }
+
+
+    /**
+     * Save Elderly in storage local.
+     *
+     * @param elderlies {@link List<Elderly>}
+     */
+    private void saveLocal(List<Elderly> elderlies) {
+        if (elderlies == null) return;
+
+        elderlyDAO.removeAll(session.getIdLogged());
+        for (Elderly e : elderlies) elderlyDAO.save(e);
     }
 
     @Override
@@ -184,28 +234,6 @@ public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRec
         } catch (JSONException e) {
             e.printStackTrace();
         }
-    }
-
-    // TODO IMPLEMENTAR NO MODULO HISTORICAL
-    private List<Elderly> transform(JSONObject json) {
-        List<Elderly> result = new ArrayList<>();
-        try {
-            JSONArray arrayData = json.getJSONArray("externalData");
-
-            for (int i = 0; i < arrayData.length(); i++) {
-                JSONObject o = arrayData.getJSONObject(i);
-                Log.d(TAG, "RE_JSON: " + o.toString());
-
-                Elderly e = new Elderly();
-                e.set_id(o.getString("_id"));
-                e.setName(o.getString("name"));
-                e.setFallRisk(o.getInt("fallRisk"));
-                result.add(e);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return result;
     }
 
     /**

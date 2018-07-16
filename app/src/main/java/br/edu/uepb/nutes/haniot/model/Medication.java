@@ -18,6 +18,7 @@ public class Medication {
     private String name;
     private String description;
     public ToOne<Elderly> elderly;
+    public int index;
 
     public Medication() {
     }
@@ -29,6 +30,11 @@ public class Medication {
     public Medication(String name, String description) {
         this.name = name;
         this.description = description;
+    }
+
+    public Medication(int index, String name) {
+        this.index = index;
+        this.name = name;
     }
 
     public long getId() {
@@ -63,6 +69,14 @@ public class Medication {
         this.elderly = elderly;
     }
 
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
     @Override
     public String toString() {
         return "Medication{" +
@@ -70,6 +84,7 @@ public class Medication {
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", elderly=" + elderly +
+                ", index=" + index +
                 '}';
     }
 }
