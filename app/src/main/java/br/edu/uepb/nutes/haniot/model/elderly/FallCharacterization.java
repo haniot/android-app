@@ -1,29 +1,32 @@
-package br.edu.uepb.nutes.haniot.model;
+package br.edu.uepb.nutes.haniot.model.elderly;
 
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.annotation.Index;
 
 /**
- * Represents object of a Fall Profile.
+ * Represents object of a Fall Characterization.
  *
  * @author Douglas Rafael <douglas.rafael@nutes.uepb.edu.br>
  * @version 1.0
  * @copyright Copyright (c) 2018, NUTES UEPB
  */
 @Entity
-public class FallProfile {
+public class FallCharacterization {
     @Id
     private long id;
 
     @Index
     private String _id; // _id in server remote (UUID)
 
-    private long registrationDate;
+    private String registrationDate;
 
     private boolean isFinalized;
 
-    public FallProfile(boolean isFinalized) {
+    public FallCharacterization() {
+    }
+
+    public FallCharacterization(boolean isFinalized) {
         this.isFinalized = isFinalized;
     }
 
@@ -43,11 +46,11 @@ public class FallProfile {
         this._id = _id;
     }
 
-    public long getRegistrationDate() {
+    public String getRegistrationDate() {
         return registrationDate;
     }
 
-    public void setRegistrationDate(long registrationDate) {
+    public void setRegistrationDate(String registrationDate) {
         this.registrationDate = registrationDate;
     }
 

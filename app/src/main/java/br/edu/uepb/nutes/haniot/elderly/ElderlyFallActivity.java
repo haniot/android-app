@@ -3,17 +3,14 @@ package br.edu.uepb.nutes.haniot.elderly;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -29,15 +26,15 @@ import java.util.List;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.ElderlyFallAdapter;
-import br.edu.uepb.nutes.haniot.adapter.ElderlyMonitoredAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
-import br.edu.uepb.nutes.haniot.model.Elderly;
-import br.edu.uepb.nutes.haniot.model.Fall;
-import br.edu.uepb.nutes.haniot.model.FallProfile;
+import br.edu.uepb.nutes.haniot.model.elderly.Elderly;
+import br.edu.uepb.nutes.haniot.model.elderly.Fall;
+import br.edu.uepb.nutes.haniot.model.elderly.FallCharacterization;
 import br.edu.uepb.nutes.haniot.model.MeasurementType;
 import br.edu.uepb.nutes.haniot.server.Server;
 import br.edu.uepb.nutes.haniot.server.historical.Params;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
+import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -170,10 +167,9 @@ public class ElderlyFallActivity extends AppCompatActivity implements OnRecycler
 
         // TODO Apenas para teste. Implementar a busca no servidor
         List<Fall> falls = new ArrayList<>();
-
-        falls.add(new Fall(1530993799671L, new FallProfile(false)));
-        falls.add(new Fall(1525741215000L, null));
-        falls.add(new Fall(1484481033000L, new FallProfile(true)));
+        falls.add(new Fall(DateUtils.getCurrentDateISO8601(), new FallCharacterization(false)));
+        falls.add(new Fall("2018-02-11T10:50:12.389Z", null));
+        falls.add(new Fall("2017-11-12T08:15:15.389Z", new FallCharacterization(true)));
         mAdapter.addItems(falls);
     }
 
@@ -271,8 +267,7 @@ public class ElderlyFallActivity extends AppCompatActivity implements OnRecycler
 
     @Override
     public void onItemClick(Fall fall) {
-        Log.d(TAG, "onItemClick() " + fall.getProfile().getTarget() + "+id " + elderlyId);
-        if (fall.getProfile().getTarget() == null && elderlyId != null) {
+        if (fall.getCharacterization() == null && elderlyId != null) {
             Intent intent = new Intent(this, FallCharacterizationActivity.class);
             intent.putExtra(FallCharacterizationActivity.EXTRA_ELDERLY_ID, elderlyId);
             startActivity(intent);

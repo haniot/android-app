@@ -17,16 +17,8 @@
           "name": "name"
         },
         {
-          "id": "3:8311374945567388464",
-          "name": "description"
-        },
-        {
-          "id": "4:3140226396770465571",
-          "indexId": "1:2700452485731953814",
-          "name": "elderlyId"
-        },
-        {
           "id": "5:4579066510113061778",
+          "indexId": "19:6931992942479914055",
           "name": "index"
         }
       ],
@@ -163,7 +155,16 @@
           "name": "pin"
         }
       ],
-      "relations": []
+      "relations": [
+        {
+          "id": "2:5448405911260553969",
+          "name": "medications"
+        },
+        {
+          "id": "3:7347870313893920734",
+          "name": "accessories"
+        }
+      ]
     },
     {
       "id": "5:7302373326731103983",
@@ -219,7 +220,7 @@
     },
     {
       "id": "6:991768507598501030",
-      "lastPropertyId": "4:115996534654921919",
+      "lastPropertyId": "5:7872321931771972819",
       "name": "Medication",
       "properties": [
         {
@@ -231,13 +232,9 @@
           "name": "name"
         },
         {
-          "id": "3:771911169622833653",
-          "name": "description"
-        },
-        {
-          "id": "4:115996534654921919",
-          "indexId": "10:359944731916448226",
-          "name": "elderlyId"
+          "id": "5:7872321931771972819",
+          "indexId": "20:3807362903397512031",
+          "name": "index"
         }
       ],
       "relations": []
@@ -388,14 +385,22 @@
     }
   ],
   "lastEntityId": "10:5898299710093726421",
-  "lastIndexId": "18:2381064598868122374",
-  "lastRelationId": "1:6471420504852280224",
+  "lastIndexId": "20:3807362903397512031",
+  "lastRelationId": "3:7347870313893920734",
   "lastSequenceId": "0:0",
   "modelVersion": 4,
   "modelVersionParserMinimum": 4,
   "retiredEntityUids": [],
-  "retiredIndexUids": [],
-  "retiredPropertyUids": [],
+  "retiredIndexUids": [
+    359944731916448226,
+    2700452485731953814
+  ],
+  "retiredPropertyUids": [
+    771911169622833653,
+    115996534654921919,
+    8311374945567388464,
+    3140226396770465571
+  ],
   "retiredRelationUids": [],
   "version": 1
 }

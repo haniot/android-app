@@ -248,7 +248,7 @@
     <string name="elderly_fall_registered_current_year">Nesse ano</string>
     <string name="elderly_latest_fall_records">Últimos registros de queda</string>
     <string name="elderly_was_not_select">Não foi possível selecionar os dados do idoso. Por favor, tente novamente mais tarde&#8230;</string>
-    <string name="elderly_confirm_delete_device_association">Tem certeza que deseja remover a associação com o dispositivo responsável pela detecção das quedas?\nUma vez removido não será possível receber notificações de queda para o idoso: %s.</string>
+    <string name="elderly_confirm_delete_device_association">Tem certeza que deseja remover a associação com o dispositivo responsável pela detecção das quedas?\n\nUma vez removido não será possível receber notificações de queda para o idoso: %s.</string>
     <!-- END ELDERLY -->
 
     <!-- ELDERLY FORM -->
@@ -385,9 +385,7 @@
     <string name="fall_characterization_cancel_dialog">Tem certeza de que deseja cancelar a caracterização da queda?\nAs
         respostas fornecidas serão perdidas&#8230;
     </string>
-    <string name="fall_characterization_did_not_fall_dialog">Você tem certeza que o idoso não sofreu uma queda no dia %s
-        às %s?
-    </string>
+    <string name="fall_characterization_did_not_fall_dialog">Você tem certeza que o idoso não sofreu uma queda no dia %s às %s?</string>
     <string name="fall_characterization_positive">Queda caracterizada como positiva.</string>
     <string name="fall_characterization_negative">Queda caracterizada como negativa.</string>
     <string name="fall_characterization_not_exist">Caracterização não existente. Clique para caracterizar a queda&#8230;</string>

@@ -12,8 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.model.Elderly;
-import br.edu.uepb.nutes.haniot.utils.Log;
+import br.edu.uepb.nutes.haniot.model.elderly.Elderly;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 

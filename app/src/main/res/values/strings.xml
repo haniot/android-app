@@ -347,7 +347,7 @@
     <string name="elderly_fall_registered_current_year">In this year</string>
     <string name="elderly_latest_fall_records">Latest fall records</string>
     <string name="elderly_was_not_select">It was not possible to select the data of the elderly. Please try again later&#8230;</string>
-    <string name="elderly_confirm_delete_device_association">Are you sure you want to remove the association with the device responsible for falls detection?\nOnce removed you will not be able to receive notification of falls for the elderly: %s.</string>
+    <string name="elderly_confirm_delete_device_association">Are you sure you want to remove the association with the device responsible for falls detection?\n\nOnce removed you will not be able to receive notification of falls for the elderly: %s.</string>
     <!-- END ELDERLY -->
 
     <!-- ELDERLY FORM -->

@@ -1,7 +1,8 @@
-package br.edu.uepb.nutes.haniot.model;
+package br.edu.uepb.nutes.haniot.model.elderly;
 
 import java.util.List;
 
+import br.edu.uepb.nutes.haniot.model.User;
 import io.objectbox.annotation.Backlink;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
@@ -63,7 +64,6 @@ public class Elderly {
     /**
      * {@link Medication}
      */
-    @Backlink(to = "elderly")
     public ToMany<Medication> medications;
 
     /**
@@ -71,7 +71,6 @@ public class Elderly {
      * <p>
      * {@link Medication}
      */
-    @Backlink(to = "elderly")
     public ToMany<Accessory> accessories;
 
     public ToOne<User> user;

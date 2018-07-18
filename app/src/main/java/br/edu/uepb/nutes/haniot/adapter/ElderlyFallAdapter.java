@@ -12,7 +12,7 @@ import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.adapter.base.BaseAdapter;
-import br.edu.uepb.nutes.haniot.model.Fall;
+import br.edu.uepb.nutes.haniot.model.elderly.Fall;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -54,11 +54,11 @@ public class ElderlyFallAdapter extends BaseAdapter<Fall> {
             final Fall fall = itemsList.get(position);
             ViewHolder h = (ViewHolder) holder;
 
-            h.date.setText(DateUtils.formatDate(fall.getRegistrationDate(),
+            h.date.setText(DateUtils.formatDateISO8601(fall.getRegistrationDate(),
                     context.getResources().getString(R.string.datetime_format2)));
 
-            if (fall.getProfile().getTarget() != null) {
-                if (fall.getProfile().getTarget().isFinalized()) {
+            if (fall.getCharacterization().getTarget() != null) {
+                if (fall.getCharacterization().getTarget().isFinalized()) {
                     h.statusClassification.setText(context.getResources().getString(R.string.fall_characterization_positive));
                 } else {
                     h.statusClassification.setText(context.getResources().getString(R.string.fall_characterization_negative));
@@ -68,7 +68,7 @@ public class ElderlyFallAdapter extends BaseAdapter<Fall> {
             }
 
             // set section
-            String currentDate = DateUtils.formatDate(fall.getRegistrationDate(), "yyyy");
+            String currentDate = DateUtils.formatDateISO8601(fall.getRegistrationDate(), "yyyy");
             if (!currentDate.equals(lastDate)) {
                 if (DateUtils.isYear(fall.getRegistrationDate()))
                     h.titleSection.setText(context.getResources().getString(R.string.elderly_fall_registered_current_year));

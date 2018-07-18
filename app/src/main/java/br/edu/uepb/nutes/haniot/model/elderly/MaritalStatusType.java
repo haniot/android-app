@@ -1,4 +1,4 @@
-package br.edu.uepb.nutes.haniot.model;
+package br.edu.uepb.nutes.haniot.model.elderly;
 
 import android.content.Context;
 

@@ -33,7 +33,7 @@ public class Measurement {
     private ToOne<Training> training;
     @Backlink(to = "measurement")
     private ToMany<ContextMeasurement> contextMeasurements;
-    public ToMany<Measurement> measurements;
+    private ToMany<Measurement> measurements;
 
     /**
      * {@link MeasurementType()}

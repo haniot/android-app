@@ -1,4 +1,4 @@
-package br.edu.uepb.nutes.haniot.model;
+package br.edu.uepb.nutes.haniot.model.elderly;
 
 import java.util.Objects;
 
@@ -22,28 +22,31 @@ public class Fall {
     @Index
     private String _id; // _id in server remote (UUID)
 
-    private long registrationDate;
+    private String registrationDate;
 
-    private ToOne<FallProfile> profile;
+    /**
+     * {@link FallCharacterization}
+     */
+    private ToOne<FallCharacterization> characterization;
 
-    public ToOne<Elderly> elderly;
+    /**
+     * {@link Elderly}
+     */
+    private ToOne<Elderly> elderly;
 
     public Fall() {
     }
 
-    public Fall(long registrationDate) {
+    public Fall(String registrationDate, FallCharacterization characterization) {
         this.registrationDate = registrationDate;
+        this.setCharacterization(characterization);
     }
 
-    public Fall(long registrationDate, FallProfile profile) {
-        this.registrationDate = registrationDate;
-        this.setProfile(profile);
-    }
-
-    public Fall(String _id, long registrationDate, FallProfile profile) {
+    public Fall(String _id, String registrationDate, FallCharacterization characterization, Elderly elderly) {
         this._id = _id;
         this.registrationDate = registrationDate;
-        this.setProfile(profile);
+        this.setCharacterization(characterization);
+        this.setElderly(elderly);
     }
 
     public long getId() {
@@ -62,28 +65,28 @@ public class Fall {
         this._id = _id;
     }
 
-    public long getRegistrationDate() {
+    public String getRegistrationDate() {
         return registrationDate;
     }
 
-    public void setRegistrationDate(long registrationDate) {
+    public void setRegistrationDate(String registrationDate) {
         this.registrationDate = registrationDate;
     }
 
-    public ToOne<FallProfile> getProfile() {
-        return profile;
+    public ToOne<FallCharacterization> getCharacterization() {
+        return characterization;
     }
 
-    public void setProfile(FallProfile profile) {
-        this.profile.setTarget(profile);
+    public void setCharacterization(FallCharacterization characterization) {
+        this.characterization.setTarget(characterization);
     }
 
     public ToOne<Elderly> getElderly() {
         return elderly;
     }
 
-    public void setElderly(ToOne<Elderly> elderly) {
-        this.elderly = elderly;
+    public void setElderly(Elderly elderly) {
+        this.elderly.setTarget(elderly);
     }
 
     @Override
@@ -104,8 +107,8 @@ public class Fall {
         return "Fall{" +
                 "id=" + id +
                 ", _id='" + _id + '\'' +
-                ", registrationDate=" + registrationDate +
-                ", profile=" + profile +
+                ", registrationDate='" + registrationDate + '\'' +
+                ", characterization=" + characterization +
                 ", elderly=" + elderly +
                 '}';
     }
