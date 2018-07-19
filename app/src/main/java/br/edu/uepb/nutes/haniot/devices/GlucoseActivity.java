@@ -93,6 +93,8 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
     private DeviceDAO deviceDAO;
     private GlucoseAdapter mAdapter;
     private Params params;
+    private String jsonGlucoseData;
+    private String jsonGlucoseContextData;
 
     /**
      * We need this variable to lock and unlock loading more.
@@ -501,8 +503,8 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
         data[1] = 0x01; // all records
         characteristic.setValue(data);
 
-        setCharacteristicRecordAccess();
         mBluetoothLeService.writeCharacteristic(characteristic);
+        setCharacteristicRecordAccess();
     }
 
     private void getFirstRecord() {
@@ -556,6 +558,8 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
         return action;
     }
 
+    String action;
+
     /**
      * Manipula vários eventos desencadeados pelo Serviço.
      * <p>
@@ -565,7 +569,7 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
      * ACTION_DATA_AVAILABLE: recebeu dados do dispositivo. Pode ser resultado de operações de leitura ou notificação.
      */
 
-    String action;
+
     private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -579,17 +583,23 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
                 updateConnectionState(mConnected);
             } else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
                 mGattService = mBluetoothLeService.getGattService(UUID.fromString(GattAttributes.SERVICE_GLUCOSE));
-                if (mGattService != null)
+                if (mGattService != null) {
                     initCharacteristics();
+                    getAllRecords();
+                    Log.d("TESTE", "Init");
+                }
             } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
-                String jsonGlucoseData = intent.getStringExtra(BluetoothLeService.EXTRA_DATA);
-                String jsonGlucoseContextData = intent.getStringExtra(BluetoothLeService.EXTRA_DATA_CONTEXT);
+                if (intent.getStringExtra(BluetoothLeService.EXTRA_DATA) != null)
+                    jsonGlucoseData = intent.getStringExtra(BluetoothLeService.EXTRA_DATA);
+
+                if (intent.getStringExtra(BluetoothLeService.EXTRA_DATA_CONTEXT) != null)
+                    jsonGlucoseContextData = intent.getStringExtra(BluetoothLeService.EXTRA_DATA_CONTEXT);
 
                 try {
                     if (jsonGlucoseData != null)
-                        glucose = JsonToMeasurementParser.boodGlucose(jsonGlucoseData);
+                        glucose = JsonToMeasurementParser.bloodGlucose(jsonGlucoseData);
 
-                    if (jsonGlucoseContextData != null)
+                    if (jsonGlucoseContextData != null && jsonGlucoseData != null)
                         contextMeasurements = JsonToContextParser.parse(jsonGlucoseData, jsonGlucoseContextData);
 
                     new Handler().postDelayed(new Runnable() {
