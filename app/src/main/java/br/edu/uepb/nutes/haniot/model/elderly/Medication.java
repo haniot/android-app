@@ -12,7 +12,6 @@ import io.objectbox.relation.ToOne;
  * @version 1.0
  * @copyright Copyright (c) 2017, NUTES UEPB
  */
-@Entity
 public class Medication extends Item {
     public Medication() {
     }

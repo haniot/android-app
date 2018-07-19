@@ -23,6 +23,7 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Arrays;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
@@ -171,6 +172,7 @@ public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRec
                 public void onResult(List<Elderly> result) {
                     if (result != null && result.size() > 0) {
                         mAdapter.addItems(result);
+
                         saveLocal(result);
                     } else {
                         toggleNoDataMessage(true);
@@ -207,6 +209,8 @@ public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRec
      */
     private void saveLocal(List<Elderly> elderlies) {
         if (elderlies == null) return;
+
+        Log.d(TAG, "SAVE LOCAL: " + Arrays.toString(elderlies.toArray()));
 
         elderlyDAO.removeAll(session.getIdLogged());
         for (Elderly e : elderlies) elderlyDAO.save(e);

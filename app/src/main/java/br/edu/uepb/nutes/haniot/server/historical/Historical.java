@@ -11,10 +11,12 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.model.elderly.Accessory;
 import br.edu.uepb.nutes.haniot.model.ContextMeasurement;
 import br.edu.uepb.nutes.haniot.model.elderly.Elderly;
 import br.edu.uepb.nutes.haniot.model.Measurement;
+import br.edu.uepb.nutes.haniot.model.elderly.Item;
 import br.edu.uepb.nutes.haniot.model.elderly.Medication;
 import br.edu.uepb.nutes.haniot.server.Server;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
@@ -32,6 +34,7 @@ public final class Historical<T> {
     private final String urn;
     private final String queryStrings;
     private final int type;
+    private Session session;
 
     private Historical(Query query) {
         this.urn = query.urn;
@@ -50,7 +53,7 @@ public final class Historical<T> {
         if (context == null) throw new IllegalArgumentException("context is required!");
 
         callback.onBeforeSend();
-
+        this.session = new Session(context);
         String path = this.urn.concat(this.queryStrings);
         Log.i("HISTORICAL", path);
 
@@ -191,7 +194,7 @@ public final class Historical<T> {
             JSONArray arrayMedications = o.getJSONArray(NameColumnsDB.ELDERLY_MEDICATIONS);
             for (int i = 0; i < arrayMedications.length(); i++) {
                 JSONObject objMedication = arrayMedications.getJSONObject(i);
-                Medication m = new Medication(
+                Item m = new Item(
                         objMedication.getInt(NameColumnsDB.ELDERLY_ITEMS_INDEX),
                         objMedication.getString(NameColumnsDB.ELDERLY_ITEMS_NAME));
                 e.addMedication(m);
@@ -202,12 +205,13 @@ public final class Historical<T> {
             JSONArray arrayAccessories = o.getJSONArray(NameColumnsDB.ELDERLY_ACCESSORIES);
             for (int i = 0; i < arrayAccessories.length(); i++) {
                 JSONObject objMedication = arrayAccessories.getJSONObject(i);
-                Accessory a = new Accessory(
+                Item a = new Item(
                         objMedication.getInt(NameColumnsDB.ELDERLY_ITEMS_INDEX),
                         objMedication.getString(NameColumnsDB.ELDERLY_ITEMS_NAME));
                 e.addAccessory(a);
             }
         }
+        e.setUser(session.getUserLogged());
 
         return e;
     }

@@ -167,6 +167,7 @@ public class ElderlyFallActivity extends AppCompatActivity implements OnRecycler
 
         // TODO Apenas para teste. Implementar a busca no servidor
         List<Fall> falls = new ArrayList<>();
+        Log.d(TAG, "DateUtils.getCurrentDateISO8601() " + DateUtils.getCurrentDateISO8601());
         falls.add(new Fall(DateUtils.getCurrentDateISO8601(), new FallCharacterization(false)));
         falls.add(new Fall("2018-02-11T10:50:12.389Z", null));
         falls.add(new Fall("2017-11-12T08:15:15.389Z", new FallCharacterization(true)));

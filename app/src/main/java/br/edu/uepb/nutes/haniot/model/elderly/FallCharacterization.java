@@ -1,8 +1,10 @@
 package br.edu.uepb.nutes.haniot.model.elderly;
 
+import io.objectbox.annotation.Convert;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.annotation.Index;
+import io.objectbox.converter.PropertyConverter;
 
 /**
  * Represents object of a Fall Characterization.
@@ -22,6 +24,8 @@ public class FallCharacterization {
     private String registrationDate;
 
     private boolean isFinalized;
+
+
 
     public FallCharacterization() {
     }
@@ -61,6 +65,8 @@ public class FallCharacterization {
     public void setFinalized(boolean finalized) {
         isFinalized = finalized;
     }
+
+
 }
 
 

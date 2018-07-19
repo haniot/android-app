@@ -2,11 +2,11 @@ package br.edu.uepb.nutes.haniot.model.elderly;
 
 import java.util.Objects;
 
-import io.objectbox.annotation.BaseEntity;
+import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.annotation.Index;
 
-@BaseEntity
+@Entity
 public class Item {
     @Id
     private long id;

@@ -19,6 +19,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Arrays;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
@@ -27,6 +28,7 @@ import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
 import br.edu.uepb.nutes.haniot.model.elderly.Accessory;
 import br.edu.uepb.nutes.haniot.model.elderly.DegreeEducationType;
 import br.edu.uepb.nutes.haniot.model.elderly.Elderly;
+import br.edu.uepb.nutes.haniot.model.elderly.Item;
 import br.edu.uepb.nutes.haniot.model.elderly.MaritalStatusType;
 import br.edu.uepb.nutes.haniot.model.elderly.Medication;
 import br.edu.uepb.nutes.haniot.model.dao.ElderlyDAO;
@@ -111,17 +113,6 @@ public class ElderlyPreviewActivity extends AppCompatActivity {
         } else {
             elderly = ElderlyDAO.getInstance(this).get(elderlyId);
             Log.d(TAG, "ID: " + elderlyId + "elderly: " + elderly);
-
-//            elderly = new Elderly("Elvis da Silva Pereira", -595720800000L, 80.6D, 174, 0, 2, 1, false);
-//            elderly.setPin("5874");
-//            elderly.addMedication(new Medication("Dipirona"));
-//            elderly.addAccessory(new Accessory(2, "Teste"));
-//            elderly.addAccessory(new Accessory(0, "Teste 2"));
-//            elderly.setPhone("83 981515-4454");
-//            elderly.setFallRisk(2);
-//
-//            elderly.addFall(new Fall(1531083223781L, null));
-//            elderly.addFall(new Fall(1431083238150L, null));
 
             initComponents();
         }
@@ -210,11 +201,14 @@ public class ElderlyPreviewActivity extends AppCompatActivity {
          */
         StringBuilder _strMed = new StringBuilder();
         boolean found = false;
-        for (Medication m : elderly.getMedications()) {
+        Log.d(TAG, "MEDICA|TIONS: " + Arrays.toString(elderly.getMedications().toArray()));
+
+        for (Item m : elderly.getMedications()) {
             if (found) _strMed.append(", ");
 
             found = true;
             _strMed.append(m.getName());
+            Log.d(TAG, "MEDICA|TIONS STR: " + _strMed);
         }
         if (_strMed.length() > 0) medicationTextView.setText(String.valueOf(_strMed));
         else medicationTextView.setText(R.string.elderly_not_medications);
@@ -225,13 +219,14 @@ public class ElderlyPreviewActivity extends AppCompatActivity {
         StringBuilder _strAcc = new StringBuilder();
         found = false;
         String[] _accessoriesArray = getResources().getStringArray(R.array.elderly_accessories_array);
-        List<Accessory> _accessories = elderly.getAccessories();
+        List<Item> _accessories = elderly.getAccessories();
         for (int i = 0; i < _accessories.size(); i++) {
             if (found) _strAcc.append(", ");
 
             found = true;
-            if (_accessories.get(i).getId() < _accessoriesArray.length)
-                _strAcc.append(_accessoriesArray[i]);
+            if (_accessories.get(i).getIndex() != -1
+                    && _accessories.get(i).getIndex() < _accessoriesArray.length)
+                _strAcc.append(_accessoriesArray[_accessories.get(i).getIndex()]);
             else _strAcc.append(_accessories.get(i).getName());
         }
         if (_strAcc.length() != 0) accessoriesTextView.setText(String.valueOf(_strAcc));

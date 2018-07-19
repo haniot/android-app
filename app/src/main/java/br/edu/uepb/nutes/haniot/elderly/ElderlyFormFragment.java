@@ -38,6 +38,7 @@ import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.model.elderly.Accessory;
 import br.edu.uepb.nutes.haniot.model.elderly.Elderly;
+import br.edu.uepb.nutes.haniot.model.elderly.Item;
 import br.edu.uepb.nutes.haniot.model.elderly.Medication;
 import br.edu.uepb.nutes.haniot.model.dao.ElderlyDAO;
 import br.edu.uepb.nutes.haniot.server.Server;
@@ -228,12 +229,12 @@ public class ElderlyFormFragment extends Fragment {
         maritalStatusSpinner.setSelection(elderlyUp.getMaritalStatus());
         educationSpinner.setSelection(elderlyUp.getDegreeOfEducation());
 
-        for (Medication medication : elderlyUp.getMedications()) {
+        for (Item medication : elderlyUp.getMedications()) {
             medicationsSpinner.selection(medication.getName());
         }
 
         int accessoriesTotal = getResources().getStringArray(R.array.elderly_accessories_array).length;
-        for (Accessory accessory : elderlyUp.getAccessories()) {
+        for (Item accessory : elderlyUp.getAccessories()) {
             if (accessory.getIndex() > -1 && accessory.getIndex() < accessoriesTotal)
                 accessoriesSpinner.selection(accessory.getIndex());
             else
@@ -446,7 +447,7 @@ public class ElderlyFormFragment extends Fragment {
         result.addProperty(NameColumnsDB.ELDERLY_DEVICE_PIN, elderly.getPin()); //  TODO PIN - Avaliar se eh a entidade idoso
 
         JsonArray arrayMedications = new JsonArray();
-        for (Medication medication : elderly.getMedications()) {
+        for (Item medication : elderly.getMedications()) {
             JsonObject itemMedication = new JsonObject();
             itemMedication.addProperty(NameColumnsDB.ELDERLY_ITEMS_INDEX, medication.getIndex());
             itemMedication.addProperty(NameColumnsDB.ELDERLY_ITEMS_NAME, medication.getName());
@@ -455,7 +456,7 @@ public class ElderlyFormFragment extends Fragment {
         result.add(NameColumnsDB.ELDERLY_MEDICATIONS, arrayMedications);
 
         JsonArray arrayAccessories = new JsonArray();
-        for (Accessory accessory : elderly.getAccessories()) {
+        for (Item accessory : elderly.getAccessories()) {
             JsonObject itemAccessory = new JsonObject();
             itemAccessory.addProperty(NameColumnsDB.ELDERLY_ITEMS_INDEX, accessory.getIndex());
             itemAccessory.addProperty(NameColumnsDB.ELDERLY_ITEMS_NAME, accessory.getName());

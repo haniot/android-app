@@ -1,5 +1,6 @@
 package br.edu.uepb.nutes.haniot.model.elderly;
 
+import java.util.Arrays;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.model.User;
@@ -62,16 +63,16 @@ public class Elderly {
     private String pin;
 
     /**
-     * {@link Medication}
+     * {@link Item}
      */
-    public ToMany<Medication> medications;
+    public ToMany<Item> medications;
 
     /**
      * Crutches, walking sticks, walkers, glasses, hearing aid...
      * <p>
-     * {@link Medication}
+     * {@link Item}
      */
-    public ToMany<Accessory> accessories;
+    public ToMany<Item> accessories;
 
     public ToOne<User> user;
 
@@ -180,35 +181,35 @@ public class Elderly {
         this.user.setTarget(user);
     }
 
-    public ToMany<Medication> getMedications() {
-        return medications;
+    public ToMany<Item> getMedications() {
+        return this.medications;
     }
 
-    public boolean addElderly(Medication medication) {
+    public boolean addElderly(Item medication) {
         return this.getMedications().add(medication);
     }
 
-    public boolean addMedications(List<Medication> medications) {
+    public boolean addMedications(List<Item> medications) {
         return this.getMedications().addAll(medications);
     }
 
-    public boolean addMedication(Medication medication) {
+    public boolean addMedication(Item medication) {
         return this.getMedications().add(medication);
     }
 
-    public ToMany<Accessory> getAccessories() {
-        return accessories;
+    public ToMany<Item> getAccessories() {
+        return this.accessories;
     }
 
     public ToMany<Fall> getFalls() {
-        return falls;
+        return this.falls;
     }
 
-    public boolean addAccessory(Accessory accessory) {
+    public boolean addAccessory(Item accessory) {
         return this.getAccessories().add(accessory);
     }
 
-    public boolean addAccessories(List<Accessory> accessories) {
+    public boolean addAccessories(List<Item> accessories) {
         return this.getAccessories().addAll(accessories);
     }
 
@@ -283,8 +284,8 @@ public class Elderly {
                 ", degreeOfEducation=" + degreeOfEducation +
                 ", liveAlone=" + liveAlone +
                 ", pin='" + pin + '\'' +
-                ", medications=" + medications +
-                ", accessories=" + accessories +
+                ", medications=" + Arrays.toString(medications.toArray()) +
+                ", accessories=" + Arrays.toString(accessories.toArray()) +
                 ", user=" + user +
                 ", falls=" + falls +
                 '}';

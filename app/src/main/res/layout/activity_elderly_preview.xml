@@ -247,7 +247,7 @@
                 android:id="@+id/elderly_medications_textView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Enisno Medio" />
+                android:text="Medicamento" />
 
             <View
                 android:layout_width="match_parent"

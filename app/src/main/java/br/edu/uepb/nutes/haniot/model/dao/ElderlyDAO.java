@@ -10,6 +10,7 @@ import br.edu.uepb.nutes.haniot.App;
 import br.edu.uepb.nutes.haniot.model.elderly.Accessory;
 import br.edu.uepb.nutes.haniot.model.elderly.Elderly;
 import br.edu.uepb.nutes.haniot.model.elderly.Elderly_;
+import br.edu.uepb.nutes.haniot.model.elderly.Item;
 import br.edu.uepb.nutes.haniot.model.elderly.Medication;
 import io.objectbox.Box;
 import io.objectbox.BoxStore;
@@ -25,6 +26,7 @@ import io.objectbox.relation.ToMany;
 public class ElderlyDAO {
     private static ElderlyDAO instance;
     private static Box<Elderly> elderlyBox;
+    private static Box<Item> itemBox;
 
     private ElderlyDAO() {
     }
@@ -38,6 +40,7 @@ public class ElderlyDAO {
 
         BoxStore boxStore = ((App) context.getApplicationContext()).getBoxStore();
         elderlyBox = boxStore.boxFor(Elderly.class);
+        itemBox = boxStore.boxFor(Item.class);
 
         return instance;
     }
@@ -100,7 +103,18 @@ public class ElderlyDAO {
      * @return {@link Elderly}
      */
     public Elderly update(@NonNull Elderly elderly) {
-        if (elderly.getId() <= 0) return null;
+        if (elderly.getId() == 0) {
+            Elderly elderlyUp = get(elderly.get_id());
+
+            /**
+             * Id is required for an update
+             * Otherwise it will be an insert
+             */
+            if (elderlyUp == null) return null;
+
+            elderly.setId(elderlyUp.getId());
+        }
+
         return save(elderly); // update
     }
 
@@ -114,7 +128,8 @@ public class ElderlyDAO {
         return elderlyBox.query()
                 .equal(Elderly_.id, id)
                 .build()
-                .remove() > 0;
+                .remove() > 0 &&
+                itemBox.query().build().remove() > 0;
     }
 
     /**
@@ -137,7 +152,8 @@ public class ElderlyDAO {
         return elderlyBox.query()
                 .equal(Elderly_.userId, userId)
                 .build()
-                .remove() > 0;
+                .remove() > 0 &&
+                itemBox.query().build().remove() > 0;
     }
 
     /**
@@ -146,8 +162,8 @@ public class ElderlyDAO {
      * @param elderlyId long
      * @return {@link List<Medication>}
      */
-    public List<Medication> listMedications(@NonNull long elderlyId) {
-        ToMany<Medication> medications = elderlyBox.query()
+    public List<Item> listMedications(@NonNull long elderlyId) {
+        ToMany<Item> medications = elderlyBox.query()
                 .equal(Elderly_.id, elderlyId)
                 .build()
                 .findFirst().getMedications();
@@ -160,8 +176,8 @@ public class ElderlyDAO {
      * @param elderlyId long
      * @return {@link List<Accessory>}
      */
-    public List<Accessory> listAccessories(@NonNull long elderlyId) {
-        ToMany<Accessory> accessories = elderlyBox.query()
+    public List<Item> listAccessories(@NonNull long elderlyId) {
+        ToMany<Item> accessories = elderlyBox.query()
                 .equal(Elderly_.id, elderlyId)
                 .build()
                 .findFirst().getAccessories();
