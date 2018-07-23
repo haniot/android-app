@@ -7,11 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.App;
-import br.edu.uepb.nutes.haniot.model.elderly.Accessory;
 import br.edu.uepb.nutes.haniot.model.elderly.Elderly;
 import br.edu.uepb.nutes.haniot.model.elderly.Elderly_;
 import br.edu.uepb.nutes.haniot.model.elderly.Item;
-import br.edu.uepb.nutes.haniot.model.elderly.Medication;
 import io.objectbox.Box;
 import io.objectbox.BoxStore;
 import io.objectbox.relation.ToMany;

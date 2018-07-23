@@ -26,7 +26,6 @@ import android.widget.Toast;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -36,11 +35,9 @@ import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
-import br.edu.uepb.nutes.haniot.model.elderly.Accessory;
+import br.edu.uepb.nutes.haniot.model.dao.ElderlyDAO;
 import br.edu.uepb.nutes.haniot.model.elderly.Elderly;
 import br.edu.uepb.nutes.haniot.model.elderly.Item;
-import br.edu.uepb.nutes.haniot.model.elderly.Medication;
-import br.edu.uepb.nutes.haniot.model.dao.ElderlyDAO;
 import br.edu.uepb.nutes.haniot.server.Server;
 import br.edu.uepb.nutes.haniot.ui.CustomMultiSelectSpinner;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
@@ -150,8 +147,6 @@ public class ElderlyFormFragment extends Fragment {
         if (getArguments() != null) {
             elderlyPin = getArguments().getString(ElderlyFormFragment.EXTRA_ELDERLY_PIN);
             elderlyId = getArguments().getString(ElderlyFormFragment.EXTRA_ELDERLY_ID);
-
-            Log.d(TAG, "PIN: " + elderlyPin + " ID: " + elderlyId);
         }
 
         initUI();
@@ -187,6 +182,7 @@ public class ElderlyFormFragment extends Fragment {
         dateBirthEditText.setOnClickListener(mListenerDatePickerDialog);
         saveButton.setOnClickListener(mListenerSave);
 
+        // edit
         if (elderlyId != null) {
             elderly = dao.get(elderlyId);
             if (elderly != null) {
@@ -197,7 +193,9 @@ public class ElderlyFormFragment extends Fragment {
                 return;
             }
         } else {
+            // save
             elderly = new Elderly();
+            elderly.setPin(elderlyPin);
         }
     }
 
@@ -229,9 +227,9 @@ public class ElderlyFormFragment extends Fragment {
         maritalStatusSpinner.setSelection(elderlyUp.getMaritalStatus());
         educationSpinner.setSelection(elderlyUp.getDegreeOfEducation());
 
-        for (Item medication : elderlyUp.getMedications()) {
-            medicationsSpinner.selection(medication.getName());
-        }
+        for (Item m : elderlyUp.getMedications())
+            medicationsSpinner.addItem(m.getName());
+        medicationsSpinner.selection(elderlyUp.getMedications());
 
         int accessoriesTotal = getResources().getStringArray(R.array.elderly_accessories_array).length;
         for (Item accessory : elderlyUp.getAccessories()) {
@@ -331,7 +329,7 @@ public class ElderlyFormFragment extends Fragment {
     private View.OnClickListener mListenerSave = (v -> {
         Log.d(TAG, "OnClickListener() PIN: " + elderlyPin + " ID: " + elderlyId);
 
-        if (elderlyId == null) save(getElderlyByForm());
+        if (elderly.getPin() == null) save(getElderlyByForm());
         else update(getElderlyByForm());
     });
 
@@ -396,17 +394,16 @@ public class ElderlyFormFragment extends Fragment {
 
         elderly.clearMedications();
         for (String medication : medicationsSpinner.getSelectedItems()) {
-            elderly.addMedication(new Medication(-1, medication));
+            elderly.addMedication(new Item(-1, medication));
         }
 
         elderly.clearAccessories();
         for (String accessory : accessoriesSpinner.getSelectedItems()) {
             int indexAccessory = findIndexArrayResource(accessory, R.array.elderly_accessories_array);
-            elderly.addAccessory(new Accessory(indexAccessory, accessory));
+            elderly.addAccessory(new Item(indexAccessory, accessory));
         }
 
         elderly.setUser(session.getUserLogged());
-        elderly.setPin(elderlyPin);
 
         return elderly;
     }
@@ -490,14 +487,6 @@ public class ElderlyFormFragment extends Fragment {
                         @Override
                         public void onSuccess(JSONObject result) {
                             loading(false);
-
-                            try {
-                                elderly.set_id(result.getString("_id"));
-                                dao.save(elderly);  // save in local
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-
                             mListener.onFormResult(elderly);
                         }
                     });
@@ -514,30 +503,23 @@ public class ElderlyFormFragment extends Fragment {
         if (validate(elderly) && mListener != null) {
             loading(true);
 
-            // TODO Implementar o update no servidor!!!
-            dao.update(elderly);  // save in local
-            mListener.onFormResult(elderly);
-
-            loading(false);
-
             // Save in remote server.
-//            server.put("users/".concat(session.get_idLogged()).concat("/external"),
-//                    elderlyToJson(elderly), // json
-//                    new Server.Callback() {
-//                        @Override
-//                        public void onError(JSONObject result) {
-//                            loading(false);
-//                            openMessageError();
-//                        }
-//
-//                        @Override
-//                        public void onSuccess(JSONObject result) {
-//                            loading(false);
-//
-//                            dao.update(elderly);  // save in local
-//                            mListener.onFormResult(elderly);
-//                        }
-//                    });
+            server.put("users/".concat(session.get_idLogged())
+                            .concat("/external/").concat(elderly.get_id()),
+                    elderlyToJson(elderly), // json
+                    new Server.Callback() {
+                        @Override
+                        public void onError(JSONObject result) {
+                            loading(false);
+                            openMessageError();
+                        }
+
+                        @Override
+                        public void onSuccess(JSONObject result) {
+                            loading(false);
+                            mListener.onFormResult(elderly);
+                        }
+                    });
         }
     }
 

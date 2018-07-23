@@ -4,14 +4,12 @@ import java.util.Objects;
 
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
-import io.objectbox.annotation.Index;
 
 @Entity
 public class Item {
     @Id
     private long id;
 
-    @Index
     public int index;
 
     private String name;
@@ -49,15 +47,15 @@ public class Item {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof Item)) return false;
-        Item item = (Item) o;
-        return index == item.index;
+    public int hashCode() {
+        return Objects.hash(id, index, name);
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(index);
+    public boolean equals(Object o) {
+        if (!(o instanceof Item)) return false;
+        Item item = (Item) o;
+        return index == item.index && name.equals(item.name);
     }
 
     @Override

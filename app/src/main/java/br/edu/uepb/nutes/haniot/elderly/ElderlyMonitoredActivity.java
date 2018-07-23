@@ -23,15 +23,14 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Arrays;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.ElderlyMonitoredAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
-import br.edu.uepb.nutes.haniot.model.elderly.Elderly;
 import br.edu.uepb.nutes.haniot.model.dao.ElderlyDAO;
+import br.edu.uepb.nutes.haniot.model.elderly.Elderly;
 import br.edu.uepb.nutes.haniot.server.Server;
 import br.edu.uepb.nutes.haniot.server.historical.CallbackHistorical;
 import br.edu.uepb.nutes.haniot.server.historical.Historical;
@@ -156,7 +155,6 @@ public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRec
                     .build();
 
             historical.request(this, new CallbackHistorical<Elderly>() {
-
                 @Override
                 public void onBeforeSend() {
                     toggleLoading(true); // Enable loading
@@ -209,8 +207,6 @@ public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRec
      */
     private void saveLocal(List<Elderly> elderlies) {
         if (elderlies == null) return;
-
-        Log.d(TAG, "SAVE LOCAL: " + Arrays.toString(elderlies.toArray()));
 
         elderlyDAO.removeAll(session.getIdLogged());
         for (Elderly e : elderlies) elderlyDAO.save(e);
