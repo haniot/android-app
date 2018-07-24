@@ -90,6 +90,9 @@
     <string name="pulse_mark_title">Pulse:</string>
 
     <string name="value_default">_ _</string>
+    <string name="get_monitor">Get Monitor</string>
+    <string name="get_monitor_dialog_tittle">Getting monitor data&#8230;</string>
+    <string name="get_monitor_desc">Make sure your monitor is nearby and in data transfer mode (Select My Data, Data Transfer, Wireless).</string>
 
     // INFO TITLE
     <string name="info_max">Maximum</string>
