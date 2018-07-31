@@ -14,6 +14,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
@@ -158,7 +159,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             user = userDAO.get(user.getEmail());
                         }
                         session.setLogged(user.getId(), token);
-                        
+
+                        // FCM TOKEN
+                        String fcmToken = FirebaseInstanceId.getInstance().getToken();
+                        if (fcmToken != null) {
+                            user.setToken(fcmToken);
+                            sendFcmToken(fcmToken);
+                        }
+
                         startActivity(new Intent(getApplicationContext(), MainActivity.class));
                         finish();
                     } else {
@@ -169,6 +177,30 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 } finally {
                     loadingSend(false);
                 }
+            }
+        });
+    }
+
+    /**
+     * Send token in FCM.
+     *
+     * @param fcmToken
+     */
+    private void sendFcmToken(String fcmToken) {
+        Log.d(TAG, "FCM_TOKEN:" + fcmToken);
+
+        String path = "users/".concat(session.get_idLogged()).concat("/fcm");
+        String jsonToken = "{\"fcmToken\":\"".concat(fcmToken).concat("\"}");
+
+        Server.getInstance(this).post(path, jsonToken, new Server.Callback() {
+            @Override
+            public void onError(JSONObject result) {
+                Log.d(TAG, result.toString());
+            }
+
+            @Override
+            public void onSuccess(JSONObject result) {
+                Log.d(TAG, result.toString());
             }
         });
     }

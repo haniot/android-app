@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.UUID;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.activity.charts.SmartBandChartActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.SmartBandAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
@@ -235,7 +236,7 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
-        mAdapter.setListener(new OnRecyclerViewListener() {
+        mAdapter.setListener(new OnRecyclerViewListener<Measurement>() {
             @Override
             public void onItemClick(Measurement item) {
                 Log.w(TAG, "onItemClick()");
@@ -759,6 +760,7 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.chart_floating_button:
+                startActivity(new Intent(getApplicationContext(), SmartBandChartActivity.class));
                 break;
             case R.id.heart_rate_floating_button:
                 startScanHeartRate();

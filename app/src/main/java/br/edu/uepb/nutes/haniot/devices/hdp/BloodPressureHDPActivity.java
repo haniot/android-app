@@ -68,7 +68,7 @@ import butterknife.ButterKnife;
  * @copyright Copyright (c) 2017, NUTES UEPB
  */
 public class BloodPressureHDPActivity extends AppCompatActivity implements View.OnClickListener {
-    private final String TAG = "BloodPressureHDPActivity";
+    private final String TAG = "BloodPressureHDP";
     private final int LIMIT_PER_PAGE = 20;
 
     private Animation animation;
@@ -215,7 +215,7 @@ public class BloodPressureHDPActivity extends AppCompatActivity implements View.
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
-        mAdapter.setListener(new OnRecyclerViewListener() {
+        mAdapter.setListener(new OnRecyclerViewListener<Measurement>() {
             @Override
             public void onItemClick(Measurement item) {
                 Log.w(TAG, "onItemClick()");

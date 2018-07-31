@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorDeepPurple"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:padding="32dp"
+            android:text="@string/risk_fall_title_end"
+            android:textColor="@android:color/white"
+            android:textSize="28sp"
+            android:textStyle="bold" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal">
+
+            <TextView
+                android:id="@+id/low_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:text="@string/risk_fall_title_low"
+                android:textColor="@color/colorTextDark" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="5dp"
+                android:layout_toEndOf="@+id/low_textView"
+                android:background="@drawable/background_rounded_corner"
+                android:backgroundTint="@color/colorGreen"
+                android:paddingLeft="50dp"
+                android:text="@null"
+                android:textColor="@color/colorTextDark" />
+
+            <TextView
+                android:id="@+id/moderate_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="27dp"
+                android:text="@string/risk_fall_title_moderate"
+                android:textColor="@color/colorTextDark" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/moderate_textView"
+                android:layout_marginStart="5dp"
+                android:layout_toEndOf="@+id/moderate_textView"
+                android:background="@drawable/background_rounded_corner"
+                android:backgroundTint="@color/colorAmber"
+                android:paddingLeft="50dp"
+                android:text="@null"
+                android:textColor="@color/colorTextDark" />
+
+            <TextView
+                android:id="@+id/high_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignStart="@+id/low_textView"
+                android:layout_marginTop="53dp"
+                android:text="@string/risk_fall_title_high"
+                android:textColor="@color/colorTextDark" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/high_textView"
+                android:layout_marginStart="5dp"
+                android:layout_toEndOf="@+id/high_textView"
+                android:background="@drawable/background_rounded_corner"
+                android:backgroundTint="@color/colorRed"
+                android:paddingRight="50dp"
+                android:text="@null"
+                android:textColor="@color/colorTextDark" />
+
+        </RelativeLayout>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/low_textView"
+        android:layout_gravity="center"
+        android:text="@string/risk_fall_title_end_confirm_result"
+        android:textColor="@color/colorTextDark" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <RadioGroup
+            android:id="@+id/question_radioGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/no_radioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button_assessment_background_left"
+                android:button="@android:color/transparent"
+                android:checked="false"
+                android:text="@string/cancel_text"
+                android:textColor="@drawable/button_assessment_text" />
+
+            <RadioButton
+                android:id="@+id/yes_radioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button_assessment_background_right"
+                android:button="@android:color/transparent"
+                android:checked="false"
+                android:text="@string/yes_text"
+                android:textColor="@drawable/button_assessment_text" />
+        </RadioGroup>
+    </LinearLayout>
+</LinearLayout>

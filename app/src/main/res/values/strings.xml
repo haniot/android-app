@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">HANIoT</string>
-    <string name="copyright">Ⓒ 2017 NUTES</string>
+    <string name="copyright">© 2017 NUTES</string>
     <string name="app_version">1.0</string>
     <string name="start_scan">Start scan</string>
     <string name="start_synchronization">Start Synchronization</string>
@@ -33,6 +33,16 @@
     <string name="week_text">Week</string>
     <string name="month_text">Month</string>
     <string name="today_text">Today</string>
+    <string name="yes_text">Yes</string>
+    <string name="no_text">No</string>
+    <string name="cancel_text">Cancel</string>
+    <string name="black_space_4">\t\t\t\t\t\</string>
+    <string name="laoding_result">Loading result...</string>
+    <string name="number_emergency">911</string>
+    <string name="call_emergency_title">Call emergency</string>
+    <string name="call_elderly_title">Call elderly</string>
+    <string name="fall_register_time_title">Fall was recorded at %s</string>
+    <string name="alert_register_time_title">Alert was triggered at %s</string>
 
     <!--ACTIONS-->
     <string name="action_settings">Settings</string>
@@ -81,17 +91,57 @@
 
     <string name="value_default">_ _</string>
 
+    // INFO TITLE
+    <string name="info_max">Maximum</string>
+    <string name="info_min">Minimum</string>
+    <string name="info_avarage">Average</string>
+    <string name="info_period">Period</string>
+    <string name="more_information">More Information</string>
+    <string name="date_format_info">yyyy/MMM/dd</string>
+    <string name="info_steps">Steps</string>
+    <string name="info_distance">Distance</string>
+    <string name="info_calories">Calories</string>
+
+
+    //UNITS
+    <string name="unit_kcal">cal</string>
+    <string name="unit_meters">m</string>
+
+    //Limit and Lines of Chart
+    <string name="diastolic">Diastolic</string>
+    <string name="systolic">Systolic</string>
+    <string name="limit_blood_pressure">High Pressure</string>
+    <string name="limit_heart_rate">Limit 1</string>
+    <string name="limit_glucose">Pre Diabetes</string>
+    <string name="limit_temperature">Fever</string>
+    <string name="limit_body_composition">Obesidade</string>
+
+    //FLOATING
+    <string name="day">Day</string>
+    <string name="week">Week</string>
+    <string name="month">Month</string>
+    <string name="year">Year</string>
+    <string name="period">Period</string>
+
+
     // DATE/TIME FORMAT
     <string name="date_format">yyyy/MM/dd</string>
+    <string name="date_format_year">yyyy</string>
+    <string name="date_format_month">MMMM</string>
+    <string name="date_format_week">w</string>
     <string name="date_format_month_day">MM/dd</string>
     <string name="datetime_format">yyyy/MM/dd HH:mm:ss</string>
     <string name="datetime_format_db">yyyy-MM-dd HH:mm:ss</string>
     <string name="time_format">HH:mm:ss</string>
-    <string name="time_format_simple">mm:ss</string>
+    <string name="time_format_simple">HH:mm</string>
+    <string name="time_format_simple2">HH\'h\'mm\'m\'</string>
 
     // FORMATS
     <string name="format_number1">#.0</string>
+    <string name="format_number_float">#.0</string>
+    <string name="format_number_integer">#</string>
     <string name="format_number2">##.0</string>
+
 
     // EXCEPTIONS LOGS
     <string name="device_not_found">"Device: %1$s not found!"</string>
@@ -189,16 +239,20 @@
     <string name="confirm_password">Confirm password</string>
 
     <!--VALIDATE MESSAGES-->
+    <string name="required_field">Required field!</string>
     <string name="validate_name">At least 3 characters</string>
     <string name="validate_not_null">Field can not be empty</string>
     <string name="validate_email">Enter a valid email address</string>
     <string name="validate_password">The password must contain at least 6 characters, with at least one number, one letter and one special character among the allowed characters: @ # $ % &amp; * ! ? . _ + - space.</string>
-    <string name="validate_height">Minimum height 60cm and maximum 250cm</string>
+    <string name="validate_height">Provide a valid height!</string>
+    <string name="validate_date_birth">Provide a valid date of birth!</string>
+    <string name="validate_phone">Provide a valid phone number!</string>
     <string name="validate_invalid_email_or_password">Invalid email or password...</string>
     <string name="validate_password_not_match_current">Current password does not match!</string>
     <string name="validate_password_not_match_new">New password and confirmation do not match!</string>
     <string name="validate_register_user_not_duplicate">Already registered user with email provided...</string>
     <string name="validate_unauthorized_access">Unauthorized access! Please contact support...</string>
+    <string name="validate_weight">Provide a valid weight!</string>
 
     <!--ERROR-->
     <string name="error_sign_out">There was an error while trying to quit...</string>
@@ -255,11 +309,95 @@
     <string name="unit_glucose_mg_dL">mg/dL</string>
     <string name="unit_glucose_kg_L">kg/L</string>
 
-    <!--SYNCHRONIZATION-->
+    <!-- SYNCHRONIZATION -->
     <string name="synchronization_failed">Data synchronization failed!</string>
     <string name="synchronization_success">Successful data synchronization!</string>
     <string name="synchronization_data">Synchronizing data...</string>
     <string name="synchronization_no_data_to_send">There is no data to send...</string>
+
+    <!-- ELDERLY -->
+    <string name="elderly_monitored">Monitored Elderly</string>
+    <string name="elderly_add">Add Elderly</string>
+    <string name="elderly_pin">PIN</string>
+    <string name="elderly_fall_register">Fall Records: %d</string>
+    <!-- END ELDERLY -->
+
+    <!-- ELDERLY FORM -->
+    <string name="elderly_input_title_name">Name</string>
+    <string name="elderly_input_title_date_birth">Birth of Date</string>
+    <string name="elderly_input_title_sex">Sex</string>
+    <string name="elderly_input_title_weight">Weight</string>
+    <string name="elderly_input_title_height">Height</string>
+    <string name="elderly_input_title_phone">Contact phone</string>
+    <string name="elderly_input_title_marital_status">Marital status</string>
+    <string name="elderly_input_title_degree_education">Education</string>
+    <string name="elderly_input_title_live_alone">Live alone?</string>
+    <string name="elderly_input_title_medications">Medications</string>
+    <string name="elderly_input_title_accessories">Accessories</string>
+    <string name="elderly_input_name">Name of the elderly</string>
+    <string name="elderly_input_date_birth">Birth of date</string>
+    <string name="elderly_input_sex">Sex</string>
+    <string name="elderly_input_weight">Weight in kg</string>
+    <string name="elderly_input_height">Height in cm</string>
+    <string name="elderly_input_phone">Elderly phone number for contact</string>
+    <string name="elderly_input_marital_status">Marital status</string>
+    <string name="elderly_input_degree_education">Degree of education</string>
+    <string name="elderly_input_live_alone">Live alone?</string>
+    <string name="elderly_input_medications">Name of medicines the elderly use</string>
+    <string name="elderly_input_accessories">Accessories that the elderly use</string>
+    <string name="elderly_add_medications">Add new medication</string>
+    <string name="elderly_please_add_medications">Please, add a new medication</string>
+    <string name="elderly_add_accessories">Add new accessory</string>
+    <string name="elderly_please_add_accessories">Please, add a new accessory</string>
+    <string name="elderly_select_medications">Select the medications</string>
+    <string name="elderly_select_accessories">Select the accessories</string>
+    <string name="elderly_register_success">Data saved successfully!\nDo you want to respond now to an assessment to identify the risk of falling?</string>
+    <string name="elderly_assessment_risk_falling">Do you want to respond now to an assessment to identify the risk of falling?</string>
+    <!-- END ELDERLY FORM -->
+
+    <!-- ELDERLY ASSESSMENT RISK FALL -->
+    <string name="risk_fall_answer_question">Answer the question to go to next!</string>
+    <string name="risk_fall_title_group1">Falls</string>
+    <string name="risk_fall_title_group2">Use of device to help with walking</string>
+    <string name="risk_fall_title_group3">Use of medicines</string>
+    <string name="risk_fall_title_group4">Muscle strength/balance</string>
+    <string name="risk_fall_title_group5">Activity of daily living</string>
+    <string name="risk_fall_title_group6">Vision/Hearing</string>
+    <string name="risk_fall_title_group7">Physical activity</string>
+    <string name="risk_fall_title_group8">Environmental factors (Conduct inspection at the home of the elderly)</string>
+    <string name="risk_fall_description_q1">1. Has the elderly person dropped in the last 12 months?</string>
+    <string name="risk_fall_description_q2">2. Does the elderly person use any walking aid?</string>
+    <string name="risk_fall_description_q3">3. The elderly uses 4 or more medications per day?</string>
+    <string name="risk_fall_description_q4">4. Uses psychotropic medications?</string>
+    <string name="risk_fall_description_q5">5. Has difficulties to descend or climb a hill?</string>
+    <string name="risk_fall_description_q6">6. Need help to walk 100 meters?</string>
+    <string name="risk_fall_description_q7">7. It has difficulty seeing (considering the use of lenses)?</string>
+    <string name="risk_fall_description_q8">8. Has difficulty to hear what other people speak?</string>
+    <string name="risk_fall_description_q9">9. Does exercises during the week?</string>
+    <string name="risk_fall_description_q10">10. Dimly lit environment (When lying down, have to raise to turn light switch; away from the bed or of difficult visualization; there is no lampshade, do not let the light of the hallway lit during the night)?</string>
+    <string name="risk_fall_title_low">Low risk of falls</string>
+    <string name="risk_fall_title_moderate">Moderate falls risk</string>
+    <string name="risk_fall_title_high">High risk of falls</string>
+    <string name="risk_fall_title_cancel">Are you sure you want to cancel?\nThe answers given will be lost...</string>
+    <string name="risk_fall_title_end">Based on the answers obtained the risk of the elderly suffering a fall will be classified in:</string>
+    <string name="risk_fall_title_end_confirm_result">Do you want to see the evaluation result?</string>
+    <string name="risk_fall_message_blocked_page">Answer the current question to go to next...</string>
+    <!-- END ELDERLY ASSESSMENT RISK FALL -->
+
+    <!-- ARRAY QUESTIONS RISK FALL -->
+    <string-array name="risk_questions_array">
+        <item>@string/risk_fall_description_q1</item>
+        <item>@string/risk_fall_description_q2</item>
+        <item>@string/risk_fall_description_q3</item>
+        <item>@string/risk_fall_description_q4</item>
+        <item>@string/risk_fall_description_q5</item>
+        <item>@string/risk_fall_description_q6</item>
+        <item>@string/risk_fall_description_q7</item>
+        <item>@string/risk_fall_description_q8</item>
+        <item>@string/risk_fall_description_q9</item>
+        <item>@string/risk_fall_description_q10</item>
+    </string-array>
+    <!-- END ARRAY QUESTIONS RISK FALL -->
 
     <string name="other">Other</string>
 
@@ -291,7 +429,6 @@
         <item>Distance</item>
         <item>Calories Burned</item>
     </string-array>
-    .
 
     <string-array name="measurement_context_types_array">
         <item>Glucose Carbohydrate</item>
@@ -370,6 +507,36 @@
         <item>Oct</item>
         <item>Nov</item>
         <item>Dec</item>
+    </string-array>
+
+    <!-- MARITAL STATUS TYPES -->
+    <string-array name="marital_status_types_array">
+        <item>Single</item>
+        <item>Married</item>
+        <item>Separated</item>
+        <item>Divorced</item>
+        <item>Widowed</item>
+    </string-array>
+
+    <!-- DEGREE EDUCATION TYPES -->
+    <string-array name="degree_education_types_array">
+        <item>Basic School</item>
+        <item>Elementary School</item>
+        <item>Middle School</item>
+        <item>High School</item>
+    </string-array>
+
+    <!-- ELDERLY USER OF ACCESSORIES -->
+    <string-array name="elderly_accessories_array">
+        <item>Crutches</item>
+        <item>Walking stick</item>
+        <item>Walkers</item>
+        <item>Glasses</item>
+        <item>Hearing aid</item>
+    </string-array>
+
+    <!-- ELDERLY MEDICATIONS -->
+    <string-array name="medications_array">
     </string-array>
 
 </resources>

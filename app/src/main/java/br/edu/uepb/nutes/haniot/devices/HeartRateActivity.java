@@ -231,7 +231,7 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
-        mAdapter.setListener(new OnRecyclerViewListener() {
+        mAdapter.setListener(new OnRecyclerViewListener<Measurement>() {
             @Override
             public void onItemClick(Measurement item) {
                 Log.w(TAG, "onItemClick()");
@@ -636,24 +636,10 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.record_floating_button:
-//                Intent intent = new Intent(this, RecordHeartRateActivity.class);
-//                intent.putExtra(HeartRateActivity.EXTRA_DEVICE_ADDRESS, mDeviceAddress);
-//                intent.putExtra(HeartRateActivity.EXTRA_DEVICE_INFORMATIONS, deviceInformations);
-//                startActivity(intent);
-
-                /**
-                 * Open dialog
-                 */
-                if (measurement != null) {
-                    measurementSave = measurement;
-                    GenericDialogFragment dialogSaveData = GenericDialogFragment.newDialog(
-                            DIALOG_SAVE_DATA,
-                            R.string.title_save_captured_data,
-                            R.string.message_save_captured_heart_rate, 0,
-                            new int[]{R.string.bt_save, R.string.bt_discard}, null);
-                    dialogSaveData.show(getSupportFragmentManager());
-                }
-
+                Intent intent = new Intent(this, RecordHeartRateActivity.class);
+                intent.putExtra(HeartRateActivity.EXTRA_DEVICE_ADDRESS, mDeviceAddress);
+                intent.putExtra(HeartRateActivity.EXTRA_DEVICE_INFORMATIONS, deviceInformations);
+                startActivity(intent);
                 break;
             case R.id.chart_floating_button:
                 startActivity(new Intent(getApplicationContext(), HeartRateChartActivity.class));

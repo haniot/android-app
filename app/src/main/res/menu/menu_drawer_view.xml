@@ -12,6 +12,11 @@
             android:id="@+id/action_scanner_devices"
             android:icon="@drawable/ic_bluetooth_searching_white_24dp"
             android:title="@string/action_scanner_devices" />
+
+        <item
+            android:id="@+id/action_monitored_elderly"
+            android:icon="@drawable/ic_person"
+            android:title="@string/elderly_monitored" />
     </group>
 
     <group

@@ -74,14 +74,14 @@ public class ContextMeasurementValueType {
      * Retrieve the mapped type name in resources.
      *
      * @param context ContextMeasurement
-     * @param valueId    int
+     * @param valueId int
      * @return String
      */
     public static String getString(Context context, int valueId) {
         String values[] = context.getResources().getStringArray(R.array.measurement_values_context_types_array);
 
-        if (values.length >= valueId) return values[valueId - 1];
+        if (valueId < 1 || valueId > values.length) return "";
 
-        return "";
+        return values[valueId - 1];
     }
 }

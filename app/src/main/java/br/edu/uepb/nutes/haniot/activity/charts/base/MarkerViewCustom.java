@@ -9,6 +9,10 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.utils.MPPointF;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
+
 import br.edu.uepb.nutes.haniot.R;
 
 /**
@@ -22,13 +26,15 @@ public class MarkerViewCustom  extends MarkerView {
 
     private TextView tvContent;
     private RelativeLayout layoutBackground;
+    private String pattern;
 
-    public MarkerViewCustom(Context context, int layoutResource) {
+    public MarkerViewCustom(Context context, int layoutResource, String pattern) {
         super(context, layoutResource);
 
         // find your layout components
         layoutBackground = (RelativeLayout) findViewById(R.id.marker_background);
         tvContent = (TextView) findViewById(R.id.tvContent);
+        this.pattern = pattern;
     }
 
     public TextView getTvContent() {
@@ -48,7 +54,9 @@ public class MarkerViewCustom  extends MarkerView {
     @Override
     public void refreshContent(Entry e, Highlight highlight) {
 
-        tvContent.setText("" + e.getY());
+        DecimalFormat decimalFormat = new DecimalFormat(pattern, new DecimalFormatSymbols(Locale.US));
+
+        tvContent.setText("" + decimalFormat.format(e.getY()));
 
         // this will perform necessary layouting
         super.refreshContent(e, highlight);

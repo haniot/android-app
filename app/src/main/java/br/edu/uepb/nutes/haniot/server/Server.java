@@ -9,6 +9,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.SocketException;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -40,16 +41,14 @@ public class Server {
     private final String LOG = "Server";
     public static Server instance;
     private static Context mContext;
+    private OkHttpClient client;
 
     /**
      * If you set a url it will be used as default and not entered by the user in the application settings
      */
       /* HEROKU */ private final String URI_DEFAULT = "https://haniot-api.herokuapp.com/api/v1";
-//      /* PC HOME */ private final String URI_DEFAULT = "https://192.168.31.113/api/v1";
-//      /* PC WIFI DOUGLAS */ private final String URI_DEFAULT = "http://192.168.50.175:3000/api/v1";
-//      /* PC ETHERNET DOUGLAS */ private final String URI_DEFAULT = "http://192.168.50.99/api/v1";
-//      /* PC EDSON */ private final String URI_DEFAULT = "http://192.168.50.38:3000/api/v1";
-//      /* PC IZABELLA */ private final String URI_DEFAULT = "http://192.168.50.179:3000/api/v1";
+//    /* PC HOME */ private final String URI_DEFAULT = "https://192.168.50.104/api/v1";
+//      /* PC WIFI */ private final String URI_DEFAULT = "http://192.168.50.175:8000/api/v1";
 
     private final String MEDIA_TYPE = "application/json; charset=utf-8";
 
@@ -196,7 +195,7 @@ public class Server {
     private void sendRequest(final Request request, final Callback serverCallback) {
         Certificate certificate = getCertificate();
 
-        OkHttpClient client = new OkHttpClient.Builder()
+        client = new OkHttpClient.Builder()
                 .sslSocketFactory(getSSLSocketFactory(certificate), KeyStoresTrustManager.getInstance(certificate))
                 .hostnameVerifier(new TrustAllHostnameVerifier())
                 .build();
@@ -204,13 +203,18 @@ public class Server {
         client.newCall(request).enqueue(new okhttp3.Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+                if (e instanceof SocketException) { // resquest canceled
+                    Log.d("SERVER - onFailure()", "Request canceled!");
+                    return;
+                }
+
                 JSONObject result = new JSONObject();
                 try {
                     result.put("message", e.getMessage());
                     result.put("code", 500);
-                    serverCallback.onError(result);
+                    Log.d("SERVER - onFailure()", result.toString());
 
-                    Log.i("SERVER - onFailure()", result.toString());
+                    serverCallback.onError(result);
                 } catch (JSONException err) {
                     err.printStackTrace();
                 }
@@ -241,6 +245,14 @@ public class Server {
                 }
             }
         });
+
+    }
+
+    /**
+     * Cancel All Requests.
+     */
+    public void cancelAllResquest() {
+        if (client != null) client.dispatcher().cancelAll();
     }
 
     /**

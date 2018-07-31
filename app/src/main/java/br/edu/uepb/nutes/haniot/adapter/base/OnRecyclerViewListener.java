@@ -1,7 +1,5 @@
 package br.edu.uepb.nutes.haniot.adapter.base;
 
-import br.edu.uepb.nutes.haniot.model.Measurement;
-
 /**
  * Interface to capture event click on itemsList listed by the adapter.
  *
@@ -9,6 +7,6 @@ import br.edu.uepb.nutes.haniot.model.Measurement;
  * @version 1.0
  * @copyright Copyright (c) 2017, NUTES UEPB
  */
-public interface OnRecyclerViewListener {
-    void onItemClick(Measurement item);
+public interface OnRecyclerViewListener<T> {
+    void onItemClick(T item);
 }

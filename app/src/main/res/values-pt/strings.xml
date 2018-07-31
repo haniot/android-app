@@ -2,4 +2,244 @@
 <resources>
     <string name="app_name">HANIoT</string>
     <string name="app_version">1.0</string>
+    <string name="copyright">© 2017 NUTES</string>
+    <string name="start_scan">Iniciar Escaneamento</string>
+    <string name="start_synchronization">Iniciar Sincronização</string>
+    <string name="stop_scan">Parar Escaneamento</string>
+    <string name="device_address">Endereço: %s</string>
+    <string name="device_connection_state">Estado: %s</string>
+    <string name="device_read_data">Data: %s</string>
+    <string name="device_read_rssi">RSSI: %d</string>
+    <string name="prefix_hex">0x</string>
+    <string name="disconnect">Desconectado</string>
+    <string name="connect">Conectar</string>
+    <string name="connecting">Conectando</string>
+    <string name="connected">Conectado</string>
+    <string name="disconnected">Desconectado</string>
+    <string name="measurement">Medição</string>
+    <string name="read">Ler</string>
+    <string name="write">Escrever</string>
+    <string name="devices">Dispositivos</string>
+    <string name="device_bonded">Paraado</string>
+    <string name="device_bonding">Pareando</string>
+    <string name="device_not_bonded">Não pareado</string>
+    <string name="not_bluetooth">Seu dispositivo não suporta bluetooth!</string>
+    <string name="permission_location">A permissão de localização é obrigatória no utilizar Bluetooth Low Energy!</string>
+    <string name="not_bluetooth_le">Seu dispositivo não suporta Bluetooth Low Energy!</string>
+    <string name="bluetooth_classic">Bluetooth Clássico</string>
+    <string name="bluetooth_le">Bluetooth LE</string>
+    <string name="welcome">Bem-vindo</string>
+    <string name="no_more_data">Não há mais dados disponíveis...</string>
+    <string name="day_text">Dia</string>
+    <string name="week_text">Semana</string>
+    <string name="month_text">Mês</string>
+    <string name="today_text">Hoje</string>
+    <string name="yes_text">Sim</string>
+    <string name="no_text">Não</string>
+    <string name="action_settings">Configurações</string>
+    <string name="action_bond">Parear</string>
+    <string name="action_connect_devices">Conectar Dispositivos</string>
+    <string name="action_scanner_devices">Escanear Dispositivos</string>
+    <string name="action_save">Salvar</string>
+    <string name="action_sign_out">Sair</string>
+    <string name="unknown">Desconhecido</string>
+    <string name="unknown_device">Dispositivo desconhecido</string>
+    <string name="unknown_characteristic">Caracteríticas desconhecida</string>
+    <string name="unknown_service">Serviço desconhecido</string>
+    <string name="uepb">UEPB</string>
+    <string name="nutes">NUTES</string>
+    <string name="nutes_desc">"Núcleo de Tecnologias Estratégicas em Saúde "</string>
+    <string name="libe">LIBE</string>
+    <string name="libe_desc">"Laboratório de Instrumentação Biomédica e Ensaios Eletrônicos "</string>
+    <string name="navigation_drawer_open">Abrir menu de navegação</string>
+    <string name="navigation_drawer_close">Fechar  menu de navegação</string>
+    <string name="temperature">Temperatura</string>
+    <string name="weight">Peso</string>
+    <string name="body_mass">Massa Corporal</string>
+    <string name="temperature_measurement">Medição de Temperatura</string>
+    <string name="body_weight_scale">Escala de peso corporal</string>
+    <string name="heart_rate_measurement">Medição da Frequência Cardíaca</string>
+    <string name="heart_rate">Frequência Cardíaca</string>
+    <string name="glucose_measurement">Medição de Glicose</string>
+    <string name="glucose">Glicose</string>
+    <string name="blood_pressure_measurement">Medição da Pressão Arterial</string>
+    <string name="blood_pressure">Pressão Arterial</string>
+    <string name="body_composition">Composição Corporal</string>
+    <string name="body_composition_measurement">Medição da Composição Corporal</string>
+    <string name="smart_band">Pulseira Inteligente</string>
+    <string name="all_records">Todos</string>
+    <string name="first_record">Primeiro</string>
+    <string name="last_record">Último</string>
+    <string name="most_recent_entries">Entradas mais recentes</string>
+    <string name="body_fat_title">Gordura Corporal</string>
+    <string name="body_bmi_title">BMI</string>
+    <string name="pulse_mark_title">Pulso:</string>
+    <string name="value_default">_ _</string>
+    <string name="date_format">dd/MM/yyyy</string>
+    <string name="date_format_month_day">dd/MM</string>
+    <string name="datetime_format">dd/MM/yyyy HH:mm:ss</string>
+    <string name="datetime_format_db">yyyy-MM-dd HH:mm:ss</string>
+    <string name="time_format">HH:mm:ss</string>
+    <string name="time_format_simple">mm:ss</string>
+    <string name="time_format_simple2">HH\'h\'mm\'m\'</string>
+    <string name="format_number1">#.0</string>
+    <string name="format_number2">##.0</string>
+    <string name="device_not_found">Dispositivo: %1$s não encontrado!</string>
+    <string name="not_save_object_empty">Você não pode salvar um objeto vazio!</string>
+    <string name="not_delete_object_empty">Você não pode excluir um objeto vazio!</string>
+    <string name="no_data_found">"Nenhum dado encontrado! "</string>
+    <string name="temperatre_type_armpit">Axila</string>
+    <string name="temperatre_type_body">Corpo (geral)</string>
+    <string name="laoding_result">Carregando resultado...</string>
+    <string name="number_emergency">192</string>
+    <string name="call_emergency_title">Ligar para emergência</string>
+    <string name="call_elderly_title">Ligar para idoso</string>
+    <string name="fall_register_time_title">Queda registrada às %s</string>
+    <string name="alert_register_time_title">Alerta disparada às %s</string>
+
+
+    <string name="noData">Sem dados</string>
+
+    //Limit and Lines of Chart
+    <string name="diastolic">Diastólica</string>
+    <string name="systolic">Sistólica</string>
+    <string name="limit_blood_pressure">Pressão Alta</string>
+    <string name="limit_heart_rate">Limit 1</string>
+    <string name="limit_glucose">Pre Diabetes</string>
+    <string name="limit_temperature">Febre</string>
+    <string name="limit_body_composition">Overweight</string>
+
+    //FLOATING
+    <string name="day">Dia</string>
+    <string name="week">Semana</string>
+    <string name="month">Mês</string>
+    <string name="year">Ano</string>
+    <string name="period">Período</string>
+
+    // INFO TITLE
+    <string name="info_max">Máximo</string>
+    <string name="info_min">Mínimo</string>
+    <string name="info_avarage">Média</string>
+    <string name="info_period">Período</string>
+    <string name="more_information">Mais Informações</string>
+    <string name="info_steps">Passos</string>
+    <string name="info_distance">Distância</string>
+    <string name="info_calories">Calorias</string>
+
+
+    <!-- ELDERLY -->
+    <string name="elderly_monitored">Monitorar Idosos</string>
+    <string name="elderly_add">Adicionar Idoso</string>
+    <string name="elderly_pin">PIN</string>
+    <string name="elderly_fall_register">Quedas registradas: %d</string>
+    <!-- END ELDERLY -->
+
+    <!-- ELDERLY FORM -->
+    <string name="elderly_input_title_name">Nome</string>
+    <string name="elderly_input_title_date_birth">Data de Nascimento</string>
+    <string name="elderly_input_title_sex">Sexo</string>
+    <string name="elderly_input_title_weight">Peso</string>
+    <string name="elderly_input_title_height">Altura</string>
+    <string name="elderly_input_title_phone">Telefone de contato</string>
+    <string name="elderly_input_title_marital_status">Estado civil</string>
+    <string name="elderly_input_title_degree_education">Ecolaridade</string>
+    <string name="elderly_input_title_live_alone">Vive sozinho?</string>
+    <string name="elderly_input_title_medications">Medicamentos</string>
+    <string name="elderly_input_title_accessories">Acessórios</string>
+    <string name="elderly_input_name">Nome completo do idoso</string>
+    <string name="elderly_input_date_birth">data de nascimento</string>
+    <string name="elderly_input_sex">Sexo</string>
+    <string name="elderly_input_weight">Peso em kg</string>
+    <string name="elderly_input_height">Altura cm</string>
+    <string name="elderly_input_phone">Telefone de contato do idoso</string>
+    <string name="elderly_input_marital_status">Estado civil</string>
+    <string name="elderly_input_degree_education">Grau de escolaridade</string>
+    <string name="elderly_input_live_alone">Vive sozinho?</string>
+    <string name="elderly_input_medications">Nome dos medicamentos utilizados pelo idoso</string>
+    <string name="elderly_input_accessories">Acessórios que o idoso usa</string>
+    <string name="elderly_add_medications">Adicionar nova medicação</string>
+    <string name="elderly_please_add_medications">Por favor, adicione uma medicação</string>
+    <string name="elderly_add_accessories">Adicionar novo acessório</string>
+    <string name="elderly_please_add_accessories">Por favor, adicione um acessório</string>
+    <string name="elderly_select_medications">Selecionar medicações</string>
+    <string name="elderly_select_accessories">Selecionar acessórios</string>
+    <string name="elderly_register_success">Dados salvos com sucesso!\nVocê deseja responder agora a uma avaliação para identificar o risco de queda?</string>
+    <string name="elderly_assessment_risk_falling">Você deseja responder agora a uma avaliação para identificar o risco de queda?</string>
+    <!-- END ELDERLY FORM -->
+
+    <!-- ELDERLY ASSESSMENT RISK FALL -->
+    <string name="risk_fall_title_group1">Quedas</string>
+    <string name="risk_fall_title_group2">Uso de dispositivo para auxílio da marcha</string>
+    <string name="risk_fall_title_group3">Uso de medicamentos</string>
+    <string name="risk_fall_title_group4">Força muscular/equilíbrio</string>
+    <string name="risk_fall_title_group5">Atividade de vida diária</string>
+    <string name="risk_fall_title_group6">Visão/Audição</string>
+    <string name="risk_fall_title_group7">Atividade física</string>
+    <string name="risk_fall_title_group8">Fatores ambientais (Realizar inspeção no domicilio do idoso)</string>
+    <string name="risk_fall_description_q1">1. O idoso sofreu alguma queda nos últimos 12 meses?</string>
+    <string name="risk_fall_description_q2">2. O idoso utiliza algum aparelho que ajuda a andar?</string>
+    <string name="risk_fall_description_q3">3. Usa 4 ou mais medicamentos por dia?</string>
+    <string name="risk_fall_description_q4">4. Usa medicamentos psicotrópicos?</string>
+    <string name="risk_fall_description_q5">5. Tem dificuldades para descer ou subir uma ladeira?</string>
+    <string name="risk_fall_description_q6">6. Precisa de ajuda para andar 100 metros?</string>
+    <string name="risk_fall_description_q7">7. Tem dificuldades para enxergar (considerar o uso de lentes)?</string>
+    <string name="risk_fall_description_q8">8. Tem dificuldade para ouvir o que as outras pessoas falam?</string>
+    <string name="risk_fall_description_q9">9. Faz exercícios durante a semana?</string>
+    <string name="risk_fall_description_q10">10. Ambiente mal iluminado? (Quando deitado, tem que levantar para acender a luz; interruptor longe da cama ou de difícil visualização; não há abajur; não deixa a luz do corredor acesa durante a noite)?</string>
+    <string name="risk_fall_title_low">Baixo risco de quedas</string>
+    <string name="risk_fall_title_moderate">Moderado risco de quedas</string>
+    <string name="risk_fall_title_high">Alto risco de quedas</string>
+    <string name="risk_fall_title_cancel">Tem certeza de que deseja cancelar?\nAs respostas fornecidas serão perdidas...</string>
+    <string name="risk_fall_title_end">Com base nas respostas obtidas, o risco do idoso sofrer uma queda pode ser classificado em:</string>
+    <string name="risk_fall_title_end_confirm_result">Deseja visualizar o resultado da avaliação?</string>
+    <string name="risk_fall_message_blocked_page">Responda a pergunta atual para ir para próxima...</string>
+    <!-- END ELDERLY ASSESSMENT RISK FALL -->
+
+    <string name="cancel_text">Cancelar</string>
+
+    <!-- ARRAY QUESTIONS RISK FALL -->
+    <string-array name="risk_questions_array">
+        <item>@string/risk_fall_description_q1</item>
+        <item>@string/risk_fall_description_q2</item>
+        <item>@string/risk_fall_description_q3</item>
+        <item>@string/risk_fall_description_q4</item>
+        <item>@string/risk_fall_description_q5</item>
+        <item>@string/risk_fall_description_q6</item>
+        <item>@string/risk_fall_description_q7</item>
+        <item>@string/risk_fall_description_q8</item>
+        <item>@string/risk_fall_description_q9</item>
+        <item>@string/risk_fall_description_q10</item>
+    </string-array>
+    <!-- END ARRAY QUESTIONS RISK FALL -->
+
+    <!-- MARITAL STATUS TYPES -->
+    <string-array name="marital_status_types_array">
+        <item>Solteiro</item>
+        <item>Casado</item>
+        <item>Separado</item>
+        <item>Divorciado</item>
+        <item>Viúvo</item>
+    </string-array>
+
+    <!-- DEGREE EDUCATION TYPES -->
+    <string-array name="degree_education_types_array">
+        <item>Ensino básico</item>
+        <item>Ensino fundamental</item>
+        <item>Ensino médio</item>
+        <item>Ensino superior</item>
+    </string-array>
+
+    <!-- ELDERLY USER OF ACCESSORIES -->
+    <string-array name="elderly_accessories_array">
+        <item>Muletas</item>
+        <item>Bengala</item>
+        <item>Andadores</item>
+        <item>Óculos</item>
+        <item>Aparelho auditivo</item>
+    </string-array>
+
+    <!-- ELDERLY MEDICATIONS -->
+    <string-array name="medications_array">
+    </string-array>
+
 </resources>

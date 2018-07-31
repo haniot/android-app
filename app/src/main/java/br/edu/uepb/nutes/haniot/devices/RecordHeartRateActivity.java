@@ -2,6 +2,8 @@ package br.edu.uepb.nutes.haniot.devices;
 
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
@@ -12,7 +14,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.support.design.widget.FloatingActionButton;
@@ -20,20 +24,28 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Chronometer;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.github.mikephil.charting.charts.Chart;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.data.LineDataSet;
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
 import org.json.JSONException;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.activity.charts.base.CreateChart;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.fragment.GenericDialogFragment;
+import br.edu.uepb.nutes.haniot.fragment.RealTimeFragment;
 import br.edu.uepb.nutes.haniot.model.Device;
 import br.edu.uepb.nutes.haniot.model.DeviceType;
 import br.edu.uepb.nutes.haniot.model.Measurement;
@@ -78,6 +90,7 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
 
+    List<Measurement> data = new ArrayList<>();
     @BindView(R.id.heart_rate_textview)
     TextView mHeartRateTextView;
 
@@ -95,6 +108,7 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
 
     @BindView(R.id.floating_button_record_stop)
     FloatingActionButton mButtonRecordStop;
+    RealTimeFragment realTimeFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,9 +116,7 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
         setContentView(R.layout.activity_heart_rate_record);
 
         ButterKnife.bind(this);
-
-        setSupportActionBar(mToolbar);
-        getSupportActionBar().setTitle(R.string.heart_rate);
+        initComponents();
 
         mButtonRecordPausePlay.setOnClickListener(this);
         mButtonRecordStop.setOnClickListener(this);
@@ -118,7 +130,6 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
         lastPause = 0;
         fcMinimum = Integer.MAX_VALUE;
         fcMaximum = Integer.MIN_VALUE;
-
         /**
          * Setting animation in heart imageview
          */
@@ -131,6 +142,7 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
 
         mDeviceAddress = getIntent().getStringExtra(HeartRateActivity.EXTRA_DEVICE_ADDRESS);
         deviceInformations = getIntent().getStringArrayExtra(HeartRateActivity.EXTRA_DEVICE_INFORMATIONS);
+
     }
 
     @Override
@@ -173,6 +185,16 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                super.onBackPressed();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.floating_button_record_pause_play:
@@ -182,7 +204,9 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
                 } else {
                     mButtonRecordPausePlay.setImageResource(R.drawable.ic_action_pause);
                     startChronometer();
+                    //sendMeasurements(); //For tests
                 }
+
                 break;
             case R.id.floating_button_record_stop:
                 stopChronometer();
@@ -333,25 +357,23 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
                     updateConnectionState(mConnected);
                 }
 
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            Measurement measurement = JsonToMeasurementParser.heartRate(intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
-                            Log.i("MeasurementTO", measurement.toString());
+                new Handler().postDelayed(()->{
+                    try {
+                        Measurement measurement = JsonToMeasurementParser.heartRate(intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
+                        Log.i("MeasurementTO", measurement.toString());
 
-                            int bpm = (int) measurement.getValue();
-                            mHeartRateTextView.setText(String.format("%03d", (int) measurement.getValue()));
+                        sendMeasurements(measurement);
+                        int bpm = (int) measurement.getValue();
+                        mHeartRateTextView.setText(String.format("%03d", (int) measurement.getValue()));
 
-                            fcAccumulate += bpm;
-                            fcMinimum = (bpm > 0 && bpm < fcMinimum) ? bpm : fcMinimum;
-                            fcMaximum = (bpm > fcMaximum) ? bpm : fcMaximum;
-                            fcTotal++;
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                        fcAccumulate += bpm;
+                        fcMinimum = (bpm > 0 && bpm < fcMinimum) ? bpm : fcMinimum;
+                        fcMaximum = (bpm > fcMaximum) ? bpm : fcMaximum;
+                        fcTotal++;
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                });
+                }, 100);
             }
         }
     };
@@ -370,5 +392,41 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
      */
     private void synchronizeWithServer() {
         SynchronizationServer.getInstance(this).run();
+    }
+
+    /**
+     * Send Measurements for chart.
+     * @param measurement
+     */
+    public void sendMeasurements(Measurement measurement) {
+        data.add(measurement);
+        realTimeFragment.sendMeasurement(measurement);
+    }
+
+    /**
+     * Initialize components
+     */
+    private void initComponents() {
+        initToolBar();
+        initFragments();
+    }
+
+    private void initFragments(){
+        realTimeFragment = RealTimeFragment.newInstance(this);
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_realtime, realTimeFragment);
+        transaction.commit();
+    }
+    /**
+     * Initialize ToolBar
+     */
+    private void initToolBar() {
+
+        mToolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+
     }
 }

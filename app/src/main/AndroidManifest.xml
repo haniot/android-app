@@ -8,9 +8,11 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <!-- Android >= 6 necessita de localização ativa -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <application
         android:name=".App"
@@ -80,12 +82,39 @@
         <activity
             android:name=".devices.SmartBandActivity"
             android:screenOrientation="portrait" />
+
+        <!-- ACTIVITIES CHARTS-->
         <activity android:name=".activity.account.ChangePasswordActivity" />
         <activity android:name=".activity.charts.BodyCompositionChartActivity" />
         <activity android:name=".activity.charts.TemperatureChartActivity" />
         <activity android:name=".activity.charts.HeartRateChartActivity" />
         <activity android:name=".activity.charts.GlucoseChartActivity" />
         <activity android:name=".activity.charts.BloodPresssureChartActivity" />
+        <activity android:name=".activity.charts.SmartBandChartActivity" />
+
+        <!-- ACTIVITIES ELDERLY -->
+        <activity
+            android:name=".elderly.ElderlyMonitoredActivity"
+            android:parentActivityName=".activity.MainActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeSecondaty">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activity.MainActivity" />
+        </activity>
+        <activity
+            android:name=".elderly.ElderlyRegisterActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeSecondaty" />
+        <activity
+            android:name=".elderly.assessment.FallRiskAssessmentActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeSecondaty" />
+        <activity
+            android:name=".elderly.assessment.FallRiskAssessmentResultActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeSecondaty" />
+        <!-- END ACTIVITIES FALL RISK -->
 
         <!-- SERVICES -->
         <service
@@ -102,6 +131,13 @@
             </intent-filter>
         </service>
         <service android:name="com.signove.health.service.BluetoothHDPService" />
+        <service android:name=".service.FCMService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <!-- END SERVICES -->
+
     </application>
 
 </manifest>
