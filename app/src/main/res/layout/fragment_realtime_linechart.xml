@@ -7,9 +7,5 @@
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/real_time_chart"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
-
-
-
+        android:layout_height="match_parent" />
 </RelativeLayout>

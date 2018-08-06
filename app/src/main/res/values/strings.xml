@@ -106,6 +106,9 @@
     <!-- FORMAT DATES -->
     <string name="date_format">yyyy/MM/dd</string>
     <string name="date_format2">MMMM dd\', \'yyyy</string>
+    <string name="date_format_year">yyyy</string>
+    <string name="date_format_month">MMMM</string>
+    <string name="date_format_week">w</string>
     <string name="date_format_month_day">MM/dd</string>
     <string name="datetime_format">yyyy/MM/dd HH:mm:ss</string>
     <string name="datetime_format2">MMMM dd HH:mm:ss</string>
@@ -115,8 +118,40 @@
     <string name="time_format_simple2">HH\'h\'mm\'m\'</string>
     <!-- END FORMAT DATES -->
 
+    <string name="info_max">Maximum</string>
+    <string name="info_min">Minimum</string>
+    <string name="info_avarage">Average</string>
+    <string name="info_period">Period</string>
+    <string name="more_information">More Information</string>
+    <string name="date_format_info">yyyy/MMM/dd</string>
+    <string name="info_steps">Steps</string>
+    <string name="info_distance">Distance</string>
+    <string name="info_calories">Calories</string>
+
+    //UNITS
+    <string name="unit_kcal">cal</string>
+    <string name="unit_meters">m</string>
+
+    //Limit and Lines of Chart
+    <string name="diastolic">Diastolic</string>
+    <string name="systolic">Systolic</string>
+    <string name="limit_blood_pressure">High Pressure</string>
+    <string name="limit_heart_rate">Limit 1</string>
+    <string name="limit_glucose">Pre Diabetes</string>
+    <string name="limit_temperature">Fever</string>
+    <string name="limit_body_composition">Obesidade</string>
+
+    //FLOATING
+    <string name="day">Day</string>
+    <string name="week">Week</string>
+    <string name="month">Month</string>
+    <string name="year">Year</string>
+    <string name="period">Period</string>
+
     // FORMATS
     <string name="format_number1">#.0</string>
+    <string name="format_number_float">#.0</string>
+    <string name="format_number_integer">#</string>
     <string name="format_number2">##.0</string>
 
     // EXCEPTIONS LOGS

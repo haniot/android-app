@@ -237,6 +237,36 @@
     </string>
     <!-- END SURVEY -->
 
+
+    <string name="noData">Sem dados</string>
+
+    //Limit and Lines of Chart
+    <string name="diastolic">Diastólica</string>
+    <string name="systolic">Sistólica</string>
+    <string name="limit_blood_pressure">Pressão Alta</string>
+    <string name="limit_heart_rate">Limit 1</string>
+    <string name="limit_glucose">Pre Diabetes</string>
+    <string name="limit_temperature">Febre</string>
+    <string name="limit_body_composition">Overweight</string>
+
+    //FLOATING
+    <string name="day">Dia</string>
+    <string name="week">Semana</string>
+    <string name="month">Mês</string>
+    <string name="year">Ano</string>
+    <string name="period">Período</string>
+
+    // INFO TITLE
+    <string name="info_max">Máximo</string>
+    <string name="info_min">Mínimo</string>
+    <string name="info_avarage">Média</string>
+    <string name="info_period">Período</string>
+    <string name="more_information">Mais Informações</string>
+    <string name="info_steps">Passos</string>
+    <string name="info_distance">Distância</string>
+    <string name="info_calories">Calorias</string>
+
+
     <!-- ELDERLY -->
     <string name="elderly_monitor">Monitorar Idosos</string>
     <string name="elderly_monitored">Idosos Monitorados</string>

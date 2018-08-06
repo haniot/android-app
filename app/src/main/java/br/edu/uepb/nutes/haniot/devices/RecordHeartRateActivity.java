@@ -2,7 +2,7 @@ package br.edu.uepb.nutes.haniot.devices;
 
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
-import android.app.FragmentManager;
+import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
@@ -19,23 +19,19 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.SystemClock;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Chronometer;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
@@ -43,7 +39,6 @@ import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 
 import br.edu.uepb.nutes.haniot.R;
@@ -113,8 +108,8 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
 
     @BindView(R.id.floating_button_record_stop)
     FloatingActionButton mButtonRecordStop;
-    Chart lineChart;
-    CreateChart mChart;
+    RealTimeFragment realTimeFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -148,19 +143,6 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
         mDeviceAddress = getIntent().getStringExtra(HeartRateActivity.EXTRA_DEVICE_ADDRESS);
         deviceInformations = getIntent().getStringArrayExtra(HeartRateActivity.EXTRA_DEVICE_INFORMATIONS);
 
-        lineChart = (LineChart) findViewById(R.id.real_time_chart);
-        mChart = new CreateChart.Params(this, lineChart)
-                .drawValues(false)
-                .yAxisEnabled(false)
-                .xAxisEnabled(false)
-                .drawValues(false)
-                .colorFont(Color.WHITE)
-                .setMaxVisibility(20,20)
-                .setStyleFilledLine(true, getResources().getColor(R.color.colorAccent))
-                .setTypeLine(LineDataSet.Mode.CUBIC_BEZIER)
-                .colorGridChart(0,0)
-                .drawCircleStyle(0,0)
-                .build();
     }
 
     @Override
@@ -200,6 +182,16 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
         super.onDestroy();
         unbindService(mServiceConnection);
         mBluetoothLeService = null;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                super.onBackPressed();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -408,7 +400,7 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
      */
     public void sendMeasurements(Measurement measurement) {
         data.add(measurement);
-        mChart.paint(measurement);
+        realTimeFragment.sendMeasurement(measurement);
     }
 
     /**
@@ -416,14 +408,25 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
      */
     private void initComponents() {
         initToolBar();
+        initFragments();
     }
 
+    private void initFragments(){
+        realTimeFragment = RealTimeFragment.newInstance(this);
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_realtime, realTimeFragment);
+        transaction.commit();
+    }
     /**
      * Initialize ToolBar
      */
     private void initToolBar() {
+
+        mToolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+
     }
 }
