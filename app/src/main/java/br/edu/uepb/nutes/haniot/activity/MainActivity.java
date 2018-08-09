@@ -5,18 +5,24 @@ import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.SpannableString;
+import android.text.style.StyleSpan;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,6 +35,7 @@ import org.json.JSONObject;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.account.LoginActivity;
+import br.edu.uepb.nutes.haniot.adapter.FragmentPageAdapter;
 import br.edu.uepb.nutes.haniot.elderly.ElderlyMonitoredActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.activity.settings.SettingsActivity;
@@ -46,25 +53,19 @@ import butterknife.ButterKnife;
  * @version 1.0
  * @copyright Copyright (c) 2017, NUTES UEPB
  */
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity {
     private final String TAG = "MainActivity";
     private final int REQUEST_ENABLE_BLUETOOTH = 1;
     private final int REQUEST_ENABLE_LOCATION = 2;
 
-    @BindView(R.id.drawer_layout)
-    DrawerLayout mDrawer;
-
-    @BindView(R.id.navigation_view)
-    NavigationView mNavigationView;
-
     @BindView(R.id.toolbar)
-    Toolbar mToolbar;
-
-    @BindView(R.id.progressBarToolbar)
-    ProgressBar mProgressBar;
-
-    private Fragment fragment;
-    private Menu mMenu;
+    Toolbar toolbar;
+    @BindView(R.id.tabLayout)
+    TabLayout tabLayout;
+    @BindView(R.id.viewpager)
+    ViewPager viewPager;
+    @BindView(R.id.newMeasureButton)
+    FloatingActionButton newMeasureButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,12 +73,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        setSupportActionBar(mToolbar);
+        toolbar.setTitle("HANIoT");
+        setSupportActionBar(toolbar);
 
-        // Setup drawer view
-        setupDrawerContent();
+        viewPager.setAdapter(new FragmentPageAdapter(getSupportFragmentManager()));
+        tabLayout.setupWithViewPager(viewPager);
 
-        fragment = new ConnectDeviceFragment();
+        if (tabLayout.getTabAt(0) != null){
+            String textDash = "DASHBOARD";
+            SpannableString dash = new SpannableString(textDash);
+            dash.setSpan(new StyleSpan(Typeface.BOLD), textDash.length(), dash.length(), 0);
+            tabLayout.getTabAt(0).setText(dash);
+        }
+
+        newMeasureButton.setOnClickListener(v -> {
+            Intent it = new Intent(MainActivity.this, ManageMeasurements.class);
+            startActivity(it);
+        });
     }
 
     @Override
@@ -92,8 +104,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             finish();
         }
 
-        mNavigationView.setCheckedItem(R.id.action_connect_devices);
-        openFragment(fragment);
     }
 
     /**
@@ -160,64 +170,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        mMenu = menu;
-
+        getMenuInflater().inflate(R.menu.main_menu,menu);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_synchronization:
-                synchronizationWithServer();
-                break;
+
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_connect_devices:
-                fragment = new ConnectDeviceFragment();
-                break;
-            case R.id.action_scanner_devices:
-                fragment = new ScanDeviceFragment();
-                break;
-            case R.id.action_monitored_elderly:
-                startActivity(new Intent(this, ElderlyMonitoredActivity.class));
-                break;
-            case R.id.action_settings:
-                startActivity(new Intent(this, SettingsActivity.class));
-                break;
-            default:
-                break;
-        }
-
-        openFragment(fragment);
-
-        mDrawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
-
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
-
-    private void setupDrawerContent() {
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, mDrawer, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        mDrawer.addDrawerListener(toggle);
-        toggle.syncState();
-
-        mNavigationView.setNavigationItemSelectedListener(this);
     }
 
     private void openFragment(Fragment fragment) {
@@ -225,51 +188,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.content, fragment).commit();
 //            transaction.replace(R.id.content, fragment).addToBackStack(null).commit();
-        }
-    }
-
-    private void synchronizationWithServer() {
-        changeSynchronization(true);
-
-        SynchronizationServer.getInstance(this)
-                .run(new SynchronizationServer.Callback() {
-                    @Override
-                    public void onError(JSONObject result) {
-                        changeSynchronization(false);
-                        showToast(getString(R.string.synchronization_failed));
-                    }
-
-                    @Override
-                    public void onSuccess(JSONObject result) {
-                        changeSynchronization(false);
-                        String message = getString(R.string.synchronization_success);
-
-                        if (result.has("message")) {
-                            try {
-                                message = result.getString("message");
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-
-                        showToast(message);
-                    }
-                });
-    }
-
-    private void changeSynchronization(final boolean isSynchronizing) {
-        if (mMenu != null) {
-            final MenuItem menuSynchronizing = mMenu.findItem(R.id.action_synchronization);
-
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    menuSynchronizing.setVisible(!isSynchronizing);
-
-                    if (isSynchronizing) mProgressBar.setVisibility(View.VISIBLE);
-                    else mProgressBar.setVisibility(View.GONE);
-                }
-            });
         }
     }
 
