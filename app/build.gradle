@@ -6,7 +6,7 @@ android {
     defaultConfig {
         applicationId "br.edu.uepb.nutes.haniot"
         minSdkVersion 19
-        targetSdkVersion 27
+        targetSdkVersion 19
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -23,8 +23,8 @@ android {
         }
     }
     compileOptions {
-        targetCompatibility 1.8
-        sourceCompatibility 1.8
+        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_1_8
     }
 }
 
@@ -36,33 +36,25 @@ dependencies {
     implementation 'com.android.support:support-v4:27.1.1'
     implementation 'com.android.support:cardview-v7:27.1.1'
     implementation 'com.android.support:recyclerview-v7:27.1.1'
-
     implementation 'com.squareup.okhttp3:okhttp:3.10.0'
     implementation 'com.google.code.gson:gson:2.8.2'
     implementation 'com.mikhaellopez:circularprogressbar:1.1.1'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
-
     // BUTTER KNIFE
     implementation 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
-
     // FIREBASE
     implementation 'com.google.firebase:firebase-core:11.8.0'
     implementation 'com.google.firebase:firebase-messaging:11.8.0'
-
     // TEXT DRAWABLE
     implementation 'com.github.amulyakhare:TextDrawable:master'
-
     // APPINTRO
     implementation 'com.github.apl-devs:appintro:v4.2.3'
-
     // TEST
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
-
     //Floating Action Button
-    compile 'com.github.clans:fab:1.6.4'
-
+    implementation 'com.github.clans:fab:1.6.4'
 }
 apply plugin: 'com.google.gms.google-services'
