@@ -384,6 +384,39 @@
     <string name="risk_fall_message_blocked_page">Answer the current question to go to next...</string>
     <!-- END ELDERLY ASSESSMENT RISK FALL -->
 
+    <!-- STRINGS FOR TABLET VERSION-->
+    <string name="profile">Profile</string>
+    <string name="connect_device">Connect Device</string>
+    <string name="rightbutton">Right Button</string>
+    <string name="LeftButton">Left Button</string>
+    <string name="new_measurement">New Measurement</string>
+    <string name="dash_item_description">Measurement Button</string>
+    <string name="distance">Distance</string>
+    <string name="Calories">Calories</string>
+    <string name="StepsNumber">Number of steps</string>
+    <string name="title_activity_manage_measurements">ManageMeasurements</string>
+    <string name="manage_measurement_title">Manage Measurements</string>
+    <string name="ear_thermometer">Ear Thermometer</string>
+    <string name="ear_thermometer_description">DL8740</string>
+    <string name="accu_check">Accu-Check</string>
+    <string name="accu_check_description">Performa Connect</string>
+    <string name="body_composition_yunmai">Body Composition Analysis Yunmai</string>
+    <string name="body_composition1">Body Composition Analyze</string>
+    <string name="body_composition_analyze_description">YUNMAI Mini 1501</string>
+    <string name="heart_rate_sensor_h10">Heart Rate Sensor Polar H10</string>
+    <string name="heart_rate_sensor_h7">Heart Rate Sensor Polar H7</string>
+    <string name="heart_rate_sensor">Heart Rate Sensor</string>
+    <string name="heart_rate_sensor_description_h7">Polar H7</string>
+    <string name="heart_rate_sensor_description_h10">Polar H10</string>
+    <string name="smartband">Smart Band</string>
+    <string name="smartband_description">MI BAND 2</string>
+    <string name="blood_pressure_monitor">Blood Pressure Monitor</string>
+    <string name="blood_pressure_monitor_description">OMRON BP792IT</string>
+    <string name="body_composition_monitor">Body Composition Monitor OMRON</string>
+    <string name="body_composition_monitor_description">OMRON HBF-206ITH</string>
+    <string name="body_composition2">Body Composition Monitor</string>
+    <string name="icon_manage_measurement">Manage measurement icon</string>
+
     <!-- ARRAY QUESTIONS RISK FALL -->
     <string-array name="risk_questions_array">
         <item>@string/risk_fall_description_q1</item>

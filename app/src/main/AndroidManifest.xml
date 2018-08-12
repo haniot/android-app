@@ -45,8 +45,12 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".activity.ManageMeasurements"
+            android:label="@string/title_activity_manage_measurements"
+            android:theme="@style/AppTheme"></activity>
+        <activity
             android:name=".activity.MainActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="sensor" />
         <activity
             android:name=".activity.DeviceInforActivity"
             android:parentActivityName=".activity.MainActivity"

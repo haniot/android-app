@@ -20,4 +20,6 @@
     <dimen name="button_assessment_radius">50dp</dimen>
     <dimen name="button_assessment_padding">15dp</dimen>
     <dimen name="radio_button_assessment_horizontal_padding">40dp</dimen>
+
+    <dimen name="item_dimen_dashboard">24dp</dimen>
 </resources>
