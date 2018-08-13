@@ -149,7 +149,7 @@ public class FragmentDash2 extends Fragment {
         gridMeasurement.addItemDecoration(new GridSpacingItemDecoration(getContext(),R.dimen.item_dimen_dashboard));
         //Método utilizado para ajeitar o lag no scroll, o scroll utilizado é o do nested e nao da recyclerview
         gridMeasurement.setNestedScrollingEnabled(false);
-        GridDashAdapter adapter = new GridDashAdapter(buttonList);
+        GridDashAdapter adapter = new GridDashAdapter(buttonList,getActivity());
         adapter.setHasStableIds(true);
         gridMeasurement.setAdapter(adapter);
 
