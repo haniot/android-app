@@ -20,20 +20,19 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="10dp"
-            android:text="Date" />
+            android:layout_marginTop="10dp" />
 
         <ImageButton
             android:id="@+id/buttonArrowLeft"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_alignParentTop="true"
             android:layout_marginEnd="50dp"
             android:layout_marginTop="115dp"
             android:layout_toStartOf="@+id/stepsProgressBar"
             android:background="@android:color/transparent"
             android:contentDescription="@string/LeftButton"
-            android:src="@drawable/ic_arrow_left" />
+            android:src="@drawable/ic_arrow_left"/>
 
         <com.mikhaellopez.circularprogressbar.CircularProgressBar
             android:id="@+id/stepsProgressBar"
@@ -50,8 +49,8 @@
 
         <ImageButton
             android:id="@+id/buttonArrowRight"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_alignTop="@+id/buttonArrowLeft"
             android:layout_marginStart="50dp"
             android:layout_toEndOf="@+id/stepsProgressBar"
@@ -68,9 +67,9 @@
             android:layout_marginStart="50dp"
             android:background="@drawable/ic_calories"
             app:cpb_background_progressbar_color="@android:color/darker_gray"
-            app:cpb_background_progressbar_width="3dp"
+            app:cpb_background_progressbar_width="6dp"
             app:cpb_progressbar_color="@color/colorAccent"
-            app:cpb_progressbar_width="6dp" />
+            app:cpb_progressbar_width="3dp" />
 
         <com.mikhaellopez.circularprogressbar.CircularProgressBar
             android:id="@+id/lightProgress2"

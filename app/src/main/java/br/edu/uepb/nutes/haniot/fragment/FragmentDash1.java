@@ -1,9 +1,12 @@
 package br.edu.uepb.nutes.haniot.fragment;
 
+import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -52,6 +55,9 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener {
     CircularProgressBar caloriesProgressBar;
     @BindView(R.id.lightProgress2)
     CircularProgressBar distanceProgressBar;
+    private int numberOfSteps;
+    private int numberOfCalories;
+    private float distance;
 
     public FragmentDash1() {
         // Required empty public constructor
@@ -93,9 +99,31 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener {
 
         String timeStamp = new SimpleDateFormat("EEEE / dd / yyyy", Locale.US).format(Calendar.getInstance().getTime());
         textDate.setText(timeStamp);
+
         btnArrowLeft.setOnClickListener(this);
         btnArrowRight.setOnClickListener(this);
 
+        //Estes dados devem vim do servidor
+        numberOfSteps = 70;
+        numberOfCalories = 80;
+        distance = 28.3f;
+
+        //Seta o progresso
+        stepsProgressBar.setProgress(0);
+        caloriesProgressBar.setProgress(0);
+        distanceProgressBar.setProgress(0);
+
+        stepsProgressBar.setProgressWithAnimation(numberOfSteps,2500);
+        caloriesProgressBar.setProgressWithAnimation(numberOfCalories,4000);
+        distanceProgressBar.setProgressWithAnimation(distance,4000);
+
+
+        stepsProgressBar.setColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
+        stepsProgressBar.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorAlertDanger));
+        caloriesProgressBar.setColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
+        caloriesProgressBar.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorGrey));
+        distanceProgressBar.setColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
+        distanceProgressBar.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorAlertDanger));
 
         return view;
     }
