@@ -1,5 +1,6 @@
 package br.edu.uepb.nutes.haniot.fragment;
 
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,8 +14,10 @@ import android.widget.Toast;
 
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 import br.edu.uepb.nutes.haniot.R;
@@ -43,6 +46,12 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener {
 
     @BindView(R.id.textDate)
     TextView textDate;
+    @BindView(R.id.textSteps)
+    TextView textSteps;
+    @BindView(R.id.textCalories)
+    TextView textCalories;
+    @BindView(R.id.textDistance)
+    TextView textDistance;
     @BindView(R.id.buttonArrowLeft)
     ImageButton btnArrowLeft;
     @BindView(R.id.buttonArrowRight)
@@ -53,9 +62,22 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener {
     CircularProgressBar caloriesProgressBar;
     @BindView(R.id.lightProgress2)
     CircularProgressBar distanceProgressBar;
-    private int numberOfSteps;
-    private int numberOfCalories;
-    private float distance;
+
+    private int    numberOfSteps = 0;
+    private int numberOfCalories = 0;
+    private float       distance = 0;
+    private int      stepsGoal = 200;
+    private int   caloriesGoal = 300;
+    private int     distanceGoal = 4;
+
+    //Date part
+    private Calendar                   calendar;
+    private SimpleDateFormat   simpleDateFormat;
+    private String                    date = "";
+    private boolean changeDateFirstTime = false;
+    private String                        today;
+
+
 
     public FragmentDash1() {
         // Required empty public constructor
@@ -94,27 +116,78 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_fragment_dash1, container, false);
         ButterKnife.bind(this,view);
+        initData();
+        today = simpleDateFormat.format(calendar.getTime());
 
-        String timeStamp = new SimpleDateFormat("EEEE / dd / yyyy", Locale.US).format(Calendar.getInstance().getTime());
-        textDate.setText(timeStamp);
+        updateTextDate(calendar.getTime());
 
         btnArrowLeft.setOnClickListener(this);
         btnArrowRight.setOnClickListener(this);
 
-        //Estes dados devem vim do servidor
-        numberOfSteps = 70;
-        numberOfCalories = 80;
-        distance = 28.3f;
+        return view;
+    }
 
-        //Seta o progresso
-        stepsProgressBar.setProgress(0);
-        caloriesProgressBar.setProgress(0);
-        distanceProgressBar.setProgress(0);
+    public void updateTextDate(Date dateToText){
+        String formattedDate = new SimpleDateFormat("EEEE / dd / yyyy",Locale.US).format(dateToText);
+        textDate.setText(formattedDate);
+    }
+
+    public Date increaseDay(String date) throws ParseException {
+
+        //Seta a data informada
+        calendar.setTime(simpleDateFormat.parse(date));
+        //Adiciona 1 dia
+        calendar.add(Calendar.DATE,1);
+        this.date = simpleDateFormat.format(calendar.getTime());
+        System.out.println("========== Date: "+this.date);
+        System.out.println("========== Today: "+this.today);
+        if (this.date.equals(this.today)){
+            btnArrowRight.setEnabled(false);
+            btnArrowRight.setBackground(getResources().getDrawable(R.mipmap.ic_arrow_right_disabled));
+        }
+
+        return calendar.getTime();
+    }
+
+    public Date decreaseDay(String date) throws ParseException {
+        btnArrowRight.setEnabled(true);
+        btnArrowRight.setBackground(getResources().getDrawable(R.mipmap.ic_arrow_right));
+        //Pega a instancia do calendario
+        calendar = Calendar.getInstance();
+        //Seta a data informada
+        calendar.setTime(simpleDateFormat.parse(date));
+        //Remove 1 dia
+        calendar.add(Calendar.DATE,-1);
+        this.date = simpleDateFormat.format(calendar.getTime());
+
+        return calendar.getTime();
+    }
+
+    public void initData(){
+        btnArrowRight.setEnabled(false);
+        btnArrowRight.setBackground(getResources().getDrawable(R.mipmap.ic_arrow_right_disabled));
+        simpleDateFormat = new SimpleDateFormat("dd / MM / yyyy");
+        calendar = Calendar.getInstance();
+        this.date = simpleDateFormat.format(calendar.getTime());
+
+        //Quantidade de passos, calorias e distancia; Estes dados devem vim do servidor
+        numberOfSteps = 70;
+        numberOfCalories = 120;
+        distance = 2.8f;
+
+        //Seta os dados nos textos abaixo da progressbar
+        textSteps.setText(numberOfSteps+" steps");
+        textCalories.setText(numberOfCalories+" calories");
+        textDistance.setText(distance+" KM");
+
+        //Seta o progresso máximo
+        stepsProgressBar.setProgressMax(stepsGoal);
+        caloriesProgressBar.setProgressMax(caloriesGoal);
+        distanceProgressBar.setProgressMax(distanceGoal);
 
         stepsProgressBar.setProgressWithAnimation(numberOfSteps,2500);
         caloriesProgressBar.setProgressWithAnimation(numberOfCalories,4000);
         distanceProgressBar.setProgressWithAnimation(distance,4000);
-
 
         stepsProgressBar.setColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
         stepsProgressBar.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorAlertDanger));
@@ -123,7 +196,6 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener {
         distanceProgressBar.setColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
         distanceProgressBar.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorAlertDanger));
 
-        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -142,13 +214,25 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()){
+
+            //Botão que volta os dias
             case R.id.buttonArrowLeft:
-                Toast.makeText(getActivity(), "leftBtn", Toast.LENGTH_SHORT).show();
-                textDate.setText("Left Button Clicked");
+                try {
+                    updateTextDate(decreaseDay(this.date));
+                    changeDateFirstTime = true;
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
                 break;
+
+            // Botão que acrescenta os dias
             case R.id.buttonArrowRight:
-                Toast.makeText(getActivity(), "rightBtn", Toast.LENGTH_SHORT).show();
-                textDate.setText("Right Button Clicked");
+                try {
+                    updateTextDate(increaseDay(this.date));
+                    changeDateFirstTime = true;
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
                 break;
 
         }
