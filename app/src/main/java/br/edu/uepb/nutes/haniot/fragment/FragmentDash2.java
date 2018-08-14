@@ -55,6 +55,7 @@ public class FragmentDash2 extends Fragment {
     private List<ItemGrid> buttonList    = new ArrayList<>();
     private SharedPreferences                          prefs;
     private SharedPreferences.Editor                  editor;
+    private GridDashAdapter                          adapter;
 
     @BindView(R.id.gridMeasurement)
     RecyclerView gridMeasurement;
@@ -149,7 +150,7 @@ public class FragmentDash2 extends Fragment {
         gridMeasurement.addItemDecoration(new GridSpacingItemDecoration(getContext(),R.dimen.item_dimen_dashboard));
         //Método utilizado para ajeitar o lag no scroll, o scroll utilizado é o do nested e nao da recyclerview
         gridMeasurement.setNestedScrollingEnabled(false);
-        GridDashAdapter adapter = new GridDashAdapter(buttonList,getActivity());
+        adapter = new GridDashAdapter(buttonList,getActivity());
         adapter.setHasStableIds(true);
         gridMeasurement.setAdapter(adapter);
 
@@ -201,6 +202,9 @@ public class FragmentDash2 extends Fragment {
                 addButtomOnGrid(iconList.get(i),descriptionList.get(i),nameList.get(i));
             }
         }
+        adapter = new GridDashAdapter(buttonList,getActivity());
+        adapter.setHasStableIds(true);
+        gridMeasurement.setAdapter(adapter);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

@@ -1,13 +1,18 @@
 package br.edu.uepb.nutes.haniot.fragment;
 
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.AppCompatImageButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -53,9 +58,9 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener {
     @BindView(R.id.textDistance)
     TextView textDistance;
     @BindView(R.id.buttonArrowLeft)
-    ImageButton btnArrowLeft;
+    AppCompatImageButton btnArrowLeft;
     @BindView(R.id.buttonArrowRight)
-    ImageButton btnArrowRight;
+    AppCompatButton btnArrowRight;
     @BindView(R.id.stepsProgressBar)
     CircularProgressBar stepsProgressBar;
     @BindView(R.id.lightProgress1)
@@ -76,6 +81,7 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener {
     private String                    date = "";
     private boolean changeDateFirstTime = false;
     private String                        today;
+    private Animation                     scale;
 
 
 
@@ -165,15 +171,17 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener {
 
     public void initData(){
         btnArrowRight.setEnabled(false);
+        scale = AnimationUtils.loadAnimation(getContext(), R.anim.bounce);
         btnArrowRight.setBackground(getResources().getDrawable(R.mipmap.ic_arrow_right_disabled));
+        btnArrowLeft.setBackground(getResources().getDrawable(R.mipmap.ic_arrow_left));
         simpleDateFormat = new SimpleDateFormat("dd / MM / yyyy");
         calendar = Calendar.getInstance();
         this.date = simpleDateFormat.format(calendar.getTime());
 
         //Quantidade de passos, calorias e distancia; Estes dados devem vim do servidor
-        numberOfSteps = 70;
-        numberOfCalories = 120;
-        distance = 2.8f;
+        this.numberOfSteps = 70;
+        this.numberOfCalories = 120;
+        this.distance = 2.8f;
 
         //Seta os dados nos textos abaixo da progressbar
         textSteps.setText(numberOfSteps+" steps");
@@ -185,9 +193,7 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener {
         caloriesProgressBar.setProgressMax(caloriesGoal);
         distanceProgressBar.setProgressMax(distanceGoal);
 
-        stepsProgressBar.setProgressWithAnimation(numberOfSteps,2500);
-        caloriesProgressBar.setProgressWithAnimation(numberOfCalories,4000);
-        distanceProgressBar.setProgressWithAnimation(distance,4000);
+        setDataProgress(this.numberOfSteps,this.numberOfCalories,this.distance);
 
         stepsProgressBar.setColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
         stepsProgressBar.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorAlertDanger));
@@ -195,6 +201,14 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener {
         caloriesProgressBar.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorGrey));
         distanceProgressBar.setColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
         distanceProgressBar.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorAlertDanger));
+
+    }
+
+    public void setDataProgress (int numberOfSteps, int numberOfCalories, float distance){
+
+        stepsProgressBar.setProgressWithAnimation(numberOfSteps,2500);
+        caloriesProgressBar.setProgressWithAnimation(numberOfCalories,3500);
+        distanceProgressBar.setProgressWithAnimation(distance,3500);
 
     }
 
@@ -218,6 +232,7 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener {
             //Botão que volta os dias
             case R.id.buttonArrowLeft:
                 try {
+                    btnArrowLeft.startAnimation(scale);
                     updateTextDate(decreaseDay(this.date));
                     changeDateFirstTime = true;
                 } catch (ParseException e) {
@@ -237,6 +252,8 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener {
 
         }
     }
+
+
 
     /**
      * This interface must be implemented by activities that contain this
