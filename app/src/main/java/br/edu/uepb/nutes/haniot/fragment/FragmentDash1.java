@@ -171,7 +171,7 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener {
 
     public void initData(){
         btnArrowRight.setEnabled(false);
-        scale = AnimationUtils.loadAnimation(getContext(), R.anim.bounce);
+        scale = AnimationUtils.loadAnimation(getContext(), R.anim.click);
         btnArrowRight.setBackground(getResources().getDrawable(R.mipmap.ic_arrow_right_disabled));
         btnArrowLeft.setBackground(getResources().getDrawable(R.mipmap.ic_arrow_left));
         simpleDateFormat = new SimpleDateFormat("dd / MM / yyyy");
@@ -243,6 +243,7 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener {
             // Botão que acrescenta os dias
             case R.id.buttonArrowRight:
                 try {
+                    btnArrowRight.startAnimation(scale);
                     updateTextDate(increaseDay(this.date));
                     changeDateFirstTime = true;
                 } catch (ParseException e) {

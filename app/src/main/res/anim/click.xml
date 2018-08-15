@@ -3,11 +3,11 @@
     android:shareInterpolator="@android:anim/linear_interpolator">
 
     <scale
-        android:duration="2000"
-        android:fromXScale="0.3"
-        android:toXScale="1.0"
-        android:fromYScale="0.3"
-        android:toYScale="1.0"
+        android:duration="30"
+        android:fromXScale="1.0"
+        android:toXScale="0.9"
+        android:fromYScale="1.0"
+        android:toYScale="0.9"
         android:pivotX="50%"
-        android:pivotY="50%" />
+        android:pivotY="50%"/>
 </set>

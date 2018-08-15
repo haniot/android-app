@@ -8,14 +8,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import br.edu.uepb.nutes.haniot.R;
 
 import java.util.List;
+import android.os.Handler;
+
+import com.mikhaellopez.circularprogressbar.CircularProgressBar;
+
+import java.util.logging.LogRecord;
 
 import br.edu.uepb.nutes.haniot.devices.GlucoseActivity;
 import br.edu.uepb.nutes.haniot.devices.HeartRateActivity;
@@ -31,12 +38,15 @@ import butterknife.ButterKnife;
 public class GridDashAdapter extends RecyclerView.Adapter<GridDashAdapter.ViewHolderGrid> {
 
     private List<ItemGrid> listaItens;
-    private Context context;
-    private int lastPosition = -1;
+    private Context           context;
+    private int     lastPosition = -1;
+    private Animation           scale;
+
 
     public GridDashAdapter(List<ItemGrid> listaItens,Context context){
         this.listaItens = listaItens;
         this.context = context;
+        scale = AnimationUtils.loadAnimation(context, R.anim.click);
     }
 
     @NonNull
@@ -68,37 +78,105 @@ public class GridDashAdapter extends RecyclerView.Adapter<GridDashAdapter.ViewHo
              */
             setAnimation(holder.itemView,position);
             holder.itemView.setOnClickListener( v -> {
+                holder.imageIten.startAnimation(scale);
+                holder.itemGridProgressBar.setVisibility(View.VISIBLE);
+                holder.itemGridProgressBar.setProgressWithAnimation(100);
+
                 switch (item.getName()){
                     case "YUNMAI Mini 1501":
-                        context.startActivity(new Intent(context,BodyCompositionHDPActivity.class));
+
+                        new Handler().postDelayed(new Runnable() {
+                            public void run() {
+                                // do something...
+                                context.startActivity(new Intent(context,BodyCompositionHDPActivity.class));
+
+                            }
+                        }, 200);
                         break;
+
                     case "DL8740":
-                        context.startActivity(new Intent(context,ThermometerActivity.class));
+
+                        new Handler().postDelayed(new Runnable() {
+                            public void run() {
+                                // do something...
+                                context.startActivity(new Intent(context,ThermometerActivity.class));
+
+                            }
+                        }, 200);
                         break;
+
                     case "OMRON BP792IT":
-                        context.startActivity(new Intent(context,BloodPressureHDPActivity.class));
+
+                        new Handler().postDelayed(new Runnable() {
+                            public void run() {
+                                // do something...
+                                context.startActivity(new Intent(context,BloodPressureHDPActivity.class));
+
+                            }
+                        }, 200);
                         break;
+
                     case "Polar H7":
-                        Intent it = new Intent(context,HeartRateActivity.class);
-                        it.putExtra(HeartRateActivity.EXTRA_DEVICE_ADDRESS, "00:22:D0:BA:95:80");
-                        it.putExtra(HeartRateActivity.EXTRA_DEVICE_INFORMATIONS, new String[]{"POLAR", "H7"});
-                        context.startActivity(it);
+
+                        new Handler().postDelayed(new Runnable() {
+                            public void run() {
+                                // do something...
+                                Intent it = new Intent(context,HeartRateActivity.class);
+                                it.putExtra(HeartRateActivity.EXTRA_DEVICE_ADDRESS, "00:22:D0:BA:95:80");
+                                it.putExtra(HeartRateActivity.EXTRA_DEVICE_INFORMATIONS, new String[]{"POLAR", "H7"});
+                                context.startActivity(it);
+
+                            }
+                        }, 200);
                         break;
+
                     case "Polar H10":
-                        Intent intent = new Intent(context,HeartRateActivity.class);
-                        intent.putExtra(HeartRateActivity.EXTRA_DEVICE_ADDRESS, "E9:50:60:1F:31:D2");
-                        intent.putExtra(HeartRateActivity.EXTRA_DEVICE_INFORMATIONS, new String[]{"POLAR", "H10"});
-                        context.startActivity(intent);
+
+                        new Handler().postDelayed(new Runnable() {
+                            public void run() {
+                                // do something...
+                                Intent intent = new Intent(context,HeartRateActivity.class);
+                                intent.putExtra(HeartRateActivity.EXTRA_DEVICE_ADDRESS, "E9:50:60:1F:31:D2");
+                                intent.putExtra(HeartRateActivity.EXTRA_DEVICE_INFORMATIONS, new String[]{"POLAR", "H10"});
+                                context.startActivity(intent);
+
+                            }
+                        }, 200);
                         break;
+
                     case "MI BAND 2":
-                        context.startActivity(new Intent(context,SmartBandActivity.class));
+
+                        new Handler().postDelayed(new Runnable() {
+                            public void run() {
+                                // do something...
+                                context.startActivity(new Intent(context,SmartBandActivity.class));
+
+                            }
+                        }, 200);
                         break;
+
                     case "Performa Connect":
-                        context.startActivity(new Intent(context,GlucoseActivity.class));
+
+                        new Handler().postDelayed(new Runnable() {
+                            public void run() {
+                                // do something...
+                                context.startActivity(new Intent(context,GlucoseActivity.class));
+
+                            }
+                        }, 200);
                         break;
+
                     case "OMRON HBF-206ITH":
-                        context.startActivity(new Intent(context,ScaleActivity.class));
+
+                        new Handler().postDelayed(new Runnable() {
+                            public void run() {
+                                // do something...
+                                context.startActivity(new Intent(context,ScaleActivity.class));
+
+                            }
+                        }, 200);
                         break;
+
                 }
             });
 
@@ -122,7 +200,6 @@ public class GridDashAdapter extends RecyclerView.Adapter<GridDashAdapter.ViewHo
         }
     }
 
-
     public List<ItemGrid> getListaItens(){
         return this.listaItens;
     }
@@ -142,6 +219,8 @@ public class GridDashAdapter extends RecyclerView.Adapter<GridDashAdapter.ViewHo
         TextView textName;
         @BindView (R.id.layoutItemGrid)
         RelativeLayout layoutItemGrid;
+        @BindView(R.id.itemGridProgressBar)
+        CircularProgressBar itemGridProgressBar;
 
         public ViewHolderGrid(View itemView, Context context) {
             super(itemView);
