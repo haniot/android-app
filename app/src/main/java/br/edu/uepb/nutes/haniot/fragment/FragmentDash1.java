@@ -19,13 +19,24 @@ import android.widget.Toast;
 
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
+import org.json.JSONObject;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.activity.settings.Session;
+import br.edu.uepb.nutes.haniot.model.Measurement;
+import br.edu.uepb.nutes.haniot.model.MeasurementType;
+import br.edu.uepb.nutes.haniot.server.historical.CallbackHistorical;
+import br.edu.uepb.nutes.haniot.server.historical.Historical;
+import br.edu.uepb.nutes.haniot.server.historical.HistoricalType;
+import br.edu.uepb.nutes.haniot.server.historical.Params;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -83,7 +94,9 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener {
     private String                        today;
     private Animation                     scale;
 
-
+    //Server part
+    private Params params;
+    private Session session;
 
     public FragmentDash1() {
         // Required empty public constructor
@@ -114,6 +127,10 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        session = new Session(getContext());
+        params = new Params(session.get_idLogged(), MeasurementType.STEPS);
+
     }
 
     @Override
@@ -138,12 +155,58 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener {
         textDate.setText(formattedDate);
     }
 
+    public void loadServerData() throws ParseException {
+
+        String formattedDate = this.date;
+        formattedDate = formattedDate.replace(" ","");
+        formattedDate = formattedDate.replace("/","-");
+        SimpleDateFormat euSpn = new SimpleDateFormat("yyyy-MM-dd");
+        String t  = euSpn.format(calendar.getTime());
+
+        Historical historical = new Historical.Query()
+                .type(HistoricalType.MEASUREMENTS_TYPE_USER)
+                .params(params) // Measurements of the temperature type, associated to the user
+                .pagination(0, 1)
+                .filterDate(t,t)
+                .build();
+
+        historical.request(getContext(), new CallbackHistorical() {
+            @Override
+            public void onBeforeSend() {
+                System.out.println("Loading data");
+            }
+
+            @Override
+            public void onError(JSONObject result) {
+                System.out.println("Error on request of data of progress bar on dashboard");
+            }
+
+            @Override
+            public void onResult(List result) {
+
+                System.out.println("Response find!");
+                if(result != null && result.size() > 0 ){
+                    List a = new ArrayList();
+                    a = result;
+                    System.out.println(a.get(0));
+                }
+
+            }
+
+            @Override
+            public void onAfterSend() {
+
+            }
+        });
+
+    }
+
     public Date increaseDay(String date) throws ParseException {
 
         //Seta a data informada
-        calendar.setTime(simpleDateFormat.parse(date));
+        this.calendar.setTime(simpleDateFormat.parse(date));
         //Adiciona 1 dia
-        calendar.add(Calendar.DATE,1);
+        this.calendar.add(Calendar.DATE,1);
         this.date = simpleDateFormat.format(calendar.getTime());
         System.out.println("========== Date: "+this.date);
         System.out.println("========== Today: "+this.today);
@@ -235,6 +298,7 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener {
                     btnArrowLeft.startAnimation(scale);
                     updateTextDate(decreaseDay(this.date));
                     changeDateFirstTime = true;
+                    loadServerData();
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
