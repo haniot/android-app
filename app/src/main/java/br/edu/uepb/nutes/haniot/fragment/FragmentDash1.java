@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatButton;
@@ -155,40 +156,54 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener {
         textDate.setText(formattedDate);
     }
 
-    public void loadServerData() throws ParseException {
+    public void loadServerData(){
 
-        String formattedDate = this.date;
-        formattedDate = formattedDate.replace(" ","");
-        formattedDate = formattedDate.replace("/","-");
-        SimpleDateFormat euSpn = new SimpleDateFormat("yyyy-MM-dd");
-        String t  = euSpn.format(calendar.getTime());
+        SimpleDateFormat euSdf = new SimpleDateFormat("yyyy-MM-dd");
+        String t  = euSdf.format(calendar.getTime());
+        calendar.add(Calendar.DATE,1);
+        String t2  = euSdf.format(calendar.getTime());
 
         Historical historical = new Historical.Query()
                 .type(HistoricalType.MEASUREMENTS_TYPE_USER)
                 .params(params) // Measurements of the temperature type, associated to the user
+                .filterDate(t,t2)
                 .pagination(0, 1)
-                .filterDate(t,t)
                 .build();
 
-        historical.request(getContext(), new CallbackHistorical() {
+
+        historical.request(getContext(), new CallbackHistorical<Measurement>() {
             @Override
             public void onBeforeSend() {
-                System.out.println("Loading data");
+                System.out.println("==========================================================Loading data");
             }
 
             @Override
             public void onError(JSONObject result) {
-                System.out.println("Error on request of data of progress bar on dashboard");
+                System.out.println("========================================================Error on request of data of progress bar on dashboard");
             }
 
             @Override
-            public void onResult(List result) {
+            public void onResult(List<Measurement> result) {
 
-                System.out.println("Response find!");
                 if(result != null && result.size() > 0 ){
-                    List a = new ArrayList();
-                    a = result;
-                    System.out.println(a.get(0));
+                    Measurement measurementCurrent =result.get(0);
+                    int steps = (int) measurementCurrent.getValue();
+                    int distance = (int) measurementCurrent.getMeasurements().get(0).getValue();
+                    int calories = (int) measurementCurrent.getMeasurements().get(1).getValue();
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            setDataProgress(steps,calories,distance);
+                        }
+                    });
+//                    setDataProgress(steps,calories,distance);
+                }else if (result != null && result.size() == 0){
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            setDataProgress(0,0,0);
+                        }
+                    });
                 }
 
             }
@@ -208,8 +223,6 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener {
         //Adiciona 1 dia
         this.calendar.add(Calendar.DATE,1);
         this.date = simpleDateFormat.format(calendar.getTime());
-        System.out.println("========== Date: "+this.date);
-        System.out.println("========== Today: "+this.today);
         if (this.date.equals(this.today)){
             btnArrowRight.setEnabled(false);
             btnArrowRight.setBackground(getResources().getDrawable(R.mipmap.ic_arrow_right_disabled));
@@ -241,29 +254,12 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener {
         calendar = Calendar.getInstance();
         this.date = simpleDateFormat.format(calendar.getTime());
 
-        //Quantidade de passos, calorias e distancia; Estes dados devem vim do servidor
-        this.numberOfSteps = 70;
-        this.numberOfCalories = 120;
-        this.distance = 2.8f;
-
-        //Seta os dados nos textos abaixo da progressbar
-        textSteps.setText(numberOfSteps+" steps");
-        textCalories.setText(numberOfCalories+" calories");
-        textDistance.setText(distance+" KM");
+        loadServerData();
 
         //Seta o progresso máximo
         stepsProgressBar.setProgressMax(stepsGoal);
         caloriesProgressBar.setProgressMax(caloriesGoal);
         distanceProgressBar.setProgressMax(distanceGoal);
-
-        setDataProgress(this.numberOfSteps,this.numberOfCalories,this.distance);
-
-        stepsProgressBar.setColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
-        stepsProgressBar.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorAlertDanger));
-        caloriesProgressBar.setColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
-        caloriesProgressBar.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorGrey));
-        distanceProgressBar.setColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
-        distanceProgressBar.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorAlertDanger));
 
     }
 
@@ -272,6 +268,11 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener {
         stepsProgressBar.setProgressWithAnimation(numberOfSteps,2500);
         caloriesProgressBar.setProgressWithAnimation(numberOfCalories,3500);
         distanceProgressBar.setProgressWithAnimation(distance,3500);
+
+        //Seta os dados nos textos abaixo da progressbar
+        textSteps.setText(numberOfSteps+" / "+this.stepsGoal+" steps");
+        textCalories.setText(numberOfCalories+" / "+this.caloriesGoal+" calories");
+        textDistance.setText(distance+" / "+this.distanceGoal+" KM");
 
     }
 
@@ -310,6 +311,7 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener {
                     btnArrowRight.startAnimation(scale);
                     updateTextDate(increaseDay(this.date));
                     changeDateFirstTime = true;
+                    loadServerData();
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }

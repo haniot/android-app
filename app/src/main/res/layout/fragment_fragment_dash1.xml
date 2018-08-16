@@ -12,7 +12,7 @@
         android:id="@+id/relativeLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_anchorGravity="bottom|center">
+        android:gravity="center">
 
         <TextView
             android:id="@+id/textDate"
@@ -44,10 +44,10 @@
             android:layout_marginTop="40dp"
             android:background="@drawable/ic_feet"
             app:cpb_progress="0"
-            app:cpb_background_progressbar_color="@android:color/darker_gray"
-            app:cpb_background_progressbar_width="3dp"
-            app:cpb_progressbar_color="@color/colorAccent"
-            app:cpb_progressbar_width="6dp" />
+            app:cpb_background_progressbar_color="@color/colorGrey"
+            app:cpb_background_progressbar_width="7dp"
+            app:cpb_progressbar_color="@color/colorPrimary"
+            app:cpb_progressbar_width="4dp" />
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/buttonArrowRight"
@@ -69,10 +69,10 @@
             android:layout_alignTop="@+id/textSteps"
             android:layout_marginStart="50dp"
             android:background="@drawable/ic_calories"
+            app:cpb_progress="0"
             app:cpb_background_progressbar_color="@color/colorGrey"
             app:cpb_background_progressbar_width="7dp"
-            app:cpb_progress="0"
-            app:cpb_progressbar_color="@color/colorAccent"
+            app:cpb_progressbar_color="@color/colorPrimary"
             app:cpb_progressbar_width="4dp" />
 
         <com.mikhaellopez.circularprogressbar.CircularProgressBar
@@ -84,10 +84,10 @@
             android:layout_marginEnd="50dp"
             android:background="@drawable/ic_distance"
             app:cpb_progress="0"
-            app:cpb_background_progressbar_color="@android:color/darker_gray"
-            app:cpb_background_progressbar_width="3dp"
-            app:cpb_progressbar_color="@color/colorAccent"
-            app:cpb_progressbar_width="3dp" />
+            app:cpb_background_progressbar_color="@color/colorGrey"
+            app:cpb_background_progressbar_width="7dp"
+            app:cpb_progressbar_color="@color/colorPrimary"
+            app:cpb_progressbar_width="4dp" />
 
         <TextView
             android:id="@+id/textCalories"
@@ -95,7 +95,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/lightProgress1"
             android:layout_alignStart="@id/lightProgress1"
-            android:layout_marginStart="10dp"
+            android:layout_alignEnd="@id/lightProgress1"
+            android:textAlignment="center"
             android:text="@string/Calories"/>
 
         <TextView
@@ -104,7 +105,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/lightProgress2"
             android:layout_alignStart="@id/lightProgress2"
-            android:layout_marginStart="20dp"
+            android:layout_alignEnd="@id/lightProgress2"
+            android:textAlignment="center"
             android:text="@string/Calories" />
 
         <TextView

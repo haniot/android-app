@@ -185,7 +185,7 @@ public final class Historical<T> {
             this.skip = 0;
             this.limit = Integer.MAX_VALUE;
             this.filterColumn = NameColumnsDB.MEASUREMENT_VALUE;
-            this.dateEnd = "today";
+            this.dateEnd = null;
             this.gt = -1;
             this.gte = -1;
             this.lt = -1;
@@ -499,7 +499,7 @@ public final class Historical<T> {
         private Query order(String order) {
             if (order == null) throw new NullPointerException("order == null");
             if (order.length() == 0) throw new IllegalArgumentException("order.length() == 0");
-            if (!order.equalsIgnoreCase("ASC") && !order.equalsIgnoreCase("ASC"))
+            if (!order.equalsIgnoreCase("ASC") && !order.equalsIgnoreCase("DESC"))
                 throw new IllegalArgumentException("order != ASC or DESC");
 
             this.order = order;
