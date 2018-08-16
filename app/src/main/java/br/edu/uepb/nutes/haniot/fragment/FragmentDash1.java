@@ -5,6 +5,8 @@ import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatButton;
@@ -85,12 +87,13 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener {
     private float       distance = 0;
     private int      stepsGoal = 200;
     private int   caloriesGoal = 300;
-    private int     distanceGoal = 4;
+    private int     distanceGoal = 800;
 
     //Date part
     private Calendar                   calendar;
+    private Calendar                calendarAux;
     private SimpleDateFormat   simpleDateFormat;
-    private String                    date = "";
+    private String                         date;
     private boolean changeDateFirstTime = false;
     private String                        today;
     private Animation                     scale;
@@ -128,9 +131,38 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
         session = new Session(getContext());
         params = new Params(session.get_idLogged(), MeasurementType.STEPS);
+
+        simpleDateFormat = new SimpleDateFormat("dd / MM / yyyy");
+        calendar = Calendar.getInstance();
+
+        if (savedInstanceState != null) {
+            System.out.println("\n ======================================= Colocado o extra date: "+this.date);
+            this.date = savedInstanceState.getString("date");
+        }else{
+            this.date = simpleDateFormat.format(calendar.getTime());
+        }
+
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+
+        super.onSaveInstanceState(outState);
+        System.out.println("\n ======================================= Colocado o extra date: "+this.date);
+        outState.putString("date",this.date);
+
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+
+        super.onActivityCreated(savedInstanceState);
+        if(savedInstanceState != null) {
+            this.date = savedInstanceState.getString("date");
+            System.out.println("==================================================================Data recuperada: "+this.date);
+        }
 
     }
 
@@ -140,28 +172,42 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_fragment_dash1, container, false);
         ButterKnife.bind(this,view);
+
         initData();
+
         today = simpleDateFormat.format(calendar.getTime());
 
+        try {
+            this.calendar.setTime(simpleDateFormat.parse(this.date));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         updateTextDate(calendar.getTime());
 
         btnArrowLeft.setOnClickListener(this);
         btnArrowRight.setOnClickListener(this);
 
+        try {
+            loadServerData();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        System.out.println("=====================================================Data ao criar a tela: "+this.date);
         return view;
     }
 
     public void updateTextDate(Date dateToText){
-        String formattedDate = new SimpleDateFormat("EEEE / dd / yyyy",Locale.US).format(dateToText);
+        String formattedDate = new SimpleDateFormat("EEEE, dd MMMM, yyyy",Locale.US).format(dateToText);
         textDate.setText(formattedDate);
     }
 
-    public void loadServerData(){
+    public void loadServerData() throws ParseException {
 
         SimpleDateFormat euSdf = new SimpleDateFormat("yyyy-MM-dd");
         String t  = euSdf.format(calendar.getTime());
-        calendar.add(Calendar.DATE,1);
-        String t2  = euSdf.format(calendar.getTime());
+        this.calendarAux.setTime(new SimpleDateFormat("dd / MM / yyyy").parse(this.date));
+        this.calendarAux.add(Calendar.DATE,1);
+        String t2  = euSdf.format(calendarAux.getTime());
 
         Historical historical = new Historical.Query()
                 .type(HistoricalType.MEASUREMENTS_TYPE_USER)
@@ -174,12 +220,11 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener {
         historical.request(getContext(), new CallbackHistorical<Measurement>() {
             @Override
             public void onBeforeSend() {
-                System.out.println("==========================================================Loading data");
             }
 
             @Override
             public void onError(JSONObject result) {
-                System.out.println("========================================================Error on request of data of progress bar on dashboard");
+                System.out.println("Error on request of data of progress bar on dashboard");
             }
 
             @Override
@@ -190,21 +235,30 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener {
                     int steps = (int) measurementCurrent.getValue();
                     int distance = (int) measurementCurrent.getMeasurements().get(0).getValue();
                     int calories = (int) measurementCurrent.getMeasurements().get(1).getValue();
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            setDataProgress(steps,calories,distance);
-                        }
-                    });
-//                    setDataProgress(steps,calories,distance);
-                }else if (result != null && result.size() == 0){
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            setDataProgress(0,0,0);
-                        }
-                    });
-                }
+
+                    if(getActivity() == null)return;
+
+                    if (getActivity() != null) {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                setDataProgress(steps, calories, distance);
+                            }
+                        });
+                    }}
+//                }else {
+//                    try {
+//                        getActivity().runOnUiThread(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                setDataProgress(0, 0, 0);
+//                            }
+//                        });
+//                    }catch (Exception e){
+//                        System.out.println("Erro ===================================================================");
+//                        System.out.println(e.getMessage());
+//                    }
+//                }
 
             }
 
@@ -250,11 +304,8 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener {
         scale = AnimationUtils.loadAnimation(getContext(), R.anim.click);
         btnArrowRight.setBackground(getResources().getDrawable(R.mipmap.ic_arrow_right_disabled));
         btnArrowLeft.setBackground(getResources().getDrawable(R.mipmap.ic_arrow_left));
-        simpleDateFormat = new SimpleDateFormat("dd / MM / yyyy");
-        calendar = Calendar.getInstance();
-        this.date = simpleDateFormat.format(calendar.getTime());
 
-        loadServerData();
+        calendarAux = Calendar.getInstance();
 
         //Seta o progresso máximo
         stepsProgressBar.setProgressMax(stepsGoal);
@@ -263,16 +314,22 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener {
 
     }
 
-    public void setDataProgress (int numberOfSteps, int numberOfCalories, float distance){
+    public void setDataProgress (int numberOfSteps, int numberOfCalories, int distance){
 
         stepsProgressBar.setProgressWithAnimation(numberOfSteps,2500);
-        caloriesProgressBar.setProgressWithAnimation(numberOfCalories,3500);
-        distanceProgressBar.setProgressWithAnimation(distance,3500);
+        caloriesProgressBar.setProgressWithAnimation(numberOfCalories,3000);
+        distanceProgressBar.setProgressWithAnimation(distance,3000);
 
         //Seta os dados nos textos abaixo da progressbar
-        textSteps.setText(numberOfSteps+" / "+this.stepsGoal+" steps");
-        textCalories.setText(numberOfCalories+" / "+this.caloriesGoal+" calories");
-        textDistance.setText(distance+" / "+this.distanceGoal+" KM");
+        textSteps.setText(numberOfSteps+" steps");
+        textCalories.setText(numberOfCalories+" calories");
+        if (distance < 1000){
+            textDistance.setText(distance+" m");
+        }
+        else{
+            float distanceKm = distance/1000;
+            textDistance.setText(distanceKm+ " KM");
+        }
 
     }
 

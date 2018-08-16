@@ -93,30 +93,29 @@
             android:id="@+id/textCalories"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/lightProgress1"
-            android:layout_alignStart="@id/lightProgress1"
             android:layout_alignEnd="@id/lightProgress1"
-            android:textAlignment="center"
-            android:text="@string/Calories"/>
+            android:layout_alignStart="@id/lightProgress1"
+            android:layout_below="@+id/lightProgress1"
+            android:textAlignment="center" />
 
         <TextView
             android:id="@+id/textDistance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/lightProgress2"
-            android:layout_alignStart="@id/lightProgress2"
             android:layout_alignEnd="@id/lightProgress2"
-            android:textAlignment="center"
-            android:text="@string/Calories" />
+            android:layout_alignStart="@id/lightProgress2"
+            android:layout_below="@+id/lightProgress2"
+            android:textAlignment="center" />
 
         <TextView
             android:id="@+id/textSteps"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/stepsProgressBar"
-            android:layout_centerHorizontal="true"
+            android:layout_alignEnd="@id/stepsProgressBar"
+            android:layout_alignStart="@+id/stepsProgressBar"
             android:layout_marginTop="5dp"
-            android:text="@string/StepsNumber" />
+            android:textAlignment="center"/>
 
         <View
             android:id="@+id/divider2"
