@@ -4,13 +4,19 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:icon="@drawable/stetho32"
+        android:id="@+id/btnManageChildren"
+        android:icon="@drawable/ic_children"
         android:orderInCategory="1"
-        android:title="@string/connect_device"
+        android:title="@string/manage_children"
         app:showAsAction="ifRoom" />
     <item
         android:icon="@drawable/ic_profile"
-        android:orderInCategory="2"
+        android:orderInCategory="3"
         android:title="@string/profile"
+        app:showAsAction="never" />
+    <item
+        android:icon="@drawable/stetho32"
+        android:orderInCategory="2"
+        android:title="@string/connect_device"
         app:showAsAction="ifRoom" />
 </menu>

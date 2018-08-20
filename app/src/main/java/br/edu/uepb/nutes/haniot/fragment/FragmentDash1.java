@@ -1,5 +1,7 @@
 package br.edu.uepb.nutes.haniot.fragment;
 
+import android.app.DatePickerDialog;
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.net.Uri;
@@ -16,6 +18,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.DatePicker;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,6 +37,7 @@ import java.util.List;
 import java.util.Locale;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.activity.account.SignupActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.model.Measurement;
 import br.edu.uepb.nutes.haniot.model.MeasurementType;
@@ -40,6 +45,7 @@ import br.edu.uepb.nutes.haniot.server.historical.CallbackHistorical;
 import br.edu.uepb.nutes.haniot.server.historical.Historical;
 import br.edu.uepb.nutes.haniot.server.historical.HistoricalType;
 import br.edu.uepb.nutes.haniot.server.historical.Params;
+import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -51,7 +57,7 @@ import butterknife.ButterKnife;
  * Use the {@link FragmentDash1#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FragmentDash1 extends Fragment implements View.OnClickListener {
+public class FragmentDash1 extends Fragment implements View.OnClickListener, DatePickerDialog.OnDateSetListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -97,6 +103,11 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener {
     private boolean changeDateFirstTime = false;
     private String                        today;
     private Animation                     scale;
+
+    private DatePickerDialog datePickerDialog;
+    private int year;
+    private int month;
+    private int day;
 
     //Server part
     private Params params;
@@ -175,21 +186,31 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener {
         }
         updateTextDate(calendar.getTime());
 
+        this.year  = this.calendar.get(Calendar.YEAR);
+        this.month = this.calendar.get(Calendar.MONTH);
+        this.day   = this.calendar.get(Calendar.DAY_OF_MONTH);
+
+        datePickerDialog = new DatePickerDialog(getContext(), this, year, month, day);
+
         btnArrowLeft.setOnClickListener(this);
         btnArrowRight.setOnClickListener(this);
+        textDate.setOnClickListener(this);
 
         try {
             loadServerData();
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        System.out.println("=====================================================Data ao criar a tela: "+this.date);
-        System.out.println("=====================================================mudança? "+somechange);
         return view;
     }
 
     public void updateTextDate(Date dateToText){
         String formattedDate = new SimpleDateFormat("EEEE, dd MMMM, yyyy",Locale.US).format(dateToText);
+        textDate.setText(formattedDate);
+    }
+
+    public void updateTextDate(String dateToText) throws ParseException {
+        String formattedDate = simpleDateFormat.parse(dateToText).toString();
         textDate.setText(formattedDate);
     }
 
@@ -366,8 +387,30 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener {
                     e.printStackTrace();
                 }
                 break;
+            case R.id.textDate:
+                textDate.startAnimation(scale);
+                openDatePicker();
+                break;
 
         }
+    }
+
+    /**
+     * Open datepicker.
+     */
+    private void openDatePicker() {
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        datePickerDialog = new DatePickerDialog(getActivity(), this, year, month, day);
+        datePickerDialog.show();
+
+        /**
+         * Close keyboard
+         */
+        ((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE))
+                .hideSoftInputFromWindow(textDate.getWindowToken(), 0);
     }
 
     public String getData(){
@@ -376,6 +419,23 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener {
 
     public String getToday(){
         return this.today;
+    }
+
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+        calendar.set(year, month, dayOfMonth, 0, 0, 0);
+        this.date = simpleDateFormat.format(calendar.getTime());
+        System.out.println("Data pega no picker: "+this.date);
+        try {
+            updateTextDate(this.date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        /**
+         * open keyboard
+         */
+        ((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE))
+                .showSoftInput(textDate, InputMethodManager.SHOW_IMPLICIT);
     }
 
     /**

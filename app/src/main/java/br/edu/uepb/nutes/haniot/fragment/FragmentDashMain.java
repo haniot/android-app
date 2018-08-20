@@ -79,7 +79,6 @@ public class FragmentDashMain extends Fragment {
         if (savedInstanceState != null){
             Bundle bundle = new Bundle();
             bundle.putString("date",savedInstanceState.getString("date"));
-            System.out.println("====================fragment main passando a data: "+bundle.getString("date"));
             fragmentDash1.setArguments(bundle);
         }
         fragmentDash2 = new FragmentDash2();

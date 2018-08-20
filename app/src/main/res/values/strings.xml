@@ -416,6 +416,7 @@
     <string name="body_composition_monitor_description">OMRON HBF-206ITH</string>
     <string name="body_composition2">Body Composition Monitor</string>
     <string name="icon_manage_measurement">Manage measurement icon</string>
+    <string name="manage_children">Manage children</string>
 
     <!-- ARRAY QUESTIONS RISK FALL -->
     <string-array name="risk_questions_array">
