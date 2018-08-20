@@ -2,6 +2,7 @@ package br.edu.uepb.nutes.haniot.fragment;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,6 +40,12 @@ public class FragmentDashMain extends Fragment {
     @BindView(R.id.frame2)
     FrameLayout frame2;
 
+    private FragmentDash1 fragmentDash1;
+    private FragmentDash2 fragmentDash2;
+
+    private String dateFrag1;
+    private final String TAG_FRAG1 = "fragment1";
+
     public FragmentDashMain() {
         // Required empty public constructor
     }
@@ -68,6 +75,30 @@ public class FragmentDashMain extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        fragmentDash1 = new FragmentDash1();
+        if (savedInstanceState != null){
+            Bundle bundle = new Bundle();
+            bundle.putString("date",savedInstanceState.getString("date"));
+            System.out.println("====================fragment main passando a data: "+bundle.getString("date"));
+            fragmentDash1.setArguments(bundle);
+        }
+        fragmentDash2 = new FragmentDash2();
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        String date;
+        date = fragmentDash1.getData();
+        if (date == null || date.equals("")){
+            date = fragmentDash1.getToday();
+        }
+        outState.putString("date",date);
+        fragmentDash1 = new FragmentDash1();
+        fragmentDash1.setArguments(outState);
+        if (fragmentDash1.isAdded()) {
+            getFragmentManager().putFragment(outState, TAG_FRAG1, fragmentDash1);
+        }
     }
 
     @Override
@@ -77,12 +108,13 @@ public class FragmentDashMain extends Fragment {
         ButterKnife.bind(this,view);
 
         //Addicting the two main fragmants to dashboard
-        FragmentDash1 frag1 = new FragmentDash1();
-        getFragmentManager().beginTransaction().replace(R.id.frame1, frag1, frag1.getTag())
-                .commit();
 
-        FragmentDash2 frag2 = new FragmentDash2();
-        getFragmentManager().beginTransaction().replace(R.id.frame2, frag2, frag2.getTag())
+        if (savedInstanceState == null){
+            getFragmentManager().beginTransaction().replace(R.id.frame1, this.fragmentDash1, this.TAG_FRAG1)
+                    .commit();
+        }
+
+        getFragmentManager().beginTransaction().replace(R.id.frame2, this.fragmentDash2, fragmentDash2.getTag())
                  .commit();
         return view;
     }

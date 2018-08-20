@@ -76,7 +76,10 @@ public class MainActivity extends AppCompatActivity {
         toolbar.setTitle("HANIoT");
         setSupportActionBar(toolbar);
 
+        new FragmentPageAdapter(getSupportFragmentManager()).saveState();
+
         viewPager.setAdapter(new FragmentPageAdapter(getSupportFragmentManager()));
+        viewPager.setOffscreenPageLimit(2);
         tabLayout.setupWithViewPager(viewPager);
 
         if (tabLayout.getTabAt(0) != null){
@@ -172,23 +175,6 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu,menu);
         return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    private void openFragment(Fragment fragment) {
-        if (fragment != null) {
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.content, fragment).commit();
-//            transaction.replace(R.id.content, fragment).addToBackStack(null).commit();
-        }
     }
 
     private void showToast(final String menssage) {

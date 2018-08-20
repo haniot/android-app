@@ -102,6 +102,8 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener {
     private Params params;
     private Session session;
 
+    private boolean somechange = false;
+
     public FragmentDash1() {
         // Required empty public constructor
     }
@@ -138,8 +140,8 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener {
         calendar = Calendar.getInstance();
 
         if (savedInstanceState != null) {
-            System.out.println("\n ======================================= Colocado o extra date: "+this.date);
             this.date = savedInstanceState.getString("date");
+            this.somechange = savedInstanceState.getBoolean("change");
         }else{
             this.date = simpleDateFormat.format(calendar.getTime());
         }
@@ -150,19 +152,8 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener {
     public void onSaveInstanceState(@NonNull Bundle outState) {
 
         super.onSaveInstanceState(outState);
-        System.out.println("\n ======================================= Colocado o extra date: "+this.date);
         outState.putString("date",this.date);
-
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-
-        super.onActivityCreated(savedInstanceState);
-        if(savedInstanceState != null) {
-            this.date = savedInstanceState.getString("date");
-            System.out.println("==================================================================Data recuperada: "+this.date);
-        }
+        outState.putBoolean("change",true);
 
     }
 
@@ -173,9 +164,9 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener {
         View view = inflater.inflate(R.layout.fragment_fragment_dash1, container, false);
         ButterKnife.bind(this,view);
 
+        today = simpleDateFormat.format(calendar.getTime());
         initData();
 
-        today = simpleDateFormat.format(calendar.getTime());
 
         try {
             this.calendar.setTime(simpleDateFormat.parse(this.date));
@@ -193,6 +184,7 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener {
             e.printStackTrace();
         }
         System.out.println("=====================================================Data ao criar a tela: "+this.date);
+        System.out.println("=====================================================mudança? "+somechange);
         return view;
     }
 
@@ -245,21 +237,19 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener {
                                 setDataProgress(steps, calories, distance);
                             }
                         });
-                    }}
-//                }else {
-//                    try {
-//                        getActivity().runOnUiThread(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                setDataProgress(0, 0, 0);
-//                            }
-//                        });
-//                    }catch (Exception e){
-//                        System.out.println("Erro ===================================================================");
-//                        System.out.println(e.getMessage());
-//                    }
-//                }
-
+                    }}else{
+                        try {
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    setDataProgress(0, 0, 0);
+                                }
+                            });
+                        }catch (Exception e){
+                            System.out.println("Erro ==");
+                            System.out.println(e.getMessage());
+                        }
+                    }
             }
 
             @Override
@@ -300,10 +290,13 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener {
     }
 
     public void initData(){
-        btnArrowRight.setEnabled(false);
+        if (this.date.equals(this.today)){
+            btnArrowRight.setEnabled(false);
+            btnArrowRight.setBackground(getResources().getDrawable(R.mipmap.ic_arrow_right_disabled));
+        }else{
+            btnArrowRight.setEnabled(true);
+        }
         scale = AnimationUtils.loadAnimation(getContext(), R.anim.click);
-        btnArrowRight.setBackground(getResources().getDrawable(R.mipmap.ic_arrow_right_disabled));
-        btnArrowLeft.setBackground(getResources().getDrawable(R.mipmap.ic_arrow_left));
 
         calendarAux = Calendar.getInstance();
 
@@ -377,7 +370,13 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener {
         }
     }
 
+    public String getData(){
+        return this.date;
+    }
 
+    public String getToday(){
+        return this.today;
+    }
 
     /**
      * This interface must be implemented by activities that contain this
@@ -393,4 +392,5 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
 }
