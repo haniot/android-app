@@ -209,11 +209,6 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener, Dat
         textDate.setText(formattedDate);
     }
 
-    public void updateTextDate(String dateToText) throws ParseException {
-        String formattedDate = simpleDateFormat.parse(dateToText).toString();
-        textDate.setText(formattedDate);
-    }
-
     public void loadServerData() throws ParseException {
 
         SimpleDateFormat euSdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -404,6 +399,7 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener, Dat
         int day = calendar.get(Calendar.DAY_OF_MONTH);
 
         datePickerDialog = new DatePickerDialog(getActivity(), this, year, month, day);
+        datePickerDialog.getDatePicker().setMaxDate(new Date().getTime());
         datePickerDialog.show();
 
         /**
@@ -423,14 +419,24 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener, Dat
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-        calendar.set(year, month, dayOfMonth, 0, 0, 0);
+        this.calendar.set(year, month, dayOfMonth);
         this.date = simpleDateFormat.format(calendar.getTime());
-        System.out.println("Data pega no picker: "+this.date);
+        System.out.println("==Data pega no picker: "+this.date);
+
+        updateTextDate(this.calendar.getTime());
+        if (!this.date.equals(this.today)){
+            btnArrowRight.setEnabled(true);
+            btnArrowRight.setBackground(getResources().getDrawable(R.mipmap.ic_arrow_right));
+        }else{
+            btnArrowRight.setEnabled(false);
+            btnArrowRight.setBackground(getResources().getDrawable(R.mipmap.ic_arrow_right_disabled));
+        }
         try {
-            updateTextDate(this.date);
+            loadServerData();
         } catch (ParseException e) {
             e.printStackTrace();
         }
+
         /**
          * open keyboard
          */
