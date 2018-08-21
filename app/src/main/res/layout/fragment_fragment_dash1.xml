@@ -17,10 +17,11 @@
         <TextView
             android:id="@+id/textDate"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="25dp"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="10dp" />
+            android:layout_marginTop="10dp"
+            android:textAlignment="center" />
 
         <android.support.v7.widget.AppCompatImageButton
             android:id="@+id/buttonArrowLeft"
@@ -46,6 +47,20 @@
             app:cpb_progress="0"
             app:cpb_background_progressbar_color="@color/colorGrey"
             app:cpb_background_progressbar_width="7dp"
+            app:cpb_progressbar_color="@color/colorPrimary"
+            app:cpb_progressbar_width="4dp" />
+
+        <com.mikhaellopez.circularprogressbar.CircularProgressBar
+            android:id="@+id/loadingDataProgressBar"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_below="@id/textSteps"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:visibility="invisible"
+            app:cpb_background_progressbar_color="@color/colorGrey"
+            app:cpb_background_progressbar_width="4dp"
+            app:cpb_indeterminate_mode="true"
             app:cpb_progressbar_color="@color/colorPrimary"
             app:cpb_progressbar_width="4dp" />
 

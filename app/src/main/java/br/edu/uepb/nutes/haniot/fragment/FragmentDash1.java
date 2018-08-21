@@ -87,10 +87,9 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener, Dat
     CircularProgressBar caloriesProgressBar;
     @BindView(R.id.lightProgress2)
     CircularProgressBar distanceProgressBar;
+    @BindView(R.id.loadingDataProgressBar)
+    CircularProgressBar loadingDataProgressBar;
 
-    private int    numberOfSteps = 0;
-    private int numberOfCalories = 0;
-    private float       distance = 0;
     private int      stepsGoal = 200;
     private int   caloriesGoal = 300;
     private int     distanceGoal = 800;
@@ -100,7 +99,6 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener, Dat
     private Calendar                calendarAux;
     private SimpleDateFormat   simpleDateFormat;
     private String                         date;
-    private boolean changeDateFirstTime = false;
     private String                        today;
     private Animation                     scale;
 
@@ -112,8 +110,6 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener, Dat
     //Server part
     private Params params;
     private Session session;
-
-    private boolean somechange = false;
 
     public FragmentDash1() {
         // Required empty public constructor
@@ -144,21 +140,24 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener, Dat
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        //Inicia a sessão com o ID logado e pega as medições do tipo STEPS
         session = new Session(getContext());
         params = new Params(session.get_idLogged(), MeasurementType.STEPS);
 
+        //Formata a data para o dia / mes / ano
         simpleDateFormat = new SimpleDateFormat("dd / MM / yyyy");
         calendar = Calendar.getInstance();
 
+        //Usado para quando virar a tela manter a data
         if (savedInstanceState != null) {
             this.date = savedInstanceState.getString("date");
-            this.somechange = savedInstanceState.getBoolean("change");
         }else{
             this.date = simpleDateFormat.format(calendar.getTime());
         }
 
     }
 
+    //Método usado para quando rotacionar/rodar/girar a tela
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
 
@@ -175,6 +174,7 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener, Dat
         View view = inflater.inflate(R.layout.fragment_fragment_dash1, container, false);
         ButterKnife.bind(this,view);
 
+        //Data é atual salva quando abre o aplicativo
         today = simpleDateFormat.format(calendar.getTime());
         initData();
 
@@ -204,23 +204,29 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener, Dat
         return view;
     }
 
+    //Formata a data para aparecer o nome por extenso, dia, nome do mês e ano; Seta a data no textview
     public void updateTextDate(Date dateToText){
         String formattedDate = new SimpleDateFormat("EEEE, dd MMMM, yyyy",Locale.US).format(dateToText);
         textDate.setText(formattedDate);
     }
 
+    //Carrega os dados do servidor
     public void loadServerData() throws ParseException {
 
+        //Converte a data para o formato que o servidor aceita
         SimpleDateFormat euSdf = new SimpleDateFormat("yyyy-MM-dd");
-        String t  = euSdf.format(calendar.getTime());
+        String timeInit  = euSdf.format(calendar.getTime());
+
+        //Calendario auxiliar criado para pegar a data de amanhã, foi necessário para filtrar a data da requisição
         this.calendarAux.setTime(new SimpleDateFormat("dd / MM / yyyy").parse(this.date));
         this.calendarAux.add(Calendar.DATE,1);
-        String t2  = euSdf.format(calendarAux.getTime());
+        String timeEnd  = euSdf.format(calendarAux.getTime());
 
+        //Prepara a querry e filtra a data para apenas UM dia, a paginação é 1 pois só é apresentado 1 medição por vez no dashboard
         Historical historical = new Historical.Query()
                 .type(HistoricalType.MEASUREMENTS_TYPE_USER)
                 .params(params) // Measurements of the temperature type, associated to the user
-                .filterDate(t,t2)
+                .filterDate(timeInit,timeEnd)
                 .pagination(0, 1)
                 .build();
 
@@ -228,6 +234,8 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener, Dat
         historical.request(getContext(), new CallbackHistorical<Measurement>() {
             @Override
             public void onBeforeSend() {
+
+
             }
 
             @Override
@@ -258,6 +266,7 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener, Dat
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
+                                    //No caso de não encontrar valores, o dashboard é zerado
                                     setDataProgress(0, 0, 0);
                                 }
                             });
@@ -270,14 +279,21 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener, Dat
 
             @Override
             public void onAfterSend() {
-
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        loadingDataProgressBar.setVisibility(View.INVISIBLE);
+                    }
+                });
             }
         });
 
     }
 
+    //Adiciona um dia na data selecionada
     public Date increaseDay(String date) throws ParseException {
 
+        loadingDataProgressBar.setVisibility(View.VISIBLE);
         //Seta a data informada
         this.calendar.setTime(simpleDateFormat.parse(date));
         //Adiciona 1 dia
@@ -291,7 +307,10 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener, Dat
         return calendar.getTime();
     }
 
+    //Remove um dia na data atual
     public Date decreaseDay(String date) throws ParseException {
+
+        loadingDataProgressBar.setVisibility(View.VISIBLE);
         btnArrowRight.setEnabled(true);
         btnArrowRight.setBackground(getResources().getDrawable(R.mipmap.ic_arrow_right));
         //Pega a instancia do calendario
@@ -323,11 +342,13 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener, Dat
 
     }
 
+    //Atualiza as circular progress bars do dashboard
     public void setDataProgress (int numberOfSteps, int numberOfCalories, int distance){
 
         stepsProgressBar.setProgressWithAnimation(numberOfSteps,2500);
         caloriesProgressBar.setProgressWithAnimation(numberOfCalories,3000);
         distanceProgressBar.setProgressWithAnimation(distance,3000);
+//        loadingDataProgressBar.setVisibility(View.VISIBLE);
 
         //Seta os dados nos textos abaixo da progressbar
         textSteps.setText(numberOfSteps+" steps");
@@ -364,7 +385,6 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener, Dat
                 try {
                     btnArrowLeft.startAnimation(scale);
                     updateTextDate(decreaseDay(this.date));
-                    changeDateFirstTime = true;
                     loadServerData();
                 } catch (ParseException e) {
                     e.printStackTrace();
@@ -376,7 +396,6 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener, Dat
                 try {
                     btnArrowRight.startAnimation(scale);
                     updateTextDate(increaseDay(this.date));
-                    changeDateFirstTime = true;
                     loadServerData();
                 } catch (ParseException e) {
                     e.printStackTrace();
@@ -400,6 +419,8 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener, Dat
 
         datePickerDialog = new DatePickerDialog(getActivity(), this, year, month, day);
 
+        //Essa parte precisa ser assim pois em algumas versões do android ao setar o max date ele
+        //buga ao tentar selecionar o ultimo dia
         Calendar maxDate = Calendar.getInstance();
         maxDate.set(Calendar.HOUR_OF_DAY, 23);
         maxDate.set(Calendar.MINUTE, 59);
@@ -426,7 +447,6 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener, Dat
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
         this.calendar.set(year, month, dayOfMonth);
         this.date = simpleDateFormat.format(calendar.getTime());
-        System.out.println("==Data pega no picker: "+this.date);
 
         updateTextDate(this.calendar.getTime());
         if (!this.date.equals(this.today)){
@@ -436,6 +456,7 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener, Dat
             btnArrowRight.setEnabled(false);
             btnArrowRight.setBackground(getResources().getDrawable(R.mipmap.ic_arrow_right_disabled));
         }
+        loadingDataProgressBar.setVisibility(View.VISIBLE);
         try {
             loadServerData();
         } catch (ParseException e) {
