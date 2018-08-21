@@ -399,7 +399,12 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener, Dat
         int day = calendar.get(Calendar.DAY_OF_MONTH);
 
         datePickerDialog = new DatePickerDialog(getActivity(), this, year, month, day);
-        datePickerDialog.getDatePicker().setMaxDate(new Date().getTime());
+
+        Calendar maxDate = Calendar.getInstance();
+        maxDate.set(Calendar.HOUR_OF_DAY, 23);
+        maxDate.set(Calendar.MINUTE, 59);
+        maxDate.set(Calendar.SECOND, 59);
+        datePickerDialog.getDatePicker().setMaxDate(maxDate.getTimeInMillis());
         datePickerDialog.show();
 
         /**
