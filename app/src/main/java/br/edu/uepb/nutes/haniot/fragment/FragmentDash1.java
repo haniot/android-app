@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatButton;
@@ -103,12 +104,12 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener, Dat
     private Animation                     scale;
 
     private DatePickerDialog datePickerDialog;
-    private int year;
+    private int  year;
     private int month;
-    private int day;
+    private int   day;
 
     //Server part
-    private Params params;
+    private Params   params;
     private Session session;
 
     public FragmentDash1() {
@@ -240,7 +241,24 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener, Dat
 
             @Override
             public void onError(JSONObject result) {
-                System.out.println("Error on request of data of progress bar on dashboard");
+                System.out.println("==Error on request of data of progress bar on dashboard");
+//                getActivity().runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        Snackbar.make(getActivity().findViewById(android.R.id.content), "Algo deu errado, por favor verifique sua conexão com a internet!", Snackbar.LENGTH_LONG)
+//                                .show();
+////                        Toast.makeText(getContext(),"Algo deu errado, por favor verifique sua conexão com a internet!",Toast.LENGTH_SHORT).show();
+//                    }
+//                });
+                new Handler(getContext().getMainLooper()).postDelayed(new Runnable(){
+
+                    @Override
+                    public void run() {
+                        Snackbar.make(getActivity().findViewById(android.R.id.content), "Algo deu errado, por favor tente mais tarde", Snackbar.LENGTH_LONG)
+                                .show();
+                    }
+                },200);
+
             }
 
             @Override
@@ -255,12 +273,19 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener, Dat
                     if(getActivity() == null)return;
 
                     if (getActivity() != null) {
-                        getActivity().runOnUiThread(new Runnable() {
+                        new Handler(getContext().getMainLooper()).postDelayed(new Runnable(){
+
                             @Override
                             public void run() {
                                 setDataProgress(steps, calories, distance);
                             }
-                        });
+                        },200);
+//                        getActivity().runOnUiThread(new Runnable() {
+//                            @Override
+//                            public void run() {
+//
+//                            }
+//                        });
                     }}else{
                         try {
                             getActivity().runOnUiThread(new Runnable() {
@@ -279,12 +304,21 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener, Dat
 
             @Override
             public void onAfterSend() {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        loadingDataProgressBar.setVisibility(View.INVISIBLE);
-                    }
-                });
+//                getActivity().runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        loadingDataProgressBar.setVisibility(View.INVISIBLE);
+//                    }
+//                });
+                if (getContext() != null) {
+                    new Handler(getContext().getMainLooper()).postDelayed(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            loadingDataProgressBar.setVisibility(View.INVISIBLE);
+                        }
+                    }, 200);
+                }
             }
         });
 
@@ -403,7 +437,12 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener, Dat
                 break;
             case R.id.textDate:
                 textDate.startAnimation(scale);
-                openDatePicker();
+                try {
+                    openDatePicker();
+                } catch (Exception e) {
+                    System.out.println("Exeption in openDatePicker(): "+e.getMessage());
+                    e.printStackTrace();
+                }
                 break;
 
         }
@@ -412,7 +451,7 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener, Dat
     /**
      * Open datepicker.
      */
-    private void openDatePicker() {
+    private void openDatePicker(){
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);

@@ -177,6 +177,19 @@ public class MainActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+        switch (id){
+            case R.id.btnManageChildren:
+                startActivity(new Intent(getApplicationContext(),ManageChildrenActivity.class));
+        }
+
+        return super.onOptionsItemSelected(item);
+
+    }
+
     private void showToast(final String menssage) {
         runOnUiThread(new Runnable() {
             @Override

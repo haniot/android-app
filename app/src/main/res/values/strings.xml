@@ -417,6 +417,8 @@
     <string name="body_composition2">Body Composition Monitor</string>
     <string name="icon_manage_measurement">Manage measurement icon</string>
     <string name="manage_children">Manage children</string>
+    <string name="add">Add</string>
+    <string name="search">Search</string>
 
     <!-- ARRAY QUESTIONS RISK FALL -->
     <string-array name="risk_questions_array">
@@ -570,7 +572,7 @@
     </string-array>
 
     <!-- ELDERLY MEDICATIONS -->
-    <string-array name="medications_array">
-    </string-array>
+    <string-array name="medications_array"></string-array>
+    <string name="title_activity_manage_children">ManageChildrenActivity</string>
 
 </resources>
