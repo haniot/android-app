@@ -277,6 +277,9 @@
     <string name="manage_children">Gerenciar Crianças</string>
     <string name="add">Add</string>
     <string name="search">Pesquisar</string>
+    <string name="id">id: </string>
+    <string name="date">Data: </string>
+
     <!-- END OF STRINGS FOR TABLET -->
 
 </resources>

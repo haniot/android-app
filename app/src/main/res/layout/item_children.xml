@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="65dp">
 
     <TextView
         android:id="@+id/textIdChildren"
@@ -10,9 +10,9 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginStart="30dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="15dp"
         android:gravity="end"
-        android:text="Id: " />
+        android:text="@string/id" />
 
     <TextView
         android:id="@+id/textRegisterDateChildren"
@@ -22,7 +22,7 @@
         android:layout_below="@+id/textIdChildren"
         android:layout_marginTop="5dp"
         android:gravity="end"
-        android:text="Date: " />
+        android:text="@string/date" />
 
     <TextView
         android:id="@+id/textIdNumberChildren"
@@ -30,8 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/textIdChildren"
         android:layout_marginStart="30dp"
-        android:layout_toEndOf="@+id/textIdChildren"
-        android:text="16625265416150" />
+        android:layout_toEndOf="@+id/textIdChildren" />
 
     <TextView
         android:id="@+id/textRegisterDateNumberChildren"
@@ -39,43 +38,45 @@
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/textRegisterDateChildren"
         android:layout_marginStart="30dp"
-        android:layout_toEndOf="@+id/textIdChildren"
-        android:text="25/8/2018" />
+        android:layout_toEndOf="@+id/textIdChildren" />
 
     <View
         android:id="@+id/div1"
-        android:layout_width="3dp"
-        android:layout_height="55dp"
-        android:layout_alignTop="@+id/textIdChildren"
-        android:layout_marginStart="100dp"
-        android:layout_toEndOf="@+id/textIdNumberChildren"
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="20dp"
+        android:layout_toStartOf="@id/btnSelectChildren"
         android:background="@color/colorPrimary" />
 
-    <Button
+    <android.support.v7.widget.AppCompatButton
         android:id="@+id/btnSelectChildren"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_alignTop="@+id/textIdChildren"
-        android:layout_marginStart="5dp"
-        android:layout_toEndOf="@+id/div1"
-        android:background="@android:drawable/ic_media_play" />
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="-5dp"
+        android:layout_toStartOf="@id/div2"
+        android:background="@mipmap/ic_select_children" />
 
     <View
         android:id="@+id/div2"
-        android:layout_width="3dp"
-        android:layout_height="55dp"
-        android:layout_alignTop="@+id/textIdChildren"
-        android:layout_marginStart="5dp"
-        android:layout_toEndOf="@+id/btnSelectChildren"
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="15dp"
+        android:layout_toStartOf="@id/btnDeleteChild"
         android:background="@color/colorPrimary" />
 
-    <Button
-        android:id="@+id/button3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/btnDeleteChild"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentEnd="true"
         android:layout_alignTop="@+id/textIdChildren"
-        android:layout_toEndOf="@+id/div2"
-        android:background="@android:drawable/ic_menu_delete" />
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="-5dp"
+        android:background="@drawable/ic_trash" />
 
 
 </RelativeLayout>

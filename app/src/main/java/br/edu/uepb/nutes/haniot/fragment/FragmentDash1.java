@@ -242,14 +242,6 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener, Dat
             @Override
             public void onError(JSONObject result) {
                 System.out.println("==Error on request of data of progress bar on dashboard");
-//                getActivity().runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        Snackbar.make(getActivity().findViewById(android.R.id.content), "Algo deu errado, por favor verifique sua conexão com a internet!", Snackbar.LENGTH_LONG)
-//                                .show();
-////                        Toast.makeText(getContext(),"Algo deu errado, por favor verifique sua conexão com a internet!",Toast.LENGTH_SHORT).show();
-//                    }
-//                });
                 new Handler(getContext().getMainLooper()).postDelayed(new Runnable(){
 
                     @Override

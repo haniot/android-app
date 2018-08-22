@@ -25,7 +25,6 @@ public class ManageMeasurementAdapter extends RecyclerView.Adapter<ManageMeasure
 
     public List<ItemManageMeasurement> listaItens;
     private Context context;
-    private boolean bloodPressureMonitor;
     private SharedPreferences prefs;
     private SharedPreferences.Editor editor;
 
@@ -34,9 +33,6 @@ public class ManageMeasurementAdapter extends RecyclerView.Adapter<ManageMeasure
         this.context = context;
         this.prefs = context.getSharedPreferences("MyPref",Context.MODE_PRIVATE);
         this.editor = prefs.edit();
-
-
-        bloodPressureMonitor = prefs.getBoolean("blood_pressure_monitor",false);
     }
 
     @NonNull
@@ -139,9 +135,6 @@ public class ManageMeasurementAdapter extends RecyclerView.Adapter<ManageMeasure
     }
 
     public static class ManageMeasurementAdapterViewHolder extends RecyclerView.ViewHolder{
-
-        private SharedPreferences prefs;
-        private SharedPreferences.Editor editor;
 
         @BindView(R.id.iconManageMeasurement)
         ImageView iconManageMeasurement;

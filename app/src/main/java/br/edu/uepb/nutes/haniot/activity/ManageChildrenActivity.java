@@ -8,6 +8,8 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
@@ -18,9 +20,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.model.Children;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -31,6 +39,8 @@ public class ManageChildrenActivity extends AppCompatActivity {
     @BindView(R.id.recyclerViewChildren)
     RecyclerView recyclerViewChildren;
 
+    private List<Children> childrenList = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +50,12 @@ public class ManageChildrenActivity extends AppCompatActivity {
         toolbar.setTitle(getResources().getString(R.string.manage_children));
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        recyclerViewChildren.setHasFixedSize(true);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerViewChildren.getContext(),
+                LinearLayout.VERTICAL);
+        recyclerViewChildren.addItemDecoration(dividerItemDecoration);
+        recyclerViewChildren.setLayoutManager(new LinearLayoutManager(this));
 
     }
 
@@ -58,13 +74,8 @@ public class ManageChildrenActivity extends AppCompatActivity {
         searchView.setMaxWidth(Integer.MAX_VALUE);
         searchView.setIconified(false);
         searchView.setBackgroundColor(Color.LTGRAY);
-//        SearchManager searchManager = (SearchManager) ManageChildrenActivity.this.getSystemService(Context.SEARCH_SERVICE);
-//        searchView.setSearchableInfo(searchManager.getSearchableInfo(ManageChildrenActivity.this.getComponentName()));
-//        searchView.setIconifiedByDefault(false);
-//
-//        EditText searchPlate = (EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
-//        searchPlate.setHint(getResources().getString(R.string.search));
-//        searchPlate.setInputType(InputType.TYPE_CLASS_NUMBER);
+        EditText searchEditText = (EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+        searchEditText.setTextColor(Color.BLACK);
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -83,14 +94,6 @@ public class ManageChildrenActivity extends AppCompatActivity {
         });
 
         return super.onCreateOptionsMenu(menu);
-    }
-
-    public void showSoftKeyboard(View view) {
-        if (view.requestFocus()) {
-            InputMethodManager imm = (InputMethodManager)
-                    getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
-        }
     }
 
     @Override

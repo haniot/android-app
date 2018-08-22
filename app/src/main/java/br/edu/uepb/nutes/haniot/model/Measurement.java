@@ -29,6 +29,7 @@ public class Measurement {
      * RELATIONS
      */
     private ToOne<User> user;
+    private ToOne<Children> children;
     private ToOne<Device> device;
     private ToOne<Training> training;
     @Backlink(to = "measurement")
@@ -92,6 +93,14 @@ public class Measurement {
 
     public void setRegistrationDate(long registrationDate) {
         this.registrationDate = registrationDate;
+    }
+
+    public ToOne<Children> getChildren() {
+        return children;
+    }
+
+    public void setChildren(ToOne<Children> children) {
+        this.children = children;
     }
 
     public ToOne<User> getUser() {
