@@ -8,8 +8,6 @@ import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.ScaleAnimation;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -19,7 +17,6 @@ import br.edu.uepb.nutes.haniot.R;
 
 import java.util.List;
 
-import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.model.ItemManageMeasurement;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -48,7 +45,7 @@ public class ManageMeasurementAdapter extends RecyclerView.Adapter<ManageMeasure
 
         //Os itens não estavam preenchendo a tela na api 19, inflando dessa forma o bug é resolvido.
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View view = inflater.from(parent.getContext()).inflate(R.layout.view_manage_measurement_line,null,false);
+        View view = inflater.from(parent.getContext()).inflate(R.layout.item_manage_measurement_line,null,false);
         RecyclerView.LayoutParams lp = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         view.setLayoutParams(lp);
 

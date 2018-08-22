@@ -4,15 +4,17 @@
 
     <item
         android:id="@+id/btnSearchChild"
+        android:enabled="true"
         android:icon="@android:drawable/ic_menu_search"
         android:orderInCategory="1"
         android:title="@string/search"
+        android:visible="true"
         app:actionViewClass="android.support.v7.widget.SearchView"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="ifRoom|collapseActionView" />
     <item
         android:id="@+id/btnAddChild"
         android:icon="@drawable/ic_add"
         android:orderInCategory="2"
         android:title="@string/add"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
 </menu>

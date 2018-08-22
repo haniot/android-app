@@ -50,7 +50,6 @@ public class ManageMeasurements extends AppCompatActivity {
         editor = prefs.edit();
 
         toolbar.setTitle(getResources().getString(R.string.manage_measurement_title));
-        toolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

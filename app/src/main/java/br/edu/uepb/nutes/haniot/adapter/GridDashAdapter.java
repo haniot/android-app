@@ -11,7 +11,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -21,8 +20,6 @@ import java.util.List;
 import android.os.Handler;
 
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
-
-import java.util.logging.LogRecord;
 
 import br.edu.uepb.nutes.haniot.devices.GlucoseActivity;
 import br.edu.uepb.nutes.haniot.devices.HeartRateActivity;
@@ -54,7 +51,7 @@ public class GridDashAdapter extends RecyclerView.Adapter<GridDashAdapter.ViewHo
     public ViewHolderGrid onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(R.layout.view_grid_dash, parent, false);
+        View view = inflater.inflate(R.layout.item_grid_dash, parent, false);
 
         ViewHolderGrid viewHolderGrid = new ViewHolderGrid(view,parent.getContext());
 

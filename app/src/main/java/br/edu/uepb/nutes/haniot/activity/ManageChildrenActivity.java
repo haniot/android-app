@@ -1,11 +1,14 @@
 package br.edu.uepb.nutes.haniot.activity;
 
 import android.app.SearchManager;
+import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
@@ -13,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -24,6 +28,8 @@ public class ManageChildrenActivity extends AppCompatActivity {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+    @BindView(R.id.recyclerViewChildren)
+    RecyclerView recyclerViewChildren;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,19 +51,27 @@ public class ManageChildrenActivity extends AppCompatActivity {
         inflater.inflate(R.menu.menu_manage_children, menu);
 
         //Botão search na toolbar
-        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.btnSearchChild));
-        SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-
-        EditText searchPlate = (EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
-        searchPlate.setHint(getResources().getString(R.string.search));
-        searchPlate.setInputType(InputType.TYPE_CLASS_NUMBER);
+        MenuItem searchBtn = menu.findItem(R.id.btnSearchChild);
+        final SearchView searchView = (SearchView) searchBtn.getActionView();
+        searchView.setInputType(InputType.TYPE_CLASS_NUMBER);
+        searchView.setIconifiedByDefault(true);
+        searchView.setMaxWidth(Integer.MAX_VALUE);
+        searchView.setIconified(false);
+        searchView.setBackgroundColor(Color.LTGRAY);
+//        SearchManager searchManager = (SearchManager) ManageChildrenActivity.this.getSystemService(Context.SEARCH_SERVICE);
+//        searchView.setSearchableInfo(searchManager.getSearchableInfo(ManageChildrenActivity.this.getComponentName()));
+//        searchView.setIconifiedByDefault(false);
+//
+//        EditText searchPlate = (EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+//        searchPlate.setHint(getResources().getString(R.string.search));
+//        searchPlate.setInputType(InputType.TYPE_CLASS_NUMBER);
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 // use this method when query submitted
                 Toast.makeText(getApplicationContext(), query, Toast.LENGTH_SHORT).show();
+                searchBtn.collapseActionView();
                 return false;
             }
 
@@ -69,6 +83,14 @@ public class ManageChildrenActivity extends AppCompatActivity {
         });
 
         return super.onCreateOptionsMenu(menu);
+    }
+
+    public void showSoftKeyboard(View view) {
+        if (view.requestFocus()) {
+            InputMethodManager imm = (InputMethodManager)
+                    getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
+        }
     }
 
     @Override
