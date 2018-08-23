@@ -27,10 +27,12 @@ public class ManageChildrenAdapter extends RecyclerView.Adapter<ManageChildrenAd
     private List<Children> itemList;
     private List<Children> itemListFiltered;
     private Context context;
+    private String searchQuerry;
 
     public ManageChildrenAdapter(List<Children> childrenList, Context context){
 
         this.itemList = childrenList;
+        this.itemListFiltered = childrenList;
         this.context = context;
 
     }
@@ -51,9 +53,9 @@ public class ManageChildrenAdapter extends RecyclerView.Adapter<ManageChildrenAd
     @Override
     public void onBindViewHolder(@NonNull ManageChildrenViewHolder holder, int position) {
 
-        if (itemList != null && itemList.size() > 0){
+        if (itemListFiltered != null && itemListFiltered.size() > 0){
 
-            Children children = itemList.get(position);
+            Children children = itemListFiltered.get(position);
             View divider = new View(this.context);
             divider.setMinimumWidth(2);
             divider.setMinimumHeight(ViewGroup.LayoutParams.MATCH_PARENT);
@@ -72,9 +74,11 @@ public class ManageChildrenAdapter extends RecyclerView.Adapter<ManageChildrenAd
 
             });
             holder.btnDelete.setOnClickListener( d -> {
-
-                Toast.makeText(context,"Deletando criança com o id: "+children.get_id(),Toast.LENGTH_SHORT).show();
-                removeChild(position);
+                Toast.makeText(context,"Deletando criança com o id: "+children.get_id()+" na posicao: "+position,Toast.LENGTH_SHORT).show();
+                int oldId = searchPositionByChildrenId(children.get_id());
+                if (oldId != -1) {
+                    removeChild(oldId);
+                }
             });
             holder.div1.setVisibility(View.VISIBLE);
         }
@@ -83,14 +87,30 @@ public class ManageChildrenAdapter extends RecyclerView.Adapter<ManageChildrenAd
 
     //Delete child;
     private void removeChild(int position){
-        itemList.remove(position);
-        notifyItemRemoved(position);
-        notifyItemRangeChanged(position,itemList.size());
+        if (itemList.size()> 0) {
+            itemList.remove(position);
+            getFilter().filter(this.searchQuerry);
+            notifyItemRemoved(position);
+            notifyItemRangeChanged(position,itemList.size());
+        }
+    }
+
+    private int searchPositionByChildrenId(String _id){
+        for (int i =0; i<itemList.size(); i++){
+            if (itemList.get(i).get_id().equals(_id)){
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public void setSearchQuerry(String searchQuerry) {
+        this.searchQuerry = searchQuerry;
     }
 
     @Override
     public int getItemCount() {
-        return itemList.size();
+        return itemListFiltered.size();
     }
 
     @Override

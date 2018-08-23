@@ -25,6 +25,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -70,10 +71,11 @@ public class ManageChildrenActivity extends AppCompatActivity {
 
     private void loadData(){
         Children child;
-        for (int i = 0;i < 15;i++){
+        SimpleDateFormat spn = new SimpleDateFormat("dd/MM/yyyy");
+        for (int i = 0;i < 10;i++){
             child = new Children();
             child.set_id(String.valueOf(i*1578));
-            child.setRegisterDate(Calendar.getInstance().getTime().toString());
+            child.setRegisterDate(spn.format(Calendar.getInstance().getTime()));
             childrenList.add(child);
         }
     }
@@ -88,13 +90,13 @@ public class ManageChildrenActivity extends AppCompatActivity {
         //Botão search na toolbar
         MenuItem searchBtn = menu.findItem(R.id.btnSearchChild);
         final SearchView searchView = (SearchView) searchBtn.getActionView();
-        searchView.setInputType(InputType.TYPE_CLASS_NUMBER);
+        searchView.setInputType(InputType.TYPE_CLASS_PHONE);
         searchView.setIconifiedByDefault(true);
         searchView.setMaxWidth(Integer.MAX_VALUE);
         searchView.setIconified(false);
-//        searchView.setBackgroundColor(Color.LTGRAY);
+        searchView.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
         EditText searchEditText = (EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
-        searchEditText.setTextColor(Color.BLACK);
+        searchEditText.setTextColor(Color.WHITE);
         searchEditText.setHintTextColor(Color.LTGRAY);
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -102,13 +104,17 @@ public class ManageChildrenActivity extends AppCompatActivity {
             public boolean onQueryTextSubmit(String query) {
                 // use this method when query submitted
                 Toast.makeText(getApplicationContext(), query, Toast.LENGTH_SHORT).show();
-                searchBtn.collapseActionView();
+
+                adapter.getFilter().filter(query);
+                System.out.println("==digitou "+query);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
                 adapter.getFilter().filter(newText);
+                adapter.setSearchQuerry(newText);
+                System.out.println("==digitou "+newText);
                 return false;
             }
         });
