@@ -8,9 +8,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
@@ -19,9 +22,10 @@ import br.edu.uepb.nutes.haniot.model.Children;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ManageChildrenAdapter extends RecyclerView.Adapter<ManageChildrenAdapter.ManageChildrenViewHolder>{
+public class ManageChildrenAdapter extends RecyclerView.Adapter<ManageChildrenAdapter.ManageChildrenViewHolder> implements Filterable{
 
     private List<Children> itemList;
+    private List<Children> itemListFiltered;
     private Context context;
 
     public ManageChildrenAdapter(List<Children> childrenList, Context context){
@@ -50,6 +54,10 @@ public class ManageChildrenAdapter extends RecyclerView.Adapter<ManageChildrenAd
         if (itemList != null && itemList.size() > 0){
 
             Children children = itemList.get(position);
+            View divider = new View(this.context);
+            divider.setMinimumWidth(2);
+            divider.setMinimumHeight(ViewGroup.LayoutParams.MATCH_PARENT);
+            divider.setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
 
             holder.textId.setText(children.get_id());
             holder.textDate.setText(children.getRegisterDate());
@@ -66,16 +74,58 @@ public class ManageChildrenAdapter extends RecyclerView.Adapter<ManageChildrenAd
             holder.btnDelete.setOnClickListener( d -> {
 
                 Toast.makeText(context,"Deletando criança com o id: "+children.get_id(),Toast.LENGTH_SHORT).show();
-
+                removeChild(position);
             });
-
+            holder.div1.setVisibility(View.VISIBLE);
         }
 
+    }
+
+    //Delete child;
+    private void removeChild(int position){
+        itemList.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position,itemList.size());
     }
 
     @Override
     public int getItemCount() {
         return itemList.size();
+    }
+
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                String querry = constraint.toString();
+                if (querry.isEmpty()){
+                    itemListFiltered = itemList;
+                }else{
+                    List<Children> filteredList = new ArrayList<>();
+                    for (Children child : itemList){
+
+                        //O filtro é aplicado aqui
+                        if (child.get_id().toLowerCase().contains(querry.toLowerCase())
+                                || child.getRegisterDate().toLowerCase().equalsIgnoreCase(querry.toLowerCase())){
+                            filteredList.add(child);
+                        }
+                    }
+                    itemListFiltered = filteredList;
+                }
+
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = itemListFiltered;
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+
+                itemListFiltered = (ArrayList<Children>)results.values;
+                notifyDataSetChanged();
+            }
+        };
     }
 
     public static class ManageChildrenViewHolder extends RecyclerView.ViewHolder{
@@ -88,6 +138,8 @@ public class ManageChildrenAdapter extends RecyclerView.Adapter<ManageChildrenAd
         AppCompatButton btnSelect;
         @BindView(R.id.btnDeleteChild)
         AppCompatButton btnDelete;
+        @BindView(R.id.div1)
+        View div1;
 
         public ManageChildrenViewHolder(View itemView) {
             super(itemView);

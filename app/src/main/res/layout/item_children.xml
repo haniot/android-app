@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="65dp">
+    android:layout_height="72dp"
+    android:background="?android:attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/textIdChildren"
@@ -9,8 +13,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
         android:gravity="end"
         android:text="@string/id" />
 
@@ -20,6 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_alignEnd="@id/textIdChildren"
         android:layout_below="@+id/textIdChildren"
+        android:layout_marginBottom="5dp"
         android:layout_marginTop="5dp"
         android:gravity="end"
         android:text="@string/date" />
@@ -29,6 +35,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/textIdChildren"
+        android:layout_marginBottom="5dp"
         android:layout_marginStart="30dp"
         android:layout_toEndOf="@+id/textIdChildren" />
 
@@ -37,45 +44,47 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/textRegisterDateChildren"
+        android:layout_marginBottom="5dp"
         android:layout_marginStart="30dp"
         android:layout_toEndOf="@+id/textIdChildren" />
 
     <View
         android:id="@+id/div1"
-        android:layout_width="1dp"
+        android:layout_width="2dp"
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"
-        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginEnd="16dp"
         android:layout_toStartOf="@id/btnSelectChildren"
         android:background="@color/colorPrimary" />
 
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/btnSelectChildren"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_alignTop="@+id/textIdChildren"
-        android:layout_marginEnd="20dp"
-        android:layout_marginTop="-5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginEnd="16dp"
         android:layout_toStartOf="@id/div2"
         android:background="@mipmap/ic_select_children" />
 
     <View
         android:id="@+id/div2"
-        android:layout_width="1dp"
+        android:layout_width="2dp"
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"
-        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginEnd="16dp"
         android:layout_toStartOf="@id/btnDeleteChild"
         android:background="@color/colorPrimary" />
 
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/btnDeleteChild"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_alignParentEnd="true"
         android:layout_alignTop="@+id/textIdChildren"
-        android:layout_marginEnd="20dp"
-        android:layout_marginTop="-5dp"
+        android:layout_marginEnd="16dp"
         android:background="@drawable/ic_trash" />
 
 

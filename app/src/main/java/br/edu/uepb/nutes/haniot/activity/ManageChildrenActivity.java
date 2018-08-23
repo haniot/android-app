@@ -8,6 +8,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -25,9 +26,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.adapter.ManageChildrenAdapter;
 import br.edu.uepb.nutes.haniot.model.Children;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -40,6 +43,7 @@ public class ManageChildrenActivity extends AppCompatActivity {
     RecyclerView recyclerViewChildren;
 
     private List<Children> childrenList = new ArrayList<>();
+    private ManageChildrenAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,12 +55,27 @@ public class ManageChildrenActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        loadData();
+
+        adapter = new ManageChildrenAdapter(this.childrenList,getApplicationContext());
         recyclerViewChildren.setHasFixedSize(true);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerViewChildren.getContext(),
                 LinearLayout.VERTICAL);
         recyclerViewChildren.addItemDecoration(dividerItemDecoration);
         recyclerViewChildren.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewChildren.setItemAnimator(new DefaultItemAnimator());
+        recyclerViewChildren.setAdapter(adapter);
 
+    }
+
+    private void loadData(){
+        Children child;
+        for (int i = 0;i < 15;i++){
+            child = new Children();
+            child.set_id(String.valueOf(i*1578));
+            child.setRegisterDate(Calendar.getInstance().getTime().toString());
+            childrenList.add(child);
+        }
     }
 
     @Override
@@ -73,9 +92,10 @@ public class ManageChildrenActivity extends AppCompatActivity {
         searchView.setIconifiedByDefault(true);
         searchView.setMaxWidth(Integer.MAX_VALUE);
         searchView.setIconified(false);
-        searchView.setBackgroundColor(Color.LTGRAY);
+//        searchView.setBackgroundColor(Color.LTGRAY);
         EditText searchEditText = (EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
         searchEditText.setTextColor(Color.BLACK);
+        searchEditText.setHintTextColor(Color.LTGRAY);
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -88,7 +108,7 @@ public class ManageChildrenActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                // use this method for auto complete search process
+                adapter.getFilter().filter(newText);
                 return false;
             }
         });
