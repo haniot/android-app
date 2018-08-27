@@ -25,6 +25,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.w3c.dom.Text;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -42,6 +44,8 @@ public class ManageChildrenActivity extends AppCompatActivity {
     Toolbar toolbar;
     @BindView(R.id.recyclerViewChildren)
     RecyclerView recyclerViewChildren;
+    @BindView(R.id.textNoDataFound)
+    TextView textNoDataFound;
 
     private List<Children> childrenList = new ArrayList<>();
     private ManageChildrenAdapter adapter;
@@ -106,20 +110,30 @@ public class ManageChildrenActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), query, Toast.LENGTH_SHORT).show();
 
                 adapter.getFilter().filter(query);
-                System.out.println("==digitou "+query);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                adapter.getFilter().filter(newText);
                 adapter.setSearchQuerry(newText);
-                System.out.println("==digitou "+newText);
+                adapter.getFilter().filter(newText);
                 return false;
             }
         });
 
         return super.onCreateOptionsMenu(menu);
+    }
+
+    public void setTextNoDataFoundVisibility(Boolean visibility){
+        if (visibility){
+            this.textNoDataFound.setVisibility(View.VISIBLE);
+            this.recyclerViewChildren.setVisibility(View.GONE);
+            return;
+        }else {
+            this.textNoDataFound.setVisibility(View.INVISIBLE);
+            this.recyclerViewChildren.setVisibility(View.VISIBLE);
+        }
+
     }
 
     @Override
@@ -135,4 +149,5 @@ public class ManageChildrenActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
 }

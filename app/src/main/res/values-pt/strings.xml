@@ -279,6 +279,7 @@
     <string name="search">Pesquisar</string>
     <string name="id">id: </string>
     <string name="date">Data: </string>
+    <string name="no_data_available">Nenhum dado aqui...</string>
 
     <!-- END OF STRINGS FOR TABLET -->
 

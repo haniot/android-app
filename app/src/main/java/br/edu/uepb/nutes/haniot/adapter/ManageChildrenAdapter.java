@@ -18,6 +18,7 @@ import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.MainActivity;
+import br.edu.uepb.nutes.haniot.activity.ManageChildrenActivity;
 import br.edu.uepb.nutes.haniot.model.Children;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -27,14 +28,13 @@ public class ManageChildrenAdapter extends RecyclerView.Adapter<ManageChildrenAd
     private List<Children> itemList;
     private List<Children> itemListFiltered;
     private Context context;
-    private String searchQuerry;
+    private String searchQuerry = "";
 
     public ManageChildrenAdapter(List<Children> childrenList, Context context){
 
         this.itemList = childrenList;
         this.itemListFiltered = childrenList;
         this.context = context;
-
     }
 
     @NonNull
@@ -74,21 +74,24 @@ public class ManageChildrenAdapter extends RecyclerView.Adapter<ManageChildrenAd
 
             });
             holder.btnDelete.setOnClickListener( d -> {
-                Toast.makeText(context,"Deletando criança com o id: "+children.get_id()+" na posicao: "+position,Toast.LENGTH_SHORT).show();
+
                 int oldId = searchPositionByChildrenId(children.get_id());
                 if (oldId != -1) {
                     removeChild(oldId);
+                    if (getItemListFilteredSize() == 0){
+                        Toast.makeText(context,context.getResources().getString(R.string.no_data_available),Toast.LENGTH_SHORT).show();
+                    }
                 }
             });
-            holder.div1.setVisibility(View.VISIBLE);
         }
 
     }
 
     //Delete child;
     private void removeChild(int position){
-        if (itemList.size()> 0) {
-            itemList.remove(position);
+        if (this.itemList.size()> 0) {
+            this.itemList.remove(position);
+            this.itemListFiltered = this.itemList;
             getFilter().filter(this.searchQuerry);
             notifyItemRemoved(position);
             notifyItemRangeChanged(position,itemList.size());
@@ -110,7 +113,13 @@ public class ManageChildrenAdapter extends RecyclerView.Adapter<ManageChildrenAd
 
     @Override
     public int getItemCount() {
-        return itemListFiltered.size();
+
+        return itemListFiltered == null ? 0 : itemListFiltered.size();
+
+    }
+
+    public int getItemListFilteredSize(){
+        return this.itemListFiltered.size();
     }
 
     @Override
@@ -119,7 +128,7 @@ public class ManageChildrenAdapter extends RecyclerView.Adapter<ManageChildrenAd
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
                 String querry = constraint.toString();
-                if (querry.isEmpty()){
+                if (querry.isEmpty() || querry.equals("")){
                     itemListFiltered = itemList;
                 }else{
                     List<Children> filteredList = new ArrayList<>();
@@ -136,12 +145,12 @@ public class ManageChildrenAdapter extends RecyclerView.Adapter<ManageChildrenAd
 
                 FilterResults filterResults = new FilterResults();
                 filterResults.values = itemListFiltered;
+                filterResults.count = itemListFiltered.size();
                 return filterResults;
             }
 
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
-
                 itemListFiltered = (ArrayList<Children>)results.values;
                 notifyDataSetChanged();
             }
@@ -158,13 +167,12 @@ public class ManageChildrenAdapter extends RecyclerView.Adapter<ManageChildrenAd
         AppCompatButton btnSelect;
         @BindView(R.id.btnDeleteChild)
         AppCompatButton btnDelete;
-        @BindView(R.id.div1)
-        View div1;
 
         public ManageChildrenViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this,itemView);
         }
+
     }
 
 }
