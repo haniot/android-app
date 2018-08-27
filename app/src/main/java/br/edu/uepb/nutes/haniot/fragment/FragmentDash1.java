@@ -2,6 +2,7 @@ package br.edu.uepb.nutes.haniot.fragment;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.net.Uri;
@@ -111,6 +112,10 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener, Dat
     //Server part
     private Params   params;
     private Session session;
+    private String childId = "";
+
+    private SharedPreferences prefs;
+    private SharedPreferences.Editor        editor;
 
     public FragmentDash1() {
         // Required empty public constructor
@@ -144,6 +149,8 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener, Dat
         //Inicia a sessão com o ID logado e pega as medições do tipo STEPS
         session = new Session(getContext());
         params = new Params(session.get_idLogged(), MeasurementType.STEPS);
+        prefs = getContext().getSharedPreferences("MyPref", Context.MODE_PRIVATE);
+        editor = prefs.edit();
 
         //Formata a data para o dia / mes / ano
         simpleDateFormat = new SimpleDateFormat("dd / MM / yyyy");
@@ -155,7 +162,6 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener, Dat
         }else{
             this.date = simpleDateFormat.format(calendar.getTime());
         }
-
     }
 
     //Método usado para quando rotacionar/rodar/girar a tela
@@ -202,7 +208,45 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener, Dat
         } catch (ParseException e) {
             e.printStackTrace();
         }
+        getChildId();
         return view;
+    }
+
+    //Pega o id da criança e habilida/desabilita os botões de controle do dashboard
+    public void getChildId(){
+        String lastId = prefs.getString("childId","null");
+        if (!lastId.equals("null")){
+            this.childId = lastId;
+            if (this.date.equals(this.today)){
+                btnArrowRight.setEnabled(false);
+                btnArrowRight.setBackground(getResources().getDrawable(R.mipmap.ic_arrow_right_disabled));
+            }else {
+                btnArrowRight.setEnabled(true);
+                btnArrowRight.setBackground(getResources().getDrawable(R.mipmap.ic_arrow_right));
+            }
+            btnArrowLeft.setEnabled(true);
+            btnArrowLeft.setBackground(getResources().getDrawable(R.mipmap.ic_arrow_left));
+            textDate.setEnabled(true);
+            stepsProgressBar.setEnabled(true);
+            caloriesProgressBar.setEnabled(true);
+            distanceProgressBar.setEnabled(true);
+        }else{
+            btnArrowRight.setEnabled(false);
+            btnArrowRight.setBackground(getResources().getDrawable(R.mipmap.ic_arrow_right_disabled));
+            btnArrowLeft.setEnabled(false);
+            btnArrowLeft.setBackground(getResources().getDrawable(R.mipmap.ic_arrow_left_disabled));
+            textDate.setEnabled(false);
+            setDataProgress(0,0,0);
+            stepsProgressBar.setEnabled(false);
+            caloriesProgressBar.setEnabled(false);
+            distanceProgressBar.setEnabled(false);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getChildId();
     }
 
     //Formata a data para aparecer o nome por extenso, dia, nome do mês e ano; Seta a data no textview

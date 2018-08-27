@@ -30,6 +30,7 @@
         <android.support.design.widget.TabLayout
             android:id="@+id/tabLayout"
             android:layout_width="match_parent"
+            app:tabMaxWidth="2000dp"
             android:layout_height="48dp"
             android:layout_below="@+id/toolbar"
             android:background="@color/colorPrimary"

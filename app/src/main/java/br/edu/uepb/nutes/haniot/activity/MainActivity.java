@@ -3,22 +3,20 @@ package br.edu.uepb.nutes.haniot.activity;
 import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.GravityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
@@ -26,22 +24,12 @@ import android.text.style.StyleSpan;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.Toast;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.account.LoginActivity;
 import br.edu.uepb.nutes.haniot.adapter.FragmentPageAdapter;
-import br.edu.uepb.nutes.haniot.elderly.ElderlyMonitoredActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
-import br.edu.uepb.nutes.haniot.activity.settings.SettingsActivity;
-import br.edu.uepb.nutes.haniot.fragment.ConnectDeviceFragment;
-import br.edu.uepb.nutes.haniot.fragment.ScanDeviceFragment;
-import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -56,7 +44,12 @@ import butterknife.ButterKnife;
 public class MainActivity extends AppCompatActivity {
     private final String TAG = "MainActivity";
     private final int REQUEST_ENABLE_BLUETOOTH = 1;
-    private final int REQUEST_ENABLE_LOCATION = 2;
+    private final int REQUEST_ENABLE_LOCATION  = 2;
+
+    private String tabTitle          = "DASHBOARD";
+    private String id                =          "";
+    private SharedPreferences                prefs;
+    private SharedPreferences.Editor        editor;
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -72,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        prefs = getApplicationContext().getSharedPreferences("MyPref", Context.MODE_PRIVATE);
+        editor = prefs.edit();
 
         toolbar.setTitle("HANIoT");
         setSupportActionBar(toolbar);
@@ -82,12 +77,7 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setOffscreenPageLimit(2);
         tabLayout.setupWithViewPager(viewPager);
 
-        if (tabLayout.getTabAt(0) != null){
-            String textDash = "DASHBOARD";
-            SpannableString dash = new SpannableString(textDash);
-            dash.setSpan(new StyleSpan(Typeface.BOLD), textDash.length(), dash.length(), 0);
-            tabLayout.getTabAt(0).setText(dash);
-        }
+        checkLastChildAndUpdateTabTitle();
 
         newMeasureButton.setOnClickListener(v -> {
             Intent it = new Intent(MainActivity.this, ManageMeasurements.class);
@@ -105,6 +95,41 @@ public class MainActivity extends AppCompatActivity {
         if (!(new Session(this).isLogged())) {
             startActivity(new Intent(this, LoginActivity.class));
             finish();
+        }
+        checkLastChildAndUpdateTabTitle();
+    }
+
+    /*Testa se tem criança salva no bundle ou no sharedpreferences,
+        caso tenha salva o id da criança e atualiza o titulo da aba
+    */
+    public void checkLastChildAndUpdateTabTitle(){
+        Bundle params = getIntent().getExtras();
+        if (params != null){
+            String idExtra = params.getString("id_child");
+            if (idExtra  != null && !idExtra .equals("")) {
+                this.id = idExtra;
+            }
+        }else{
+            this.id = "";
+        }
+        String lastId = prefs.getString("childId","null");
+        if (!lastId.equals("null")){
+            this.id = lastId;
+        }else{
+            this.id = "";
+        }
+        if (this.id.equals("")){
+            this.id = "404 not found";
+            tabLayout.setTabTextColors(ContextCompat.getColorStateList(this, R.color.colorRed));
+        }
+
+        tabTitle = "DASHBOARD" + " - " + id;
+
+        if (tabLayout.getTabAt(0) != null){
+
+            SpannableString dash = new SpannableString(tabTitle);
+            dash.setSpan(new StyleSpan(Typeface.BOLD), tabTitle.length(), dash.length(), 0);
+            tabLayout.getTabAt(0).setText(dash);
         }
 
     }

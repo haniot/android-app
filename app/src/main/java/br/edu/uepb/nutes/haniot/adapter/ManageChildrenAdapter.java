@@ -1,8 +1,12 @@
 package br.edu.uepb.nutes.haniot.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -29,12 +33,16 @@ public class ManageChildrenAdapter extends RecyclerView.Adapter<ManageChildrenAd
     private List<Children> itemListFiltered;
     private Context context;
     private String searchQuerry = "";
+    private SharedPreferences prefs;
+    private SharedPreferences.Editor editor;
 
     public ManageChildrenAdapter(List<Children> childrenList, Context context){
 
         this.itemList = childrenList;
         this.itemListFiltered = childrenList;
         this.context = context;
+        this.prefs = context.getSharedPreferences("MyPref",Context.MODE_PRIVATE);
+        this.editor = prefs.edit();
     }
 
     @NonNull
@@ -68,9 +76,15 @@ public class ManageChildrenAdapter extends RecyclerView.Adapter<ManageChildrenAd
                 Toast.makeText(context,"Iniciando dashboard com o id: "+children.get_id(),Toast.LENGTH_SHORT).show();
 
                 //Código abaixo funcional!
-//                Intent it = new Intent(context,MainActivity.class);
-//                it.putExtra("_id",children.get_id());
-//                this.context.startActivity(it);
+                Intent it = new Intent(context,MainActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("id_child",children.get_id());
+
+                it.putExtras(bundle);
+                it.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                editor.putString("childId",children.get_id()).commit();
+
+                context.startActivity(it);
 
             });
             holder.btnDelete.setOnClickListener( d -> {
@@ -78,6 +92,9 @@ public class ManageChildrenAdapter extends RecyclerView.Adapter<ManageChildrenAd
                 int oldId = searchPositionByChildrenId(children.get_id());
                 if (oldId != -1) {
                     removeChild(oldId);
+                    if (children.get_id().equals(prefs.getString("childId","null").toString())) {
+                        editor.putString("childId", "null").commit();
+                    }
                     if (getItemListFilteredSize() == 0){
                         Toast.makeText(context,context.getResources().getString(R.string.no_data_available),Toast.LENGTH_SHORT).show();
                     }
