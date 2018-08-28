@@ -92,9 +92,9 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener, Dat
     @BindView(R.id.loadingDataProgressBar)
     CircularProgressBar loadingDataProgressBar;
 
-    private int      stepsGoal = 200;
-    private int   caloriesGoal = 300;
-    private int     distanceGoal = 800;
+    private int      highProgressBarGoal = 200;
+    private int   lightProgressBar1Goal = 300;
+    private int     lightProgressBar2Goal = 800;
 
     //Date part
     private Calendar                   calendar;
@@ -116,6 +116,7 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener, Dat
 
     private SharedPreferences prefs;
     private SharedPreferences.Editor        editor;
+    private String [] measurementTypeArray;
 
     public FragmentDash1() {
         // Required empty public constructor
@@ -215,6 +216,7 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener, Dat
     //Pega o id da criança e habilida/desabilita os botões de controle do dashboard
     public void getChildId(){
         String lastId = prefs.getString("childId","null");
+        System.out.println("\n == valor do last id: "+lastId);
         if (!lastId.equals("null")){
             this.childId = lastId;
             if (this.date.equals(this.today)){
@@ -236,6 +238,7 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener, Dat
             btnArrowLeft.setEnabled(false);
             btnArrowLeft.setBackground(getResources().getDrawable(R.mipmap.ic_arrow_left_disabled));
             textDate.setEnabled(false);
+            System.out.println("\n == zerando as progress bars");
             setDataProgress(0,0,0);
             stepsProgressBar.setEnabled(false);
             caloriesProgressBar.setEnabled(false);
@@ -251,8 +254,10 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener, Dat
 
     //Formata a data para aparecer o nome por extenso, dia, nome do mês e ano; Seta a data no textview
     public void updateTextDate(Date dateToText){
-        String formattedDate = new SimpleDateFormat("EEEE, dd MMMM, yyyy",Locale.US).format(dateToText);
-        textDate.setText(formattedDate);
+        Locale current = getResources().getConfiguration().locale;
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE, dd MMMM, yyyy",current);
+        String dateFormatted = simpleDateFormat.format(dateToText);
+        textDate.setText(dateFormatted);
     }
 
     //Carrega os dados do servidor
@@ -395,6 +400,8 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener, Dat
     }
 
     public void initData(){
+        measurementTypeArray = getResources().getStringArray(R.array.measurement_types_array);
+
         if (this.date.equals(this.today)){
             btnArrowRight.setEnabled(false);
             btnArrowRight.setBackground(getResources().getDrawable(R.mipmap.ic_arrow_right_disabled));
@@ -406,9 +413,9 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener, Dat
         calendarAux = Calendar.getInstance();
 
         //Seta o progresso máximo
-        stepsProgressBar.setProgressMax(stepsGoal);
-        caloriesProgressBar.setProgressMax(caloriesGoal);
-        distanceProgressBar.setProgressMax(distanceGoal);
+        stepsProgressBar.setProgressMax(highProgressBarGoal);
+        caloriesProgressBar.setProgressMax(lightProgressBar1Goal);
+        distanceProgressBar.setProgressMax(lightProgressBar2Goal);
 
     }
 
@@ -421,8 +428,8 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener, Dat
 //        loadingDataProgressBar.setVisibility(View.VISIBLE);
 
         //Seta os dados nos textos abaixo da progressbar
-        textSteps.setText(numberOfSteps+" steps");
-        textCalories.setText(numberOfCalories+" calories");
+        textSteps.setText(numberOfSteps+" "+measurementTypeArray[12]);
+        textCalories.setText(numberOfCalories+" "+measurementTypeArray[14]);
         if (distance < 1000){
             textDistance.setText(distance+" m");
         }

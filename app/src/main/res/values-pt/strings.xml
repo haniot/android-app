@@ -283,4 +283,21 @@
 
     <!-- END OF STRINGS FOR TABLET -->
 
+    <string-array name="measurement_types_array">
+        <item>Temperatura</item>
+        <item>Blood Glucose</item>
+        <item>Body Weight</item>
+        <item>Body Fat</item>
+        <item>Blood Pressure</item>
+        <item>Heart Rate</item>
+        <item>BMI - Body Mass Index</item>
+        <item>RMR - Resting Metabolic Rate</item>
+        <item>BMR - Basal Metabolic Rate</item>
+        <item>Muscle Mass</item>
+        <item>Visceral Fat</item>
+        <item>Body Age</item>
+        <item>Passos</item>
+        <item>Distancia</item>
+        <item>Calorias</item>
+    </string-array>
 </resources>
