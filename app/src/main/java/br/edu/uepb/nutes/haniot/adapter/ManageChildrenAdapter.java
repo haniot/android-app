@@ -71,6 +71,7 @@ public class ManageChildrenAdapter extends RecyclerView.Adapter<ManageChildrenAd
 
             holder.textId.setText(children.get_id());
             holder.textDate.setText(children.getRegisterDate());
+            holder.textName.setText(children.getName());
             holder.btnSelect.setOnClickListener( c -> {
 
                 Toast.makeText(context,"Iniciando dashboard com o id: "+children.get_id(),Toast.LENGTH_SHORT).show();
@@ -78,11 +79,13 @@ public class ManageChildrenAdapter extends RecyclerView.Adapter<ManageChildrenAd
                 //Código abaixo funcional!
                 Intent it = new Intent(context,MainActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putString("id_child",children.get_id());
-
+                bundle.putString("id__last_child",children.get_id());
+                bundle.putString("name__last_child",children.getName());
                 it.putExtras(bundle);
                 it.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
                 editor.putString("childId",children.get_id()).commit();
+                editor.putString("childName",children.getName()).commit();
 
                 context.startActivity(it);
 
@@ -94,6 +97,7 @@ public class ManageChildrenAdapter extends RecyclerView.Adapter<ManageChildrenAd
                     removeChild(oldId);
                     if (children.get_id().equals(prefs.getString("childId","null").toString())) {
                         editor.putString("childId", "null").commit();
+                        editor.putString("childName","null").commit();
                     }
                     if (getItemListFilteredSize() == 0){
                         Toast.makeText(context,context.getResources().getString(R.string.no_data_available),Toast.LENGTH_SHORT).show();
@@ -153,7 +157,8 @@ public class ManageChildrenAdapter extends RecyclerView.Adapter<ManageChildrenAd
 
                         //O filtro é aplicado aqui
                         if (child.get_id().toLowerCase().contains(querry.toLowerCase())
-                                || child.getRegisterDate().toLowerCase().equalsIgnoreCase(querry.toLowerCase())){
+                                || child.getRegisterDate().toLowerCase().equalsIgnoreCase(querry.toLowerCase())
+                                || child.getName().toLowerCase().contains(querry.toLowerCase())){
                             filteredList.add(child);
                         }
                     }
@@ -184,6 +189,8 @@ public class ManageChildrenAdapter extends RecyclerView.Adapter<ManageChildrenAd
         AppCompatButton btnSelect;
         @BindView(R.id.btnDeleteChild)
         AppCompatButton btnDelete;
+        @BindView(R.id.textNameChildValue)
+        TextView textName;
 
         public ManageChildrenViewHolder(View itemView) {
             super(itemView);

@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
 
     private String tabTitle          = "DASHBOARD";
     private String id                =          "";
+    private String lastNameSelected  =          "";
     private SharedPreferences                prefs;
     private SharedPreferences.Editor        editor;
 
@@ -103,28 +104,39 @@ public class MainActivity extends AppCompatActivity {
         caso tenha salva o id da criança e atualiza o titulo da aba
     */
     public void checkLastChildAndUpdateTabTitle(){
+        //caso a tela seja restaurada
         Bundle params = getIntent().getExtras();
         if (params != null){
-            String idExtra = params.getString("id_child");
-            if (idExtra  != null && !idExtra .equals("")) {
+            String idExtra = params.getString("id_last_child");
+            String nameExtra = params.getString("name_last_child");
+            if (idExtra  != null && !idExtra.equals("")
+                    && nameExtra != null && !nameExtra.equals("")) {
                 this.id = idExtra;
+                this.lastNameSelected = nameExtra;
             }
         }else{
             this.id = "";
+            this.lastNameSelected = "";
         }
-        String lastId = prefs.getString("childId","null");
-        if (!lastId.equals("null")){
-            this.id = lastId;
+        String lastIdSelected = prefs.getString("childId","null");
+        String lastName = prefs.getString("childName","null");
+        if (!lastIdSelected.equals("null") && !lastName.equals("null")){
+            this.id = lastIdSelected;
+            this.lastNameSelected = lastName;
         }else{
             this.id = "";
+            this.lastNameSelected = "";
         }
+        //caso nao tenha encontrado uma crianca selecionada no sharedpreferences
         if (this.id.equals("")){
             this.id = "404 not found";
+            this.lastNameSelected = "404 not found";
             tabLayout.setTabTextColors(ContextCompat.getColorStateList(this, R.color.colorRed));
         }
 
-        tabTitle = "DASHBOARD" + " - " + id;
+        tabTitle = "DASHBOARD" + " - " + this.lastNameSelected;
 
+        //Coloca o texto na aba
         if (tabLayout.getTabAt(0) != null){
 
             SpannableString dash = new SpannableString(tabTitle);

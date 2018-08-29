@@ -16,6 +16,7 @@ public class Children {
     @Index
     private String _id;
 
+    private String name;
     private String sex;
     private String color;
     private int age;
@@ -42,6 +43,14 @@ public class Children {
 
     public void setMeasurements(ToMany<Measurement> measurements) {
         this.measurements = measurements;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String get_id() {

@@ -1,22 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="72dp"
+    android:layout_height="88dp"
     android:background="?android:attr/selectableItemBackground"
     android:clickable="true"
     android:focusable="true"
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/textIdChildren"
+        android:id="@+id/textNameChild"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginBottom="5dp"
-        android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
-        android:gravity="end"
+        android:layout_marginStart="16dp"
+        android:text="Nome:" />
+
+    <TextView
+        android:id="@+id/textNameChildValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/textNameChild"
+        android:layout_toEndOf="@id/textNameChild"
+        android:layout_marginStart="30dp"
+        android:textStyle="bold"
+        android:textSize="18dp"
+
+        android:text="Tiago santos"
+
+        />
+
+    <TextView
+        android:id="@+id/textIdChildren"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textNameChild"
+        android:layout_alignRight="@id/textNameChild"
+        android:layout_marginTop="8dp"
         android:text="@string/id" />
 
     <TextView
@@ -37,7 +58,8 @@
         android:layout_alignTop="@+id/textIdChildren"
         android:layout_marginBottom="5dp"
         android:layout_marginStart="30dp"
-        android:layout_toEndOf="@+id/textIdChildren" />
+        android:layout_toEndOf="@+id/textIdChildren"
+        android:text="6546544" />
 
     <TextView
         android:id="@+id/textRegisterDateNumberChildren"
@@ -46,46 +68,33 @@
         android:layout_alignTop="@+id/textRegisterDateChildren"
         android:layout_marginBottom="5dp"
         android:layout_marginStart="30dp"
-        android:layout_toEndOf="@+id/textIdChildren" />
-
-    <View
-        android:id="@+id/div1"
-        android:layout_width="2dp"
-        android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
-        android:layout_marginBottom="5dp"
-        android:layout_marginEnd="16dp"
-        android:layout_toStartOf="@id/btnSelectChildren"
-        android:background="@color/colorPrimary" />
+        android:layout_toEndOf="@+id/textIdChildren"
+        android:text="25/08/2018" />
 
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/btnSelectChildren"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_alignTop="@+id/textIdChildren"
-        android:layout_marginBottom="5dp"
-        android:layout_marginEnd="16dp"
-        android:layout_toStartOf="@id/div2"
-        android:background="@mipmap/ic_select_children" />
-
-    <View
-        android:id="@+id/div2"
-        android:layout_width="2dp"
-        android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
-        android:layout_marginBottom="5dp"
         android:layout_marginEnd="16dp"
         android:layout_toStartOf="@id/btnDeleteChild"
-        android:background="@color/colorPrimary" />
+        android:layout_centerVertical="true"
+        android:background="@mipmap/ic_select_children" />
 
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/btnDeleteChild"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_alignParentEnd="true"
-        android:layout_alignTop="@+id/textIdChildren"
         android:layout_marginEnd="16dp"
+        android:layout_centerVertical="true"
         android:background="@drawable/ic_trash" />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignStart="@id/textNameChildValue"
+
+        android:background="@android:color/darker_gray" />
 
 </RelativeLayout>

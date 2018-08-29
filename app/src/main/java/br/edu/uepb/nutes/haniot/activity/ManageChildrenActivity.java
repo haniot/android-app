@@ -64,9 +64,9 @@ public class ManageChildrenActivity extends AppCompatActivity {
 
         adapter = new ManageChildrenAdapter(this.childrenList,getApplicationContext());
         recyclerViewChildren.setHasFixedSize(true);
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerViewChildren.getContext(),
-                LinearLayout.VERTICAL);
-        recyclerViewChildren.addItemDecoration(dividerItemDecoration);
+//        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerViewChildren.getContext(),
+//                LinearLayout.VERTICAL);
+//        recyclerViewChildren.addItemDecoration(dividerItemDecoration);
         recyclerViewChildren.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewChildren.setItemAnimator(new DefaultItemAnimator());
         recyclerViewChildren.setAdapter(adapter);
@@ -74,12 +74,25 @@ public class ManageChildrenActivity extends AppCompatActivity {
     }
 
     private void loadData(){
+        List<String> l = new ArrayList<String>();
+        l.add("joao");
+        l.add("tiago");
+        l.add("jonatas");
+        l.add("felipe");
+        l.add("maria");
+        l.add("jose");
+        l.add("lucas");
+        l.add("ramom");
+        l.add("luis");
+        l.add("josue");
+
         Children child;
         SimpleDateFormat spn = new SimpleDateFormat("dd/MM/yyyy");
         for (int i = 0;i < 10;i++){
             child = new Children();
             child.set_id(String.valueOf(i*1578));
             child.setRegisterDate(spn.format(Calendar.getInstance().getTime()));
+            child.setName(l.get(i));
             childrenList.add(child);
         }
     }
@@ -94,7 +107,6 @@ public class ManageChildrenActivity extends AppCompatActivity {
         //Botão search na toolbar
         MenuItem searchBtn = menu.findItem(R.id.btnSearchChild);
         final SearchView searchView = (SearchView) searchBtn.getActionView();
-        searchView.setInputType(InputType.TYPE_CLASS_PHONE);
         searchView.setIconifiedByDefault(true);
         searchView.setMaxWidth(Integer.MAX_VALUE);
         searchView.setIconified(false);

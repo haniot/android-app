@@ -329,7 +329,7 @@
     },
     {
       "id": "10:2181044037372696431",
-      "lastPropertyId": "7:3431227324498431234",
+      "lastPropertyId": "8:6200314761782803510",
       "name": "Children",
       "properties": [
         {
@@ -360,6 +360,10 @@
         {
           "id": "7:3431227324498431234",
           "name": "idProfessionalSponsor"
+        },
+        {
+          "id": "8:6200314761782803510",
+          "name": "name"
         }
       ],
       "relations": []

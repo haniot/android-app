@@ -204,11 +204,6 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener, Dat
         btnArrowRight.setOnClickListener(this);
         textDate.setOnClickListener(this);
 
-        try {
-            loadServerData();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
         getChildId();
         return view;
     }
@@ -216,7 +211,6 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener, Dat
     //Pega o id da criança e habilida/desabilita os botões de controle do dashboard
     public void getChildId(){
         String lastId = prefs.getString("childId","null");
-        System.out.println("\n == valor do last id: "+lastId);
         if (!lastId.equals("null")){
             this.childId = lastId;
             if (this.date.equals(this.today)){
@@ -232,13 +226,17 @@ public class FragmentDash1 extends Fragment implements View.OnClickListener, Dat
             stepsProgressBar.setEnabled(true);
             caloriesProgressBar.setEnabled(true);
             distanceProgressBar.setEnabled(true);
+            try {
+                loadServerData();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         }else{
             btnArrowRight.setEnabled(false);
             btnArrowRight.setBackground(getResources().getDrawable(R.mipmap.ic_arrow_right_disabled));
             btnArrowLeft.setEnabled(false);
             btnArrowLeft.setBackground(getResources().getDrawable(R.mipmap.ic_arrow_left_disabled));
             textDate.setEnabled(false);
-            System.out.println("\n == zerando as progress bars");
             setDataProgress(0,0,0);
             stepsProgressBar.setEnabled(false);
             caloriesProgressBar.setEnabled(false);
