@@ -400,6 +400,8 @@
     <!-- END ARRAY QUESTIONS RISK FALL -->
 
     <string name="other">Other</string>
+    <string name="name_device">Name Device</string>
+    <string name="model_device">Model device</string>
 
     <!--TYPES AND GROUPS-->
     <string-array name="device_types_array">
@@ -536,7 +538,6 @@
     </string-array>
 
     <!-- ELDERLY MEDICATIONS -->
-    <string-array name="medications_array">
-    </string-array>
+    <string-array name="medications_array"></string-array>
 
 </resources>

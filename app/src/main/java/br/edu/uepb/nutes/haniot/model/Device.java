@@ -24,6 +24,9 @@ public class Device {
     private String name;
     private String manufacturer;
     private String modelNumber;
+    int img_device;
+
+
 
     /**
      * RELATIONS
@@ -36,6 +39,13 @@ public class Device {
     private int typeId;
 
     public Device() {
+    }
+
+    // metodo construtor utilizado no pacote register
+    public Device(String name, String modelNumber, int img_device) {
+        this.name = name;
+        this.modelNumber = modelNumber;
+        this.img_device = img_device;
     }
 
     /**
@@ -112,6 +122,14 @@ public class Device {
 
     public void setTypeId(int typeId) {
         this.typeId = typeId;
+    }
+
+    public int getImg_device() {
+        return img_device;
+    }
+
+    public void setImg_device(int img_device) {
+        this.img_device = img_device;
     }
 
     public ToOne<User> getUser() {

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="72dp">
+
+    <TextView
+        android:id="@+id/name_device"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignTop="@+id/image_device"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="65dp"
+        android:fontFamily="@font/lekton"
+        android:gravity="center_vertical"
+        android:text="@string/name_device"
+        android:textAllCaps="false"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:id="@+id/image_device"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="16dp"
+        app:srcCompat="@drawable/img_thermometer" />
+
+    <TextView
+        android:id="@+id/model_device"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/image_device"
+        android:layout_alignStart="@+id/name_device"
+        android:fontFamily="@font/lekton"
+        android:gravity="center_vertical"
+        android:text="@string/model_device"
+        android:textSize="12sp"
+        android:typeface="normal" />
+</RelativeLayout>

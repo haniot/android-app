@@ -11,7 +11,7 @@ import java.util.List;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.model.Device;
 
-public class ManageDevicesActivity extends AppCompatActivity {
+public class ManageDeviceActivity extends AppCompatActivity {
 
     RecyclerView mRecyclerView;
     RecyclerView.Adapter mAdapter;

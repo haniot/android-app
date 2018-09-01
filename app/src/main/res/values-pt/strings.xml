@@ -96,7 +96,8 @@
     <string name="call_elderly_title">Ligar para idoso</string>
     <string name="fall_register_time_title">Queda registrada às %s</string>
     <string name="alert_register_time_title">Alerta disparada às %s</string>
-
+    <string name="model">Model</string>
+    <string name="name_device">Name Device</string>
 
     <string name="noData">Sem dados</string>
 
