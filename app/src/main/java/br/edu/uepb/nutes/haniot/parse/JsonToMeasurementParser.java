@@ -1,7 +1,6 @@
 package br.edu.uepb.nutes.haniot.parse;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -9,7 +8,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.edu.uepb.nutes.haniot.model.ContextMeasurement;
 import br.edu.uepb.nutes.haniot.model.Measurement;
 import br.edu.uepb.nutes.haniot.model.MeasurementType;
 
@@ -44,7 +42,7 @@ public class JsonToMeasurementParser {
             }
 
             if (o.has("glucose")) {
-                item = boodGlucose(json);
+                item = bloodGlucose(json);
                 if (!result.contains(item)) result.add(item);
                 continue;
             }
@@ -163,7 +161,7 @@ public class JsonToMeasurementParser {
      * @return Measurement
      * @throws JSONException
      */
-    public static Measurement boodGlucose(String json) throws JSONException {
+    public static Measurement bloodGlucose(String json) throws JSONException {
         JSONObject o = new JSONObject(json);
 
         Measurement measurement = new Measurement(

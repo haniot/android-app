@@ -90,13 +90,16 @@
     <string name="no_data_found">"Nenhum dado encontrado! "</string>
     <string name="temperatre_type_armpit">Axila</string>
     <string name="temperatre_type_body">Corpo (geral)</string>
-    <string name="laoding_result">Carregando resultado...</string>
+    <string name="laoding_result">Carregando resultado&#8230;</string>
     <string name="number_emergency">192</string>
     <string name="call_emergency_title">Ligar para emergência</string>
     <string name="call_elderly_title">Ligar para idoso</string>
     <string name="fall_register_time_title">Queda registrada às %s</string>
     <string name="alert_register_time_title">Alerta disparada às %s</string>
 
+    <string name="get_monitor">Obter do Monitor</string>
+    <string name="get_monitor_dialog_tittle">Obtendo dados do monitor&#8230;</string>
+    <string name="get_monitor_desc">Verifique se o monitor está próximo e no modo de transferência de dados (Selecione Meus Dados, Transf. de Dados, Sem fio).</string>
 
     <string name="noData">Sem dados</string>
 
