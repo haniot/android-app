@@ -23,7 +23,6 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -97,6 +96,7 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
     private Params params;
     private String jsonGlucoseData;
     private String jsonGlucoseContextData;
+    private String action;
 
     /**
      * We need this variable to lock and unlock loading more.
@@ -579,7 +579,6 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
         return action;
     }
 
-    String action;
 
     /**
      * Manipula vários eventos desencadeados pelo Serviço.
@@ -589,8 +588,6 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
      * ACTION_GATT_SERVICES_DISCOVERED: serviços GATT descobertos.
      * ACTION_DATA_AVAILABLE: recebeu dados do dispositivo. Pode ser resultado de operações de leitura ou notificação.
      */
-
-
     private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -656,7 +653,6 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
             }
         }
     };
