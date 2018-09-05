@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">BLESimpleConnect</string>
+    <string name="app_name">Connection BLE API</string>
+    <string name="title_activity_test">TestActivity</string>
 </resources>
