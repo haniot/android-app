@@ -203,7 +203,7 @@
     },
     {
       "id": "6:1981941651856646767",
-      "lastPropertyId": "4:7531907360289045250",
+      "lastPropertyId": "5:6872324971609698198",
       "name": "Item",
       "properties": [
         {
@@ -215,8 +215,8 @@
           "name": "name"
         },
         {
-          "id": "4:7531907360289045250",
-          "name": "indexValue"
+          "id": "5:6872324971609698198",
+          "name": "index"
         }
       ],
       "relations": []
@@ -371,7 +371,8 @@
   "retiredEntityUids": [],
   "retiredIndexUids": [],
   "retiredPropertyUids": [
-    5824374510281300948
+    5824374510281300948,
+    7531907360289045250
   ],
   "retiredRelationUids": [],
   "version": 1
