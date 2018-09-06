@@ -48,7 +48,11 @@ public class TestActivity extends AppCompatActivity {
             public void onClick(View view) {
                     bleScanner
                             .addFilterServiceUuid(GattAttributes.SERVICE_HEART_RATE, GattAttributes.SERVICE_HEALTH_THERMOMETER)
+                            .addFilterAdress()
+                            .addSettingsScan()
                             .startScan(callbackScan);
+
+
 
             }
         });
@@ -91,6 +95,7 @@ public class TestActivity extends AppCompatActivity {
             Log.i("BLE", "DESCOBERTO:" + device.getName());
             bleScanner.startScan(callbackScan);
             bleBroadcast.connect(device.getAddress(), callbackBroadcast);
+
         }
 
         @Override

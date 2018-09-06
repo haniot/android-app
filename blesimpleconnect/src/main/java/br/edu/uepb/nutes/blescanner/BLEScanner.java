@@ -57,6 +57,7 @@ public class BLEScanner {
     private CallbackScan callbackScan;
     private ScanSettings scanSettings;
 
+    // TODO Criar Builder() para setar as configurações necessárias e build() para construir a instancia
     /**
      * Constructor.
      */
@@ -108,6 +109,7 @@ public class BLEScanner {
      * @param callback
      */
     public void startScan(CallbackScan callback) {
+//        TODO verificar se callback eh null
         if (isScanStarted()) {
             Log.i(TAG, "Scanning");
 
@@ -123,13 +125,13 @@ public class BLEScanner {
             public void run() {
                 stopScan();
                 callbackScan.onListResult(listBluetoothDevice);
-                callbackScan = null;
+                callbackScan = null; // TODO remover!!!
                 Toast.makeText(mContext,
                         "Scan end!",
                         Toast.LENGTH_LONG).show();
                 Log.i(TAG, "End of scan");
                 mScanning = false;
-                resetSettings();
+                resetSettings(); // TODO Remover!!!
 
             }
         }, scanPeriod);
@@ -177,7 +179,6 @@ public class BLEScanner {
         public void onScanResult(int callbackType, ScanResult result) {
             super.onScanResult(callbackType, result);
             addBluetoothDevice(result.getDevice());
-
         }
 
         /*
@@ -185,6 +186,7 @@ public class BLEScanner {
         */
         @Override
         public void onBatchScanResults(List<ScanResult> results) {
+
             super.onBatchScanResults(results);
             for (ScanResult result : results) {
                 Log.i(TAG, results.toString());
@@ -217,7 +219,7 @@ public class BLEScanner {
     /**
      * Add filter adress.
      *
-     * @param ADRESS
+     * @param ADRESS TODO minuscula
      * @return instance
      */
     public BLEScanner addFilterAdress(String ADRESS) {
