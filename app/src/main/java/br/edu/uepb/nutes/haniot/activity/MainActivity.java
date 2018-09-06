@@ -29,6 +29,7 @@ import org.json.JSONObject;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.account.LoginActivity;
+import br.edu.uepb.nutes.haniot.devices.register.DeviceManagerActivity;
 import br.edu.uepb.nutes.haniot.elderly.ElderlyMonitoredActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.activity.settings.SettingsActivity;
@@ -191,6 +192,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.action_settings:
                 startActivity(new Intent(this, SettingsActivity.class));
+                break;
+            case R.id.action_manager_devices:
+                startActivity(new Intent(this, DeviceManagerActivity.class));
                 break;
             default:
                 break;

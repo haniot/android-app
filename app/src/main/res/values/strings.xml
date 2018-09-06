@@ -43,6 +43,7 @@
     <string name="call_elderly_title">Call elderly</string>
     <string name="fall_register_time_title">Fall was recorded at %s</string>
     <string name="alert_register_time_title">Alert was triggered at %s</string>
+    <string name="no_data_available">No data to display...</string>
 
     <!--ACTIONS-->
     <string name="action_settings">Settings</string>
@@ -300,7 +301,6 @@
     <string name="message_save_captured_data">Do you want to save the captured data?</string>
     <string name="message_save_captured_heart_rate">Do you want to save the captured heart rate?</string>
 
-    <string name="no_data_available">No data to display...</string>
     <string name="unit_kg">kg</string>
     <string name="unit_percentage">%</string>
     <string name="unit_celsius">°C</string>
@@ -539,5 +539,14 @@
 
     <!-- ELDERLY MEDICATIONS -->
     <string-array name="medications_array"></string-array>
+
+    <!-- REGISTERED DEVICES -->
+    <string name="title_devices_registered">Registered</string>
+    <string name="title_devices_available">Availables</string>
+    <string name="no_devices_registered">No registered devices...</string>
+    <string name="no_devices_available">No device available. Soon the list will be updated...</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

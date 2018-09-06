@@ -56,13 +56,12 @@ dependencies {
     // APPINTRO
     implementation 'com.github.apl-devs:appintro:v4.2.3'
 
+    //Floating Action Button
+    implementation 'com.github.clans:fab:1.6.4'
+
     // TEST
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
-
-    //Floating Action Button
-    compile 'com.github.clans:fab:1.6.4'
-
 }
 apply plugin: 'com.google.gms.google-services'

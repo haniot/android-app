@@ -46,7 +46,7 @@ public class Server {
     /**
      * If you set a url it will be used as default and not entered by the user in the application settings
      */
-      /* HEROKU */ private final String URI_DEFAULT = "https://haniot-api.herokuapp.com/api/v1";
+    /* HEROKU */ private final String URI_DEFAULT = "https://haniot-api.herokuapp.com/api/v1";
 //    /* PC HOME */ private final String URI_DEFAULT = "https://192.168.50.104/api/v1";
 //      /* PC WIFI */ private final String URI_DEFAULT = "http://192.168.50.175:8000/api/v1";
 
@@ -341,6 +341,7 @@ public class Server {
             }
         }
 
+        Log.d(LOG, "url: " + url);
         return url;
     }
 

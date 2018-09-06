@@ -116,6 +116,11 @@
         <!-- END ACTIVITIES FALL RISK -->
 
 
+        <!-- ACTIVITIES MANAGER DEVICES -->
+        <activity android:name=".devices.register.DeviceManagerActivity" />
+        <!-- END ACTIVITIES MANAGER DEVICES -->
+
+
         <!-- SERVICES -->
         <service
             android:name=".service.BluetoothLeService"
@@ -137,11 +142,7 @@
             </intent-filter>
         </service>
         <!-- END SERVICES -->
-
-        <activity android:name=".devices.register.ManageDeviceActivity"></activity>
-        <meta-data
-            android:name="preloaded_fonts"
-            android:resource="@array/preloaded_fonts" />
+        <activity android:name=".devices.register.DeviceRegisterActivity"></activity>
     </application>
 
 </manifest>

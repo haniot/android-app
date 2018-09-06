@@ -98,6 +98,7 @@
     <string name="alert_register_time_title">Alerta disparada às %s</string>
     <string name="model">Model</string>
     <string name="name_device">Name Device</string>
+    <string name="no_data_available">Sem dados a exibir...</string>
 
     <string name="noData">Sem dados</string>
 
@@ -127,6 +128,12 @@
     <string name="info_distance">Distância</string>
     <string name="info_calories">Calorias</string>
 
+    <!--ERROR-->
+    <string name="error_sign_out">Houve um erro ao tentar sair...</string>
+    <string name="error_500">Não foi possível concluir o pedido! Por favor, tente novamente mais tarde...</string>
+    <string name="error_internal_device">Não foi possível concluir o pedido! Por favor, tente novamente mais tarde...</string>
+    <string name="error_connectivity">Ocorreu um erro ao se comunicar com nossos servidores.\nPor favor, verifique a conectividade do seu telefone e tente novamente mais tarde.</string>
+    <string name="connect_network_try_again">Conecte-se a uma rede e tente novamente...</string>
 
     <!-- ELDERLY -->
     <string name="elderly_monitored">Monitorar Idosos</string>
@@ -240,7 +247,12 @@
     </string-array>
 
     <!-- ELDERLY MEDICATIONS -->
-    <string-array name="medications_array">
-    </string-array>
+    <string-array name="medications_array"></string-array>
+
+    <!-- REGISTERED DEVICES -->
+    <string name="title_devices_registered">Cadastrados</string>
+    <string name="title_devices_available">Disponíveis</string>
+    <string name="no_devices_registered">Não há didpositivos cadastrados...</string>
+    <string name="no_devices_available">Nenhum dispositivo disponível. Em breve a lista será atualizada...</string>
 
 </resources>
