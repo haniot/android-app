@@ -268,7 +268,7 @@ public class ElderlyFallActivity extends AppCompatActivity implements OnRecycler
 
     @Override
     public void onItemClick(Fall fall) {
-        if (fall.getCharacterization() == null && elderlyId != null) {
+        if (elderlyId != null) {
             Intent intent = new Intent(this, FallCharacterizationActivity.class);
             intent.putExtra(FallCharacterizationActivity.EXTRA_ELDERLY_ID, elderlyId);
             startActivity(intent);

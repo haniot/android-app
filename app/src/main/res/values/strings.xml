@@ -103,9 +103,43 @@
 
     <string name="value_default">_ _</string>
 
+    // INFO TITLE
+    <string name="info_max">Maximum</string>
+    <string name="info_min">Minimum</string>
+    <string name="info_avarage">Average</string>
+    <string name="info_period">Period</string>
+    <string name="more_information">More Information</string>
+    <string name="date_format_info">yyyy/MMM/dd</string>
+    <string name="info_steps">Steps</string>
+    <string name="info_distance">Distance</string>
+    <string name="info_calories">Calories</string>
+
+    //UNITS
+    <string name="unit_kcal">cal</string>
+    <string name="unit_meters">m</string>
+
+    //Limit and Lines of Chart
+    <string name="diastolic">Diastolic</string>
+    <string name="systolic">Systolic</string>
+    <string name="limit_blood_pressure">High Pressure</string>
+    <string name="limit_heart_rate">Limit 1</string>
+    <string name="limit_glucose">Pre Diabetes</string>
+    <string name="limit_temperature">Fever</string>
+    <string name="limit_body_composition">Obesidade</string>
+
+    //FLOATING
+    <string name="day">Day</string>
+    <string name="week">Week</string>
+    <string name="month">Month</string>
+    <string name="year">Year</string>
+    <string name="period">Period</string>
+
     <!-- FORMAT DATES -->
     <string name="date_format">yyyy/MM/dd</string>
     <string name="date_format2">MMMM dd\', \'yyyy</string>
+    <string name="date_format_year">yyyy</string>
+    <string name="date_format_month">MMMM</string>
+    <string name="date_format_week">w</string>
     <string name="date_format_month_day">MM/dd</string>
     <string name="datetime_format">yyyy/MM/dd HH:mm:ss</string>
     <string name="datetime_format2">MMMM dd HH:mm:ss</string>
@@ -117,7 +151,10 @@
 
     // FORMATS
     <string name="format_number1">#.0</string>
+    <string name="format_number_float">#.0</string>
+    <string name="format_number_integer">#</string>
     <string name="format_number2">##.0</string>
+
 
     // EXCEPTIONS LOGS
     <string name="device_not_found">"Device: %1$s not found!"</string>
@@ -272,8 +309,7 @@
     <string name="settings_summary_server_address">Enter the server address for sending data.</string>
     <string name="settings_summary_full_server_address">Enter the address.\nExample: http://192.168.31.113:8080/api/v1
     </string>
-    <string name="settings_summary_signout">You will be logged out of the application and redirected to login screen.
-    </string>
+    <string name="settings_summary_signout">You will be logged out of the application and redirected to login screen.</string>
     <string name="settings_summary_support">Got any queries? We are happy to help!</string>
     <string name="settings_summary_close_account">Delete the registered account and application settings.</string>
     <string name="settings_summary_about">NUTES is a reference center for the development of technologies to be applied

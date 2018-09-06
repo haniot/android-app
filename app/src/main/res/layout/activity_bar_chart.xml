@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".devices.GlucoseActivity"
+    android:background="#fff">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_below="@id/a"
+        >
+
+        <RelativeLayout
+            android:id="@+id/a"
+            android:layout_width="match_parent"
+            android:layout_height="330dp"
+            android:orientation="vertical"
+            tools:layout_editor_absoluteY="-2dp">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                style="@style/ToolbarStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimary" />
+
+            <RelativeLayout
+                android:id="@+id/box_measurement"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_below="@id/toolbar"
+                android:layout_marginBottom="35dp"
+                android:background="@color/colorPrimary"
+                app:layout_collapseMode="parallax">
+
+                <ProgressBar
+                    android:id="@+id/chart_progress_bar"
+                    style="?android:attr/progressBarStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="75dp" />
+
+                <com.github.mikephil.charting.charts.BarChart
+                    android:id="@+id/barChart"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="40dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    app:cpb_background_progressbar_color="@color/colorAlertDanger"
+                    app:cpb_background_progressbar_width="6dp"
+                    app:cpb_progressbar_color="@color/colorAccent"
+                    app:cpb_progressbar_width="6dp"
+                   >
+
+                </com.github.mikephil.charting.charts.BarChart>
+
+            </RelativeLayout>
+
+            <com.github.clans.fab.FloatingActionMenu
+                android:id="@+id/menu_period"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="35dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                fab:menu_colorNormal="@color/colorAccent"
+                fab:menu_colorPressed="@color/colorPrimaryDark"
+                fab:menu_fab_label="@string/period"
+                fab:menu_icon="@drawable/ic_month"
+                fab:menu_labels_colorNormal="@color/cardview_light_background"
+                fab:menu_labels_ellipsize="end"
+                fab:menu_labels_singleLine="true"
+                fab:menu_labels_textColor="@color/cardview_dark_background">
+
+                <com.github.clans.fab.FloatingActionButton
+                    android:id="@+id/fab_year"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_year"
+                    fab:fab_colorNormal="@color/colorAccent"
+                    fab:fab_colorPressed="@color/colorPrimary"
+                    fab:fab_label="@string/year"
+                    fab:fab_size="mini" />
+
+                <com.github.clans.fab.FloatingActionButton
+                    android:id="@+id/fab_month"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_month"
+                    fab:fab_colorNormal="@color/colorAccent"
+                    fab:fab_colorPressed="@color/colorPrimary"
+                    fab:fab_label="@string/month"
+                    fab:fab_size="mini" />
+
+                <com.github.clans.fab.FloatingActionButton
+                    android:id="@+id/fab_week"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_week"
+                    fab:fab_colorNormal="@color/colorAccent"
+                    fab:fab_colorPressed="@color/colorPrimary"
+                    fab:fab_label="@string/week"
+                    fab:fab_size="mini" />
+
+                <com.github.clans.fab.FloatingActionButton
+                    android:id="@+id/fab_day"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_day"
+                    fab:fab_colorNormal="@color/colorAccent"
+                    fab:fab_colorPressed="@color/colorPrimary"
+                    fab:fab_label="@string/day"
+                    fab:fab_size="mini" />
+            </com.github.clans.fab.FloatingActionMenu>
+        </RelativeLayout>
+
+        <LinearLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#fff"
+            android:orientation="vertical"
+            tools:layout_editor_absoluteY="-2dp">
+
+            <TextView
+                android:id="@+id/text_view_title_history"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:orientation="vertical"
+                android:text="@string/more_information"
+                android:textAllCaps="false"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/no_data_textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="center"
+                android:text="@string/no_data_available"
+                android:visibility="gone" />
+
+            <GridView
+                android:id="@+id/moreinfo_grid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:background="#e5e5e5"
+                android:horizontalSpacing="1dp"
+                android:numColumns="auto_fit"
+                android:stretchMode="columnWidth"
+                android:verticalSpacing="1dp" />
+
+        </LinearLayout>
+    </LinearLayout>
+</android.support.design.widget.CoordinatorLayout>
