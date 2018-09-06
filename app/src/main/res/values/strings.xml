@@ -100,13 +100,12 @@
     <string name="body_fat_title">Body Fat</string>
     <string name="body_bmi_title">BMI</string>
     <string name="pulse_mark_title">Pulse:</string>
-
     <string name="value_default">_ _</string>
     <string name="get_monitor">Get Monitor</string>
     <string name="get_monitor_dialog_tittle">Getting monitor data&#8230;</string>
     <string name="get_monitor_desc">Make sure your monitor is nearby and in data transfer mode (Select My Data, Data Transfer, Wireless).</string>
 
-    // INFO TITLE
+      // INFO TITLE
     <string name="info_max">Maximum</string>
     <string name="info_min">Minimum</string>
     <string name="info_avarage">Average</string>
@@ -157,7 +156,6 @@
     <string name="format_number_float">#.0</string>
     <string name="format_number_integer">#</string>
     <string name="format_number2">##.0</string>
-
 
     // EXCEPTIONS LOGS
     <string name="device_not_found">"Device: %1$s not found!"</string>
