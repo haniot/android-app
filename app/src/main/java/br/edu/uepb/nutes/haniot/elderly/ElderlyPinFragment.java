@@ -2,11 +2,15 @@ package br.edu.uepb.nutes.haniot.elderly;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
+import android.widget.EditText;
 
 import br.edu.uepb.nutes.haniot.R;
 import butterknife.BindView;
@@ -22,6 +26,9 @@ import butterknife.ButterKnife;
 public class ElderlyPinFragment extends Fragment {
 
     private OnNextPageSelectedListener mListener;
+
+    @BindView(R.id.pin_editText)
+    TextInputEditText pinEditText;
 
     @BindView(R.id.next_page_button)
     Button nextPageButton;
@@ -54,8 +61,18 @@ public class ElderlyPinFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_elderly_pin, container, false);
         ButterKnife.bind(this, view);
 
-        nextPageButton.setOnClickListener(v -> mListener.onNextPageSelected());
+        nextPageButton.setOnClickListener(v -> associatePin());
         return view;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        pinEditText.setOnEditorActionListener((textView, actionId, keyEvent) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEND) associatePin();
+            return false;
+        });
     }
 
     @Override
@@ -74,7 +91,50 @@ public class ElderlyPinFragment extends Fragment {
         mListener = null;
     }
 
+    /**
+     * Validate Elderly from data form.
+     *
+     * @return boolean
+     */
+    public boolean validate() {
+        if (String.valueOf(pinEditText.getText()).isEmpty()) {
+            pinEditText.setError(getResources().getString(R.string.required_field));
+            requestFocus(pinEditText);
+            return false;
+        } else {
+            pinEditText.setError(null);
+        }
+
+        if (pinEditText.getText().length() != 4) {
+            pinEditText.setError(getResources().getString(R.string.validate_pin));
+            requestFocus(pinEditText);
+            return false;
+        } else {
+            pinEditText.setError(null);
+        }
+
+        return true;
+    }
+
+    /**
+     * Request focus in input
+     *
+     * @param editText
+     */
+    private void requestFocus(EditText editText) {
+        editText.setFocusableInTouchMode(true);
+        editText.requestFocus();
+    }
+
+    private void associatePin() {
+        // TODO realizar o processo de associacao de PIN.
+        // TODO Alguma requisição no servidor para verificação!?
+
+        if (validate())
+            mListener.onNextPageSelected(String.valueOf(pinEditText.getText()));
+    }
+
     public interface OnNextPageSelectedListener {
-        void onNextPageSelected();
+        void onNextPageSelected(String pin);
     }
 }

@@ -23,21 +23,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.account.LoginActivity;
-import br.edu.uepb.nutes.haniot.elderly.ElderlyMonitoredActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.activity.settings.SettingsActivity;
+import br.edu.uepb.nutes.haniot.elderly.ElderlyMonitoredActivity;
 import br.edu.uepb.nutes.haniot.fragment.ConnectDeviceFragment;
 import br.edu.uepb.nutes.haniot.fragment.ScanDeviceFragment;
 import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Main activity, application start.

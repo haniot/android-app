@@ -28,7 +28,7 @@
     <string name="bluetooth_classic">Bluetooth Classic</string>
     <string name="bluetooth_le">Bluetooth LE</string>
     <string name="welcome">Welcome</string>
-    <string name="no_more_data">No more data available...</string>
+    <string name="no_more_data">No more data available&#8230;</string>
     <string name="day_text">Day</string>
     <string name="week_text">Week</string>
     <string name="month_text">Month</string>
@@ -37,20 +37,32 @@
     <string name="no_text">No</string>
     <string name="cancel_text">Cancel</string>
     <string name="black_space_4">\t\t\t\t\t\</string>
-    <string name="laoding_result">Loading result...</string>
+    <string name="laoding_result">Loading result&#8230;</string>
     <string name="number_emergency">911</string>
     <string name="call_emergency_title">Call emergency</string>
     <string name="call_elderly_title">Call elderly</string>
     <string name="fall_register_time_title">Fall was recorded at %s</string>
     <string name="alert_register_time_title">Alert was triggered at %s</string>
+    <string name="image">Image</string>
+    <string name="warning_title">Warning!</string>
 
-    <!--ACTIONS-->
+    <!-- ACTIONS -->
     <string name="action_settings">Settings</string>
     <string name="action_bond">Bond</string>
     <string name="action_connect_devices">Connect Devices</string>
     <string name="action_scanner_devices">Scanner Devices</string>
     <string name="action_save">Save</string>
     <string name="action_sign_out">Sign out</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_delete_elderly">Delete Elderly</string>
+    <string name="action_list_falls">List Falls</string>
+    <string name="action_fall_risk_assessment">Fall Risk Assessment</string>
+    <string name="action_new_fall_risk_assessment">New Fall Risk Assessment</string>
+    <string name="action_characterize_fall">Characterize Fall</string>
+    <string name="action_remove_association">Remove Association</string>
+    <string name="action_view_information">View Informations</string>
+    <string name="action_update">Update</string>
+    <!-- END ACTIONS -->
 
     <string name="unknown">Unknown</string>
     <string name="unknown_device">Unknown device</string>
@@ -88,13 +100,12 @@
     <string name="body_fat_title">Body Fat</string>
     <string name="body_bmi_title">BMI</string>
     <string name="pulse_mark_title">Pulse:</string>
-
     <string name="value_default">_ _</string>
     <string name="get_monitor">Get Monitor</string>
     <string name="get_monitor_dialog_tittle">Getting monitor data&#8230;</string>
     <string name="get_monitor_desc">Make sure your monitor is nearby and in data transfer mode (Select My Data, Data Transfer, Wireless).</string>
 
-    // INFO TITLE
+      // INFO TITLE
     <string name="info_max">Maximum</string>
     <string name="info_min">Minimum</string>
     <string name="info_avarage">Average</string>
@@ -104,7 +115,6 @@
     <string name="info_steps">Steps</string>
     <string name="info_distance">Distance</string>
     <string name="info_calories">Calories</string>
-
 
     //UNITS
     <string name="unit_kcal">cal</string>
@@ -126,25 +136,26 @@
     <string name="year">Year</string>
     <string name="period">Period</string>
 
-
-    // DATE/TIME FORMAT
+    <!-- FORMAT DATES -->
     <string name="date_format">yyyy/MM/dd</string>
+    <string name="date_format2">MMMM dd\', \'yyyy</string>
     <string name="date_format_year">yyyy</string>
     <string name="date_format_month">MMMM</string>
     <string name="date_format_week">w</string>
     <string name="date_format_month_day">MM/dd</string>
     <string name="datetime_format">yyyy/MM/dd HH:mm:ss</string>
+    <string name="datetime_format2">MMMM dd HH:mm:ss</string>
     <string name="datetime_format_db">yyyy-MM-dd HH:mm:ss</string>
     <string name="time_format">HH:mm:ss</string>
     <string name="time_format_simple">HH:mm</string>
     <string name="time_format_simple2">HH\'h\'mm\'m\'</string>
+    <!-- END FORMAT DATES -->
 
     // FORMATS
     <string name="format_number1">#.0</string>
     <string name="format_number_float">#.0</string>
     <string name="format_number_integer">#</string>
     <string name="format_number2">##.0</string>
-
 
     // EXCEPTIONS LOGS
     <string name="device_not_found">"Device: %1$s not found!"</string>
@@ -181,17 +192,30 @@
 
     // GLUCOSE STATUS ANNUNCIATION
     <string name="glucose_status_annunciation_battery_low">Device battery low at time of measurement</string>
-    <string name="glucose_status_annunciation_sensor_malfunction">Sensor malfunction or faulting at time of measurement</string>
-    <string name="glucose_status_annunciation_sample_size_insufficient">Sample size for blood or control solution insufficient at time of measurement</string>
+    <string name="glucose_status_annunciation_sensor_malfunction">Sensor malfunction or faulting at time of
+        measurement
+    </string>
+    <string name="glucose_status_annunciation_sample_size_insufficient">Sample size for blood or control solution
+        insufficient at time of measurement
+    </string>
     <string name="glucose_status_annunciation_strip_insertion_error">Strip insertion error</string>
     <string name="glucose_status_annunciation_strip_incorrect">Strip typeId incorrect for device</string>
     <string name="glucose_status_annunciation_result_high">Sensor result higher than the device can process</string>
     <string name="glucose_status_annunciation_result_lower">Sensor result lower than the device can process</string>
-    <string name="glucose_status_annunciation_sensor_temperature_high">Sensor temperature too high for valid test/result at time of measurement</string>
-    <string name="glucose_status_annunciation_sensor_temperature_lower">Sensor temperature too low for valid test/result at time of measurement</string>
-    <string name="glucose_status_annunciation_sensor_read_interrupted">Sensor read interrupted because strip was pulled too soon at time of measurement</string>
-    <string name="glucose_status_annunciation_general_device_fault">General device fault has occurred in the sensor</string>
-    <string name="glucose_status_annunciation_sensor_time_fault">Time fault has occurred in the sensor and time may be inaccurate</string>
+    <string name="glucose_status_annunciation_sensor_temperature_high">Sensor temperature too high for valid test/result
+        at time of measurement
+    </string>
+    <string name="glucose_status_annunciation_sensor_temperature_lower">Sensor temperature too low for valid test/result
+        at time of measurement
+    </string>
+    <string name="glucose_status_annunciation_sensor_read_interrupted">Sensor read interrupted because strip was pulled
+        too soon at time of measurement
+    </string>
+    <string name="glucose_status_annunciation_general_device_fault">General device fault has occurred in the sensor
+    </string>
+    <string name="glucose_status_annunciation_sensor_time_fault">Time fault has occurred in the sensor and time may be
+        inaccurate
+    </string>
 
     // GLUCOSE LOCATION
     <string name="glucose_location_finger">Finger</string>
@@ -219,7 +243,7 @@
     <string name="login">Sign in</string>
     <string name="no_account_yet">No account yet? Create one</string>
 
-    <!--SIGNUP-->
+    <!-- SIGNUP -->
     <string name="name">Name</string>
     <string name="gender">Gender</string>
     <string name="gender_male">Male</string>
@@ -234,37 +258,45 @@
     <string name="update_data">Update data</string>
     <string name="register_success">Data registered successfully!</string>
     <string name="update_success">Data updated successfully!</string>
-    <string name="register_error">There was an error inserting user...</string>
-    <string name="update_error">There was an error updating the data...</string>
+    <string name="register_error">There was an error inserting user&#8230;</string>
+    <string name="update_error">There was an error updating the data&#8230;</string>
     <string name="change_password">Change password</string>
     <string name="current_password">Current password</string>
     <string name="new_password">New password</string>
     <string name="confirm_password">Confirm password</string>
+    <!-- END SIGNUP -->
 
-    <!--VALIDATE MESSAGES-->
+    <!-- VALIDATE MESSAGES -->
     <string name="required_field">Required field!</string>
     <string name="validate_name">At least 3 characters</string>
     <string name="validate_not_null">Field can not be empty</string>
     <string name="validate_email">Enter a valid email address</string>
-    <string name="validate_password">The password must contain at least 6 characters, with at least one number, one letter and one special character among the allowed characters: @ # $ % &amp; * ! ? . _ + - space.</string>
+    <string name="validate_password">The password must contain at least 6 characters, with at least one number, one
+        letter and one special character among the allowed characters: @ # $ % &amp; * ! ? . _ + - space.
+    </string>
     <string name="validate_height">Provide a valid height!</string>
     <string name="validate_date_birth">Provide a valid date of birth!</string>
     <string name="validate_phone">Provide a valid phone number!</string>
-    <string name="validate_invalid_email_or_password">Invalid email or password...</string>
+    <string name="validate_invalid_email_or_password">Invalid email or password&#8230;</string>
     <string name="validate_password_not_match_current">Current password does not match!</string>
     <string name="validate_password_not_match_new">New password and confirmation do not match!</string>
-    <string name="validate_register_user_not_duplicate">Already registered user with email provided...</string>
-    <string name="validate_unauthorized_access">Unauthorized access! Please contact support...</string>
+    <string name="validate_register_user_not_duplicate">Already registered user with email provided&#8230;</string>
+    <string name="validate_unauthorized_access">Unauthorized access! Please contact support&#8230;</string>
     <string name="validate_weight">Provide a valid weight!</string>
+    <string name="validate_pin">The 4 digit PIN is required!</string>
+    <!-- END VALIDATE MESSAGES -->
 
-    <!--ERROR-->
-    <string name="error_sign_out">There was an error while trying to quit...</string>
-    <string name="error_500">Could not complete request! Please try again later...</string>
-    <string name="error_internal_device">Could not complete request! Please try again later...</string>
-    <string name="error_connectivity">There was an error communicating with our servers.\nPlease, check your phone connectivity and try again later.</string>
-    <string name="connect_network_try_again">Connect to a network and try again...</string>
+    <!-- ERROR MESSAGES -->
+    <string name="error_sign_out">There was an error while trying to quit&#8230;</string>
+    <string name="error_500">Could not complete request! Please try again later&#8230;</string>
+    <string name="error_internal_device">Could not complete request! Please try again later&#8230;</string>
+    <string name="error_connectivity">There was an error communicating with our servers.\nPlease, check your phone
+        connectivity and try again later.
+    </string>
+    <string name="connect_network_try_again">Connect to a network and try again&#8230;</string>
+    <!-- END ERROR MESSAGES -->
 
-    <!--SETTINGS-->
+    <!-- SETTINGS -->
     <string name="settings_your_data">Your Data</string>
     <string name="settings_server">Server</string>
     <string name="settings_server_address">Server address</string>
@@ -276,11 +308,15 @@
     <string name="settings_close_account">Close account</string>
     <string name="settings_summary_your_data">View and edit your registered data</string>
     <string name="settings_summary_server_address">Enter the server address for sending data.</string>
-    <string name="settings_summary_full_server_address">Enter the address.\nExample: http://192.168.31.113:8080/api/v1</string>
+    <string name="settings_summary_full_server_address">Enter the address.\nExample: http://192.168.31.113:8080/api/v1
+    </string>
     <string name="settings_summary_signout">You will be logged out of the application and redirected to login screen.</string>
     <string name="settings_summary_support">Got any queries? We are happy to help!</string>
     <string name="settings_summary_close_account">Delete the registered account and application settings.</string>
-    <string name="settings_summary_about">NUTES is a reference center for the development of technologies to be applied to the health domain, composed of professors, researchers and students of grad and post grad level from the areas of Computer Science, Odontology and Phisioterapy.</string>
+    <string name="settings_summary_about">NUTES is a reference center for the development of technologies to be applied
+        to the health domain, composed of professors, researchers and students of grad and post grad level from the
+        areas of Computer Science, Odontology and Phisioterapy.
+    </string>
     <string name="settings_version">Version</string>
     <string name="key_your_data">key_your_data</string>
     <string name="key_send_feedback">key_send_feedback</string>
@@ -292,18 +328,27 @@
     <string name="choose_email_client">Choose email client</string>
     <string name="email_contact">contact@nutes.uepb.edu.br</string>
     <string name="message_not_remove">Please don\'t remove this information</string>
+    <!-- END SETTINGS -->
 
-    <!--DIALOGS-->
-    <string name="confirm_sign_out">Do you really want to quit the application?\nYou will be redirected to login screen...</string>
+    <!-- BUTTONS -->
     <string name="bt_ok">Ok</string>
     <string name="bt_cancel">Cancel</string>
+    <string name="bt_stop">Stop</string>
+    <string name="bt_pause">Pause</string>
     <string name="bt_discard">Discard</string>
     <string name="bt_save">Save</string>
-    <string name="title_save_captured_data">Save data...</string>
+    <string name="bt_next">Next</string>
+    <string name="bt_remind_me_later">Remind me later</string>
+    <!-- END BUTTONS -->
+
+    <!-- DIALOGS -->
+    <string name="confirm_sign_out">Do you really want to quit the application?\nYou will be redirected to login screen&#8230;</string>
+    <string name="title_save_captured_data">Save data&#8230;</string>
     <string name="message_save_captured_data">Do you want to save the captured data?</string>
     <string name="message_save_captured_heart_rate">Do you want to save the captured heart rate?</string>
+    <!-- END DIALOGS -->
 
-    <string name="no_data_available">No data to display...</string>
+    <string name="no_data_available">No data to display&#8230;</string>
     <string name="unit_kg">kg</string>
     <string name="unit_percentage">%</string>
     <string name="unit_celsius">°C</string>
@@ -315,17 +360,39 @@
     <!-- SYNCHRONIZATION -->
     <string name="synchronization_failed">Data synchronization failed!</string>
     <string name="synchronization_success">Successful data synchronization!</string>
-    <string name="synchronization_data">Synchronizing data...</string>
-    <string name="synchronization_no_data_to_send">There is no data to send...</string>
+    <string name="synchronization_data">Synchronizing data&#8230;</string>
+    <string name="synchronization_no_data_to_send">There is no data to send&#8230;</string>
+
+    <!-- SURVEY -->
+    <string name="survey_select_an_answer">Select an answer&#8230;</string>
+    <string name="survey_select_the_answers">Select the answers&#8230;</string>
+    <string name="survey_enter_an_answer">Enter an answer&#8230;</string>
+    <string name="survey_add_new_answer">Add new answer</string>
+    <string name="survey_add_new_item">Add new item</string>
+    <string name="survey_please_add_new_item">Please add new items&#8230;</string>
+    <string name="survey_dialog_remove_add_new_item">Added items that are not used will be removed.\nAre you sure you do not want to select the item?</string>
+    <!-- END SURVEY -->
 
     <!-- ELDERLY -->
+    <string name="elderly_monitor">Monitor Elderly</string>
     <string name="elderly_monitored">Monitored Elderly</string>
     <string name="elderly_add">Add Elderly</string>
     <string name="elderly_pin">PIN</string>
     <string name="elderly_fall_register">Fall Records: %d</string>
+    <string name="elderly_fall_registered">Registered falls</string>
+    <string name="elderly_fall_registered_in">In %s</string>
+    <string name="elderly_fall_registered_current_year">In this year</string>
+    <string name="elderly_latest_fall_records">Latest fall records</string>
+    <string name="elderly_was_not_select">It was not possible to select the data of the elderly. Please try again later&#8230;</string>
+    <string name="elderly_confirm_delete_device_association">Are you sure you want to remove the association with the device responsible for falls detection?\n\nOnce removed you will not be able to receive notification of falls for the elderly: %s.</string>
     <!-- END ELDERLY -->
 
     <!-- ELDERLY FORM -->
+    <string name="elderly_associate_device_info1">Before going to the elderly register it is necessary to make association of the device responsible for detecting the fall.</string>
+    <string name="elderly_associate_device_info2">Open the fall application installed on the fitbit and provide the 4 digit PIN that is displayed on the smartwatch.</string>
+    <string name="elderly_associate_device">Associate Device</string>
+    <string name="elderly_associated_device">Associated Device</string>
+    <string name="elderly_registration">Elderly Registration</string>
     <string name="elderly_input_title_name">Name</string>
     <string name="elderly_input_title_date_birth">Birth of Date</string>
     <string name="elderly_input_title_sex">Sex</string>
@@ -355,50 +422,145 @@
     <string name="elderly_select_medications">Select the medications</string>
     <string name="elderly_select_accessories">Select the accessories</string>
     <string name="elderly_register_success">Data saved successfully!\nDo you want to respond now to an assessment to identify the risk of falling?</string>
-    <string name="elderly_assessment_risk_falling">Do you want to respond now to an assessment to identify the risk of falling?</string>
+    <string name="elderly_survey_risk_falling">Do you want to respond now to an assessment to identify the risk of falling?</string>
+    <string name="elderly_not_medications">No medicines</string>
+    <string name="elderly_not_accessories">No accessories</string>
     <!-- END ELDERLY FORM -->
 
-    <!-- ELDERLY ASSESSMENT RISK FALL -->
-    <string name="risk_fall_answer_question">Answer the question to go to next!</string>
-    <string name="risk_fall_title_group1">Falls</string>
-    <string name="risk_fall_title_group2">Use of device to help with walking</string>
-    <string name="risk_fall_title_group3">Use of medicines</string>
-    <string name="risk_fall_title_group4">Muscle strength/balance</string>
-    <string name="risk_fall_title_group5">Activity of daily living</string>
-    <string name="risk_fall_title_group6">Vision/Hearing</string>
-    <string name="risk_fall_title_group7">Physical activity</string>
-    <string name="risk_fall_title_group8">Environmental factors (Conduct inspection at the home of the elderly)</string>
-    <string name="risk_fall_description_q1">1. Has the elderly person dropped in the last 12 months?</string>
-    <string name="risk_fall_description_q2">2. Does the elderly person use any walking aid?</string>
-    <string name="risk_fall_description_q3">3. The elderly uses 4 or more medications per day?</string>
-    <string name="risk_fall_description_q4">4. Uses psychotropic medications?</string>
-    <string name="risk_fall_description_q5">5. Has difficulties to descend or climb a hill?</string>
-    <string name="risk_fall_description_q6">6. Need help to walk 100 meters?</string>
-    <string name="risk_fall_description_q7">7. It has difficulty seeing (considering the use of lenses)?</string>
-    <string name="risk_fall_description_q8">8. Has difficulty to hear what other people speak?</string>
-    <string name="risk_fall_description_q9">9. Does exercises during the week?</string>
-    <string name="risk_fall_description_q10">10. Dimly lit environment (When lying down, have to raise to turn light switch; away from the bed or of difficult visualization; there is no lampshade, do not let the light of the hallway lit during the night)?</string>
-    <string name="risk_fall_title_low">Low risk of falls</string>
-    <string name="risk_fall_title_moderate">Moderate falls risk</string>
-    <string name="risk_fall_title_high">High risk of falls</string>
-    <string name="risk_fall_title_cancel">Are you sure you want to cancel?\nThe answers given will be lost...</string>
-    <string name="risk_fall_title_end">Based on the answers obtained the risk of the elderly suffering a fall will be classified in:</string>
-    <string name="risk_fall_title_end_confirm_result">Do you want to see the evaluation result?</string>
-    <string name="risk_fall_message_blocked_page">Answer the current question to go to next...</string>
-    <!-- END ELDERLY ASSESSMENT RISK FALL -->
+    <!-- ELDERLY SURVEY RISK FALL -->
+    <string name="fall_risk_answer_question">Answer the question to go to next!</string>
+    <string name="fall_risk_title_group1">Falls</string>
+    <string name="fall_risk_title_group2">Use of device to help with walking</string>
+    <string name="fall_risk_title_group3">Use of medicines</string>
+    <string name="fall_risk_title_group4">Muscle strength/balance</string>
+    <string name="fall_risk_title_group5">Activity of daily living</string>
+    <string name="fall_risk_title_group6">Vision/Hearing</string>
+    <string name="fall_risk_title_group7">Physical activity</string>
+    <string name="fall_risk_title_group8">Environmental factors (Conduct inspection at the home of the elderly)</string>
+    <string name="fall_risk_description_q1">1. Has the elderly person dropped in the last 12 months?</string>
+    <string name="fall_risk_description_q2">2. Does the elderly person use any walking aid?</string>
+    <string name="fall_risk_description_q3">3. The elderly uses 4 or more medications per day?</string>
+    <string name="fall_risk_description_q4">4. Uses psychotropic medications?</string>
+    <string name="fall_risk_description_q5">5. Has difficulties to descend or climb a hill?</string>
+    <string name="fall_risk_description_q6">6. Need help to walk 100 meters?</string>
+    <string name="fall_risk_description_q7">7. It has difficulty seeing (considering the use of lenses)?</string>
+    <string name="fall_risk_description_q8">8. Has difficulty to hear what other people speak?</string>
+    <string name="fall_risk_description_q9">9. Does exercises during the week?</string>
+    <string name="fall_risk_description_q10">10. Dimly lit environment (When lying down, have to raise to turn light
+        switch; away from the bed or of difficult visualization; there is no lampshade, do not let the light of the
+        hallway lit during the night)?
+    </string>
+    <string name="fall_risk_title_low">Low risk of falls</string>
+    <string name="fall_risk_title_moderate">Moderate falls risk</string>
+    <string name="fall_risk_title_high">High risk of falls</string>
+    <string name="fall_risk_title_cancel">Are you sure you want to cancel?\nThe answers provide will be lost&#8230;</string>
+    <string name="fall_risk_title_end">Based on the answers obtained the risk of the elderly suffering a fall will be classified in:</string>
+    <string name="fall_risk_title_end_confirm_result">Do you want to see the evaluation result?</string>
+    <string name="fall_risk_message_blocked_page">Answer the current question to go to next&#8230;</string>
+    <!-- END ELDERLY SURVEY FALL RISK -->
+
+    <!-- ELDERLY FALL CHARACTERIZATION SURVEY -->
+    <string name="fall_characterization_q1">You confirm that the elderly %s suffered the fall detected on: %s?</string>
+    <string name="fall_characterization_q2">After the fall was there any kind of medical care?</string>
+    <string name="fall_characterization_q3">Was hospitalization necessary?</string>
+    <string name="fall_characterization_q4">What was the average length of hospitalization?</string>
+    <string name="fall_characterization_q5">The fall generated any fractures?</string>
+    <string name="fall_characterization_q6">What was the site of the fracture?</string>
+    <string name="fall_characterization_q7">What caused the fall?</string>
+    <string name="fall_characterization_q8">Where the fall happened?</string>
+    <string name="fall_characterization_q9">The fall occurred at what time?</string>
+    <string name="fall_characterization_add_new_Item_q8">Add a new drop location</string>
+    <string name="fall_characterization_cancel_dialog">Are you sure you want to cancel the fall characterization?\nThe answers provide will be lost&#8230;</string>
+    <string name="fall_characterization_did_not_fall_dialog">Are you sure the elderly did not fall on %s at %s?</string>
+    <string name="fall_characterization_positive">Fall characterized as positive.</string>
+    <string name="fall_characterization_negative">Fall characterized as negative.</string>
+    <string name="fall_characterization_not_exist">Characterization does not exist. Click to characterize the fall&#8230;</string>
+    <!-- END ELDERLY FALL CHARACTERIZATION SURVEY -->
+
+    <!-- ARRAY ALTERNATIVES FALL CHARACTERIZATION SURVEY Q4 -->
+    <string-array name="answers_fall_characterization_q4_array">
+        <item>0&#8211;7 days</item>
+        <item>7&#8211;15 days</item>
+        <item>15&#8211;30 days</item>
+        <item>Over 30 days</item>
+    </string-array>
+    <!-- END ARRAY ALTERNATIVES FALL CHARACTERIZATION SURVEY Q4 -->
+
+    <!-- ARRAY ALTERNATIVES FALL CHARACTERIZATION QUESTION 6 -->
+    <string-array name="answers_fall_characterization_q6_array">
+        <item>1 - Skull/Face</item>
+        <item>2 - Ribs/Clavicle</item>
+        <item>3 - Humerus</item>
+        <item>4 - Ulna/Radio</item>
+        <item>5 - Hip</item>
+        <item>6 - Carpal/Metacarpal/Phalanges</item>
+        <item>7 - Femur</item>
+        <item>8 - knee</item>
+        <item>9 - Tibia/Fibula</item>
+        <item>10 - Tarsus/Metatarsal/Phalanges</item>
+        <item>11 - Cervical spine</item>
+        <item>12 - Thoracic spine</item>
+        <item>13 - Lumbar spine</item>
+        <item>14 - Sacrum</item>
+    </string-array>
+    <!-- END ARRAY ALTERNATIVES FALL CHARACTERIZATION QUESTION 6 -->
+
+    <!-- ARRAY ALTERNATIVES FALL CHARACTERIZATION QUESTION 7 -->
+    <string-array name="answers_fall_characterization_q7_array">
+        <item>Wet floor</item>
+        <item>Carpet or objects on the floor</item>
+        <item>Illumination inadequate</item>
+        <item>Use of stairs</item>
+        <item>Lack of railings in stairs or bathrooms</item>
+        <item>Inappropriate ladder step</item>
+        <item>Cabinets or high objects</item>
+        <item>Animal presence</item>
+        <item>High heels</item>
+        <item>Fainting</item>
+        <item>Dizziness</item>
+        <item>Convulsive crisis</item>
+        <item>Muscle weakness</item>
+        <item>Increased blood pressure</item>
+        <item>Low blood pressure</item>
+    </string-array>
+    <!-- END ARRAY ALTERNATIVES FALL CHARACTERIZATION QUESTION 7 -->
+
+    <!-- ARRAY ALTERNATIVES FALL CHARACTERIZATION QUESTION 8 -->
+    <string-array name="answers_fall_characterization_q8_array">
+        <item>Bathrooms</item>
+        <item>Bedroom</item>
+        <item>Kitchen</item>
+        <item>Living room</item>
+        <item>Garden</item>
+        <item>Backyard</item>
+        <item>Garage</item>
+    </string-array>
+    <!-- END ARRAY ALTERNATIVES FALL CHARACTERIZATION QUESTION 8 -->
+
+    <!-- ARRAY ALTERNATIVES FALL CHARACTERIZATION QUESTION 9 -->
+    <string-array name="answers_fall_characterization_q9_array">
+        <item>Early morning</item>
+        <item>End of the morning</item>
+        <item>Early afternoon</item>
+        <item>Late afternoon</item>
+        <item>Early evening</item>
+        <item>End of the night</item>
+        <item>Dawn</item>
+    </string-array>
+    <!-- END ARRAY ALTERNATIVES FALL CHARACTERIZATION QUESTION 9 -->
 
     <!-- ARRAY QUESTIONS RISK FALL -->
-    <string-array name="risk_questions_array">
-        <item>@string/risk_fall_description_q1</item>
-        <item>@string/risk_fall_description_q2</item>
-        <item>@string/risk_fall_description_q3</item>
-        <item>@string/risk_fall_description_q4</item>
-        <item>@string/risk_fall_description_q5</item>
-        <item>@string/risk_fall_description_q6</item>
-        <item>@string/risk_fall_description_q7</item>
-        <item>@string/risk_fall_description_q8</item>
-        <item>@string/risk_fall_description_q9</item>
-        <item>@string/risk_fall_description_q10</item>
+    <string-array name="fall_risk_questions_array">
+        <item>@string/fall_risk_description_q1</item>
+        <item>@string/fall_risk_description_q2</item>
+        <item>@string/fall_risk_description_q3</item>
+        <item>@string/fall_risk_description_q4</item>
+        <item>@string/fall_risk_description_q5</item>
+        <item>@string/fall_risk_description_q6</item>
+        <item>@string/fall_risk_description_q7</item>
+        <item>@string/fall_risk_description_q8</item>
+        <item>@string/fall_risk_description_q9</item>
+        <item>@string/fall_risk_description_q10</item>
     </string-array>
     <!-- END ARRAY QUESTIONS RISK FALL -->
 
@@ -539,7 +701,6 @@
     </string-array>
 
     <!-- ELDERLY MEDICATIONS -->
-    <string-array name="medications_array">
-    </string-array>
+    <string-array name="medications_array"></string-array>
 
 </resources>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="br.edu.uepb.nutes.haniot">
 
     <!-- PERMISSIONS -->
@@ -8,7 +7,6 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <!-- Android >= 6 necessita de localização ativa -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -83,7 +81,7 @@
             android:name=".devices.SmartBandActivity"
             android:screenOrientation="portrait" />
 
-        <!-- ACTIVITIES CHARTS-->
+        <!-- ACTIVITIES CHARTS -->
         <activity android:name=".activity.account.ChangePasswordActivity" />
         <activity android:name=".activity.charts.BodyCompositionChartActivity" />
         <activity android:name=".activity.charts.TemperatureChartActivity" />
@@ -97,7 +95,7 @@
             android:name=".elderly.ElderlyMonitoredActivity"
             android:parentActivityName=".activity.MainActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppThemeSecondaty">
+            android:theme="@style/AppThemeSecondary">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activity.MainActivity" />
@@ -105,16 +103,27 @@
         <activity
             android:name=".elderly.ElderlyRegisterActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppThemeSecondaty" />
+            android:theme="@style/AppThemeSecondary" />
         <activity
-            android:name=".elderly.assessment.FallRiskAssessmentActivity"
+            android:name=".elderly.FallRiskActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppThemeSecondaty" />
+            android:theme="@style/AppThemeSecondary" />
         <activity
-            android:name=".elderly.assessment.FallRiskAssessmentResultActivity"
+            android:name=".elderly.FallRiskResultActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppThemeSecondaty" />
-        <!-- END ACTIVITIES FALL RISK -->
+            android:theme="@style/AppThemeSecondary" />
+        <activity
+            android:name=".elderly.FallCharacterizationActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeSecondary" />
+        <activity
+            android:name=".elderly.ElderlyFallActivity"
+            android:theme="@style/AppThemeSecondary" />
+        <activity
+            android:name=".elderly.ElderlyPreviewActivity"
+            android:theme="@style/AppThemeSecondary" />
+        <!-- END ELDERLY -->
+
 
         <!-- SERVICES -->
         <service

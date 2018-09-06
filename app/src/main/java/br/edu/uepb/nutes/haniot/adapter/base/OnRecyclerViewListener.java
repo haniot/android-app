@@ -1,5 +1,8 @@
 package br.edu.uepb.nutes.haniot.adapter.base;
 
+import android.view.MenuItem;
+import android.view.View;
+
 /**
  * Interface to capture event click on itemsList listed by the adapter.
  *
@@ -9,4 +12,8 @@ package br.edu.uepb.nutes.haniot.adapter.base;
  */
 public interface OnRecyclerViewListener<T> {
     void onItemClick(T item);
+
+    void onLongItemClick(View v, T item);
+
+    void onMenuContextClick(View v, T item);
 }

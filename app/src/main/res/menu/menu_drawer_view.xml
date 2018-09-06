@@ -16,7 +16,7 @@
         <item
             android:id="@+id/action_monitored_elderly"
             android:icon="@drawable/ic_person"
-            android:title="@string/elderly_monitored" />
+            android:title="@string/elderly_monitor" />
     </group>
 
     <group

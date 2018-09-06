@@ -12,7 +12,7 @@ public class NameColumnsDB {
     public static String USER_ID = "_id";
     public static String USER_NAME = "name";
     public static String USER_GENDER = "gender";
-    public static String USER_DATE_OD_BIRTH = "dateOfBirth";
+    public static String USER_DATE_BIRTH = "dateOfBirth";
     public static String USER_HEIGHT = "height";
     public static String USER_EMAIL = "email";
     public static String USER_PASSWORD = "password";
@@ -43,4 +43,22 @@ public class NameColumnsDB {
     public static String CONTEXT_ID = "_id";
     public static String CONTEXT_VALUE_ID = "valueId";
     public static String CONTEXT_TYPE_ID = "typeId";
+
+    public static String ELDERLY = "externalData";
+    public static String ELDERLY_ID = "_id";
+    public static String ELDERLY_NAME = "name";
+    public static String ELDERLY_DATE_BIRTH = "date_birth";
+    public static String ELDERLY_WEIGHT = "weight";
+    public static String ELDERLY_HEIGHT = "height";
+    public static String ELDERLY_SEX = "sex";
+    public static String ELDERLY_PHONE = "phone";
+    public static String ELDERLY_DEVICE_PIN = "encodedId";
+    public static String ELDERLY_MARITAL_STATUS = "marital_status";
+    public static String ELDERLY_DEGREE_EDUCATION = "degree_education";
+    public static String ELDERLY_LIVE_ALONE = "live_alone";
+    public static String ELDERLY_MEDICATIONS = "medications";
+    public static String ELDERLY_ACCESSORIES = "accessories";
+    public static String ELDERLY_FALL_RISK = "fall_risk";
+    public static String ELDERLY_ITEMS_INDEX = "index";
+    public static String ELDERLY_ITEMS_NAME = "name";
 }

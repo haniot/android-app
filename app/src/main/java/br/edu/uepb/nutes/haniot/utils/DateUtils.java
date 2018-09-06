@@ -2,7 +2,6 @@ package br.edu.uepb.nutes.haniot.utils;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -11,8 +10,8 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.Locale;
 import java.util.TimeZone;
 
 import br.edu.uepb.nutes.haniot.R;
@@ -25,6 +24,7 @@ import br.edu.uepb.nutes.haniot.R;
  * @copyright Copyright (c) 2017, NUTES UEPB
  */
 public final class DateUtils {
+    public static final String DATE_FORMAT_ISO_8601 = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
     /**
      * Get/Retrieve calendar instance.
@@ -149,6 +149,54 @@ public final class DateUtils {
     }
 
     /**
+     * Format date in ISO 8601 for the format passed in the "format_date" parameter.
+     * The default timezone will be used.
+     *
+     * @param str_date
+     * @param format_date
+     * @return String
+     */
+    public static String formatDateISO8601(String str_date, String format_date) {
+        if (str_date == null || format_date == null)
+            return null;
+
+        TimeZone timeZone = TimeZone.getDefault();
+
+        DateFormat dateFormat = new SimpleDateFormat(format_date);
+        dateFormat.setTimeZone(timeZone);
+        return dateFormat.format(DateUtils.fromISO8601(str_date));
+    }
+
+    public static String getCurrentDateISO8601() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(DateUtils.DATE_FORMAT_ISO_8601);
+        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+        return dateFormat.format(new Date());
+    }
+
+    /**
+     * Convert string datetime in UTC ISO 8601
+     *
+     * @param str_date
+     * @return String
+     */
+    public static Date fromISO8601(String str_date) {
+        if (str_date == null)
+            return null;
+
+        DateFormat dateFormat = new SimpleDateFormat(DateUtils.DATE_FORMAT_ISO_8601);
+        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+        try {
+            return dateFormat.parse(str_date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    /**
      * Add days to calendar.
      *
      * @param days (-) to decrease the days (+) to advance
@@ -262,5 +310,58 @@ public final class DateUtils {
             return true;
 
         return false;
+    }
+
+    /**
+     * Checks if the date passed as parameter is this year.
+     *
+     * @param dateMills long
+     * @return boolean
+     */
+    public static boolean isYear(long dateMills) {
+        Calendar c1 = GregorianCalendar.getInstance();
+        Calendar c2 = GregorianCalendar.getInstance();
+        c1.setTimeInMillis(dateMills);
+        c2.setTimeInMillis(getCurrentDatetime());
+
+        return (c1.get(Calendar.YEAR) == c2.get(Calendar.YEAR));
+    }
+
+    /**
+     * Checks if the date passed as parameter is this year.
+     *
+     * @param str_date
+     * @return boolean
+     */
+    public static boolean isYear(String str_date) {
+        Calendar c1 = GregorianCalendar.getInstance();
+        Calendar c2 = GregorianCalendar.getInstance();
+        c2.setTimeInMillis(getCurrentDatetime());
+
+        Calendar c = Calendar.getInstance();
+        c1.setTime(DateUtils.fromISO8601(str_date));
+
+        return (c1.get(Calendar.YEAR) == c2.get(Calendar.YEAR));
+    }
+
+    /**
+     * Convert date in string format to milliseconds.
+     *
+     * @param date   {@link String}
+     * @param format {@link String}
+     * @return long
+     */
+    public static long getDateStringInMillis(String date, @Nullable String format) {
+        if (format == null || format.length() == 0)
+            format = "yyyy-MM-dd";
+
+        Calendar calendar = Calendar.getInstance();
+        try {
+            DateFormat df = new SimpleDateFormat(format);
+            calendar.setTime(df.parse(date));
+        } catch (ParseException e) {
+        }
+
+        return calendar.getTimeInMillis();
     }
 }

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
+        android:orientation="vertical">
+
+        <!-- BOX MENU BAR -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="25dp"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_horizontal_margin">
+
+            <ImageButton
+                android:id="@+id/close_imageButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:background="@android:color/transparent"
+                android:contentDescription="@string/bt_cancel"
+                app:srcCompat="@drawable/ic_action_close_light" />
+
+        </RelativeLayout>
+        <!-- END BOX MENU BAR -->
+
+        <!-- BOX TITLE -->
+        <LinearLayout
+            android:id="@+id/box_title"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingLeft="25dp"
+            android:paddingRight="25dp">
+
+            <TextView
+                android:id="@+id/question_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="@string/fall_risk_title_group3"
+                android:textAppearance="@android:style/TextAppearance.Large"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+        <!-- END BOX TITLE -->
+
+        <!-- BOX IMAGE -->
+        <LinearLayout
+            android:id="@+id/box_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.9"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="@dimen/activity_horizontal_margin">
+
+            <com.github.chrisbanes.photoview.PhotoView
+                android:id="@+id/question_image"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/image"
+                android:src="@drawable/fall_elderly" />
+
+        </LinearLayout>
+        <!-- END BOX IMAGE -->
+
+        <!-- BOX DESCRIPTION -->
+        <LinearLayout
+            android:id="@+id/box_description"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="25dp">
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fillViewport="true"
+                android:scrollbars="vertical">
+
+                <TextView
+                    android:id="@+id/question_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="@string/fall_risk_description_q1"
+                    android:textAppearance="@android:style/TextAppearance.Medium" />
+            </ScrollView>
+        </LinearLayout>
+        <!-- END BOX DESCRIPTION -->
+
+        <!-- BOX INPUT -->
+        <LinearLayout
+            android:id="@+id/box_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="40dp"
+            android:orientation="vertical"
+            android:padding="@dimen/spinner_answer_margin">
+
+            <br.edu.uepb.nutes.haniot.ui.CustomSelectSpinner
+                android:id="@+id/answer_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:entries="@array/answers_fall_characterization_q4_array"
+                android:hint="@string/survey_select_an_answer"
+                app:colorBackgroundTint="@color/colorPurple"
+                app:enabledAddNewItem="false"
+                app:textAlign="center" />
+        </LinearLayout>
+        <!-- END BOX INPUT -->
+
+
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>
+

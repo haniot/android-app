@@ -4,12 +4,15 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.List;
 import java.util.Locale;
+
+import javax.annotation.Nullable;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.adapter.base.BaseAdapter;
@@ -67,12 +70,9 @@ public class TemperatureAdapter extends BaseAdapter<Measurement> {
             /**
              * OnClick Item
              */
-            h.mView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (TemperatureAdapter.super.mListener != null)
-                        TemperatureAdapter.super.mListener.onItemClick(m);
-                }
+            h.mView.setOnClickListener(v -> {
+                if (TemperatureAdapter.super.mListener != null)
+                    TemperatureAdapter.super.mListener.onItemClick(m);
             });
 
             // call Animation function
