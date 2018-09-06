@@ -177,7 +177,6 @@ public class DeviceManagerActivity extends AppCompatActivity {
                     mBoxDevicesAvailable.setVisibility(View.VISIBLE);
                     mProgressBar.setVisibility(View.GONE);
                 }
-
             }
         });
     }
@@ -275,28 +274,36 @@ public class DeviceManagerActivity extends AppCompatActivity {
         List<Device> devicesAvailable = new ArrayList<>();
 
         devicesAvailable.add(new Device("Ear Thermometer ".concat(NUMBER_MODEL_THERM_DL8740),
-                "Philips", "DL8740", R.drawable.device_thermometer_philips_dl8740));
+                "Philips", NUMBER_MODEL_THERM_DL8740,
+                R.drawable.device_thermometer_philips_dl8740));
 
         devicesAvailable.add(new Device("Accu-Chek ".concat(NUMBER_MODEL_GLUCOMETER_PERFORMA),
-                "Accu-Chek", "Performa Connect", R.drawable.device_glucose_accuchek));
+                "Accu-Chek", NUMBER_MODEL_GLUCOMETER_PERFORMA,
+                R.drawable.device_glucose_accuchek));
 
         devicesAvailable.add(new Device("Scale YUNMAI Mini ".concat(NUMBER_MODEL_SCALE_1501),
-                "Yunmai", "1501", R.drawable.device_scale_yunmai_mini_color));
+                "Yunmai", NUMBER_MODEL_SCALE_1501,
+                R.drawable.device_scale_yunmai_mini_color));
 
         devicesAvailable.add(new Device("Scale OMRON ".concat(NUMBER_MODEL_SCALE_HBF206IT),
-                "Omron", "HBF-206IT", R.drawable.device_scale_omron_hbf206it));
+                "Omron", NUMBER_MODEL_SCALE_HBF206IT,
+                R.drawable.device_scale_omron_hbf206it));
 
         devicesAvailable.add(new Device("Heart Rate Sensor ".concat(NUMBER_MODEL_HEART_RATE_H7),
-                "Polar", "H7", R.drawable.device_heart_rate_h7));
+                "Polar", NUMBER_MODEL_HEART_RATE_H7,
+                R.drawable.device_heart_rate_h7));
 
         devicesAvailable.add(new Device("Heart Rate Sensor ".concat(NUMBER_MODEL_HEART_RATE_H10),
-                "Polar", "H10", R.drawable.device_heart_rate_h10));
+                "Polar", NUMBER_MODEL_HEART_RATE_H10,
+                R.drawable.device_heart_rate_h10));
 
         devicesAvailable.add(new Device("Smartband ".concat(NUMBER_MODEL_SMARTBAND_MI2),
-                "Xiaomi", "MI Band 2", R.drawable.device_smartband_miband2));
+                "Xiaomi", NUMBER_MODEL_SMARTBAND_MI2,
+                R.drawable.device_smartband_miband2));
 
         devicesAvailable.add(new Device("Blood Pressure Monitor ".concat(NUMBER_MODEL_PRESSURE_BP792IT),
-                "Omron", "BP792IT", R.drawable.device_pressure_ormron_bp792it));
+                "Omron", NUMBER_MODEL_PRESSURE_BP792IT,
+                R.drawable.device_pressure_ormron_bp792it));
 
         devicesAvailable = mergeDevicesAvailableRegistered(devicesRegistered, devicesAvailable);
 
