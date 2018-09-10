@@ -34,7 +34,6 @@ public class TestBLEActivity extends AppCompatActivity {
                         .addFilterServiceUuid(GattAttributes.SERVICE_HEART_RATE, GattAttributes.SERVICE_HEALTH_THERMOMETER, GattAttributes.SERVICE_SCALE)
                         .addScanPeriod(800000)
                         .build();
-
                 bleScanner.startScan(scanCallback);
             }
         });
