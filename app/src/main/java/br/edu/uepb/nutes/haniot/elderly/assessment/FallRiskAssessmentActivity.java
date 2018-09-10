@@ -79,7 +79,7 @@ public class FallRiskAssessmentActivity extends AppIntro implements OnAnswerList
      */
     private void addPages() {
         /**
-         * Config pages.
+         * Builder pages.
          */
         setColorTransitionsEnabled(true);
         setFadeAnimation();

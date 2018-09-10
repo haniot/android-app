@@ -8,7 +8,6 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <!-- Android >= 6 necessita de localização ativa -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -83,7 +82,7 @@
             android:name=".devices.SmartBandActivity"
             android:screenOrientation="portrait" />
 
-        <!-- ACTIVITIES CHARTS-->
+        <!-- ACTIVITIES CHARTS -->
         <activity android:name=".activity.account.ChangePasswordActivity" />
         <activity android:name=".activity.charts.BodyCompositionChartActivity" />
         <activity android:name=".activity.charts.TemperatureChartActivity" />
@@ -116,6 +115,7 @@
             android:theme="@style/AppThemeSecondaty" />
         <!-- END ACTIVITIES FALL RISK -->
 
+
         <!-- SERVICES -->
         <service
             android:name=".service.BluetoothLeService"
@@ -138,6 +138,16 @@
         </service>
         <!-- END SERVICES -->
 
+        <activity
+            android:name=".activity.TestBLEActivity"
+            android:label="@string/title_activity_teste_ble"
+            android:theme="@style/AppTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
