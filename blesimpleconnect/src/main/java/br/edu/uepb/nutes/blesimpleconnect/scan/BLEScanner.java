@@ -1,4 +1,4 @@
-package br.edu.uepb.nutes.blesimpleconnect;
+package br.edu.uepb.nutes.blesimpleconnect.scan;
 
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
@@ -104,12 +104,12 @@ public abstract class BLEScanner {
         /**
          * Add filter adress.
          *
-         * @param adress
+         * @param address
          * @return instance
          */
-        public Builder addFilterAdress(String adress) {
+        public Builder addFilterAddress(String address) {
             scanFilters.add(new ScanFilter.Builder()
-                    .setDeviceAddress(adress)
+                    .setDeviceAddress(address)
                     .build());
             return this;
         }

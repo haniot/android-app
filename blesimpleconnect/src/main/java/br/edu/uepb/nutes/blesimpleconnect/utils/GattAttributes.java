@@ -1,4 +1,4 @@
-package br.edu.uepb.nutes.blesimpleconnect;
+package br.edu.uepb.nutes.blesimpleconnect.utils;
 
 import java.util.HashMap;
 import java.util.Map;

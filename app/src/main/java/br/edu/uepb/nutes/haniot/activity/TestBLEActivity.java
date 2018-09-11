@@ -11,8 +11,8 @@ import android.view.View;
 
 import java.util.List;
 
-import br.edu.uepb.nutes.blesimpleconnect.BLEScanner;
-import br.edu.uepb.nutes.blesimpleconnect.GattAttributes;
+import br.edu.uepb.nutes.blesimpleconnect.scan.BLEScanner;
+import br.edu.uepb.nutes.blesimpleconnect.utils.GattAttributes;
 import br.edu.uepb.nutes.haniot.R;
 
 public class TestBLEActivity extends AppCompatActivity {

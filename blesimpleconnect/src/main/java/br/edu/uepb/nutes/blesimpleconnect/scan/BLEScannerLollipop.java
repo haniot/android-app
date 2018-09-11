@@ -1,11 +1,10 @@
-package br.edu.uepb.nutes.blesimpleconnect;
+package br.edu.uepb.nutes.blesimpleconnect.scan;
 
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
 import android.support.annotation.RequiresPermission;
-import android.util.Log;
 
 /**
  * Class of Bluetooth Scanner fo Lollipop.
