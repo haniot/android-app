@@ -45,6 +45,7 @@
     <string name="alert_register_time_title">Alert was triggered at %s</string>
     <string name="image">Image</string>
     <string name="warning_title">Warning!</string>
+    <string name="no_data">No data</string>
 
     <!-- ACTIONS -->
     <string name="action_settings">Settings</string>

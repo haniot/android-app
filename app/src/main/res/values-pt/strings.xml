@@ -241,7 +241,7 @@
     <string name="get_monitor_dialog_tittle">Obtendo dados do monitor&#8230;</string>
     <string name="get_monitor_desc">Verifique se o monitor está próximo e no modo de transferência de dados (Selecione Meus Dados, Transf. de Dados, Sem fio).</string>
 
-    <string name="noData">Sem dados</string>
+    <string name="no_data">Sem dados</string>
 
     //Limit and Lines of Chart
     <string name="diastolic">Diastólica</string>

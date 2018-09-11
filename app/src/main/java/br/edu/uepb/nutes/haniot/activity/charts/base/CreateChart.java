@@ -82,7 +82,7 @@ public final class CreateChart<T> {
         Paint p = mChart.getPaint(Chart.PAINT_INFO);
         p.setColor(Color.WHITE);
         p.setTextSize(32);
-        mChart.setNoDataText(params.context.getString(R.string.noData));
+        mChart.setNoDataText(params.context.getString(R.string.no_data));
         configureDataChart();
         mChart.notifyDataSetChanged();
 
