@@ -6,6 +6,7 @@ import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,8 +47,8 @@ public class Server {
     /**
      * If you set a url it will be used as default and not entered by the user in the application settings
      */
-      /* HEROKU */ private final String URI_DEFAULT = "https://haniot-api.herokuapp.com/api/v1";
-//    /* PC HOME */ private final String URI_DEFAULT = "https://192.168.50.104/api/v1";
+    /* HEROKU */ private final String URI_DEFAULT = "https://haniot-api.herokuapp.com/api/v1";
+//    /* PC HOME */ private final String URI_DEFAULT = "https://192.168.31.113/api/v1";
 //      /* PC WIFI */ private final String URI_DEFAULT = "http://192.168.50.175:8000/api/v1";
 
     private final String MEDIA_TYPE = "application/json; charset=utf-8";
@@ -77,6 +78,7 @@ public class Server {
                 .get()
                 .url(urlParser(path))
                 .headers(headers)
+                .tag(mContext.getClass().getName())
                 .build();
 
         sendRequest(request, serverCallback);
@@ -108,6 +110,7 @@ public class Server {
                 .post(body)
                 .url(urlParser(path))
                 .headers(headers)
+                .tag(mContext.getClass().getName())
                 .build();
 
         sendRequest(request, serverCallback);
@@ -140,6 +143,7 @@ public class Server {
                 .put(body)
                 .url(urlParser(path))
                 .headers(headers)
+                .tag(mContext.getClass().getName())
                 .build();
 
         sendRequest(request, serverCallback);
@@ -170,6 +174,7 @@ public class Server {
                 .delete()
                 .url(urlParser(path))
                 .headers(headers)
+                .tag(mContext.getClass().getName())
                 .build();
 
         sendRequest(request, serverCallback);
@@ -203,7 +208,7 @@ public class Server {
         client.newCall(request).enqueue(new okhttp3.Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                if (e instanceof SocketException) { // resquest canceled
+                if (e instanceof SocketException) { // request canceled
                     Log.d("SERVER - onFailure()", "Request canceled!");
                     return;
                 }
@@ -212,9 +217,9 @@ public class Server {
                 try {
                     result.put("message", e.getMessage());
                     result.put("code", 500);
-                    Log.d("SERVER - onFailure()", result.toString());
 
                     serverCallback.onError(result);
+                    Log.d("SERVER - onFailure()", result.toString());
                 } catch (JSONException err) {
                     err.printStackTrace();
                 }
@@ -228,24 +233,24 @@ public class Server {
                     if (jsonString.equals("Unauthorized")) {
                         result.put("unauthorized", mContext.getString(R.string.validate_unauthorized_access));
                     } else if (!jsonString.isEmpty()) {
-                        result = new JSONObject(jsonString);
+                        Object json = new JSONTokener(jsonString).nextValue();
+                        if(json instanceof JSONObject)
+                            result = new JSONObject(jsonString);
                     }
 
                     // Adds the HTTP response code to the json object
                     result.put("code", response.code());
 
-                    if (!response.isSuccessful()) {
-                        serverCallback.onError(result);
-                    } else {
-                        serverCallback.onSuccess(result);
-                    }
+                    if (!response.isSuccessful()) serverCallback.onError(result);
+                    else serverCallback.onSuccess(result);
+
                     Log.i("SERVER - onResponse()", result.toString());
                 } catch (JSONException err) {
+                    serverCallback.onError(null);
                     err.printStackTrace();
                 }
             }
         });
-
     }
 
     /**
@@ -253,6 +258,25 @@ public class Server {
      */
     public void cancelAllResquest() {
         if (client != null) client.dispatcher().cancelAll();
+    }
+
+    /**
+     * Cancels all as requests with a tag passed as parameter.
+     *
+     * @param tag
+     */
+    public void cancelTagRequest(String tag) {
+        // go through the queued calls and cancel if the tag matches
+        for (Call call : client.dispatcher().queuedCalls()) {
+            if (call.request().tag().equals(tag))
+                call.cancel();
+        }
+
+        // go through the running calls and cancel if the tag matches
+        for (Call call : client.dispatcher().runningCalls()) {
+            if (call.request().tag().equals(tag))
+                call.cancel();
+        }
     }
 
     /**

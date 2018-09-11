@@ -12,14 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Class Base Recycler.ViewHolder.
- *
- * @author Douglas Rafael <douglasrafaelcg@gmail.com>
- * @version 1.0
- * @copyright Copyright (c) 2017, NUTES UEPB
- */
-
-/**
  * Class BaseAdapter for RecyclerView.Adapter.
  *
  * @param <T>

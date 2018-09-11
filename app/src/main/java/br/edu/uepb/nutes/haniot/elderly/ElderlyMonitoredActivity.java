@@ -1,5 +1,6 @@
 package br.edu.uepb.nutes.haniot.elderly;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,31 +10,31 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.ElderlyMonitoredAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
-import br.edu.uepb.nutes.haniot.elderly.assessment.FallRiskAssessmentActivity;
-import br.edu.uepb.nutes.haniot.model.Elderly;
-import br.edu.uepb.nutes.haniot.model.MeasurementType;
 import br.edu.uepb.nutes.haniot.model.dao.ElderlyDAO;
+import br.edu.uepb.nutes.haniot.model.elderly.Elderly;
 import br.edu.uepb.nutes.haniot.server.Server;
+import br.edu.uepb.nutes.haniot.server.historical.CallbackHistorical;
+import br.edu.uepb.nutes.haniot.server.historical.Historical;
+import br.edu.uepb.nutes.haniot.server.historical.HistoricalType;
 import br.edu.uepb.nutes.haniot.server.historical.Params;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
@@ -44,14 +45,13 @@ import butterknife.ButterKnife;
  *
  * @author Douglas Rafael <douglas.rafael@nutes.uepb.edu.br>
  * @version 1.0
- * @copyright Copyright (c) 2017, NUTES UEPB
+ * @copyright Copyright (c) 2018, NUTES UEPB
  */
 public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRecyclerViewListener<Elderly> {
-    private final String TAG = "PatientsMonitoredFrag";
+    private final String TAG = "ElderlyMonitoredAc";
     private final int LIMIT_PER_PAGE = 20;
 
     private ElderlyMonitoredAdapter mAdapter;
-
     /**
      * We need this variable to lock and unlock loading more.
      * We should not charge more when a request has already been made.
@@ -61,6 +61,8 @@ public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRec
     private Params params;
     private Session session;
     private Server server;
+    private ElderlyDAO elderlyDAO;
+    private boolean itemClicked;
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -71,11 +73,11 @@ public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRec
     @BindView(R.id.data_swiperefresh)
     SwipeRefreshLayout mDataSwipeRefresh;
 
-    @BindView(R.id.patients_recyclerview)
+    @BindView(R.id.elderlies_recyclerview)
     RecyclerView mRecyclerView;
 
-    @BindView(R.id.patient_add_floating_button)
-    FloatingActionButton mAddPatientButton;
+    @BindView(R.id.elderly_add_floating_button)
+    FloatingActionButton mAddElderlyButton;
 
     public ElderlyMonitoredActivity() {
     }
@@ -88,7 +90,8 @@ public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRec
 
         session = new Session(this);
         server = Server.getInstance(this);
-        params = new Params(session.get_idLogged(), MeasurementType.TEMPERATURE);
+        elderlyDAO = ElderlyDAO.getInstance(this);
+        params = new Params(session.get_idLogged());
 
         initComponents();
     }
@@ -96,6 +99,7 @@ public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRec
     @Override
     protected void onResume() {
         super.onResume();
+        itemClicked = false;
         loadData();
     }
 
@@ -104,18 +108,18 @@ public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRec
         initRecyclerView();
         initDataSwipeRefresh();
 
-        mAddPatientButton.setOnClickListener((v) -> {
+        mAddElderlyButton.setOnClickListener((v) -> {
             startActivity(new Intent(getApplicationContext(), ElderlyRegisterActivity.class));
-            server.cancelAllResquest();
+            server.cancelTagRequest(this.getClass().getName());
         });
     }
 
     private void initToolBar() {
         setSupportActionBar(mToolbar);
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle(getString(R.string.elderly_monitored));
-        actionBar.setDisplayShowTitleEnabled(true);
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        ActionBar mActionBar = getSupportActionBar();
+        mActionBar.setTitle(getString(R.string.elderly_monitored));
+        mActionBar.setDisplayShowTitleEnabled(true);
+        mActionBar.setDisplayHomeAsUpEnabled(true);
     }
 
     private void initRecyclerView() {
@@ -129,11 +133,8 @@ public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRec
     }
 
     private void initDataSwipeRefresh() {
-        mDataSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                if (itShouldLoadMore) loadData();
-            }
+        mDataSwipeRefresh.setOnRefreshListener(() -> {
+            if (itShouldLoadMore) loadData();
         });
     }
 
@@ -145,54 +146,94 @@ public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRec
     private void loadData() {
         mAdapter.clearItems(); // clear list
 
-        toggleLoading(true); // Enable loading
-        if (ConnectionUtils.internetIsEnabled(this)) {
-            String path = "/users/".concat(session.get_idLogged()).concat("/external");
-            server.get(path, new Server.Callback() {
+        if (!ConnectionUtils.internetIsEnabled(this)) {
+            loadDataLocal();
+        } else {
+            Historical historical = new Historical.Query()
+                    .type(HistoricalType.ELDERLIES_USER)
+                    .params(params)
+                    .build();
+
+            historical.request(this, new CallbackHistorical<Elderly>() {
                 @Override
-                public void onError(JSONObject result) {
-                    Log.w(TAG, "loadData - onError()");
-                    toggleLoading(false); // Disable loading
-                    if (mAdapter.itemsIsEmpty()) printMessage(getString(R.string.error_500));
+                public void onBeforeSend() {
+                    toggleLoading(true); // Enable loading
+                    toggleNoDataMessage(false); // Disable message no data
                 }
 
                 @Override
-                public void onSuccess(JSONObject result) {
-                    toggleLoading(false); // Disable loading
+                public void onError(JSONObject result) {
+                    printError(result);
+                }
 
-                    if (result != null && result.length() > 0) {
-                        mAdapter.addItems(transform(result));
+                @Override
+                public void onResult(List<Elderly> result) {
+                    if (result != null && result.size() > 0) {
+                        mAdapter.addItems(result);
+
+                        saveLocal(result);
+                    } else {
+                        toggleNoDataMessage(true);
                     }
-                    toggleNoDataMessage(true); // Enable message no data
+                }
+
+                @Override
+                public void onAfterSend() {
+                    toggleLoading(false); // Disable loading
                 }
             });
         }
     }
 
+    /**
+     * Load data from the local database.
+     * It should only be called when there is no internet connection or
+     * when an error occurs on the first request with the server.
+     */
+    private void loadDataLocal() {
+        mAdapter.addItems(elderlyDAO.list(session.getIdLogged()));
+
+        if (mAdapter.itemsIsEmpty()) {
+            toggleNoDataMessage(true); // Enable message no data
+        }
+        toggleLoading(false);
+    }
+
+
+    /**
+     * Save Elderly in storage local.
+     *
+     * @param elderlies {@link List<Elderly>}
+     */
+    private void saveLocal(List<Elderly> elderlies) {
+        if (elderlies == null) return;
+
+        elderlyDAO.removeAll(session.getIdLogged());
+        for (Elderly e : elderlies) elderlyDAO.save(e);
+    }
+
     @Override
     protected void onStop() {
         super.onStop();
-        server.cancelAllResquest();
+        server.cancelTagRequest(this.getClass().getName());
     }
 
-    // TODO IMPLEMENTAR NO MODULO HISTORICAL
-    private List<Elderly> transform(JSONObject json) {
-        List<Elderly> result = new ArrayList<>();
+    /**
+     * Print message error.
+     *
+     * @param result
+     */
+    private void printError(JSONObject result) {
         try {
-            JSONArray arrayData = json.getJSONArray("externalData");
-
-            for (int i = 0; i < arrayData.length(); i++) {
-                JSONObject o = arrayData.getJSONObject(i);
-
-                Elderly e = new Elderly();
-                e.setName(o.getString("name"));
-                e.setFallRisk(o.getInt("fallRisk"));
-                result.add(e);
+            if (result.has("message")) {
+                if (!result.getString("message").equals("Canceled"))
+                    printMessage(result.getString("message"));
+            } else {
+                printMessage(getString(R.string.error_500));
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return result;
     }
 
     /**
@@ -263,8 +304,74 @@ public class ElderlyMonitoredActivity extends AppCompatActivity implements OnRec
     }
 
     @Override
-    public void onItemClick(Elderly item) {
-        Log.w(TAG, "onItemClick()");
-        startActivity(new Intent(getApplicationContext(), FallRiskAssessmentActivity.class));
+    public void onItemClick(Elderly elderly) {
+        if (itemClicked) return;
+
+        Intent intentFall = new Intent(this, ElderlyFallActivity.class);
+        intentFall.putExtra(ElderlyFallActivity.EXTRA_ELDERLY_ID, elderly.get_id());
+        startActivity(intentFall);
+        itemClicked = true;
+    }
+
+    @Override
+    public void onLongItemClick(View v, Elderly item) {
+        Log.w(TAG, "onLongItemClick()");
+    }
+
+    @Override
+    public void onMenuContextClick(View v, Elderly elderly) {
+        openDropMenu(v, elderly);
+    }
+
+    private void openDropMenu(View view, Elderly elderly) {
+        Log.d(TAG, "openDropMenu() " + elderly);
+        PopupMenu dropDownMenu = new PopupMenu(this, view);
+        MenuInflater inflater = dropDownMenu.getMenuInflater();
+        inflater.inflate(R.menu.menu_drop_down_elderly_list, dropDownMenu.getMenu());
+
+        if (elderly.getFallRisk() > 0) {
+            dropDownMenu.getMenu().getItem(1).setTitle(R.string.action_new_fall_risk_assessment);
+        }
+
+        dropDownMenu.setOnMenuItemClickListener(menuItem -> {
+            switch (menuItem.getItemId()) {
+                case R.id.action_elderly_view_infor:
+                    Intent intent = new Intent(this, ElderlyPreviewActivity.class);
+                    intent.putExtra(ElderlyPreviewActivity.EXTRA_ELDERLY_ID, elderly.get_id());
+                    startActivity(intent);
+                    break;
+                case R.id.action_elderly_fall_risk:
+                    Intent intentFallRisk = new Intent(this, FallRiskActivity.class);
+                    intentFallRisk.putExtra(FallRiskActivity.EXTRA_ELDERLY_ID, elderly.get_id());
+                    startActivity(intentFallRisk);
+                    break;
+                case R.id.action_elderly_delete_device_association:
+                    openDialogConfirmRemoveAssociation(elderly);
+                    break;
+                case R.id.action_elderly_delete:
+                    Toast.makeText(getApplicationContext(), "action_elderly_delete " + menuItem.getTitle(), Toast.LENGTH_LONG).show();
+                    break;
+                default:
+                    break;
+            }
+            return true;
+        });
+        dropDownMenu.show();
+    }
+
+    /**
+     * Dialog confirmation to remove association with device.
+     */
+    private void openDialogConfirmRemoveAssociation(Elderly elderly) {
+        runOnUiThread(() -> {
+            AlertDialog.Builder mDialog = new AlertDialog.Builder(this);
+            mDialog.setTitle(R.string.warning_title)
+                    .setMessage(getResources().getString(R.string.elderly_confirm_delete_device_association, elderly.getName()))
+                    .setPositiveButton(R.string.yes_text, (dialogInterface, which) -> {
+                        // TODO Relizar rotina para remover o pin/atualizar view/atualizar elderly local e remoto.
+                    })
+                    .setNegativeButton(R.string.no_text, null)
+                    .create().show();
+        });
     }
 }

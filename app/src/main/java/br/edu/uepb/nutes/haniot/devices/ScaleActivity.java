@@ -224,6 +224,16 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
             public void onItemClick(Measurement item) {
                 Log.w(TAG, "onItemClick()");
             }
+
+            @Override
+            public void onLongItemClick(View v, Measurement item) {
+
+            }
+
+            @Override
+            public void onMenuContextClick(View v, Measurement item) {
+
+            }
         });
 
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {

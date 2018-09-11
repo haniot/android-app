@@ -9,12 +9,12 @@
     <color name="colorAccentSecondary">#4fc3f7</color>
 
     <color name="colorCard">#EBF6F4</color>
+    <color name="colorCardSection">#aedbd3</color>
     <color name="colorCardSecondary">#E3F2FD</color>
     <color name="colorTextDark">#FFFFFF</color>
     <color name="colorAlertDanger">#a94442</color>
     <color name="colorItemSeparator">#E0E0E0</color>
     <color name="colorBackRadiogroup">#f0f0f0</color>
-    <color name="colorRadiogroupAssessmentPressedText">#424242</color>
 
     <!--COLORS BUTTONS-->
     <color name="colorButtonPrimary">@color/colorAccent</color>
@@ -47,4 +47,5 @@
     <color name="colorGrey">#9e9e9e</color>
     <color name="colorBlueGrey">#607D8B</color>
     <color name="colorRed">#C62828</color>
+    <color name="colorBlackGrey">#5e5c5c</color>
 </resources>

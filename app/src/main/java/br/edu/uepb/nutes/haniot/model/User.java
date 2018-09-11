@@ -2,12 +2,11 @@ package br.edu.uepb.nutes.haniot.model;
 
 import java.util.List;
 
+import br.edu.uepb.nutes.haniot.model.elderly.Elderly;
 import io.objectbox.annotation.Backlink;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.annotation.Index;
-import io.objectbox.annotation.NameInDb;
-import io.objectbox.annotation.Uid;
 import io.objectbox.relation.ToMany;
 
 /**

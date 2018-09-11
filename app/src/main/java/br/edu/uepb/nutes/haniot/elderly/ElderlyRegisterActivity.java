@@ -12,9 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.elderly.assessment.FallRiskAssessmentActivity;
-import br.edu.uepb.nutes.haniot.model.Elderly;
-import br.edu.uepb.nutes.haniot.utils.Log;
+import br.edu.uepb.nutes.haniot.model.elderly.Elderly;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -28,10 +26,12 @@ import butterknife.ButterKnife;
 public class ElderlyRegisterActivity extends AppCompatActivity implements
         ElderlyPinFragment.OnNextPageSelectedListener, ElderlyFormFragment.OnFormListener {
     private final String TAG = "ElderlyRegisterActivity";
-    public static final String EXTRA_ELDERLY_ID = "extra_elderly_id";
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
+
+    private ActionBar actionBar;
+    private String elderlyId;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -39,12 +39,23 @@ public class ElderlyRegisterActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_elderly_register);
         ButterKnife.bind(this);
 
+        Intent it = getIntent();
+        elderlyId = it.getStringExtra(FallRiskActivity.EXTRA_ELDERLY_ID);
+
         initComponents();
     }
 
     private void initComponents() {
         initToolBar();
-        openFragment(ElderlyPinFragment.newInstance());
+        if (elderlyId != null) {
+            Fragment fragment = ElderlyFormFragment.newInstance();
+            Bundle args = new Bundle();
+            args.putString(ElderlyFormFragment.EXTRA_ELDERLY_ID, elderlyId);
+            fragment.setArguments(args);
+            openFragment(fragment);
+        } else {
+            openFragment(ElderlyPinFragment.newInstance());
+        }
     }
 
     /**
@@ -54,17 +65,26 @@ public class ElderlyRegisterActivity extends AppCompatActivity implements
      */
     private void openFragment(Fragment fragment) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        if (fragment instanceof ElderlyFormFragment)
-            transaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left);
+
+        if (fragment instanceof ElderlyFormFragment) {
+            actionBar.setTitle(getString(R.string.elderly_registration));
+
+            // Come from the ElderlyPinFragment
+            if (fragment.getArguments().getString(ElderlyFormFragment.EXTRA_ELDERLY_ID) == null)
+                transaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left);
+        } else {
+            actionBar.setTitle(getString(R.string.elderly_associate_device));
+        }
+
         transaction.replace(R.id.content_form_elderly, fragment).commit();
     }
 
     private void initToolBar() {
         setSupportActionBar(mToolbar);
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle(getString(R.string.elderly_add));
+        actionBar = getSupportActionBar();
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setHomeAsUpIndicator(R.drawable.ic_action_close);
     }
 
     @Override
@@ -85,21 +105,25 @@ public class ElderlyRegisterActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onNextPageSelected() {
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
-        openFragment(ElderlyFormFragment.newInstance());
+    public void onNextPageSelected(String pin) {
+        Fragment fragment = ElderlyFormFragment.newInstance();
+        Bundle args = new Bundle();
+        args.putString(ElderlyFormFragment.EXTRA_ELDERLY_PIN, pin);
+        fragment.setArguments(args);
+        openFragment(fragment);
     }
 
     @Override
     public void onFormResult(Elderly elderly) {
-        Log.d(TAG, "onFormResult() ".concat(elderly.toString()));
+        if (elderly == null) finish();
+
         runOnUiThread(() -> {
             AlertDialog.Builder dialog = new AlertDialog.Builder(this);
             dialog.setMessage(getResources().getString(R.string.elderly_register_success));
 
             dialog.setPositiveButton(R.string.yes_text, (dialogInterface, which) -> {
-                Intent it = new Intent(this, FallRiskAssessmentActivity.class);
-                it.putExtra(EXTRA_ELDERLY_ID, elderly.get_id());
+                Intent it = new Intent(this, FallRiskActivity.class);
+                it.putExtra(FallRiskActivity.EXTRA_ELDERLY_ID, elderly.get_id());
                 startActivity(it);
             });
 
@@ -114,5 +138,4 @@ public class ElderlyRegisterActivity extends AppCompatActivity implements
             dialog.create().show();
         });
     }
-
 }

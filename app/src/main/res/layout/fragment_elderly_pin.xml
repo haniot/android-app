@@ -6,8 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".elderly.ElderlyPinFragment">
 
-    <!--<include layout="@layout/toolbar" />-->
-
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/box_pin"
         android:layout_width="match_parent"
@@ -34,10 +32,18 @@
                 android:id="@+id/textView2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
                 android:layout_marginTop="20dp"
                 android:gravity="center"
-                android:text="Para cadastrar um novo idoso forneça o PIN de quadro digitos que é exibido no relógio." />
+                android:text="@string/elderly_associate_device_info1" />
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:text="@string/elderly_associate_device_info2" />
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
@@ -63,7 +69,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="20dp"
-                android:text="Próximo" />
+                android:text="@string/bt_next" />
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>

@@ -17,9 +17,9 @@
             android:layout_marginTop="20dp"
             android:gravity="center"
             android:padding="32dp"
-            android:text="@string/risk_fall_title_end"
+            android:text="@string/fall_risk_title_end"
             android:textColor="@android:color/white"
-            android:textSize="28sp"
+            android:textAppearance="@android:style/TextAppearance.Large"
             android:textStyle="bold" />
 
         <RelativeLayout
@@ -33,7 +33,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
-                android:text="@string/risk_fall_title_low"
+                android:text="@string/fall_risk_title_low"
                 android:textColor="@color/colorTextDark" />
 
             <TextView
@@ -44,7 +44,7 @@
                 android:layout_toEndOf="@+id/low_textView"
                 android:background="@drawable/background_rounded_corner"
                 android:backgroundTint="@color/colorGreen"
-                android:paddingLeft="50dp"
+                android:paddingStart="50dp"
                 android:text="@null"
                 android:textColor="@color/colorTextDark" />
 
@@ -55,7 +55,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="27dp"
-                android:text="@string/risk_fall_title_moderate"
+                android:text="@string/fall_risk_title_moderate"
                 android:textColor="@color/colorTextDark" />
 
             <TextView
@@ -77,7 +77,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_alignStart="@+id/low_textView"
                 android:layout_marginTop="53dp"
-                android:text="@string/risk_fall_title_high"
+                android:text="@string/fall_risk_title_high"
                 android:textColor="@color/colorTextDark" />
 
             <TextView
@@ -101,7 +101,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignStart="@+id/low_textView"
         android:layout_gravity="center"
-        android:text="@string/risk_fall_title_end_confirm_result"
+        android:text="@string/fall_risk_title_end_confirm_result"
         android:textColor="@color/colorTextDark" />
 
     <LinearLayout
@@ -112,7 +112,7 @@
         android:orientation="vertical">
 
         <RadioGroup
-            android:id="@+id/question_radioGroup"
+            android:id="@+id/answer_radioGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -120,24 +120,26 @@
             android:orientation="horizontal">
 
             <RadioButton
-                android:id="@+id/no_radioButton"
+                android:id="@+id/left_radioButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/button_assessment_background_left"
+                android:background="@drawable/button_background_white_left"
                 android:button="@android:color/transparent"
                 android:checked="false"
                 android:text="@string/cancel_text"
-                android:textColor="@drawable/button_assessment_text" />
+                android:textColor="@drawable/button_white_text" />
 
             <RadioButton
-                android:id="@+id/yes_radioButton"
+                android:id="@+id/right_radioButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/button_assessment_background_right"
+                android:background="@drawable/button_background_white_right"
                 android:button="@android:color/transparent"
                 android:checked="false"
                 android:text="@string/yes_text"
-                android:textColor="@drawable/button_assessment_text" />
+                android:textColor="@drawable/button_white_text" />
         </RadioGroup>
+
+
     </LinearLayout>
 </LinearLayout>
