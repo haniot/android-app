@@ -16,7 +16,7 @@ import org.json.JSONException;
 
 import java.util.UUID;
 
-public class BLEBroadcast {
+public class BLEBroadcast{
 
     //Conexão com os dispositivos (Autoconexão)
     private final String TAG = "BLEBroadcast";
@@ -42,14 +42,19 @@ public class BLEBroadcast {
 //            }
 //        }
         this.callbackBroadcast = callbackBroadcast;
-        final BluetoothManager bluetoothManager = (BluetoothManager) mContext.getSystemService(Context.BLUETOOTH_SERVICE);
-        mBluetoothAdapter = bluetoothManager.getAdapter();
+        initBluetoothAdapter();
+
         final BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
         if (device == null) return false;
 
         mBluetoothGatt = device.connectGatt(mContext, true, mGattCallback);
 
         return true;
+    }
+
+    public void initBluetoothAdapter(){
+        final BluetoothManager bluetoothManager = (BluetoothManager) mContext.getSystemService(Context.BLUETOOTH_SERVICE);
+        mBluetoothAdapter = bluetoothManager.getAdapter();
     }
 
     //Métodos de monitoramento de serviços (Configurar características...)

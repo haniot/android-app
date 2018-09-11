@@ -1,2 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="br.edu.uepb.nutes.blesimpleconnect" />
+    package="br.edu.uepb.nutes.blesimpleconnect" >
+
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+</manifest>
