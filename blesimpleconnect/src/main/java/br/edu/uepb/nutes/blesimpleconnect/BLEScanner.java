@@ -1,13 +1,14 @@
 package br.edu.uepb.nutes.blesimpleconnect;
 
+import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanSettings;
 import android.os.Build;
 import android.os.Handler;
 import android.os.ParcelUuid;
+import android.support.annotation.RequiresPermission;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +19,7 @@ import java.util.List;
  * @author Fábio Júnior <fabio.pequeno@nutes.edu.uepb.br>
  * @author Arthur Stevam <arthurstevam.ac@gmail.com>
  * @version 1.0
- * @copyright Copyright (c) 2018
+ * @copyright Copyright (c) 2018, NUTES UEPB
  */
 public abstract class BLEScanner {
     protected final String TAG = "BLEScanner";
@@ -62,11 +63,13 @@ public abstract class BLEScanner {
      *
      * @param callback
      */
+    @RequiresPermission(allOf = {Manifest.permission.BLUETOOTH_ADMIN, Manifest.permission.BLUETOOTH})
     public abstract void startScan(ScanCallback callback);
 
     /**
      * Stop scan.
      */
+    @RequiresPermission(allOf = {Manifest.permission.BLUETOOTH_ADMIN, Manifest.permission.BLUETOOTH})
     abstract void stopScan();
 
     /**
@@ -161,10 +164,16 @@ public abstract class BLEScanner {
             return this;
         }
 
+        /**
+         * Build instance of BLEScanner
+         *
+         * @return BLEScanner
+         * @throws IllegalArgumentException If {@code settings} or {@code callback} is null.
+         */
         public BLEScanner build() {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) return new BLEScannerLollipop(this);
-            return null;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+                return new BLEScannerLollipop(this);
+            throw new IllegalArgumentException("Not implemented");
         }
-
     }
 }
