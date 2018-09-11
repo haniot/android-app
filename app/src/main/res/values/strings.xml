@@ -702,5 +702,6 @@
 
     <!-- ELDERLY MEDICATIONS -->
     <string-array name="medications_array"></string-array>
+    <string name="title_activity_teste_ble">TesteBLEActivity</string>
 
 </resources>

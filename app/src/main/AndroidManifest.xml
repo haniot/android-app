@@ -125,6 +125,7 @@
         <!-- END ELDERLY -->
 
 
+
         <!-- SERVICES -->
         <service
             android:name=".service.BluetoothLeService"
@@ -147,6 +148,16 @@
         </service>
         <!-- END SERVICES -->
 
+        <activity
+            android:name=".activity.TestBLEActivity"
+            android:label="@string/title_activity_teste_ble"
+            android:theme="@style/AppTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
