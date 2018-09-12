@@ -2,7 +2,26 @@ package br.edu.uepb.nutes.haniot.model;
 
 import java.util.ArrayList;
 
+import io.objectbox.annotation.Backlink;
+import io.objectbox.annotation.Entity;
+import io.objectbox.annotation.Id;
+import io.objectbox.annotation.Index;
+import io.objectbox.relation.ToMany;
+import io.objectbox.relation.ToOne;
+
+@Entity
 public class Question {
+
+    @Id
+    private long id;
+
+    @Index
+    private String _id;
+
+    ToOne<Quiz> quiz;
+
+    @Backlink(to = "question")
+    ToMany<QuestionOption> options;
 
     //Tipos de questão suportados
     public final int MULTIPLE_CHOICE = 1;
@@ -16,9 +35,9 @@ public class Question {
     private String label;
 
     //Atributo options guarda as opções da questão
-    private ArrayList<String> options;
+//    private ArrayList<String> options;
 
-    public Question(int questionType, String title, ArrayList<String> options){
+    /*public Question(int questionType, String title){
 
         //Este if faz a validação do tipo da questão
         if (questionType == this.SIMPLE_CHOICE || questionType == this.BOOLEAN_CHOICE || questionType == this.MULTIPLE_CHOICE){
@@ -35,12 +54,28 @@ public class Question {
         }
 
         //Este if testa se o array de opções não é vazio
-        if (!options.isEmpty() && options.size()>0 ){
-            this.options = options;
-        }else{
-            return;
-        }
+//        if (!options.isEmpty() && options.size()>0 ){
+//            this.options = options;
+//        }else{
+//            return;
+//        }
 
+    }*/
+
+    public String get_id() {
+        return _id;
+    }
+
+    public void set_id(String _id) {
+        this._id = _id;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public int getKey() {
@@ -59,12 +94,12 @@ public class Question {
         this.label = label;
     }
 
-    public ArrayList<String> getOptions() {
-        return options;
-    }
-
-    public void setOptions(ArrayList<String> options) {
-        this.options = options;
-    }
+//    public ArrayList<String> getOptions() {
+//        return options;
+//    }
+//
+//    public void setOptions(ArrayList<String> options) {
+//        this.options = options;
+//    }
 
 }

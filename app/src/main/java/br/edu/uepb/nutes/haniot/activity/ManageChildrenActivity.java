@@ -90,7 +90,7 @@ public class ManageChildrenActivity extends AppCompatActivity {
         SimpleDateFormat spn = new SimpleDateFormat("dd/MM/yyyy");
         for (int i = 0;i < 10;i++){
             child = new Children();
-            child.set_id(String.valueOf(i*1578));
+            child.set_id(String.valueOf(i*65478));
             child.setRegisterDate(spn.format(Calendar.getInstance().getTime()));
             child.setName(l.get(i));
             childrenList.add(child);
