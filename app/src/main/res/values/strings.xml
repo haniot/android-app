@@ -126,10 +126,12 @@
 
     // DATE/TIME FORMAT
     <string name="date_format">yyyy/MM/dd</string>
+    <string name="date_format_server">yyyy-MM-dd</string>
     <string name="date_format_year">yyyy</string>
     <string name="date_format_month">MMMM</string>
     <string name="date_format_week">w</string>
     <string name="date_format_month_day">MM/dd</string>
+    <string name="date_format_week_day_year">EEEE, dd MMMM, yyyy</string>
     <string name="datetime_format">yyyy/MM/dd HH:mm:ss</string>
     <string name="datetime_format_db">yyyy-MM-dd HH:mm:ss</string>
     <string name="time_format">HH:mm:ss</string>

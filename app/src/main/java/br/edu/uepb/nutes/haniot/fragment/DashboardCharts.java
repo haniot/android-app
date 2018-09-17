@@ -64,8 +64,6 @@ public class DashboardCharts extends Fragment implements View.OnClickListener, D
     private int lightProgressBar2Goal = 800;
 
     //Date part
-
-    private DateUtils dateUtils;
     private Calendar calendar;
     private Calendar calendarAux;
     private SimpleDateFormat simpleDateFormat;
@@ -103,7 +101,7 @@ public class DashboardCharts extends Fragment implements View.OnClickListener, D
         params = new Params(session.get_idLogged(), MeasurementType.STEPS);
 
         //Formata a data para o dia / mes / ano
-        simpleDateFormat = new SimpleDateFormat("dd / MM / yyyy");
+        simpleDateFormat = new SimpleDateFormat(getResources().getString(R.string.date_format));
         calendar = Calendar.getInstance();
 
         //Usado para quando virar a tela manter a data
@@ -120,7 +118,6 @@ public class DashboardCharts extends Fragment implements View.OnClickListener, D
 
         super.onSaveInstanceState(outState);
         outState.putString("date", this.date);
-        outState.putBoolean("change", true);
 
     }
 
@@ -132,9 +129,8 @@ public class DashboardCharts extends Fragment implements View.OnClickListener, D
         ButterKnife.bind(this, view);
 
         //Data é atual salva quando abre o aplicativo
-        today = simpleDateFormat.format(calendar.getTime());
+        today = DateUtils.getCurrentDatetime(getResources().getString(R.string.date_format));
         initData();
-
 
         try {
             this.calendar.setTime(simpleDateFormat.parse(this.date));
@@ -201,7 +197,7 @@ public class DashboardCharts extends Fragment implements View.OnClickListener, D
     //Formatt the date of dashboard
     public void updateTextDate(Date dateToText) {
         Locale current = getResources().getConfiguration().locale;
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE, dd MMMM, yyyy", current);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(getResources().getString(R.string.date_format_week_day_year), current);
         String dateFormatted = simpleDateFormat.format(dateToText);
         textDate.setText(dateFormatted);
     }
@@ -210,13 +206,12 @@ public class DashboardCharts extends Fragment implements View.OnClickListener, D
     public void loadServerData() throws ParseException {
 
         //Converte a data para o formato que o servidor aceita
-        SimpleDateFormat euSdf = new SimpleDateFormat("yyyy-MM-dd");
-        String timeInit = euSdf.format(calendar.getTime());
-
+        String timeInit = DateUtils.calendarToString(this.calendar,getResources().getString(R.string.date_format_server));
         //Calendario auxiliar criado para pegar a data de amanhã, foi necessário para filtrar a data da requisição
-        this.calendarAux.setTime(new SimpleDateFormat("dd / MM / yyyy").parse(this.date));
+        String patt = getResources().getString(R.string.date_format);
+        this.calendarAux.setTime(new SimpleDateFormat(patt).parse(this.date));
         this.calendarAux.add(Calendar.DATE, 1);
-        String timeEnd = euSdf.format(calendarAux.getTime());
+        String timeEnd = DateUtils.calendarToString(calendarAux,getResources().getString(R.string.date_format_server));
 
         //Prepara a querry e filtra a data para apenas UM dia, a paginação é 1 pois só é apresentado 1 medição por vez no dashboard
         Historical historical = new Historical.Query()
@@ -226,14 +221,13 @@ public class DashboardCharts extends Fragment implements View.OnClickListener, D
                 .pagination(0, 1)
                 .build();
 
-
         historical.request(getContext(), new CallbackHistorical<Measurement>() {
             @Override
-            public void onBeforeSend() { }
+            public void onBeforeSend() {
+            }
 
             @Override
             public void onError(JSONObject result) {
-
             }
 
             @Override
@@ -334,7 +328,6 @@ public class DashboardCharts extends Fragment implements View.OnClickListener, D
         }
         scale = AnimationUtils.loadAnimation(getContext(), R.anim.click);
 
-        dateUtils = new DateUtils();
         calendarAux = Calendar.getInstance();
 
         //Seta o progresso máximo
@@ -367,7 +360,6 @@ public class DashboardCharts extends Fragment implements View.OnClickListener, D
     public void onDetach() {
         super.onDetach();
     }
-
 
     //Anims for buttons and textview of date
     public void animLeftBtn(){
