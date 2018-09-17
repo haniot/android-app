@@ -32,6 +32,7 @@ import br.edu.uepb.nutes.haniot.server.historical.CallbackHistorical;
 import br.edu.uepb.nutes.haniot.server.historical.Historical;
 import br.edu.uepb.nutes.haniot.server.historical.HistoricalType;
 import br.edu.uepb.nutes.haniot.server.historical.Params;
+import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -63,6 +64,8 @@ public class DashboardCharts extends Fragment implements View.OnClickListener, D
     private int lightProgressBar2Goal = 800;
 
     //Date part
+
+    private DateUtils dateUtils;
     private Calendar calendar;
     private Calendar calendarAux;
     private SimpleDateFormat simpleDateFormat;
@@ -111,7 +114,7 @@ public class DashboardCharts extends Fragment implements View.OnClickListener, D
         }
     }
 
-    //Método usado para quando rotacionar/rodar/girar a tela
+    //This method is used when the user turn the screen
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
 
@@ -153,10 +156,9 @@ public class DashboardCharts extends Fragment implements View.OnClickListener, D
         getChildId();
         return view;
     }
-
-    //Pega o id da criança e habilida/desabilita os botões de controle do dashboard
+    //Get the child id and enable/disable the control buttons of dashboard
     public void getChildId() {
-        String lastId = session.getString(getResources().getString(R.string.childId));
+        String lastId = session.getString(getResources().getString(R.string.id_last_child));
         if (!lastId.equals("")) {
             this.childId = lastId;
             if (this.date.equals(this.today)) {
@@ -196,7 +198,7 @@ public class DashboardCharts extends Fragment implements View.OnClickListener, D
         getChildId();
     }
 
-    //Formata a data para aparecer o nome por extenso, dia, nome do mês e ano; Seta a data no textview
+    //Formatt the date of dashboard
     public void updateTextDate(Date dateToText) {
         Locale current = getResources().getConfiguration().locale;
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE, dd MMMM, yyyy", current);
@@ -204,7 +206,7 @@ public class DashboardCharts extends Fragment implements View.OnClickListener, D
         textDate.setText(dateFormatted);
     }
 
-    //Carrega os dados do servidor
+    //Get the data from server
     public void loadServerData() throws ParseException {
 
         //Converte a data para o formato que o servidor aceita
@@ -286,7 +288,7 @@ public class DashboardCharts extends Fragment implements View.OnClickListener, D
 
     }
 
-    //Adiciona um dia na data selecionada
+    //Sum a day
     public Date increaseDay(String date) throws ParseException {
 
         loadingDataProgressBar.setVisibility(View.VISIBLE);
@@ -303,7 +305,7 @@ public class DashboardCharts extends Fragment implements View.OnClickListener, D
         return calendar.getTime();
     }
 
-    //Remove um dia na data atual
+    //Decrease a day
     public Date decreaseDay(String date) throws ParseException {
 
         loadingDataProgressBar.setVisibility(View.VISIBLE);
@@ -332,6 +334,7 @@ public class DashboardCharts extends Fragment implements View.OnClickListener, D
         }
         scale = AnimationUtils.loadAnimation(getContext(), R.anim.click);
 
+        dateUtils = new DateUtils();
         calendarAux = Calendar.getInstance();
 
         //Seta o progresso máximo
@@ -341,7 +344,7 @@ public class DashboardCharts extends Fragment implements View.OnClickListener, D
 
     }
 
-    //Atualiza as circular progress bars do dashboard
+    //Update the data of progressbar of dashboard
     public void setDataProgress(int numberOfSteps, int numberOfCalories, int distance) {
 
         stepsProgressBar.setProgressWithAnimation(numberOfSteps, 2500);
@@ -365,38 +368,53 @@ public class DashboardCharts extends Fragment implements View.OnClickListener, D
         super.onDetach();
     }
 
+
+    //Anims for buttons and textview of date
+    public void animLeftBtn(){
+        try {
+            btnArrowLeft.startAnimation(scale);
+            updateTextDate(decreaseDay(this.date));
+            loadServerData();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void animRightBtn(){
+        try {
+            btnArrowRight.startAnimation(scale);
+            updateTextDate(increaseDay(this.date));
+            loadServerData();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void animTextDate(){
+        textDate.startAnimation(scale);
+        try {
+            openDatePicker();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
 
-            //Botão que volta os dias
+            // Button that decrease the days of dashboard
             case R.id.buttonArrowLeft:
-                try {
-                    btnArrowLeft.startAnimation(scale);
-                    updateTextDate(decreaseDay(this.date));
-                    loadServerData();
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
+                animLeftBtn();
                 break;
 
-            // Botão que acrescenta os dias
+            // Button that increase the days of dashboard
             case R.id.buttonArrowRight:
-                try {
-                    btnArrowRight.startAnimation(scale);
-                    updateTextDate(increaseDay(this.date));
-                    loadServerData();
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
+                animRightBtn();
                 break;
+            // TextView of date
             case R.id.textDate:
-                textDate.startAnimation(scale);
-                try {
-                    openDatePicker();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                animTextDate();
                 break;
         }
     }
