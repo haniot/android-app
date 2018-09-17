@@ -243,6 +243,7 @@
     </string-array>
 
     <!-- STRINGS FOR TABLET VERSION-->
+    <string name="dashboard">Dashboard</string>
     <string name="profile">Perfil</string>
     <string name="connect_device">Connectar Dispositivo</string>
     <string name="rightbutton">Botão Direito</string>
@@ -280,6 +281,12 @@
     <string name="id">id: </string>
     <string name="date">Data: </string>
     <string name="no_data_available">Nenhum dado aqui...</string>
+    <string name="id_last_child">id_last_child</string>
+    <string name="name_last_child">name_last_child</string>
+    <string name="childId">childId</string>
+    <string name="childName">childName</string>
+    <string name="noPatientSelected">Nenhum paciente selecionado</string>
+    <string name="unit_kilometer">KM</string>
 
     <!-- END OF STRINGS FOR TABLET -->
 

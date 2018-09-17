@@ -23,6 +23,7 @@ import java.util.List;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.MainActivity;
 import br.edu.uepb.nutes.haniot.activity.ManageChildrenActivity;
+import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.model.Children;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,16 +34,14 @@ public class ManageChildrenAdapter extends RecyclerView.Adapter<ManageChildrenAd
     private List<Children> itemListFiltered;
     private Context context;
     private String searchQuerry = "";
-    private SharedPreferences prefs;
-    private SharedPreferences.Editor editor;
+    private Session session;
 
     public ManageChildrenAdapter(List<Children> childrenList, Context context){
 
         this.itemList = childrenList;
         this.itemListFiltered = childrenList;
         this.context = context;
-        this.prefs = context.getSharedPreferences("MyPref",Context.MODE_PRIVATE);
-        this.editor = prefs.edit();
+        session = new Session(context);
     }
 
     @NonNull
@@ -79,13 +78,15 @@ public class ManageChildrenAdapter extends RecyclerView.Adapter<ManageChildrenAd
                 //Código abaixo funcional!
                 Intent it = new Intent(context,MainActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putString("id__last_child",children.get_id());
-                bundle.putString("name__last_child",children.getName());
+                bundle.putString(context.getResources().getString(R.string.id_last_child),children.get_id());
+                bundle.putString(context.getResources().getString(R.string.name_last_child),children.getName());
                 it.putExtras(bundle);
                 it.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-                editor.putString("childId",children.get_id()).commit();
-                editor.putString("childName",children.getName()).commit();
+                String id = context.getResources().getString(R.string.id_last_child);
+                String name = context.getResources().getString(R.string.name_last_child);
+                session.putString(id,children.get_id());
+                session.putString(name,children.getName());
 
                 context.startActivity(it);
 
@@ -95,9 +96,13 @@ public class ManageChildrenAdapter extends RecyclerView.Adapter<ManageChildrenAd
                 int oldId = searchPositionByChildrenId(children.get_id());
                 if (oldId != -1) {
                     removeChild(oldId);
-                    if (children.get_id().equals(prefs.getString("childId","null").toString())) {
-                        editor.putString("childId", "null").commit();
-                        editor.putString("childName","null").commit();
+                    String idLastChild = context.getResources().getString(R.string.id_last_child);
+                    String lastId = session.getString(idLastChild);
+                    if (children.get_id().equals(lastId)) {
+                        String id = context.getResources().getString(R.string.id_last_child);
+                        String name = context.getResources().getString(R.string.name_last_child);
+                        session.putString(id,"");
+                        session.putString(name,"");
                     }
                     if (getItemListFilteredSize() == 0){
                         Toast.makeText(context,context.getResources().getString(R.string.no_data_available),Toast.LENGTH_SHORT).show();

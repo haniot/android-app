@@ -385,6 +385,7 @@
     <!-- END ELDERLY ASSESSMENT RISK FALL -->
 
     <!-- STRINGS FOR TABLET VERSION-->
+    <string name="dashboard">Dashboard</string>
     <string name="profile">Profile</string>
     <string name="connect_device">Connect Device</string>
     <string name="rightbutton">Right Button</string>
@@ -421,6 +422,12 @@
     <string name="search">Search</string>
     <string name="date">Date: </string>
     <string name="id">id: </string>
+    <string name="id_last_child">id_last_child</string>
+    <string name="name_last_child">name_last_child</string>
+    <string name="childId">childId</string>
+    <string name="childName">childName</string>
+    <string name="noPatientSelected">No patient selected</string>
+    <string name="unit_kilometer">KM</string>
 
     <!-- ARRAY QUESTIONS RISK FALL -->
     <string-array name="risk_questions_array">

@@ -3,11 +3,10 @@ package br.edu.uepb.nutes.haniot.activity;
 import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
-import android.content.Context;
+//import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
+//import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,9 +24,9 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
-
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.account.LoginActivity;
+import br.edu.uepb.nutes.haniot.activity.settings.SettingsActivity;
 import br.edu.uepb.nutes.haniot.adapter.FragmentPageAdapter;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
@@ -44,13 +43,14 @@ import butterknife.ButterKnife;
 public class MainActivity extends AppCompatActivity {
     private final String TAG = "MainActivity";
     private final int REQUEST_ENABLE_BLUETOOTH = 1;
-    private final int REQUEST_ENABLE_LOCATION  = 2;
+    private final int REQUEST_ENABLE_LOCATION = 2;
 
-    private String tabTitle          = "DASHBOARD";
-    private String id                =          "";
-    private String lastNameSelected  =          "";
-    private SharedPreferences                prefs;
-    private SharedPreferences.Editor        editor;
+    private String tabTitle ;
+    private String id = "";
+    private String lastNameSelected = "";
+//    private SharedPreferences prefs;
+//    private SharedPreferences.Editor editor;
+    private Session session;
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -66,10 +66,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        prefs = getApplicationContext().getSharedPreferences("MyPref", Context.MODE_PRIVATE);
-        editor = prefs.edit();
 
-        toolbar.setTitle("HANIoT");
+        this.session = new Session(getApplicationContext());
+
+//        prefs = getApplicationContext().getSharedPreferences("MyPref", Context.MODE_PRIVATE);
+//        editor = prefs.edit();
+
+        toolbar.setTitle(getResources().getString(R.string.app_name));
         setSupportActionBar(toolbar);
 
         new FragmentPageAdapter(getSupportFragmentManager()).saveState();
@@ -103,41 +106,46 @@ public class MainActivity extends AppCompatActivity {
     /*Testa se tem criança salva no bundle ou no sharedpreferences,
         caso tenha salva o id da criança e atualiza o titulo da aba
     */
-    public void checkLastChildAndUpdateTabTitle(){
+    public void checkLastChildAndUpdateTabTitle() {
         //caso a tela seja restaurada
         Bundle params = getIntent().getExtras();
-        if (params != null){
-            String idExtra = params.getString("id_last_child");
-            String nameExtra = params.getString("name_last_child");
-            if (idExtra  != null && !idExtra.equals("")
+        if (params != null) {
+            String idExtra = params.getString(getResources().getString(R.string.id_last_child));
+            String nameExtra = params.getString(getResources().getString(R.string.name_last_child));
+            if (idExtra != null && !idExtra.equals("")
                     && nameExtra != null && !nameExtra.equals("")) {
                 this.id = idExtra;
                 this.lastNameSelected = nameExtra;
             }
-        }else{
+
+        } else {
             this.id = "";
             this.lastNameSelected = "";
         }
-        String lastIdSelected = prefs.getString("childId","null");
-        String lastName = prefs.getString("childName","null");
-        if (!lastIdSelected.equals("null") && !lastName.equals("null")){
+//        String lastIdSelected = prefs.getString(getResources().getString(R.string.childId), "null");
+//        String lastName = prefs.getString(getResources().getString(R.string.childName), "null");
+        String id = getResources().getString(R.string.id_last_child);
+        String name = getResources().getString(R.string.name_last_child);
+        String lastIdSelected = session.getString(id);
+        String lastName = session.getString(name);
+        if (!lastIdSelected.equals("") && !lastName.equals("")) {
             this.id = lastIdSelected;
             this.lastNameSelected = lastName;
-        }else{
+        } else {
             this.id = "";
             this.lastNameSelected = "";
         }
         //caso nao tenha encontrado uma crianca selecionada no sharedpreferences
-        if (this.id.equals("")){
-            this.id = "404 not found";
-            this.lastNameSelected = "404 not found";
+        if (this.id.equals("")) {
+            this.id = getResources().getString(R.string.noPatientSelected);
+            this.lastNameSelected = getResources().getString(R.string.noPatientSelected);
             tabLayout.setTabTextColors(ContextCompat.getColorStateList(this, R.color.colorRed));
         }
 
-        tabTitle = "DASHBOARD" + " - " + this.lastNameSelected;
+        tabTitle = getResources().getString(R.string.dashboard) + " - " + this.lastNameSelected;
 
         //Coloca o texto na aba
-        if (tabLayout.getTabAt(0) != null){
+        if (tabLayout.getTabAt(0) != null) {
 
             SpannableString dash = new SpannableString(tabTitle);
             dash.setSpan(new StyleSpan(Typeface.BOLD), tabTitle.length(), dash.length(), 0);
@@ -210,7 +218,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_menu,menu);
+        getMenuInflater().inflate(R.menu.main_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -218,9 +226,15 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         int id = item.getItemId();
-        switch (id){
+        switch (id) {
             case R.id.btnManageChildren:
-                startActivity(new Intent(getApplicationContext(),ManageChildrenActivity.class));
+                startActivity(new Intent(getApplicationContext(), ManageChildrenActivity.class));
+                break;
+            case R.id.btnMenuMainSettings:
+                startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+                break;
+            default:
+                break;
         }
 
         return super.onOptionsItemSelected(item);
