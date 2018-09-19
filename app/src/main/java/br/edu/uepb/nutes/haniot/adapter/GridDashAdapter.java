@@ -2,6 +2,7 @@ package br.edu.uepb.nutes.haniot.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -32,6 +33,11 @@ public class GridDashAdapter extends BaseAdapter<ItemGrid> {
     }
 
     @Override
+    public int getItemViewType(int position) {
+        return super.getItemViewType(position);
+    }
+
+    @Override
     public RecyclerView.ViewHolder createViewHolder(View view) {
         return new ViewHolder(view);
     }
@@ -43,12 +49,13 @@ public class GridDashAdapter extends BaseAdapter<ItemGrid> {
             ViewHolder h = (ViewHolder) holder;
 
             h.layoutItemGrid.setBackgroundResource(R.drawable.border_button_grid);
-            h.imageIten.setImageDrawable(ig.getIcon());
+            h.imageIten.setImageResource(ig.getIcon());
             h.textDescription.setText(ig.getDescription());
             h.textName.setText(ig.getName());
 
             h.mView.setOnClickListener(v -> {
                 if (GridDashAdapter.super.mListener != null) {
+                Log.d("TESTE", "aqui " );
                     GridDashAdapter.super.mListener.onItemClick(ig);
                 }
             });

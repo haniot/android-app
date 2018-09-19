@@ -153,7 +153,7 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
         // synchronization with server
         synchronizeWithServer();
 
-        mDeviceAddress = "C7:22:95:E8:84:5E";
+        mDeviceAddress = "CD:EE:CD:A2:21:D4";
         session = new Session(this);
         measurementDAO = MeasurementDAO.getInstance(this);
         deviceDAO = DeviceDAO.getInstance(this);
@@ -240,6 +240,16 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
             @Override
             public void onItemClick(Measurement item) {
                 Log.w(TAG, "onItemClick()");
+            }
+
+            @Override
+            public void onLongItemClick(View v, Measurement item) {
+
+            }
+
+            @Override
+            public void onMenuContextClick(View v, Measurement item) {
+
             }
         });
 

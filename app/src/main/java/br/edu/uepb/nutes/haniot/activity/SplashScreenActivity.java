@@ -3,18 +3,15 @@ package br.edu.uepb.nutes.haniot.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
-
-import org.json.JSONObject;
-
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.account.LoginActivity;
 import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import org.json.JSONObject;
 
 /**
  * Activity SplashScreenActivity.

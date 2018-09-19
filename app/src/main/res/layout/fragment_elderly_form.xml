@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/AppThemeSecondaty"
+    android:id="@+id/elderly_form_ScrollView"
+    style="@style/AppThemeSecondary"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:scrollbarSize="2dp"
-    android:id="@+id/elderly_form_ScrollView"
     android:scrollbarThumbVertical="@color/colorAccentSecondary"
     tools:context=".elderly.ElderlyFormFragment">
 
@@ -118,86 +119,77 @@
                 <!-- LAYOUT LINE 3 -->
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_marginTop="@dimen/activity_horizontal_margin"
-                    android:baselineAligned="false"
-                    android:orientation="horizontal">
+                    android:orientation="vertical">
 
-                    <!-- LAYOUT BOX BIRTH DATE -->
-                    <LinearLayout
+                    <TextView
+                        android:id="@+id/date_birth_textView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/elderly_input_title_date_birth" />
+
+                    <EditText
+                        android:id="@+id/date_birth_editText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/date_birth_textView"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/elderly_input_title_date_birth" />
-
-                        <EditText
-                            android:id="@+id/date_birth_editText"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:clickable="false"
-                            android:focusable="false"
-                            android:hint="@string/elderly_input_date_birth"
-                            android:imeOptions="actionNext"
-                            android:inputType="date" />
-                    </LinearLayout>
-                    <!-- END LAYOUT BOX BIRTH DATE -->
-
-                    <!-- LAYOUT BOX SEX -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/sex_textView"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/elderly_input_title_sex" />
-
-                        <RadioGroup
-                            android:id="@+id/sex_radioGroup"
-                            android:layout_width="wrap_content"
-                            android:layout_marginLeft="5dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:gravity="center"
-                            android:orientation="horizontal">
-
-                            <RadioButton
-                                android:id="@+id/gender_male_radioButton"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:background="@drawable/button_background_left"
-                                android:button="@android:color/transparent"
-                                android:checked="true"
-                                android:text="@string/gender_male"
-                                android:textColor="@drawable/button_text"
-                                android:textSize="12sp" />
-
-                            <RadioButton
-                                android:id="@+id/gender_female_radioButton"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:background="@drawable/button_background_right"
-                                android:button="@android:color/transparent"
-                                android:checked="false"
-                                android:text="@string/gender_female"
-                                android:textColor="@drawable/button_text"
-                                android:textSize="12sp" />
-                        </RadioGroup>
-                    </LinearLayout>
-                    <!-- END LAYOUT BOX SEX -->
+                        android:clickable="false"
+                        android:focusable="false"
+                        android:hint="@string/elderly_input_date_birth"
+                        android:imeOptions="actionNext"
+                        android:inputType="date" />
                 </LinearLayout>
                 <!-- END LAYOUT LINE 3 -->
 
                 <!-- LAYOUT LINE 4 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/activity_horizontal_margin"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/sex_textView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/elderly_input_title_sex" />
+
+                    <RadioGroup
+                        android:id="@+id/sex_radioGroup"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginTop="4dp"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <RadioButton
+                            android:id="@+id/gender_male_radioButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/button_background_small_blue_left"
+                            android:button="@android:color/transparent"
+                            android:checked="true"
+                            android:text="@string/gender_male"
+                            android:textColor="@drawable/button_black_text"
+                            android:textSize="13sp" />
+
+                        <RadioButton
+                            android:id="@+id/gender_female_radioButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/button_background_small_blue_right"
+                            android:button="@android:color/transparent"
+                            android:checked="false"
+                            android:text="@string/gender_female"
+                            android:textColor="@drawable/button_black_text"
+                            android:textSize="13sp" />
+                    </RadioGroup>
+
+                </LinearLayout>
+                <!-- END LAYOUT LINE 4 -->
+
+                <!-- LAYOUT LINE 5 -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -217,10 +209,10 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/elderly_input_phone"
                         android:imeOptions="actionNext"
-                        android:inputType="phone" />.
+                        android:inputType="phone" />
 
                 </LinearLayout>
-                <!-- END LAYOUT LINE 4 -->
+                <!-- END LAYOUT LINE 5 -->
 
             </LinearLayout>
             <!-- END LAYOUT GENERAL DATA BOX 1 -->
@@ -261,9 +253,10 @@
 
                     <Spinner
                         android:id="@+id/marital_status_spinner"
+                        style="@style/Base.Widget.AppCompat.Spinner.Underlined"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
+                        android:backgroundTint="@color/colorSecondary"
                         android:entries="@array/marital_status_types_array" />
                 </LinearLayout>
                 <!-- END LAYOUT LINE 1 -->
@@ -283,9 +276,10 @@
 
                     <Spinner
                         android:id="@+id/education_spinner"
+                        style="@style/Base.Widget.AppCompat.Spinner.Underlined"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
+                        android:backgroundTint="@color/colorSecondary"
                         android:entries="@array/degree_education_types_array" />
                 </LinearLayout>
                 <!-- END LAYOUT LINE 2 -->
@@ -316,23 +310,23 @@
                             android:id="@+id/live_alone_yes_radioButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/button_background_left"
+                            android:background="@drawable/button_background_small_blue_left"
                             android:button="@android:color/transparent"
                             android:checked="true"
                             android:text="@string/yes_text"
-                            android:textColor="@drawable/button_text"
-                            android:textSize="12sp" />
+                            android:textColor="@drawable/button_black_text"
+                            android:textSize="13sp" />
 
                         <RadioButton
                             android:id="@+id/live_alone_no_radioButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/button_background_right"
+                            android:background="@drawable/button_background_small_blue_right"
                             android:button="@android:color/transparent"
                             android:checked="false"
                             android:text="@string/no_text"
-                            android:textColor="@drawable/button_text"
-                            android:textSize="12sp" />
+                            android:textColor="@drawable/button_black_text"
+                            android:textSize="13sp" />
                     </RadioGroup>
                 </LinearLayout>
                 <!-- END LAYOUT LINE 3 -->
@@ -363,99 +357,55 @@
                 <!-- LAYOUT LINE 1 -->
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:baselineAligned="false"
-                    android:orientation="horizontal">
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
 
-                    <!-- LAYOUT DATA LINE MEDICATIONS -->
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/medications_textView"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/elderly_input_title_medications" />
-
-                        <br.edu.uepb.nutes.haniot.ui.MultiSelectSpinner
-                            android:id="@+id/medications_multiSelectSpinner"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/activity_horizontal_margin"
-                            android:layout_marginTop="10dp" />
-                    </LinearLayout>
-                    <!-- END LAYOUT DATA LINE MEDICATIONS -->
-
-                    <!-- LAYOUT DATA LINE MEDICATIONS BUTTON -->
-                    <LinearLayout
+                    <TextView
+                        android:id="@+id/medications_textView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:text="@string/elderly_input_title_medications" />
 
-                        <ImageButton
-                            android:id="@+id/new_medications_imageButton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="25dp"
-                            android:background="@android:color/transparent"
-                            android:contentDescription="@string/elderly_add_medications"
-                            android:src="@drawable/ic_add"
-                            android:tint="@color/colorSecondary" />
-                    </LinearLayout>
-                    <!-- END LAYOUT DATA LINE MEDICATIONS BUTTON -->
+                    <br.edu.uepb.nutes.haniot.ui.CustomMultiSelectSpinner
+                        android:id="@+id/medications_multiSelectSpinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/activity_horizontal_margin"
+                        android:hint="@string/elderly_select_medications"
+                        app:colorBackgroundTint="@color/colorSecondary"
+                        app:enabledAddNewItem="true"
+                        app:messageEmpty="@string/elderly_please_add_medications"
+                        app:textAlign="left"
+                        app:titleDialogAddNewItem="@string/elderly_add_medications" />
                 </LinearLayout>
                 <!-- END LAYOUT LINE 1 -->
 
                 <!-- LAYOUT LINE 2 -->
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:baselineAligned="false"
-                    android:orientation="horizontal">
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
 
-                    <!-- LAYOUT DATA LINE ACCESSORIES -->
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/accessories_textView"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/elderly_input_title_accessories" />
-
-                        <br.edu.uepb.nutes.haniot.ui.MultiSelectSpinner
-                            android:id="@+id/accessories_multiSelectSpinner"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp" />
-                    </LinearLayout>
-                    <!-- END LAYOUT DATA LINE ACCESSORIES -->
-
-                    <!-- LAYOUT DATA LINE ACCESSORIES BUTTON -->
-                    <LinearLayout
+                    <TextView
+                        android:id="@+id/accessories_textView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:text="@string/elderly_input_title_accessories" />
 
-                        <ImageButton
-                            android:id="@+id/new_accessories_imageButton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="23dp"
-                            android:background="@android:color/transparent"
-                            android:contentDescription="@string/elderly_add_accessories"
-                            android:src="@drawable/ic_add"
-                            android:tint="@color/colorSecondary" />
-                    </LinearLayout>
-                    <!-- END LAYOUT DATA LINE ACCESSORIES BUTTON -->
+                    <br.edu.uepb.nutes.haniot.ui.CustomMultiSelectSpinner
+                        android:id="@+id/accessories_multiSelectSpinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/activity_horizontal_margin"
+                        android:hint="@string/elderly_select_accessories"
+                        app:colorBackgroundTint="@color/colorSecondary"
+                        app:enabledAddNewItem="true"
+                        app:messageEmpty="@string/elderly_please_add_accessories"
+                        app:textAlign="left"
+                        app:titleDialogAddNewItem="@string/elderly_add_accessories" />
                 </LinearLayout>
                 <!-- END LAYOUT LINE 2 -->
+
             </LinearLayout>
             <!-- END LAYOUT GENERAL DATA BOX 3 -->
         </android.support.v7.widget.CardView>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CustomSelectSpinner">
+        <attr name="android:entries" />
+        <attr name="android:hint" />
+
+        <attr name="colorSelectedText" format="reference" />
+        <attr name="colorBackgroundTint" format="reference" />
+        <attr name="enabledAddNewItem" format="boolean" />
+        <attr name="textAlign" format="enum">
+            <enum name="left" value="0"/>
+            <enum name="center" value="1"/>
+            <enum name="right" value="2"/>
+        </attr>
+    </declare-styleable>
+
+    <declare-styleable name="CustomMultiSelectSpinner" parent="CustomSelectSpinner">
+        <attr name="android:entries" />
+        <attr name="android:hint" />
+
+        <attr name="colorSelectedText" />
+        <attr name="colorBackgroundTint" />
+        <attr name="enabledAddNewItem" />
+        <attr name="textAlign" />
+
+        <attr name="messageEmpty" format="string" />
+        <attr name="titleDialogAddNewItem" format="string" />
+    </declare-styleable>
+</resources>

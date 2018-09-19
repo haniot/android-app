@@ -10,6 +10,8 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="profile_width">75dp</dimen>
     <dimen name="profile_height">75dp</dimen>
+    <dimen name="spinner_answer_margin">40dp</dimen>
+    <dimen name="spinner_answer_margin_simple">20dp</dimen>
 
     <dimen name="height_logo_drawer">90dp</dimen>
 

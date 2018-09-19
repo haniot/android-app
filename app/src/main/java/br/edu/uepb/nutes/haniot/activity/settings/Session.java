@@ -2,7 +2,6 @@ package br.edu.uepb.nutes.haniot.activity.settings;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-
 import br.edu.uepb.nutes.haniot.model.User;
 import br.edu.uepb.nutes.haniot.model.dao.UserDAO;
 import io.objectbox.BoxStore;
@@ -21,7 +20,7 @@ public class Session {
 
     public Session(Context context) {
         this.context = context;
-        prefs = context.getSharedPreferences("ocariot", Context.MODE_PRIVATE);
+        prefs = context.getSharedPreferences("haniot", Context.MODE_PRIVATE);
         editor = prefs.edit();
     }
 

@@ -7,10 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.App;
-import br.edu.uepb.nutes.haniot.model.Accessory;
-import br.edu.uepb.nutes.haniot.model.Elderly;
-import br.edu.uepb.nutes.haniot.model.Elderly_;
-import br.edu.uepb.nutes.haniot.model.Medication;
+import br.edu.uepb.nutes.haniot.model.elderly.Elderly;
+import br.edu.uepb.nutes.haniot.model.elderly.Elderly_;
+import br.edu.uepb.nutes.haniot.model.elderly.Item;
 import io.objectbox.Box;
 import io.objectbox.BoxStore;
 import io.objectbox.relation.ToMany;
@@ -20,11 +19,12 @@ import io.objectbox.relation.ToMany;
  *
  * @author Douglas Rafael <douglas.rafael@nutes.uepb.edu.br>
  * @version 1.5
- * @copyright Copyright (c) 2017, NUTES UEPB
+ * @copyright Copyright (c) 2018, NUTES UEPB
  */
 public class ElderlyDAO {
-    public static ElderlyDAO instance;
+    private static ElderlyDAO instance;
     private static Box<Elderly> elderlyBox;
+    private static Box<Item> itemBox;
 
     private ElderlyDAO() {
     }
@@ -38,12 +38,13 @@ public class ElderlyDAO {
 
         BoxStore boxStore = ((App) context.getApplicationContext()).getBoxStore();
         elderlyBox = boxStore.boxFor(Elderly.class);
+        itemBox = boxStore.boxFor(Item.class);
 
         return instance;
     }
 
     /**
-     * Select a measurement.
+     * Select a Elderly.
      *
      * @param id long
      * @return {@link Elderly}
@@ -51,6 +52,19 @@ public class ElderlyDAO {
     public Elderly get(@NonNull long id) {
         return elderlyBox.query()
                 .equal(Elderly_.id, id)
+                .build()
+                .findFirst();
+    }
+
+    /**
+     * Select a Elderly.
+     *
+     * @param _id String
+     * @return {@link Elderly}
+     */
+    public Elderly get(@NonNull String _id) {
+        return elderlyBox.query()
+                .equal(Elderly_._id, _id)
                 .build()
                 .findFirst();
     }
@@ -87,7 +101,18 @@ public class ElderlyDAO {
      * @return {@link Elderly}
      */
     public Elderly update(@NonNull Elderly elderly) {
-        if (elderly.getId() <= 0) return null;
+        if (elderly.getId() == 0) {
+            Elderly elderlyUp = get(elderly.get_id());
+
+            /**
+             * Id is required for an update
+             * Otherwise it will be an insert
+             */
+            if (elderlyUp == null) return null;
+
+            elderly.setId(elderlyUp.getId());
+        }
+
         return save(elderly); // update
     }
 
@@ -101,7 +126,8 @@ public class ElderlyDAO {
         return elderlyBox.query()
                 .equal(Elderly_.id, id)
                 .build()
-                .remove() > 0;
+                .remove() > 0 &&
+                itemBox.query().build().remove() > 0;
     }
 
     /**
@@ -124,7 +150,8 @@ public class ElderlyDAO {
         return elderlyBox.query()
                 .equal(Elderly_.userId, userId)
                 .build()
-                .remove() > 0;
+                .remove() > 0 &&
+                itemBox.query().build().remove() > 0;
     }
 
     /**
@@ -133,8 +160,8 @@ public class ElderlyDAO {
      * @param elderlyId long
      * @return {@link List<Medication>}
      */
-    public List<Medication> listMedications(@NonNull long elderlyId) {
-        ToMany<Medication> medications = elderlyBox.query()
+    public List<Item> listMedications(@NonNull long elderlyId) {
+        ToMany<Item> medications = elderlyBox.query()
                 .equal(Elderly_.id, elderlyId)
                 .build()
                 .findFirst().getMedications();
@@ -147,8 +174,8 @@ public class ElderlyDAO {
      * @param elderlyId long
      * @return {@link List<Accessory>}
      */
-    public List<Accessory> listAccessories(@NonNull long elderlyId) {
-        ToMany<Accessory> accessories = elderlyBox.query()
+    public List<Item> listAccessories(@NonNull long elderlyId) {
+        ToMany<Item> accessories = elderlyBox.query()
                 .equal(Elderly_.id, elderlyId)
                 .build()
                 .findFirst().getAccessories();

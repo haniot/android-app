@@ -25,7 +25,7 @@ public class FragmentDashMain extends Fragment {
     FrameLayout frame2;
 
     private DashboardCharts dashboardCharts;
-    private DashboardDevicesGrid fragmentDash2;
+    private DashDevicesGridFragment fragmentDash2;
 
     private String dateFrag1;
     private final String TAG_FRAG1 = "fragment1";
@@ -57,7 +57,7 @@ public class FragmentDashMain extends Fragment {
             bundle.putString("date",savedInstanceState.getString("date"));
             dashboardCharts.setArguments(bundle);
         }
-        fragmentDash2 = new DashboardDevicesGrid();
+        fragmentDash2 = new DashDevicesGridFragment();
     }
 
     @Override

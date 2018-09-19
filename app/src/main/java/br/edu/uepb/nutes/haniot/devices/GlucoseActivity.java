@@ -1,5 +1,6 @@
 package br.edu.uepb.nutes.haniot.devices;
 
+import android.app.ProgressDialog;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
@@ -22,7 +23,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
@@ -93,6 +94,9 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
     private DeviceDAO deviceDAO;
     private GlucoseAdapter mAdapter;
     private Params params;
+    private String jsonGlucoseData;
+    private String jsonGlucoseContextData;
+    private String action;
 
     /**
      * We need this variable to lock and unlock loading more.
@@ -134,6 +138,9 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
     @BindView(R.id.chart_floating_button)
     FloatingActionButton mChartButton;
 
+    private ProgressDialog progressDialog;
+    private boolean isGetAllMonitor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -155,6 +162,7 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
         Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
 
+        isGetAllMonitor = false;
         initComponents();
     }
 
@@ -211,7 +219,16 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
         mAdapter.setListener(new OnRecyclerViewListener<Measurement>() {
             @Override
             public void onItemClick(Measurement item) {
-                Log.w(TAG, "onItemClick()");
+            }
+
+            @Override
+            public void onLongItemClick(View v, Measurement item) {
+
+            }
+
+            @Override
+            public void onMenuContextClick(View v, Measurement item) {
+
             }
         });
 
@@ -282,21 +299,18 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
             historical.request(this, new CallbackHistorical<Measurement>() {
                 @Override
                 public void onBeforeSend() {
-                    Log.w(TAG, "loadData - onBeforeSend()");
                     toggleLoading(true); // Enable loading
                     toggleNoDataMessage(false); // Disable message no data
                 }
 
                 @Override
                 public void onError(JSONObject result) {
-                    Log.w(TAG, "loadData - onError()");
                     if (mAdapter.itemsIsEmpty()) printMessage(getString(R.string.error_500));
                     else loadDataLocal();
                 }
 
                 @Override
                 public void onResult(List<Measurement> result) {
-                    Log.w(TAG, "loadData - onResult()");
                     if (result != null && result.size() > 0) {
                         mAdapter.addItems(result);
                         updateUILastMeasurement(mAdapter.getFirstItem(), false);
@@ -307,7 +321,6 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
 
                 @Override
                 public void onAfterSend() {
-                    Log.w(TAG, "loadData - onAfterSend()");
                     toggleLoading(false); // Disable loading
                 }
             });
@@ -330,26 +343,22 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
         historical.request(this, new CallbackHistorical<Measurement>() {
             @Override
             public void onBeforeSend() {
-                Log.w(TAG, "loadMoreData - onBeforeSend()");
                 toggleLoading(true); // Enable loading
             }
 
             @Override
             public void onError(JSONObject result) {
-                Log.w(TAG, "loadMoreData - onError()");
                 printMessage(getString(R.string.error_500));
             }
 
             @Override
             public void onResult(List<Measurement> result) {
-                Log.w(TAG, "loadMoreData - onResult()");
                 if (result != null && result.size() > 0) mAdapter.addItems(result);
                 else printMessage(getString(R.string.no_more_data));
             }
 
             @Override
             public void onAfterSend() {
-                Log.w(TAG, "loadMoreData - onAfterSend()");
                 toggleLoading(false); // Disable loading
             }
         });
@@ -419,6 +428,12 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                if (progressDialog != null && !isConnected && isGetAllMonitor) {
+                    isGetAllMonitor = false;
+                    progressDialog.dismiss();
+                    synchronizeWithServer();
+                    loadData();
+                }
                 mCircularProgressBar.setProgress(0);
                 mCircularProgressBar.setProgressWithAnimation(100); // Default animate duration = 1500ms
 
@@ -476,8 +491,29 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
                 mBluetoothLeService.disconnect();
                 super.onBackPressed();
                 break;
+            case 0:
+                getMonitor();
+                break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void getMonitor() {
+        progressDialog = ProgressDialog.show(this, getString(R.string.get_monitor_dialog_tittle), getString(R.string.get_monitor_desc), true);
+        progressDialog.setCancelable(true);
+        progressDialog.show();
+
+        new Handler().postDelayed(() -> getAllRecords(), 10000);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+
+        MenuItem menuItem = menu.add(0, 0, 0, getString(R.string.get_monitor));
+        menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+
+        return true;
     }
 
     private static IntentFilter makeGattUpdateIntentFilter() {
@@ -491,9 +527,9 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     public void getAllRecords() {
-        Log.i(TAG, "getAllRecords()");
         if (mGattService == null) return;
 
+        isGetAllMonitor = true;
         BluetoothGattCharacteristic characteristic = mGattService.getCharacteristic(UUID.fromString(GattAttributes.CHARACTERISTIC_GLUSOSE_RECORD_ACCESS_CONTROL));
 
         byte[] data = new byte[2];
@@ -501,12 +537,11 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
         data[1] = 0x01; // all records
         characteristic.setValue(data);
 
-        setCharacteristicRecordAccess();
         mBluetoothLeService.writeCharacteristic(characteristic);
+        setCharacteristicRecordAccess();
     }
 
     private void getFirstRecord() {
-        Log.i(TAG, "getFirstRecord()");
         if (mGattService == null) return;
 
         BluetoothGattCharacteristic characteristic = mGattService.getCharacteristic(UUID.fromString(GattAttributes.CHARACTERISTIC_GLUSOSE_RECORD_ACCESS_CONTROL));
@@ -520,7 +555,6 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void getLastRecord() {
-        Log.i(TAG, "getLastRecord()");
         if (mGattService == null) return;
 
         BluetoothGattCharacteristic characteristic = mGattService.getCharacteristic(UUID.fromString(GattAttributes.CHARACTERISTIC_GLUSOSE_RECORD_ACCESS_CONTROL));
@@ -539,7 +573,6 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
         public void onServiceConnected(ComponentName componentName, IBinder service) {
             mBluetoothLeService = ((BluetoothLeService.LocalBinder) service).getService();
             if (!mBluetoothLeService.initialize()) {
-                Log.e(TAG, "Unable to initialize Bluetooth");
                 finish();
             }
             // Conecta-se automaticamente ao dispositivo após a inicialização bem-sucedida.
@@ -556,6 +589,7 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
         return action;
     }
 
+
     /**
      * Manipula vários eventos desencadeados pelo Serviço.
      * <p>
@@ -564,8 +598,6 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
      * ACTION_GATT_SERVICES_DISCOVERED: serviços GATT descobertos.
      * ACTION_DATA_AVAILABLE: recebeu dados do dispositivo. Pode ser resultado de operações de leitura ou notificação.
      */
-
-    String action;
     private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -579,24 +611,27 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
                 updateConnectionState(mConnected);
             } else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
                 mGattService = mBluetoothLeService.getGattService(UUID.fromString(GattAttributes.SERVICE_GLUCOSE));
-                if (mGattService != null)
+                if (mGattService != null) {
                     initCharacteristics();
+                }
             } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
-                String jsonGlucoseData = intent.getStringExtra(BluetoothLeService.EXTRA_DATA);
-                String jsonGlucoseContextData = intent.getStringExtra(BluetoothLeService.EXTRA_DATA_CONTEXT);
+                if (intent.getStringExtra(BluetoothLeService.EXTRA_DATA) != null)
+                    jsonGlucoseData = intent.getStringExtra(BluetoothLeService.EXTRA_DATA);
+
+                if (intent.getStringExtra(BluetoothLeService.EXTRA_DATA_CONTEXT) != null)
+                    jsonGlucoseContextData = intent.getStringExtra(BluetoothLeService.EXTRA_DATA_CONTEXT);
 
                 try {
                     if (jsonGlucoseData != null)
-                        glucose = JsonToMeasurementParser.boodGlucose(jsonGlucoseData);
+                        glucose = JsonToMeasurementParser.bloodGlucose(jsonGlucoseData);
 
-                    if (jsonGlucoseContextData != null)
+                    if (jsonGlucoseContextData != null && jsonGlucoseData != null)
                         contextMeasurements = JsonToContextParser.parse(jsonGlucoseData, jsonGlucoseContextData);
 
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             if (glucose != null) {
-                                Log.i(TAG, "MEASUREMENT: " + glucose.toString());
 
                                 glucose.setDevice(mDevice);
                                 glucose.setUser(session.getUserLogged());
@@ -617,8 +652,10 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
                                  * Send to server saved successfully
                                  */
                                 if (measurementDAO.save(glucose)) {
-                                    synchronizeWithServer();
-                                    loadData();
+                                    if (!isGetAllMonitor) {
+                                        synchronizeWithServer();
+                                        loadData();
+                                    }
                                 }
                             }
                         }
@@ -626,7 +663,6 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
             }
         }
     };
@@ -659,7 +695,6 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
      */
     public String mealToString(List<ContextMeasurement> contextMeasurements) {
         for (ContextMeasurement c : contextMeasurements) {
-            Log.i(TAG, "CONTEXTO: " + c.toString());
             if (c.getTypeId() == ContextMeasurementType.GLUCOSE_MEAL)
                 return ContextMeasurementValueType.getString(this, c.getValueId());
         }

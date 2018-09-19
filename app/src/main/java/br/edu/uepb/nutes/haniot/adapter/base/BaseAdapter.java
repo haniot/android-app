@@ -11,13 +11,8 @@ import android.view.animation.ScaleAnimation;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Class Base Recycler.ViewHolder.
- *
- * @author Douglas Rafael <douglasrafaelcg@gmail.com>
- * @version 1.0
- * @copyright Copyright (c) 2017, NUTES UEPB
- */
+import br.edu.uepb.nutes.haniot.adapter.GridDashAdapter;
+import br.edu.uepb.nutes.haniot.utils.Log;
 
 /**
  * Class BaseAdapter for RecyclerView.Adapter.
@@ -169,6 +164,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
      * @param mListener
      */
     public void setListener(OnRecyclerViewListener mListener) {
+        Log.d("TEST", "as " + mListener.getClass().getName());
         this.mListener = mListener;
     }
 

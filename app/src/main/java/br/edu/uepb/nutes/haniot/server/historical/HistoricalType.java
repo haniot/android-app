@@ -8,14 +8,16 @@ package br.edu.uepb.nutes.haniot.server.historical;
  * @copyright Copyright (c) 2017, NUTES UEPB
  */
 public class HistoricalType {
-    public static int MEASUREMENTS_USER = 1;
-    public static int MEASUREMENTS_DEVICE_USER = 2;
-    public static int MEASUREMENTS_TYPE_USER = 3;
+    public static int MEASUREMENTS_USER = 1; // User measurements
+    public static int MEASUREMENTS_DEVICE_USER = 2; // Measurements associated with device and user
+    public static int MEASUREMENTS_TYPE_USER = 3; // Measurements of a type associated with the user
+    public static int ELDERLIES_USER = 4; // Elderly associated with the user
 
     public static int[] SUPPORTED_TYPES = {
             MEASUREMENTS_USER,
             MEASUREMENTS_DEVICE_USER,
-            MEASUREMENTS_TYPE_USER
+            MEASUREMENTS_TYPE_USER,
+            ELDERLIES_USER
     };
 
     /**

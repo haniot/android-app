@@ -1,5 +1,6 @@
 package br.edu.uepb.nutes.haniot.activity.account;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -7,6 +8,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -83,13 +85,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             finish();
         }
 
-        passwordEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-                if (actionId == EditorInfo.IME_ACTION_SEND) login();
+        passwordEditText.setOnEditorActionListener((textView, actionId, keyEvent) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEND) login();
 
-                return false;
-            }
+            return false;
         });
     }
 
@@ -117,6 +116,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
      * Authenticate user
      */
     private void login() {
+        // close keyboard
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0); // hide
+
         /**
          * Check if you have an internet connection.
          * If yes, it does authentication with the remote server

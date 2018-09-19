@@ -209,6 +209,16 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
             public void onItemClick(Measurement item) {
                 Log.w(TAG, "onItemClick()");
             }
+
+            @Override
+            public void onLongItemClick(View v, Measurement item) {
+
+            }
+
+            @Override
+            public void onMenuContextClick(View v, Measurement item) {
+
+            }
         });
 
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -550,11 +560,16 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
             } else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
                 BluetoothGattService gattService = mBluetoothLeService.getGattService(UUID.fromString(GattAttributes.SERVICE_HEALTH_THERMOMETER));
 
+
+
                 if (gattService != null) {
                     BluetoothGattCharacteristic characteristic = gattService.getCharacteristic(UUID.fromString(GattAttributes.CHARACTERISTIC_TEMPERATURE_MEASUREMENT));
                     if (characteristic != null)
                         setCharacteristicNotification(characteristic);
                 }
+
+
+
             } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
                 String jsonData = intent.getStringExtra(BluetoothLeService.EXTRA_DATA);
 

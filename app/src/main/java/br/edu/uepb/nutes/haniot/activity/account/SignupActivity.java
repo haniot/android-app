@@ -14,29 +14,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
-import android.widget.DatePicker;
-import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.google.gson.Gson;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.Calendar;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import android.widget.*;
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.activity.settings.MyPreferenceFragment;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
-import br.edu.uepb.nutes.haniot.activity.settings.SettingsActivity;
 import br.edu.uepb.nutes.haniot.fragment.GenericDialogFragment;
 import br.edu.uepb.nutes.haniot.model.User;
 import br.edu.uepb.nutes.haniot.model.dao.UserDAO;
@@ -45,6 +26,12 @@ import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import com.google.gson.Gson;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Calendar;
+import java.util.regex.Pattern;
 
 /**
  * SignupActivity implementation.
@@ -139,7 +126,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
          * Check if it's to edit
          */
         Intent intent = getIntent();
-        if (intent.getBooleanExtra(SettingsActivity.FORM_UPDATE, false)) {
+        if (intent.getBooleanExtra(MyPreferenceFragment.FORM_UPDATE, false)) {
             isUpdate = true;
             prepareEditing();
 
