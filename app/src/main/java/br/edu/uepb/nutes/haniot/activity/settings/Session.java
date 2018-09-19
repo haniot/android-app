@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 
 import br.edu.uepb.nutes.haniot.model.User;
 import br.edu.uepb.nutes.haniot.model.dao.UserDAO;
+import io.objectbox.BoxStore;
 
 /**
  * Session implementation.
@@ -110,6 +111,16 @@ public class Session {
 
     public String getString(String key) {
         return prefs.getString(key, "");
+    }
+
+    public boolean putBoolean(String key, boolean value) {
+        editor.putBoolean(key, value);
+
+        return editor.commit();
+    }
+
+    public boolean getBoolean(String key) {
+        return prefs.getBoolean(key, false);
     }
 
     /**

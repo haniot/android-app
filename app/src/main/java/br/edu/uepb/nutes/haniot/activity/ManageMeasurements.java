@@ -22,6 +22,7 @@ import br.edu.uepb.nutes.haniot.R;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.ManageMeasurementAdapter;
 import br.edu.uepb.nutes.haniot.model.ItemManageMeasurement;
 import butterknife.BindView;
@@ -33,8 +34,7 @@ public class ManageMeasurements extends AppCompatActivity {
     private List<String> nameList = new ArrayList<>();
     private List<SwitchCompat> switchCompatList = new ArrayList<>();
     private List<ItemManageMeasurement> itemList = new ArrayList<>();
-    private SharedPreferences prefs;
-    private SharedPreferences.Editor editor;
+    private Session session;
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -46,8 +46,7 @@ public class ManageMeasurements extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_measurements);
         ButterKnife.bind(this);
-        prefs = getApplicationContext().getSharedPreferences("MyPref",Context.MODE_PRIVATE);
-        editor = prefs.edit();
+        session = new Session(getApplicationContext());
 
         toolbar.setTitle(getResources().getString(R.string.manage_measurement_title));
         setSupportActionBar(toolbar);
@@ -85,14 +84,15 @@ public class ManageMeasurements extends AppCompatActivity {
         nameList.add(getResources().getString(R.string.body_composition_monitor));
 
         //Essa parte cria os switchs com os respectivos Ids e os adiciona na lista de switchs
-        Boolean bloodPressureMonitor = prefs.getBoolean("blood_pressure_monitor",false);
-        Boolean heartRateH10 = prefs.getBoolean("heart_rate_sensor_polar_h10",false);
-        Boolean heartRateH7 = prefs.getBoolean("heart_rate_sensor_polar_h7",false);
-        Boolean smartBand = prefs.getBoolean("smart_band",false);
-        Boolean earThermometer = prefs.getBoolean("ear_thermometer",false);
-        Boolean accuCheck = prefs.getBoolean("accu_check",false);
-        Boolean bodyCompositionYunmai = prefs.getBoolean("body_composition_yunmai",false);
-        Boolean bodyCompositionOmron = prefs.getBoolean("body_composition_omron",false);
+        boolean bloodPressureMonitor = session.getBoolean("blood_pressure_monitor");
+        boolean heartRateH10 = session.getBoolean("heart_rate_sensor_polar_h10");
+        boolean heartRateH7 = session.getBoolean("heart_rate_sensor_polar_h7");
+        boolean smartBand = session.getBoolean("smart_band");
+        boolean earThermometer = session.getBoolean("ear_thermometer");
+        boolean accuCheck = session.getBoolean("accu_check");
+        boolean bodyCompositionYunmai = session.getBoolean("body_composition_yunmai");
+        boolean bodyCompositionOmron = session.getBoolean("body_composition_omron");
+
         SwitchCompat sw1 = new SwitchCompat(getApplicationContext());
         SwitchCompat sw2 = new SwitchCompat(getApplicationContext());
         SwitchCompat sw3 = new SwitchCompat(getApplicationContext());

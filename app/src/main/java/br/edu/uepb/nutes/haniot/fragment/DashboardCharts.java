@@ -362,7 +362,7 @@ public class DashboardCharts extends Fragment implements View.OnClickListener, D
     }
 
     //Anims for buttons and textview of date
-    public void animLeftBtn(){
+    private void animLeftBtn(){
         try {
             btnArrowLeft.startAnimation(scale);
             updateTextDate(decreaseDay(this.date));
@@ -372,7 +372,7 @@ public class DashboardCharts extends Fragment implements View.OnClickListener, D
         }
     }
 
-    public void animRightBtn(){
+    private void animRightBtn(){
         try {
             btnArrowRight.startAnimation(scale);
             updateTextDate(increaseDay(this.date));
@@ -382,7 +382,7 @@ public class DashboardCharts extends Fragment implements View.OnClickListener, D
         }
     }
 
-    public void animTextDate(){
+    private void animTextDate(){
         textDate.startAnimation(scale);
         try {
             openDatePicker();

@@ -17,6 +17,7 @@ import br.edu.uepb.nutes.haniot.R;
 
 import java.util.List;
 
+import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.model.ItemManageMeasurement;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -25,14 +26,12 @@ public class ManageMeasurementAdapter extends RecyclerView.Adapter<ManageMeasure
 
     public List<ItemManageMeasurement> listaItens;
     private Context context;
-    private SharedPreferences prefs;
-    private SharedPreferences.Editor editor;
+    private Session session;
 
     public ManageMeasurementAdapter(List<ItemManageMeasurement> listaItens, Context context){
         this.listaItens = listaItens;
         this.context = context;
-        this.prefs = context.getSharedPreferences("MyPref",Context.MODE_PRIVATE);
-        this.editor = prefs.edit();
+        session = new Session(context);
     }
 
     @NonNull
@@ -67,58 +66,58 @@ public class ManageMeasurementAdapter extends RecyclerView.Adapter<ManageMeasure
                 switch (holder.switchManageMeasurement.getId()) {
                     case 1:
                         if (b) {
-                            editor.putBoolean("blood_pressure_monitor", true).commit();
+                            session.putBoolean("blood_pressure_monitor", true);
                         } else {
-                            editor.putBoolean("blood_pressure_monitor", false).commit();
+                            session.putBoolean("blood_pressure_monitor", false);
                         }
                         break;
                     case 2:
                         if(b){
-                            editor.putBoolean("heart_rate_sensor_polar_h10",true).commit();
+                            session.putBoolean("heart_rate_sensor_polar_h10",true);
                         } else {
-                            editor.putBoolean("heart_rate_sensor_polar_h10",false).commit();
+                            session.putBoolean("heart_rate_sensor_polar_h10",false);
                         }
                         break;
                     case 3:
                         if(b){
-                            editor.putBoolean("heart_rate_sensor_polar_h7",true).commit();
+                            session.putBoolean("heart_rate_sensor_polar_h7",true);
                         } else {
-                            editor.putBoolean("heart_rate_sensor_polar_h7",false).commit();
+                            session.putBoolean("heart_rate_sensor_polar_h7",false);
                         }
                         break;
                     case 4:
                         if(b){
-                            editor.putBoolean("smart_band",true).commit();
+                            session.putBoolean("smart_band",true);
                         } else {
-                            editor.putBoolean("smart_band",false).commit();
+                            session.putBoolean("smart_band",false);
                         }
                         break;
                     case 5:
                         if(b){
-                            editor.putBoolean("ear_thermometer",true).commit();
+                            session.putBoolean("ear_thermometer",true);
                         } else {
-                            editor.putBoolean("ear_thermometer",false).commit();
+                            session.putBoolean("ear_thermometer",false);
                         }
                         break;
                     case 6:
                         if(b){
-                            editor.putBoolean("accu_check",true).commit();
+                            session.putBoolean("accu_check",true);
                         } else {
-                            editor.putBoolean("accu_check",false).commit();
+                            session.putBoolean("accu_check",false);
                         }
                         break;
                     case 7:
                         if(b){
-                            editor.putBoolean("body_composition_yunmai",true).commit();
+                            session.putBoolean("body_composition_yunmai",true);
                         } else {
-                            editor.putBoolean("body_composition_yunmai",false).commit();
+                            session.putBoolean("body_composition_yunmai",false);
                         }
                         break;
                     case 8:
                         if(b){
-                            editor.putBoolean("body_composition_omron",true).commit();
+                            session.putBoolean("body_composition_omron",true);
                         } else {
-                            editor.putBoolean("body_composition_omron",false).commit();
+                            session.putBoolean("body_composition_omron",false);
                         }
                         break;
                 }

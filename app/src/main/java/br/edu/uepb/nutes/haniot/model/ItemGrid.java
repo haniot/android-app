@@ -3,9 +3,11 @@ package br.edu.uepb.nutes.haniot.model;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.support.v7.widget.AppCompatButton;
+import android.widget.Button;
 import android.widget.TextView;
 
-public class ItemGrid {
+public class ItemGrid extends AppCompatButton{
 
     private Drawable icon;
     private TextView description;
@@ -13,9 +15,9 @@ public class ItemGrid {
     private Context context;
     public Activity activity;
 
-    public ItemGrid(Context context, Activity activity) {
+    public ItemGrid(Context context) {
+        super(context);
         this.context = context;
-        this.activity = activity;
     }
 
     public Drawable getIcon() {

@@ -1,11 +1,11 @@
 package br.edu.uepb.nutes.haniot.fragment;
 
 import android.content.Context;
-import android.content.SharedPreferences;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,65 +19,37 @@ import br.edu.uepb.nutes.haniot.R;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.GridDashAdapter;
+import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
+import br.edu.uepb.nutes.haniot.devices.hdp.BodyCompositionHDPActivity;
 import br.edu.uepb.nutes.haniot.model.ItemGrid;
 import br.edu.uepb.nutes.haniot.utils.GridSpacingItemDecoration;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link DashboardDevicesGrid.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link DashboardDevicesGrid#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class DashboardDevicesGrid extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     private OnFragmentInteractionListener mListener;
 
     //List of items that will be placed in grid;
-    private List<Drawable> iconList      = new ArrayList<>();
+    private List<Drawable> iconList = new ArrayList<>();
     private List<String> descriptionList = new ArrayList<>();
-    private List<String> nameList        = new ArrayList<>();
+    private List<String> nameList = new ArrayList<>();
 
-    private List<ItemGrid> buttonList    = new ArrayList<>();
-    private SharedPreferences                          prefs;
-    private SharedPreferences.Editor                  editor;
-    private GridDashAdapter                          adapter;
+    private List<ItemGrid> buttonList = new ArrayList<>();
+    private Session session;
+    private GridDashAdapter adapter;
 
     @BindView(R.id.gridMeasurement)
     RecyclerView gridMeasurement;
 
-    private FloatingActionButton newMeasurementButton;
-
     public DashboardDevicesGrid() {
-        // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment DashboardDevicesGrid.
-     */
-    // TODO: Rename and change types and number of parameters
     public static DashboardDevicesGrid newInstance(String param1, String param2) {
         DashboardDevicesGrid fragment = new DashboardDevicesGrid();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -85,11 +57,7 @@ public class DashboardDevicesGrid extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-        //Cria lista de icones
+        //Create the icon list of grid items
         iconList.add(getResources().getDrawable(R.drawable.ic_blood_pressure));
         iconList.add(getResources().getDrawable(R.drawable.ic_heart));
         iconList.add(getResources().getDrawable(R.drawable.ic_heart2));
@@ -98,7 +66,7 @@ public class DashboardDevicesGrid extends Fragment {
         iconList.add(getResources().getDrawable(R.drawable.ic_blood_sugar));
         iconList.add(getResources().getDrawable(R.drawable.ic_balance));
         iconList.add(getResources().getDrawable(R.drawable.ic_balance_2));
-        //Cria lista de nomes
+        //Create the name list of grid items
         descriptionList.add(getResources().getString(R.string.blood_pressure_monitor));
         descriptionList.add(getResources().getString(R.string.heart_rate_sensor));
         descriptionList.add(getResources().getString(R.string.heart_rate_sensor));
@@ -107,7 +75,7 @@ public class DashboardDevicesGrid extends Fragment {
         descriptionList.add(getResources().getString(R.string.accu_check));
         descriptionList.add(getResources().getString(R.string.body_composition1));
         descriptionList.add(getResources().getString(R.string.body_composition2));
-        //Cria lista de descrições
+        //Create the description list of grid items
         nameList.add(getResources().getString(R.string.blood_pressure_monitor_description));
         nameList.add(getResources().getString(R.string.heart_rate_sensor_description_h7));
         nameList.add(getResources().getString(R.string.heart_rate_sensor_description_h10));
@@ -119,9 +87,9 @@ public class DashboardDevicesGrid extends Fragment {
     }
 
     // Add button on the list of the grid
-    public void addButtomOnGrid(Drawable drawable, String description, String name){
+    public void addButtomOnGrid(Drawable drawable, String description, String name) {
 
-        ItemGrid button = new ItemGrid(getContext(),getActivity());
+        ItemGrid button = new ItemGrid(getContext());
         button.setIcon(drawable);
         button.setDescription(description);
         button.setName(name);
@@ -133,23 +101,29 @@ public class DashboardDevicesGrid extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_fragment_dash2, container, false);
-        ButterKnife.bind(this,view);
-        prefs = getContext().getSharedPreferences("MyPref",Context.MODE_PRIVATE);
-        editor = prefs.edit();
+        ButterKnife.bind(this, view);
+        session = new Session(getContext());
 
         updateGrid();
-
-        // Faz com que todos os itens tenham o mesmo tamanho
+        // This method set the same size to all items of grid
         gridMeasurement.setHasFixedSize(true);
-        // Para itens de tamanhos iguais
-        gridMeasurement.setLayoutManager(new GridLayoutManager(getContext(),calculateNoOfColumns(getContext())));
-        //Para itens de diferentes tamanhos
-       //gridMeasurement.setLayoutManager(new StaggeredGridLayoutManager(calculateNoOfColumns(getContext()),StaggeredGridLayoutManager.VERTICAL));
-        gridMeasurement.addItemDecoration(new GridSpacingItemDecoration(getContext(),R.dimen.item_dimen_dashboard));
-        //Método utilizado para ajeitar o lag no scroll, o scroll utilizado é o do nested e nao da recyclerview
+        // Set a grid layout to recyclerview, the calculateNoOfColumns was used to set the grid autospacing
+        gridMeasurement.setLayoutManager(new GridLayoutManager(getContext(), calculateNoOfColumns(getContext())));
+        gridMeasurement.addItemDecoration(new GridSpacingItemDecoration(getContext(), R.dimen.item_dimen_dashboard));
+
+        //Method used to fix lag on scroll in recyclerview
         gridMeasurement.setNestedScrollingEnabled(false);
-        adapter = new GridDashAdapter(buttonList,getActivity());
+
+        adapter = new GridDashAdapter(getContext());
         adapter.setHasStableIds(true);
+        adapter.setListener(new OnRecyclerViewListener<ItemGrid>() {
+
+            @Override
+            public void onItemClick(ItemGrid item) {
+                System.out.println("==== teste");
+            }
+        });
+        adapter.addItems(buttonList);
         gridMeasurement.setAdapter(adapter);
 
         return view;
@@ -168,20 +142,20 @@ public class DashboardDevicesGrid extends Fragment {
         return noOfColumns;
     }
 
-    public void updateGrid(){
+    public void updateGrid() {
         //Limpa lista de botoes e a recyclerview
         buttonList.clear();
         gridMeasurement.removeAllViews();
 
         //Pega os dados que foram selecionados nas preferencias
-        Boolean bloodPressureMonitor = prefs.getBoolean("blood_pressure_monitor",false);
-        Boolean heartRateH10 = prefs.getBoolean("heart_rate_sensor_polar_h10",false);
-        Boolean heartRateH7 = prefs.getBoolean("heart_rate_sensor_polar_h7",false);
-        Boolean smartBand = prefs.getBoolean("smart_band",false);
-        Boolean earThermometer = prefs.getBoolean("ear_thermometer",false);
-        Boolean accuCheck = prefs.getBoolean("accu_check",false);
-        Boolean bodyCompositionYunmai = prefs.getBoolean("body_composition_yunmai",false);
-        Boolean bodyCompositionOmron = prefs.getBoolean("body_composition_omron",false);
+        Boolean bloodPressureMonitor = session.getBoolean(getResources().getString(R.string.blood_pressure_monitor_pref));
+        Boolean heartRateH10 = session.getBoolean(getResources().getString(R.string.heart_rate_sensor_polar_h10_pref));
+        Boolean heartRateH7 = session.getBoolean(getResources().getString(R.string.heart_rate_sensor_polar_h7_pref));
+        Boolean smartBand = session.getBoolean(getResources().getString(R.string.smart_band_pref));
+        Boolean earThermometer = session.getBoolean(getResources().getString(R.string.ear_thermometer_pref));
+        Boolean accuCheck = session.getBoolean(getResources().getString(R.string.accu_check_pref));
+        Boolean bodyCompositionYunmai = session.getBoolean(getResources().getString(R.string.body_composition_yunmai_pref));
+        Boolean bodyCompositionOmron = session.getBoolean(getResources().getString(R.string.body_composition_omron_pref));
 
         //Adiciona na lista de itens selecionados
         List<Boolean> listaSwitchPressionados = new ArrayList<>();
@@ -195,21 +169,15 @@ public class DashboardDevicesGrid extends Fragment {
         listaSwitchPressionados.add(bodyCompositionOmron);
 
         //Aqui a mágica acontece :D
-        for(int i = 0; i < listaSwitchPressionados.size(); i++){
-            if (listaSwitchPressionados.get(i)){
-                addButtomOnGrid(iconList.get(i),descriptionList.get(i),nameList.get(i));
+        for (int i = 0; i < listaSwitchPressionados.size(); i++) {
+            if (listaSwitchPressionados.get(i)) {
+                addButtomOnGrid(iconList.get(i), descriptionList.get(i), nameList.get(i));
             }
         }
-        adapter = new GridDashAdapter(buttonList,getActivity());
+        adapter = new GridDashAdapter(getContext());
+        adapter.addItems(buttonList);
         adapter.setHasStableIds(true);
         gridMeasurement.setAdapter(adapter);
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
     }
 
     @Override
@@ -218,18 +186,7 @@ public class DashboardDevicesGrid extends Fragment {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 }
