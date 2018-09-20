@@ -1,17 +1,31 @@
 package br.edu.uepb.nutes.haniot.devices.register;
 
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.model.Device;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class DeviceProcessFragment extends Fragment {
-
     private OnDeviceRegisterListener mListener;
+
+    @BindView(R.id.name_device_fragment)
+    TextView mNameDeviceFragment;
+
+    @BindView(R.id.img_device_fragment)
+    ImageView mImgDeviceFragment;
+
+    private Device mDevice;
+
 
     public DeviceProcessFragment() {
         // Required empty public constructor
@@ -23,22 +37,39 @@ public class DeviceProcessFragment extends Fragment {
      *
      * @return A new instance of fragment DeviceProcessFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static DeviceProcessFragment newInstance() {
         DeviceProcessFragment fragment = new DeviceProcessFragment();
+
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Bundle bundle = getArguments();
+        if (bundle.containsKey(DeviceRegisterActivity.EXTRA_DEVICE)) {
+            mDevice = bundle.getParcelable(DeviceRegisterActivity.EXTRA_DEVICE);
+        }
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_device_process, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_device_process, container, false);
+        ButterKnife.bind(this, view);
+        return view;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        populateView();
+    }
+
+    private void populateView() {
+        if(mDevice == null) return;
+        mNameDeviceFragment.setText(mDevice.getName());
+        mImgDeviceFragment.setImageResource(mDevice.getImg());
     }
 
     @Override
@@ -69,6 +100,6 @@ public class DeviceProcessFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnDeviceRegisterListener {
-        // TODO: Update argument type and name
+        void onClickStartScan(Device device);
     }
 }

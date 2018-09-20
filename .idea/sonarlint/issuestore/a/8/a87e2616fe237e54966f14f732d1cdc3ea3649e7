@@ -1,0 +1,5 @@
+
+_squid:HiddenFieldCheck":Rename "target" which hides the field declared at line 16.(νιΒÿÿÿÿÿ
+csquid:S00101"MRename this class name to match the regular expression '^[A-Z][a-zA-Z0-9]*$'.(β¶γ’
+rsquid:UselessImportCheck"QRemove this unnecessary import: java.lang classes are always implicitly imported.(–ηΐ/
+ssquid:UselessImportCheck"QRemove this unnecessary import: java.lang classes are always implicitly imported.(ϊ®Ϊ±

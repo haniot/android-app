@@ -59,7 +59,6 @@ public class Device implements Parcelable {
         this.img = img;
     }
 
-
     protected Device(Parcel in) {
         id = in.readLong();
         _id = in.readString();

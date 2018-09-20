@@ -1,0 +1,15 @@
+
+Ssquid:UnusedPrivateMethod"0Remove this unused private "animateView" method.(¿£¯‰
+S"squid:SwitchLastCaseIsDefaultCheck""Add a default case to this switch.(øå´¡ÿÿÿÿÿ
+>squid:S1068")Remove this unused "mMenu" private field.(ú˜íí
+nsquid:S2293"YReplace the type specification in this constructor call with the diamond operator ("<>").(š‡§û
+isquid:S1450"TRemove the "mMenu" field and declare it as a local variable in the relevant methods.(ú˜íí
+Gsquid:S1135"2Complete the task associated to this TODO comment.(ßüÓ°
+;squid:S1170"!Make this final field static too.(ÉŠÓ“ıÿÿÿÿ
+6squid:S1170"!Make this final field static too.(ğ¿ò
+6squid:S1170"!Make this final field static too.(âÓ·Ò
+Bsquid:S1604"(Make this anonymous inner class a lambda(˜ã¯şÿÿÿÿ
+isquid:S00116"NRename this field "LOG" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÉŠÓ“ıÿÿÿÿ
+jsquid:S00116"TRename this field "LIST_NAME" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ğ¿ò
+jsquid:S00116"TRename this field "LIST_UUID" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(âÓ·Ò
+csquid:MaximumInheritanceDepth"<This class has 7 parents which is greater than 5 authorized.(¿„ô

@@ -40,7 +40,6 @@ import butterknife.ButterKnife;
 
 public class DeviceManagerActivity extends AppCompatActivity {
     private final String LOG_TAG = getClass().getSimpleName();
-    private final static String EXTRA_DEVICE = "extra_device";
 
     private final String NUMBER_MODEL_THERM_DL8740 = "DL8740";
     private final String NUMBER_MODEL_GLUCOMETER_PERFORMA = "Performa Connect";
@@ -100,6 +99,8 @@ public class DeviceManagerActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 super.onBackPressed();
+                break;
+            default:
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -220,7 +221,8 @@ public class DeviceManagerActivity extends AppCompatActivity {
         mAdapterDeviceRegistered.setListener(new OnRecyclerViewListener<Device>() {
             @Override
             public void onItemClick(Device item) {
-                Log.w(LOG_TAG, "onItemClick() " + item);
+                Log.w(LOG_TAG, "onItemClick()" + item);
+                removeDeviceRegister(item);
             }
         });
 
@@ -344,7 +346,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
         // TODO 5 - Salvar no banco local
         // TODO 6 - Retornar para essa tela (listagem dos devices cadastrados e disponíveis)
         Intent intent = new Intent(this, DeviceRegisterActivity.class);
-        intent.putExtra(DeviceManagerActivity.EXTRA_DEVICE, device);
+        intent.putExtra(DeviceRegisterActivity.EXTRA_DEVICE, device);
         startActivity(intent);
     }
 
@@ -359,4 +361,5 @@ public class DeviceManagerActivity extends AppCompatActivity {
         // TODO 3 - Remover do banco local
         // TODO 4 - Atualizar UI
     }
+
 }

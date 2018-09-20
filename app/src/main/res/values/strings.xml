@@ -543,7 +543,10 @@
     <!-- REGISTERED DEVICES -->
     <string name="title_devices_registered">Registered</string>
     <string name="title_devices_available">Availables</string>
+    <string name="thermometer">Thermometer</string>
+    <string name="find_device">Find device</string>
     <string name="no_devices_registered">No registered devices...</string>
+
     <string name="no_devices_available">No device available. Soon the list will be updated...</string>
 
     <!-- TODO: Remove or change this placeholder text -->

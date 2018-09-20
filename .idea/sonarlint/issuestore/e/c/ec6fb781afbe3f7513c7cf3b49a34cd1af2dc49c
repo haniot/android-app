@@ -1,0 +1,36 @@
+
+tsquid:ModifiersOrderCheck"EReorder the modifiers to comply with the Java Language Specification.(Θΰ±υωÿÿÿÿ8ªύρ‘ί,
+Nsquid:S1135"2Complete the task associated to this TODO comment.(¤„Ψΰ8ªύρ‘ί,
+Ssquid:S1135"2Complete the task associated to this TODO comment.(•φ¤ρϋÿÿÿÿ8ªύρ‘ί,
+Ssquid:S1135"2Complete the task associated to this TODO comment.(ά†¥ϊÿÿÿÿ8ªύρ‘ί,
+Nsquid:S1135"2Complete the task associated to this TODO comment.(Ν½ª³8ªύρ‘ί,
+Ssquid:S1135"2Complete the task associated to this TODO comment.(Ι“Υϋÿÿÿÿ8ªύρ‘ί,
+Nsquid:S1135"2Complete the task associated to this TODO comment.(¦ΞµΓ8ªύρ‘ί,
+squid:S00116"fRename this field "NUMBER_MODEL_HEART_RATE_H10" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(εζ¨εύÿÿÿÿ8ªύρ‘ί,
+…squid:S00116"hRename this field "NUMBER_MODEL_PRESSURE_BP792IT" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Κ¨Υύ8ªύρ‘ί,
+osquid:MaximumInheritanceDepth"<This class has 7 parents which is greater than 5 authorized.(΄®Δβόÿÿÿÿ8ªύρ‘ί,
+squid:S00116"bRename this field "NUMBER_MODEL_SCALE_1501" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Κ‘ÿβ8ªύρ‘ί,
+‚squid:S00116"eRename this field "NUMBER_MODEL_HEART_RATE_H7" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¦“8ªύρ‘ί,
+Dsquid:S1604"(Make this anonymous inner class a lambda(Έώ®ο8ªύρ‘ί,
+=squid:S1170"!Make this final field static too.(ΣϋΘξ8ªύρ‘ί,
+Nsquid:S1135"2Complete the task associated to this TODO comment.(ψ²ήξ8ªύρ‘ί,
+=squid:S1170"!Make this final field static too.(Κ¨Υύ8ªύρ‘ί,
+squid:S00116"kRename this field "NUMBER_MODEL_GLUCOMETER_PERFORMA" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(­©ΣΜ8ªύρ‘ί,
+Nsquid:S1135"2Complete the task associated to this TODO comment.(¶°¥‚8ªύρ‘ί,
+†squid:S00116"dRename this field "NUMBER_MODEL_THERM_DL8740" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(™Σ¥Φόÿÿÿÿ8ªύρ‘ί,
+Bsquid:S1170"!Make this final field static too.(μΈ‰ÿÿÿÿÿ8ªύρ‘ί,
+=squid:S1170"!Make this final field static too.(Κ‘ÿβ8ªύρ‘ί,
+Bsquid:S1170"!Make this final field static too.(™Σ¥Φόÿÿÿÿ8ªύρ‘ί,
+Isquid:S1172"-Remove this unused method parameter "device".(ΰΊά 8ªύρ‘ί,
+Bsquid:S1170"!Make this final field static too.(εζ¨εύÿÿÿÿ8ªύρ‘ί,
+squid:S00116"fRename this field "NUMBER_MODEL_SCALE_HBF206IT" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(μΈ‰ÿÿÿÿÿ8ªύρ‘ί,
+Nsquid:S1135"2Complete the task associated to this TODO comment.(ζΟΪΕ8ªύρ‘ί,
+nsquid:S00116"RRename this field "LOG_TAG" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Υ³O8ªύρ‘ί,
+=squid:S1170"!Make this final field static too.(­©ΣΜ8ªύρ‘ί,
+Dsquid:S1604"(Make this anonymous inner class a lambda(βϋ 8ªύρ‘ί,
+Nsquid:S1135"2Complete the task associated to this TODO comment.(’φ‡»8ªύρ‘ί,
+Isquid:S1604"(Make this anonymous inner class a lambda(γ―ώÿÿÿÿ8ªύρ‘ί,
+=squid:S1170"!Make this final field static too.(¦“8ªύρ‘ί,
+squid:S4165"nRemove this useless assignment; "devicesAvailable" already holds the assigned value along all execution paths.(ΐύΝώ8ªύρ‘ί,
+‚squid:S00116"eRename this field "NUMBER_MODEL_SMARTBAND_MI2" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ΣϋΘξ8ªύρ‘ί,
+lsquid:S1301"KReplace this "switch" statement by "if" statements to increase readability.(ψε΄΅ÿÿÿÿÿ8ªύρ‘ί,

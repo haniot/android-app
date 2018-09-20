@@ -1,0 +1,18 @@
+
+^squid:UnusedPrivateMethod"4Remove this unused private "connectToDevice" method.(Á˜›º8ˆº»’ß,
+Z"squid:SwitchLastCaseIsDefaultCheck""Add a default case to this switch.(øå´¡ÿÿÿÿÿ8ˆº»’ß,
+nsquid:S1192"MDefine a constant instead of duplicating this literal "gattCallback" 3 times.(ˆÎË§üÿÿÿÿ8ˆº»’ß,
+Rsquid:S1068"7Remove this unused "adapterLeScanResult" private field.(—¤É8ˆº»’ß,
+usquid:S2293"YReplace the type specification in this constructor call with the diamond operator ("<>").(½Ç¶™8ˆº»’ß,
+7squid:S3626"Remove this redundant jump.(ûÁÝ…8ˆº»’ß,
+lsquid:S1301"KReplace this "switch" statement by "if" statements to increase readability.(øå´¡ÿÿÿÿÿ8ˆº»’ß,
+lsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(þÏ®²üÿÿÿÿ8ˆº»’ß,
+Bsquid:S1170"!Make this final field static too.(í…Ãäüÿÿÿÿ8ˆº»’ß,
+Bsquid:S1170"!Make this final field static too.(«Ã³Ñþÿÿÿÿ8ˆº»’ß,
+Bsquid:S1170"!Make this final field static too.(äˆÃùÿÿÿÿ8ˆº»’ß,
+Csquid:S1604"(Make this anonymous inner class a lambda(»¬ãS8ˆº»’ß,
+Isquid:S1604"(Make this anonymous inner class a lambda(÷»ÉŸýÿÿÿÿ8ˆº»’ß,
+Isquid:S1604"(Make this anonymous inner class a lambda(÷»ÉŸýÿÿÿÿ8ˆº»’ß,
+psquid:S00116"NRename this field "LOG" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(í…Ãäüÿÿÿÿ8ˆº»’ß,
+…squid:S00116"cRename this field "REQUEST_ENABLE_BLUETOOTH" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(«Ã³Ñþÿÿÿÿ8ˆº»’ß,
+xsquid:S00116"VRename this field "SCAN_PERIOD" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(äˆÃùÿÿÿÿ8ˆº»’ß,
