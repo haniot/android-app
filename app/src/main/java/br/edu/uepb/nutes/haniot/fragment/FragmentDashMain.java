@@ -24,7 +24,7 @@ public class FragmentDashMain extends Fragment {
     @BindView(R.id.frame2)
     FrameLayout frame2;
 
-    private DashboardCharts dashboardCharts;
+    private DashboardChartsFragment dashboardChartsFragment;
     private DashDevicesGridFragment fragmentDash2;
 
     private String dateFrag1;
@@ -51,11 +51,11 @@ public class FragmentDashMain extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        dashboardCharts = new DashboardCharts();
+        dashboardChartsFragment = new DashboardChartsFragment();
         if (savedInstanceState != null){
             Bundle bundle = new Bundle();
             bundle.putString("date",savedInstanceState.getString("date"));
-            dashboardCharts.setArguments(bundle);
+            dashboardChartsFragment.setArguments(bundle);
         }
         fragmentDash2 = new DashDevicesGridFragment();
     }
@@ -64,15 +64,15 @@ public class FragmentDashMain extends Fragment {
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         String date;
-        date = dashboardCharts.getData();
+        date = dashboardChartsFragment.getData();
         if (date == null || date.equals("")){
-            date = dashboardCharts.getToday();
+            date = dashboardChartsFragment.getToday();
         }
         outState.putString("date",date);
-        dashboardCharts = new DashboardCharts();
-        dashboardCharts.setArguments(outState);
-        if (dashboardCharts.isAdded()) {
-            getFragmentManager().putFragment(outState, TAG_FRAG1, dashboardCharts);
+        dashboardChartsFragment = new DashboardChartsFragment();
+        dashboardChartsFragment.setArguments(outState);
+        if (dashboardChartsFragment.isAdded()) {
+            getFragmentManager().putFragment(outState, TAG_FRAG1, dashboardChartsFragment);
         }
     }
 
@@ -85,7 +85,7 @@ public class FragmentDashMain extends Fragment {
         //Addicting the two main fragmants to dashboard
 
         if (savedInstanceState == null){
-            getFragmentManager().beginTransaction().replace(R.id.frame1, this.dashboardCharts, this.TAG_FRAG1)
+            getFragmentManager().beginTransaction().replace(R.id.frame1, this.dashboardChartsFragment, this.TAG_FRAG1)
                     .commit();
         }
 

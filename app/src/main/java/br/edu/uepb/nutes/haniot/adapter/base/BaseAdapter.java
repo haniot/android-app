@@ -11,7 +11,6 @@ import android.view.animation.ScaleAnimation;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.edu.uepb.nutes.haniot.adapter.GridDashAdapter;
 import br.edu.uepb.nutes.haniot.utils.Log;
 
 /**

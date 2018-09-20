@@ -1,7 +1,9 @@
 package br.edu.uepb.nutes.haniot.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -21,6 +23,13 @@ import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.GridDashAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
+import br.edu.uepb.nutes.haniot.devices.GlucoseActivity;
+import br.edu.uepb.nutes.haniot.devices.HeartRateActivity;
+import br.edu.uepb.nutes.haniot.devices.ScaleActivity;
+import br.edu.uepb.nutes.haniot.devices.SmartBandActivity;
+import br.edu.uepb.nutes.haniot.devices.ThermometerActivity;
+import br.edu.uepb.nutes.haniot.devices.hdp.BloodPressureHDPActivity;
+import br.edu.uepb.nutes.haniot.devices.hdp.BodyCompositionHDPActivity;
 import br.edu.uepb.nutes.haniot.model.ItemGrid;
 import br.edu.uepb.nutes.haniot.utils.GridSpacingItemDecoration;
 import butterknife.BindView;
@@ -97,7 +106,6 @@ public class DashDevicesGridFragment extends Fragment implements OnRecyclerViewL
 
         return view;
     }
-
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -192,6 +200,7 @@ public class DashDevicesGridFragment extends Fragment implements OnRecyclerViewL
                 addButtomOnGrid(iconList.get(i), descriptionList.get(i), nameList.get(i));
             }
         }
+        mAdapter.clearItems();
         mAdapter.addItems(buttonList);
     }
 
@@ -202,7 +211,104 @@ public class DashDevicesGridFragment extends Fragment implements OnRecyclerViewL
 
     @Override
     public void onItemClick(ItemGrid item) {
-        Log.w("TEST", "onItemClick() " + item);
+        switch (item.getName()){
+            case "YUNMAI Mini 1501":
+
+                new Handler().postDelayed(new Runnable() {
+                    public void run() {
+                        // do something...
+                        startActivity(new Intent(getContext(),BodyCompositionHDPActivity.class));
+
+                    }
+                }, 200);
+                break;
+
+            case "DL8740":
+
+                new Handler().postDelayed(new Runnable() {
+                    public void run() {
+                        // do something...
+                        startActivity(new Intent(getContext(),ThermometerActivity.class));
+
+                    }
+                }, 200);
+                break;
+
+            case "OMRON BP792IT":
+
+                new Handler().postDelayed(new Runnable() {
+                    public void run() {
+                        // do something...
+                        startActivity(new Intent(getContext(),BloodPressureHDPActivity.class));
+
+                    }
+                }, 200);
+                break;
+
+            case "Polar H7":
+
+                new Handler().postDelayed(new Runnable() {
+                    public void run() {
+                        // do something...
+                        Intent it = new Intent(getContext(),HeartRateActivity.class);
+                        it.putExtra(HeartRateActivity.EXTRA_DEVICE_ADDRESS, "00:22:D0:BA:95:80");
+                        it.putExtra(HeartRateActivity.EXTRA_DEVICE_INFORMATIONS, new String[]{"POLAR", "H7"});
+                        startActivity(it);
+
+                    }
+                }, 200);
+                break;
+
+            case "Polar H10":
+
+                new Handler().postDelayed(new Runnable() {
+                    public void run() {
+                        // do something...
+                        Intent intent = new Intent(getContext(),HeartRateActivity.class);
+                        intent.putExtra(HeartRateActivity.EXTRA_DEVICE_ADDRESS, "E9:50:60:1F:31:D2");
+                        intent.putExtra(HeartRateActivity.EXTRA_DEVICE_INFORMATIONS, new String[]{"POLAR", "H10"});
+                        startActivity(intent);
+
+                    }
+                }, 200);
+                break;
+
+            case "MI BAND 2":
+
+                new Handler().postDelayed(new Runnable() {
+                    public void run() {
+                        // do something...
+                        startActivity(new Intent(getContext(),SmartBandActivity.class));
+
+                    }
+                }, 200);
+                break;
+
+            case "Performa Connect":
+
+                new Handler().postDelayed(new Runnable() {
+                    public void run() {
+                        // do something...
+                        startActivity(new Intent(getContext(),GlucoseActivity.class));
+
+                    }
+                }, 200);
+                break;
+
+            case "OMRON HBF-206ITH":
+
+                new Handler().postDelayed(new Runnable() {
+                    public void run() {
+                        // do something...
+                        startActivity(new Intent(getContext(),ScaleActivity.class));
+
+                    }
+                }, 200);
+                break;
+
+            default:
+                break;
+        }
     }
 
     @Override

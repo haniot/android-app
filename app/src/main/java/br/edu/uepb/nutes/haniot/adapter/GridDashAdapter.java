@@ -55,7 +55,6 @@ public class GridDashAdapter extends BaseAdapter<ItemGrid> {
 
             h.mView.setOnClickListener(v -> {
                 if (GridDashAdapter.super.mListener != null) {
-                Log.d("TESTE", "aqui " );
                     GridDashAdapter.super.mListener.onItemClick(ig);
                 }
             });

@@ -36,7 +36,7 @@ import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class DashboardCharts extends Fragment implements View.OnClickListener, DatePickerDialog.OnDateSetListener {
+public class DashboardChartsFragment extends Fragment implements View.OnClickListener, DatePickerDialog.OnDateSetListener {
 
     @BindView(R.id.textDate)
     TextView textDate;
@@ -83,12 +83,12 @@ public class DashboardCharts extends Fragment implements View.OnClickListener, D
 
     private String[] measurementTypeArray;
 
-    public DashboardCharts() {
+    public DashboardChartsFragment() {
         // Required empty public constructor
     }
 
-    public static DashboardCharts newInstance(String param1, String param2) {
-        DashboardCharts fragment = new DashboardCharts();
+    public static DashboardChartsFragment newInstance(String param1, String param2) {
+        DashboardChartsFragment fragment = new DashboardChartsFragment();
         return fragment;
     }
 
