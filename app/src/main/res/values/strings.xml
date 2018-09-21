@@ -545,8 +545,10 @@
     <string name="title_devices_available">Availables</string>
     <string name="thermometer">Thermometer</string>
     <string name="find_device">Find device</string>
+    <string name="remove_device">Do you want to remove this device from your list?</string>
+    <string name="remove">Remove</string>
+    <string name="cancel">Cancel</string>
     <string name="no_devices_registered">No registered devices...</string>
-
     <string name="no_devices_available">No device available. Soon the list will be updated...</string>
 
     <!-- TODO: Remove or change this placeholder text -->

@@ -1,0 +1,19 @@
+
+^squid:S2583"DChange this condition so that it does not always evaluate to "false"(µƒÛ«ÿÿÿÿÿ
+zsquid:S1488"`Immediately return this expression instead of assigning it to the temporary variable "fragment".(ÖßµÂüÿÿÿÿ
+Gsquid:S1135"2Complete the task associated to this TODO comment.(»¯—Þ
+;squid:S1170"!Make this final field static too.(ªÌöúÿÿÿÿ
+;squid:S1170"!Make this final field static too.(æ‰ò¡ùÿÿÿÿ
+;squid:S1170"!Make this final field static too.(£îÆÖþÿÿÿÿ
+6squid:S1170"!Make this final field static too.(ÚÛ“¼
+Fsquid:S1602",Remove useless curly braces around statement(±’Â¯üÿÿÿÿ
+Fsquid:S1602",Remove useless curly braces around statement(Î¬Ø°øÿÿÿÿ
+Asquid:S1602",Remove useless curly braces around statement(ï×ƒÎ
+Dsquid:S1611"/Remove the parentheses around the "v" parameter(ï×ƒÎ
+isquid:S00116"NRename this field "TAG" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ªÌöúÿÿÿÿ
+{squid:S00116"`Rename this field "KEY_ITEMS_MEDICATIONS" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(æ‰ò¡ùÿÿÿÿ
+{squid:S00116"`Rename this field "KEY_ITEMS_ACCESSORIES" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(£îÆÖþÿÿÿÿ
+psquid:S00116"ZRename this field "SEPARATOR_ITEMS" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÚÛ“¼
+Ssquid:UselessImportCheck"1Remove this unused import 'com.google.gson.Gson'.(–§
+Vsquid:UselessImportCheck"/Remove this unused import 'org.json.JSONArray'.(¬¸Ê’üÿÿÿÿ
+Ssquid:S1155">Use isEmpty() to check whether the collection is empty or not.(Úï„·

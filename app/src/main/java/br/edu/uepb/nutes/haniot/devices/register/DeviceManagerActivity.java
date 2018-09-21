@@ -1,9 +1,12 @@
 package br.edu.uepb.nutes.haniot.devices.register;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
@@ -33,6 +36,7 @@ import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.DeviceAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
 import br.edu.uepb.nutes.haniot.model.Device;
+import br.edu.uepb.nutes.haniot.model.dao.DeviceDAO;
 import br.edu.uepb.nutes.haniot.server.Server;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
@@ -40,6 +44,7 @@ import butterknife.ButterKnife;
 
 public class DeviceManagerActivity extends AppCompatActivity {
     private final String LOG_TAG = getClass().getSimpleName();
+    private Context context;
 
     private final String NUMBER_MODEL_THERM_DL8740 = "DL8740";
     private final String NUMBER_MODEL_GLUCOMETER_PERFORMA = "Performa Connect";
@@ -49,6 +54,11 @@ public class DeviceManagerActivity extends AppCompatActivity {
     private final String NUMBER_MODEL_HEART_RATE_H10 = "H10";
     private final String NUMBER_MODEL_SMARTBAND_MI2 = "MI Band 2";
     private final String NUMBER_MODEL_PRESSURE_BP792IT = "BP792IT";
+
+    private DeviceDAO mDeviceDAO;
+
+    //class attributes AlertDialog.
+    private AlertDialog alert;
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -87,9 +97,9 @@ public class DeviceManagerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manager_devices);
         ButterKnife.bind(this);
-
         server = Server.getInstance(this);
         session = new Session(this);
+        mDeviceDAO = DeviceDAO.getInstance(this);
 
         initComponents();
     }
@@ -152,8 +162,13 @@ public class DeviceManagerActivity extends AppCompatActivity {
             public void onSuccess(JSONObject result) {
                 List<Device> devicesRegistered = jsonToListDevice(result);
 
+                //saves the devices coming from the server in the local database
+                for(Device mDevices: devicesRegistered){
+                    mDeviceDAO.save(mDevices);
+                }
+
                 populateDevicesRegistered(devicesRegistered);
-                populateDevicesAvailable(devicesRegistered);
+                populateDevicesAvailable(mDeviceDAO.list(session.getIdLogged()));
                 displayLoading(false);
             }
         });
@@ -201,7 +216,6 @@ public class DeviceManagerActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
         return new ArrayList<>();
     }
 
@@ -222,10 +236,9 @@ public class DeviceManagerActivity extends AppCompatActivity {
             @Override
             public void onItemClick(Device item) {
                 Log.w(LOG_TAG, "onItemClick()" + item);
-                removeDeviceRegister(item);
+                confirmRemoveDeviceRegister(item);
             }
         });
-
         mRegisteredRecyclerView.setAdapter(mAdapterDeviceRegistered);
     }
 
@@ -248,7 +261,6 @@ public class DeviceManagerActivity extends AppCompatActivity {
                 openRegister(item);
             }
         });
-
         mAvailableRecyclerView.setAdapter(mAdapterDeviceAvailable);
     }
 
@@ -262,7 +274,6 @@ public class DeviceManagerActivity extends AppCompatActivity {
             mNoRegisteredDevices.setVisibility(View.VISIBLE);
             return;
         }
-
         mAdapterDeviceRegistered.clearItems();
         mAdapterDeviceRegistered.addItems(devicesRegistered);
     }
@@ -313,7 +324,6 @@ public class DeviceManagerActivity extends AppCompatActivity {
             mNoAvailableDevices.setVisibility(View.VISIBLE);
             return;
         }
-
         mAdapterDeviceAvailable.clearItems();
         mAdapterDeviceAvailable.addItems(devicesAvailable);
     }
@@ -325,8 +335,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
      * @param availableList  {@link List<Device>}
      * @return {@link List<Device>}
      */
-    private List<Device> mergeDevicesAvailableRegistered(List<Device> registeredList,
-                                                         List<Device> availableList) {
+    private List<Device> mergeDevicesAvailableRegistered(List<Device> registeredList, List<Device> availableList) {
         /**
          * Add only devices that have not been registered
          */
@@ -334,7 +343,6 @@ public class DeviceManagerActivity extends AppCompatActivity {
             if (availableList.contains(d))
                 availableList.remove(d);
         }
-
         return availableList;
     }
 
@@ -350,16 +358,61 @@ public class DeviceManagerActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    private void confirmRemoveDeviceRegister(Device device) {
+        //Create the AlertDialog generator
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        //sets the title
+        builder.setTitle(device.getName());
+        //sets the message
+        builder.setMessage(R.string.remove_device);
+        //define a button how to remove
+        builder.setPositiveButton(R.string.remove, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface arg0, int arg1) {
+                //removes the device from the server database
+                removeDeviceRegister(device.get_id(),device);
+            }
+        });
+        //define a button how to cancel.
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface arg0, int arg1) {
+
+            }
+        });
+        //create the AlertDialog
+        alert = builder.create();
+        //Exibe
+        alert.show();
+    }
     /**
      * Remove device association with user.
      *
-     * @param device {@link Device}
+     * @param deviceId {@link String}
      */
-    private void removeDeviceRegister(Device device) {
+    private void removeDeviceRegister(String deviceId, Device device) {
         // TODO 1 - Abrir dialog para confirmacao
         // TODO 2 - Remover associacao no servidor
         // TODO 3 - Remover do banco local
         // TODO 4 - Atualizar UI
+
+        displayLoading(true);
+        String path = "devices/:deviceId/users/:deviceId/".concat(session.get_idLogged());
+        server.delete(path, new Server.Callback() {
+            @Override
+            public void onError(JSONObject result) {
+                displayLoading(false);
+            }
+
+            @Override
+            public void onSuccess(JSONObject result) {
+
+
+                List<Device> devicesRegistered = jsonToListDevice(result);
+
+                populateDevicesRegistered(devicesRegistered);
+                populateDevicesAvailable(mDeviceDAO.list(session.getIdLogged()));
+                displayLoading(false);
+            }
+        });
     }
 
 }

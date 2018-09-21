@@ -1,6 +1,7 @@
 package br.edu.uepb.nutes.haniot.devices.register;
 
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;

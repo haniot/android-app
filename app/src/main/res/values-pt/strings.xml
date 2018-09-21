@@ -252,8 +252,11 @@
     <!-- REGISTERED DEVICES -->
     <string name="title_devices_registered">Cadastrados</string>
     <string name="title_devices_available">Disponíveis</string>
-    <string name="termometro">Termometro</string>
-    <string name="localizar_dispositivo">Localizar Dispositivo</string>
+    <string name="thermometer">Termometro</string>
+    <string name="find_device">Localizar Dispositivo</string>
+    <string name="remove_device">Deseja remover este dispositivo da sua lista ?</string>
+    <string name="remove">Remover</string>
+    <string name="cancelar">Cancelar</string>
     <string name="no_devices_registered">Não há didpositivos cadastrados...</string>
     <string name="no_devices_available">Nenhum dispositivo disponível. Em breve a lista será atualizada...</string>
 

@@ -1,13 +1,9 @@
 
-lsquid:MaximumInheritanceDepth"<This class has 7 parents which is greater than 5 authorized.(ñ€Ò“8ÀôÓ’ß,
-Usquid:S1135+"2Complete the task associated to this TODO comment.(Â·Á“ùÿÿÿÿ8ÀôÓ’ß,
-Dsquid:S1170"!Make this final field static too.(²¨ªêýÿÿÿÿ8ÀôÓ’ß,
-]squid:UselessImportCheck
-"-Remove this unused import 'android.util.Log'.(Ô¦Ø²øÿÿÿÿ8ÀôÓ’ß,
-rsquid:S00116"NRename this field "TAG" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(²¨ªêýÿÿÿÿ8ÀôÓ’ß,
-isquid:CommentedOutCodeLineS"<This block of commented-out lines of code should be removed.(Å†Ç¾8ÀôÓ’ß,
-\"squid:SwitchLastCaseIsDefaultCheckD""Add a default case to this switch.(øå´¡ÿÿÿÿÿ8ÀôÓ’ß,
-Jsquid:S1068"'Remove this unused "TAG" private field.(²¨ªêýÿÿÿÿ8ÀôÓ’ß,
-nsquid:S1301D"KReplace this "switch" statement by "if" statements to increase readability.(øå´¡ÿÿÿÿÿ8ÀôÓ’ß,
-esquid:UselessImportCheck"5Remove this unused import 'android.widget.ImageView'.(ú¯ëàüÿÿÿÿ8þˆØ’ß,
-fsquid:UselessImportCheck"6Remove this unused import 'javax.annotation.Nullable'.(—å¨Íûÿÿÿÿ8þˆØ’ß,
+Z"squid:SwitchLastCaseIsDefaultCheck""Add a default case to this switch.(øå´¡ÿÿÿÿÿ8Ìö›¹ß,
+tsquid:ModifiersOrderCheck"EReorder the modifiers to comply with the Java Language Specification.(Èà±õùÿÿÿÿ8Ìö›¹ß,
+Hsquid:S1068"'Remove this unused "TAG" private field.(²¨ªêýÿÿÿÿ8Ìö›¹ß,
+lsquid:S1301"KReplace this "switch" statement by "if" statements to increase readability.(øå´¡ÿÿÿÿÿ8Ìö›¹ß,
+gsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(Å†Ç¾8Ìö›¹ß,
+Bsquid:S1170"!Make this final field static too.(²¨ªêýÿÿÿÿ8Ìö›¹ß,
+psquid:S00116"NRename this field "TAG" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(²¨ªêýÿÿÿÿ8Ìö›¹ß,
+jsquid:MaximumInheritanceDepth"<This class has 7 parents which is greater than 5 authorized.(ñ€Ò“8Ìö›¹ß,
