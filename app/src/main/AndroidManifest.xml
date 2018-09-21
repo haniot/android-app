@@ -154,7 +154,10 @@
         <activity
             android:name=".activity.ManageChildrenActivity"
             android:label="@string/title_activity_manage_children"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".activity.settings.ManageMeasurementsActivity"
+            android:label="@string/title_activity_manage_measurements"></activity>
     </application>
 
 </manifest>

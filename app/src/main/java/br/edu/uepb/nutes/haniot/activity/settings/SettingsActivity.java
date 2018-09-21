@@ -40,4 +40,5 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     protected void onPause() {
         super.onPause();
     }
+
 }

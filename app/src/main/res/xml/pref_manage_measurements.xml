@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <SwitchPreference
+        android:icon="@drawable/ic_blood_pressure_64"
+        android:defaultValue="false"
+        android:key="key_blood_pressure"
+        android:title="@string/blood_pressure_monitor"
+        />
+    <SwitchPreference
+        android:icon="@drawable/ic_heart_64"
+        android:defaultValue="false"
+        android:title="@string/heart_rate_sensor_description_h7"
+        />
+    <SwitchPreference
+        android:icon="@drawable/ic_heart_64_2"
+        android:defaultValue="false"
+        android:title="@string/heart_rate_sensor_h10"
+        />
+    <SwitchPreference
+        android:icon="@drawable/ic_smartband_64"
+        android:defaultValue="false"
+        android:title="@string/smart_band"
+        />
+    <SwitchPreference
+        android:icon="@drawable/ic_ear_thermometer_64"
+        android:defaultValue="false"
+        android:title="@string/ear_thermometer"
+        />
+    <SwitchPreference
+        android:icon="@drawable/ic_blood_sugar_64"
+        android:defaultValue="false"
+        android:title="@string/accu_check"
+        />
+    <SwitchPreference
+        android:icon="@drawable/ic_balance_64"
+        android:defaultValue="false"
+        android:title="@string/body_composition_yunmai"
+        />
+    <SwitchPreference
+        android:icon="@drawable/ic_balance_2_64"
+        android:defaultValue="false"
+        android:title="@string/body_composition_monitor"
+        />
+
+</PreferenceScreen>
