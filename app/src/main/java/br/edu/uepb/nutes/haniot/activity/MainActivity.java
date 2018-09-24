@@ -3,9 +3,7 @@ package br.edu.uepb.nutes.haniot.activity;
 import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
-//import android.content.Context;
 import android.content.Intent;
-//import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.os.Build;
@@ -49,8 +47,6 @@ public class MainActivity extends AppCompatActivity {
     private String tabTitle ;
     private String id = "";
     private String lastNameSelected = "";
-//    private SharedPreferences prefs;
-//    private SharedPreferences.Editor editor;
     private Session session;
 
     @BindView(R.id.toolbar)
@@ -70,9 +66,6 @@ public class MainActivity extends AppCompatActivity {
 
         this.session = new Session(getApplicationContext());
 
-//        prefs = getApplicationContext().getSharedPreferences("MyPref", Context.MODE_PRIVATE);
-//        editor = prefs.edit();
-
         toolbar.setTitle(getResources().getString(R.string.app_name));
         setSupportActionBar(toolbar);
 
@@ -85,8 +78,9 @@ public class MainActivity extends AppCompatActivity {
         checkLastChildAndUpdateTabTitle();
 
         newMeasureButton.setOnClickListener(v -> {
-            Intent it = new Intent(MainActivity.this, ManageMeasurements.class);
-            //Intent it = new Intent(MainActivity.this, ManageMeasurementsActivity.class);
+//            Intent it = new Intent(MainActivity.this, ManageMeasurements.class);
+            Intent it = new Intent(MainActivity.this,
+                    ManageMeasurementsActivity.class);
             startActivity(it);
         });
     }
@@ -105,8 +99,8 @@ public class MainActivity extends AppCompatActivity {
         checkLastChildAndUpdateTabTitle();
     }
 
-    /*Testa se tem criança salva no bundle ou no sharedpreferences,
-        caso tenha salva o id da criança e atualiza o titulo da aba
+    /* Test if there is some children saved on bundle or on shared preferences
+        if some children is finded, the title is updated.
     */
     public void checkLastChildAndUpdateTabTitle() {
         //caso a tela seja restaurada
@@ -124,8 +118,6 @@ public class MainActivity extends AppCompatActivity {
             this.id = "";
             this.lastNameSelected = "";
         }
-//        String lastIdSelected = prefs.getString(getResources().getString(R.string.childId), "null");
-//        String lastName = prefs.getString(getResources().getString(R.string.childName), "null");
         String id = getResources().getString(R.string.id_last_child);
         String name = getResources().getString(R.string.name_last_child);
         String lastIdSelected = session.getString(id);
@@ -141,7 +133,8 @@ public class MainActivity extends AppCompatActivity {
         if (this.id.equals("")) {
             this.id = getResources().getString(R.string.noPatientSelected);
             this.lastNameSelected = getResources().getString(R.string.noPatientSelected);
-            tabLayout.setTabTextColors(ContextCompat.getColorStateList(this, R.color.colorRed));
+            tabLayout.setTabTextColors(ContextCompat
+                    .getColorStateList(this, R.color.colorRed));
         }
 
         tabTitle = getResources().getString(R.string.dashboard) + " - " + this.lastNameSelected;

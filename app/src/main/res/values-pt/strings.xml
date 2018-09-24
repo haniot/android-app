@@ -326,6 +326,9 @@
     <string name="accu_check_pref">accu_check</string>
     <string name="body_composition_yunmai_pref">body_composition_yunmai</string>
     <string name="body_composition_omron_pref">body_composition_omron</string>
+    <string name="dashboard_charts">Gráficos do dashboard</string>
+    <string name="measurements">Medições</string>
+
     <!-- END OF STRINGS FOR TABLET -->
 
     <!-- ELDERLY -->

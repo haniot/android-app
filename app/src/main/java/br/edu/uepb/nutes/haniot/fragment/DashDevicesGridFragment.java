@@ -168,26 +168,33 @@ public class DashDevicesGridFragment extends Fragment implements OnRecyclerViewL
         //Pega os dados que foram selecionados nas preferencias
         Boolean bloodPressureMonitor = session.getBoolean(getResources()
                 .getString(R.string.blood_pressure_monitor_pref));
+
         Boolean heartRateH10 = session.getBoolean(getResources()
                 .getString(R.string.heart_rate_sensor_polar_h10_pref));
+
         Boolean heartRateH7 = session.getBoolean(getResources()
                 .getString(R.string.heart_rate_sensor_polar_h7_pref));
+
         Boolean smartBand = session.getBoolean(getResources()
                 .getString(R.string.smart_band_pref));
+
         Boolean earThermometer = session.getBoolean(getResources()
                 .getString(R.string.ear_thermometer_pref));
+
         Boolean accuCheck = session.getBoolean(getResources()
                 .getString(R.string.accu_check_pref));
+
         Boolean bodyCompositionYunmai = session.getBoolean(getResources()
                 .getString(R.string.body_composition_yunmai_pref));
+
         Boolean bodyCompositionOmron = session.getBoolean(getResources()
                 .getString(R.string.body_composition_omron_pref));
 
         //Adiciona na lista de itens selecionados
         List<Boolean> listaSwitchPressionados = new ArrayList<>();
         listaSwitchPressionados.add(bloodPressureMonitor);
-        listaSwitchPressionados.add(heartRateH10);
         listaSwitchPressionados.add(heartRateH7);
+        listaSwitchPressionados.add(heartRateH10);
         listaSwitchPressionados.add(smartBand);
         listaSwitchPressionados.add(earThermometer);
         listaSwitchPressionados.add(accuCheck);
@@ -211,99 +218,53 @@ public class DashDevicesGridFragment extends Fragment implements OnRecyclerViewL
 
     @Override
     public void onItemClick(ItemGrid item) {
-        switch (item.getName()){
+        switch (item.getName()) {
             case "YUNMAI Mini 1501":
 
-                new Handler().postDelayed(new Runnable() {
-                    public void run() {
-                        // do something...
-                        startActivity(new Intent(getContext(),BodyCompositionHDPActivity.class));
-
-                    }
-                }, 200);
+                startActivity(new Intent(getContext(), BodyCompositionHDPActivity.class));
                 break;
 
             case "DL8740":
 
-                new Handler().postDelayed(new Runnable() {
-                    public void run() {
-                        // do something...
-                        startActivity(new Intent(getContext(),ThermometerActivity.class));
+                startActivity(new Intent(getContext(), ThermometerActivity.class));
 
-                    }
-                }, 200);
                 break;
 
             case "OMRON BP792IT":
 
-                new Handler().postDelayed(new Runnable() {
-                    public void run() {
-                        // do something...
-                        startActivity(new Intent(getContext(),BloodPressureHDPActivity.class));
+                startActivity(new Intent(getContext(), BloodPressureHDPActivity.class));
 
-                    }
-                }, 200);
                 break;
 
             case "Polar H7":
 
-                new Handler().postDelayed(new Runnable() {
-                    public void run() {
-                        // do something...
-                        Intent it = new Intent(getContext(),HeartRateActivity.class);
-                        it.putExtra(HeartRateActivity.EXTRA_DEVICE_ADDRESS, "00:22:D0:BA:95:80");
-                        it.putExtra(HeartRateActivity.EXTRA_DEVICE_INFORMATIONS, new String[]{"POLAR", "H7"});
-                        startActivity(it);
-
-                    }
-                }, 200);
+                Intent it = new Intent(getContext(), HeartRateActivity.class);
+                it.putExtra(HeartRateActivity.EXTRA_DEVICE_ADDRESS, "00:22:D0:BA:95:80");
+                it.putExtra(HeartRateActivity.EXTRA_DEVICE_INFORMATIONS, new String[]{"POLAR", "H7"});
+                startActivity(it);
                 break;
 
             case "Polar H10":
 
-                new Handler().postDelayed(new Runnable() {
-                    public void run() {
-                        // do something...
-                        Intent intent = new Intent(getContext(),HeartRateActivity.class);
-                        intent.putExtra(HeartRateActivity.EXTRA_DEVICE_ADDRESS, "E9:50:60:1F:31:D2");
-                        intent.putExtra(HeartRateActivity.EXTRA_DEVICE_INFORMATIONS, new String[]{"POLAR", "H10"});
-                        startActivity(intent);
-
-                    }
-                }, 200);
+                Intent intent = new Intent(getContext(), HeartRateActivity.class);
+                intent.putExtra(HeartRateActivity.EXTRA_DEVICE_ADDRESS, "E9:50:60:1F:31:D2");
+                intent.putExtra(HeartRateActivity.EXTRA_DEVICE_INFORMATIONS, new String[]{"POLAR", "H10"});
+                startActivity(intent);
                 break;
 
             case "MI BAND 2":
 
-                new Handler().postDelayed(new Runnable() {
-                    public void run() {
-                        // do something...
-                        startActivity(new Intent(getContext(),SmartBandActivity.class));
-
-                    }
-                }, 200);
+                startActivity(new Intent(getContext(), SmartBandActivity.class));
                 break;
 
             case "Performa Connect":
 
-                new Handler().postDelayed(new Runnable() {
-                    public void run() {
-                        // do something...
-                        startActivity(new Intent(getContext(),GlucoseActivity.class));
-
-                    }
-                }, 200);
+                startActivity(new Intent(getContext(), GlucoseActivity.class));
                 break;
 
             case "OMRON HBF-206ITH":
 
-                new Handler().postDelayed(new Runnable() {
-                    public void run() {
-                        // do something...
-                        startActivity(new Intent(getContext(),ScaleActivity.class));
-
-                    }
-                }, 200);
+                startActivity(new Intent(getContext(), ScaleActivity.class));
                 break;
 
             default:

@@ -404,6 +404,8 @@
     <string name="body_composition_yunmai_pref">body_composition_yunmai</string>
     <string name="body_composition_omron_pref">body_composition_omron</string>
     <string name="key_blood_pressure">key_blood_pressure</string>
+    <string name="dashboard_charts">Dashboard Charts</string>
+    <string name="measurements">Measurements</string>
 
     <!-- SURVEY -->
     <string name="survey_select_an_answer">Select an answer&#8230;</string>
