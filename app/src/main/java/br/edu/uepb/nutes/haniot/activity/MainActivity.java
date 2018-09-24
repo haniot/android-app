@@ -24,7 +24,6 @@ import android.view.MenuItem;
 import android.widget.Toast;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.account.LoginActivity;
-import br.edu.uepb.nutes.haniot.activity.settings.ManageMeasurementsActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.SettingsActivity;
 import br.edu.uepb.nutes.haniot.adapter.FragmentPageAdapter;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
@@ -78,9 +77,8 @@ public class MainActivity extends AppCompatActivity {
         checkLastChildAndUpdateTabTitle();
 
         newMeasureButton.setOnClickListener(v -> {
-//            Intent it = new Intent(MainActivity.this, ManageMeasurements.class);
-            Intent it = new Intent(MainActivity.this,
-                    ManageMeasurementsActivity.class);
+          Intent it = new Intent(this, SettingsActivity.class);
+            it.putExtra("settingType",2);
             startActivity(it);
         });
     }
@@ -226,7 +224,9 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(getApplicationContext(), ManageChildrenActivity.class));
                 break;
             case R.id.btnMenuMainSettings:
-                startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+                Intent it = new Intent(this, SettingsActivity.class);
+                it.putExtra("settingType",1);
+                startActivity(it);
                 break;
             default:
                 break;

@@ -2,11 +2,18 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- Used to set the dashboard progressbars -->
-    <PreferenceCategory
-        android:title="@string/dashboard_charts"
-        android:singleLineTitle="true">
+    <!--<PreferenceCategory-->
+        <!--android:title="@string/dashboard_charts"-->
+        <!--android:singleLineTitle="true">-->
 
-    </PreferenceCategory>
+        <!--<ListPreference-->
+            <!--android:title="Dashboard"-->
+            <!--android:defaultValue="1"-->
+            <!--android:entries="@array/testearray"-->
+            <!--android:entryValues="@array/testearray"-->
+            <!--/>-->
+
+    <!--</PreferenceCategory>-->
 
     <!-- Used to set the grid measurements -->
     <PreferenceCategory

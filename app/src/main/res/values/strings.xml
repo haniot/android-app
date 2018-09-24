@@ -406,6 +406,12 @@
     <string name="key_blood_pressure">key_blood_pressure</string>
     <string name="dashboard_charts">Dashboard Charts</string>
     <string name="measurements">Measurements</string>
+    <string-array name="testearray">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
 
     <!-- SURVEY -->
     <string name="survey_select_an_answer">Select an answer&#8230;</string>

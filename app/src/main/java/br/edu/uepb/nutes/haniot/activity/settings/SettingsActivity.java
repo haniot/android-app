@@ -1,8 +1,12 @@
 package br.edu.uepb.nutes.haniot.activity.settings;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
+
+import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.utils.Log;
 
 /**
  * SettingsActivity implementation.
@@ -12,6 +16,10 @@ import android.view.MenuItem;
  * @copyright Copyright (c) 2017, NUTES UEPB
  */
 public class SettingsActivity extends AppCompatPreferenceActivity {
+
+    public final int SETTINGSAPP = 1;
+    public final int SETTINGSMEASUREMENT = 2;
+    private int settingsType = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,7 +31,22 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        getFragmentManager().beginTransaction().replace(android.R.id.content, new MyPreferenceFragment()).commit();
+        final Intent intent = getIntent();
+        if (intent != null){
+            int result = intent.getIntExtra("settingType",0);
+            if (result == 1){
+                actionBar.setTitle(getResources().getString(R.string.action_settings));
+                getFragmentManager().beginTransaction()
+                        .replace(android.R.id.content, new MyPreferenceFragment()).commit();
+            }else if(result == 2){
+                actionBar.setTitle(getResources().getString(R.string.manage_measurement_title));
+                getFragmentManager().beginTransaction()
+                        .replace(android.R.id.content, new ManageMeasurementsPreferenceFragment())
+                        .commit();
+            }else{
+                return;
+            }
+        }
     }
 
     @Override
