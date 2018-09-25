@@ -43,3 +43,15 @@ Oapp/src/main/java/br/edu/uepb/nutes/haniot/elderly/ElderlyRegisterActivity.java
 uapp/build/generated/source/apt/debug/br/edu/uepb/nutes/haniot/devices/register/DeviceProcessFragment_ViewBinding.java,2\8\283b26690e3dbd755882dd7981d36883d8f44bdc
 x
 Happ/src/main/java/br/edu/uepb/nutes/haniot/adapter/base/BaseAdapter.java,4\7\4773c56343e8c33ed076f621136366c4d6544e5a
+V
+&app/src/main/res/values-pt/strings.xml,b\9\b9c30540e6209ff807329cc1f6f3e0a4405fd03a
+S
+#app/src/main/res/values/strings.xml,d\2\d2281fbb3027de2722081a53408dd77628bf080e
+i
+9app/src/main/jni/antidote/src/communication/association.c,0\8\08b41b7b8a360338d87a3400bc575ddeac405ddc
+t
+Dapp/src/main/java/br/edu/uepb/nutes/haniot/model/dao/ElderlyDAO.java,5\a\5a4915e9f5f7b7b8360eeb4f7745de56e5011238
+s
+Capp/src/main/java/br/edu/uepb/nutes/haniot/model/dao/DeviceDAO.java,5\2\5239306070102b40e0fa9bd103475a9cd1459fc8
+€
+Papp/build/generated/source/apt/debug/br/edu/uepb/nutes/haniot/model/Device_.java,0\2\028fb679752796c9d8d443c5e728d7763af0e8eb

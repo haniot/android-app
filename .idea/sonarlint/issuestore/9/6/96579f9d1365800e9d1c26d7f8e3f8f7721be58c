@@ -1,16 +1,16 @@
 
-[squid:UnusedPrivateMethod"3Remove this unused private "hasPermissions" method.(Ãì¨Üÿÿÿÿÿ
-S"squid:SwitchLastCaseIsDefaultCheck""Add a default case to this switch.(øå´¡ÿÿÿÿÿ
-<squid:S1068"'Remove this unused "TAG" private field.(¸·µù
-esquid:S1301"KReplace this "switch" statement by "if" statements to increase readability.(øå´¡ÿÿÿÿÿ
+Bsquid:S1604"(Make this anonymous inner class a lambda(˜ã¯þÿÿÿÿ
 esquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(ßÓŒðýÿÿÿÿ
-Isquid:S1905"/Remove this unnecessary cast to "DrawerLayout".(ÐÍè¨þÿÿÿÿ
+Bsquid:S1604"(Make this anonymous inner class a lambda(˜ã¯þÿÿÿÿ
 6squid:S1170"!Make this final field static too.(¸·µù
+~squid:S00116"cRename this field "REQUEST_ENABLE_BLUETOOTH" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(«Ã³Ñþÿÿÿÿ
+[squid:UnusedPrivateMethod"3Remove this unused private "hasPermissions" method.(Ãì¨Üÿÿÿÿÿ
+csquid:MaximumInheritanceDepth"<This class has 7 parents which is greater than 5 authorized.(Žƒ¿
+Isquid:S1905"/Remove this unnecessary cast to "DrawerLayout".(ÐÍè¨þÿÿÿÿ
+}squid:S00116"bRename this field "REQUEST_ENABLE_LOCATION" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(œµì‘þÿÿÿÿ
+dsquid:S00116"NRename this field "TAG" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¸·µù
+S"squid:SwitchLastCaseIsDefaultCheck""Add a default case to this switch.(øå´¡ÿÿÿÿÿ
+esquid:S1301"KReplace this "switch" statement by "if" statements to increase readability.(øå´¡ÿÿÿÿÿ
+<squid:S1068"'Remove this unused "TAG" private field.(¸·µù
 ;squid:S1170"!Make this final field static too.(«Ã³Ñþÿÿÿÿ
 ;squid:S1170"!Make this final field static too.(œµì‘þÿÿÿÿ
-Bsquid:S1604"(Make this anonymous inner class a lambda(˜ã¯þÿÿÿÿ
-Bsquid:S1604"(Make this anonymous inner class a lambda(˜ã¯þÿÿÿÿ
-dsquid:S00116"NRename this field "TAG" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¸·µù
-~squid:S00116"cRename this field "REQUEST_ENABLE_BLUETOOTH" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(«Ã³Ñþÿÿÿÿ
-}squid:S00116"bRename this field "REQUEST_ENABLE_LOCATION" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(œµì‘þÿÿÿÿ
-csquid:MaximumInheritanceDepth"<This class has 7 parents which is greater than 5 authorized.(Žƒ¿

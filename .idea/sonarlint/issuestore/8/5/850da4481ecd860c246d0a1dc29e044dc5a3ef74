@@ -1,9 +1,9 @@
 
-Z"squid:SwitchLastCaseIsDefaultCheck""Add a default case to this switch.(øå´¡ÿÿÿÿÿ8Ìö›¹ß,
-tsquid:ModifiersOrderCheck"EReorder the modifiers to comply with the Java Language Specification.(Èà±õùÿÿÿÿ8Ìö›¹ß,
 Hsquid:S1068"'Remove this unused "TAG" private field.(²¨ªêıÿÿÿÿ8Ìö›¹ß,
-lsquid:S1301"KReplace this "switch" statement by "if" statements to increase readability.(øå´¡ÿÿÿÿÿ8Ìö›¹ß,
-gsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(Å†Ç¾8Ìö›¹ß,
-Bsquid:S1170"!Make this final field static too.(²¨ªêıÿÿÿÿ8Ìö›¹ß,
 psquid:S00116"NRename this field "TAG" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(²¨ªêıÿÿÿÿ8Ìö›¹ß,
 jsquid:MaximumInheritanceDepth"<This class has 7 parents which is greater than 5 authorized.(ñ€Ò“8Ìö›¹ß,
+tsquid:ModifiersOrderCheck"EReorder the modifiers to comply with the Java Language Specification.(Èà±õùÿÿÿÿ8Ìö›¹ß,
+lsquid:S1301"KReplace this "switch" statement by "if" statements to increase readability.(øå´¡ÿÿÿÿÿ8Ìö›¹ß,
+Z"squid:SwitchLastCaseIsDefaultCheck""Add a default case to this switch.(øå´¡ÿÿÿÿÿ8Ìö›¹ß,
+gsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(Å†Ç¾8Ìö›¹ß,
+Bsquid:S1170"!Make this final field static too.(²¨ªêıÿÿÿÿ8Ìö›¹ß,

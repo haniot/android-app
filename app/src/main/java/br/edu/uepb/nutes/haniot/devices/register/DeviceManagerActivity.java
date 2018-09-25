@@ -1,6 +1,5 @@
 package br.edu.uepb.nutes.haniot.devices.register;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -44,7 +43,6 @@ import butterknife.ButterKnife;
 
 public class DeviceManagerActivity extends AppCompatActivity {
     private final String LOG_TAG = getClass().getSimpleName();
-    private Context context;
 
     private final String NUMBER_MODEL_THERM_DL8740 = "DL8740";
     private final String NUMBER_MODEL_GLUCOMETER_PERFORMA = "Performa Connect";
@@ -54,11 +52,6 @@ public class DeviceManagerActivity extends AppCompatActivity {
     private final String NUMBER_MODEL_HEART_RATE_H10 = "H10";
     private final String NUMBER_MODEL_SMARTBAND_MI2 = "MI Band 2";
     private final String NUMBER_MODEL_PRESSURE_BP792IT = "BP792IT";
-
-    private DeviceDAO mDeviceDAO;
-
-    //class attributes AlertDialog.
-    private AlertDialog alert;
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -89,8 +82,12 @@ public class DeviceManagerActivity extends AppCompatActivity {
 
     private Server server;
     private Session session;
+
     private DeviceAdapter mAdapterDeviceAvailable;
     private DeviceAdapter mAdapterDeviceRegistered;
+
+    private DeviceDAO mDeviceDAO;
+    private AlertDialog alert;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -166,7 +163,6 @@ public class DeviceManagerActivity extends AppCompatActivity {
                 for(Device mDevices: devicesRegistered){
                     mDeviceDAO.save(mDevices);
                 }
-
                 populateDevicesRegistered(devicesRegistered);
                 populateDevicesAvailable(mDeviceDAO.list(session.getIdLogged()));
                 displayLoading(false);
@@ -369,7 +365,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
         builder.setPositiveButton(R.string.remove, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface arg0, int arg1) {
                 //removes the device from the server database
-                removeDeviceRegister(device.get_id(),device);
+                removeDeviceRegister(device);
             }
         });
         //define a button how to cancel.
@@ -380,22 +376,17 @@ public class DeviceManagerActivity extends AppCompatActivity {
         });
         //create the AlertDialog
         alert = builder.create();
-        //Exibe
         alert.show();
     }
-    /**
-     * Remove device association with user.
-     *
-     * @param deviceId {@link String}
-     */
-    private void removeDeviceRegister(String deviceId, Device device) {
+
+    private void removeDeviceRegister(Device device) {
         // TODO 1 - Abrir dialog para confirmacao
         // TODO 2 - Remover associacao no servidor
         // TODO 3 - Remover do banco local
         // TODO 4 - Atualizar UI
 
         displayLoading(true);
-        String path = "devices/:deviceId/users/:deviceId/".concat(session.get_idLogged());
+        String path = "devices/".concat(device.get_id()).concat("/users/").concat(session.get_idLogged());
         server.delete(path, new Server.Callback() {
             @Override
             public void onError(JSONObject result) {
@@ -405,9 +396,9 @@ public class DeviceManagerActivity extends AppCompatActivity {
             @Override
             public void onSuccess(JSONObject result) {
 
+                mDeviceDAO.remove(device);
 
                 List<Device> devicesRegistered = jsonToListDevice(result);
-
                 populateDevicesRegistered(devicesRegistered);
                 populateDevicesAvailable(mDeviceDAO.list(session.getIdLogged()));
                 displayLoading(false);
