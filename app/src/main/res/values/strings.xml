@@ -395,14 +395,6 @@
     <string name="childName">childName</string>
     <string name="noPatientSelected">No patient selected</string>
     <string name="unit_kilometer">KM</string>
-    <string name="blood_pressure_monitor_pref">blood_pressure_monitor</string>
-    <string name="heart_rate_sensor_polar_h10_pref">heart_rate_sensor_polar_h10</string>
-    <string name="heart_rate_sensor_polar_h7_pref">heart_rate_sensor_polar_h7</string>
-    <string name="smart_band_pref">smart_band</string>
-    <string name="ear_thermometer_pref">ear_thermometer</string>
-    <string name="accu_check_pref">accu_check</string>
-    <string name="body_composition_yunmai_pref">body_composition_yunmai</string>
-    <string name="body_composition_omron_pref">body_composition_omron</string>
     <string name="dashboard_charts">Dashboard Charts</string>
     <string name="measurements">Measurements</string>
     <string name="key_blood_pressure">key_blood_pressure</string>
@@ -413,12 +405,13 @@
     <string name="key_accu_check">key_accu_check</string>
     <string name="key_yunmai">key_yunmai</string>
     <string name="key_omron">key_omron</string>
-    <string-array name="testearray">
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-        <item>4</item>
+    <string-array name="array_dashboard_charts_options">
+        <item>Steps, Calories, Kilometers</item>
     </string-array>
+    <string-array name="array_dashboard_entries">
+        <item>1</item>
+    </string-array>
+    <string name="choose_dashboard_charts">Choose the dashboard charts</string>
 
     <!-- SURVEY -->
     <string name="survey_select_an_answer">Select an answer&#8230;</string>

@@ -17,10 +17,6 @@ import br.edu.uepb.nutes.haniot.utils.Log;
  */
 public class SettingsActivity extends AppCompatPreferenceActivity {
 
-    public final int SETTINGSAPP = 1;
-    public final int SETTINGSMEASUREMENT = 2;
-    private int settingsType = 0;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,6 +27,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
+//        Get tne type of settings, 1 is to app configurations and 2 is to measurement
+//        configurations
         final Intent intent = getIntent();
         if (intent != null){
             int result = intent.getIntExtra("settingType",0);

@@ -43,10 +43,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.ManageMeasurements"
-            android:label="@string/title_activity_manage_measurements"
-            android:theme="@style/AppTheme" />
-        <activity
             android:name=".activity.MainActivity"
             android:screenOrientation="sensor" />
         <activity

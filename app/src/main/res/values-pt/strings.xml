@@ -178,6 +178,14 @@
     <string name="key_accu_check">key_accu_check</string>
     <string name="key_yunmai">key_yunmai</string>
     <string name="key_omron">key_omron</string>
+    <string-array name="array_dashboard_charts_options">
+        <item>Passos, Calorias, Quilômetros</item>
+    </string-array>
+    <string-array name="array_dashboard_entries">
+        <item>1</item>
+    </string-array>
+    <string name="choose_dashboard_charts">Escolha os gráficos do dashboard</string>
+
     <!-- END SETTINGS -->
 
 
