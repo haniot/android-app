@@ -2,8 +2,10 @@ package br.edu.uepb.nutes.haniot.fragment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -47,6 +49,8 @@ public class DashDevicesGridFragment extends Fragment implements OnRecyclerViewL
     private Context mContext;
     private GridDashAdapter mAdapter;
 
+    private SharedPreferences preferences;
+
     @BindView(R.id.gridMeasurement)
     RecyclerView gridMeasurement;
 
@@ -62,6 +66,10 @@ public class DashDevicesGridFragment extends Fragment implements OnRecyclerViewL
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         session = new Session(mContext);
+
+        PreferenceManager.setDefaultValues(
+                getActivity(),R.xml.pref_manage_measurements, false);
+        this.preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
         //Create the icon list of grid items
         iconList.add(R.drawable.ic_blood_pressure);
@@ -131,9 +139,6 @@ public class DashDevicesGridFragment extends Fragment implements OnRecyclerViewL
         gridMeasurement.setLayoutManager(new GridLayoutManager(mContext,
                 calculateNoOfColumns(mContext)));
         gridMeasurement.setItemAnimator(new DefaultItemAnimator());
-//        gridMeasurement.addItemDecoration(new GridSpacingItemDecoration(mContext,
-//                R.dimen.item_dimen_dashboard));
-        //Method used to fix lag on scroll in recyclerview
         gridMeasurement.setNestedScrollingEnabled(false);
 
         mAdapter.setListener(this);
@@ -165,29 +170,29 @@ public class DashDevicesGridFragment extends Fragment implements OnRecyclerViewL
         gridMeasurement.removeAllViews();
 
         //Pega os dados que foram selecionados nas preferencias
-        Boolean bloodPressureMonitor = session.getBoolean(getResources()
-                .getString(R.string.blood_pressure_monitor_pref));
+        Boolean bloodPressureMonitor = getPreferenceBoolean(
+                getResources().getString(R.string.key_blood_pressure));
 
-        Boolean heartRateH10 = session.getBoolean(getResources()
-                .getString(R.string.heart_rate_sensor_polar_h10_pref));
+        Boolean heartRateH7 = getPreferenceBoolean(getResources()
+                .getString(R.string.key_heart_H7));
 
-        Boolean heartRateH7 = session.getBoolean(getResources()
-                .getString(R.string.heart_rate_sensor_polar_h7_pref));
+        Boolean heartRateH10 = getPreferenceBoolean(getResources()
+                .getString(R.string.key_heart_H10));
 
-        Boolean smartBand = session.getBoolean(getResources()
-                .getString(R.string.smart_band_pref));
+        Boolean smartBand = getPreferenceBoolean(getResources()
+                .getString(R.string.key_smartband));
 
-        Boolean earThermometer = session.getBoolean(getResources()
-                .getString(R.string.ear_thermometer_pref));
+        Boolean earThermometer = getPreferenceBoolean(getResources()
+                .getString(R.string.key_ear_thermometer));
 
-        Boolean accuCheck = session.getBoolean(getResources()
-                .getString(R.string.accu_check_pref));
+        Boolean accuCheck = getPreferenceBoolean(getResources()
+                .getString(R.string.key_accu_check));
 
-        Boolean bodyCompositionYunmai = session.getBoolean(getResources()
-                .getString(R.string.body_composition_yunmai_pref));
+        Boolean bodyCompositionYunmai = getPreferenceBoolean(getResources()
+                .getString(R.string.key_yunmai));
 
-        Boolean bodyCompositionOmron = session.getBoolean(getResources()
-                .getString(R.string.body_composition_omron_pref));
+        Boolean bodyCompositionOmron = getPreferenceBoolean(getResources()
+                .getString(R.string.key_omron));
 
         //Adiciona na lista de itens selecionados
         List<Boolean> listaSwitchPressionados = new ArrayList<>();
@@ -208,6 +213,10 @@ public class DashDevicesGridFragment extends Fragment implements OnRecyclerViewL
         }
         mAdapter.clearItems();
         mAdapter.addItems(buttonList);
+    }
+
+    public Boolean getPreferenceBoolean(String key){
+        return preferences.getBoolean(key, false);
     }
 
     @Override

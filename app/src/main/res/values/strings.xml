@@ -403,9 +403,16 @@
     <string name="accu_check_pref">accu_check</string>
     <string name="body_composition_yunmai_pref">body_composition_yunmai</string>
     <string name="body_composition_omron_pref">body_composition_omron</string>
-    <string name="key_blood_pressure">key_blood_pressure</string>
     <string name="dashboard_charts">Dashboard Charts</string>
     <string name="measurements">Measurements</string>
+    <string name="key_blood_pressure">key_blood_pressure</string>
+    <string name="key_heart_H7">key_heart_H7</string>
+    <string name="key_heart_H10">key_heart_H10</string>
+    <string name="key_smartband">key_smartband</string>
+    <string name="key_ear_thermometer">key_ear_thermometer</string>
+    <string name="key_accu_check">key_accu_check</string>
+    <string name="key_yunmai">key_yunmai</string>
+    <string name="key_omron">key_omron</string>
     <string-array name="testearray">
         <item>1</item>
         <item>2</item>

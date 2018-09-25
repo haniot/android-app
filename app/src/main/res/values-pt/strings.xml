@@ -170,6 +170,14 @@
     <string name="choose_email_client">Escolha o cliente de email</string>
     <string name="email_contact">contact@nutes.uepb.edu.br</string>
     <string name="message_not_remove">Por favor não remover esta informação.</string>
+    <string name="key_blood_pressure">key_blood_pressure</string>
+    <string name="key_heart_H7">key_heart_H7</string>
+    <string name="key_heart_H10">key_heart_H10</string>
+    <string name="key_smartband">key_smartband</string>
+    <string name="key_ear_thermometer">key_ear_thermometer</string>
+    <string name="key_accu_check">key_accu_check</string>
+    <string name="key_yunmai">key_yunmai</string>
+    <string name="key_omron">key_omron</string>
     <!-- END SETTINGS -->
 
 
