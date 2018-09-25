@@ -13,8 +13,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="16dp"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         android:text="Nome:" />
 
     <TextView
@@ -22,12 +22,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@id/textNameChild"
-        android:layout_toEndOf="@id/textNameChild"
         android:layout_marginStart="30dp"
-        android:textStyle="bold"
+        android:layout_toEndOf="@id/textNameChild"
+        android:text="Tiago santos"
         android:textSize="18dp"
 
-        android:text="Tiago santos"
+        android:textStyle="bold"
 
         />
 
@@ -35,8 +35,8 @@
         android:id="@+id/textIdChildren"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/textNameChild"
         android:layout_alignRight="@id/textNameChild"
+        android:layout_below="@id/textNameChild"
         android:layout_marginTop="8dp"
         android:text="@string/id" />
 
@@ -75,9 +75,9 @@
         android:id="@+id/btnSelectChildren"
         android:layout_width="40dp"
         android:layout_height="40dp"
+        android:layout_centerVertical="true"
         android:layout_marginEnd="16dp"
         android:layout_toStartOf="@id/btnDeleteChild"
-        android:layout_centerVertical="true"
         android:background="@mipmap/ic_select_children" />
 
     <android.support.v7.widget.AppCompatButton
@@ -85,8 +85,8 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_alignParentEnd="true"
-        android:layout_marginEnd="16dp"
         android:layout_centerVertical="true"
+        android:layout_marginEnd="16dp"
         android:background="@drawable/ic_trash" />
 
     <View

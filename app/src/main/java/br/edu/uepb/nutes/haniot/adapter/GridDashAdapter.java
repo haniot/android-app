@@ -1,6 +1,7 @@
 package br.edu.uepb.nutes.haniot.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -48,7 +49,7 @@ public class GridDashAdapter extends BaseAdapter<ItemGrid> {
             final ItemGrid ig = itemsList.get(position);
             ViewHolder h = (ViewHolder) holder;
 
-            h.layoutItemGrid.setBackgroundResource(R.drawable.border_button_grid);
+//            h.layoutItemGrid.setBackgroundResource(R.drawable.border_button_grid);
             h.imageIten.setImageResource(ig.getIcon());
             h.textDescription.setText(ig.getDescription());
             h.textName.setText(ig.getName());

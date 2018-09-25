@@ -131,8 +131,8 @@ public class DashDevicesGridFragment extends Fragment implements OnRecyclerViewL
         gridMeasurement.setLayoutManager(new GridLayoutManager(mContext,
                 calculateNoOfColumns(mContext)));
         gridMeasurement.setItemAnimator(new DefaultItemAnimator());
-        gridMeasurement.addItemDecoration(new GridSpacingItemDecoration(mContext,
-                R.dimen.item_dimen_dashboard));
+//        gridMeasurement.addItemDecoration(new GridSpacingItemDecoration(mContext,
+//                R.dimen.item_dimen_dashboard));
         //Method used to fix lag on scroll in recyclerview
         gridMeasurement.setNestedScrollingEnabled(false);
 
@@ -160,7 +160,6 @@ public class DashDevicesGridFragment extends Fragment implements OnRecyclerViewL
     }
 
     public void updateGrid() {
-        Log.w("TEST", "updateGrid()");
         //Limpa lista de botoes e a recyclerview
         buttonList.clear();
         gridMeasurement.removeAllViews();
