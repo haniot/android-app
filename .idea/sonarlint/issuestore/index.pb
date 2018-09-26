@@ -55,3 +55,5 @@ s
 Capp/src/main/java/br/edu/uepb/nutes/haniot/model/dao/DeviceDAO.java,5\2\5239306070102b40e0fa9bd103475a9cd1459fc8
 €
 Papp/build/generated/source/apt/debug/br/edu/uepb/nutes/haniot/model/Device_.java,0\2\028fb679752796c9d8d443c5e728d7763af0e8eb
+Y
+)app/src/main/jni/antidote/src/Makefile.am,3\6\36cde6ad63be2d93ef3c4c2222453b01c8a36224

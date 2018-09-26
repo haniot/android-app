@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -25,7 +26,11 @@ public class DeviceProcessFragment extends Fragment {
     @BindView(R.id.img_device_fragment)
     ImageView mImgDeviceFragment;
 
+    @BindView(R.id.bnt_find_device_fragment)
+    Button bntFindDevice;
+
     private Device mDevice;
+    private DeviceRegisterActivity mDeviceRegisterActivity;
 
 
     public DeviceProcessFragment() {
@@ -48,6 +53,8 @@ public class DeviceProcessFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle bundle = getArguments();
+        mDeviceRegisterActivity = new DeviceRegisterActivity();
+
         if (bundle.containsKey(DeviceRegisterActivity.EXTRA_DEVICE)) {
             mDevice = bundle.getParcelable(DeviceRegisterActivity.EXTRA_DEVICE);
         }
@@ -57,6 +64,15 @@ public class DeviceProcessFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_device_process, container, false);
         ButterKnife.bind(this, view);
+
+        //passes instance of button clicked
+        bntFindDevice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDeviceRegisterActivity.onClick(v);
+            }
+        });
+
         return view;
     }
 
@@ -101,6 +117,6 @@ public class DeviceProcessFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnDeviceRegisterListener {
-        void onClickStartScan(Device device);
+        void onClickStartScan();
     }
 }

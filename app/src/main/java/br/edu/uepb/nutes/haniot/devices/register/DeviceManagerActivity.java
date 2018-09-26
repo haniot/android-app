@@ -298,11 +298,11 @@ public class DeviceManagerActivity extends AppCompatActivity {
                 "Omron", NUMBER_MODEL_SCALE_HBF206IT,
                 R.drawable.device_scale_omron_hbf206it));
 
-        devicesAvailable.add(new Device("Heart Rate Sensor ".concat(NUMBER_MODEL_HEART_RATE_H7),
+        devicesAvailable.add(new Device("Heart Rate Sensor H7".concat(NUMBER_MODEL_HEART_RATE_H7),
                 "Polar", NUMBER_MODEL_HEART_RATE_H7,
                 R.drawable.device_heart_rate_h7));
 
-        devicesAvailable.add(new Device("Heart Rate Sensor ".concat(NUMBER_MODEL_HEART_RATE_H10),
+        devicesAvailable.add(new Device("Heart Rate Sensor H10".concat(NUMBER_MODEL_HEART_RATE_H10),
                 "Polar", NUMBER_MODEL_HEART_RATE_H10,
                 R.drawable.device_heart_rate_h10));
 
@@ -343,7 +343,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
     }
 
     private void openRegister(Device device) {
-        // TODO 1 - Abrir tela para aplicar fluxo de repectivo do device selecionado
+        // TODO 1 - Abrir tela para aplicar fluxo do repectivo device selecionado
         // TODO 2 - Aplicar processo de scanner
         // TODO 3 - Retornar via callback do fragments para tela o retorno de sucesso com as infors necessárias do device
         // TODO 4 - Enviar para o servidor
