@@ -170,22 +170,6 @@
     <string name="choose_email_client">Escolha o cliente de email</string>
     <string name="email_contact">contact@nutes.uepb.edu.br</string>
     <string name="message_not_remove">Por favor não remover esta informação.</string>
-    <string name="key_blood_pressure">key_blood_pressure</string>
-    <string name="key_heart_H7">key_heart_H7</string>
-    <string name="key_heart_H10">key_heart_H10</string>
-    <string name="key_smartband">key_smartband</string>
-    <string name="key_ear_thermometer">key_ear_thermometer</string>
-    <string name="key_accu_check">key_accu_check</string>
-    <string name="key_yunmai">key_yunmai</string>
-    <string name="key_omron">key_omron</string>
-    <string-array name="array_dashboard_charts_options">
-        <item>Passos, Calorias, Quilômetros</item>
-    </string-array>
-    <string-array name="array_dashboard_entries">
-        <item>1</item>
-    </string-array>
-    <string name="choose_dashboard_charts">Escolha os gráficos do dashboard</string>
-
     <!-- END SETTINGS -->
 
 
@@ -344,6 +328,30 @@
     <string name="body_composition_omron_pref">body_composition_omron</string>
     <string name="dashboard_charts">Gráficos do dashboard</string>
     <string name="measurements">Medições</string>
+    <string name="key_steps">key_steps</string>
+    <string name="key_activity">key_activity</string>
+    <string name="key_sleep">key_sleep</string>
+    <string name="key_weight">key_weight</string>
+    <string name="key_blood_glucose">key_blood_glucose</string>
+    <string name="key_blood_pressure">key_blood_pressure</string>
+    <string name="key_temperature">key_temperature</string>
+    <string name="key_heart_rate">key_heart_rate</string>
+    <string name="key_calories">key_calories</string>
+    <string name="key_distance">key_distance</string>
+    <string-array name="array_dashboard_charts_options">
+        <item>Passos, Calorias, Quilômetros</item>
+    </string-array>
+    <string-array name="array_dashboard_entries">
+        <item>1</item>
+    </string-array>
+    <string name="choose_dashboard_charts">Escolha os gráficos do dashboard</string>
+    <string name="activity">Atividade</string>
+    <string name="blood_glucose">Glicose no sangue</string>
+    <string name="steps">Passos</string>
+    <string name="sleep">Sono</string>
+    <string name="unit_temperature">ºC</string>
+    <string name="unit_weight">kg</string>
+    <string name="unit_hour">h</string>
 
     <!-- END OF STRINGS FOR TABLET -->
 

@@ -27,6 +27,7 @@
                 android:clipToPadding="false"
                 android:foregroundGravity="center"
                 android:scrollbars="vertical"
+                android:tag="tablet"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior" />
         </RelativeLayout>
     </android.support.v4.widget.NestedScrollView>

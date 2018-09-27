@@ -8,6 +8,11 @@ public class ItemGridType {
     public static final int BLOOD_GLUCOSE = 5;
     public static final int BLOOD_PRESSURE = 6;
     public static final int HEART_RATE = 7;
+    public static final int SLEEP = 8;
+
+    private ItemGridType(){
+
+    }
 
     public static int[] SUPPORTED_TYPES = {
             STEPS,
@@ -16,6 +21,11 @@ public class ItemGridType {
             WEIGHT,
             TEMPERATURE,
             BLOOD_GLUCOSE,
-            BLOOD_PRESSURE
+            BLOOD_PRESSURE,
+            SLEEP
     };
+
+    public static int[] getSupportedTypes() {
+        return SUPPORTED_TYPES;
+    }
 }

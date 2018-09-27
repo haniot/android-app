@@ -1,18 +1,60 @@
 package br.edu.uepb.nutes.haniot.model;
 
+import android.content.Context;
+
+import br.edu.uepb.nutes.haniot.R;
+
 public class ItemGrid {
 
     private int icon;
     private String description;
     private String name;
+    private String measurementValue;
+    private String measurementInitials;
+    //used to access strings
+    private Context context;
 
     public ItemGrid() {
     }
 
-    public ItemGrid(int icon, String description, String name) {
+    public ItemGrid(Context context,
+                    int icon,
+                    String description,
+                    String name,
+                    String measurementValue,
+                    int type) {
+
+        this.context = context;
         this.icon = icon;
         this.description = description;
         this.name = name;
+        this.measurementValue = measurementValue;
+        switch (type){
+
+            case ItemGridType.HEART_RATE:
+                measurementInitials = context.getResources().getString(R.string.unit_pulse);
+                break;
+            case ItemGridType.BLOOD_GLUCOSE:
+                measurementInitials = context.getResources().getString(R.string.unit_glucose_mg_dL);
+                break;
+            case ItemGridType.BLOOD_PRESSURE:
+                measurementInitials = context.getResources().getString(R.string.unit_pressure);
+                break;
+                case ItemGridType.TEMPERATURE:
+                    measurementInitials = context.getResources()
+                            .getString(R.string.unit_temperature);
+                    break;
+            case ItemGridType.WEIGHT:
+                measurementInitials = context.getResources().getString(R.string.unit_weight);
+                break;
+            case ItemGridType.SLEEP:
+                measurementInitials = context.getResources().getString(R.string.unit_hour);
+                break;
+            case ItemGridType.ACTIVITY:
+                measurementInitials = context.getResources().getString(R.string.unit_kilometer);
+                break;
+
+        }
     }
 
     public int getIcon() {
@@ -37,6 +79,22 @@ public class ItemGrid {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getMeasurementValue() {
+        return measurementValue;
+    }
+
+    public void setMeasurementValue(String measurementValue) {
+        this.measurementValue = measurementValue;
+    }
+
+    public String getMeasurementInitials() {
+        return measurementInitials;
+    }
+
+    public void setMeasurementInitials(String measurementInitials) {
+        this.measurementInitials = measurementInitials;
     }
 
     @Override

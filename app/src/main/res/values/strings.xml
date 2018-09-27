@@ -397,14 +397,16 @@
     <string name="unit_kilometer">KM</string>
     <string name="dashboard_charts">Dashboard Charts</string>
     <string name="measurements">Measurements</string>
+    <string name="key_steps">key_steps</string>
+    <string name="key_activity">key_activity</string>
+    <string name="key_sleep">key_sleep</string>
+    <string name="key_weight">key_weight</string>
+    <string name="key_blood_glucose">key_blood_glucose</string>
     <string name="key_blood_pressure">key_blood_pressure</string>
-    <string name="key_heart_H7">key_heart_H7</string>
-    <string name="key_heart_H10">key_heart_H10</string>
-    <string name="key_smartband">key_smartband</string>
-    <string name="key_ear_thermometer">key_ear_thermometer</string>
-    <string name="key_accu_check">key_accu_check</string>
-    <string name="key_yunmai">key_yunmai</string>
-    <string name="key_omron">key_omron</string>
+    <string name="key_temperature">key_temperature</string>
+    <string name="key_heart_rate">key_heart_rate</string>
+    <string name="key_calories">key_calories</string>
+    <string name="key_distance">key_distance</string>
     <string-array name="array_dashboard_charts_options">
         <item>Steps, Calories, Kilometers</item>
     </string-array>
@@ -412,6 +414,13 @@
         <item>1</item>
     </string-array>
     <string name="choose_dashboard_charts">Choose the dashboard charts</string>
+    <string name="activity">Activity</string>
+    <string name="blood_glucose">Blood glucose</string>
+    <string name="steps">Steps</string>
+    <string name="sleep">Sleep</string>
+    <string name="unit_temperature">ºF</string>
+    <string name="unit_weight">lb</string>
+    <string name="unit_hour">h</string>
 
     <!-- SURVEY -->
     <string name="survey_select_an_answer">Select an answer&#8230;</string>

@@ -5,13 +5,34 @@
     <PreferenceCategory
         android:title="@string/dashboard_charts">
 
-        <ListPreference
-            android:icon="@drawable/ic_dashboard_chart_128"
-            android:title="Dashboard"
-            android:summary="Escolha os valores"
-            android:entries="@array/array_dashboard_charts_options"
-            android:entryValues="@array/array_dashboard_entries"
-            android:defaultValue="1"/>
+        <!--<ListPreference-->
+            <!--android:icon="@drawable/ic_dashboard_chart_128"-->
+            <!--android:title="Dashboard"-->
+            <!--android:summary="Escolha os valores"-->
+            <!--android:entries="@array/array_dashboard_charts_options"-->
+            <!--android:entryValues="@array/array_dashboard_entries"-->
+            <!--android:defaultValue="1"/>-->
+        <SwitchPreference
+            android:icon="@drawable/ic_steps_shoes"
+            android:defaultValue="true"
+            android:key="@string/key_steps"
+            android:title="@string/steps"
+            android:enabled="false"
+            />
+        <SwitchPreference
+            android:icon="@drawable/ic_calories_64"
+            android:defaultValue="true"
+            android:key="@string/key_calories"
+            android:title="@string/Calories"
+            android:enabled="false"
+            />
+        <SwitchPreference
+            android:icon="@drawable/ic_distance_64"
+            android:defaultValue="true"
+            android:key="@string/key_distance"
+            android:title="@string/distance"
+            android:enabled="false"
+            />
 
     </PreferenceCategory>
 
@@ -21,53 +42,48 @@
         android:singleLineTitle="true"
         >
         <SwitchPreference
-            android:icon="@drawable/ic_blood_pressure_64"
+            android:icon="@drawable/ic_activity"
             android:defaultValue="false"
-            android:key="key_blood_pressure"
-            android:title="@string/blood_pressure_monitor"
+            android:key="key_activity"
+            android:title="@string/activity"
             />
         <SwitchPreference
-            android:icon="@drawable/ic_heart_64"
+            android:icon="@drawable/ic_blood_glucose"
             android:defaultValue="false"
-            android:key="key_heart_H7"
-            android:title="@string/heart_rate_sensor_description_h7"
+            android:key="@string/key_blood_glucose"
+            android:title="@string/blood_glucose"
+            />
+        <SwitchPreference
+            android:icon="@drawable/ic_blood_pressure_64"
+            android:defaultValue="false"
+            android:key="@string/key_blood_pressure"
+            android:title="@string/blood_pressure"
+            />
+        <SwitchPreference
+            android:icon="@drawable/ic_temperature"
+            android:defaultValue="false"
+            android:key="@string/key_temperature"
+            android:title="@string/temperature"
+            />
+        <SwitchPreference
+            android:icon="@drawable/ic_weight"
+            android:defaultValue="false"
+            android:key="@string/key_weight"
+            android:title="@string/weight"
+            />
+        <SwitchPreference
+            android:icon="@drawable/ic_sleeping"
+            android:defaultValue="false"
+            android:key="@string/key_sleep"
+            android:title="@string/sleep"
             />
         <SwitchPreference
             android:icon="@drawable/ic_heart_64_2"
             android:defaultValue="false"
-            android:key="key_heart_H10"
-            android:title="@string/heart_rate_sensor_h10"
+            android:key="@string/key_heart_rate"
+            android:title="@string/heart_rate"
             />
-        <SwitchPreference
-            android:icon="@drawable/ic_smartband_64"
-            android:defaultValue="false"
-            android:key="key_smartband"
-            android:title="@string/smart_band"
-            />
-        <SwitchPreference
-            android:icon="@drawable/ic_ear_thermometer_64"
-            android:defaultValue="false"
-            android:key="key_ear_thermometer"
-            android:title="@string/ear_thermometer"
-            />
-        <SwitchPreference
-            android:icon="@drawable/ic_blood_sugar_64"
-            android:defaultValue="false"
-            android:key="key_accu_check"
-            android:title="@string/accu_check"
-            />
-        <SwitchPreference
-            android:icon="@drawable/ic_balance_64"
-            android:defaultValue="false"
-            android:key="key_yunmai"
-            android:title="@string/body_composition_yunmai"
-            />
-        <SwitchPreference
-            android:icon="@drawable/ic_balance_2_64"
-            android:defaultValue="false"
-            android:key="key_omron"
-            android:title="@string/body_composition_monitor"
-            />
+
     </PreferenceCategory>
 
 </PreferenceScreen>

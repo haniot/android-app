@@ -181,7 +181,11 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
             btnArrowLeft.setEnabled(false);
             btnArrowLeft.setBackground(getResources().getDrawable(R.mipmap.ic_arrow_left_disabled));
             textDate.setEnabled(false);
-            setDataProgress(0, 0, 0);
+            try {
+                setDataProgress(0, 0, 0);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             stepsProgressBar.setEnabled(false);
             caloriesProgressBar.setEnabled(false);
             distanceProgressBar.setEnabled(false);
@@ -246,7 +250,11 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
 
                             @Override
                             public void run() {
-                                setDataProgress(steps, calories, distance);
+                                try {
+                                    setDataProgress(steps, calories, distance);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
                             }
                         }, 200);
                     }
@@ -256,7 +264,11 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
                             @Override
                             public void run() {
                                 //No caso de não encontrar valores, o dashboard é zerado
-                                setDataProgress(0, 0, 0);
+                                try {
+                                    setDataProgress(0, 0, 0);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
                             }
                         });
                     } catch (Exception e) {
@@ -338,7 +350,7 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
     }
 
     //Update the data of progressbar of dashboard
-    public void setDataProgress(int numberOfSteps, int numberOfCalories, int distance) {
+    public void setDataProgress(int numberOfSteps, int numberOfCalories, int distance) throws Exception{
 
         stepsProgressBar.setProgressWithAnimation(numberOfSteps, 2500);
         caloriesProgressBar.setProgressWithAnimation(numberOfCalories, 3000);

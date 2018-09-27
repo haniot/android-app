@@ -6,9 +6,11 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import br.edu.uepb.nutes.haniot.R;
 
@@ -49,10 +51,18 @@ public class GridDashAdapter extends BaseAdapter<ItemGrid> {
             final ItemGrid ig = itemsList.get(position);
             ViewHolder h = (ViewHolder) holder;
 
-//            h.layoutItemGrid.setBackgroundResource(R.drawable.border_button_grid);
+            /*h.imageIten.setImageResource(ig.getIcon());
+            h.textDescription.setText(ig.getDescription());
+            h.textName.setText(ig.getName());*/
+
+
             h.imageIten.setImageResource(ig.getIcon());
             h.textDescription.setText(ig.getDescription());
-            h.textName.setText(ig.getName());
+            h.textMeasurement.setText(ig.getMeasurementValue());
+            h.textMeasurementType.setText(ig.getMeasurementInitials());
+//            h.botAddMeasurement.setOnClickListener(v -> {
+//                Toast.makeText(context,"teste",Toast.LENGTH_SHORT).show();
+//            });
 
             h.mView.setOnClickListener(v -> {
                 if (GridDashAdapter.super.mListener != null) {
@@ -72,7 +82,7 @@ public class GridDashAdapter extends BaseAdapter<ItemGrid> {
     public class ViewHolder extends RecyclerView.ViewHolder {
         final View mView;
 
-        @BindView(R.id.imageIten)
+        /*@BindView(R.id.imageIten)
         ImageView imageIten;
         @BindView(R.id.textDescription)
         TextView textDescription;
@@ -81,7 +91,18 @@ public class GridDashAdapter extends BaseAdapter<ItemGrid> {
         @BindView(R.id.layoutItemGrid)
         RelativeLayout layoutItemGrid;
         @BindView(R.id.itemGridProgressBar)
-        CircularProgressBar itemGridProgressBar;
+        CircularProgressBar itemGridProgressBar;*/
+
+        @BindView(R.id.imageIten)
+        ImageView imageIten;
+        @BindView(R.id.textDescription)
+        TextView textDescription;
+        @BindView(R.id.textMeasurement)
+        TextView textMeasurement;
+        @BindView(R.id.textMeasurementType)
+        TextView textMeasurementType;
+        @BindView(R.id.botAddMeasurement)
+        Button botAddMeasurement;
 
         public ViewHolder(View itemView) {
             super(itemView);
