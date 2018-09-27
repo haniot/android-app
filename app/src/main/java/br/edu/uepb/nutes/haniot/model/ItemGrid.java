@@ -11,6 +11,7 @@ public class ItemGrid {
     private String name;
     private String measurementValue;
     private String measurementInitials;
+    private int type;
     //used to access strings
     private Context context;
 
@@ -32,29 +33,56 @@ public class ItemGrid {
         switch (type){
 
             case ItemGridType.HEART_RATE:
+
                 measurementInitials = context.getResources().getString(R.string.unit_pulse);
-                break;
-            case ItemGridType.BLOOD_GLUCOSE:
-                measurementInitials = context.getResources().getString(R.string.unit_glucose_mg_dL);
-                break;
-            case ItemGridType.BLOOD_PRESSURE:
-                measurementInitials = context.getResources().getString(R.string.unit_pressure);
-                break;
-                case ItemGridType.TEMPERATURE:
-                    measurementInitials = context.getResources()
-                            .getString(R.string.unit_temperature);
-                    break;
-            case ItemGridType.WEIGHT:
-                measurementInitials = context.getResources().getString(R.string.unit_weight);
-                break;
-            case ItemGridType.SLEEP:
-                measurementInitials = context.getResources().getString(R.string.unit_hour);
-                break;
-            case ItemGridType.ACTIVITY:
-                measurementInitials = context.getResources().getString(R.string.unit_kilometer);
+                this.type = ItemGridType.HEART_RATE;
                 break;
 
+            case ItemGridType.BLOOD_GLUCOSE:
+
+                this.type = ItemGridType.BLOOD_GLUCOSE;
+                measurementInitials = context.getResources().getString(R.string.unit_glucose_mg_dL);
+                break;
+
+            case ItemGridType.BLOOD_PRESSURE:
+
+                this.type = ItemGridType.BLOOD_PRESSURE;
+                measurementInitials = context.getResources().getString(R.string.unit_pressure);
+                break;
+
+            case ItemGridType.TEMPERATURE:
+
+                this.type = ItemGridType.TEMPERATURE;
+                measurementInitials = context.getResources()
+                            .getString(R.string.unit_temperature);
+                break;
+
+            case ItemGridType.WEIGHT:
+
+                this.type = ItemGridType.WEIGHT;
+                measurementInitials = context.getResources().getString(R.string.unit_weight);
+                break;
+
+            case ItemGridType.SLEEP:
+
+                this.type = ItemGridType.SLEEP;
+                measurementInitials = context.getResources().getString(R.string.unit_hour);
+                break;
+
+            case ItemGridType.ACTIVITY:
+
+                this.type = ItemGridType.ACTIVITY;
+                measurementInitials = context.getResources().getString(R.string.unit_kilometer);
+                break;
         }
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 
     public int getIcon() {

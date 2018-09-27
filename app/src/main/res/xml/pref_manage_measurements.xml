@@ -78,7 +78,7 @@
             android:title="@string/sleep"
             />
         <SwitchPreference
-            android:icon="@drawable/ic_heart_64_2"
+            android:icon="@drawable/ic_heart_rate_64"
             android:defaultValue="false"
             android:key="@string/key_heart_rate"
             android:title="@string/heart_rate"

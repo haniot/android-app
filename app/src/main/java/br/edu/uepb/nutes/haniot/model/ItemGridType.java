@@ -1,5 +1,7 @@
 package br.edu.uepb.nutes.haniot.model;
 
+import java.util.ArrayList;
+
 public class ItemGridType {
     public static final int STEPS = 1;
     public static final int ACTIVITY = 2;
@@ -14,18 +16,23 @@ public class ItemGridType {
 
     }
 
-    public static int[] SUPPORTED_TYPES = {
-            STEPS,
-            ACTIVITY,
-            TEMPERATURE,
-            WEIGHT,
-            TEMPERATURE,
-            BLOOD_GLUCOSE,
-            BLOOD_PRESSURE,
-            SLEEP
-    };
+    public static ArrayList<Integer> SUPPORTED_TYPES = new ArrayList<Integer>(){{
+        add(STEPS);
+        add(ACTIVITY);
+        add(TEMPERATURE);
+        add(WEIGHT);
+        add(BLOOD_GLUCOSE);
+        add(BLOOD_PRESSURE);
+        add(HEART_RATE);
+        add(SLEEP);
+    }};
 
-    public static int[] getSupportedTypes() {
+    public static ArrayList<Integer> getSupportedTypes() {
         return SUPPORTED_TYPES;
     }
+
+    public static boolean typeSupported(int type){
+        return getSupportedTypes().contains(type);
+    }
+
 }

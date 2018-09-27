@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.activity.ManuallyAddMeasurement;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.GridDashAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
@@ -91,7 +92,7 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
         iconList.add(R.drawable.ic_temperature);
         iconList.add(R.drawable.ic_weight);
         iconList.add(R.drawable.ic_sleeping);
-        iconList.add(R.drawable.ic_heart_64_2);
+        iconList.add(R.drawable.ic_heart_rate_64);
         //Create the name list of grid items
         descriptionList.add(getResources().getString(R.string.activity));
         descriptionList.add(getResources().getString(R.string.blood_glucose));
@@ -331,6 +332,15 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
 
     @Override
     public void onMenuContextClick(View v, ItemGrid item) {
-        throw new UnsupportedOperationException();
+
+        int type = item.getType();
+        Intent it = new Intent(getContext(), ManuallyAddMeasurement.class);
+        switch (type){
+            case ItemGridType.ACTIVITY:
+                startActivity(it);
+                break;
+
+        }
+
     }
 }

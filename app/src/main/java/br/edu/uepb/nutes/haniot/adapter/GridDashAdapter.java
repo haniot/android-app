@@ -18,6 +18,7 @@ import java.util.List;
 
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
+import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
 import br.edu.uepb.nutes.haniot.model.ItemGrid;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -25,6 +26,7 @@ import br.edu.uepb.nutes.haniot.adapter.base.BaseAdapter;
 
 public class GridDashAdapter extends BaseAdapter<ItemGrid> {
     private Context context;
+    public OnRecyclerViewListener botAddListener;
 
     public GridDashAdapter(Context context) {
         this.context = context;
@@ -51,18 +53,16 @@ public class GridDashAdapter extends BaseAdapter<ItemGrid> {
             final ItemGrid ig = itemsList.get(position);
             ViewHolder h = (ViewHolder) holder;
 
-            /*h.imageIten.setImageResource(ig.getIcon());
-            h.textDescription.setText(ig.getDescription());
-            h.textName.setText(ig.getName());*/
-
-
             h.imageIten.setImageResource(ig.getIcon());
             h.textDescription.setText(ig.getDescription());
             h.textMeasurement.setText(ig.getMeasurementValue());
             h.textMeasurementType.setText(ig.getMeasurementInitials());
-//            h.botAddMeasurement.setOnClickListener(v -> {
-//                Toast.makeText(context,"teste",Toast.LENGTH_SHORT).show();
-//            });
+
+            h.botAddMeasurement.setOnClickListener(v -> {
+                if (GridDashAdapter.super.mListener != null){
+                    GridDashAdapter.super.mListener.onMenuContextClick(h.botAddMeasurement, ig);
+                }
+            });
 
             h.mView.setOnClickListener(v -> {
                 if (GridDashAdapter.super.mListener != null) {
