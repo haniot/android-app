@@ -57,3 +57,9 @@ Capp/src/main/java/br/edu/uepb/nutes/haniot/model/dao/DeviceDAO.java,5\2\523930
 Papp/build/generated/source/apt/debug/br/edu/uepb/nutes/haniot/model/Device_.java,0\2\028fb679752796c9d8d443c5e728d7763af0e8eb
 Y
 )app/src/main/jni/antidote/src/Makefile.am,3\6\36cde6ad63be2d93ef3c4c2222453b01c8a36224
+<
+build.gradle,f\0\f07866736216be0ee2aba49e392191aeae700a35
+@
+app/build.gradle,f\4\f4a01d6a4fcb971362ec00a83903fd3902f52164
+P
+ app/src/main/AndroidManifest.xml,8\c\8c55c3ccc257e5907959013f99656e4c8ec3903e

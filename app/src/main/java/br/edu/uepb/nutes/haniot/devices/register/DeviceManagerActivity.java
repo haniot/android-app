@@ -44,14 +44,14 @@ import butterknife.ButterKnife;
 public class DeviceManagerActivity extends AppCompatActivity {
     private final String LOG_TAG = getClass().getSimpleName();
 
-    private final String NUMBER_MODEL_THERM_DL8740 = "DL8740";
-    private final String NUMBER_MODEL_GLUCOMETER_PERFORMA = "Performa Connect";
-    private final String NUMBER_MODEL_SCALE_1501 = "1501";
-    private final String NUMBER_MODEL_SCALE_HBF206IT = "HB-F206IT";
-    private final String NUMBER_MODEL_HEART_RATE_H7 = "H7";
-    private final String NUMBER_MODEL_HEART_RATE_H10 = "H10";
-    private final String NUMBER_MODEL_SMARTBAND_MI2 = "MI Band 2";
-    private final String NUMBER_MODEL_PRESSURE_BP792IT = "BP792IT";
+    public final String NUMBER_MODEL_THERM_DL8740 = "DL8740";
+    public final String NUMBER_MODEL_GLUCOMETER_PERFORMA = "Performa Connect";
+    public final String NUMBER_MODEL_SCALE_1501 = "1501";
+    public final String NUMBER_MODEL_SCALE_HBF206IT = "HB-F206IT";
+    public final String NUMBER_MODEL_HEART_RATE_H7 = "H7";
+    public final String NUMBER_MODEL_HEART_RATE_H10 = "H10";
+    public final String NUMBER_MODEL_SMARTBAND_MI2 = "MI Band 2";
+    public final String NUMBER_MODEL_PRESSURE_BP792IT = "BP792IT";
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -298,11 +298,11 @@ public class DeviceManagerActivity extends AppCompatActivity {
                 "Omron", NUMBER_MODEL_SCALE_HBF206IT,
                 R.drawable.device_scale_omron_hbf206it));
 
-        devicesAvailable.add(new Device("Heart Rate Sensor H7".concat(NUMBER_MODEL_HEART_RATE_H7),
+        devicesAvailable.add(new Device("Heart Rate Sensor".concat(NUMBER_MODEL_HEART_RATE_H7),
                 "Polar", NUMBER_MODEL_HEART_RATE_H7,
                 R.drawable.device_heart_rate_h7));
 
-        devicesAvailable.add(new Device("Heart Rate Sensor H10".concat(NUMBER_MODEL_HEART_RATE_H10),
+        devicesAvailable.add(new Device("Heart Rate Sensor".concat(NUMBER_MODEL_HEART_RATE_H10),
                 "Polar", NUMBER_MODEL_HEART_RATE_H10,
                 R.drawable.device_heart_rate_h10));
 
@@ -343,12 +343,6 @@ public class DeviceManagerActivity extends AppCompatActivity {
     }
 
     private void openRegister(Device device) {
-        // TODO 1 - Abrir tela para aplicar fluxo do repectivo device selecionado
-        // TODO 2 - Aplicar processo de scanner
-        // TODO 3 - Retornar via callback do fragments para tela o retorno de sucesso com as infors necessárias do device
-        // TODO 4 - Enviar para o servidor
-        // TODO 5 - Salvar no banco local
-        // TODO 6 - Retornar para essa tela (listagem dos devices cadastrados e disponíveis)
         Intent intent = new Intent(this, DeviceRegisterActivity.class);
         intent.putExtra(DeviceRegisterActivity.EXTRA_DEVICE, device);
         startActivity(intent);
@@ -380,11 +374,6 @@ public class DeviceManagerActivity extends AppCompatActivity {
     }
 
     private void removeDeviceRegister(Device device) {
-        // TODO 1 - Abrir dialog para confirmacao
-        // TODO 2 - Remover associacao no servidor
-        // TODO 3 - Remover do banco local
-        // TODO 4 - Atualizar UI
-
         displayLoading(true);
         String path = "devices/".concat(device.get_id()).concat("/users/").concat(session.get_idLogged());
         server.delete(path, new Server.Callback() {
@@ -395,7 +384,6 @@ public class DeviceManagerActivity extends AppCompatActivity {
 
             @Override
             public void onSuccess(JSONObject result) {
-
                 mDeviceDAO.remove(device);
 
                 List<Device> devicesRegistered = jsonToListDevice(result);

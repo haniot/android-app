@@ -53,7 +53,6 @@ public class DeviceProcessFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle bundle = getArguments();
-        mDeviceRegisterActivity = new DeviceRegisterActivity();
 
         if (bundle.containsKey(DeviceRegisterActivity.EXTRA_DEVICE)) {
             mDevice = bundle.getParcelable(DeviceRegisterActivity.EXTRA_DEVICE);
@@ -69,7 +68,8 @@ public class DeviceProcessFragment extends Fragment {
         bntFindDevice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mDeviceRegisterActivity.onClick(v);
+                if(mListener == null) return;
+                mListener.onClickStartScan(mDevice);
             }
         });
 
@@ -117,6 +117,6 @@ public class DeviceProcessFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnDeviceRegisterListener {
-        void onClickStartScan();
+        void onClickStartScan(Device device);
     }
 }
