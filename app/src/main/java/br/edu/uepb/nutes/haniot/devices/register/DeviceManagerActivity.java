@@ -160,7 +160,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
                 List<Device> devicesRegistered = jsonToListDevice(result);
 
                 //saves the devices coming from the server in the local database
-                for(Device mDevices: devicesRegistered){
+                for (Device mDevices : devicesRegistered) {
                     mDeviceDAO.save(mDevices);
                 }
                 populateDevicesRegistered(devicesRegistered);

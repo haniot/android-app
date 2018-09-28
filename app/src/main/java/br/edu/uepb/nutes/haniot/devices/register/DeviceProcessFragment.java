@@ -30,8 +30,6 @@ public class DeviceProcessFragment extends Fragment {
     Button bntFindDevice;
 
     private Device mDevice;
-    private DeviceRegisterActivity mDeviceRegisterActivity;
-
 
     public DeviceProcessFragment() {
         // Required empty public constructor
@@ -45,7 +43,6 @@ public class DeviceProcessFragment extends Fragment {
      */
     public static DeviceProcessFragment newInstance() {
         DeviceProcessFragment fragment = new DeviceProcessFragment();
-
         return fragment;
     }
 
@@ -68,7 +65,7 @@ public class DeviceProcessFragment extends Fragment {
         bntFindDevice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mListener == null) return;
+                if (mListener == null) return;
                 mListener.onClickStartScan(mDevice);
             }
         });
@@ -84,7 +81,7 @@ public class DeviceProcessFragment extends Fragment {
     }
 
     private void populateView() {
-        if(mDevice == null) return;
+        if (mDevice == null) return;
         mNameDeviceFragment.setText(mDevice.getName());
         mImgDeviceFragment.setImageResource(mDevice.getImg());
     }

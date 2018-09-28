@@ -38,23 +38,11 @@ public class DeviceRegisterActivity extends AppCompatActivity
 
     private final String TAG = "DeviceRegisterActivity ";
     public final static String EXTRA_DEVICE = "extra_device";
+    public final static String EXTRA_SERVICE_UUID = "extra_service_uuid";
 
-    private final String NAME_DEVICE_THERM_DL8740 = "Ear Thermometer DL8740";
-    private final String NAME_DEVICE_GLUCOMETER_PERFORMA = "Accu-Chek Performa Connect";
-    private final String NAME_DEVICE_SCALE_1501 = "Scale YUNMAI Mini 1501";
-    private final String NAME_DEVICE_SCALE_HBF206IT = "Scale OMRON HB-F206IT";
-    private final String NAME_DEVICE_HEART_RATE_H7 = "Heart Rate Sensor H7";
-    private final String NAME_DEVICE_HEART_RATE_H10 = "Heart Rate Sensor H10";
-    private final String NAME_DEVICE_SMARTBAND_MI2 = "Smartband MI Band 2";
-    private final String NAME_DEVICE_PRESSURE_BP792IT = "Blood Pressure Monitor BP792IT";
-
-    //scanner
     private static final int REQUEST_ENABLE_BLUETOOTH = 1;
     private static final int REQUEST_ENABLE_LOCATION = 2;
 
-    //scanner
-    private TextView mResultTextView;
-    private ProgressBar mProgresBar;
     private SimpleBleScanner mScanner;
 
     @BindView(R.id.toolbar)
@@ -80,25 +68,15 @@ public class DeviceRegisterActivity extends AppCompatActivity
         // open fragments default DeviceProcessFragment
         replaceFragment(deviceProcessFragment);
 
-        // Initialize scanner settings
-//        mScanner = new SimpleBleScanner.Builder()
-////                .addFilterServiceUuid(GattAttributes.SERVICE_HEALTH_THERMOMETER,
-////                        "00001310-0000-1000-8000-00805f9b34fb")
-//                .addFilterServiceUuid(getServiceUuidDevice(scannerDevice.getName()))
-//                //.addFilterName("MI Band 2")
-//                .addScanPeriod(15000) // 15s
-//                .build();
     }
 
+
     //start scanner library ble
-
-
     @Override
     protected void onResume() {
         super.onResume();
         checkPermissions();
     }
-
 
     /**
      * Checks if you have permission to use.
@@ -186,8 +164,6 @@ public class DeviceRegisterActivity extends AppCompatActivity
             if (device == null) return;
             Log.d(TAG, "onScanResult: " + device);
 
-
-
         }
 
         @Override
@@ -198,11 +174,6 @@ public class DeviceRegisterActivity extends AppCompatActivity
         @Override
         public void onFinish() {
             Log.d("MainActivity", "onFinish()");
-            mResultTextView.setText(String.valueOf(mResultTextView.getText())
-                    .concat("\n\n")
-                    .concat("onFinish()")
-            );
-            mProgresBar.setVisibility(View.GONE);
         }
 
         @Override
@@ -211,7 +182,6 @@ public class DeviceRegisterActivity extends AppCompatActivity
         }
     };
     //end scanner library ble
-
 
     /**
      * Initialize the components.
@@ -253,66 +223,13 @@ public class DeviceRegisterActivity extends AppCompatActivity
         }
     }
 
-    public String getServiceUuidDevice(String nameDevice) {
-        String service = null;
-
-        if (!nameDevice.isEmpty()) {
-            if (nameDevice.equals(NAME_DEVICE_THERM_DL8740)) {//
-                service = GattAttributes.SERVICE_HEALTH_THERMOMETER;
-            } else if (nameDevice.equals(NAME_DEVICE_GLUCOMETER_PERFORMA)) {//
-                service = GattAttributes.SERVICE_GLUCOSE;
-            } else if (nameDevice.equals(NAME_DEVICE_SCALE_1501)) {
-                service = GattAttributes.SERVICE_SCALE;
-            } else if (nameDevice.equals(NAME_DEVICE_HEART_RATE_H7)) {//
-                service = GattAttributes.SERVICE_HEART_RATE;
-            } else if (nameDevice.equals(NAME_DEVICE_HEART_RATE_H10)) {//
-                service = GattAttributes.SERVICE_HEART_RATE;
-            } else if (nameDevice.equals(NAME_DEVICE_SMARTBAND_MI2)) {//
-                service = GattAttributes.SERVICE_STEPS_DISTANCE_CALORIES;
-            }
-        }
-        return service;
-    }
-//    public String chooseDevice2(String nameDevice) {
-//        String service = null;
-//        switch (nameDevice) {
-//            case NAME_DEVICE_THERM_DL8740:
-//                service = GattAttributes.SERVICE_HEALTH_THERMOMETER;
-//                break;
-//            case NAME_DEVICE_GLUCOMETER_PERFORMA:
-//                service = GattAttributes.SERVICE_GLUCOSE;
-//                break;
-//            case NAME_DEVICE_SCALE_1501:
-//                service = GattAttributes.SERVICE_SCALE;
-//                break;
-//            case NAME_DEVICE_SCALE_HBF206IT:
-//                service = GattAttributes.SERVICE_GLUCOSE;
-//                break;
-//            case NAME_DEVICE_HEART_RATE_H7:
-//                service = GattAttributes.SERVICE_HEART_RATE;
-//                break;
-//            case NAME_DEVICE_HEART_RATE_H10:
-//                service = GattAttributes.SERVICE_HEART_RATE;
-//                break;
-//            case NAME_DEVICE_SMARTBAND_MI2:
-//                service = GattAttributes.SERVICE_STEPS_DISTANCE_CALORIES;
-//                break;
-//            case NAME_DEVICE_PRESSURE_BP792IT:
-//                service = GattAttributes.SERVICE_BLOOD_PRESSURE;
-//                break;
-//            default:
-//                break;
-//        }
-//        return service;
-//    }
-
     @Override
     public void onClickStartScan(Device device) {
         // set arguments in fragments DeviceProcessFragment
-//        DeviceProcessFragment mDeviceProcessFragment = DeviceScannerFragment.newInstance();
+        DeviceScannerFragment mDeviceScannerFragment = DeviceScannerFragment.newInstance();
         Bundle bundle = new Bundle();
-//        bundle.putParcelable(EXTRA_SERVICE_UUID, getServiceUuid(device));
-//        mDeviceProcessFragment.setArguments(bundle);
-//        replaceFragment(DeviceScannerFragment);
+        bundle.putParcelable(EXTRA_SERVICE_UUID, device);
+        mDeviceScannerFragment.setArguments(bundle);
+        replaceFragment(mDeviceScannerFragment);
     }
 }
