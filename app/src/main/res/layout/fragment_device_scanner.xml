@@ -5,10 +5,50 @@
     android:layout_height="match_parent"
     tools:context=".devices.register.DeviceScannerFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <RelativeLayout
+        android:id="@+id/fragment_device_scanner"
+        android:paddingBottom="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_horizontal_margin"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/name_device_fragment_scanner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="16dp"
+            android:text="Nome Device"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+            android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/bnt_start_device_scanner"
+            android:layout_width="352dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="30dp"
+            android:text="@string/start_scanner" />
+
+        <ImageView
+            android:id="@+id/img_device_fragment_scanner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="131dp"
+            android:src="@drawable/bluetooth" />
+
+        <TextView
+            android:id="@+id/mac_device_fragment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="62dp"
+            android:text="Mac Device" />
+    </RelativeLayout>
 
 </FrameLayout>

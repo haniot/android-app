@@ -1,18 +1,30 @@
 package br.edu.uepb.nutes.haniot.devices.register;
 
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.le.ScanResult;
 import android.content.Context;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.model.Device;
 import br.edu.uepb.nutes.simplebleconnect.scanner.SimpleBleScanner;
+import br.edu.uepb.nutes.simplebleconnect.scanner.SimpleScanCallback;
 import br.edu.uepb.nutes.simplebleconnect.utils.GattAttributes;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class DeviceScannerFragment extends Fragment {
@@ -27,7 +39,19 @@ public class DeviceScannerFragment extends Fragment {
     private final String NAME_DEVICE_HEART_RATE_H10 = "Heart Rate Sensor H10";
     private final String NAME_DEVICE_SMARTBAND_MI2 = "Smartband MI Band 2";
     private final String NAME_DEVICE_PRESSURE_BP792IT = "Blood Pressure Monitor BP792IT";
+    private final String SERVICE_SCALE_1501 = "00001310-0000-1000-8000-00805f9b34fb";
 
+    @BindView(R.id.bnt_start_device_scanner)
+    Button startDeviceFragment;
+
+    @BindView(R.id.name_device_fragment_scanner)
+    TextView nameDeviceFragmentScanner;
+
+    @BindView(R.id.img_device_fragment_scanner)
+    ImageView imgDeviceFragmentScanner;
+
+    @BindView(R.id.mac_device_fragment)
+    TextView macDeviceFragment;
 
     private Device mDevice;
     private SimpleBleScanner mScanner;
@@ -57,6 +81,7 @@ public class DeviceScannerFragment extends Fragment {
             mDevice = bundle.getParcelable(DeviceRegisterActivity.EXTRA_SERVICE_UUID);
         }
         //Initialize scanner settings
+        Log.d(TAG, "onCreate: "+getServiceUuidDevice(mDevice.getName()));
         mScanner = new SimpleBleScanner.Builder()
                 .addFilterServiceUuid(getServiceUuidDevice(mDevice.getName()))
                 .addScanPeriod(15000) // 15s
@@ -68,9 +93,50 @@ public class DeviceScannerFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_device_scanner, container, false);
         ButterKnife.bind(this, view);
 
+        startDeviceFragment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(v.getId() == R.id.bnt_start_device_scanner){
+                    if (mScanner != null) {
+                        mScanner.stopScan();
+                        mScanner.startScan(mScanCallback);
+                    }
+                }
+            }
+        });
 
         return view;
     }
+    public final SimpleScanCallback mScanCallback = new SimpleScanCallback() {
+        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+        @Override
+        public void onScanResult(int callbackType, ScanResult scanResult) {
+            BluetoothDevice device = scanResult.getDevice();
+            if (device == null) return;
+            Log.d(TAG, "onScanResult: " + device);
+
+
+                if (device == null) return;
+                nameDeviceFragmentScanner.setText(device.getName());
+                macDeviceFragment.setText(device.getAddress());
+                imgDeviceFragmentScanner.setImageResource(mDevice.getImg());
+        }
+
+        @Override
+        public void onBatchScanResults(List<ScanResult> scanResults) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void onFinish() {
+            Log.d("MainActivity", "onFinish()");
+        }
+
+        @Override
+        public void onScanFailed(int errorCode) {
+            Log.d("MainActivity", "onScanFailed() " + errorCode);
+        }
+    };
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -80,11 +146,10 @@ public class DeviceScannerFragment extends Fragment {
     }
 
     private void populateView() {
-        if (mDevice == null) return;
-//        mNameDeviceFragment.setText(mDevice.getName());
-//        mImgDeviceFragment.setImageResource(mDevice.getImg());
+//        if (mDevice == null) return;
+//        nameDeviceFragmentScanner.setText(mDevice.getName());
+//        imgDeviceFragmentScanner.setImageResource(mDevice.getImg());
     }
-
 
     @Override
     public void onAttach(Context context) {
@@ -112,7 +177,7 @@ public class DeviceScannerFragment extends Fragment {
             } else if (nameDevice.equals(NAME_DEVICE_GLUCOMETER_PERFORMA)) {//
                 service = GattAttributes.SERVICE_GLUCOSE;
             } else if (nameDevice.equals(NAME_DEVICE_SCALE_1501)) {
-                service = GattAttributes.SERVICE_SCALE;
+                service = SERVICE_SCALE_1501;
             } else if (nameDevice.equals(NAME_DEVICE_HEART_RATE_H7)) {//
                 service = GattAttributes.SERVICE_HEART_RATE;
             } else if (nameDevice.equals(NAME_DEVICE_HEART_RATE_H10)) {//

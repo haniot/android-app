@@ -7,6 +7,7 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.le.ScanResult;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -34,7 +35,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class DeviceRegisterActivity extends AppCompatActivity
-        implements DeviceProcessFragment.OnDeviceRegisterListener {
+        implements DeviceProcessFragment.OnDeviceRegisterListener, DeviceScannerFragment.OnFragmentInteractionListener {
 
     private final String TAG = "DeviceRegisterActivity ";
     public final static String EXTRA_DEVICE = "extra_device";
@@ -43,7 +44,7 @@ public class DeviceRegisterActivity extends AppCompatActivity
     private static final int REQUEST_ENABLE_BLUETOOTH = 1;
     private static final int REQUEST_ENABLE_LOCATION = 2;
 
-    private SimpleBleScanner mScanner;
+   // private SimpleBleScanner mScanner;
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -140,47 +141,6 @@ public class DeviceRegisterActivity extends AppCompatActivity
             requestBluetoothEnable();
         }
     }
-
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.bnt_find_device_fragment:
-                Log.d(TAG, "onClick:");
-                if (mScanner != null) {
-                    mScanner.stopScan();
-                    mScanner.startScan(mScanCallback);
-                }
-                break;
-            default:
-                break;
-        }
-    }
-
-    //displays the scanner result
-    public final SimpleScanCallback mScanCallback = new SimpleScanCallback() {
-        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-        @Override
-        public void onScanResult(int callbackType, ScanResult scanResult) {
-            BluetoothDevice device = scanResult.getDevice();
-            if (device == null) return;
-            Log.d(TAG, "onScanResult: " + device);
-
-        }
-
-        @Override
-        public void onBatchScanResults(List<ScanResult> scanResults) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void onFinish() {
-            Log.d("MainActivity", "onFinish()");
-        }
-
-        @Override
-        public void onScanFailed(int errorCode) {
-            Log.d("MainActivity", "onScanFailed() " + errorCode);
-        }
-    };
     //end scanner library ble
 
     /**
@@ -231,5 +191,10 @@ public class DeviceRegisterActivity extends AppCompatActivity
         bundle.putParcelable(EXTRA_SERVICE_UUID, device);
         mDeviceScannerFragment.setArguments(bundle);
         replaceFragment(mDeviceScannerFragment);
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 }
