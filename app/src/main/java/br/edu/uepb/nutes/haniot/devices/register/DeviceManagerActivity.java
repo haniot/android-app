@@ -44,14 +44,14 @@ import butterknife.ButterKnife;
 public class DeviceManagerActivity extends AppCompatActivity {
     private final String LOG_TAG = getClass().getSimpleName();
 
+    public static final String EXTRA_DEVICE = "extra_device";
+
     public final String NUMBER_MODEL_THERM_DL8740 = "DL8740";
     public final String NUMBER_MODEL_GLUCOMETER_PERFORMA = "Performa Connect";
     public final String NUMBER_MODEL_SCALE_1501 = "1501";
-    public final String NUMBER_MODEL_SCALE_HBF206IT = "HB-F206IT";
     public final String NUMBER_MODEL_HEART_RATE_H7 = "H7";
     public final String NUMBER_MODEL_HEART_RATE_H10 = "H10";
     public final String NUMBER_MODEL_SMARTBAND_MI2 = "MI Band 2";
-    public final String NUMBER_MODEL_PRESSURE_BP792IT = "BP792IT";
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -294,15 +294,11 @@ public class DeviceManagerActivity extends AppCompatActivity {
                 "Yunmai", NUMBER_MODEL_SCALE_1501,
                 R.drawable.device_scale_yunmai_mini_color));
 
-        devicesAvailable.add(new Device("Scale OMRON ".concat(NUMBER_MODEL_SCALE_HBF206IT),
-                "Omron", NUMBER_MODEL_SCALE_HBF206IT,
-                R.drawable.device_scale_omron_hbf206it));
-
-        devicesAvailable.add(new Device("Heart Rate Sensor".concat(NUMBER_MODEL_HEART_RATE_H7),
+        devicesAvailable.add(new Device("Heart Rate Sensor ".concat(NUMBER_MODEL_HEART_RATE_H7),
                 "Polar", NUMBER_MODEL_HEART_RATE_H7,
                 R.drawable.device_heart_rate_h7));
 
-        devicesAvailable.add(new Device("Heart Rate Sensor".concat(NUMBER_MODEL_HEART_RATE_H10),
+        devicesAvailable.add(new Device("Heart Rate Sensor ".concat(NUMBER_MODEL_HEART_RATE_H10),
                 "Polar", NUMBER_MODEL_HEART_RATE_H10,
                 R.drawable.device_heart_rate_h10));
 
@@ -310,9 +306,6 @@ public class DeviceManagerActivity extends AppCompatActivity {
                 "Xiaomi", NUMBER_MODEL_SMARTBAND_MI2,
                 R.drawable.device_smartband_miband2));
 
-        devicesAvailable.add(new Device("Blood Pressure Monitor ".concat(NUMBER_MODEL_PRESSURE_BP792IT),
-                "Omron", NUMBER_MODEL_PRESSURE_BP792IT,
-                R.drawable.device_pressure_ormron_bp792it));
 
         devicesAvailable = mergeDevicesAvailableRegistered(devicesRegistered, devicesAvailable);
 
@@ -344,7 +337,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
 
     private void openRegister(Device device) {
         Intent intent = new Intent(this, DeviceRegisterActivity.class);
-        intent.putExtra(DeviceRegisterActivity.EXTRA_DEVICE, device);
+        intent.putExtra(EXTRA_DEVICE, device);
         startActivity(intent);
     }
 
