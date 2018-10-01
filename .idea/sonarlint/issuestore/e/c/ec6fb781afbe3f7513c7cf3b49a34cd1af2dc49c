@@ -1,0 +1,26 @@
+
+psquid:S1450"TRemove the "alert" field and declare it as a local variable in the relevant methods.(ÃğÛ‹8õ‹áƒâ,
+Šsquid:S4165"nRemove this useless assignment; "devicesAvailable" already holds the assigned value along all execution paths.(ÀıÍş8õ‹áƒâ,
+lsquid:S1301"KReplace this "switch" statement by "if" statements to increase readability.(øå´¡ÿÿÿÿÿ8õ‹áƒâ,
+Bsquid:S1170"!Make this final field static too.(ÉŒãûúÿÿÿÿ8õ‹áƒâ,
+=squid:S1170"!Make this final field static too.(ÜÚÅó8õ‹áƒâ,
+=squid:S1170"!Make this final field static too.(ÛşñÌ8õ‹áƒâ,
+=squid:S1170"!Make this final field static too.(Ç€ÃÍ8õ‹áƒâ,
+Bsquid:S1170"!Make this final field static too.(‡ØÖÊúÿÿÿÿ8õ‹áƒâ,
+=squid:S1170"!Make this final field static too.(‚›¨ç8õ‹áƒâ,
+Bsquid:S1170"!Make this final field static too.(èÀ¢©ûÿÿÿÿ8õ‹áƒâ,
+Bsquid:S1170"!Make this final field static too.(ÜÏùûÿÿÿÿ8õ‹áƒâ,
+Isquid:S1604"(Make this anonymous inner class a lambda(˜ã¯şÿÿÿÿ8õ‹áƒâ,
+Dsquid:S1604"(Make this anonymous inner class a lambda(Œâû 8õ‹áƒâ,
+Dsquid:S1604"(Make this anonymous inner class a lambda(¸ş®ï8õ‹áƒâ,
+œsquid:S1186"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(ÿ¥ıI8õ‹áƒâ,
+nsquid:S00116"RRename this field "LOG_TAG" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Õ³O8õ‹áƒâ,
+†squid:S00116"dRename this field "NUMBER_MODEL_THERM_DL8740" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÉŒãûúÿÿÿÿ8õ‹áƒâ,
+ˆsquid:S00116"kRename this field "NUMBER_MODEL_GLUCOMETER_PERFORMA" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÜÚÅó8õ‹áƒâ,
+squid:S00116"bRename this field "NUMBER_MODEL_SCALE_1501" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÛşñÌ8õ‹áƒâ,
+ƒsquid:S00116"fRename this field "NUMBER_MODEL_SCALE_HBF206IT" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ç€ÃÍ8õ‹áƒâ,
+‡squid:S00116"eRename this field "NUMBER_MODEL_HEART_RATE_H7" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(‡ØÖÊúÿÿÿÿ8õ‹áƒâ,
+ƒsquid:S00116"fRename this field "NUMBER_MODEL_HEART_RATE_H10" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(‚›¨ç8õ‹áƒâ,
+‡squid:S00116"eRename this field "NUMBER_MODEL_SMARTBAND_MI2" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(èÀ¢©ûÿÿÿÿ8õ‹áƒâ,
+Šsquid:S00116"hRename this field "NUMBER_MODEL_PRESSURE_BP792IT" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÜÏùûÿÿÿÿ8õ‹áƒâ,
+osquid:MaximumInheritanceDepth"<This class has 7 parents which is greater than 5 authorized.(´®Äâüÿÿÿÿ8õ‹áƒâ,

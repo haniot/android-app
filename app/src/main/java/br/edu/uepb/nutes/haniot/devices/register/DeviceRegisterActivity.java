@@ -7,14 +7,11 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.le.ScanResult;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -64,6 +61,9 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
 
     @BindView(R.id.img_device_register)
     ImageView imgDeviceRegister;
+
+    @BindView(R.id.device_progressBar_register)
+    ProgressBar deviceProgressBarRegister;
 
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -158,11 +158,13 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     }
 
     public final SimpleScanCallback mScanCallback = new SimpleScanCallback() {
+
         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         @Override
         public void onScanResult(int callbackType, ScanResult scanResult) {
             BluetoothDevice device = scanResult.getDevice();
             if (device == null) return;
+            deviceConnected(device);
             Log.d(TAG, "onScanResult: " + device);
 
         }
@@ -174,6 +176,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
 
         @Override
         public void onFinish() {
+            displayLoading(false);
             Log.d("MainActivity", "onFinish()");
         }
 
@@ -184,6 +187,30 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     };
 
     //end scanner library ble
+
+    /**
+     * Display ProgressBar or disable according to the parameter value.
+     * True to display or False to disable.
+     *
+     * @param show boolean
+     */
+    private void displayLoading(boolean show) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (show) {
+                    imgDeviceRegister.setVisibility(View.GONE);
+                    nameDeviceRegister.setVisibility(View.GONE);
+                    deviceProgressBarRegister.setVisibility(View.VISIBLE);
+                } else {
+                    imgDeviceRegister.setVisibility(View.VISIBLE);
+                    nameDeviceRegister.setVisibility(View.VISIBLE);
+                    deviceProgressBarRegister.setVisibility(View.GONE);
+                }
+            }
+        });
+    }
+
 
     /**
      * Initialize the components.
@@ -200,6 +227,15 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         setSupportActionBar(mToolbar);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle(getString(R.string.devices));
+        actionBar.setDisplayShowTitleEnabled(true);
+        actionBar.setHomeAsUpIndicator(R.drawable.ic_close);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+    }
+
+    private void initToolBarDetails() {
+        setSupportActionBar(mToolbar);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle(getString(R.string.details));
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setHomeAsUpIndicator(R.drawable.ic_close);
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -241,14 +277,23 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         return service;
     }
 
+
+    public void deviceConnected(BluetoothDevice device){
+        initToolBarDetails();
+        Device mDevice = getIntent().getParcelableExtra(DeviceManagerActivity.EXTRA_DEVICE);
+        displayLoading(false);
+        nameDeviceRegister.setText("Device "+device.getName()+" connected successfully");
+        imgDeviceRegister.setImageResource(mDevice.getImg());
+        btnDeviceRegister.setText(R.string.remove_device_register);
+    }
+
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.btn_device_register) {
             Log.d(TAG, "onClick: ");
             if (mScanner != null) {
-                Log.d(TAG, "onClick: 1");
                 mScanner.stopScan();
-                ;
+                displayLoading(true);
                 mScanner.startScan(mScanCallback);
             }
         }
