@@ -1,10 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.ManuallyAddMeasurement">
+    android:orientation="vertical"
+    tools:context=".activity_manually_add_measurement">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+    <!--Esses temas são importantes-->
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+        <!--Esses temas são importantes-->
+
+    </android.support.design.widget.AppBarLayout>
 
     <FrameLayout
         android:id="@+id/frame_add_measurement"
@@ -12,4 +29,5 @@
         android:layout_height="match_parent">
 
     </FrameLayout>
-</android.support.constraint.ConstraintLayout>
+
+</LinearLayout>

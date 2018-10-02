@@ -421,6 +421,11 @@
     <string name="unit_temperature">ºF</string>
     <string name="unit_weight">lb</string>
     <string name="unit_hour">h</string>
+    <string name="manually_add_measurement">manually add measurement</string>
+    <string name="measurementType">measurementType</string>
+    <string name="choose_weight">Choose the weight</string>
+    <string name="kg">Pounds</string>
+    <string name="Gr">Grams</string>
 
     <!-- SURVEY -->
     <string name="survey_select_an_answer">Select an answer&#8230;</string>
@@ -838,5 +843,7 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_manually_add_measurement">activity_manually_add_measurement
+    </string>
 
 </resources>

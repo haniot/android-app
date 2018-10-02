@@ -181,7 +181,7 @@ typedef struct MDS {
 	/**
 	 * AbsoluteTimeAdjust This attribute reports any date
 	 * and time adjustments that occur either due to a person's
-	 * changing the clock or events such as	daylight savings time.
+	 * changing the ic_clock or events such as	daylight savings time.
 	 * This is used in event reports only. If queried with Get MDS Object
 	 * command, this value shall be not present or 0. If the agent ever
 	 * adjusts the date and time, this attribute is used in an event report

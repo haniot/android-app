@@ -398,9 +398,9 @@ Request *mds_service_action_data_request(Context *ctx, DataReqMode data_req_mode
 }
 
 /**
- * Allows the manager system to set a real-time clock (RTC) with the absolute
+ * Allows the manager system to set a real-time ic_clock (RTC) with the absolute
  * time. The agent indicates whether the Set-Time command is valid by using
- * the mds-time-capab-set-clock bit in the Mds-Time-Info attribute.
+ * the mds-time-capab-set-ic_clock bit in the Mds-Time-Info attribute.
  *
  * \param ctx
  * \param time

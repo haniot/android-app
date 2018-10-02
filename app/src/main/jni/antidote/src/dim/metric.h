@@ -180,7 +180,7 @@ struct Metric {
 
 	/**
 	 *This attribute defines the time of observation (time stamp in
-	 *a relative time format/number of clock ticks as defined by
+	 *a relative time format/number of ic_clock ticks as defined by
 	 *RelativeTime data type)
 	 *
 	 * Qualifier: Conditional
@@ -189,7 +189,7 @@ struct Metric {
 
 	/**
 	 *This attribute defines the time of observation (time stamp in
-	 *a high-resolution relative time format/number of clock ticks as defined by
+	 *a high-resolution relative time format/number of ic_clock ticks as defined by
 	 *HighResRelativeTime data type)
 	 *
 	 * Qualifier: Conditional

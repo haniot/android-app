@@ -330,6 +330,7 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
         throw new UnsupportedOperationException();
     }
 
+//    Methods to manually add measurement button
     @Override
     public void onMenuContextClick(View v, ItemGrid item) {
 
@@ -337,8 +338,42 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
         Intent it = new Intent(getContext(), ManuallyAddMeasurement.class);
         switch (type){
             case ItemGridType.ACTIVITY:
+                it.putExtra(getResources().getString(R.string.measurementType),ItemGridType.ACTIVITY);
                 startActivity(it);
                 break;
+
+            case ItemGridType.BLOOD_GLUCOSE:
+                it.putExtra(getResources().getString(R.string.measurementType),ItemGridType.BLOOD_GLUCOSE);
+                startActivity(it);
+                break;
+
+            case ItemGridType.BLOOD_PRESSURE:
+                it.putExtra(getResources().getString(R.string.measurementType),ItemGridType.BLOOD_PRESSURE);
+                startActivity(it);
+                break;
+
+            case ItemGridType.TEMPERATURE:
+                it.putExtra(getResources().getString(R.string.measurementType),ItemGridType.TEMPERATURE);
+                startActivity(it);
+                break;
+
+            case ItemGridType.WEIGHT:
+                it.putExtra(getResources().getString(R.string.measurementType),ItemGridType.WEIGHT);
+                startActivity(it);
+                break;
+
+            case ItemGridType.SLEEP:
+                it.putExtra(getResources().getString(R.string.measurementType),ItemGridType.SLEEP);
+                startActivity(it);
+                break;
+
+            case ItemGridType.HEART_RATE:
+                it.putExtra(getResources().getString(R.string.measurementType),ItemGridType.HEART_RATE);
+                startActivity(it);
+                break;
+
+            default:
+                return;
 
         }
 

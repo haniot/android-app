@@ -352,6 +352,12 @@
     <string name="unit_temperature">ºC</string>
     <string name="unit_weight">kg</string>
     <string name="unit_hour">h</string>
+    <string name="manually_add_measurement">Adicionar Medições Manualmente</string>
+    <string name="measurementType">measurementType</string>
+    <string name="choose_weight">Escolha o peso</string>
+    <string name="kg">Quilos</string>
+    <string name="Gr">Gramas</string>
+
 
     <!-- END OF STRINGS FOR TABLET -->
 

@@ -124,7 +124,7 @@ struct PMSegment {
 
 	/**
 	 * This attribute reports any date and time adjustments that
-	 * occur either due to a person’s changing the clock or events
+	 * occur either due to a person’s changing the ic_clock or events
 	 * such as daylight savings time.
 	 *
 	 * Qualifier: Conditional
