@@ -7,6 +7,7 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.le.ScanResult;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -20,7 +21,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.List;
@@ -62,8 +62,8 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     @BindView(R.id.img_device_register)
     ImageView imgDeviceRegister;
 
-    @BindView(R.id.device_progressBar_register)
-    ProgressBar deviceProgressBarRegister;
+    @BindView(R.id.img_animation_bluetooth)
+    ImageView imgAnimationBluetooth;
 
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -166,7 +166,6 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
             if (device == null) return;
             deviceConnected(device);
             Log.d(TAG, "onScanResult: " + device);
-
         }
 
         @Override
@@ -176,7 +175,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
 
         @Override
         public void onFinish() {
-            displayLoading(false);
+            animationScanner(false);
             Log.d("MainActivity", "onFinish()");
         }
 
@@ -187,30 +186,6 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     };
 
     //end scanner library ble
-
-    /**
-     * Display ProgressBar or disable according to the parameter value.
-     * True to display or False to disable.
-     *
-     * @param show boolean
-     */
-    private void displayLoading(boolean show) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (show) {
-                    imgDeviceRegister.setVisibility(View.GONE);
-                    nameDeviceRegister.setVisibility(View.GONE);
-                    deviceProgressBarRegister.setVisibility(View.VISIBLE);
-                } else {
-                    imgDeviceRegister.setVisibility(View.VISIBLE);
-                    nameDeviceRegister.setVisibility(View.VISIBLE);
-                    deviceProgressBarRegister.setVisibility(View.GONE);
-                }
-            }
-        });
-    }
-
 
     /**
      * Initialize the components.
@@ -241,6 +216,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         actionBar.setDisplayHomeAsUpEnabled(true);
     }
 
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
@@ -278,14 +254,38 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     }
 
 
-    public void deviceConnected(BluetoothDevice device){
+    public void deviceConnected(BluetoothDevice device) {
         initToolBarDetails();
         Device mDevice = getIntent().getParcelableExtra(DeviceManagerActivity.EXTRA_DEVICE);
-        displayLoading(false);
-        nameDeviceRegister.setText("Device "+device.getName()+" connected successfully");
+        animationScanner(false);
+        nameDeviceRegister.setText("Device " + device.getName() + " connected successfully");
         imgDeviceRegister.setImageResource(mDevice.getImg());
         btnDeviceRegister.setText(R.string.remove_device_register);
     }
+
+    public void animationScanner(boolean show) {
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (show) {
+                    imgDeviceRegister.setVisibility(View.GONE);
+                    nameDeviceRegister.setVisibility(View.GONE);
+                    imgAnimationBluetooth.setVisibility(View.VISIBLE);
+                    imgAnimationBluetooth.setBackgroundResource(R.drawable.bluetooth_animation);
+                    AnimationDrawable animation = (AnimationDrawable) imgAnimationBluetooth.getBackground();
+                    animation.start();
+                } else {
+                    imgDeviceRegister.setVisibility(View.VISIBLE);
+                    nameDeviceRegister.setVisibility(View.VISIBLE);
+                    imgAnimationBluetooth.setVisibility(View.GONE);
+                    AnimationDrawable animation = (AnimationDrawable) imgAnimationBluetooth.getBackground();
+                    animation.stop();
+                }
+            }
+        });
+    }
+
 
     @Override
     public void onClick(View v) {
@@ -293,7 +293,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
             Log.d(TAG, "onClick: ");
             if (mScanner != null) {
                 mScanner.stopScan();
-                displayLoading(true);
+                animationScanner(true);
                 mScanner.startScan(mScanCallback);
             }
         }

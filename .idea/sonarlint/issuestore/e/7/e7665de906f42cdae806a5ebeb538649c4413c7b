@@ -1,30 +1,0 @@
-
-Rsquid:S1066d"/Merge this if statement with the enclosing one.(Î³ãùÿÿÿÿ8ß«ðƒâ,
-Psquid:S1068"-Remove this unused "mListener" private field.(ÏÙå¯úÿÿÿÿ8ß«ðƒâ,
-asquid:S1068%">Remove this unused "NAME_DEVICE_SCALE_HBF206IT" private field.(»“ù©ùÿÿÿÿ8ß«ðƒâ,
-csquid:S1068)"@Remove this unused "NAME_DEVICE_PRESSURE_BP792IT" private field.(ˆ÷˜Îþÿÿÿÿ8ß«ðƒâ,
-jsquid:CommentedOutCodeLine•"<This block of commented-out lines of code should be removed.(®ãÏ¸8ß«ðƒâ,
-bsquid:S2583w"DChange this condition so that it does not always evaluate to "false"(ñ³›®8ß«ðƒâ,
-}squid:S1488G"`Immediately return this expression instead of assigning it to the temporary variable "fragment".(ÕÃŸI8ß«ðƒâ,
-Usquid:S1135E"2Complete the task associated to this TODO comment.(ßíŠÿÿÿÿÿ8ß«ðƒâ,
-?squid:S1170 "!Make this final field static too.(Ù±‘8ß«ðƒâ,
-?squid:S1170""!Make this final field static too.(‡àÒ8ß«ðƒâ,
-?squid:S1170#"!Make this final field static too.(¤¯£¼8ß«ðƒâ,
-?squid:S1170$"!Make this final field static too.(ˆò¸Î8ß«ðƒâ,
-Dsquid:S1170%"!Make this final field static too.(»“ù©ùÿÿÿÿ8ß«ðƒâ,
-?squid:S1170&"!Make this final field static too.(¢‡ê¢8ß«ðƒâ,
-Dsquid:S1170'"!Make this final field static too.(µ—Ïžúÿÿÿÿ8ß«ðƒâ,
-Dsquid:S1170("!Make this final field static too.(ÌÕñÀýÿÿÿÿ8ß«ðƒâ,
-Dsquid:S1170)"!Make this final field static too.(ˆ÷˜Îþÿÿÿÿ8ß«ðƒâ,
-Dsquid:S1170*"!Make this final field static too.(þú˜¡þÿÿÿÿ8ß«ðƒâ,
-fsquid:S00112 "FDefine and throw a dedicated exception instead of using a generic one.(ÝŒÜ±8ß«ðƒâ,
-msquid:S00116 "NRename this field "TAG" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ù±‘8ß«ðƒâ,
-‚squid:S00116""cRename this field "NAME_DEVICE_THERM_DL8740" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(‡àÒ8ß«ðƒâ,
-‰squid:S00116#"jRename this field "NAME_DEVICE_GLUCOMETER_PERFORMA" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¤¯£¼8ß«ðƒâ,
-€squid:S00116$"aRename this field "NAME_DEVICE_SCALE_1501" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ˆò¸Î8ß«ðƒâ,
-‰squid:S00116%"eRename this field "NAME_DEVICE_SCALE_HBF206IT" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(»“ù©ùÿÿÿÿ8ß«ðƒâ,
-ƒsquid:S00116&"dRename this field "NAME_DEVICE_HEART_RATE_H7" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¢‡ê¢8ß«ðƒâ,
-‰squid:S00116'"eRename this field "NAME_DEVICE_HEART_RATE_H10" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(µ—Ïžúÿÿÿÿ8ß«ðƒâ,
-ˆsquid:S00116("dRename this field "NAME_DEVICE_SMARTBAND_MI2" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÌÕñÀýÿÿÿÿ8ß«ðƒâ,
-‹squid:S00116)"gRename this field "NAME_DEVICE_PRESSURE_BP792IT" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ˆ÷˜Îþÿÿÿÿ8ß«ðƒâ,
-squid:S00116*"]Rename this field "SERVICE_SCALE_1501" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(þú˜¡þÿÿÿÿ8ß«ðƒâ,

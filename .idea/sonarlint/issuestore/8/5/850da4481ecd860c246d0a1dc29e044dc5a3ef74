@@ -1,21 +1,28 @@
 
-Z"squid:SwitchLastCaseIsDefaultCheck""Add a default case to this switch.(øå´¡ÿÿÿÿÿ8ã·›ƒâ,
-tsquid:ModifiersOrderCheck"EReorder the modifiers to comply with the Java Language Specification.(Èà±õùÿÿÿÿ8ã·›ƒâ,
-tsquid:ModifiersOrderCheck"EReorder the modifiers to comply with the Java Language Specification.(áà¥şÿÿÿÿ8ã·›ƒâ,
-Hsquid:S1068"'Remove this unused "TAG" private field.(²¨ªêıÿÿÿÿ8ã·›ƒâ,
-lsquid:S1301"KReplace this "switch" statement by "if" statements to increase readability.(øå´¡ÿÿÿÿÿ8ã·›ƒâ,
-fsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(í©Ük8ã·›ƒâ,
-gsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(Å†Ç¾8ã·›ƒâ,
-Bsquid:S1170"!Make this final field static too.(²¨ªêıÿÿÿÿ8ã·›ƒâ,
-squid:S1186"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(„˜®’8ã·›ƒâ,
-psquid:S00116"NRename this field "TAG" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(²¨ªêıÿÿÿÿ8ã·›ƒâ,
-gsquid:UselessImportCheck">Remove this unused import 'android.bluetooth.BluetoothDevice'.(˜¾Ÿü8ã·›ƒâ,
-esquid:UselessImportCheck"7Remove this unused import 'android.widget.ProgressBar'.(³ñÿŸùÿÿÿÿ8ã·›ƒâ,
-}squid:UselessImportCheck"TRemove this unused import 'br.edu.uepb.nutes.simplebleconnect.utils.GattAttributes'.(Äúïä8ã·›ƒâ,
-jsquid:UselessImportCheck"<Remove this unused import 'android.bluetooth.le.ScanResult'.(¤Íáùÿÿÿÿ8ã·›ƒâ,
-\squid:UselessImportCheck".Remove this unused import 'android.view.View'.(Ø½­äşÿÿÿÿ8ã·›ƒâ,
-[squid:UselessImportCheck"-Remove this unused import 'android.util.Log'.(Ô¦Ø²øÿÿÿÿ8ã·›ƒâ,
-ˆsquid:UselessImportCheck"ZRemove this unused import 'br.edu.uepb.nutes.simplebleconnect.scanner.SimpleScanCallback'.(©´¹¾ùÿÿÿÿ8ã·›ƒâ,
-Ysquid:UselessImportCheck"+Remove this unused import 'java.util.List'.(Õë±Äøÿÿÿÿ8ã·›ƒâ,
-bsquid:UselessImportCheck"4Remove this unused import 'android.widget.TextView'.(„Ë‚ˆÿÿÿÿÿ8ã·›ƒâ,
-jsquid:MaximumInheritanceDepth"<This class has 7 parents which is greater than 5 authorized.(ñ€Ò“8ã·›ƒâ,
+Vsquid:S1161":Add the "@Override" annotation above this method signature(ñ”Ò8Îªßã,
+~squid:S00116"aRename this field "NAME_DEVICE_SCALE_1501" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ˆò¸Î8Îªßã,
+Bsquid:S1170"!Make this final field static too.(²¨ªêıÿÿÿÿ8Îªßã,
+Z"squid:SwitchLastCaseIsDefaultCheck""Add a default case to this switch.(øå´¡ÿÿÿÿÿ8Îªßã,
+‡squid:S00116"jRename this field "NAME_DEVICE_GLUCOMETER_PERFORMA" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¤¯£¼8Îªßã,
+‡squid:S00116"eRename this field "NAME_DEVICE_HEART_RATE_H10" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(µ—Ïúÿÿÿÿ8Îªßã,
+Bsquid:S1170"!Make this final field static too.(µ—Ïúÿÿÿÿ8Îªßã,
+lsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(áíüÈùÿÿÿÿ8Îªßã,
+psquid:S00116"NRename this field "TAG" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(²¨ªêıÿÿÿÿ8Îªßã,
+squid:S00116"]Rename this field "SERVICE_SCALE_1501" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(şú˜¡şÿÿÿÿ8Îªßã,
+lsquid:S1301"KReplace this "switch" statement by "if" statements to increase readability.(øå´¡ÿÿÿÿÿ8Îªßã,
+=squid:S1170"!Make this final field static too.(¤¯£¼8Îªßã,
+gsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(ôµÍ 8Îªßã,
+gsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(Ú¬¼„8Îªßã,
+€squid:S00116"cRename this field "NAME_DEVICE_THERM_DL8740" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(‡àÒ8Îªßã,
+lsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(ªÓ‡ğÿÿÿÿÿ8Îªßã,
+=squid:S1170"!Make this final field static too.(‡àÒ8Îªßã,
+Isquid:S1604"(Make this anonymous inner class a lambda(˜ã¯şÿÿÿÿ8Îªßã,
+gsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(ôµÍ 8Îªßã,
+squid:S00116"dRename this field "NAME_DEVICE_HEART_RATE_H7" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¢‡ê¢8Îªßã,
+=squid:S1170"!Make this final field static too.(ˆò¸Î8Îªßã,
+Bsquid:S1170"!Make this final field static too.(ÌÕñÀıÿÿÿÿ8Îªßã,
+=squid:S1170"!Make this final field static too.(¢‡ê¢8Îªßã,
+†squid:S00116"dRename this field "NAME_DEVICE_SMARTBAND_MI2" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÌÕñÀıÿÿÿÿ8Îªßã,
+fsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(ÿßÅ&8Îªßã,
+psquid:MaximumInheritanceDepth"=This class has 10 parents which is greater than 5 authorized.(¥÷”ÿÿÿÿÿ8Îªßã,
+Bsquid:S1170"!Make this final field static too.(şú˜¡şÿÿÿÿ8Îªßã,

@@ -22,15 +22,13 @@
         android:text="Nome Dispositivo"
         android:textAlignment="center" />
 
-    <ProgressBar
-        android:id="@+id/device_progressBar_register"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
+    <ImageView
+        android:id="@+id/img_animation_bluetooth"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="239dp"
-        android:indeterminate="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="200dp"
         android:visibility="gone" />
 
     <ImageView
