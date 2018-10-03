@@ -2,24 +2,33 @@ package br.edu.uepb.nutes.haniot.fragment;
 
 import android.app.AlertDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 import com.shawnlin.numberpicker.NumberPicker;
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.utils.Log;
+import br.edu.uepb.nutes.haniot.utils.NumberPickerDialog;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-public class AddWeightManuallyFragment extends Fragment implements View.OnClickListener{
+public class AddWeightManuallyFragment extends Fragment implements View.OnClickListener,
+        DialogInterface.OnClickListener{
 
     @BindView(R.id.botClock)
     Button botClock;
@@ -32,6 +41,7 @@ public class AddWeightManuallyFragment extends Fragment implements View.OnClickL
     private AlertDialog alertDialog;
 
     private TimePickerDialog timePicker;
+    private NumberPickerDialog numberPicker;
 
     public AddWeightManuallyFragment() { }
 
@@ -46,6 +56,8 @@ public class AddWeightManuallyFragment extends Fragment implements View.OnClickL
         View view = inflater.inflate(R.layout.fragment_add_weight_manually, container,
                 false);
         ButterKnife.bind(this, view);
+
+        numberPicker = new NumberPickerDialog(getContext());
 
         botWeight.setOnClickListener(this);
         botClock.setOnClickListener(this);
@@ -78,9 +90,22 @@ public class AddWeightManuallyFragment extends Fragment implements View.OnClickL
         this.builder.setIcon(getResources().getDrawable(R.drawable.ic_balance));
 
 //        get the refference of items of view
+        TextView textPounds = (TextView)view.findViewById(R.id.textPounds);
         NumberPicker pickerPounds = (NumberPicker)view.findViewById(R.id.number_picker_pounds);
         NumberPicker pickerGrams = (NumberPicker)view.findViewById(R.id.number_picker_grams);
+        pickerPounds.setFadingEdgeEnabled(true);
+        pickerPounds.setWrapSelectorWheel(true);
 
+        LinearLayout ll = (LinearLayout)view.findViewById(R.id.test);
+        ll.setOrientation(LinearLayout.VERTICAL);
+
+        textPounds.setOnClickListener(c ->{
+//            InputMethodManager imm=(InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+//            imm.showSoftInput(textPounds, InputMethodManager.SHOW_IMPLICIT);
+            ((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE))
+                    .showSoftInput(textPounds,0);
+//            pickerPounds.setValue(1);
+        });
 //        setting the listeners and basic configs
         builder.setCancelable(false)
                 .setNegativeButton(getResources().getString(R.string.bt_cancel), (v,d) ->{
@@ -105,10 +130,17 @@ public class AddWeightManuallyFragment extends Fragment implements View.OnClickL
                 break;
 
             case R.id.botWeight:
-                openNumberPicker();
+//                openNumberPicker();
+                this.numberPicker.create(getContext(),this,5);
                 break;
         }
     }
 
 
+    @Override
+    public void onClick(DialogInterface dialog, int which) {
+        Log.d("TESTE","click dialog");
+        ArrayList<Integer> data = this.numberPicker.getData();
+        if (data != null) Log.d("TESTE","peguei :"+data.get(0));
+    }
 }

@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.fragment.AddWeightManuallyFragment;
@@ -49,13 +50,15 @@ public class ManuallyAddMeasurement extends AppCompatActivity {
 
     }
 
+//    Here the fragment of date is replaced first and the measurement fragment after for each
+//    measurement
     public void replaceFragment(int measurementType){
         switch (measurementType){
             case ItemGridType.WEIGHT:
 
                 myFragment = new AddWeightManuallyFragment();
 
-                getSupportFragmentManager().beginTransaction().replace(R.id.frame_add_measurement,
+                getSupportFragmentManager().beginTransaction().replace(R.id.frame_date,
                         myFragment)
                         .commit();
                 break;
@@ -63,4 +66,15 @@ public class ManuallyAddMeasurement extends AppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()){
+            case android.R.id.home:
+                finish();
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 }

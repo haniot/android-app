@@ -26,7 +26,6 @@ import br.edu.uepb.nutes.haniot.adapter.base.BaseAdapter;
 
 public class GridDashAdapter extends BaseAdapter<ItemGrid> {
     private Context context;
-    public OnRecyclerViewListener botAddListener;
 
     public GridDashAdapter(Context context) {
         this.context = context;

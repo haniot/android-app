@@ -6,114 +6,142 @@
     android:layout_height="match_parent"
     tools:context=".fragment.AddWeightManuallyFragment">
 
-    <TextView
-        android:id="@+id/textDateInfo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Choose the date"
-        android:layout_centerHorizontal="true"
-        android:textSize="22sp"
-        android:layout_marginTop="50dp"/>
-
-    <Button
-        android:id="@+id/botCalendar"
-        android:layout_width="96dp"
-        android:layout_height="96dp"
-        android:layout_below="@id/textDateInfo"
-        android:layout_toStartOf="@+id/textWeightInfo"
-        android:layout_marginTop="15dp"
-        android:background="@drawable/ic_calendar_128" />
-
-    <TextView
-        android:id="@+id/textDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="25/08/18"
-        android:layout_toEndOf="@id/botCalendar"
-        android:layout_alignBaseline="@id/botCalendar"
-        android:layout_marginStart="100dp"
-        android:textSize="30sp"/>
-
-    <TextView
-        android:id="@+id/textTimeInfo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Choose the time"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="40dp"
-        android:layout_below="@id/botCalendar"
-        android:textSize="22sp"/>
-
-    <Button
-        android:id="@+id/botClock"
-        android:layout_width="96dp"
-        android:layout_height="96dp"
-        android:layout_alignStart="@id/botCalendar"
-        android:background="@drawable/ic_clock"
-        android:layout_below="@id/textTimeInfo"
-        android:layout_marginTop="15dp"/>
-
-    <TextView
-        android:id="@+id/textTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="10:58 AM"
-        android:layout_toEndOf="@id/botClock"
-        android:layout_alignBaseline="@id/botClock"
-        android:layout_alignStart="@id/textDate"
-        android:textSize="30sp"/>
-
-    <TextView
-        android:id="@+id/textWeightInfo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Choose the weight"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/botClock"
-        android:layout_marginTop="40dp"
-        android:textSize="22sp"/>
-
-    <android.support.v7.widget.AppCompatButton
-        android:id="@+id/botWeight"
-        style="@style/Widget.AppCompat.Button.Colored"
-        android:layout_width="96dp"
-        android:layout_height="96dp"
-        android:layout_alignStart="@id/botCalendar"
-        android:background="@drawable/ic_balance"
-        android:layout_below="@id/textWeightInfo"
-        android:layout_marginTop="15dp"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="76 Kg"
-        android:layout_toEndOf="@id/botWeight"
-        android:layout_alignBaseline="@id/botWeight"
-        android:layout_alignStart="@id/textDate"
-        android:textSize="30sp"/>
-
-    <android.support.v7.widget.AppCompatButton
-        android:id="@+id/btnCancel"
-        style="@style/Widget.AppCompat.Button.Colored"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_alignParentStart="true"
-        android:layout_marginStart="150dp"
-        android:layout_marginBottom="25dp"
-        android:padding="20dp"
-        android:text="Cancel" />
+        android:layout_alignParentTop="true"
+        android:fillViewport="true">
 
-    <android.support.v7.widget.AppCompatButton
-        android:id="@+id/btnConfirm"
-        style="@style/Widget.AppCompat.Button.Colored"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="150dp"
-        android:layout_alignTop="@id/btnCancel"
-        android:padding="20dp"
-        android:text="confirm"
-        android:textColor="@color/colorTextDark" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/botWeight"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:layout_alignStart="@id/botCalendar"
+                android:layout_below="@id/textWeightInfo"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/ic_balance" />
+
+            <Button
+                android:id="@+id/botCalendar"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignStart="@+id/btnCancel"
+                android:layout_marginTop="111dp"
+                android:background="@drawable/ic_calendar_128" />
+
+            <TextView
+                android:id="@+id/textTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@id/botClock"
+                android:layout_alignStart="@id/textDate"
+                android:layout_toEndOf="@id/botClock"
+                android:text="10:58 AM"
+                android:textSize="30sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@id/botWeight"
+                android:layout_alignStart="@id/textDate"
+                android:layout_toEndOf="@id/botWeight"
+                android:text="76 Kg"
+                android:textSize="30sp" />
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/btnCancel"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginBottom="25dp"
+                android:layout_marginStart="150dp"
+                android:padding="20dp"
+                android:text="Cancel" />
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/btnConfirm"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignTop="@id/btnCancel"
+                android:layout_marginEnd="150dp"
+                android:padding="20dp"
+                android:text="confirm"
+                android:textColor="@color/colorTextDark" />
+
+            <TextView
+                android:id="@+id/textDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@+id/textDateInfo"
+                android:layout_marginEnd="200dp"
+                android:text="25/08/18"
+                android:textSize="22sp" />
+
+            <TextView
+                android:id="@+id/textDateInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginEnd="168dp"
+                android:layout_marginTop="132dp"
+                android:text="Choose the date"
+                android:textSize="22sp" />
+
+            <Button
+                android:id="@+id/botClock"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:layout_alignStart="@id/botCalendar"
+                android:layout_below="@id/textTimeInfo"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/ic_clock" />
+
+            <TextView
+                android:id="@+id/textWeightInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/botClock"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="40dp"
+                android:text="Choose the weight"
+                android:textSize="22sp" />
+
+            <TextView
+                android:id="@+id/textTimeInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/botCalendar"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="40dp"
+                android:text="Choose the time"
+                android:textSize="22sp" />
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/button2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/botWeight"
+                android:layout_centerHorizontal="true"
+                android:textAlignment="center"
+                android:drawableLeft="@drawable/ic_clock"
+                android:text="Button"
+                android:padding="50dp"
+
+                style="@style/Widget.AppCompat.Button.Borderless"/>
+        </RelativeLayout>
+    </android.support.v4.widget.NestedScrollView>
 
 </RelativeLayout>

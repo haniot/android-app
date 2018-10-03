@@ -1,74 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:orientation="vertical">
 
     <View
-        android:id="@+id/centerView"
-        android:layout_width="10dp"
-        android:layout_height="300dp"
-        android:layout_centerInParent="true"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"/>
+        android:id="@+id/divider7"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:background="@android:color/transparent" />
 
-    <com.shawnlin.numberpicker.NumberPicker
-        android:id="@+id/number_picker_pounds"
-        android:layout_width="150dp"
+    <LinearLayout
+        android:id="@+id/test"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toStartOf="@id/centerView"
-        android:layout_alignBaseline="@id/centerView"
-        android:layout_marginTop="50dp"
         android:gravity="center"
-        app:np_dividerColor="@color/colorPrimary"
-        app:np_dividerThickness="5dp"
-        app:np_height="180dp"
-        app:np_max="500"
-        app:np_min="0"
-        app:np_selectedTextColor="@color/colorPrimary"
-        app:np_textColor="@color/colorPrimary"
-        app:np_value="50"
-        app:np_width="64dp" />
+        android:orientation="horizontal">
 
-    <TextView
-        android:layout_width="wrap_content"
+        <com.shawnlin.numberpicker.NumberPicker
+            android:id="@+id/number_picker_pounds"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:showDividers="none"
+            app:np_dividerColor="@color/colorPrimary"
+            app:np_dividerDistance="80dp"
+            app:np_dividerThickness="5dp"
+            app:np_max="500"
+            app:np_min="0"
+            app:np_selectedTextColor="@color/colorPrimary"
+            app:np_textColor="@color/colorPrimary"
+            app:np_value="50"
+            app:np_width="64dp">
+
+        </com.shawnlin.numberpicker.NumberPicker>
+
+        <View
+            android:id="@+id/divider3"
+            android:layout_width="27dp"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent" />
+
+        <com.shawnlin.numberpicker.NumberPicker
+            android:id="@+id/number_picker_grams"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            app:np_dividerColor="@color/colorPrimary"
+            app:np_dividerDistance="80dp"
+            app:np_dividerThickness="5dp"
+            app:np_height="180dp"
+            app:np_max="9"
+            app:np_min="0"
+            app:np_selectedTextColor="@color/colorPrimary"
+            app:np_textColor="@color/colorPrimary"
+            app:np_value="0"
+            app:np_width="64dp" />
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/divider5"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:background="@android:color/transparent" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@id/number_picker_pounds"
-        android:layout_alignEnd="@id/number_picker_pounds"
-        android:layout_below="@id/number_picker_pounds"
-        android:layout_marginTop="10dp"
-        android:textAlignment="center"
-        android:textColor="@color/colorPrimary"
-        android:text="@string/kg"
-        android:textSize="22dp" />
+        android:gravity="center"
+        android:orientation="horizontal">
 
-    <com.shawnlin.numberpicker.NumberPicker
-        android:id="@+id/number_picker_grams"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@id/number_picker_pounds"
-        android:layout_toEndOf="@id/number_picker_pounds"
-        android:layout_marginStart="10dp"
-        app:np_dividerColor="@color/colorPrimary"
-        app:np_dividerThickness="5dp"
-        app:np_height="180dp"
-        app:np_max="500"
-        app:np_min="0"
-        app:np_selectedTextColor="@color/colorPrimary"
-        app:np_textColor="@color/colorPrimary"
-        app:np_value="50"
-        app:np_width="64dp" />
+        <TextView
+            android:id="@+id/textPounds"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/kg"
+            android:textColor="@color/colorPrimary"
+            android:textSize="22sp" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignStart="@id/number_picker_grams"
-        android:layout_alignEnd="@id/number_picker_grams"
-        android:layout_below="@id/number_picker_grams"
-        android:layout_marginTop="10dp"
-        android:textAlignment="center"
-        android:textColor="@color/colorPrimary"
-        android:text="@string/Gr"
-        android:textSize="22dp"/>
+        <View
+            android:id="@+id/divider4"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent" />
 
-</RelativeLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/Gr"
+            android:textColor="@color/colorPrimary"
+            android:textSize="22sp" />
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/divider6"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:background="@android:color/transparent" />
+
+</LinearLayout>
