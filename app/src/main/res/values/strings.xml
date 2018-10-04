@@ -549,6 +549,7 @@
     <string name="remove">Remove</string>
     <string name="cancel">Cancel</string>
     <string name="start_scanner">Start scanner</string>
+    <string name="stop_scanner">Stop scanner</string>
     <string name="details">Details</string>
     <string name="remove_device_register">Remove Device</string>
     <string name="no_devices_registered">No registered devices...</string>

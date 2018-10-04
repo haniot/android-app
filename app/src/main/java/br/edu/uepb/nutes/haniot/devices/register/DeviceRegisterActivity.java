@@ -32,6 +32,7 @@ import br.edu.uepb.nutes.simplebleconnect.scanner.SimpleScanCallback;
 import br.edu.uepb.nutes.simplebleconnect.utils.GattAttributes;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import pl.bclogic.pulsator4droid.library.PulsatorLayout;
 
 public class DeviceRegisterActivity extends AppCompatActivity implements View.OnClickListener {
     private final String TAG = "DeviceRegisterActivity ";
@@ -48,7 +49,9 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     private static final int REQUEST_ENABLE_BLUETOOTH = 1;
     private static final int REQUEST_ENABLE_LOCATION = 2;
 
+
     private SimpleBleScanner mScanner;
+    private PulsatorLayout pulsator;
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -62,10 +65,6 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     @BindView(R.id.img_device_register)
     ImageView imgDeviceRegister;
 
-    @BindView(R.id.img_animation_bluetooth)
-    ImageView imgAnimationBluetooth;
-
-
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,13 +72,14 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         setContentView(R.layout.activity_device_register);
         ButterKnife.bind(this);
 
+        pulsator = findViewById(R.id.pulsator);
         initComponents();
 
         btnDeviceRegister = findViewById(R.id.btn_device_register);
         btnDeviceRegister.setOnClickListener(this);
 
         Device mDevice = getIntent().getParcelableExtra(DeviceManagerActivity.EXTRA_DEVICE);
-//      Initialize scanner settings
+        //Initialize scanner settings
         mScanner = new SimpleBleScanner.Builder()
                 .addFilterServiceUuid(getServiceUuidDevice(mDevice.getName()))
                 .addScanPeriod(15000) // 15s
@@ -165,7 +165,6 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
             BluetoothDevice device = scanResult.getDevice();
             if (device == null) return;
             deviceConnected(device);
-            Log.d(TAG, "onScanResult: " + device);
         }
 
         @Override
@@ -257,10 +256,8 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     public void deviceConnected(BluetoothDevice device) {
         initToolBarDetails();
         Device mDevice = getIntent().getParcelableExtra(DeviceManagerActivity.EXTRA_DEVICE);
-        animationScanner(false);
         nameDeviceRegister.setText("Device " + device.getName() + " connected successfully");
         imgDeviceRegister.setImageResource(mDevice.getImg());
-        btnDeviceRegister.setText(R.string.remove_device_register);
     }
 
     public void animationScanner(boolean show) {
@@ -271,30 +268,33 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
                 if (show) {
                     imgDeviceRegister.setVisibility(View.GONE);
                     nameDeviceRegister.setVisibility(View.GONE);
-                    imgAnimationBluetooth.setVisibility(View.VISIBLE);
-                    imgAnimationBluetooth.setBackgroundResource(R.drawable.bluetooth_animation);
-                    AnimationDrawable animation = (AnimationDrawable) imgAnimationBluetooth.getBackground();
-                    animation.start();
+                    btnDeviceRegister.setText(R.string.stop_scanner);
+                    pulsator.start();
                 } else {
                     imgDeviceRegister.setVisibility(View.VISIBLE);
                     nameDeviceRegister.setVisibility(View.VISIBLE);
-                    imgAnimationBluetooth.setVisibility(View.GONE);
-                    AnimationDrawable animation = (AnimationDrawable) imgAnimationBluetooth.getBackground();
-                    animation.stop();
+                    btnDeviceRegister.setText(R.string.start_scanner);
+                    pulsator.stop();
                 }
             }
         });
     }
 
-
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.btn_device_register) {
-            Log.d(TAG, "onClick: ");
-            if (mScanner != null) {
+        int id = v.getId();
+        if (id == R.id.btn_device_register) {
+            if (btnDeviceRegister.getText().equals(getString(R.string.start_scanner))) {
+                Log.d(TAG, "onClick: start scanner");
+                if (mScanner != null) {
+                    mScanner.stopScan();
+                    animationScanner(true);
+                    mScanner.startScan(mScanCallback);
+                }
+            } else if (btnDeviceRegister.getText().equals(getString(R.string.stop_scanner))) {
+                Log.d(TAG, "onClick: stop scanner");
                 mScanner.stopScan();
-                animationScanner(true);
-                mScanner.startScan(mScanCallback);
+                animationScanner(false);
             }
         }
     }

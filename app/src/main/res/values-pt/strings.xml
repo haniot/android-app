@@ -258,6 +258,7 @@
     <string name="remove">Remover</string>
     <string name="cancelar">Cancelar</string>
     <string name="start_scanner">Inciar scanner</string>
+    <string name="stop_scanner">Parar scanner</string>
     <string name="details">Detalhes</string>
     <string name="remove_device_register">Remover Dispositivo</string>
     <string name="no_devices_registered">Não há didpositivos cadastrados...</string>

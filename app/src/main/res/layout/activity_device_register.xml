@@ -10,6 +10,25 @@
     <!-- The ActionBar displayed at the top -->
     <include layout="@layout/toolbar" />
 
+    <pl.bclogic.pulsator4droid.library.PulsatorLayout
+        android:id="@+id/pulsator"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:pulse_count="4"
+        app:pulse_duration="7000"
+        app:pulse_repeat="0"
+        app:pulse_color="@color/colorAccent"
+        app:pulse_startFromScratch="false"
+        app:pulse_interpolator="Linear">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            app:srcCompat="@drawable/ic_bluetooth_searching_white_24dp" />
+
+    </pl.bclogic.pulsator4droid.library.PulsatorLayout>
+
 
     <TextView
         android:id="@+id/txt_name_device_register"
@@ -22,14 +41,7 @@
         android:text="Nome Dispositivo"
         android:textAlignment="center" />
 
-    <ImageView
-        android:id="@+id/img_animation_bluetooth"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="200dp"
-        android:visibility="gone" />
+
 
     <ImageView
         android:id="@+id/img_device_register"
