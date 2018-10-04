@@ -131,7 +131,19 @@ public class AddWeightManuallyFragment extends Fragment implements View.OnClickL
 
             case R.id.botWeight:
 //                openNumberPicker();
-                this.numberPicker.create(getContext(),this,5);
+
+                this.numberPicker.setDialogIcon(R.drawable.ic_balance);
+                Log.d("TESTE","setando icon");
+
+                this.numberPicker.setDialogTitle("teste titulo");
+                this.numberPicker.setDialogMessage("teste message");
+                ArrayList<String> teste = new ArrayList<String>(){{
+                    add("Kg");
+                    add("Gr");
+                }};
+                this.numberPicker.setPickersTitles(teste);
+                this.numberPicker.setOrientation(LinearLayout.HORIZONTAL);
+                this.numberPicker.create(getContext(),this,2);
                 break;
         }
     }
@@ -139,8 +151,6 @@ public class AddWeightManuallyFragment extends Fragment implements View.OnClickL
 
     @Override
     public void onClick(DialogInterface dialog, int which) {
-        Log.d("TESTE","click dialog");
         ArrayList<Integer> data = this.numberPicker.getData();
-        if (data != null) Log.d("TESTE","peguei :"+data.get(0));
     }
 }
