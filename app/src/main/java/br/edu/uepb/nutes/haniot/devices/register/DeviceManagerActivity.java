@@ -1,5 +1,6 @@
 package br.edu.uepb.nutes.haniot.devices.register;
 
+import android.bluetooth.BluetoothDevice;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -358,7 +359,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
         //define a button how to cancel.
         builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface arg0, int arg1) {
-
+                finish();
             }
         });
         //create the AlertDialog
@@ -385,6 +386,29 @@ public class DeviceManagerActivity extends AppCompatActivity {
                 displayLoading(false);
             }
         });
+    }
+
+    //TODO: 1 - finish the save method on the server
+    public void saveDeviceRegister(Device device) {
+        displayLoading(true);
+        //devices/users/:userId
+//        String path = "devices/".concat("/users/").concat(session.get_idLogged());
+//        server.post(path, new Server.Callback() {
+//            @Override
+//            public void onError(JSONObject result) {
+//                displayLoading(false);
+//            }
+//
+//            @Override
+//            public void onSuccess(JSONObject result) {
+//                mDeviceDAO.save(device);
+//
+//                List<Device> devicesRegistered = jsonToListDevice(result);
+//                populateDevicesRegistered(devicesRegistered);
+//                populateDevicesAvailable(mDeviceDAO.list(session.getIdLogged()));
+//                displayLoading(false);
+//            }
+//        });
     }
 
 }

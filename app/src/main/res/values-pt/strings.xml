@@ -261,6 +261,7 @@
     <string name="stop_scanner">Parar scanner</string>
     <string name="details">Detalhes</string>
     <string name="remove_device_register">Remover Dispositivo</string>
+    <string name="device_not_found_try_again">Dispositivo não encontrado tente novamente</string>
     <string name="no_devices_registered">Não há didpositivos cadastrados...</string>
     <string name="no_devices_available">Nenhum dispositivo disponível. Em breve a lista será atualizada...</string>
 

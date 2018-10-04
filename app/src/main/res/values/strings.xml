@@ -552,6 +552,7 @@
     <string name="stop_scanner">Stop scanner</string>
     <string name="details">Details</string>
     <string name="remove_device_register">Remove Device</string>
+    <string name="device_not_found_try_again">Device not found try again</string>
     <string name="no_devices_registered">No registered devices...</string>
     <string name="no_devices_available">No device available. Soon the list will be updated...</string>
 
