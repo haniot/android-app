@@ -388,27 +388,39 @@ public class DeviceManagerActivity extends AppCompatActivity {
         });
     }
 
+    public String deviceToJson(Device device, BluetoothDevice bluetoothDevice) throws JSONException {
+
+        JSONObject result = new JSONObject();
+        result.put("typeId", device.get_id());
+        result.put("name",device.getName());
+        result.put("manufacture",device.getManufacturer());
+        result.put("model",device.getModelNumber());
+        result.put("address", bluetoothDevice.getAddress());
+
+        return String.valueOf(result);
+    }
+
     //TODO: 1 - finish the save method on the server
-    public void saveDeviceRegister(Device device) {
+    public void saveDeviceRegister(Device device,BluetoothDevice bluetoothDevice,Session session,Server server) throws JSONException {
         displayLoading(true);
-        //devices/users/:userId
-//        String path = "devices/".concat("/users/").concat(session.get_idLogged());
-//        server.post(path, new Server.Callback() {
-//            @Override
-//            public void onError(JSONObject result) {
-//                displayLoading(false);
-//            }
-//
-//            @Override
-//            public void onSuccess(JSONObject result) {
-//                mDeviceDAO.save(device);
-//
-//                List<Device> devicesRegistered = jsonToListDevice(result);
-//                populateDevicesRegistered(devicesRegistered);
-//                populateDevicesAvailable(mDeviceDAO.list(session.getIdLogged()));
-//                displayLoading(false);
-//            }
-//        });
+
+        String path = "devices/".concat("/users/").concat(session.get_idLogged());
+        server.post(path, deviceToJson(device, bluetoothDevice), new Server.Callback() {
+            @Override
+            public void onError(JSONObject result) {
+                displayLoading(false);
+            }
+
+            @Override
+            public void onSuccess(JSONObject result) {
+                mDeviceDAO.save(device);
+
+                List<Device> devicesRegistered = jsonToListDevice(result);
+                populateDevicesRegistered(devicesRegistered);
+                populateDevicesAvailable(mDeviceDAO.list(session.getIdLogged()));
+                displayLoading(false);
+            }
+        });
     }
 
 }

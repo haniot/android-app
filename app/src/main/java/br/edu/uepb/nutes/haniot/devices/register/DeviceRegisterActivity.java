@@ -22,10 +22,14 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.json.JSONException;
+
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.model.Device;
+import br.edu.uepb.nutes.haniot.server.Server;
 import br.edu.uepb.nutes.simplebleconnect.scanner.SimpleBleScanner;
 import br.edu.uepb.nutes.simplebleconnect.scanner.SimpleScanCallback;
 import br.edu.uepb.nutes.simplebleconnect.utils.GattAttributes;
@@ -50,9 +54,10 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
 
 
     private SimpleBleScanner mScanner;
-    private PulsatorLayout mPulsatorLayout;
     private Device mDevice;
     private DeviceManagerActivity mDeviceManagerActivity;
+    private Server server;
+    private Session session;
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -72,6 +77,10 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     @BindView(R.id.txt_mac_device)
     TextView txtMacDevice;
 
+    @BindView(R.id.pulsator)
+    PulsatorLayout mPulsatorLayout;
+
+
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -81,10 +90,10 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         ButterKnife.bind(this);
         initComponents();
 
-        mPulsatorLayout = findViewById(R.id.pulsator);
-        mDeviceManagerActivity = new DeviceManagerActivity();
+        server = Server.getInstance(this);
+        session = new Session(this);
 
-        btnDeviceRegister = findViewById(R.id.btn_device_register);
+        mDeviceManagerActivity = new DeviceManagerActivity();
         btnDeviceRegister.setOnClickListener(this);
 
         mDevice = getIntent().getParcelableExtra(DeviceManagerActivity.EXTRA_DEVICE);
@@ -174,7 +183,11 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
             BluetoothDevice device = scanResult.getDevice();
             Log.d(TAG, "onScanResult: "+device.getAddress());
             if (device == null) return;
-            deviceConnected(device);
+            try {
+                deviceConnected(device);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
 
         @Override
@@ -185,7 +198,11 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         @Override
         public void onFinish() {
             animationScanner(false);
-            deviceConnected(null);
+            try {
+                deviceConnected(null);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
             Log.d("MainActivity", "onFinish()");
         }
 
@@ -265,7 +282,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     }
 
 
-    public void deviceConnected(BluetoothDevice device) {
+    public void deviceConnected(BluetoothDevice device) throws JSONException {
         if(device != null ){
             initToolBarDetails();
             mScanner.stopScan();
@@ -277,8 +294,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
             txtMacDevice.setVisibility(View.VISIBLE);
             txtMacDevice.setText(device.getAddress());
             //implement the method to save in the server
-            //mDeviceManagerActivity.saveDeviceRegister(device);
-
+            mDeviceManagerActivity.saveDeviceRegister(mDevice, device, session, server);
         }else{
             nameDeviceRegister.setText(R.string.device_not_found_try_again);
             txtMacDevice.setVisibility(View.GONE);
@@ -296,12 +312,12 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
                 imgBluetooth.setVisibility(View.VISIBLE);
                 mPulsatorLayout.start();
             } else {
-                mPulsatorLayout.stop();
                 imgDeviceRegister.setVisibility(View.VISIBLE);
                 nameDeviceRegister.setVisibility(View.VISIBLE);
                 txtMacDevice.setVisibility(View.VISIBLE);
                 btnDeviceRegister.setText(R.string.start_scanner);
                 imgBluetooth.setVisibility(View.GONE);
+                mPulsatorLayout.stop();
             }
         });
     }
