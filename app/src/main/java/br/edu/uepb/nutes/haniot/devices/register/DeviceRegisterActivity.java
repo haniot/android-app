@@ -22,13 +22,21 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.json.JSONException;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.model.Device;
+import br.edu.uepb.nutes.haniot.model.dao.DeviceDAO;
 import br.edu.uepb.nutes.haniot.server.Server;
 import br.edu.uepb.nutes.simplebleconnect.scanner.SimpleBleScanner;
 import br.edu.uepb.nutes.simplebleconnect.scanner.SimpleScanCallback;
@@ -55,9 +63,10 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
 
     private SimpleBleScanner mScanner;
     private Device mDevice;
-    private DeviceManagerActivity mDeviceManagerActivity;
+    private DeviceDAO mDeviceDAO;
     private Server server;
     private Session session;
+    private DeviceManagerActivity mDeviceManagerActivity;
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -81,7 +90,6 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     PulsatorLayout mPulsatorLayout;
 
 
-
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,8 +100,9 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
 
         server = Server.getInstance(this);
         session = new Session(this);
-
+        mDeviceDAO = DeviceDAO.getInstance(this);
         mDeviceManagerActivity = new DeviceManagerActivity();
+
         btnDeviceRegister.setOnClickListener(this);
 
         mDevice = getIntent().getParcelableExtra(DeviceManagerActivity.EXTRA_DEVICE);
@@ -103,6 +112,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
                 .addScanPeriod(15000) // 15s
                 .build();
     }
+
 
     //start scanner library ble
     @Override
@@ -181,7 +191,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         @Override
         public void onScanResult(int callbackType, ScanResult scanResult) {
             BluetoothDevice device = scanResult.getDevice();
-            Log.d(TAG, "onScanResult: "+device.getAddress());
+            Log.d(TAG, "onScanResult: " + device.getAddress());
             if (device == null) return;
             try {
                 deviceConnected(device);
@@ -283,7 +293,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
 
 
     public void deviceConnected(BluetoothDevice device) throws JSONException {
-        if(device != null ){
+        if (device != null) {
             initToolBarDetails();
             mScanner.stopScan();
             mPulsatorLayout.stop();
@@ -294,8 +304,8 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
             txtMacDevice.setVisibility(View.VISIBLE);
             txtMacDevice.setText(device.getAddress());
             //implement the method to save in the server
-            mDeviceManagerActivity.saveDeviceRegister(mDevice, device, session, server);
-        }else{
+            saveDeviceRegister(device);
+        } else {
             nameDeviceRegister.setText(R.string.device_not_found_try_again);
             txtMacDevice.setVisibility(View.GONE);
         }
@@ -338,5 +348,57 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
                 mScanner.stopScan();
             }
         }
+    }
+
+    /**
+     * Deserialize json in a list of devices.
+     * If any error occurs it will be returned List empty.
+     *
+     * @param json {@link JSONObject}
+     * @return {@link List<Device>}
+     */
+    private List<Device> jsonToListDevice(JSONObject json) {
+        if (json == null || !json.has("devices")) return new ArrayList<>();
+
+        Type typeUserAccess = new TypeToken<List<Device>>() {
+        }.getType();
+
+        try {
+            JSONArray jsonArray = json.getJSONArray("devices");
+            return new Gson().fromJson(jsonArray.toString(), typeUserAccess);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
+
+    public String deviceToJson(BluetoothDevice device) throws JSONException {
+
+        mDevice = getIntent().getParcelableExtra(DeviceManagerActivity.EXTRA_DEVICE);
+        JSONObject result = new JSONObject();
+        result.put("typeId", mDevice.getTypeId());
+        result.put("address", device.getAddress());
+        result.put("name", mDevice.getName());
+        result.put("manufacturer", mDevice.getManufacturer());
+        result.put("modelNumber",mDevice.getModelNumber());
+
+        return String.valueOf(result);
+    }
+
+    //TODO: 1 - finish the save method on the server
+    public void saveDeviceRegister(BluetoothDevice device) throws JSONException {
+
+        String path = "devices/".concat("/users/").concat(session.get_idLogged());
+        server.post(path, deviceToJson(device), new Server.Callback() {
+            @Override
+            public void onError(JSONObject result) {
+                Log.d(TAG, "onError: ");
+            }
+
+            @Override
+            public void onSuccess(JSONObject result) {
+
+            }
+        });
     }
 }

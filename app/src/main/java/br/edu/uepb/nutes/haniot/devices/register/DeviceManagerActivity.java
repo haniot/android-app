@@ -120,6 +120,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
         populateView();
     }
 
+
     /**
      * Initialize the components.
      */
@@ -266,7 +267,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
      *
      * @param devicesRegistered
      */
-    private void populateDevicesRegistered(@NonNull List<Device> devicesRegistered) {
+    public void populateDevicesRegistered(@NonNull List<Device> devicesRegistered) {
         if (devicesRegistered.isEmpty()) {
             mNoRegisteredDevices.setVisibility(View.VISIBLE);
             return;
@@ -280,7 +281,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
      *
      * @param devicesRegistered
      */
-    private void populateDevicesAvailable(@NonNull List<Device> devicesRegistered) {
+    public void populateDevicesAvailable(@NonNull List<Device> devicesRegistered) {
         List<Device> devicesAvailable = new ArrayList<>();
 
         devicesAvailable.add(new Device("Ear Thermometer ".concat(NUMBER_MODEL_THERM_DL8740),
@@ -379,42 +380,6 @@ public class DeviceManagerActivity extends AppCompatActivity {
             @Override
             public void onSuccess(JSONObject result) {
                 mDeviceDAO.remove(device);
-
-                List<Device> devicesRegistered = jsonToListDevice(result);
-                populateDevicesRegistered(devicesRegistered);
-                populateDevicesAvailable(mDeviceDAO.list(session.getIdLogged()));
-                displayLoading(false);
-            }
-        });
-    }
-
-    public String deviceToJson(Device device, BluetoothDevice bluetoothDevice) throws JSONException {
-
-        JSONObject result = new JSONObject();
-        result.put("typeId", device.get_id());
-        result.put("name",device.getName());
-        result.put("manufacture",device.getManufacturer());
-        result.put("model",device.getModelNumber());
-        result.put("address", bluetoothDevice.getAddress());
-
-        return String.valueOf(result);
-    }
-
-    //TODO: 1 - finish the save method on the server
-    public void saveDeviceRegister(Device device,BluetoothDevice bluetoothDevice,Session session,Server server) throws JSONException {
-        displayLoading(true);
-
-        String path = "devices/".concat("/users/").concat(session.get_idLogged());
-        server.post(path, deviceToJson(device, bluetoothDevice), new Server.Callback() {
-            @Override
-            public void onError(JSONObject result) {
-                displayLoading(false);
-            }
-
-            @Override
-            public void onSuccess(JSONObject result) {
-                mDeviceDAO.save(device);
-
                 List<Device> devicesRegistered = jsonToListDevice(result);
                 populateDevicesRegistered(devicesRegistered);
                 populateDevicesAvailable(mDeviceDAO.list(session.getIdLogged()));
