@@ -66,7 +66,6 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     private DeviceDAO mDeviceDAO;
     private Server server;
     private Session session;
-    private DeviceManagerActivity mDeviceManagerActivity;
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -101,8 +100,6 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         server = Server.getInstance(this);
         session = new Session(this);
         mDeviceDAO = DeviceDAO.getInstance(this);
-        mDeviceManagerActivity = new DeviceManagerActivity();
-
         btnDeviceRegister.setOnClickListener(this);
 
         mDevice = getIntent().getParcelableExtra(DeviceManagerActivity.EXTRA_DEVICE);
@@ -257,8 +254,10 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                finish();
+                super.onBackPressed();
+                break;
             default:
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -380,7 +379,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         result.put("address", device.getAddress());
         result.put("name", mDevice.getName());
         result.put("manufacturer", mDevice.getManufacturer());
-        result.put("modelNumber",mDevice.getModelNumber());
+        result.put("modelNumber", mDevice.getModelNumber());
 
         return String.valueOf(result);
     }
@@ -397,7 +396,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
 
             @Override
             public void onSuccess(JSONObject result) {
-
+                Log.d(TAG, "onSuccess: ");
             }
         });
     }
