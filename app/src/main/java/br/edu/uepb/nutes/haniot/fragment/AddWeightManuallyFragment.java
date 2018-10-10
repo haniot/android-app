@@ -21,6 +21,7 @@ import java.util.Calendar;
 
 import com.shawnlin.numberpicker.NumberPicker;
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.utils.Log;
 import br.edu.uepb.nutes.haniot.utils.NumberPickerDialog;
 import butterknife.BindView;
@@ -30,8 +31,6 @@ import butterknife.ButterKnife;
 public class AddWeightManuallyFragment extends Fragment implements View.OnClickListener,
         DialogInterface.OnClickListener{
 
-    @BindView(R.id.botClock)
-    Button botClock;
     @BindView(R.id.botWeight)
     AppCompatButton botWeight;
 
@@ -40,7 +39,9 @@ public class AddWeightManuallyFragment extends Fragment implements View.OnClickL
     private AlertDialog.Builder builder;
     private AlertDialog alertDialog;
 
-    private TimePickerDialog timePicker;
+    private ArrayList<Integer> data;
+    private Session session;
+
     private NumberPickerDialog numberPicker;
 
     public AddWeightManuallyFragment() { }
@@ -58,23 +59,11 @@ public class AddWeightManuallyFragment extends Fragment implements View.OnClickL
         ButterKnife.bind(this, view);
 
         numberPicker = new NumberPickerDialog(getContext());
+        session = new Session(getContext());
 
         botWeight.setOnClickListener(this);
-        botClock.setOnClickListener(this);
 
         return view;
-    }
-
-    public void openTimePicker(){
-
-        Calendar mcurrentTime = Calendar.getInstance();
-        int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
-        int minute = mcurrentTime.get(Calendar.MINUTE);
-
-        timePicker = new TimePickerDialog(getContext(), (view, hourOfDay, minute1) -> {
-
-        }, hour, minute, true);//Yes 24 hour time
-        timePicker.show();
     }
 
     public void openNumberPicker(){
@@ -87,7 +76,7 @@ public class AddWeightManuallyFragment extends Fragment implements View.OnClickL
         this.builder = new AlertDialog.Builder(getContext());
         this.builder.setView(view);
         this.builder.setTitle(getResources().getString(R.string.choose_weight));
-        this.builder.setIcon(getResources().getDrawable(R.drawable.ic_balance));
+        this.builder.setIcon(getResources().getDrawable(R.drawable.ic_balance_128));
 
 //        get the refference of items of view
         TextView textPounds = (TextView)view.findViewById(R.id.textPounds);
@@ -122,24 +111,22 @@ public class AddWeightManuallyFragment extends Fragment implements View.OnClickL
 
     }
 
+    public ArrayList<Integer> getData() {
+        return data;
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.botClock:
-                openTimePicker();
-                break;
-
             case R.id.botWeight:
-//                openNumberPicker();
 
-                this.numberPicker.setDialogIcon(R.drawable.ic_balance);
-                Log.d("TESTE","setando icon");
+                this.numberPicker.setDialogIcon(R.drawable.ic_balance_128);
 
                 this.numberPicker.setDialogTitle("teste titulo");
                 this.numberPicker.setDialogMessage("teste message");
                 ArrayList<String> teste = new ArrayList<String>(){{
-                    add("Kg");
-                    add("Gr");
+                    add("Quilos");
+                    add("Gramas");
                 }};
                 this.numberPicker.setPickersTitles(teste);
                 this.numberPicker.setOrientation(LinearLayout.HORIZONTAL);
@@ -151,6 +138,9 @@ public class AddWeightManuallyFragment extends Fragment implements View.OnClickL
 
     @Override
     public void onClick(DialogInterface dialog, int which) {
-        ArrayList<Integer> data = this.numberPicker.getData();
+        this.data = this.numberPicker.getData();
+        session.putString("lastWeight1", this.data.get(0).toString());
+        session.putString("lastWeight2", this.data.get(1).toString());
     }
+
 }

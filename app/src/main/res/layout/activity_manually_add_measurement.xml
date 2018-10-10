@@ -35,14 +35,23 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <FrameLayout
-                android:id="@+id/frame_date"
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/btnCalendar"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="0.5"
-                android:fitsSystemWindows="true">
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ic_calendar_128"
+                android:text="Button &#10; another text"
+                android:padding="50dp"
+                style="@style/Widget.AppCompat.Button.Borderless"/>
 
-            </FrameLayout>
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/btnClock"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/clock"
+                android:text="Button &#10; another text"
+                android:padding="50dp"
+                style="@style/Widget.AppCompat.Button.Borderless"/>
 
             <FrameLayout
                 android:id="@+id/frame_measurement"
@@ -51,6 +60,31 @@
                 android:layout_weight="0.5">
 
             </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center">
+
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/btnCancel"
+                    style="@style/Widget.AppCompat.Button.Colored"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="20dp"
+                    android:text="Cancel" />
+
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/btnConfirm"
+                    style="@style/Widget.AppCompat.Button.Colored"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="20dp"
+                    android:text="confirm"
+                    android:textColor="@color/colorTextDark" />
+
+            </LinearLayout>
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>

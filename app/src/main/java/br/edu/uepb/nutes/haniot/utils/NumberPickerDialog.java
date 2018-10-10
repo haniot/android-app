@@ -248,7 +248,6 @@ public class NumberPickerDialog {
     public void setDialogIcon(int dialogIcon){
 
         this.dialogIcon = dialogIcon;
-        Log.d("TESTE","icon setado");
 
     }
 
