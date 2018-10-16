@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatButton;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,8 +44,17 @@ public class AddWeightManuallyFragment extends Fragment implements View.OnClickL
     private Session session;
 
     private NumberPickerDialog numberPicker;
+    private final int NUMBEROFPICKERS = 2;
+
+    // interface instance on sender fragment
+    private SendMessageListener command;
 
     public AddWeightManuallyFragment() { }
+
+    //Comunication interface with another fragments and activities
+    public interface SendMessageListener {
+        void onSendMessage(Pair<String,String> data);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -62,6 +72,10 @@ public class AddWeightManuallyFragment extends Fragment implements View.OnClickL
         session = new Session(getContext());
 
         botWeight.setOnClickListener(this);
+        botWeight.setText(getResources().getString(R.string.unit_kg));
+
+        AppCompatButton confirm = (AppCompatButton)view.findViewById(R.id.btnConfirm);
+        confirm.setOnClickListener(this);
 
         return view;
     }
@@ -122,23 +136,56 @@ public class AddWeightManuallyFragment extends Fragment implements View.OnClickL
 
                 this.numberPicker.setDialogIcon(R.drawable.ic_balance_128);
 
-                this.numberPicker.setDialogTitle("teste titulo");
-                this.numberPicker.setDialogMessage("teste message");
                 ArrayList<String> teste = new ArrayList<String>(){{
                     add("Quilos");
                     add("Gramas");
                 }};
                 this.numberPicker.setPickersTitles(teste);
-                this.numberPicker.setOrientation(LinearLayout.VERTICAL);
-                this.numberPicker.create(getContext(),this,2);
+                this.numberPicker.setOrientation(LinearLayout.HORIZONTAL);
+                this.numberPicker.create(getContext(),this,NUMBEROFPICKERS);
+                break;
+            case R.id.btnConfirm:
+                //Action for send message to activity that implements the interface
+                if (command != null){
+                    if (this.data != null) {
+                        Pair<String, String> data = new Pair<>(
+                                this.data.get(0).toString(), this.data.get(1).toString());
+                        command.onSendMessage(data);
+                    }else{
+                        command.onSendMessage(null);
+                    }
+                }
                 break;
         }
     }
 
+    public void updateTextWeight(){
+        if (this.data != null){
+            String weight = String.valueOf(this.data.get(0))+"."+String.valueOf(this.data.get(1))
+                    +" "+getResources().getString(R.string.unit_kg);
+            botWeight.setText(weight);
+        }else{
+            botWeight.setText(getResources().getString(R.string.unit_kg));
+        }
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        try{
+            command = (SendMessageListener)context;
+        }catch (ClassCastException e){
+            throw new ClassCastException(getActivity().toString()+"Must implement Sender interface");
+        }
+
+    }
 
     @Override
     public void onClick(DialogInterface dialog, int which) {
         this.data = this.numberPicker.getData();
+        updateTextWeight();
+
         session.putString("lastWeight1", this.data.get(0).toString());
         session.putString("lastWeight2", this.data.get(1).toString());
     }

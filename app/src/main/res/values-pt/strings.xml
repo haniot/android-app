@@ -181,7 +181,7 @@
     <string name="datetime_format2">dd\' de \'MMMM\' às \'HH:mm:ss</string>
     <string name="datetime_format_db">yyyy-MM-dd HH:mm:ss</string>
     <string name="time_format">HH:mm:ss</string>
-    <string name="time_format_simple">mm:ss</string>
+    <string name="time_format_simple">HH:mm</string>
     <string name="time_format_simple2">HH\'h\'mm\'m\'</string>
     <!-- END FORMAT DATES -->
 
@@ -357,7 +357,9 @@
     <string name="choose_weight">Escolha o peso</string>
     <string name="kg">Quilos</string>
     <string name="Gr">Gramas</string>
-
+    <string name="choose_date">Escolha a data</string>
+    <string name="choose_hour">Escolha a hora</string>
+    <string name="error_insering_measurement">Erro ao inserir medição</string>
 
     <!-- END OF STRINGS FOR TABLET -->
 

@@ -426,6 +426,9 @@
     <string name="choose_weight">Choose the weight</string>
     <string name="kg">Pounds</string>
     <string name="Gr">Grams</string>
+    <string name="choose_date">Choose date</string>
+    <string name="choose_hour">Choose hour</string>
+    <string name="error_insering_measurement">Error insering measurement</string>
 
     <!-- SURVEY -->
     <string name="survey_select_an_answer">Select an answer&#8230;</string>

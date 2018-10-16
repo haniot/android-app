@@ -461,7 +461,6 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
         this.calendar.set(year, month, dayOfMonth);
         this.date = simpleDateFormat.format(calendar.getTime());
-
         updateTextDate(this.calendar.getTime());
         if (!this.date.equals(this.today)) {
             btnArrowRight.setEnabled(true);
