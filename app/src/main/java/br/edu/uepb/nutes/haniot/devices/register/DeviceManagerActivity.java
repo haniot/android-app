@@ -102,32 +102,25 @@ public class DeviceManagerActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
     protected void onStart() {
         super.onStart();
         populateView();
-        Log.d(LOG_TAG, "onStart: ");
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         populateView();
-        Log.d(LOG_TAG, "onResume: ");
     }
-
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                super.onBackPressed();
-                break;
-            default:
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
 
     /**
      * Initialize the components.
@@ -167,16 +160,10 @@ public class DeviceManagerActivity extends AppCompatActivity {
 
             @Override
             public void onSuccess(JSONObject result) {
-
                 List<Device> devicesRegistered = jsonToListDevice(result);
 
-                //saves the devices coming from the server in the local database
-                for (Device mDevices : devicesRegistered) {
-                    mDeviceDAO.save(mDevices);
-                }
                 populateDevicesRegistered(devicesRegistered);
                 populateDevicesAvailable(mDeviceDAO.list(session.getIdLogged()));
-
                 displayLoading(false);
             }
         });
@@ -280,19 +267,17 @@ public class DeviceManagerActivity extends AppCompatActivity {
     public void populateDevicesRegistered(@NonNull List<Device> devicesRegistered) {
         mAdapterDeviceRegistered.clearItems();
         mAdapterDeviceRegistered.addItems(devicesRegistered);
-
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 if (devicesRegistered.isEmpty()) {
                     mNoRegisteredDevices.setVisibility(View.VISIBLE);
                     return;
-                } else {
+                }else{
                     mNoRegisteredDevices.setVisibility(View.GONE);
                 }
             }
         });
-
     }
 
     /**
@@ -327,6 +312,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
                 "Xiaomi", NUMBER_MODEL_SMARTBAND_MI2,
                 R.drawable.device_smartband_miband2));
 
+
         devicesAvailable = mergeDevicesAvailableRegistered(devicesRegistered, devicesAvailable);
 
         mAdapterDeviceAvailable.clearItems();
@@ -345,7 +331,8 @@ public class DeviceManagerActivity extends AppCompatActivity {
      * @param availableList  {@link List<Device>}
      * @return {@link List<Device>}
      */
-    private List<Device> mergeDevicesAvailableRegistered(List<Device> registeredList, List<Device> availableList) {
+    private List<Device> mergeDevicesAvailableRegistered(List<Device> registeredList,
+                                                         List<Device> availableList) {
         /**
          * Add only devices that have not been registered
          */
@@ -379,7 +366,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
         //define a button how to cancel.
         builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface arg0, int arg1) {
-
+                finish();
             }
         });
         //create the AlertDialog
@@ -387,21 +374,20 @@ public class DeviceManagerActivity extends AppCompatActivity {
         alert.show();
     }
 
-
     private void removeDeviceRegister(Device device) {
         displayLoading(true);
-        String path = "devices/".concat(device.get_id()).concat("/users/").concat(session.get_idLogged());
+        String path = "devices/".concat(device.get_id())
+                .concat("/users/")
+                .concat(session.get_idLogged());
         server.delete(path, new Server.Callback() {
             @Override
             public void onError(JSONObject result) {
-                Log.d(LOG_TAG, "onError: ");
                 displayLoading(false);
             }
 
             @Override
             public void onSuccess(JSONObject result) {
-                mDeviceDAO.remove(device);
-                Log.d(LOG_TAG, "onSuccess: ");
+                mDeviceDAO.remove(device.get_id());
                 populateView();
             }
         });

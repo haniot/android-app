@@ -10,7 +10,6 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -23,14 +22,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
@@ -66,6 +61,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     private DeviceDAO mDeviceDAO;
     private Server server;
     private Session session;
+    private ActionBar mActionBar;
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -88,8 +84,6 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     @BindView(R.id.pulsator)
     PulsatorLayout mPulsatorLayout;
 
-
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,9 +94,11 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         server = Server.getInstance(this);
         session = new Session(this);
         mDeviceDAO = DeviceDAO.getInstance(this);
+
         btnDeviceRegister.setOnClickListener(this);
 
         mDevice = getIntent().getParcelableExtra(DeviceManagerActivity.EXTRA_DEVICE);
+
         //Initialize scanner settings
         mScanner = new SimpleBleScanner.Builder()
                 .addFilterServiceUuid(getServiceUuidDevice(mDevice.getName()))
@@ -162,7 +158,6 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
                 new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_ENABLE_LOCATION);
     }
 
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
@@ -184,14 +179,21 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
 
     public final SimpleScanCallback mScanCallback = new SimpleScanCallback() {
 
-        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         @Override
         public void onScanResult(int callbackType, ScanResult scanResult) {
-            BluetoothDevice device = scanResult.getDevice();
+            BluetoothDevice device = null;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                device = scanResult.getDevice();
+            }
+
             Log.d(TAG, "onScanResult: " + device.getAddress());
-            if (device == null) return;
+            if (device == null) {
+                mScanner.stopScan();
+                return;
+            }
+
             try {
-                deviceConnected(device);
+                deviceAvailable(device);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -206,7 +208,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         public void onFinish() {
             animationScanner(false);
             try {
-                deviceConnected(null);
+                deviceAvailable(null);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -234,30 +236,21 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
      */
     private void initToolBar() {
         setSupportActionBar(mToolbar);
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle(getString(R.string.devices));
-        actionBar.setDisplayShowTitleEnabled(true);
-        actionBar.setHomeAsUpIndicator(R.drawable.ic_close);
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        mActionBar = getSupportActionBar();
+        mActionBar.setTitle(getString(R.string.devices));
+        mActionBar.setDisplayShowTitleEnabled(true);
+        mActionBar.setHomeAsUpIndicator(R.drawable.ic_close);
+        mActionBar.setDisplayHomeAsUpEnabled(true);
     }
 
     private void initToolBarDetails() {
-        setSupportActionBar(mToolbar);
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle(getString(R.string.details));
-        actionBar.setDisplayShowTitleEnabled(true);
-        actionBar.setHomeAsUpIndicator(R.drawable.ic_close);
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        mActionBar.setTitle(getString(R.string.details));
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                super.onBackPressed();
-                break;
-            default:
-                break;
+        if (item.getItemId() == android.R.id.home) {
+            finish();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -291,19 +284,22 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     }
 
 
-    public void deviceConnected(BluetoothDevice device) throws JSONException {
+    public void deviceAvailable(BluetoothDevice device) throws JSONException {
         if (device != null) {
+            mDevice.setAddress(device.getAddress());
+
             initToolBarDetails();
             mScanner.stopScan();
             mPulsatorLayout.stop();
             imgBluetooth.setVisibility(View.GONE);
-            mDevice = getIntent().getParcelableExtra(DeviceManagerActivity.EXTRA_DEVICE);
-            nameDeviceRegister.setText("Device " + device.getName() + " connected successfully");
+            nameDeviceRegister.setText(getString(R.string.device_registered_success,
+                    mDevice.getName()));
             imgDeviceRegister.setImageResource(mDevice.getImg());
             txtMacDevice.setVisibility(View.VISIBLE);
             txtMacDevice.setText(device.getAddress());
-            //implement the method to save in the server
-            saveDeviceRegister(device);
+
+            // Save in the server
+            saveDeviceRegister(mDevice);
         } else {
             nameDeviceRegister.setText(R.string.device_not_found_try_again);
             txtMacDevice.setVisibility(View.GONE);
@@ -311,7 +307,6 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     }
 
     public void animationScanner(boolean show) {
-
         runOnUiThread(() -> {
             if (show) {
                 imgDeviceRegister.setVisibility(View.GONE);
@@ -350,53 +345,38 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     }
 
     /**
-     * Deserialize json in a list of devices.
-     * If any error occurs it will be returned List empty.
-     *
-     * @param json {@link JSONObject}
-     * @return {@link List<Device>}
+     * @param device
+     * @return
+     * @throws JSONException
      */
-    private List<Device> jsonToListDevice(JSONObject json) {
-        if (json == null || !json.has("devices")) return new ArrayList<>();
-
-        Type typeUserAccess = new TypeToken<List<Device>>() {
-        }.getType();
-
+    public String deviceToJson(Device device) {
+        mDevice = getIntent().getParcelableExtra(DeviceManagerActivity.EXTRA_DEVICE);
+        JSONObject result = new JSONObject();
         try {
-            JSONArray jsonArray = json.getJSONArray("devices");
-            return new Gson().fromJson(jsonArray.toString(), typeUserAccess);
+            result.put("typeId", mDevice.getTypeId());
+            result.put("address", device.getAddress());
+            result.put("name", mDevice.getName());
+            result.put("manufacturer", mDevice.getManufacturer());
+            result.put("modelNumber", mDevice.getModelNumber());
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return new ArrayList<>();
-    }
-
-    public String deviceToJson(BluetoothDevice device) throws JSONException {
-
-        mDevice = getIntent().getParcelableExtra(DeviceManagerActivity.EXTRA_DEVICE);
-        JSONObject result = new JSONObject();
-        result.put("typeId", mDevice.getTypeId());
-        result.put("address", device.getAddress());
-        result.put("name", mDevice.getName());
-        result.put("manufacturer", mDevice.getManufacturer());
-        result.put("modelNumber", mDevice.getModelNumber());
-
         return String.valueOf(result);
     }
 
-    //TODO: 1 - finish the save method on the server
-    public void saveDeviceRegister(BluetoothDevice device) throws JSONException {
-
+    public void saveDeviceRegister(Device device) {
         String path = "devices/".concat("/users/").concat(session.get_idLogged());
         server.post(path, deviceToJson(device), new Server.Callback() {
             @Override
             public void onError(JSONObject result) {
-                Log.d(TAG, "onError: ");
+                Log.d(TAG, "onError:");
             }
 
             @Override
             public void onSuccess(JSONObject result) {
-                Log.d(TAG, "onSuccess: ");
+                Device device = new Gson().fromJson(String.valueOf(result), Device.class);
+                Log.d(TAG, "onSuccess: result: "+result);
+                mDeviceDAO.save(device);
             }
         });
     }

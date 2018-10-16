@@ -1,26 +1,0 @@
-
-dsquid:UnusedPrivateMethod"5Remove this unused private "jsonToListDevice" method.(Î‡ÿ›ıÿÿÿÿ8¤ß×ää,
-Osquid:S1068".Remove this unused "mDeviceDAO" private field.(ı¥ÿ°øÿÿÿÿ8¤ß×ää,
-[squid:S1068":Remove this unused "mDeviceManagerActivity" private field.(š“ä»ıÿÿÿÿ8¤ß×ää,
-zsquid:S1450"YRemove the "mDeviceDAO" field and declare it as a local variable in the relevant methods.(ı¥ÿ°øÿÿÿÿ8¤ß×ää,
-†squid:S1450"eRemove the "mDeviceManagerActivity" field and declare it as a local variable in the relevant methods.(š“ä»ıÿÿÿÿ8¤ß×ää,
-lsquid:S1301"KReplace this "switch" statement by "if" statements to increase readability.(øå´¡ÿÿÿÿÿ8¤ß×ää,
-`squid:S2583"DChange this condition so that it does not always evaluate to "false"(ñ³›®8¤ß×ää,
-Ssquid:S1135"2Complete the task associated to this TODO comment.(ìîˆ¸úÿÿÿÿ8¤ß×ää,
-Bsquid:S1170"!Make this final field static too.(²¨ªêıÿÿÿÿ8¤ß×ää,
-=squid:S1170"!Make this final field static too.(‡àÒ8¤ß×ää,
-=squid:S1170"!Make this final field static too.(¤¯£¼8¤ß×ää,
-=squid:S1170"!Make this final field static too.(ˆò¸Î8¤ß×ää,
-=squid:S1170"!Make this final field static too.(¢‡ê¢8¤ß×ää,
-Bsquid:S1170"!Make this final field static too.(µ—Ïúÿÿÿÿ8¤ß×ää,
-Bsquid:S1170"!Make this final field static too.(ÌÕñÀıÿÿÿÿ8¤ß×ää,
-Bsquid:S1170"!Make this final field static too.(şú˜¡şÿÿÿÿ8¤ß×ää,
-psquid:S00116"NRename this field "TAG" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(²¨ªêıÿÿÿÿ8¤ß×ää,
-€squid:S00116"cRename this field "NAME_DEVICE_THERM_DL8740" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(‡àÒ8¤ß×ää,
-‡squid:S00116"jRename this field "NAME_DEVICE_GLUCOMETER_PERFORMA" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¤¯£¼8¤ß×ää,
-~squid:S00116"aRename this field "NAME_DEVICE_SCALE_1501" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ˆò¸Î8¤ß×ää,
-squid:S00116"dRename this field "NAME_DEVICE_HEART_RATE_H7" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¢‡ê¢8¤ß×ää,
-‡squid:S00116"eRename this field "NAME_DEVICE_HEART_RATE_H10" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(µ—Ïúÿÿÿÿ8¤ß×ää,
-†squid:S00116"dRename this field "NAME_DEVICE_SMARTBAND_MI2" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÌÕñÀıÿÿÿÿ8¤ß×ää,
-squid:S00116"]Rename this field "SERVICE_SCALE_1501" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(şú˜¡şÿÿÿÿ8¤ß×ää,
-osquid:MaximumInheritanceDepth"<This class has 7 parents which is greater than 5 authorized.(¥÷”ÿÿÿÿÿ8¤ß×ää,

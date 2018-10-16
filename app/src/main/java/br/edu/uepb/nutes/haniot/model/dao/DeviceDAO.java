@@ -85,6 +85,19 @@ public class DeviceDAO {
     }
 
     /**
+     * Removes device  passed as parameter.
+     *
+     * @param _id String
+     * @return boolean
+     */
+    public boolean remove(@NonNull String _id) {
+        return (deviceBox.query()
+                .equal(Device_._id, _id)
+                .build()
+                .remove()) > 0;
+    }
+
+    /**
      * Removes all devices.
      * According to userId user.
      *
