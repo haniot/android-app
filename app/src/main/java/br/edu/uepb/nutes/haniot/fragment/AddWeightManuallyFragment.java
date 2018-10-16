@@ -129,7 +129,7 @@ public class AddWeightManuallyFragment extends Fragment implements View.OnClickL
                     add("Gramas");
                 }};
                 this.numberPicker.setPickersTitles(teste);
-                this.numberPicker.setOrientation(LinearLayout.HORIZONTAL);
+                this.numberPicker.setOrientation(LinearLayout.VERTICAL);
                 this.numberPicker.create(getContext(),this,2);
                 break;
         }

@@ -9,6 +9,7 @@ import android.support.v7.widget.AppCompatButton;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -87,7 +88,7 @@ public class NumberPickerDialog {
             NumberPicker picker = new NumberPicker(context);
             picker.setDividerColor(context.getResources().getColor(R.color.colorPrimary));
             picker.setWrapSelectorWheel(true);
-            picker.setDividerDistance(60);
+            picker.setDividerDistance(50);
             picker.setDividerThickness(5);
             picker.setMinimumWidth(100);
             if (this.orientation == -1 || orientation == LinearLayout.HORIZONTAL){
@@ -125,7 +126,7 @@ public class NumberPickerDialog {
         if (this.orientation == -1 || orientation == LinearLayout.HORIZONTAL) {
             pickersLayout.setOrientation(LinearLayout.HORIZONTAL);
         }else{
-            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(100, 200);
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(300,LinearLayout.LayoutParams.WRAP_CONTENT);
             pickersLayout.setLayoutParams(lp);
             pickersLayout.setOrientation(LinearLayout.VERTICAL);
         }
@@ -135,7 +136,7 @@ public class NumberPickerDialog {
 
             ImageView divider = new ImageView(context);
             LinearLayout.LayoutParams lp =
-                    new LinearLayout.LayoutParams(25, LinearLayout.LayoutParams.MATCH_PARENT);
+                    new LinearLayout.LayoutParams(30, 10);
             divider.setLayoutParams(lp);
             divider.setBackgroundColor(Color.TRANSPARENT);
 
@@ -153,16 +154,25 @@ public class NumberPickerDialog {
     public void addTitlesOnPickers(){
         if (getPickersTitles() != null) {
             this.pickersTitlesLayout = new LinearLayout(this.context);
+
             if (this.orientation == -1 || orientation == LinearLayout.HORIZONTAL) {
+
                 this.pickersTitlesLayout.setOrientation(LinearLayout.HORIZONTAL);
-            }else{
-                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(100, 100);
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT);
+                this.pickersTitlesLayout.setLayoutParams(lp);
+
+            } else {
+
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                        150,
+                        LinearLayout.LayoutParams.MATCH_PARENT);
                 this.pickersTitlesLayout.setOrientation(LinearLayout.VERTICAL);
                 this.pickersTitlesLayout.setLayoutParams(lp);
-            }
-            this.pickersTitlesLayout.setGravity(Gravity.CENTER);
-//            this.pickersTitlesLayout.setPadding(10, 0, 0, 0);
 
+            }
+            this.pickersTitlesLayout.setGravity(Gravity.CENTER_HORIZONTAL);
             for (String pickerTitle : this.pickersTitles) {
 
                 AppCompatButton bt = new AppCompatButton(context, null, R.style.Widget_AppCompat_Button_Colored);
@@ -172,15 +182,26 @@ public class NumberPickerDialog {
 
                 });
 
-                this.pickersTitlesLayout.addView(bt);
-
                 ImageView divider = new ImageView(context);
-                LinearLayout.LayoutParams lp =
-                        new LinearLayout.LayoutParams(60, LinearLayout.LayoutParams.MATCH_PARENT);
-                divider.setLayoutParams(lp);
-                divider.setBackgroundColor(Color.TRANSPARENT);
 
-                this.pickersTitlesLayout.addView(divider);
+                if (this.orientation == -1 || orientation == LinearLayout.HORIZONTAL) {
+                    LinearLayout.LayoutParams lp =
+                            new LinearLayout.LayoutParams(50, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    divider.setLayoutParams(lp);
+                    divider.setBackgroundColor(Color.TRANSPARENT);
+                    this.pickersTitlesLayout.addView(bt);
+                    this.pickersTitlesLayout.addView(divider);
+                }else{
+                    LinearLayout.LayoutParams lp =
+                            new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 50);
+                    divider.setLayoutParams(lp);
+                    divider.setBackgroundColor(Color.TRANSPARENT);
+                    this.pickersTitlesLayout.addView(divider);
+                    this.pickersTitlesLayout.addView(bt);
+                }
+
+
+
             }
         }
     }
