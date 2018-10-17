@@ -62,6 +62,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     private Server server;
     private Session session;
     private ActionBar mActionBar;
+    private int contStartScanner = 0;
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -300,8 +301,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
             // Save in the server
             saveDeviceRegister(mDevice);
         } else {
-            nameDeviceRegister.setText(R.string.device_not_found_try_again);
-            txtMacDevice.setVisibility(View.GONE);
+            failedFindDevice(++contStartScanner);
         }
     }
 
@@ -342,6 +342,19 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
             }
         }
     }
+
+    public void failedFindDevice(int cont){
+       if(cont >= 3){
+           Log.d(TAG, "failedFindDevice: "+cont);
+           nameDeviceRegister.setText(R.string.failed_to_find_device);
+           imgDeviceRegister.setVisibility(View.GONE);
+           btnDeviceRegister.setVisibility(View.GONE);
+       }else{
+           nameDeviceRegister.setText(R.string.device_not_found_try_again);
+           txtMacDevice.setVisibility(View.GONE);
+       }
+    }
+
 
     /**
      * @param device

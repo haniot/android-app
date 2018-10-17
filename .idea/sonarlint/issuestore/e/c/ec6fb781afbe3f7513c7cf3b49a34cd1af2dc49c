@@ -1,0 +1,21 @@
+
+|squid:S00116"fRename this field "NUMBER_MODEL_HEART_RATE_H10" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(‚›¨ç
+isquid:S1450"TRemove the "alert" field and declare it as a local variable in the relevant methods.(ÃğÛ‹
+gsquid:S00116"RRename this field "LOG_TAG" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Õ³O
+squid:S00116"kRename this field "NUMBER_MODEL_GLUCOMETER_PERFORMA" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÜÚÅó
+€squid:S00116"eRename this field "NUMBER_MODEL_HEART_RATE_H7" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(‡ØÖÊúÿÿÿÿ
+6squid:S1170"!Make this final field static too.(‚›¨ç
+€squid:S00116"eRename this field "NUMBER_MODEL_SMARTBAND_MI2" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(èÀ¢©ûÿÿÿÿ
+6squid:S1170"!Make this final field static too.(ÜÚÅó
+xsquid:S00116"bRename this field "NUMBER_MODEL_SCALE_1501" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÛşñÌ
+squid:S00116"dRename this field "NUMBER_MODEL_THERM_DL8740" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÉŒãûúÿÿÿÿ
+hsquid:MaximumInheritanceDepth"<This class has 7 parents which is greater than 5 authorized.(´®Äâüÿÿÿÿ
+6squid:S1170"!Make this final field static too.(ÛşñÌ
+;squid:S1170"!Make this final field static too.(‡ØÖÊúÿÿÿÿ
+;squid:S1170"!Make this final field static too.(èÀ¢©ûÿÿÿÿ
+;squid:S1170"!Make this final field static too.(ÉŒãûúÿÿÿÿ
+Šsquid:S4165"nRemove this useless assignment; "devicesAvailable" already holds the assigned value along all execution paths.(ÀıÍş8˜¿êç,
+7squid:S3626"Remove this redundant jump.(ûÁİ…8˜¿êç,
+7squid:S3626"Remove this redundant jump.(ûÁİ…8˜¿êç,
+Isquid:S1604"(Make this anonymous inner class a lambda(˜ã¯şÿÿÿÿ8˜¿êç,
+Isquid:S1604"(Make this anonymous inner class a lambda(˜ã¯şÿÿÿÿ8˜¿êç,

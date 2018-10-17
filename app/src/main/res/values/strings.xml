@@ -556,6 +556,7 @@
     <string name="no_devices_registered">No registered devices&#8230;</string>
     <string name="no_devices_available">No device available. Soon the list will be updated&#8230;</string>
     <string name="device_registered_success">Device %s successfully registered!</string>
+    <string name="failed_to_find_device">Failed to find device</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

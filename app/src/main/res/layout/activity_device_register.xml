@@ -29,16 +29,16 @@
             android:visibility="gone"
             app:srcCompat="@drawable/ic_bluetooth_searching_white_24dp" />
 
-        <TextView
-            android:id="@+id/txt_mac_device"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="157dp" />
-
     </pl.bclogic.pulsator4droid.library.PulsatorLayout>
 
+    <TextView
+        android:id="@+id/txt_mac_device"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="157dp"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/txt_name_device_register"

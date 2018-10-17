@@ -265,5 +265,6 @@
     <string name="no_devices_registered">Não há didpositivos cadastrados&#8230;</string>
     <string name="no_devices_available">Nenhum dispositivo disponível. Em breve a lista será atualizada&#8230;</string>
     <string name="device_registered_success">Dispositivo %s cadastrado com sucesso!</string>
+    <string name="failed_to_find_device">Falha ao localizar dispositivo</string>
 
 </resources>

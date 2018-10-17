@@ -118,11 +118,6 @@ public class DeviceManagerActivity extends AppCompatActivity {
         populateView();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        populateView();
-    }
 
     /**
      * Initialize the components.
@@ -394,7 +389,6 @@ public class DeviceManagerActivity extends AppCompatActivity {
         //define a button how to cancel.
         builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface arg0, int arg1) {
-                finish();
             }
         });
         //create the AlertDialog
