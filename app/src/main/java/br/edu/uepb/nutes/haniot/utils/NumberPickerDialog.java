@@ -4,23 +4,25 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.support.v7.widget.AppCompatButton;
+import android.util.Pair;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.shawnlin.numberpicker.NumberPicker;
 
 import java.util.ArrayList;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.activity.settings.Session;
 
 public class NumberPickerDialog {
+    //    haniot specific
+    private Session session;
 
     private View mainView;
     private Context context;
@@ -37,53 +39,58 @@ public class NumberPickerDialog {
     private ArrayList<String> pickersTitles;
     private LinearLayout pickersTitlesLayout;
     private int orientation = -1;
+    private ArrayList<Pair<Integer, Integer>> bounds;
+    private ArrayList<Integer> lastMeasurements;
 
-    public NumberPickerDialog(Context context){
+    public NumberPickerDialog(Context context) {
 
         this.pickers = new ArrayList<>();
         this.context = context;
+        this.session = new Session(context);
 
     }
 
-    public ArrayList<Float> create(Context context, DialogInterface.OnClickListener listener, int numberOfPickers){
+    // Create and configure the dialog
+    public ArrayList<Float> create(Context context, DialogInterface.OnClickListener listener, int numberOfPickers) {
 
+//        Dialog configuration
         this.inflater = LayoutInflater.from(context);
-        this.mainView = inflater.inflate(R.layout.clean_number_picker_dialog,null);
-
-        this.mainLayout = (LinearLayout)this.mainView.findViewById(R.id.mainLayout);
-
+        this.mainView = inflater.inflate(R.layout.clean_number_picker_dialog, null);
+        this.mainLayout = (LinearLayout) this.mainView.findViewById(R.id.mainLayout);
         this.builder = new AlertDialog.Builder(context);
         this.builder.setView(this.mainView);
 
-        if(this.dialogTitle != null){
+        if (this.dialogTitle != null) {
             this.builder.setTitle(getDialogTitle());
-        }else{
+        } else {
             this.builder.setTitle("");
         }
 
-        if (this.dialogMessage != null){
+        if (this.dialogMessage != null) {
             this.builder.setMessage(getDialogMessage());
-        }else{
+        } else {
             this.builder.setMessage("");
         }
 
-        if (this.dialogIcon != -1){
+        if (this.dialogIcon != -1) {
             this.builder.setIcon(getDialogIcon());
-        }else{
-            Log.d("TESTE","icnull");
         }
 
-        this.builder.setNegativeButton(context.getResources().getString(R.string.bt_cancel), (v,d) ->{
+//        Cancel listener will ever close the dialog window
+        this.builder.setNegativeButton(context.getResources().getString(R.string.bt_cancel), (v, d) -> {
             this.dialog.cancel();
         });
 
-        this.builder.setPositiveButton(context.getResources().getString(R.string.bt_ok),listener);
+//        Positive listener is setted on the class that have a instance of this class
+        this.builder.setPositiveButton(context.getResources().getString(R.string.bt_ok), listener);
         setmListener(listener);
 
         initBaseLayout(context);
 
         this.pickers.clear();
-        for(int i = 0; i < numberOfPickers; i++){
+
+//        this for create the pickers and customize
+        for (int i = 0; i < numberOfPickers; i++) {
 
             NumberPicker picker = new NumberPicker(context);
             picker.setDividerColor(context.getResources().getColor(R.color.colorPrimary));
@@ -91,27 +98,52 @@ public class NumberPickerDialog {
             picker.setDividerDistance(50);
             picker.setDividerThickness(5);
             picker.setMinimumWidth(100);
-            if (this.orientation == -1 || orientation == LinearLayout.HORIZONTAL){
+
+//            Adjust the orientation of pickers
+            if (this.orientation == -1 || orientation == LinearLayout.HORIZONTAL) {
                 picker.setOrientation(LinearLayout.VERTICAL);
-            }else{
+            } else {
                 picker.setOrientation(LinearLayout.HORIZONTAL);
+            }
+
+//            Set bounds of each picker, the bounds count must be the same of number of pickers
+            if (getBounds() != null) {
+                picker.setMinValue(this.bounds.get(i).first);
+                picker.setMaxValue(this.bounds.get(i).second);
+            }
+
+//            Set value to each picker of last measurement, the last measurement count must be
+// the same of number of pickers
+            if (getLastMeasurements() != null) {
+                picker.setValue(this.getLastMeasurements().get(i));
             }
 
             this.pickers.add(picker);
         }
 
+//        Add the pickers on layout
         addPickersOnLayout();
 
+//        Create the dialog
         this.dialog = builder.create();
         this.dialog.show();
 
         return null;
     }
 
-    public ArrayList<Integer> getData(){
-        if (!this.pickers.isEmpty()){
+    //    Haniot specific
+    public ArrayList<Integer> getLastMeasurements() {
+        return lastMeasurements;
+    }
+
+    public void setLastMeasurements(ArrayList<Integer> lastMeasurements) {
+        this.lastMeasurements = lastMeasurements;
+    }
+
+    public ArrayList<Integer> getData() {
+        if (!this.pickers.isEmpty()) {
             ArrayList<Integer> selectedNumbers = new ArrayList<>();
-            for (int i = 0; i < this.pickers.size(); i++){
+            for (int i = 0; i < this.pickers.size(); i++) {
                 selectedNumbers.add(this.pickers.get(i).getValue());
             }
             return selectedNumbers;
@@ -119,19 +151,19 @@ public class NumberPickerDialog {
         return null;
     }
 
-    public void addPickersOnLayout(){
+    private void addPickersOnLayout() {
 
         LinearLayout pickersLayout = new LinearLayout(this.context);
         pickersLayout.setGravity(Gravity.CENTER);
         if (this.orientation == -1 || orientation == LinearLayout.HORIZONTAL) {
             pickersLayout.setOrientation(LinearLayout.HORIZONTAL);
-        }else{
-            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(300,LinearLayout.LayoutParams.WRAP_CONTENT);
+        } else {
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(300, LinearLayout.LayoutParams.WRAP_CONTENT);
             pickersLayout.setLayoutParams(lp);
             pickersLayout.setOrientation(LinearLayout.VERTICAL);
         }
 
-        for (NumberPicker picker : this.pickers){
+        for (NumberPicker picker : this.pickers) {
             pickersLayout.addView(picker);
 
             ImageView divider = new ImageView(context);
@@ -151,7 +183,7 @@ public class NumberPickerDialog {
         this.mainLayout.addView(this.baseLayout);
     }
 
-    public void addTitlesOnPickers(){
+    private void addTitlesOnPickers() {
         if (getPickersTitles() != null) {
             this.pickersTitlesLayout = new LinearLayout(this.context);
 
@@ -191,7 +223,7 @@ public class NumberPickerDialog {
                     divider.setBackgroundColor(Color.TRANSPARENT);
                     this.pickersTitlesLayout.addView(bt);
                     this.pickersTitlesLayout.addView(divider);
-                }else{
+                } else {
                     LinearLayout.LayoutParams lp =
                             new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 50);
                     divider.setLayoutParams(lp);
@@ -199,18 +231,15 @@ public class NumberPickerDialog {
                     this.pickersTitlesLayout.addView(divider);
                     this.pickersTitlesLayout.addView(bt);
                 }
-
-
-
             }
         }
     }
 
-    public void initBaseLayout(Context context){
+    private void initBaseLayout(Context context) {
         this.baseLayout = new LinearLayout(context);
-        if (this.orientation == -1 || orientation == LinearLayout.HORIZONTAL){
-            this.baseLayout.setOrientation(LinearLayout.VERTICAL );
-        }else{
+        if (this.orientation == -1 || orientation == LinearLayout.HORIZONTAL) {
+            this.baseLayout.setOrientation(LinearLayout.VERTICAL);
+        } else {
             this.baseLayout.setOrientation(LinearLayout.HORIZONTAL);
         }
         this.baseLayout.setGravity(Gravity.CENTER);
@@ -224,7 +253,7 @@ public class NumberPickerDialog {
         this.orientation = orientation;
     }
 
-    public void setCancelable(Boolean state){
+    public void setCancelable(Boolean state) {
         this.builder.setCancelable(state);
     }
 
@@ -266,10 +295,16 @@ public class NumberPickerDialog {
         return dialogIcon;
     }
 
-    public void setDialogIcon(int dialogIcon){
-
+    public void setDialogIcon(int dialogIcon) {
         this.dialogIcon = dialogIcon;
 
     }
 
+    public ArrayList<Pair<Integer, Integer>> getBounds() {
+        return bounds;
+    }
+
+    public void setBounds(ArrayList<Pair<Integer, Integer>> bounds) {
+        this.bounds = bounds;
+    }
 }

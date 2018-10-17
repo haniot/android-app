@@ -41,6 +41,7 @@
                 android:layout_height="wrap_content"
                 android:drawableLeft="@drawable/ic_calendar_128"
                 android:padding="50dp"
+                android:layout_marginTop="50dp"
                 style="@style/Widget.AppCompat.Button.Borderless"/>
 
             <android.support.v7.widget.AppCompatButton
@@ -54,35 +55,7 @@
             <FrameLayout
                 android:id="@+id/frame_measurement"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="0.5">
-
-            </FrameLayout>
-
-            <!--<LinearLayout-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:orientation="horizontal"-->
-                <!--android:gravity="center">-->
-
-                <!--<android.support.v7.widget.AppCompatButton-->
-                    <!--android:id="@+id/btnCancel"-->
-                    <!--style="@style/Widget.AppCompat.Button.Colored"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:padding="20dp"-->
-                    <!--android:text="Cancel" />-->
-
-                <!--<android.support.v7.widget.AppCompatButton-->
-                    <!--android:id="@+id/btnConfirm"-->
-                    <!--style="@style/Widget.AppCompat.Button.Colored"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:padding="20dp"-->
-                    <!--android:text="confirm"-->
-                    <!--android:textColor="@color/colorTextDark" />-->
-
-            <!--</LinearLayout>-->
+                android:layout_height="match_parent"/>
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>

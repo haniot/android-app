@@ -429,6 +429,10 @@
     <string name="choose_date">Choose date</string>
     <string name="choose_hour">Choose hour</string>
     <string name="error_insering_measurement">Error insering measurement</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
+
+    <!-- END OF STRINGS FOR TABLET -->
 
     <!-- SURVEY -->
     <string name="survey_select_an_answer">Select an answer&#8230;</string>

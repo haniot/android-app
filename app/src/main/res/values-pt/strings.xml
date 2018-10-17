@@ -360,6 +360,8 @@
     <string name="choose_date">Escolha a data</string>
     <string name="choose_hour">Escolha a hora</string>
     <string name="error_insering_measurement">Erro ao inserir medição</string>
+    <string name="confirm">Confirmar</string>
+    <string name="cancel">Cancelar</string>
 
     <!-- END OF STRINGS FOR TABLET -->
 

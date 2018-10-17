@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.DatePicker;
+import android.widget.FrameLayout;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -24,6 +25,7 @@ import java.util.Date;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
+import br.edu.uepb.nutes.haniot.fragment.AddBloodGlucoseManuallyFragment;
 import br.edu.uepb.nutes.haniot.fragment.AddWeightManuallyFragment;
 import br.edu.uepb.nutes.haniot.model.ItemGridType;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
@@ -33,7 +35,6 @@ import butterknife.ButterKnife;
 
 public class ManuallyAddMeasurement extends AppCompatActivity implements View.OnClickListener,
         DatePickerDialog.OnDateSetListener,
-        TimePickerDialog.OnTimeSetListener,
         AddWeightManuallyFragment.SendMessageListener{
 
     @BindView(R.id.toolbar)
@@ -185,7 +186,14 @@ public class ManuallyAddMeasurement extends AppCompatActivity implements View.On
             case ItemGridType.WEIGHT:
 
                 myFragment = new AddWeightManuallyFragment();
+                getSupportFragmentManager().beginTransaction().replace(R.id.frame_measurement,
+                        myFragment)
+                        .commit();
+                break;
 
+            case ItemGridType.BLOOD_GLUCOSE:
+
+                myFragment = new AddBloodGlucoseManuallyFragment();
                 getSupportFragmentManager().beginTransaction().replace(R.id.frame_measurement,
                         myFragment)
                         .commit();
@@ -234,7 +242,6 @@ public class ManuallyAddMeasurement extends AppCompatActivity implements View.On
         });
     }
 
-
     @Override
     public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
         String dateTime = String.valueOf(dayOfMonth)+"/"+String.valueOf(month+1)+"/"
@@ -244,11 +251,6 @@ public class ManuallyAddMeasurement extends AppCompatActivity implements View.On
         this.daySelected = dayOfMonth;
         setDateTime(dateTime);
         updateTextDate();
-    }
-
-    @Override
-    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        Log.d("TESTE","TESTING HOUR: "+hourOfDay+" "+minute);
     }
 
     @Override
@@ -265,4 +267,5 @@ public class ManuallyAddMeasurement extends AppCompatActivity implements View.On
 
         }
     }
+
 }

@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatButton;
@@ -34,6 +35,8 @@ public class AddWeightManuallyFragment extends Fragment implements View.OnClickL
 
     @BindView(R.id.botWeight)
     AppCompatButton botWeight;
+    @BindView(R.id.btnCancel)
+    AppCompatButton btnCancel;
 
 //    NumberPicker things
     private LayoutInflater li;
@@ -71,8 +74,10 @@ public class AddWeightManuallyFragment extends Fragment implements View.OnClickL
         numberPicker = new NumberPickerDialog(getContext());
         session = new Session(getContext());
 
+        btnCancel.setOnClickListener(this);
         botWeight.setOnClickListener(this);
-        botWeight.setText(getResources().getString(R.string.unit_kg));
+        botWeight.setText(getResources().getString(R.string.choose_weight)+
+                "\n"+getResources().getString(R.string.unit_kg));
 
         AppCompatButton confirm = (AppCompatButton)view.findViewById(R.id.btnConfirm);
         confirm.setOnClickListener(this);
@@ -129,32 +134,70 @@ public class AddWeightManuallyFragment extends Fragment implements View.OnClickL
         return data;
     }
 
+    private void setupPickers(){
+
+//        Setting dialog icon, the dialog icon just will appear when the dialog title is setted
+        this.numberPicker.setDialogIcon(R.drawable.ic_balance_128);
+//        Array of titles for each picker, the number of titles must be the same of
+// number of pickers
+        ArrayList<String> titles = new ArrayList<String>(){{
+            add(getResources().getString(R.string.kg));
+            add(getResources().getString(R.string.Gr));
+        }};
+//        Configure the pickers to start at last selection, the number of measurements
+// must be the same of number of pickers
+        ArrayList<Integer> lastMeasurements = new ArrayList<Integer>(){{
+            add(Integer.valueOf(session.getString("lastWeight1")));
+            add(Integer.valueOf(session.getString("lastWeight2")));
+        }};
+//        Configure the bounds of each picker, the number of bounds must be the same of number of
+//        pickers
+        ArrayList<Pair<Integer,Integer>> bounds = new ArrayList<Pair<Integer,Integer>>(){{
+            add(new Pair<>(1,100));
+            add(new Pair<>(0,9));
+        }};
+
+        this.numberPicker.setLastMeasurements(lastMeasurements);
+        this.numberPicker.setPickersTitles(titles);
+        this.numberPicker.setBounds(bounds);
+        this.numberPicker.setDialogTitle(getResources().getString(R.string.choose_weight));
+        this.numberPicker.setOrientation(LinearLayout.HORIZONTAL);
+//        creating the dialog
+        this.numberPicker.create(getContext(),this,NUMBEROFPICKERS);
+
+    }
+
+    private void setupListener(){
+
+        //Action for send message to activity that implements the interface
+        if (command != null){
+            if (this.data != null) {
+                Pair<String, String> data = new Pair<>(
+                        this.data.get(0).toString(), this.data.get(1).toString());
+                command.onSendMessage(data);
+            }else{
+                this.botWeight.setTextColor(getResources().getColor(R.color.colorAlertDanger));
+                botWeight.setSelected(true);
+                command.onSendMessage(null);
+            }
+        }
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.botWeight:
 
-                this.numberPicker.setDialogIcon(R.drawable.ic_balance_128);
-
-                ArrayList<String> teste = new ArrayList<String>(){{
-                    add("Quilos");
-                    add("Gramas");
-                }};
-                this.numberPicker.setPickersTitles(teste);
-                this.numberPicker.setOrientation(LinearLayout.HORIZONTAL);
-                this.numberPicker.create(getContext(),this,NUMBEROFPICKERS);
+                setupPickers();
                 break;
+
             case R.id.btnConfirm:
-                //Action for send message to activity that implements the interface
-                if (command != null){
-                    if (this.data != null) {
-                        Pair<String, String> data = new Pair<>(
-                                this.data.get(0).toString(), this.data.get(1).toString());
-                        command.onSendMessage(data);
-                    }else{
-                        command.onSendMessage(null);
-                    }
-                }
+
+                setupListener();
+                break;
+
+            case R.id.btnCancel:
+                getActivity().finish();
                 break;
         }
     }
@@ -186,6 +229,7 @@ public class AddWeightManuallyFragment extends Fragment implements View.OnClickL
         this.data = this.numberPicker.getData();
         updateTextWeight();
 
+        this.botWeight.setTextColor(Color.BLACK );
         session.putString("lastWeight1", this.data.get(0).toString());
         session.putString("lastWeight2", this.data.get(1).toString());
     }

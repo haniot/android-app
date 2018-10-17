@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragment.AddWeightManuallyFragment">
+    tools:context=".fragment.AddBloodGlucoseManuallyFragment">
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -18,15 +18,46 @@
             android:layout_height="match_parent">
 
             <android.support.v7.widget.AppCompatButton
-                android:id="@+id/botWeight"
                 style="@style/Widget.AppCompat.Button.Borderless"
+                android:id="@+id/botGlucose"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
-                android:drawableStart="@drawable/ic_balance_128"
+                android:drawableStart="@drawable/ic_blood_glucose_128"
                 android:padding="50dp"
+                android:text="Selecione o valor da glicose"
                 android:textAlignment="center" />
+
+            <View
+                android:id="@+id/divider8"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@id/botGlucose"
+                android:background="?android:attr/listDivider" />
+
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/divider8"
+                android:orientation="horizontal">
+
+                <ToggleButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableTop="@drawable/ic_heart_rate_64"/>
+                <ToggleButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableTop="@drawable/ic_heart_rate_64"/>
+                <ToggleButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableTop="@drawable/ic_heart_rate_64"/>
+
+            </RadioGroup>
+
+
 
             <android.support.v7.widget.AppCompatButton
                 android:id="@+id/btnCancel"
@@ -55,7 +86,10 @@
                 android:text="@string/confirm"
                 android:textColor="@color/colorTextDark" />
 
+
+
         </RelativeLayout>
+
     </android.support.v4.widget.NestedScrollView>
 
 </RelativeLayout>
