@@ -343,6 +343,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         }
     }
 
+
     public void failedFindDevice(int cont){
        if(cont >= 3){
            Log.d(TAG, "failedFindDevice: "+cont);
