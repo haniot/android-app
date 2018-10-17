@@ -88,6 +88,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
 
     private DeviceDAO mDeviceDAO;
     private AlertDialog alert;
+    private Device mDevice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +98,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
         server = Server.getInstance(this);
         session = new Session(this);
         mDeviceDAO = DeviceDAO.getInstance(this);
+        mDevice = new Device();
 
         initComponents();
     }
@@ -160,13 +162,41 @@ public class DeviceManagerActivity extends AppCompatActivity {
 
             @Override
             public void onSuccess(JSONObject result) {
-                List<Device> devicesRegistered = jsonToListDevice(result);
 
-                populateDevicesRegistered(devicesRegistered);
-                populateDevicesAvailable(mDeviceDAO.list(session.getIdLogged()));
+                List<Device> devicesRegistered = jsonToListDevice(result);
+                populateDevicesRegistered(newList(devicesRegistered));
+                populateDevicesAvailable(mDeviceDAO.list(mDevice.getId()));
                 displayLoading(false);
             }
         });
+    }
+
+    //returns a device with your image
+    public List<Device> newList(List<Device> list){
+        List<Device> listDevices = new ArrayList<Device>();
+
+        for(Device devices: list){
+            if(devices.getName().equals("Ear Thermometer ".concat(NUMBER_MODEL_THERM_DL8740))){
+                devices.setImg(R.drawable.device_thermometer_philips_dl8740);
+                listDevices.add(devices);
+            }else if(devices.getName().equals("Accu-Chek ".concat(NUMBER_MODEL_GLUCOMETER_PERFORMA))){
+                devices.setImg(R.drawable.device_glucose_accuchek);
+                listDevices.add(devices);
+            }else if(devices.getName().equals("Scale YUNMAI Mini ".concat(NUMBER_MODEL_SCALE_1501))){
+                devices.setImg(R.drawable.device_scale_yunmai_mini_color);
+                listDevices.add(devices);
+            }else if(devices.getName().equals("Heart Rate Sensor ".concat(NUMBER_MODEL_HEART_RATE_H7))){
+                devices.setImg(R.drawable.device_heart_rate_h7);
+                listDevices.add(devices);
+            }else if(devices.getName().equals("Heart Rate Sensor ".concat(NUMBER_MODEL_HEART_RATE_H10))){
+                devices.setImg(R.drawable.device_heart_rate_h10);
+                listDevices.add(devices);
+            }else if(devices.getName().equals("Smartband ".concat(NUMBER_MODEL_SMARTBAND_MI2))){
+                devices.setImg(R.drawable.device_smartband_miband2);
+                listDevices.add(devices);
+            }
+        }
+        return listDevices;
     }
 
     /**
@@ -267,13 +297,13 @@ public class DeviceManagerActivity extends AppCompatActivity {
     public void populateDevicesRegistered(@NonNull List<Device> devicesRegistered) {
         mAdapterDeviceRegistered.clearItems();
         mAdapterDeviceRegistered.addItems(devicesRegistered);
+
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 if (devicesRegistered.isEmpty()) {
                     mNoRegisteredDevices.setVisibility(View.VISIBLE);
-                    return;
-                }else{
+                } else {
                     mNoRegisteredDevices.setVisibility(View.GONE);
                 }
             }
@@ -320,7 +350,6 @@ public class DeviceManagerActivity extends AppCompatActivity {
 
         if (devicesAvailable.isEmpty()) {
             mNoAvailableDevices.setVisibility(View.VISIBLE);
-            return;
         }
     }
 
@@ -331,8 +360,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
      * @param availableList  {@link List<Device>}
      * @return {@link List<Device>}
      */
-    private List<Device> mergeDevicesAvailableRegistered(List<Device> registeredList,
-                                                         List<Device> availableList) {
+    private List<Device> mergeDevicesAvailableRegistered(List<Device> registeredList, List<Device> availableList) {
         /**
          * Add only devices that have not been registered
          */
@@ -376,9 +404,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
 
     private void removeDeviceRegister(Device device) {
         displayLoading(true);
-        String path = "devices/".concat(device.get_id())
-                .concat("/users/")
-                .concat(session.get_idLogged());
+        String path = "devices/".concat(device.get_id()).concat("/users/").concat(session.get_idLogged());
         server.delete(path, new Server.Callback() {
             @Override
             public void onError(JSONObject result) {
@@ -387,7 +413,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
 
             @Override
             public void onSuccess(JSONObject result) {
-                mDeviceDAO.remove(device.get_id());
+                mDeviceDAO.remove(device.getAddress());
                 populateView();
             }
         });

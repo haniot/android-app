@@ -87,12 +87,12 @@ public class DeviceDAO {
     /**
      * Removes device  passed as parameter.
      *
-     * @param _id String
+     * @param address String
      * @return boolean
      */
-    public boolean remove(@NonNull String _id) {
+    public boolean remove(@NonNull String address) {
         return (deviceBox.query()
-                .equal(Device_._id, _id)
+                .equal(Device_.address, address)
                 .build()
                 .remove()) > 0;
     }

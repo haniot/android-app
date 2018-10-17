@@ -185,12 +185,11 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
                 device = scanResult.getDevice();
             }
-
-            Log.d(TAG, "onScanResult: " + device.getAddress());
             if (device == null) {
                 mScanner.stopScan();
                 return;
             }
+            Log.d(TAG, "onScanResult: " + device.getAddress());
 
             try {
                 deviceAvailable(device);
@@ -293,7 +292,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
             mPulsatorLayout.stop();
             imgBluetooth.setVisibility(View.GONE);
             nameDeviceRegister.setText(getString(R.string.device_registered_success,
-                    mDevice.getName()));
+                    device.getName()));
             imgDeviceRegister.setImageResource(mDevice.getImg());
             txtMacDevice.setVisibility(View.VISIBLE);
             txtMacDevice.setText(device.getAddress());
@@ -353,11 +352,14 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         mDevice = getIntent().getParcelableExtra(DeviceManagerActivity.EXTRA_DEVICE);
         JSONObject result = new JSONObject();
         try {
+
             result.put("typeId", mDevice.getTypeId());
             result.put("address", device.getAddress());
             result.put("name", mDevice.getName());
             result.put("manufacturer", mDevice.getManufacturer());
             result.put("modelNumber", mDevice.getModelNumber());
+            result.put("img", device.getImg());
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -374,9 +376,9 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
 
             @Override
             public void onSuccess(JSONObject result) {
-                Device device = new Gson().fromJson(String.valueOf(result), Device.class);
-                Log.d(TAG, "onSuccess: result: "+result);
-                mDeviceDAO.save(device);
+                Gson gson = new Gson();
+                Device deviceGson = gson.fromJson(deviceToJson(device), Device.class);
+                mDeviceDAO.save(deviceGson);
             }
         });
     }
