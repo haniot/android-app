@@ -47,7 +47,7 @@
                 android:layout_below="@id/textChooseGlucose"
                 android:drawableStart="@drawable/ic_blood_glucose_128"
                 android:padding="50dp"
-                android:text="Selecione o valor da glicose"
+                android:text="@string/unit_glucose_mg_dL"
                 android:textAlignment="center" />
 
             <TextView

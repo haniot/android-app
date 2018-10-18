@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragment.AddWeightManuallyFragment">
+    tools:context=".fragment.AddHeartRateManuallyFragment">
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -18,7 +18,7 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/textChooseWeight"
+                android:id="@+id/textChooseHeartRate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
@@ -26,27 +26,28 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:textSize="18dp"
-                android:text="@string/choose_weight"/>
+                android:text="@string/choose_heart_rate"/>
 
             <View
-                android:id="@+id/divGlucose"
+                android:id="@+id/divHeartRate"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_toEndOf="@id/textChooseWeight"
-                android:layout_alignBaseline="@id/textChooseWeight"
+                android:layout_toEndOf="@id/textChooseHeartRate"
+                android:layout_alignBaseline="@id/textChooseHeartRate"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:background="?android:attr/listDivider" />
 
             <android.support.v7.widget.AppCompatButton
-                android:id="@+id/botWeight"
+                android:id="@+id/botHeartRate"
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:layout_below="@id/textChooseWeight"
-                android:drawableStart="@drawable/ic_balance_128"
+                android:layout_below="@id/textChooseHeartRate"
+                android:drawableStart="@drawable/ic_heart_128"
                 android:padding="50dp"
+                android:text="@string/unit_heart_rate"
                 android:textAlignment="center" />
 
             <android.support.v7.widget.AppCompatButton
@@ -77,6 +78,7 @@
                 android:textColor="@color/colorTextDark" />
 
         </RelativeLayout>
+
     </android.support.v4.widget.NestedScrollView>
 
 </RelativeLayout>

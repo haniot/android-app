@@ -359,6 +359,7 @@
     <string name="Gr">Gramas</string>
     <string name="choose_date">Escolha a data</string>
     <string name="choose_hour">Escolha a hora</string>
+    <string name="unit_heart_rate">bpm</string>
     <string name="error_insering_measurement">Erro ao inserir medição</string>
     <string name="confirm">Confirmar</string>
     <string name="cancel">Cancelar</string>
@@ -369,6 +370,8 @@
     <string name="glucose_meal_bedtime">Antes de dormir</string>
     <string name="choose_glucose">Escolha o valor da glicose</string>
     <string name="choose_status">Escolha o status</string>
+    <string name="choose_heart_rate">Escolha os batimentos cardiacos</string>
+    <string name="choose_temperature">Escolha a temperatura</string>
 
     <!-- END OF STRINGS FOR TABLET -->
 

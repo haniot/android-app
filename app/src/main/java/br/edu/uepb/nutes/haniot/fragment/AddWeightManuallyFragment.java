@@ -37,6 +37,8 @@ public class AddWeightManuallyFragment extends Fragment implements View.OnClickL
     AppCompatButton botWeight;
     @BindView(R.id.btnCancel)
     AppCompatButton btnCancel;
+    @BindView(R.id.textChooseWeight)
+    TextView textChooseWeight;
 
 //    NumberPicker things
     private LayoutInflater li;
@@ -176,6 +178,7 @@ public class AddWeightManuallyFragment extends Fragment implements View.OnClickL
                 command.onSendMessageWeight(data);
             }else{
                 this.botWeight.setTextColor(getResources().getColor(R.color.colorAlertDanger));
+                this.textChooseWeight.setTextColor(getResources().getColor(R.color.colorAlertDanger));
                 command.onSendMessageWeight(null);
             }
         }
@@ -230,6 +233,7 @@ public class AddWeightManuallyFragment extends Fragment implements View.OnClickL
         updateTextWeight();
 
         this.botWeight.setTextColor(Color.BLACK );
+        this.textChooseWeight.setTextColor(Color.BLACK);
         session.putString("lastWeight1", this.data.get(0).toString());
         session.putString("lastWeight2", this.data.get(1).toString());
     }

@@ -2,6 +2,7 @@ package br.edu.uepb.nutes.haniot.fragment;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -45,12 +47,16 @@ public class AddBloodGlucoseManuallyFragment extends Fragment implements View.On
     RadioButton radioPrepandial;
     @BindView(R.id.radioPostprandial)
     RadioButton radioPostprandial;
+    @BindView(R.id.textChooseGlucose)
+    TextView textChooseGlucose;
+    @BindView(R.id.textStatus)
+    TextView textChooseStatus;
 
     private SendMessageListener mListener;
 
     private NumberPickerDialog numberPicker;
     private Session session;
-    private int glucoseValue;
+    private int glucoseValue = -1;
     private int type = -1;
 
     public AddBloodGlucoseManuallyFragment() {}
@@ -58,6 +64,12 @@ public class AddBloodGlucoseManuallyFragment extends Fragment implements View.On
     @Override
     public void onClick(DialogInterface dialog, int which) {
         this.glucoseValue = this.numberPicker.getData().get(0);
+        if (getGlucoseValue() != -1){
+            this.textChooseGlucose.setTextColor(Color.BLACK);
+            this.botGlucose.setTextColor(Color.BLACK);
+            updateTextGlucose();
+        }
+
     }
 
     public interface SendMessageListener{
@@ -82,9 +94,16 @@ public class AddBloodGlucoseManuallyFragment extends Fragment implements View.On
         return view;
     }
 
+    private void updateTextGlucose(){
+        this.botGlucose.setText(this.glucoseValue+" "+getResources()
+                    .getString(R.string.unit_glucose_mg_dL));
+    }
+
     private void initComponents(){
 
         botGlucose.setOnClickListener(this);
+        btnCancel.setOnClickListener(this);
+        btnConfirm.setOnClickListener(this);
 
         this.numberPicker = new NumberPickerDialog(getContext());
         this.session = new Session(getContext());
@@ -109,6 +128,7 @@ public class AddBloodGlucoseManuallyFragment extends Fragment implements View.On
                 default:
                     this.type = -1;
             }
+            this.textChooseStatus.setTextColor(Color.BLACK);
         });
 
     }
@@ -121,7 +141,7 @@ public class AddBloodGlucoseManuallyFragment extends Fragment implements View.On
             mListener = (SendMessageListener)context;
         }catch (ClassCastException e){
             throw new ClassCastException(getActivity().toString() +
-                    "must implement SendMessageListener");
+                    "must implement Glucose SendMessageListener");
         }
 
     }
@@ -144,14 +164,16 @@ public class AddBloodGlucoseManuallyFragment extends Fragment implements View.On
         if (mListener != null){
             if (this.glucoseValue != -1 && type != -1){
                 mListener.onSendMessageGlucose(this.glucoseValue, this.type);
-                Log.d("TESTE","deu certo");
                 return;
             }else if (this.glucoseValue == -1){
-                this.botGlucose.setTextColor(getResources().getColor(R.color.colorAlertDanger));
-                Log.d("TESTE","falta glucose");
-            }else if (this.type == -1){
-                this.radioGroup.setBackgroundColor(getResources().getColor(R.color.colorAlertDanger));
-                Log.d("TESTE","falta status");
+                this.botGlucose.setTextColor(getResources()
+                        .getColor(R.color.colorAlertDanger));
+                this.textChooseGlucose.setTextColor(getResources()
+                        .getColor(R.color.colorAlertDanger));
+            }
+            if (this.type == -1){
+                this.textChooseStatus.setTextColor(getResources()
+                        .getColor(R.color.colorAlertDanger));
             }
             mListener.onSendMessageGlucose(-1, -1);
         }
@@ -172,7 +194,6 @@ public class AddBloodGlucoseManuallyFragment extends Fragment implements View.On
 
             case R.id.btnConfirm:
                 setupListener();
-                Log.d("TESTE","click confirm");
                 break;
         }
 

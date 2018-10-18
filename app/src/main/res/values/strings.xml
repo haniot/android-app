@@ -421,6 +421,7 @@
     <string name="unit_temperature">ºF</string>
     <string name="unit_weight">lb</string>
     <string name="unit_hour">h</string>
+    <string name="unit_heart_rate">bpm</string>
     <string name="manually_add_measurement">manually add measurement</string>
     <string name="measurementType">measurementType</string>
     <string name="choose_weight">Choose the weight</string>
@@ -433,6 +434,8 @@
     <string name="cancel">Cancel</string>
     <string name="choose_glucose">Choose the glucose value</string>
     <string name="choose_status">Choose the status</string>
+    <string name="choose_heart_rate">Choose the Heart Rate</string>
+    <string name="choose_temperature">Choose the temperature</string>
 
     <!-- END OF STRINGS FOR TABLET -->
 

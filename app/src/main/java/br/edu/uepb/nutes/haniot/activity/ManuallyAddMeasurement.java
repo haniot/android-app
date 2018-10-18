@@ -26,6 +26,8 @@ import java.util.Date;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.fragment.AddBloodGlucoseManuallyFragment;
+import br.edu.uepb.nutes.haniot.fragment.AddHeartRateManuallyFragment;
+import br.edu.uepb.nutes.haniot.fragment.AddTemperatureManuallyFragment;
 import br.edu.uepb.nutes.haniot.fragment.AddWeightManuallyFragment;
 import br.edu.uepb.nutes.haniot.model.ContextMeasurementValueType;
 import br.edu.uepb.nutes.haniot.model.ItemGridType;
@@ -37,7 +39,8 @@ import butterknife.ButterKnife;
 public class ManuallyAddMeasurement extends AppCompatActivity implements View.OnClickListener,
         DatePickerDialog.OnDateSetListener,
         AddWeightManuallyFragment.SendMessageListener,
-        AddBloodGlucoseManuallyFragment.SendMessageListener{
+        AddBloodGlucoseManuallyFragment.SendMessageListener,
+        AddHeartRateManuallyFragment.SendMessageListener{
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -201,6 +204,19 @@ public class ManuallyAddMeasurement extends AppCompatActivity implements View.On
                         .commit();
                 break;
 
+            case ItemGridType.HEART_RATE:
+
+                myFragment = new AddHeartRateManuallyFragment();
+                getSupportFragmentManager().beginTransaction().replace(R.id.frame_measurement,
+                        myFragment).commit();
+                break;
+
+            case ItemGridType.TEMPERATURE:
+
+                myFragment = new AddTemperatureManuallyFragment();
+                getSupportFragmentManager().beginTransaction().replace(R.id.frame_measurement,
+                        myFragment).commit();
+                break;
         }
     }
 
@@ -269,6 +285,22 @@ public class ManuallyAddMeasurement extends AppCompatActivity implements View.On
 
     @Override
     public void onSendMessageGlucose(int glucoseValue, int type) {
-        Log.d("TESTE","Valor da glicose e tipo: "+glucoseValue+" "+type);
+        if (glucoseValue != -1) {
+            Log.d("TESTE", "Valor da glicose e tipo: " + glucoseValue + " " + type);
+//            inserir funcao de enviar pro servidor aqui
+        }else{
+            showToast(getResources().getString(R.string.error_insering_measurement));
+        }
     }
+
+    @Override
+    public void onSendMessageHeartRate(int heartBeat) {
+        if (heartBeat != -1) {
+            Log.d("TESTE", "Valor do bpm: "+heartBeat);
+//            inserir funcao de enviar pro servidor aqui
+        }else{
+            showToast(getResources().getString(R.string.error_insering_measurement));
+        }
+    }
+
 }
