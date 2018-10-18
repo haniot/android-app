@@ -56,7 +56,7 @@ public class AddWeightManuallyFragment extends Fragment implements View.OnClickL
 
     //Comunication interface with another fragments and activities
     public interface SendMessageListener {
-        void onSendMessage(Pair<String,String> data);
+        void onSendMessageWeight(Pair<String,String> data);
     }
 
     @Override
@@ -76,8 +76,7 @@ public class AddWeightManuallyFragment extends Fragment implements View.OnClickL
 
         btnCancel.setOnClickListener(this);
         botWeight.setOnClickListener(this);
-        botWeight.setText(getResources().getString(R.string.choose_weight)+
-                "\n"+getResources().getString(R.string.unit_kg));
+        botWeight.setText(getResources().getString(R.string.unit_kg));
 
         AppCompatButton confirm = (AppCompatButton)view.findViewById(R.id.btnConfirm);
         confirm.setOnClickListener(this);
@@ -174,15 +173,15 @@ public class AddWeightManuallyFragment extends Fragment implements View.OnClickL
             if (this.data != null) {
                 Pair<String, String> data = new Pair<>(
                         this.data.get(0).toString(), this.data.get(1).toString());
-                command.onSendMessage(data);
+                command.onSendMessageWeight(data);
             }else{
                 this.botWeight.setTextColor(getResources().getColor(R.color.colorAlertDanger));
-                botWeight.setSelected(true);
-                command.onSendMessage(null);
+                command.onSendMessageWeight(null);
             }
         }
     }
 
+    //Click do botao
     @Override
     public void onClick(View v) {
         switch (v.getId()){
@@ -224,6 +223,7 @@ public class AddWeightManuallyFragment extends Fragment implements View.OnClickL
 
     }
 
+//    click do numberpicker, aqui pega os dados
     @Override
     public void onClick(DialogInterface dialog, int which) {
         this.data = this.numberPicker.getData();

@@ -26,7 +26,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:textSize="18dp"
-                android:text="Escolha o valor da glicose"/>
+                android:text="@string/choose_glucose"/>
 
             <View
                 android:id="@+id/divGlucose"
@@ -58,7 +58,7 @@
                 android:layout_alignParentStart="true"
                 android:layout_marginStart="16dp"
                 android:textSize="18dp"
-                android:text="Escolha o status"/>
+                android:text="@string/choose_status"/>
 
             <View
                 android:id="@+id/divider8"
@@ -77,6 +77,7 @@
                 android:layout_below="@id/textStatus">
 
                 <RadioGroup
+                    android:id="@+id/radioGlucoseStatus"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -85,48 +86,58 @@
                     android:showDividers="middle">
 
                     <RadioButton
+                        android:id="@+id/radioFasting"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@drawable/toogle_button_background"
-                        android:drawableTop="@drawable/ic_fasting_128"
+                        android:drawableTop="@drawable/ic_fasting"
                         android:button="@color/transparent"
                         android:text="@string/glucose_meal_fasting"
+                        android:textAlignment="center"
                         android:checked="false"/>
 
                     <RadioButton
+                        android:id="@+id/radioCasual"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@drawable/toogle_button_background"
-                        android:drawableTop="@drawable/ic_heart_rate_64"
+                        android:drawableTop="@drawable/ic_snacs"
                         android:button="@color/transparent"
                         android:text="@string/glucose_meal_casual"
+                        android:textAlignment="center"
                         android:checked="false"/>
 
                     <RadioButton
+                        android:id="@+id/radioBedtime"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@drawable/toogle_button_background"
-                        android:drawableTop="@drawable/ic_heart_rate_64"
+                        android:drawableTop="@drawable/ic_sleep"
                         android:button="@color/transparent"
                         android:text="@string/glucose_meal_bedtime"
+                        android:textAlignment="center"
                         android:checked="false"/>
 
                     <RadioButton
+                        android:id="@+id/radioPrepandial"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@drawable/toogle_button_background"
-                        android:drawableTop="@drawable/ic_heart_rate_64"
-                        android:button="@color/transparent"
-                        android:text="@string/glucose_meal_postprandial"
-                        android:checked="false"/>
-
-                    <RadioButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/toogle_button_background"
-                        android:drawableTop="@drawable/ic_heart_rate_64"
+                        android:drawableTop="@drawable/ic_food"
                         android:button="@color/transparent"
                         android:text="@string/glucose_meal_preprandial"
+                        android:textAlignment="center"
+                        android:checked="false"/>
+
+                    <RadioButton
+                        android:id="@+id/radioPostprandial"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/toogle_button_background"
+                        android:drawableTop="@drawable/ic_after_lunch"
+                        android:button="@color/transparent"
+                        android:text="@string/glucose_meal_postprandial"
+                        android:textAlignment="center"
                         android:checked="false"/>
 
                 </RadioGroup>

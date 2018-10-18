@@ -431,6 +431,8 @@
     <string name="error_insering_measurement">Error insering measurement</string>
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
+    <string name="choose_glucose">Choose the glucose value</string>
+    <string name="choose_status">Choose the status</string>
 
     <!-- END OF STRINGS FOR TABLET -->
 

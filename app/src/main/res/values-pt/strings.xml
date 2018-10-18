@@ -367,6 +367,8 @@
     <string name="glucose_meal_fasting">Jejum</string>
     <string name="glucose_meal_casual">Casual</string>
     <string name="glucose_meal_bedtime">Antes de dormir</string>
+    <string name="choose_glucose">Escolha o valor da glicose</string>
+    <string name="choose_status">Escolha o status</string>
 
     <!-- END OF STRINGS FOR TABLET -->
 

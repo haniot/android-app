@@ -41,6 +41,7 @@ public class NumberPickerDialog {
     private int orientation = -1;
     private ArrayList<Pair<Integer, Integer>> bounds;
     private ArrayList<Integer> lastMeasurements;
+    private int startValue = -1;
 
     public NumberPickerDialog(Context context) {
 
@@ -110,6 +111,10 @@ public class NumberPickerDialog {
             if (getBounds() != null) {
                 picker.setMinValue(this.bounds.get(i).first);
                 picker.setMaxValue(this.bounds.get(i).second);
+            }
+
+            if (startValue != -1){
+                picker.setValue(this.startValue);
             }
 
 //            Set value to each picker of last measurement, the last measurement count must be
@@ -306,5 +311,13 @@ public class NumberPickerDialog {
 
     public void setBounds(ArrayList<Pair<Integer, Integer>> bounds) {
         this.bounds = bounds;
+    }
+
+    public int getStartValue() {
+        return startValue;
+    }
+
+    public void setStartValue(int startValue) {
+        this.startValue = startValue;
     }
 }

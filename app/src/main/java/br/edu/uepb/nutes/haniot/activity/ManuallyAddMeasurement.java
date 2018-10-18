@@ -27,6 +27,7 @@ import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.fragment.AddBloodGlucoseManuallyFragment;
 import br.edu.uepb.nutes.haniot.fragment.AddWeightManuallyFragment;
+import br.edu.uepb.nutes.haniot.model.ContextMeasurementValueType;
 import br.edu.uepb.nutes.haniot.model.ItemGridType;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import br.edu.uepb.nutes.haniot.utils.Log;
@@ -35,7 +36,8 @@ import butterknife.ButterKnife;
 
 public class ManuallyAddMeasurement extends AppCompatActivity implements View.OnClickListener,
         DatePickerDialog.OnDateSetListener,
-        AddWeightManuallyFragment.SendMessageListener{
+        AddWeightManuallyFragment.SendMessageListener,
+        AddBloodGlucoseManuallyFragment.SendMessageListener{
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -117,23 +119,23 @@ public class ManuallyAddMeasurement extends AppCompatActivity implements View.On
         btnClock.setOnClickListener(this);
 
         setDateTime(DateUtils.getCurrentDatetime(getResources().getString(R.string.date_format)));
-        btnCalendar.setText(getResources().getString(R.string.choose_date) + "\n" +getDateTime());
+        btnCalendar.setText(getDateTime());
 
         Date currentDate = calendar.getTime();
         DateFormat format = new SimpleDateFormat(
                 getResources().getString(R.string.time_format_simple));
         String formatted = format.format(currentDate);
         setDateHour(formatted);
-        btnClock.setText(getResources().getString(R.string.choose_hour) + "\n" +getDateHour());
+        btnClock.setText(getDateHour());
 
     }
 
     private void updateTextDate(){
-        btnCalendar.setText(getResources().getString(R.string.choose_date) + "\n" +getDateTime());
+        btnCalendar.setText(getDateTime());
     }
 
     private void updateTextHour(){
-        btnClock.setText(getResources().getString(R.string.choose_hour) + "\n" +getDateHour());
+        btnClock.setText(getDateHour());
     }
 
     public void openTimePicker(){
@@ -254,18 +256,19 @@ public class ManuallyAddMeasurement extends AppCompatActivity implements View.On
     }
 
     @Override
-    public void onSendMessage(Pair<String, String> data) {
-        switch (this.type){
-            case ItemGridType.WEIGHT:
-                if (data != null) {
-                    Log.d("TESTE", "Data 1: " + data.first + " Data 2: " + data.second);
-                    //funcao de salvar aqui
-                }else{
-                    showToast(getResources().getString(R.string.error_insering_measurement));
-                }
-                break;
+    public void onSendMessageWeight(Pair<String, String> data) {
 
-        }
+            if (data != null) {
+                Log.d("TESTE", "Data 1: " + data.first + " Data 2: " + data.second);
+                //funcao de salvar aqui
+            }else{
+                showToast(getResources().getString(R.string.error_insering_measurement));
+            }
+
     }
 
+    @Override
+    public void onSendMessageGlucose(int glucoseValue, int type) {
+        Log.d("TESTE","Valor da glicose e tipo: "+glucoseValue+" "+type);
+    }
 }
