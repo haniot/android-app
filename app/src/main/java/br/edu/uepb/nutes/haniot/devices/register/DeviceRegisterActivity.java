@@ -14,10 +14,14 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Layout;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -62,16 +66,33 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     private Server server;
     private Session session;
     private ActionBar mActionBar;
-    private int contStartScanner = 0;
 
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
+//    @BindView(R.id.toolbar)
+//    Toolbar mToolbar;
 
-    @BindView(R.id.btn_device_register)
-    Button btnDeviceRegister;
+    @BindView(R.id.box_scanner)
+    FrameLayout boxScanner;
+
+    @BindView(R.id.box_register)
+    FrameLayout boxRegister;
+
+    @BindView(R.id.box_response)
+    FrameLayout boxResponse;
+
+    @BindView(R.id.btn_device_register_scanner)
+    Button btnDeviceRegisterScanner;
+
+    @BindView(R.id.name_device_scanner)
+    TextView nameDeviceScanner;
+
+    @BindView(R.id.btn_device_register_stop)
+    Button btnDeviceRegisterStop;
 
     @BindView(R.id.txt_name_device_register)
     TextView nameDeviceRegister;
+
+    @BindView(R.id.name_device_scanner_register)
+    TextView nameDeviceScannerRegister;
 
     @BindView(R.id.img_device_register)
     ImageView imgDeviceRegister;
@@ -88,15 +109,23 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         setContentView(R.layout.activity_device_register);
         ButterKnife.bind(this);
+
+
         initComponents();
 
         server = Server.getInstance(this);
         session = new Session(this);
         mDeviceDAO = DeviceDAO.getInstance(this);
 
-        btnDeviceRegister.setOnClickListener(this);
+        btnDeviceRegisterScanner.setOnClickListener(this);
+        btnDeviceRegisterStop.setOnClickListener(this);
 
         mDevice = getIntent().getParcelableExtra(DeviceManagerActivity.EXTRA_DEVICE);
 
@@ -227,25 +256,25 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
      * Initialize the components.
      */
     private void initComponents() {
-        initToolBar();
+        //initToolBar();
         populateView();
     }
 
-    /**
-     * Initialize toolbar and insert title.
-     */
-    private void initToolBar() {
-        setSupportActionBar(mToolbar);
-        mActionBar = getSupportActionBar();
-        mActionBar.setTitle(getString(R.string.devices));
-        mActionBar.setDisplayShowTitleEnabled(true);
-        mActionBar.setHomeAsUpIndicator(R.drawable.ic_close);
-        mActionBar.setDisplayHomeAsUpEnabled(true);
-    }
+//    /**
+//     * Initialize toolbar and insert title.
+//     */
+//    private void initToolBar() {
+//        setSupportActionBar(mToolbar);
+//        mActionBar = getSupportActionBar();
+//        mActionBar.setTitle(getString(R.string.devices));
+//        mActionBar.setDisplayShowTitleEnabled(true);
+//        mActionBar.setHomeAsUpIndicator(R.drawable.ic_close);
+//        mActionBar.setDisplayHomeAsUpEnabled(true);
+//    }
 
-    private void initToolBarDetails() {
-        mActionBar.setTitle(getString(R.string.details));
-    }
+//    private void initToolBarDetails() {
+//        mActionBar.setTitle(getString(R.string.details));
+//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -288,7 +317,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         if (device != null) {
             mDevice.setAddress(device.getAddress());
 
-            initToolBarDetails();
+            // initToolBarDetails();
             mScanner.stopScan();
             mPulsatorLayout.stop();
             imgBluetooth.setVisibility(View.GONE);
@@ -301,25 +330,24 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
             // Save in the server
             saveDeviceRegister(mDevice);
         } else {
-            failedFindDevice(++contStartScanner);
+            nameDeviceScannerRegister.setText(mDevice.getName());
+            nameDeviceRegister.setText(R.string.device_not_found_try_again);
+            txtMacDevice.setVisibility(View.GONE);
         }
     }
 
     public void animationScanner(boolean show) {
         runOnUiThread(() -> {
             if (show) {
-                imgDeviceRegister.setVisibility(View.GONE);
-                nameDeviceRegister.setVisibility(View.GONE);
-                txtMacDevice.setVisibility(View.GONE);
-                btnDeviceRegister.setText(R.string.stop_scanner);
-                imgBluetooth.setVisibility(View.VISIBLE);
+                boxRegister.setVisibility(View.GONE);
+                boxResponse.setVisibility(View.GONE);
+                nameDeviceScanner.setText(mDevice.getName());
+                boxScanner.setVisibility(View.VISIBLE);
                 mPulsatorLayout.start();
             } else {
-                imgDeviceRegister.setVisibility(View.VISIBLE);
-                nameDeviceRegister.setVisibility(View.VISIBLE);
-                txtMacDevice.setVisibility(View.VISIBLE);
-                btnDeviceRegister.setText(R.string.start_scanner);
-                imgBluetooth.setVisibility(View.GONE);
+                boxResponse.setVisibility(View.GONE);
+                boxScanner.setVisibility(View.GONE);
+                boxRegister.setVisibility(View.VISIBLE);
                 mPulsatorLayout.stop();
             }
         });
@@ -327,35 +355,22 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.btn_device_register) {
-            if (btnDeviceRegister.getText().equals(getString(R.string.start_scanner))) {
-                Log.d(TAG, "onClick: start scanner");
-                if (mScanner != null) {
-                    mScanner.stopScan();
-                    animationScanner(true);
-                    mScanner.startScan(mScanCallback);
-                }
-            } else if (btnDeviceRegister.getText().equals(getString(R.string.stop_scanner))) {
-                Log.d(TAG, "onClick: stop scanner");
-                animationScanner(false);
+        int id = v.getId();
+
+        if (id == R.id.btn_device_register_scanner) {
+            Log.d(TAG, "onClick: start scanner");
+            if (mScanner != null) {
                 mScanner.stopScan();
+                animationScanner(true);
+                mScanner.startScan(mScanCallback);
             }
+
+        } else if (id == R.id.btn_device_register_stop) {
+            Log.d(TAG, "onClick: stop scanner");
+            animationScanner(false);
+            mScanner.stopScan();
         }
     }
-
-
-    public void failedFindDevice(int cont){
-       if(cont >= 3){
-           Log.d(TAG, "failedFindDevice: "+cont);
-           nameDeviceRegister.setText(R.string.failed_to_find_device);
-           imgDeviceRegister.setVisibility(View.GONE);
-           btnDeviceRegister.setVisibility(View.GONE);
-       }else{
-           nameDeviceRegister.setText(R.string.device_not_found_try_again);
-           txtMacDevice.setVisibility(View.GONE);
-       }
-    }
-
 
     /**
      * @param device
@@ -390,8 +405,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
 
             @Override
             public void onSuccess(JSONObject result) {
-                Gson gson = new Gson();
-                Device deviceGson = gson.fromJson(deviceToJson(device), Device.class);
+                Device deviceGson = new Gson().fromJson(deviceToJson(device), Device.class);
                 mDeviceDAO.save(deviceGson);
             }
         });

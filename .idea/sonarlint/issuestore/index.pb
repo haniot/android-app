@@ -9,3 +9,17 @@ S
 #app/src/main/res/values/strings.xml,d\2\d2281fbb3027de2722081a53408dd77628bf080e
 ‡
 Wapp/src/main/java/br/edu/uepb/nutes/haniot/devices/register/DeviceRegisterActivity.java,8\5\850da4481ecd860c246d0a1dc29e044dc5a3ef74
+d
+4app/src/main/res/layout/activity_device_register.xml,a\f\af3befe6495022e99c778e2fb8e6e60e8951622e
+q
+Aapp/src/main/java/br/edu/uepb/nutes/haniot/model/dao/UserDAO.java,4\8\48685c674d964568aa24f41c1c6abee118a86919
+l
+<app/src/main/java/br/edu/uepb/nutes/haniot/model/Device.java,0\9\090b8d77b4e924e7568ff3ec543c89f38ed360b4
+S
+#app/src/main/res/layout/toolbar.xml,4\5\45d76a7cdbf5104b6c62b94286f71266371a7d02
+_
+/app/src/main/res/layout/layout_box_response.xml,d\6\d67ee0a38cdd41531a2f058e8183bca80bf45671
+^
+.app/src/main/res/layout/layout_box_scanner.xml,b\0\b0667d95673b9835cf5ef9fe376373bab944344b
+_
+/app/src/main/res/layout/layout_box_register.xml,4\6\4656307004ef2ea8c67889043168a5ce3c8e8c8d

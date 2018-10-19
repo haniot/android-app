@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/name_device_scanner"
+        style="@style/Base.TextAppearance.AppCompat.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="-60dp"
+        android:layout_marginTop="60dp"
+        android:gravity="center_vertical"
+        android:text="Name Device"
+        android:textSize="16sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="82dp"
+        android:text="@string/connection"
+        android:textSize="12sp"
+        android:typeface="normal" />
+
+
+    <pl.bclogic.pulsator4droid.library.PulsatorLayout
+        android:id="@+id/pulsator"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        app:pulse_color="@color/colorAccent"
+        app:pulse_count="4"
+        app:pulse_duration="4000"
+        app:pulse_interpolator="Linear"
+        app:pulse_repeat="0"
+        app:pulse_startFromScratch="true">
+
+        <ImageView
+            android:id="@+id/img_bluetooth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="visible"
+            app:srcCompat="@drawable/ic_bluetooth_searching_white_24dp" />
+
+    </pl.bclogic.pulsator4droid.library.PulsatorLayout>
+
+    <Button
+        android:id="@+id/btn_device_register_stop"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="330dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="24dp"
+        android:padding="20dp"
+        android:text="@string/stop_scanner"
+        android:textColor="@color/colorTextDark" />
+
+
+</RelativeLayout>

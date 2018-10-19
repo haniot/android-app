@@ -7,64 +7,33 @@
     android:orientation="vertical"
     tools:context=".devices.register.DeviceRegisterActivity">
 
-    <!-- The ActionBar displayed at the top -->
-    <include layout="@layout/toolbar" />
-
-    <pl.bclogic.pulsator4droid.library.PulsatorLayout
-        android:id="@+id/pulsator"
+    <FrameLayout
+        android:id="@+id/box_register"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:pulse_color="@color/colorAccent"
-        app:pulse_count="4"
-        app:pulse_duration="4000"
-        app:pulse_interpolator="Linear"
-        app:pulse_repeat="0"
-        app:pulse_startFromScratch="true">
+        android:visibility="visible">
+        <include layout="@layout/layout_box_register"/>
+    </FrameLayout>
 
-        <ImageView
-            android:id="@+id/img_bluetooth"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:visibility="gone"
-            app:srcCompat="@drawable/ic_bluetooth_searching_white_24dp" />
 
-    </pl.bclogic.pulsator4droid.library.PulsatorLayout>
+    <!--animation pulsator -->
+    <FrameLayout
+        android:id="@+id/box_scanner"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+        <include layout="@layout/layout_box_scanner"/>
+    </FrameLayout>
 
-    <TextView
-        android:id="@+id/txt_mac_device"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="157dp"
-        android:visibility="gone" />
 
-    <TextView
-        android:id="@+id/txt_name_device_register"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="82dp"
-        android:text="Nome Dispositivo"
-        android:textAlignment="center" />
+    <!-- search result -->
+    <FrameLayout
+        android:id="@+id/box_response"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+        <include layout="@layout/layout_box_response"/>
+    </FrameLayout>
 
-    <ImageView
-        android:id="@+id/img_device_register"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="152dp"
-        app:srcCompat="@drawable/thermometer" />
-
-    <Button
-        android:id="@+id/btn_device_register"
-        android:layout_width="324dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:text="@string/start_scanner" />
 
 </RelativeLayout>
