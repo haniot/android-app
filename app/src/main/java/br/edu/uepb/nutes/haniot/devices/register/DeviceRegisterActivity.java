@@ -65,7 +65,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     private DeviceDAO mDeviceDAO;
     private Server server;
     private Session session;
-    private ActionBar mActionBar;
+    //private ActionBar mActionBar;
 
 //    @BindView(R.id.toolbar)
 //    Toolbar mToolbar;
@@ -88,20 +88,20 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     @BindView(R.id.btn_device_register_stop)
     Button btnDeviceRegisterStop;
 
-    @BindView(R.id.txt_name_device_register)
-    TextView nameDeviceRegister;
-
     @BindView(R.id.name_device_scanner_register)
     TextView nameDeviceScannerRegister;
+
+    @BindView(R.id.txt_device_not_found)
+    TextView deviceNotFound;
+
+    @BindView(R.id.txt_device_successfully_registered)
+    TextView deviceSuccessfullyRegistered;
 
     @BindView(R.id.img_device_register)
     ImageView imgDeviceRegister;
 
     @BindView(R.id.img_bluetooth)
     ImageView imgBluetooth;
-
-    @BindView(R.id.txt_mac_device)
-    TextView txtMacDevice;
 
     @BindView(R.id.pulsator)
     PulsatorLayout mPulsatorLayout;
@@ -286,7 +286,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
 
     public void populateView() {
         mDevice = getIntent().getParcelableExtra(DeviceManagerActivity.EXTRA_DEVICE);
-        nameDeviceRegister.setText(mDevice.getName());
+        nameDeviceScannerRegister.setText(mDevice.getName());
         imgDeviceRegister.setImageResource(mDevice.getImg());
     }
 
@@ -320,19 +320,17 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
             // initToolBarDetails();
             mScanner.stopScan();
             mPulsatorLayout.stop();
-            imgBluetooth.setVisibility(View.GONE);
-            nameDeviceRegister.setText(getString(R.string.device_registered_success,
+            deviceSuccessfullyRegistered.setText(getString(R.string.device_registered_success,
                     device.getName()));
-            imgDeviceRegister.setImageResource(mDevice.getImg());
-            txtMacDevice.setVisibility(View.VISIBLE);
-            txtMacDevice.setText(device.getAddress());
+            boxRegister.setVisibility(View.GONE);
+            boxScanner.setVisibility(View.GONE);
+            boxResponse.setVisibility(View.VISIBLE);
 
             // Save in the server
             saveDeviceRegister(mDevice);
         } else {
             nameDeviceScannerRegister.setText(mDevice.getName());
-            nameDeviceRegister.setText(R.string.device_not_found_try_again);
-            txtMacDevice.setVisibility(View.GONE);
+            deviceNotFound.setText(R.string.device_not_found_try_again);
         }
     }
 

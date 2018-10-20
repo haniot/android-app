@@ -13,17 +13,21 @@
         android:layout_marginBottom="-60dp"
         android:layout_marginTop="60dp"
         android:gravity="center_vertical"
+        android:text="Nome Dispositivo"
         android:textSize="16sp" />
 
     <TextView
-        android:id="@+id/txt_name_device_register"
+        android:id="@+id/txt_device_not_found"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
+        android:layout_marginBottom="-60dp"
         android:layout_marginTop="82dp"
-        android:text="Nome Dispositivo"
-        android:textAlignment="center" />
+        android:gravity="center_vertical"
+        android:textAlignment="center"
+        android:textSize="12sp"
+        android:typeface="normal" />
 
     <ImageView
         android:id="@+id/img_device_register"

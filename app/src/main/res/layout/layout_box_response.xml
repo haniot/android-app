@@ -1,17 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
     <TextView
-        android:id="@+id/txt_mac_device"
+        android:id="@+id/txt_device_successfully_registered"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="81dp"
+        android:gravity="center_vertical"
+        android:text="@string/device_registered_success"
+        android:textAlignment="center"
+        android:textSize="12sp"
+        android:typeface="normal" />
+
+    <Button
+        android:id="@+id/button2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="157dp"
-        android:text="Mac Device"
-        android:visibility="visible" />
+        android:layout_marginBottom="121dp"
+        android:text="Fechar" />
+
+    <ImageView
+        android:id="@+id/imageView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="124dp"
+        app:srcCompat="@drawable/sucess" />
 
 </RelativeLayout>
