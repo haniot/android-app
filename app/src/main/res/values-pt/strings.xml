@@ -372,6 +372,9 @@
     <string name="choose_status">Escolha o status</string>
     <string name="choose_heart_rate">Escolha os batimentos cardiacos</string>
     <string name="choose_temperature">Escolha a temperatura</string>
+    <string name="choose_blood_pressure">Escolha o valor da pressão</string>
+    <string name="choose_pulse">Escolha o pulso</string>
+    <string name="unit_min">/min</string>
 
     <!-- END OF STRINGS FOR TABLET -->
 

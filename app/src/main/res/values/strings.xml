@@ -436,6 +436,9 @@
     <string name="choose_status">Choose the status</string>
     <string name="choose_heart_rate">Choose the Heart Rate</string>
     <string name="choose_temperature">Choose the temperature</string>
+    <string name="choose_blood_pressure">Choose the pressure</string>
+    <string name="choose_pulse">Chosse the pulse</string>
+    <string name="unit_min">/min</string>
 
     <!-- END OF STRINGS FOR TABLET -->
 

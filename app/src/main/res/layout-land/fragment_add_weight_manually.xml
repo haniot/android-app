@@ -28,16 +28,23 @@
                 android:padding="50dp"
                 android:textAlignment="center" />
 
+            <View
+                android:id="@+id/botDivider"
+                android:layout_width="1dp"
+                android:layout_height="1dp"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@id/botWeight"
+                android:background="@color/transparent"
+                android:layout_marginTop="15dp"/>
+
             <android.support.v7.widget.AppCompatButton
                 android:id="@+id/btnCancel"
                 style="@style/Widget.AppCompat.Button.Colored"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/botWeight"
-                android:layout_alignParentStart="true"
-                android:layout_marginBottom="16dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="20dp"
+                android:layout_toStartOf="@id/botDivider"
+                android:layout_below="@id/botDivider"
+                android:layout_marginEnd="15dp"
                 android:padding="20dp"
                 android:text="@string/cancel" />
 
@@ -46,11 +53,9 @@
                 style="@style/Widget.AppCompat.Button.Colored"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_below="@id/botWeight"
-                android:layout_marginBottom="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginTop="20dp"
+                android:layout_toEndOf="@id/botDivider"
+                android:layout_below="@id/botDivider"
+                android:layout_marginStart="15dp"
                 android:padding="20dp"
                 android:text="@string/confirm"
                 android:textColor="@color/colorTextDark" />

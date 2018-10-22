@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragment.AddTemperatureManuallyFragment">
+    tools:context=".fragment.AddBloodPressureManuallyFragment">
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -18,7 +18,7 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/textChooseTemperature"
+                android:id="@+id/textChooseBloodPressure"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
@@ -26,38 +26,68 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:textSize="18dp"
-                android:text="@string/choose_temperature"/>
+                android:text="@string/choose_blood_pressure"/>
 
             <View
-                android:id="@+id/divTemperature"
+                android:id="@+id/divBloodPressure"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_toEndOf="@id/textChooseTemperature"
-                android:layout_alignBaseline="@id/textChooseTemperature"
+                android:layout_toEndOf="@id/textChooseBloodPressure"
+                android:layout_alignBaseline="@id/textChooseBloodPressure"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:background="?android:attr/listDivider" />
 
             <android.support.v7.widget.AppCompatButton
-                android:id="@+id/botTemperature"
+                android:id="@+id/botBloodPressure"
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:layout_below="@id/textChooseTemperature"
-                android:drawableStart="@drawable/ic_thermometer_128"
+                android:layout_below="@id/textChooseBloodPressure"
+                android:drawableStart="@drawable/ic_blood_pressure_128"
                 android:padding="50dp"
-                android:text="@string/unit_temperature"
+                android:text="@string/unit_pressure"
                 android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/textChoosePulse"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/botBloodPressure"
+                android:layout_marginStart="16dp"
+                android:textSize="18dp"
+                android:text="@string/choose_pulse"/>
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/botPulse"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@id/textChoosePulse"
+                android:drawableStart="@drawable/ic_pulse_128"
+                android:padding="45dp"
+                android:text="@string/unit_min"
+                android:textAlignment="center" />
+
+            <View
+                android:id="@+id/divPulse"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_toEndOf="@id/textChoosePulse"
+                android:layout_alignBaseline="@id/textChoosePulse"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="?android:attr/listDivider" />
 
             <View
                 android:id="@+id/botDivider"
                 android:layout_width="1dp"
                 android:layout_height="1dp"
                 android:layout_centerHorizontal="true"
-                android:layout_below="@id/botTemperature"
-                android:background="@color/transparent"
-                android:layout_marginTop="15dp"/>
+                android:layout_below="@id/botPulse"
+                android:background="@color/transparent"/>
 
             <android.support.v7.widget.AppCompatButton
                 android:id="@+id/btnCancel"

@@ -20,12 +20,14 @@ import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.fragment.AddBloodGlucoseManuallyFragment;
+import br.edu.uepb.nutes.haniot.fragment.AddBloodPressureManuallyFragment;
 import br.edu.uepb.nutes.haniot.fragment.AddHeartRateManuallyFragment;
 import br.edu.uepb.nutes.haniot.fragment.AddTemperatureManuallyFragment;
 import br.edu.uepb.nutes.haniot.fragment.AddWeightManuallyFragment;
@@ -40,7 +42,9 @@ public class ManuallyAddMeasurement extends AppCompatActivity implements View.On
         DatePickerDialog.OnDateSetListener,
         AddWeightManuallyFragment.SendMessageListener,
         AddBloodGlucoseManuallyFragment.SendMessageListener,
-        AddHeartRateManuallyFragment.SendMessageListener{
+        AddHeartRateManuallyFragment.SendMessageListener,
+        AddTemperatureManuallyFragment.SendMessageListener,
+        AddBloodPressureManuallyFragment.SendMessageListener{
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -217,6 +221,13 @@ public class ManuallyAddMeasurement extends AppCompatActivity implements View.On
                 getSupportFragmentManager().beginTransaction().replace(R.id.frame_measurement,
                         myFragment).commit();
                 break;
+
+            case ItemGridType.BLOOD_PRESSURE:
+
+                myFragment = new AddBloodPressureManuallyFragment();
+                getSupportFragmentManager().beginTransaction().replace(R.id.frame_measurement,
+                        myFragment).commit();
+                break;
         }
     }
 
@@ -303,4 +314,24 @@ public class ManuallyAddMeasurement extends AppCompatActivity implements View.On
         }
     }
 
+    @Override
+    public void onSendMessageTemperature(int temperature) {
+        if (temperature != -1){
+            Log.d("TESTE","Valor da temperatura: "+temperature);
+//            inserir funcao de enviar pro seridor aqui
+        }else{
+            showToast(getResources().getString(R.string.error_insering_measurement));
+        }
+    }
+
+    @Override
+    public void onSendMessagePressure(Pair<Integer, Integer> pressure, int pulse) {
+        if (pressure != null && pulse != -1){
+            Log.d("TESTE","Valor da pressao: "+pressure.first+"/"+pressure.second
+                    +" pulse: "+pulse);
+//            inserir funcao de enviar pro seridor aqui
+            return;
+        }
+        showToast(getResources().getString(R.string.error_insering_measurement));
+    }
 }

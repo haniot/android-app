@@ -148,8 +148,12 @@ public class AddWeightManuallyFragment extends Fragment implements View.OnClickL
 //        Configure the pickers to start at last selection, the number of measurements
 // must be the same of number of pickers
         ArrayList<Integer> lastMeasurements = new ArrayList<Integer>(){{
-            add(Integer.valueOf(session.getString("lastWeight1")));
-            add(Integer.valueOf(session.getString("lastWeight2")));
+            try {
+                add(Integer.valueOf(session.getString("lastWeight1")));
+                add(Integer.valueOf(session.getString("lastWeight2")));
+            }catch (NumberFormatException e){
+                Log.d("TESTE",e.getMessage());
+            }
         }};
 //        Configure the bounds of each picker, the number of bounds must be the same of number of
 //        pickers
@@ -158,7 +162,9 @@ public class AddWeightManuallyFragment extends Fragment implements View.OnClickL
             add(new Pair<>(0,9));
         }};
 
-        this.numberPicker.setLastMeasurements(lastMeasurements);
+        if (lastMeasurements.size() > 0) {
+            this.numberPicker.setLastMeasurements(lastMeasurements);
+        }
         this.numberPicker.setPickersTitles(titles);
         this.numberPicker.setBounds(bounds);
         this.numberPicker.setDialogTitle(getResources().getString(R.string.choose_weight));
