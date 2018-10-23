@@ -51,7 +51,7 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="color" value="a9a9a9" />
+                                                <entry key="color" value="009b8a" />
                                                 <entry key="paddingPercent" value="10" />
                                               </map>
                                             </option>
@@ -63,7 +63,7 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="url" value="jar:file:/C:/Program%20Files/Android/Android%20Studio/plugins/android/lib/android.jar!/images/material_design_icons/hardware/ic_keyboard_arrow_left_black_24dp.xml" />
+                                                <entry key="url" value="jar:file:/C:/Program%20Files/Android/Android%20Studio/plugins/android/lib/android.jar!/images/material_design_icons/content/ic_add_circle_black_24dp.xml" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -73,9 +73,10 @@
                                   </option>
                                   <option name="values">
                                     <map>
-                                      <entry key="backgroundColor" value="d3d3d3" />
+                                      <entry key="backgroundColor" value="009b8a" />
+                                      <entry key="cropped" value="true" />
                                       <entry key="iconShape" value="CIRCLE" />
-                                      <entry key="outputName" value="ic_arrow_left_disabled" />
+                                      <entry key="outputName" value="ic_circle" />
                                     </map>
                                   </option>
                                 </PersistentState>

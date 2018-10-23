@@ -23,39 +23,14 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <com.mikhaellopez.circularprogressbar.CircularProgressBar
-        android:id="@+id/progressBarChildren"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_below="@id/appBarLayout2"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="5dp"
-        android:visibility="invisible"
-        app:cpb_background_progressbar_color="@color/colorGrey"
-        app:cpb_background_progressbar_width="4dp"
-        app:cpb_indeterminate_mode="true"
-        app:cpb_progressbar_color="@color/colorPrimary"
-        app:cpb_progressbar_width="4dp" />
-
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerViewChildren"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/appBarLayout2"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp"
-        android:padding="25dp"
+        android:layout_marginTop="16dp"
         android:scrollbars="vertical">
 
     </android.support.v7.widget.RecyclerView>
-
-    <TextView
-        android:id="@+id/textNoDataFound"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/progressBarChildren"
-        android:layout_centerHorizontal="true"
-        android:text="@string/no_data_available"
-        android:visibility="invisible" />
 
 </RelativeLayout>

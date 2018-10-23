@@ -32,8 +32,6 @@ public class ManageChildrenActivity extends AppCompatActivity {
     Toolbar toolbar;
     @BindView(R.id.recyclerViewChildren)
     RecyclerView recyclerViewChildren;
-    @BindView(R.id.textNoDataFound)
-    TextView textNoDataFound;
 
     private List<Children> childrenList = new ArrayList<>();
     private ManageChildrenAdapter adapter;

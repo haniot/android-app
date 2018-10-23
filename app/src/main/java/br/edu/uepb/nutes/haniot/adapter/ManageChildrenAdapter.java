@@ -25,6 +25,7 @@ import br.edu.uepb.nutes.haniot.activity.MainActivity;
 import br.edu.uepb.nutes.haniot.activity.ManageChildrenActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.model.Children;
+import br.edu.uepb.nutes.haniot.utils.Log;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -68,12 +69,12 @@ public class ManageChildrenAdapter extends RecyclerView.Adapter<ManageChildrenAd
             divider.setMinimumHeight(ViewGroup.LayoutParams.MATCH_PARENT);
             divider.setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
 
+            String nameText = String.valueOf(children.getName().charAt(0));
+
+            holder.textLetter.setText(nameText);
             holder.textId.setText(children.get_id());
-            holder.textDate.setText(children.getRegisterDate());
             holder.textName.setText(children.getName());
             holder.btnSelect.setOnClickListener( c -> {
-
-                Toast.makeText(context,"Iniciando dashboard com o id: "+children.get_id(),Toast.LENGTH_SHORT).show();
 
                 //Código abaixo funcional!
                 Intent it = new Intent(context,MainActivity.class);
@@ -188,14 +189,14 @@ public class ManageChildrenAdapter extends RecyclerView.Adapter<ManageChildrenAd
 
         @BindView(R.id.textIdNumberChildren)
         TextView textId;
-        @BindView(R.id.textRegisterDateNumberChildren)
-        TextView textDate;
         @BindView(R.id.btnSelectChildren)
         AppCompatButton btnSelect;
         @BindView(R.id.btnDeleteChild)
         AppCompatButton btnDelete;
         @BindView(R.id.textNameChildValue)
         TextView textName;
+        @BindView(R.id.textLetter)
+        TextView textLetter;
 
         public ManageChildrenViewHolder(View itemView) {
             super(itemView);
