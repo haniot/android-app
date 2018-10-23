@@ -1,0 +1,27 @@
+
+osquid:S1192"SDefine a constant instead of duplicating this literal "Heart Rate Sensor " 4 times.(яЅу«8гВыти,
+zsquid:S2293"YReplace the type specification in this constructor call with the diamond operator ("<>").(щЩщ≤€€€€€8гВыти,
+psquid:S1450"TRemove the "alert" field and declare it as a local variable in the relevant methods.(√рџЛ8гВыти,
+Кsquid:S4165"nRemove this useless assignment; "devicesAvailable" already holds the assigned value along all execution paths.(јэЌю8гВыти,
+Bsquid:S1170"!Make this final field static too.(…Мгыъ€€€€8гВыти,
+=squid:S1170"!Make this final field static too.(№Џ≈у8гВыти,
+=squid:S1170"!Make this final field static too.(џюсћ8гВыти,
+Bsquid:S1170"!Make this final field static too.(ЗЎ÷ ъ€€€€8гВыти,
+=squid:S1170"!Make this final field static too.(ВЫ®з8гВыти,
+Bsquid:S1170"!Make this final field static too.(ијҐ©ы€€€€8гВыти,
+Isquid:S1604"(Make this anonymous inner class a lambda(ШБгѓю€€€€8гВыти,
+Dsquid:S1604"(Make this anonymous inner class a lambda(Мвы†8гВыти,
+Dsquid:S1604"(Make this anonymous inner class a lambda(ЄюЃп8гВыти,
+Isquid:S1604"(Make this anonymous inner class a lambda(ШБгѓю€€€€8гВыти,
+Isquid:S1604"(Make this anonymous inner class a lambda(Ьъі£э€€€€8гВыти,
+Dsquid:S1604"(Make this anonymous inner class a lambda(ШЧ°и8гВыти,
+Ьsquid:S1186"АAdd a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(€•эI8гВыти,
+nsquid:S00116"RRename this field "LOG_TAG" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ю’≥O8гВыти,
+Жsquid:S00116"dRename this field "NUMBER_MODEL_THERM_DL8740" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(…Мгыъ€€€€8гВыти,
+Иsquid:S00116"kRename this field "NUMBER_MODEL_GLUCOMETER_PERFORMA" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(№Џ≈у8гВыти,
+squid:S00116"bRename this field "NUMBER_MODEL_SCALE_1501" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(џюсћ8гВыти,
+Зsquid:S00116"eRename this field "NUMBER_MODEL_HEART_RATE_H7" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ЗЎ÷ ъ€€€€8гВыти,
+Гsquid:S00116"fRename this field "NUMBER_MODEL_HEART_RATE_H10" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ВЫ®з8гВыти,
+Зsquid:S00116"eRename this field "NUMBER_MODEL_SMARTBAND_MI2" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ијҐ©ы€€€€8гВыти,
+Dsquid:S1148"#Use a logger to log this exception.(А…‘Еэ€€€€8гВыти,
+psquid:MaximumInheritanceDepth"=This class has 10 parents which is greater than 5 authorized.(іЃƒвь€€€€8гВыти,

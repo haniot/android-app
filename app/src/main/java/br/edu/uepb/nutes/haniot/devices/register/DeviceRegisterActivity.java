@@ -22,6 +22,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -100,8 +101,11 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     @BindView(R.id.img_device_register)
     ImageView imgDeviceRegister;
 
-    @BindView(R.id.img_bluetooth)
-    ImageView imgBluetooth;
+    @BindView(R.id.btn_close_register)
+    ImageButton btnCloseRegister;
+
+    @BindView(R.id.btn_close_response)
+    Button btnCloseResponse;
 
     @BindView(R.id.pulsator)
     PulsatorLayout mPulsatorLayout;
@@ -126,6 +130,8 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
 
         btnDeviceRegisterScanner.setOnClickListener(this);
         btnDeviceRegisterStop.setOnClickListener(this);
+        btnCloseRegister.setOnClickListener(this);
+        btnCloseResponse.setOnClickListener(this);
 
         mDevice = getIntent().getParcelableExtra(DeviceManagerActivity.EXTRA_DEVICE);
 
@@ -367,6 +373,10 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
             Log.d(TAG, "onClick: stop scanner");
             animationScanner(false);
             mScanner.stopScan();
+        } else if (id == R.id.btn_close_register) {
+            finish();
+        } else if (id == R.id.btn_close_response) {
+            finish();
         }
     }
 

@@ -1,0 +1,29 @@
+
+ª%squid:RedundantThrowsDeclarationCheck"oRemove the declaration of thrown exception 'org.json.JSONException', as it cannot be thrown from method's body.(…¼Ôôøÿÿÿÿ8·æÊ÷è,
+gsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(ãÎÎ»8·æÊ÷è,
+gsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(²£‹Ü8·æÊ÷è,
+lsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(‹êÔòúÿÿÿÿ8·æÊ÷è,
+gsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(Ý—€Ë8·æÊ÷è,
+gsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(ë­8·æÊ÷è,
+lsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(‡®…îýÿÿÿÿ8·æÊ÷è,
+Bsquid:S1170"!Make this final field static too.(²¨ªêýÿÿÿÿ8·æÊ÷è,
+=squid:S1170"!Make this final field static too.(‡àÒ8·æÊ÷è,
+=squid:S1170"!Make this final field static too.(¤¯£¼8·æÊ÷è,
+=squid:S1170"!Make this final field static too.(ˆò¸Î8·æÊ÷è,
+=squid:S1170"!Make this final field static too.(¢‡ê¢8·æÊ÷è,
+Bsquid:S1170"!Make this final field static too.(µ—Ïžúÿÿÿÿ8·æÊ÷è,
+Bsquid:S1170"!Make this final field static too.(ÌÕñÀýÿÿÿÿ8·æÊ÷è,
+Bsquid:S1170"!Make this final field static too.(þú˜¡þÿÿÿÿ8·æÊ÷è,
+psquid:S00116"NRename this field "TAG" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(²¨ªêýÿÿÿÿ8·æÊ÷è,
+€squid:S00116"cRename this field "NAME_DEVICE_THERM_DL8740" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(‡àÒ8·æÊ÷è,
+‡squid:S00116"jRename this field "NAME_DEVICE_GLUCOMETER_PERFORMA" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¤¯£¼8·æÊ÷è,
+~squid:S00116"aRename this field "NAME_DEVICE_SCALE_1501" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ˆò¸Î8·æÊ÷è,
+squid:S00116"dRename this field "NAME_DEVICE_HEART_RATE_H7" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¢‡ê¢8·æÊ÷è,
+‡squid:S00116"eRename this field "NAME_DEVICE_HEART_RATE_H10" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(µ—Ïžúÿÿÿÿ8·æÊ÷è,
+†squid:S00116"dRename this field "NAME_DEVICE_SMARTBAND_MI2" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÌÕñÀýÿÿÿÿ8·æÊ÷è,
+squid:S00116"]Rename this field "SERVICE_SCALE_1501" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(þú˜¡þÿÿÿÿ8·æÊ÷è,
+^squid:UselessImportCheck"0Remove this unused import 'android.text.Layout'.(ÔŠ²±úÿÿÿÿ8·æÊ÷è,
+Dsquid:S1148"#Use a logger to log this exception.(€ÉÔ…ýÿÿÿÿ8·æÊ÷è,
+Dsquid:S1148"#Use a logger to log this exception.(€ÉÔ…ýÿÿÿÿ8·æÊ÷è,
+Dsquid:S1148"#Use a logger to log this exception.(€ÉÔ…ýÿÿÿÿ8·æÊ÷è,
+psquid:MaximumInheritanceDepth"=This class has 10 parents which is greater than 5 authorized.(¥÷”ÿÿÿÿÿ8·æÊ÷è,
