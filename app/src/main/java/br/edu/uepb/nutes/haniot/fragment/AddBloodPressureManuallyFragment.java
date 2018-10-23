@@ -66,6 +66,8 @@ public class AddBloodPressureManuallyFragment extends Fragment implements View.O
                     this.numberPickerDialogPressure.getData().get(1));
             this.botPressure.setTextColor(Color.BLACK );
             this.textPressure.setTextColor(Color.BLACK );
+            session.putString("lastPressure1",String.valueOf(this.pressure.first));
+            session.putString("lastPressure2",String.valueOf(this.pressure.second));
             updateTextPressure();
         }catch (NullPointerException e){
             Log.d("TESTE",e.getMessage());
@@ -75,6 +77,7 @@ public class AddBloodPressureManuallyFragment extends Fragment implements View.O
             this.textPulse.setTextColor(Color.BLACK );
             this.botPulse.setTextColor(Color.BLACK );
             updateTextPulse();
+            session.putString("lastPulse",String.valueOf(this.pulse));
         }catch (NullPointerException e){
             this.pulse = -1;
             Log.d("TESTE",e.getMessage());
@@ -154,6 +157,17 @@ public class AddBloodPressureManuallyFragment extends Fragment implements View.O
 
     private void setupPickerPressure(){
 
+        try{
+            Pair<Integer,Integer> lastPressure = new Pair<>(Integer.valueOf(session.getString("lastPressure1")),
+                    Integer.valueOf(session.getString("lastPressure2")));
+            this.numberPickerDialogPressure.setLastMeasurements(new ArrayList<Integer>(){{
+                add(lastPressure.first);
+                add(lastPressure.second);
+            }});
+        }catch (Exception e){
+            Log.d("TESTE",e.getMessage());
+        }
+
         this.numberPickerDialogPressure.setDialogTitle(getResources()
                 .getString(R.string.choose_blood_pressure)+" "+
                 getResources().getString(R.string.unit_glucose_mg_dL));
@@ -161,6 +175,15 @@ public class AddBloodPressureManuallyFragment extends Fragment implements View.O
     }
 
     private void setupPickerPulse(){
+
+        try{
+            int lastPulse = Integer.valueOf(session.getString("lastPulse"));
+            this.numberPickerDialogPulse.setLastMeasurements(new ArrayList<Integer>(){{
+                add(lastPulse);
+            }});
+        }catch (Exception e){
+            Log.d("TESTE",e.getMessage());
+        }
 
         this.numberPickerDialogPulse.setDialogTitle(getResources().getString(R.string.choose_pulse));
         this.numberPickerDialogPulse.create(getContext(),this,1);

@@ -68,6 +68,7 @@ public class AddBloodGlucoseManuallyFragment extends Fragment implements View.On
             this.textChooseGlucose.setTextColor(Color.BLACK);
             this.botGlucose.setTextColor(Color.BLACK);
             updateTextGlucose();
+            session.putString("lastGlucose",String.valueOf(this.glucoseValue));
         }
 
     }
@@ -147,6 +148,15 @@ public class AddBloodGlucoseManuallyFragment extends Fragment implements View.On
     }
 
     private void setupPicker(){
+
+        try{
+            int lastGlucose = Integer.valueOf(session.getString("lastGlucose"));
+            this.numberPicker.setLastMeasurements(new ArrayList<Integer>(){{
+                add(lastGlucose);
+            }});
+        }catch (Exception e){
+            Log.d("TESTE",e.getMessage());
+        }
 
         this.numberPicker.setDialogIcon(R.drawable.ic_blood_glucose);
         this.numberPicker.setDialogTitle(getResources().getString(R.string.choose_glucose));

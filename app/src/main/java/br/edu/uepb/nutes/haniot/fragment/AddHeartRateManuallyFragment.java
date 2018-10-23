@@ -17,6 +17,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.utils.Log;
 import br.edu.uepb.nutes.haniot.utils.NumberPickerDialog;
 import butterknife.BindView;
@@ -37,6 +38,7 @@ public class AddHeartRateManuallyFragment extends Fragment implements View.OnCli
     private NumberPickerDialog numberPickerDialog;
     private int heartBeat = -1;
     private SendMessageListener mListener;
+    private Session session;
 
     public AddHeartRateManuallyFragment() {}
 
@@ -49,6 +51,8 @@ public class AddHeartRateManuallyFragment extends Fragment implements View.OnCli
             this.textChooseHeartRate.setTextColor(Color.BLACK);
             this.botHeartRate.setTextColor(Color.BLACK);
             updateTextHeartRate();
+            session.putString("lastHeartRate",String.valueOf(this.heartBeat));
+
         }
 
     }
@@ -85,6 +89,15 @@ public class AddHeartRateManuallyFragment extends Fragment implements View.OnCli
     }
 
     private void setupPicker(){
+
+        try{
+            int lastHeartBeat = Integer.valueOf(session.getString("lastHeartRate"));
+            this.numberPickerDialog.setLastMeasurements(new ArrayList<Integer>(){{
+                add(lastHeartBeat);
+            }});
+        }catch (Exception e){
+            Log.d("TESTE",e.getMessage());
+        }
 
         this.numberPickerDialog.setDialogIcon(R.drawable.ic_heart_rate_64);
         this.numberPickerDialog.setDialogTitle(getResources().getString(R.string.choose_heart_rate));
@@ -126,6 +139,7 @@ public class AddHeartRateManuallyFragment extends Fragment implements View.OnCli
         this.btnCancel.setOnClickListener(this);
         this.btnConfirm.setOnClickListener(this);
         this.numberPickerDialog = new NumberPickerDialog(getContext());
+        this.session = new Session(getContext());
 
     }
 
