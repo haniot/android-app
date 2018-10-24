@@ -21,6 +21,9 @@ import java.util.ArrayList;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.model.ContextMeasurementValueType;
+import br.edu.uepb.nutes.haniot.model.Measurement;
+import br.edu.uepb.nutes.haniot.model.MeasurementType;
+import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
 import br.edu.uepb.nutes.haniot.utils.Log;
 import br.edu.uepb.nutes.haniot.utils.NumberPickerDialog;
 import butterknife.BindView;
@@ -58,6 +61,7 @@ public class AddBloodGlucoseManuallyFragment extends Fragment implements View.On
     private Session session;
     private int glucoseValue = -1;
     private int type = -1;
+    private String date;
 
     public AddBloodGlucoseManuallyFragment() {}
 

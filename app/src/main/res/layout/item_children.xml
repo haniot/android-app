@@ -64,6 +64,7 @@
         android:background="@mipmap/ic_trash" />
 
     <View
+        android:id="@+id/divChildren"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@id/textIdNumberChildren"

@@ -2,7 +2,6 @@ package br.edu.uepb.nutes.haniot.activity;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -12,15 +11,11 @@ import android.support.v7.widget.Toolbar;
 import android.util.Pair;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.DatePicker;
-import android.widget.FrameLayout;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -31,8 +26,13 @@ import br.edu.uepb.nutes.haniot.fragment.AddBloodPressureManuallyFragment;
 import br.edu.uepb.nutes.haniot.fragment.AddHeartRateManuallyFragment;
 import br.edu.uepb.nutes.haniot.fragment.AddTemperatureManuallyFragment;
 import br.edu.uepb.nutes.haniot.fragment.AddWeightManuallyFragment;
-import br.edu.uepb.nutes.haniot.model.ContextMeasurementValueType;
+import br.edu.uepb.nutes.haniot.model.Device;
+import br.edu.uepb.nutes.haniot.model.DeviceType;
 import br.edu.uepb.nutes.haniot.model.ItemGridType;
+import br.edu.uepb.nutes.haniot.model.Measurement;
+import br.edu.uepb.nutes.haniot.model.MeasurementType;
+import br.edu.uepb.nutes.haniot.model.dao.MeasurementDAO;
+import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import br.edu.uepb.nutes.haniot.utils.Log;
 import butterknife.BindView;
@@ -61,11 +61,13 @@ public class ManuallyAddMeasurement extends AppCompatActivity implements View.On
     private DatePickerDialog datePickerDialog;
     private Calendar calendar;
     private Session session;
-    private String dateTime;
-    private String dateHour;
+    private String dateTime = "";
+    private String dateHour = "";
     private int yearSelected = -1;
     private int monthSelected = -1;
     private int daySelected = -1;
+
+    private MeasurementDAO measurementDAO;
 
 //    Fragment to be replaced
     private Fragment myFragment;
@@ -125,15 +127,15 @@ public class ManuallyAddMeasurement extends AppCompatActivity implements View.On
         btnCalendar.setOnClickListener(this);
         btnClock.setOnClickListener(this);
 
-        setDateTime(DateUtils.getCurrentDatetime(getResources().getString(R.string.date_format)));
-        btnCalendar.setText(getDateTime());
+        btnCalendar.setText(DateUtils.getCurrentDatetime(getResources()
+                .getString(R.string.date_format)));
 
         Date currentDate = calendar.getTime();
         DateFormat format = new SimpleDateFormat(
                 getResources().getString(R.string.time_format_simple));
         String formatted = format.format(currentDate);
-        setDateHour(formatted);
-        btnClock.setText(getDateHour());
+        btnClock.setText(formatted);
+        measurementDAO = MeasurementDAO.getInstance(this);
 
     }
 
@@ -282,12 +284,62 @@ public class ManuallyAddMeasurement extends AppCompatActivity implements View.On
         updateTextDate();
     }
 
+    private void synchronizeWithServer() {
+        SynchronizationServer.getInstance(this).run();
+    }
+
+    private void saveMeasurement(Double value, Long date, int type){
+
+        String unit = "";
+        switch (type){
+            case MeasurementType.BODY_MASS:
+                unit = getResources().getString(R.string.unit_weight);
+                break;
+            case MeasurementType.BLOOD_GLUCOSE:
+                unit = getResources().getString(R.string.unit_glucose_mg_dL);
+                break;
+            case MeasurementType.BLOOD_PRESSURE_DIASTOLIC :
+                unit = getResources().getString(R.string.unit_pressure);
+                break;
+            case MeasurementType.TEMPERATURE:
+                unit = getResources().getString(R.string.unit_temperature);
+                break;
+            case MeasurementType.HEART_RATE:
+                unit = getResources().getString(R.string.unit_heart_rate);
+                break;
+        }
+
+        Measurement measurement = new Measurement( value,unit, date,
+                type);
+        measurement.setUser(session.getUserLogged());
+        if (this.measurementDAO.save(measurement)){
+            synchronizeWithServer();
+        }
+    }
+
     @Override
     public void onSendMessageWeight(Pair<String, String> data) {
 
             if (data != null) {
                 Log.d("TESTE", "Data 1: " + data.first + " Data 2: " + data.second);
                 //funcao de salvar aqui
+                String weight = data.first + "." + data.second;
+                double value = Double.valueOf(weight);
+
+                String dateTimeJoined = this.dateTime+" "+this.dateHour;
+                Log.d("TESTE","teste converte long"+DateUtils.getDateStringInMillis(dateTimeJoined,null));
+                Long dateServer = DateUtils.getDateStringInMillis(dateTimeJoined,null);
+                if (this.dateTime.equals("") && this.dateHour.equals("")){
+                    dateServer = DateUtils.getCurrentDatetime();
+//                    saveMeasurement(value,dateServer, MeasurementType.BODY_MASS);
+                }else{
+
+                    Log.d("TESTE","Data e hora setados: "+this.dateTime+" "+this.dateHour);
+                    saveMeasurement(value,dateServer, MeasurementType.BODY_MASS);
+
+                }
+
+                finish();
             }else{
                 showToast(getResources().getString(R.string.error_insering_measurement));
             }

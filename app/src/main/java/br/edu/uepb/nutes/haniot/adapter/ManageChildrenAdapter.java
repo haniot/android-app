@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -64,15 +65,16 @@ public class ManageChildrenAdapter extends RecyclerView.Adapter<ManageChildrenAd
         if (itemListFiltered != null && itemListFiltered.size() > 0){
 
             Children children = itemListFiltered.get(position);
-            View divider = new View(this.context);
-            divider.setMinimumWidth(2);
-            divider.setMinimumHeight(ViewGroup.LayoutParams.MATCH_PARENT);
-            divider.setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
+
+            if(position == getItemCount()-1){
+                holder.divChildren.setBackgroundColor(Color.TRANSPARENT);
+            }
 
             String nameText = String.valueOf(children.getName().charAt(0));
 
             holder.textLetter.setText(nameText);
             holder.textId.setText(children.get_id());
+            holder.textId.setTextColor(context.getResources().getColor(R.color.colorBlackGrey));
             holder.textName.setText(children.getName());
             holder.btnSelect.setOnClickListener( c -> {
 
@@ -197,6 +199,8 @@ public class ManageChildrenAdapter extends RecyclerView.Adapter<ManageChildrenAd
         TextView textName;
         @BindView(R.id.textLetter)
         TextView textLetter;
+        @BindView(R.id.divChildren)
+        View divChildren;
 
         public ManageChildrenViewHolder(View itemView) {
             super(itemView);
