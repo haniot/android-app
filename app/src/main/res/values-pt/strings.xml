@@ -257,7 +257,7 @@
     <string name="remove_device">Deseja remover este dispositivo da sua lista ?</string>
     <string name="remove">Remover</string>
     <string name="cancelar">Cancelar</string>
-    <string name="start_scanner">Inciar scanner</string>
+    <string name="start_scanner">Iniciar scanner</string>
     <string name="stop_scanner">Parar scanner</string>
     <string name="details">Detalhes</string>
     <string name="remove_device_register">Remover Dispositivo</string>
@@ -266,5 +266,6 @@
     <string name="no_devices_available">Nenhum dispositivo disponível. Em breve a lista será atualizada&#8230;</string>
     <string name="device_registered_success">Dispositivo %s cadastrado com sucesso!</string>
     <string name="connection">Conectando, segure o telefone perto do dispositivo</string>
+    <string name="come_back">Voltar</string>
 
 </resources>

@@ -1,0 +1,6 @@
+
+Asquid:S1068"'Remove this unused "TAG" private field.(²æ¸Èýÿÿÿÿ
+;squid:S1170"!Make this final field static too.(²æ¸Èýÿÿÿÿ
+isquid:S00116"NRename this field "TAG" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(²æ¸Èýÿÿÿÿ
+Tsquid:UselessImportCheck"-Remove this unused import 'android.util.Log'.(Ô¦Ø²øÿÿÿÿ
+csquid:MaximumInheritanceDepth"<This class has 7 parents which is greater than 5 authorized.(©ˆà

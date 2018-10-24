@@ -1,5 +1,6 @@
 package br.edu.uepb.nutes.haniot.devices.register;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -40,6 +41,8 @@ import br.edu.uepb.nutes.haniot.server.Server;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static br.edu.uepb.nutes.haniot.R.drawable.ic_action_warning;
 
 public class DeviceManagerActivity extends AppCompatActivity {
     private final String LOG_TAG = getClass().getSimpleName();
@@ -372,6 +375,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    @SuppressLint("ResourceType")
     private void confirmRemoveDeviceRegister(Device device) {
         //Create the AlertDialog generator
         AlertDialog.Builder builder = new AlertDialog.Builder(this);

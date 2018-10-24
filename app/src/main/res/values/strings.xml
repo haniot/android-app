@@ -557,6 +557,7 @@
     <string name="no_devices_available">No device available. Soon the list will be updated&#8230;</string>
     <string name="device_registered_success">Device %s successfully registered!</string>
     <string name="connection">By connecting, hold the phone near the</string>
+    <string name="come_back">Come back</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

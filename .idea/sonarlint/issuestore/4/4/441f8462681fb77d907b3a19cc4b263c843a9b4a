@@ -1,0 +1,18 @@
+
+Rsquid:S1197"8Move the array designator from the variable to the type.(ÈôŠÈÿÿÿÿÿ
+Msquid:S1197"8Move the array designator from the variable to the type.(÷ûÉŒ
+Asquid:S1068"'Remove this unused "TAG" private field.(´íüÿÿÿÿ
+gsquid:S1871"MThis branch's code block is the same as the block for the branch on line 232.(Ú±¹üÿÿÿÿ
+Lsquid:S1135"2Complete the task associated to this TODO comment.(¦ÔŸ…ıÿÿÿÿ
+[squid:S2142"FEither re-interrupt this method or rethrow the "InterruptedException".(ä ¹€
+;squid:S1170"!Make this final field static too.(´íüÿÿÿÿ
+6squid:S1170"!Make this final field static too.(•Ôíµ
+;squid:S1170"!Make this final field static too.(ÛÌò®øÿÿÿÿ
+;squid:S1170"!Make this final field static too.(åà’Çøÿÿÿÿ
+Dsquid:S1611"/Remove the parentheses around the "v" parameter(îì˜¡
+isquid:S00116"NRename this field "TAG" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(´íüÿÿÿÿ
+isquid:S00116"SRename this field "LOW_RISK" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(•Ôíµ
+ssquid:S00116"XRename this field "MODERATE_RISK" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÛÌò®øÿÿÿÿ
+osquid:S00116"TRename this field "HIGH_RISK" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(åà’Çøÿÿÿÿ
+=squid:S1148"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ
+hsquid:MaximumInheritanceDepth"<This class has 7 parents which is greater than 5 authorized.(Éèúÿÿÿÿ
