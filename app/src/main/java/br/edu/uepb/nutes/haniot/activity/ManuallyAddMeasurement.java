@@ -15,6 +15,7 @@ import android.widget.DatePicker;
 import android.widget.Toast;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -121,7 +122,6 @@ public class ManuallyAddMeasurement extends AppCompatActivity implements View.On
             String selectedHour = String.valueOf(hourOfDay)+":"+String.valueOf(minute1);
             setDateHour(selectedHour);
             updateTextHour();
-            Log.d("TESTE","Hora: "+hourOfDay+" "+minute1);
         },hour, minute, true);//Yes 24 hour time
 
         btnCalendar.setOnClickListener(this);
@@ -321,24 +321,40 @@ public class ManuallyAddMeasurement extends AppCompatActivity implements View.On
     public void onSendMessageWeight(Pair<String, String> data) {
 
             if (data != null) {
-                Log.d("TESTE", "Data 1: " + data.first + " Data 2: " + data.second);
                 //funcao de salvar aqui
                 String weight = data.first + "." + data.second;
                 double value = Double.valueOf(weight);
 
                 String dateTimeJoined = this.dateTime+" "+this.dateHour;
-                Log.d("TESTE","teste converte long"+DateUtils.getDateStringInMillis(dateTimeJoined,null));
                 Long dateServer = DateUtils.getDateStringInMillis(dateTimeJoined,null);
+
+//                quando o usuário não modificou data nem hora
                 if (this.dateTime.equals("") && this.dateHour.equals("")){
                     dateServer = DateUtils.getCurrentDatetime();
 //                    saveMeasurement(value,dateServer, MeasurementType.BODY_MASS);
-                }else{
+                    return;
 
-                    Log.d("TESTE","Data e hora setados: "+this.dateTime+" "+this.dateHour);
-                    saveMeasurement(value,dateServer, MeasurementType.BODY_MASS);
+//                    quando o usuário modificou apenas a hora
+                }else if (this.dateTime.equals("") && !this.dateHour.equals("")){
+
+                    SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+                    Date currentDate = new Date();
+                    String current = format.format(currentDate);
+
+                    current = current +" "+this.dateHour;
+                    dateServer = DateUtils.getDateStringInMillis(current, null);
+                    Log.d("TESTE","Data: "+dateServer);
+
+//                    saveMeasurement(value,dateServer, MeasurementType.BODY_MASS);
+
+//                quando o usuário modificou apenas a data
+                }else if (!this.dateTime.equals("") && this.dateHour.equals("")){
+
+
+//                                        quando o usuário modificou data e hora
+                }else if (!this.dateTime.equals("") && !this.dateHour.equals("")){
 
                 }
-
                 finish();
             }else{
                 showToast(getResources().getString(R.string.error_insering_measurement));
