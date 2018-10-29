@@ -343,12 +343,17 @@ public class ManuallyAddMeasurement extends AppCompatActivity implements View.On
 
                     current = current +" "+this.dateHour;
                     dateServer = DateUtils.getDateStringInMillis(current, null);
-                    Log.d("TESTE","Data: "+dateServer);
+                    Log.d("TESTE","Data: "+current);
 
 //                    saveMeasurement(value,dateServer, MeasurementType.BODY_MASS);
 
 //                quando o usuário modificou apenas a data
                 }else if (!this.dateTime.equals("") && this.dateHour.equals("")){
+
+                    SimpleDateFormat format = new SimpleDateFormat("HH:mm");
+                    Date currentDate = new Date();
+                    String currentHour = format.format(currentDate);
+                    Log.d("TESTE","Hora atual: "+currentHour);
 
 
 //                                        quando o usuário modificou data e hora
