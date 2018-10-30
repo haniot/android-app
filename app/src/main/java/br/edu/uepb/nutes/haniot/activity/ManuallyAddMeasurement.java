@@ -120,6 +120,19 @@ public class ManuallyAddMeasurement extends AppCompatActivity implements View.On
         timePicker = new TimePickerDialog(ManuallyAddMeasurement.this,
                 (view, hourOfDay, minute1) -> {
             String selectedHour = String.valueOf(hourOfDay)+":"+String.valueOf(minute1);
+            String secondChar = String.valueOf(selectedHour.charAt(1));
+//            adiciona o 0 para datas com 1 casa decimal
+            if (secondChar.equals(":")){
+                selectedHour = "0"+selectedHour;
+            }
+            if (selectedHour.length() == 4){
+                String firstPart = selectedHour.substring(0,3);
+                firstPart = firstPart+"0";
+                String secondPart = selectedHour.substring(3,4);
+                selectedHour = firstPart+secondPart;
+                Log.d("TESTE","Hora tratada: "+selectedHour);
+            }
+            selectedHour = selectedHour+":00";
             setDateHour(selectedHour);
             updateTextHour();
         },hour, minute, true);//Yes 24 hour time
@@ -288,7 +301,42 @@ public class ManuallyAddMeasurement extends AppCompatActivity implements View.On
         SynchronizationServer.getInstance(this).run();
     }
 
-    private void saveMeasurement(Double value, Long date, int type){
+    private void saveMeasurement(Double value, int type){
+
+        Long dateServer = null;
+        String dateTimeSelected = "";
+
+//                quando o usuário não modificou data nem hora
+        if (this.dateTime.equals("") && this.dateHour.equals("")){
+            dateServer = DateUtils.getCurrentDatetime();
+
+//                    quando o usuário modificou apenas a hora
+        }else if (this.dateTime.equals("") && !this.dateHour.equals("")){
+
+            SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+            Date currentDate = new Date();
+            String current = format.format(currentDate);
+
+            dateTimeSelected = current +" "+this.dateHour;
+            dateServer = DateUtils.getDateStringInMillis(dateTimeSelected, null);
+
+//                quando o usuário modificou apenas a data
+        }else if (!this.dateTime.equals("") && this.dateHour.equals("")){
+
+            SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+            Date currentDate = new Date();
+            String currentHour = format.format(currentDate);
+            dateTimeSelected = this.dateTime + " " + currentHour;
+            dateServer = DateUtils.getDateStringInMillis(dateTimeSelected, null);
+
+
+//                                        quando o usuário modificou data e hora
+        }else if (!this.dateTime.equals("") && !this.dateHour.equals("")){
+
+            dateTimeSelected = this.dateTime + " " + this.dateHour;
+            dateServer = DateUtils.getDateStringInMillis(dateTimeSelected,null);
+
+        }
 
         String unit = "";
         switch (type){
@@ -309,10 +357,13 @@ public class ManuallyAddMeasurement extends AppCompatActivity implements View.On
                 break;
         }
 
-        Measurement measurement = new Measurement( value,unit, date,
-                type);
+        Log.d("TESTE","data enviada para o banco: "+dateTimeSelected);
+        if (dateServer == null || dateTimeSelected.equals("")) return;
+
+        Measurement measurement = new Measurement( value,unit, dateServer,type);
         measurement.setUser(session.getUserLogged());
         if (this.measurementDAO.save(measurement)){
+            Log.d("TESTE","Salvo no banco");
             synchronizeWithServer();
         }
     }
@@ -324,42 +375,7 @@ public class ManuallyAddMeasurement extends AppCompatActivity implements View.On
                 //funcao de salvar aqui
                 String weight = data.first + "." + data.second;
                 double value = Double.valueOf(weight);
-
-                String dateTimeJoined = this.dateTime+" "+this.dateHour;
-                Long dateServer = DateUtils.getDateStringInMillis(dateTimeJoined,null);
-
-//                quando o usuário não modificou data nem hora
-                if (this.dateTime.equals("") && this.dateHour.equals("")){
-                    dateServer = DateUtils.getCurrentDatetime();
-//                    saveMeasurement(value,dateServer, MeasurementType.BODY_MASS);
-                    return;
-
-//                    quando o usuário modificou apenas a hora
-                }else if (this.dateTime.equals("") && !this.dateHour.equals("")){
-
-                    SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-                    Date currentDate = new Date();
-                    String current = format.format(currentDate);
-
-                    current = current +" "+this.dateHour;
-                    dateServer = DateUtils.getDateStringInMillis(current, null);
-                    Log.d("TESTE","Data: "+current);
-
-//                    saveMeasurement(value,dateServer, MeasurementType.BODY_MASS);
-
-//                quando o usuário modificou apenas a data
-                }else if (!this.dateTime.equals("") && this.dateHour.equals("")){
-
-                    SimpleDateFormat format = new SimpleDateFormat("HH:mm");
-                    Date currentDate = new Date();
-                    String currentHour = format.format(currentDate);
-                    Log.d("TESTE","Hora atual: "+currentHour);
-
-
-//                                        quando o usuário modificou data e hora
-                }else if (!this.dateTime.equals("") && !this.dateHour.equals("")){
-
-                }
+                saveMeasurement(value,MeasurementType.BODY_MASS);
                 finish();
             }else{
                 showToast(getResources().getString(R.string.error_insering_measurement));
