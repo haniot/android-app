@@ -27,6 +27,8 @@ import br.edu.uepb.nutes.haniot.fragment.AddBloodPressureManuallyFragment;
 import br.edu.uepb.nutes.haniot.fragment.AddHeartRateManuallyFragment;
 import br.edu.uepb.nutes.haniot.fragment.AddTemperatureManuallyFragment;
 import br.edu.uepb.nutes.haniot.fragment.AddWeightManuallyFragment;
+import br.edu.uepb.nutes.haniot.model.ContextMeasurement;
+import br.edu.uepb.nutes.haniot.model.ContextMeasurementValueType;
 import br.edu.uepb.nutes.haniot.model.Device;
 import br.edu.uepb.nutes.haniot.model.DeviceType;
 import br.edu.uepb.nutes.haniot.model.ItemGridType;
@@ -45,7 +47,7 @@ public class ManuallyAddMeasurement extends AppCompatActivity implements View.On
         AddBloodGlucoseManuallyFragment.SendMessageListener,
         AddHeartRateManuallyFragment.SendMessageListener,
         AddTemperatureManuallyFragment.SendMessageListener,
-        AddBloodPressureManuallyFragment.SendMessageListener{
+        AddBloodPressureManuallyFragment.SendMessageListener {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -70,7 +72,7 @@ public class ManuallyAddMeasurement extends AppCompatActivity implements View.On
 
     private MeasurementDAO measurementDAO;
 
-//    Fragment to be replaced
+    //    Fragment to be replaced
     private Fragment myFragment;
     private int type = -1;
 
@@ -92,19 +94,19 @@ public class ManuallyAddMeasurement extends AppCompatActivity implements View.On
         intent.getExtras();
 //        get the type of measurement to replace the fragment
         this.type = intent.getExtras().getInt(getResources().getString(R.string.measurementType));
-        if (type == -1){
+        if (type == -1) {
             finish();
-        }else{
-            if (ItemGridType.typeSupported(type)){
+        } else {
+            if (ItemGridType.typeSupported(type)) {
                 replaceFragment(type);
-            }else{
+            } else {
                 finish();
             }
         }
 
     }
 
-    private void initComponents(){
+    private void initComponents() {
 
         calendar = Calendar.getInstance();
         session = new Session(getApplicationContext());
@@ -119,23 +121,23 @@ public class ManuallyAddMeasurement extends AppCompatActivity implements View.On
         int minute = calendar.get(Calendar.MINUTE);
         timePicker = new TimePickerDialog(ManuallyAddMeasurement.this,
                 (view, hourOfDay, minute1) -> {
-            String selectedHour = String.valueOf(hourOfDay)+":"+String.valueOf(minute1);
-            String secondChar = String.valueOf(selectedHour.charAt(1));
+                    String selectedHour = String.valueOf(hourOfDay) + ":" + String.valueOf(minute1);
+                    String secondChar = String.valueOf(selectedHour.charAt(1));
 //            adiciona o 0 para datas com 1 casa decimal
-            if (secondChar.equals(":")){
-                selectedHour = "0"+selectedHour;
-            }
-            if (selectedHour.length() == 4){
-                String firstPart = selectedHour.substring(0,3);
-                firstPart = firstPart+"0";
-                String secondPart = selectedHour.substring(3,4);
-                selectedHour = firstPart+secondPart;
-                Log.d("TESTE","Hora tratada: "+selectedHour);
-            }
-            selectedHour = selectedHour+":00";
-            setDateHour(selectedHour);
-            updateTextHour();
-        },hour, minute, true);//Yes 24 hour time
+                    if (secondChar.equals(":")) {
+                        selectedHour = "0" + selectedHour;
+                    }
+                    if (selectedHour.length() == 4) {
+                        String firstPart = selectedHour.substring(0, 3);
+                        firstPart = firstPart + "0";
+                        String secondPart = selectedHour.substring(3, 4);
+                        selectedHour = firstPart + secondPart;
+                        Log.d("TESTE", "Hora tratada: " + selectedHour);
+                    }
+                    selectedHour = selectedHour + ":00";
+                    setDateHour(selectedHour);
+                    updateTextHour();
+                }, hour, minute, true);//Yes 24 hour time
 
         btnCalendar.setOnClickListener(this);
         btnClock.setOnClickListener(this);
@@ -152,15 +154,15 @@ public class ManuallyAddMeasurement extends AppCompatActivity implements View.On
 
     }
 
-    private void updateTextDate(){
+    private void updateTextDate() {
         btnCalendar.setText(getDateTime());
     }
 
-    private void updateTextHour(){
+    private void updateTextHour() {
         btnClock.setText(getDateHour());
     }
 
-    public void openTimePicker(){
+    public void openTimePicker() {
 
         timePicker.show();
     }
@@ -173,9 +175,9 @@ public class ManuallyAddMeasurement extends AppCompatActivity implements View.On
 
             datePickerDialog = new DatePickerDialog(ManuallyAddMeasurement.this,
                     this, year, month, day);
-        }else{
+        } else {
             datePickerDialog = new DatePickerDialog(ManuallyAddMeasurement.this,
-                    this,yearSelected,monthSelected,daySelected);
+                    this, yearSelected, monthSelected, daySelected);
         }
 
         //Essa parte precisa ser assim pois em algumas versões do android ao setar o max date ele
@@ -205,8 +207,8 @@ public class ManuallyAddMeasurement extends AppCompatActivity implements View.On
     }
 
     //    Here the fragment of the measurement is replaced;
-    public void replaceFragment(int measurementType){
-        switch (measurementType){
+    public void replaceFragment(int measurementType) {
+        switch (measurementType) {
             case ItemGridType.WEIGHT:
 
                 myFragment = new AddWeightManuallyFragment();
@@ -249,7 +251,7 @@ public class ManuallyAddMeasurement extends AppCompatActivity implements View.On
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
                 break;
@@ -260,7 +262,7 @@ public class ManuallyAddMeasurement extends AppCompatActivity implements View.On
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.btnConfirm:
 
                 break;
@@ -288,8 +290,8 @@ public class ManuallyAddMeasurement extends AppCompatActivity implements View.On
 
     @Override
     public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
-        String dateTime = String.valueOf(dayOfMonth)+"/"+String.valueOf(month+1)+"/"
-                +String.valueOf(year);
+        String dateTime = String.valueOf(dayOfMonth) + "/" + String.valueOf(month + 1) + "/"
+                + String.valueOf(year);
         this.yearSelected = year;
         this.monthSelected = month;
         this.daySelected = dayOfMonth;
@@ -301,27 +303,27 @@ public class ManuallyAddMeasurement extends AppCompatActivity implements View.On
         SynchronizationServer.getInstance(this).run();
     }
 
-    private void saveMeasurement(Double value, int type){
+    private void saveMeasurement(Measurement measurement) {
 
         Long dateServer = null;
         String dateTimeSelected = "";
 
 //                quando o usuário não modificou data nem hora
-        if (this.dateTime.equals("") && this.dateHour.equals("")){
+        if (this.dateTime.equals("") && this.dateHour.equals("")) {
             dateServer = DateUtils.getCurrentDatetime();
 
 //                    quando o usuário modificou apenas a hora
-        }else if (this.dateTime.equals("") && !this.dateHour.equals("")){
+        } else if (this.dateTime.equals("") && !this.dateHour.equals("")) {
 
             SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
             Date currentDate = new Date();
             String current = format.format(currentDate);
 
-            dateTimeSelected = current +" "+this.dateHour;
+            dateTimeSelected = current + " " + this.dateHour;
             dateServer = DateUtils.getDateStringInMillis(dateTimeSelected, null);
 
 //                quando o usuário modificou apenas a data
-        }else if (!this.dateTime.equals("") && this.dateHour.equals("")){
+        } else if (!this.dateTime.equals("") && this.dateHour.equals("")) {
 
             SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
             Date currentDate = new Date();
@@ -331,39 +333,19 @@ public class ManuallyAddMeasurement extends AppCompatActivity implements View.On
 
 
 //                                        quando o usuário modificou data e hora
-        }else if (!this.dateTime.equals("") && !this.dateHour.equals("")){
+        } else if (!this.dateTime.equals("") && !this.dateHour.equals("")) {
 
             dateTimeSelected = this.dateTime + " " + this.dateHour;
-            dateServer = DateUtils.getDateStringInMillis(dateTimeSelected,null);
+            dateServer = DateUtils.getDateStringInMillis(dateTimeSelected, null);
 
         }
 
-        String unit = "";
-        switch (type){
-            case MeasurementType.BODY_MASS:
-                unit = getResources().getString(R.string.unit_weight);
-                break;
-            case MeasurementType.BLOOD_GLUCOSE:
-                unit = getResources().getString(R.string.unit_glucose_mg_dL);
-                break;
-            case MeasurementType.BLOOD_PRESSURE_DIASTOLIC :
-                unit = getResources().getString(R.string.unit_pressure);
-                break;
-            case MeasurementType.TEMPERATURE:
-                unit = getResources().getString(R.string.unit_temperature);
-                break;
-            case MeasurementType.HEART_RATE:
-                unit = getResources().getString(R.string.unit_heart_rate);
-                break;
-        }
+        if (dateServer == null && dateTimeSelected.equals("")) return;
 
-        Log.d("TESTE","data enviada para o banco: "+dateTimeSelected);
-        if (dateServer == null || dateTimeSelected.equals("")) return;
+        measurement.setRegistrationDate(dateServer);
 
-        Measurement measurement = new Measurement( value,unit, dateServer,type);
-        measurement.setUser(session.getUserLogged());
-        if (this.measurementDAO.save(measurement)){
-            Log.d("TESTE","Salvo no banco");
+        if (this.measurementDAO.save(measurement)) {
+            Log.d("TESTE", "Salvo no banco !");
             synchronizeWithServer();
         }
     }
@@ -371,15 +353,22 @@ public class ManuallyAddMeasurement extends AppCompatActivity implements View.On
     @Override
     public void onSendMessageWeight(Pair<String, String> data) {
 
-            if (data != null) {
-                //funcao de salvar aqui
-                String weight = data.first + "." + data.second;
-                double value = Double.valueOf(weight);
-                saveMeasurement(value,MeasurementType.BODY_MASS);
-                finish();
-            }else{
-                showToast(getResources().getString(R.string.error_insering_measurement));
-            }
+        if (data != null) {
+            //funcao de salvar aqui
+            String weight = data.first + "." + data.second;
+            double value = Double.valueOf(weight);
+
+            Measurement weightMeasurement = new Measurement();
+            weightMeasurement.setUser(session.getUserLogged());
+            weightMeasurement.setValue(value);
+            weightMeasurement.setTypeId(MeasurementType.BODY_MASS);
+            weightMeasurement.setUnit(getResources().getString(R.string.unit_weight));
+
+            saveMeasurement(weightMeasurement);
+            finish();
+        } else {
+            showToast(getResources().getString(R.string.error_insering_measurement));
+        }
 
     }
 
@@ -387,8 +376,17 @@ public class ManuallyAddMeasurement extends AppCompatActivity implements View.On
     public void onSendMessageGlucose(int glucoseValue, int type) {
         if (glucoseValue != -1) {
             Log.d("TESTE", "Valor da glicose e tipo: " + glucoseValue + " " + type);
-//            inserir funcao de enviar pro servidor aqui
-        }else{
+            double value = Double.valueOf(glucoseValue);
+
+            Measurement glucose = new Measurement();
+            glucose.setUser(session.getUserLogged());
+            glucose.setValue(value);
+            glucose.setTypeId(type);
+            glucose.setUnit(getResources().getString(R.string.unit_glucose_mg_dL));
+
+            saveMeasurement(glucose);
+            finish();
+        } else {
             showToast(getResources().getString(R.string.error_insering_measurement));
         }
     }
@@ -396,31 +394,69 @@ public class ManuallyAddMeasurement extends AppCompatActivity implements View.On
     @Override
     public void onSendMessageHeartRate(int heartBeat) {
         if (heartBeat != -1) {
-            Log.d("TESTE", "Valor do bpm: "+heartBeat);
-//            inserir funcao de enviar pro servidor aqui
-        }else{
+            Log.d("TESTE", "Valor do bpm: " + heartBeat);
+            double value = Double.valueOf(heartBeat);
+
+            Measurement heartMeasurement = new Measurement();
+            heartMeasurement.setUser(session.getUserLogged());
+            heartMeasurement.setValue(heartBeat);
+            heartMeasurement.setTypeId(MeasurementType.HEART_RATE);
+            heartMeasurement.setUnit(getResources().getString(R.string.unit_heart_rate));
+
+            saveMeasurement(heartMeasurement);
+            finish();
+        } else {
             showToast(getResources().getString(R.string.error_insering_measurement));
         }
     }
 
     @Override
     public void onSendMessageTemperature(int temperature) {
-        if (temperature != -1){
-            Log.d("TESTE","Valor da temperatura: "+temperature);
-//            inserir funcao de enviar pro seridor aqui
-        }else{
+        if (temperature != -1) {
+            Log.d("TESTE", "Valor da temperatura: " + temperature);
+            double value = Double.valueOf(temperature);
+
+            Measurement temp = new Measurement();
+            temp.setUser(session.getUserLogged());
+            temp.setTypeId(MeasurementType.TEMPERATURE);
+            temp.setValue(temperature);
+            temp.setUnit(getResources().getString(R.string.unit_temperature));
+
+            saveMeasurement(temp);
+            finish();
+        } else {
             showToast(getResources().getString(R.string.error_insering_measurement));
         }
     }
 
     @Override
     public void onSendMessagePressure(Pair<Integer, Integer> pressure, int pulse) {
-        if (pressure != null && pulse != -1){
-            Log.d("TESTE","Valor da pressao: "+pressure.first+"/"+pressure.second
-                    +" pulse: "+pulse);
-//            inserir funcao de enviar pro seridor aqui
+        if (pressure != null && pulse != -1) {
+            Log.d("TESTE", "Valor da pressao: " + pressure.first + "/" + pressure.second
+                    + " pulse: " + pulse);
+
+            Measurement systolic = new Measurement();
+            systolic.setUser(session.getUserLogged());
+            systolic.setValue(pressure.first);
+            systolic.setTypeId(MeasurementType.BLOOD_PRESSURE_SYSTOLIC);
+            systolic.setUnit(getResources().getString(R.string.unit_pressure));
+
+            Measurement diastolic = new Measurement();
+            diastolic.setUser(session.getUserLogged());
+            diastolic.setValue(pressure.second);
+            diastolic.setTypeId(MeasurementType.BLOOD_PRESSURE_DIASTOLIC);
+
+            Measurement heartRate = new Measurement();
+            heartRate.setValue(pulse);
+            heartRate.setUser(session.getUserLogged());
+            heartRate.setTypeId(MeasurementType.HEART_RATE);
+
+            systolic.addMeasurement(diastolic, heartRate);
+            saveMeasurement(systolic);
+            finish();
             return;
         }
         showToast(getResources().getString(R.string.error_insering_measurement));
     }
+
 }

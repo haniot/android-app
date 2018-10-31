@@ -70,7 +70,7 @@ public class AddBloodPressureManuallyFragment extends Fragment implements View.O
             session.putString("lastPressure2",String.valueOf(this.pressure.second));
             updateTextPressure();
         }catch (NullPointerException e){
-            Log.d("TESTE",e.getMessage());
+            Log.d("TESTE"," Exception no dialog do bloodPressure value pressure"+e.getMessage());
         }
         try{
             this.pulse = this.numberPickerDialogPulse.getData().get(0);
@@ -80,7 +80,7 @@ public class AddBloodPressureManuallyFragment extends Fragment implements View.O
             session.putString("lastPulse",String.valueOf(this.pulse));
         }catch (NullPointerException e){
             this.pulse = -1;
-            Log.d("TESTE",e.getMessage());
+            Log.d("TESTE"," Exception no dialog do bloodPressure value pulse"+e.getMessage());
         }
     }
 
@@ -164,10 +164,14 @@ public class AddBloodPressureManuallyFragment extends Fragment implements View.O
                 add(lastPressure.first);
                 add(lastPressure.second);
             }});
+
         }catch (Exception e){
             Log.d("TESTE",e.getMessage());
         }
-
+        this.numberPickerDialogPressure.setBounds(new ArrayList<Pair<Integer,Integer>>(){{
+            add(new Pair<>(0,180));
+            add(new Pair<>(0,130));
+        }});
         this.numberPickerDialogPressure.setDialogTitle(getResources()
                 .getString(R.string.choose_blood_pressure)+" "+
                 getResources().getString(R.string.unit_glucose_mg_dL));
