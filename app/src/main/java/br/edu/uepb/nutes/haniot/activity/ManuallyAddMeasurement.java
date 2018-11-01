@@ -28,6 +28,7 @@ import br.edu.uepb.nutes.haniot.fragment.AddHeartRateManuallyFragment;
 import br.edu.uepb.nutes.haniot.fragment.AddTemperatureManuallyFragment;
 import br.edu.uepb.nutes.haniot.fragment.AddWeightManuallyFragment;
 import br.edu.uepb.nutes.haniot.model.ContextMeasurement;
+import br.edu.uepb.nutes.haniot.model.ContextMeasurementType;
 import br.edu.uepb.nutes.haniot.model.ContextMeasurementValueType;
 import br.edu.uepb.nutes.haniot.model.Device;
 import br.edu.uepb.nutes.haniot.model.DeviceType;
@@ -135,6 +136,7 @@ public class ManuallyAddMeasurement extends AppCompatActivity implements View.On
                         Log.d("TESTE", "Hora tratada: " + selectedHour);
                     }
                     selectedHour = selectedHour + ":00";
+                    Log.d("TESTE","Hora setada : "+selectedHour);
                     setDateHour(selectedHour);
                     updateTextHour();
                 }, hour, minute, true);//Yes 24 hour time
@@ -320,7 +322,8 @@ public class ManuallyAddMeasurement extends AppCompatActivity implements View.On
             String current = format.format(currentDate);
 
             dateTimeSelected = current + " " + this.dateHour;
-            dateServer = DateUtils.getDateStringInMillis(dateTimeSelected, null);
+            Log.d("TESTE","Modificou a hora para : "+this.dateHour);
+            dateServer = DateUtils.getDateStringInMillis(dateTimeSelected, getResources().getString(R.string.datetime_format));
 
 //                quando o usuário modificou apenas a data
         } else if (!this.dateTime.equals("") && this.dateHour.equals("")) {
@@ -329,14 +332,15 @@ public class ManuallyAddMeasurement extends AppCompatActivity implements View.On
             Date currentDate = new Date();
             String currentHour = format.format(currentDate);
             dateTimeSelected = this.dateTime + " " + currentHour;
-            dateServer = DateUtils.getDateStringInMillis(dateTimeSelected, null);
+            dateServer = DateUtils.getDateStringInMillis(dateTimeSelected,
+                    getResources().getString(R.string.datetime_format));
 
 
 //                                        quando o usuário modificou data e hora
         } else if (!this.dateTime.equals("") && !this.dateHour.equals("")) {
 
             dateTimeSelected = this.dateTime + " " + this.dateHour;
-            dateServer = DateUtils.getDateStringInMillis(dateTimeSelected, null);
+            dateServer = DateUtils.getDateStringInMillis(dateTimeSelected, getResources().getString(R.string.datetime_format));
 
         }
 
@@ -345,7 +349,9 @@ public class ManuallyAddMeasurement extends AppCompatActivity implements View.On
         measurement.setRegistrationDate(dateServer);
 
         if (this.measurementDAO.save(measurement)) {
-            Log.d("TESTE", "Salvo no banco !");
+            Log.d("TESTE", "Salvo no banco o valor: "+measurement.getValue()
+                    +" com a data: "+DateUtils.formatDate(measurement.getRegistrationDate(),getResources().getString(R.string.datetime_format)));
+            Log.d("TESTE","\n "+measurement.toString());
             synchronizeWithServer();
         }
     }
@@ -381,8 +387,11 @@ public class ManuallyAddMeasurement extends AppCompatActivity implements View.On
             Measurement glucose = new Measurement();
             glucose.setUser(session.getUserLogged());
             glucose.setValue(value);
-            glucose.setTypeId(type);
+            glucose.setTypeId(MeasurementType.BLOOD_GLUCOSE);
             glucose.setUnit(getResources().getString(R.string.unit_glucose_mg_dL));
+            if (type == -1) return;
+            glucose.addContext(new ContextMeasurement(ContextMeasurementType.GLUCOSE_MEAL,
+                    type));
 
             saveMeasurement(glucose);
             finish();
