@@ -170,26 +170,26 @@ public class DeviceManagerActivity extends AppCompatActivity {
     }
 
     //returns a device with your image
-    public List<Device> newList(List<Device> list){
+    public List<Device> newList(List<Device> list) {
         List<Device> listDevices = new ArrayList<Device>();
 
-        for(Device devices: list){
-            if(devices.getName().equals("Ear Thermometer ".concat(NUMBER_MODEL_THERM_DL8740))){
+        for (Device devices : list) {
+            if (devices.getName().equals("Ear Thermometer ".concat(NUMBER_MODEL_THERM_DL8740))) {
                 devices.setImg(R.drawable.device_thermometer_philips_dl8740);
                 listDevices.add(devices);
-            }else if(devices.getName().equals("Accu-Chek ".concat(NUMBER_MODEL_GLUCOMETER_PERFORMA))){
+            } else if (devices.getName().equals("Accu-Chek ".concat(NUMBER_MODEL_GLUCOMETER_PERFORMA))) {
                 devices.setImg(R.drawable.device_glucose_accuchek);
                 listDevices.add(devices);
-            }else if(devices.getName().equals("Scale YUNMAI Mini ".concat(NUMBER_MODEL_SCALE_1501))){
+            } else if (devices.getName().equals("Scale YUNMAI Mini ".concat(NUMBER_MODEL_SCALE_1501))) {
                 devices.setImg(R.drawable.device_scale_yunmai_mini_color);
                 listDevices.add(devices);
-            }else if(devices.getName().equals("Heart Rate Sensor ".concat(NUMBER_MODEL_HEART_RATE_H7))){
+            } else if (devices.getName().equals("Heart Rate Sensor ".concat(NUMBER_MODEL_HEART_RATE_H7))) {
                 devices.setImg(R.drawable.device_heart_rate_h7);
                 listDevices.add(devices);
-            }else if(devices.getName().equals("Heart Rate Sensor ".concat(NUMBER_MODEL_HEART_RATE_H10))){
+            } else if (devices.getName().equals("Heart Rate Sensor ".concat(NUMBER_MODEL_HEART_RATE_H10))) {
                 devices.setImg(R.drawable.device_heart_rate_h10);
                 listDevices.add(devices);
-            }else if(devices.getName().equals("Smartband ".concat(NUMBER_MODEL_SMARTBAND_MI2))){
+            } else if (devices.getName().equals("Smartband ".concat(NUMBER_MODEL_SMARTBAND_MI2))) {
                 devices.setImg(R.drawable.device_smartband_miband2);
                 listDevices.add(devices);
             }
@@ -379,10 +379,13 @@ public class DeviceManagerActivity extends AppCompatActivity {
     private void confirmRemoveDeviceRegister(Device device) {
         //Create the AlertDialog generator
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        // sets image title
+        builder.setIcon(R.drawable.ic_action_warning);
         //sets the title
-        builder.setTitle(device.getName());
+        builder.setTitle(R.string.attention);
         //sets the message
-        builder.setMessage(R.string.remove_device);
+        builder.setMessage(getString(R.string.remove_device, device.getName()));
         //define a button how to remove
         builder.setPositiveButton(R.string.remove, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface arg0, int arg1) {

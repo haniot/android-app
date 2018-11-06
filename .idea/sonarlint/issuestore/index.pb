@@ -19,3 +19,5 @@ _
 /app/src/main/res/layout/layout_box_register.xml,4\6\4656307004ef2ea8c67889043168a5ce3c8e8c8d
 _
 /app/src/main/res/layout/layout_box_response.xml,d\6\d67ee0a38cdd41531a2f058e8183bca80bf45671
+S
+#app/src/main/res/values/strings.xml,d\2\d2281fbb3027de2722081a53408dd77628bf080e

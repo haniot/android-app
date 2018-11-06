@@ -1,27 +1,22 @@
 
-osquid:S1192"SDefine a constant instead of duplicating this literal "Heart Rate Sensor " 4 times.(ßÁóÇ8ã‚ûòè,
-zsquid:S2293"YReplace the type specification in this constructor call with the diamond operator ("<>").(ù™ù²ÿÿÿÿÿ8ã‚ûòè,
-psquid:S1450"TRemove the "alert" field and declare it as a local variable in the relevant methods.(ÃğÛ‹8ã‚ûòè,
-Šsquid:S4165"nRemove this useless assignment; "devicesAvailable" already holds the assigned value along all execution paths.(ÀıÍş8ã‚ûòè,
-Bsquid:S1170"!Make this final field static too.(ÉŒãûúÿÿÿÿ8ã‚ûòè,
-=squid:S1170"!Make this final field static too.(ÜÚÅó8ã‚ûòè,
-=squid:S1170"!Make this final field static too.(ÛşñÌ8ã‚ûòè,
-Bsquid:S1170"!Make this final field static too.(‡ØÖÊúÿÿÿÿ8ã‚ûòè,
-=squid:S1170"!Make this final field static too.(‚›¨ç8ã‚ûòè,
-Bsquid:S1170"!Make this final field static too.(èÀ¢©ûÿÿÿÿ8ã‚ûòè,
-Isquid:S1604"(Make this anonymous inner class a lambda(˜ã¯şÿÿÿÿ8ã‚ûòè,
-Dsquid:S1604"(Make this anonymous inner class a lambda(Œâû 8ã‚ûòè,
-Dsquid:S1604"(Make this anonymous inner class a lambda(¸ş®ï8ã‚ûòè,
-Isquid:S1604"(Make this anonymous inner class a lambda(˜ã¯şÿÿÿÿ8ã‚ûòè,
-Isquid:S1604"(Make this anonymous inner class a lambda(œú´£ıÿÿÿÿ8ã‚ûòè,
-Dsquid:S1604"(Make this anonymous inner class a lambda(˜—¡è8ã‚ûòè,
-œsquid:S1186"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(ÿ¥ıI8ã‚ûòè,
-nsquid:S00116"RRename this field "LOG_TAG" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Õ³O8ã‚ûòè,
-†squid:S00116"dRename this field "NUMBER_MODEL_THERM_DL8740" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÉŒãûúÿÿÿÿ8ã‚ûòè,
-ˆsquid:S00116"kRename this field "NUMBER_MODEL_GLUCOMETER_PERFORMA" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÜÚÅó8ã‚ûòè,
-squid:S00116"bRename this field "NUMBER_MODEL_SCALE_1501" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÛşñÌ8ã‚ûòè,
-‡squid:S00116"eRename this field "NUMBER_MODEL_HEART_RATE_H7" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(‡ØÖÊúÿÿÿÿ8ã‚ûòè,
-ƒsquid:S00116"fRename this field "NUMBER_MODEL_HEART_RATE_H10" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(‚›¨ç8ã‚ûòè,
-‡squid:S00116"eRename this field "NUMBER_MODEL_SMARTBAND_MI2" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(èÀ¢©ûÿÿÿÿ8ã‚ûòè,
-Dsquid:S1148"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ8ã‚ûòè,
-psquid:MaximumInheritanceDepth"=This class has 10 parents which is greater than 5 authorized.(´®Äâüÿÿÿÿ8ã‚ûòè,
+osquid:S1192"SDefine a constant instead of duplicating this literal "Heart Rate Sensor " 4 times.(ßÁóÇ8ÕµÄ´ê,
+zsquid:S2293"YReplace the type specification in this constructor call with the diamond operator ("<>").(ù™ù²ÿÿÿÿÿ8ÕµÄ´ê,
+psquid:S1450"TRemove the "alert" field and declare it as a local variable in the relevant methods.(ÃğÛ‹8ÕµÄ´ê,
+Šsquid:S4165"nRemove this useless assignment; "devicesAvailable" already holds the assigned value along all execution paths.(ÀıÍş8ÕµÄ´ê,
+Bsquid:S1170"!Make this final field static too.(ÉŒãûúÿÿÿÿ8ÕµÄ´ê,
+=squid:S1170"!Make this final field static too.(ÜÚÅó8ÕµÄ´ê,
+=squid:S1170"!Make this final field static too.(ÛşñÌ8ÕµÄ´ê,
+Bsquid:S1170"!Make this final field static too.(‡ØÖÊúÿÿÿÿ8ÕµÄ´ê,
+=squid:S1170"!Make this final field static too.(‚›¨ç8ÕµÄ´ê,
+Bsquid:S1170"!Make this final field static too.(èÀ¢©ûÿÿÿÿ8ÕµÄ´ê,
+Isquid:S1604"(Make this anonymous inner class a lambda(˜ã¯şÿÿÿÿ8ÕµÄ´ê,
+Isquid:S1604"(Make this anonymous inner class a lambda(˜ã¯şÿÿÿÿ8ÕµÄ´ê,
+œsquid:S1186"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(ÿ¥ıI8ÕµÄ´ê,
+nsquid:S00116"RRename this field "LOG_TAG" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Õ³O8ÕµÄ´ê,
+†squid:S00116"dRename this field "NUMBER_MODEL_THERM_DL8740" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÉŒãûúÿÿÿÿ8ÕµÄ´ê,
+ˆsquid:S00116"kRename this field "NUMBER_MODEL_GLUCOMETER_PERFORMA" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÜÚÅó8ÕµÄ´ê,
+squid:S00116"bRename this field "NUMBER_MODEL_SCALE_1501" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÛşñÌ8ÕµÄ´ê,
+‡squid:S00116"eRename this field "NUMBER_MODEL_HEART_RATE_H7" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(‡ØÖÊúÿÿÿÿ8ÕµÄ´ê,
+ƒsquid:S00116"fRename this field "NUMBER_MODEL_HEART_RATE_H10" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(‚›¨ç8ÕµÄ´ê,
+‡squid:S00116"eRename this field "NUMBER_MODEL_SMARTBAND_MI2" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(èÀ¢©ûÿÿÿÿ8ÕµÄ´ê,
+osquid:MaximumInheritanceDepth"<This class has 7 parents which is greater than 5 authorized.(´®Äâüÿÿÿÿ8ÕµÄ´ê,

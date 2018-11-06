@@ -254,7 +254,7 @@
     <string name="title_devices_available">Disponíveis</string>
     <string name="thermometer">Termometro</string>
     <string name="find_device">Localizar Dispositivo</string>
-    <string name="remove_device">Deseja remover este dispositivo da sua lista ?</string>
+    <string name="remove_device">Deseja remover o %s da sua lista ?</string>
     <string name="remove">Remover</string>
     <string name="cancelar">Cancelar</string>
     <string name="start_scanner">Iniciar scanner</string>
@@ -267,5 +267,6 @@
     <string name="device_registered_success">Dispositivo %s cadastrado com sucesso!</string>
     <string name="connection">Conectando, segure o telefone perto do dispositivo</string>
     <string name="come_back">Voltar</string>
+    <string name="attention">Atenção</string>
 
 </resources>

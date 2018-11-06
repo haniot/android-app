@@ -545,7 +545,7 @@
     <string name="title_devices_available">Availables</string>
     <string name="thermometer">Thermometer</string>
     <string name="find_device">Find device</string>
-    <string name="remove_device">Do you want to remove this device from your list?</string>
+    <string name="remove_device">Do you want to remove the %s from your list?</string>
     <string name="remove">Remove</string>
     <string name="cancel">Cancel</string>
     <string name="start_scanner">Start scanner</string>
@@ -558,6 +558,7 @@
     <string name="device_registered_success">Device %s successfully registered!</string>
     <string name="connection">By connecting, hold the phone near the</string>
     <string name="come_back">Come back</string>
+    <string name="attention">Attention</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
