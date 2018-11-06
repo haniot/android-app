@@ -2,6 +2,7 @@ package br.edu.uepb.nutes.haniot.activity;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.Fragment;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -22,12 +23,20 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.account.LoginActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.SettingsActivity;
 import br.edu.uepb.nutes.haniot.adapter.FragmentPageAdapter;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
+import br.edu.uepb.nutes.haniot.fragment.DashboardChartsFragment;
+import br.edu.uepb.nutes.haniot.model.DateEvent;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
+import br.edu.uepb.nutes.haniot.utils.Log;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -38,7 +47,7 @@ import butterknife.ButterKnife;
  * @version 1.0
  * @copyright Copyright (c) 2017, NUTES UEPB
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements DashboardChartsFragment.SendDateListener{
     private final String TAG = "MainActivity";
     private final int REQUEST_ENABLE_BLUETOOTH = 1;
     private final int REQUEST_ENABLE_LOCATION = 2;
@@ -47,6 +56,8 @@ public class MainActivity extends AppCompatActivity {
     private String id = "";
     private String lastNameSelected = "";
     private Session session;
+
+    private EventBus _eventBus;
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -76,11 +87,25 @@ public class MainActivity extends AppCompatActivity {
 
         checkLastChildAndUpdateTabTitle();
 
+        _eventBus = EventBus.getDefault();
+
         newMeasureButton.setOnClickListener(v -> {
           Intent it = new Intent(this, SettingsActivity.class);
             it.putExtra("settingType",2);
             startActivity(it);
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        _eventBus.register(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        _eventBus.unregister(this);
     }
 
     @Override
@@ -95,6 +120,7 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }
         checkLastChildAndUpdateTabTitle();
+        _eventBus.register(this);
     }
 
     /* Test if there is some children saved on bundle or on shared preferences
@@ -253,4 +279,12 @@ public class MainActivity extends AppCompatActivity {
         this.finishAffinity();
         System.exit(0);
     }
+
+    @Override
+    public void onSendDate(String date) {
+        Log.d("TESTE","Data: "+date);
+        session.putString("LastDate",date);
+        EventBus.getDefault().post(new DateEvent(date));
+    }
+
 }

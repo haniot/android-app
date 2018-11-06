@@ -1,5 +1,6 @@
 package br.edu.uepb.nutes.haniot.fragment;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -33,10 +34,12 @@ import br.edu.uepb.nutes.haniot.server.historical.Historical;
 import br.edu.uepb.nutes.haniot.server.historical.HistoricalType;
 import br.edu.uepb.nutes.haniot.server.historical.Params;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
+import br.edu.uepb.nutes.haniot.utils.Log;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class DashboardChartsFragment extends Fragment implements View.OnClickListener, DatePickerDialog.OnDateSetListener {
+public class DashboardChartsFragment extends Fragment implements View.OnClickListener,
+        DatePickerDialog.OnDateSetListener {
 
     @BindView(R.id.textDate)
     TextView textDate;
@@ -82,6 +85,11 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
     private String childId = "";
 
     private String[] measurementTypeArray;
+    private SendDateListener mListener;
+
+    public interface SendDateListener{
+        void onSendDate(String date);
+    }
 
     public DashboardChartsFragment() {
         // Required empty public constructor
@@ -308,6 +316,7 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
             btnArrowRight.setBackground(getResources().getDrawable(R.mipmap.ic_arrow_right_disabled));
         }
 
+        setupListener();
         return calendar.getTime();
     }
 
@@ -325,6 +334,7 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
         calendar.add(Calendar.DATE, -1);
         this.date = simpleDateFormat.format(calendar.getTime());
 
+        setupListener();
         return calendar.getTime();
     }
 
@@ -341,6 +351,7 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
         scale = AnimationUtils.loadAnimation(getContext(), R.anim.click);
 
         calendarAux = Calendar.getInstance();
+        setupListener();
 
         //Seta o progresso máximo
         stepsProgressBar.setProgressMax(highProgressBarGoal);
@@ -366,11 +377,6 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
             textDistance.setText(distanceKm + getResources().getString(R.string.unit_kilometer));
         }
 
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
     }
 
     //Anims for buttons and textview of date
@@ -455,6 +461,29 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
 
     public String getToday() {
         return this.today;
+    }
+
+    private void setupListener(){
+
+        if (mListener != null){
+            Log.d("TESTE","Setando data: "+this.calendar.getTime().toString());
+            mListener.onSendDate(this.calendar.getTime().toString());
+        }else{
+            Log.d("TESTE","Listener charts null");
+        }
+
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try{
+            mListener = (SendDateListener)activity;
+            Log.d("TESTE","Listener setado: "+mListener);
+        }catch (ClassCastException e){
+            Log.d("TESTE",e.getMessage()+" must implement " +
+                    "sendDateListener on charts fragment");
+        }
     }
 
     @Override

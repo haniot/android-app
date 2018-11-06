@@ -20,10 +20,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.greenrobot.eventbus.Subscribe;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.activity.MainActivity;
 import br.edu.uepb.nutes.haniot.activity.ManuallyAddMeasurement;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.GridDashAdapter;
@@ -33,12 +36,13 @@ import br.edu.uepb.nutes.haniot.devices.HeartRateActivity;
 import br.edu.uepb.nutes.haniot.devices.ScaleActivity;
 import br.edu.uepb.nutes.haniot.devices.ThermometerActivity;
 import br.edu.uepb.nutes.haniot.devices.hdp.BloodPressureHDPActivity;
+import br.edu.uepb.nutes.haniot.model.DateEvent;
 import br.edu.uepb.nutes.haniot.model.ItemGrid;
 import br.edu.uepb.nutes.haniot.model.ItemGridType;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class DashMeasurementsGridFragment extends Fragment implements OnRecyclerViewListener<ItemGrid> {
+public class DashMeasurementsGridFragment extends Fragment implements OnRecyclerViewListener<ItemGrid>{
 
     //List of items that will be placed in grid;
     private List<Integer> iconList = new ArrayList<>();
@@ -62,6 +66,8 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
     private String weight = "";
     private String sleep = "";
     private String heartRate = "";
+
+    private ArrayList<String> measurements = new ArrayList<>();
 
     private String deviceTypeTag;
 
@@ -118,6 +124,12 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
         this.weight = getResources().getString(R.string.weight);
         this.sleep = getResources().getString(R.string.sleep);
         this.heartRate = getResources().getString(R.string.heart_rate);
+
+        String lastDate = session.getString("LastDate");
+        if (lastDate != null){
+            Log.d("TESTE","Tem argumentos: "+lastDate);
+        }
+
     }
 
     // Add button on the list of the grid
@@ -144,7 +156,6 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        initComponents();
     }
 
     private void initComponents() {
@@ -172,6 +183,12 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
         gridMeasurement.setAdapter(mAdapter);
     }
 
+    private void getMeasurementsFromServer(){
+        for (ItemGrid item : buttonList){
+            Log.d("TESTE",item.getMeasurementInitials());
+        }
+    }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -181,7 +198,7 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
     @Override
     public void onResume() {
         super.onResume();
-        updateGrid();
+        initComponents();
     }
 
     public int calculateNoOfColumns(Context context) {
@@ -253,13 +270,14 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
                             iconList.get(i),
                             descriptionList.get(i),
                             nameList.get(i),
-                            "120",
+                            "--",
                             itemType);
                 }else{
                     return;
                 }
             }
         }
+//        getMeasurementsFromServer();
         mAdapter.clearItems();
         mAdapter.addItems(buttonList);
     }
@@ -275,11 +293,6 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
         else if (measurement.equals(sleep)) return ItemGridType.SLEEP;
         else if (measurement.equals(heartRate)) return ItemGridType.HEART_RATE;
         return -1;
-    }
-
-    //Getting data from server
-    public String getLastMeasurement(String measurementType) {
-        return null;
     }
 
     //    Method used to get the preferences of sharedpreference screen
@@ -378,4 +391,10 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
         }
 
     }
+
+    @Subscribe
+    public void teste(DateEvent e){
+        Log.d("TESTE","Recebi: "+e.getDate());
+    }
+
 }

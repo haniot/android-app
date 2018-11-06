@@ -75,5 +75,8 @@ dependencies {
 
     // NUMBER PICKER
     implementation 'com.shawnlin:number-picker:2.4.6'
+
+    // EVENT BUS
+    implementation 'org.greenrobot:eventbus:3.0.0'
 }
 apply plugin: 'com.google.gms.google-services'

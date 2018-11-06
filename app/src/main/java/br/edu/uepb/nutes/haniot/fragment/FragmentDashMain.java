@@ -11,10 +11,11 @@ import android.widget.FrameLayout;
 
 import br.edu.uepb.nutes.haniot.R;
 
+import br.edu.uepb.nutes.haniot.utils.Log;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class FragmentDashMain extends Fragment {
+public class FragmentDashMain extends Fragment implements DashboardChartsFragment.SendDateListener{
 
     private OnFragmentInteractionListener mListener;
 
@@ -32,20 +33,6 @@ public class FragmentDashMain extends Fragment {
 
     public FragmentDashMain() {
         // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment FragmentDashMain.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static FragmentDashMain newInstance(String param1, String param2) {
-        FragmentDashMain fragment = new FragmentDashMain();
-        return fragment;
     }
 
     @Override
@@ -104,6 +91,18 @@ public class FragmentDashMain extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onSendDate(String date) {
+        Log.d("TESTE","Data: "+date);
+        fragmentDash2 = new DashMeasurementsGridFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("date",date);
+
+        fragmentDash2.setArguments(bundle);
+        getFragmentManager().beginTransaction().replace(R.id.frame2, this.fragmentDash2, fragmentDash2.getTag())
+                .commit();
     }
 
     public interface OnFragmentInteractionListener {

@@ -174,7 +174,7 @@ public class AddBloodPressureManuallyFragment extends Fragment implements View.O
         }});
         this.numberPickerDialogPressure.setDialogTitle(getResources()
                 .getString(R.string.choose_blood_pressure)+" "+
-                getResources().getString(R.string.unit_glucose_mg_dL));
+                getResources().getString(R.string.unit_pressure));
         this.numberPickerDialogPressure.create(getContext(),this,2);
     }
 

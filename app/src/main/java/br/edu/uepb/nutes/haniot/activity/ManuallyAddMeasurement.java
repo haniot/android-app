@@ -56,10 +56,6 @@ public class ManuallyAddMeasurement extends AppCompatActivity implements View.On
     AppCompatButton btnCalendar;
     @BindView(R.id.btnClock)
     AppCompatButton btnClock;
-//    @BindView(R.id.btnConfirm)
-//    AppCompatButton btnConfirm;
-//    @BindView(R.id.btnCancel)
-//    AppCompatButton btnCancel;
 
     private TimePickerDialog timePicker;
     private DatePickerDialog datePickerDialog;
@@ -149,7 +145,7 @@ public class ManuallyAddMeasurement extends AppCompatActivity implements View.On
 
         Date currentDate = calendar.getTime();
         DateFormat format = new SimpleDateFormat(
-                getResources().getString(R.string.time_format_simple));
+                getResources().getString(R.string.time_format));
         String formatted = format.format(currentDate);
         btnClock.setText(formatted);
         measurementDAO = MeasurementDAO.getInstance(this);
@@ -393,6 +389,7 @@ public class ManuallyAddMeasurement extends AppCompatActivity implements View.On
             glucose.addContext(new ContextMeasurement(ContextMeasurementType.GLUCOSE_MEAL,
                     type));
 
+            Log.d("TESTE",glucose.toString());
             saveMeasurement(glucose);
             finish();
         } else {
