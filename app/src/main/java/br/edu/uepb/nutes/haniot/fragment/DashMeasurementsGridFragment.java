@@ -20,9 +20,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
@@ -68,6 +73,7 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
     private String heartRate = "";
 
     private ArrayList<String> measurements = new ArrayList<>();
+    private String measurementDate = "";
 
     private String deviceTypeTag;
 
@@ -124,12 +130,12 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
         this.weight = getResources().getString(R.string.weight);
         this.sleep = getResources().getString(R.string.sleep);
         this.heartRate = getResources().getString(R.string.heart_rate);
+        Calendar calendar = Calendar.getInstance();
+        Date date = calendar.getTime();
+        SimpleDateFormat spn = new SimpleDateFormat(getResources().getString(R.string.date_format));
 
-        String lastDate = session.getString("LastDate");
-        if (lastDate != null){
-            Log.d("TESTE","Tem argumentos: "+lastDate);
-        }
-
+        this.measurementDate = spn.format(date);
+        Log.d("TESTE","Initial date: "+this.measurementDate);
     }
 
     // Add button on the list of the grid
@@ -392,8 +398,21 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
 
     }
 
-    @Subscribe
-    public void teste(DateEvent e){
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void updateDate(DateEvent e){
+        this.measurementDate = e.getDate();
         Log.d("TESTE","Recebi: "+e.getDate());
     }
 

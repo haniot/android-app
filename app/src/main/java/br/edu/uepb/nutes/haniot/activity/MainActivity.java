@@ -28,6 +28,8 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.text.SimpleDateFormat;
+
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.account.LoginActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.SettingsActivity;
@@ -36,6 +38,7 @@ import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.fragment.DashboardChartsFragment;
 import br.edu.uepb.nutes.haniot.model.DateEvent;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
+import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import br.edu.uepb.nutes.haniot.utils.Log;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -58,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
     private Session session;
 
     private EventBus _eventBus;
+    private String date;
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -120,7 +124,6 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
             finish();
         }
         checkLastChildAndUpdateTabTitle();
-        _eventBus.register(this);
     }
 
     /* Test if there is some children saved on bundle or on shared preferences
@@ -282,9 +285,14 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
 
     @Override
     public void onSendDate(String date) {
-        Log.d("TESTE","Data: "+date);
         session.putString("LastDate",date);
+        this.date = date;
         EventBus.getDefault().post(new DateEvent(date));
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onDateChanged(DateEvent event){
+
     }
 
 }

@@ -466,8 +466,11 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
     private void setupListener(){
 
         if (mListener != null){
-            Log.d("TESTE","Setando data: "+this.calendar.getTime().toString());
-            mListener.onSendDate(this.calendar.getTime().toString());
+            SimpleDateFormat spn = new SimpleDateFormat(getResources()
+                    .getString(R.string.date_format));
+
+
+            mListener.onSendDate(spn.format(calendar.getTime()));
         }else{
             Log.d("TESTE","Listener charts null");
         }
@@ -479,7 +482,6 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
         super.onAttach(activity);
         try{
             mListener = (SendDateListener)activity;
-            Log.d("TESTE","Listener setado: "+mListener);
         }catch (ClassCastException e){
             Log.d("TESTE",e.getMessage()+" must implement " +
                     "sendDateListener on charts fragment");
@@ -510,6 +512,8 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
          */
         ((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE))
                 .showSoftInput(textDate, InputMethodManager.SHOW_IMPLICIT);
+        setupListener();
+
     }
 
 }

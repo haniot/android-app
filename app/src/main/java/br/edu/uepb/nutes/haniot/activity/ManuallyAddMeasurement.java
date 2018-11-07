@@ -386,8 +386,7 @@ public class ManuallyAddMeasurement extends AppCompatActivity implements View.On
             glucose.setTypeId(MeasurementType.BLOOD_GLUCOSE);
             glucose.setUnit(getResources().getString(R.string.unit_glucose_mg_dL));
             if (type == -1) return;
-            glucose.addContext(new ContextMeasurement(ContextMeasurementType.GLUCOSE_MEAL,
-                    type));
+            glucose.addContext(new ContextMeasurement(type, ContextMeasurementType.GLUCOSE_MEAL));
 
             Log.d("TESTE",glucose.toString());
             saveMeasurement(glucose);
