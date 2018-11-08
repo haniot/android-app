@@ -50,7 +50,7 @@ import butterknife.ButterKnife;
  * @version 1.0
  * @copyright Copyright (c) 2017, NUTES UEPB
  */
-public class MainActivity extends AppCompatActivity implements DashboardChartsFragment.SendDateListener{
+public class MainActivity extends AppCompatActivity {
     private final String TAG = "MainActivity";
     private final int REQUEST_ENABLE_BLUETOOTH = 1;
     private final int REQUEST_ENABLE_LOCATION = 2;
@@ -59,9 +59,6 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
     private String id = "";
     private String lastNameSelected = "";
     private Session session;
-
-    private EventBus _eventBus;
-    private String date;
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -91,25 +88,12 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
 
         checkLastChildAndUpdateTabTitle();
 
-        _eventBus = EventBus.getDefault();
 
         newMeasureButton.setOnClickListener(v -> {
           Intent it = new Intent(this, SettingsActivity.class);
             it.putExtra("settingType",2);
             startActivity(it);
         });
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        _eventBus.register(this);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        _eventBus.unregister(this);
     }
 
     @Override
@@ -281,18 +265,6 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
         super.onBackPressed();
         this.finishAffinity();
         System.exit(0);
-    }
-
-    @Override
-    public void onSendDate(String date) {
-        session.putString("LastDate",date);
-        this.date = date;
-        EventBus.getDefault().post(new DateEvent(date));
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onDateChanged(DateEvent event){
-
     }
 
 }

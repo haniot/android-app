@@ -18,6 +18,9 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.DatePicker;
 import android.widget.TextView;
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 import org.json.JSONObject;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -27,6 +30,7 @@ import java.util.List;
 import java.util.Locale;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
+import br.edu.uepb.nutes.haniot.model.DateEvent;
 import br.edu.uepb.nutes.haniot.model.Measurement;
 import br.edu.uepb.nutes.haniot.model.MeasurementType;
 import br.edu.uepb.nutes.haniot.server.historical.CallbackHistorical;
@@ -85,11 +89,8 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
     private String childId = "";
 
     private String[] measurementTypeArray;
-    private SendDateListener mListener;
 
-    public interface SendDateListener{
-        void onSendDate(String date);
-    }
+    private EventBus _eventBus;
 
     public DashboardChartsFragment() {
         // Required empty public constructor
@@ -118,6 +119,8 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
         } else {
             this.date = simpleDateFormat.format(calendar.getTime());
         }
+
+        _eventBus = EventBus.getDefault();
     }
 
     //This method is used when the user turn the screen
@@ -198,6 +201,23 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
             caloriesProgressBar.setEnabled(false);
             distanceProgressBar.setEnabled(false);
         }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        _eventBus.register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        _eventBus.unregister(this);
+    }
+
+    @Subscribe
+    public void onDateChanged(DateEvent e){
+        Log.d("TESTE","Evento ??");
     }
 
     @Override
@@ -316,7 +336,8 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
             btnArrowRight.setBackground(getResources().getDrawable(R.mipmap.ic_arrow_right_disabled));
         }
 
-        setupListener();
+//        setupListener();
+        postEvent(new DateEvent(getSelectedData()));
         return calendar.getTime();
     }
 
@@ -334,7 +355,8 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
         calendar.add(Calendar.DATE, -1);
         this.date = simpleDateFormat.format(calendar.getTime());
 
-        setupListener();
+//        setupListener();
+        postEvent(new DateEvent(getSelectedData()));
         return calendar.getTime();
     }
 
@@ -351,7 +373,9 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
         scale = AnimationUtils.loadAnimation(getContext(), R.anim.click);
 
         calendarAux = Calendar.getInstance();
-        setupListener();
+//        setupListener();
+
+        postEvent(new DateEvent(getSelectedData()));
 
         //Seta o progresso máximo
         stepsProgressBar.setProgressMax(highProgressBarGoal);
@@ -463,29 +487,14 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
         return this.today;
     }
 
-    private void setupListener(){
-
-        if (mListener != null){
-            SimpleDateFormat spn = new SimpleDateFormat(getResources()
-                    .getString(R.string.date_format));
-
-
-            mListener.onSendDate(spn.format(calendar.getTime()));
-        }else{
-            Log.d("TESTE","Listener charts null");
-        }
-
+    private void postEvent(Object event){
+        EventBus.getDefault().post(event);
     }
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        try{
-            mListener = (SendDateListener)activity;
-        }catch (ClassCastException e){
-            Log.d("TESTE",e.getMessage()+" must implement " +
-                    "sendDateListener on charts fragment");
-        }
+    private String getSelectedData(){
+        SimpleDateFormat spn = new SimpleDateFormat(getResources()
+                .getString(R.string.date_format));
+        return spn.format(calendar.getTime());
     }
 
     @Override
@@ -512,7 +521,9 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
          */
         ((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE))
                 .showSoftInput(textDate, InputMethodManager.SHOW_IMPLICIT);
-        setupListener();
+//        setupListener();
+
+        postEvent(new DateEvent(getSelectedData()));
 
     }
 

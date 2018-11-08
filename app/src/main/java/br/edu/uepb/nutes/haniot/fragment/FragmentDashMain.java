@@ -15,7 +15,7 @@ import br.edu.uepb.nutes.haniot.utils.Log;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class FragmentDashMain extends Fragment implements DashboardChartsFragment.SendDateListener{
+public class FragmentDashMain extends Fragment{
 
     private OnFragmentInteractionListener mListener;
 
@@ -91,18 +91,6 @@ public class FragmentDashMain extends Fragment implements DashboardChartsFragmen
     public void onDetach() {
         super.onDetach();
         mListener = null;
-    }
-
-    @Override
-    public void onSendDate(String date) {
-        Log.d("TESTE","Data: "+date);
-        fragmentDash2 = new DashMeasurementsGridFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString("date",date);
-
-        fragmentDash2.setArguments(bundle);
-        getFragmentManager().beginTransaction().replace(R.id.frame2, this.fragmentDash2, fragmentDash2.getTag())
-                .commit();
     }
 
     public interface OnFragmentInteractionListener {
