@@ -3,9 +3,7 @@ package br.edu.uepb.nutes.haniot.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
@@ -13,7 +11,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,9 +28,7 @@ import java.util.Date;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.activity.MainActivity;
 import br.edu.uepb.nutes.haniot.activity.ManuallyAddMeasurement;
-import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.GridDashAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
 import br.edu.uepb.nutes.haniot.devices.GlucoseActivity;
@@ -56,7 +51,6 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
     private List<Boolean> listaSwitchPressionados = new ArrayList<>();
 
     private List<ItemGrid> buttonList = new ArrayList<>();
-    private Session session;
     private Context mContext;
     private GridDashAdapter mAdapter;
 
@@ -91,7 +85,6 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        session = new Session(mContext);
 
         PreferenceManager.setDefaultValues(
                 getActivity(), R.xml.pref_manage_measurements, false);

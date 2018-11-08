@@ -1,6 +1,5 @@
 package br.edu.uepb.nutes.haniot.fragment;
 
-import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -216,9 +215,7 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
     }
 
     @Subscribe
-    public void onDateChanged(DateEvent e){
-        Log.d("TESTE","Evento ??");
-    }
+    public void onDateChanged(DateEvent e){ }
 
     @Override
     public void onResume() {
@@ -336,7 +333,6 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
             btnArrowRight.setBackground(getResources().getDrawable(R.mipmap.ic_arrow_right_disabled));
         }
 
-//        setupListener();
         postEvent(new DateEvent(getSelectedData()));
         return calendar.getTime();
     }
@@ -355,7 +351,6 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
         calendar.add(Calendar.DATE, -1);
         this.date = simpleDateFormat.format(calendar.getTime());
 
-//        setupListener();
         postEvent(new DateEvent(getSelectedData()));
         return calendar.getTime();
     }
@@ -373,7 +368,6 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
         scale = AnimationUtils.loadAnimation(getContext(), R.anim.click);
 
         calendarAux = Calendar.getInstance();
-//        setupListener();
 
         postEvent(new DateEvent(getSelectedData()));
 
@@ -521,7 +515,6 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
          */
         ((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE))
                 .showSoftInput(textDate, InputMethodManager.SHOW_IMPLICIT);
-//        setupListener();
 
         postEvent(new DateEvent(getSelectedData()));
 
