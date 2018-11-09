@@ -36,6 +36,7 @@ import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.DeviceAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
 import br.edu.uepb.nutes.haniot.model.Device;
+import br.edu.uepb.nutes.haniot.model.DeviceType;
 import br.edu.uepb.nutes.haniot.model.dao.DeviceDAO;
 import br.edu.uepb.nutes.haniot.server.Server;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
@@ -90,7 +91,6 @@ public class DeviceManagerActivity extends AppCompatActivity {
     private DeviceAdapter mAdapterDeviceRegistered;
 
     private DeviceDAO mDeviceDAO;
-    private AlertDialog alert;
     private Device mDevice;
 
     @Override
@@ -204,18 +204,15 @@ public class DeviceManagerActivity extends AppCompatActivity {
      * @param show boolean
      */
     private void displayLoading(boolean show) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (show) {
-                    mBoxDevicesRegistered.setVisibility(View.GONE);
-                    mBoxDevicesAvailable.setVisibility(View.GONE);
-                    mProgressBar.setVisibility(View.VISIBLE);
-                } else {
-                    mBoxDevicesRegistered.setVisibility(View.VISIBLE);
-                    mBoxDevicesAvailable.setVisibility(View.VISIBLE);
-                    mProgressBar.setVisibility(View.GONE);
-                }
+        runOnUiThread(() -> {
+            if (show) {
+                mBoxDevicesRegistered.setVisibility(View.GONE);
+                mBoxDevicesAvailable.setVisibility(View.GONE);
+                mProgressBar.setVisibility(View.VISIBLE);
+            } else {
+                mBoxDevicesRegistered.setVisibility(View.VISIBLE);
+                mBoxDevicesAvailable.setVisibility(View.VISIBLE);
+                mProgressBar.setVisibility(View.GONE);
             }
         });
     }
@@ -255,12 +252,9 @@ public class DeviceManagerActivity extends AppCompatActivity {
                 new LinearLayoutManager(this).getOrientation())
         );
 
-        mAdapterDeviceRegistered.setListener(new OnRecyclerViewListener<Device>() {
-            @Override
-            public void onItemClick(Device item) {
-                Log.w(LOG_TAG, "onItemClick()" + item);
-                confirmRemoveDeviceRegister(item);
-            }
+        mAdapterDeviceRegistered.setListener((OnRecyclerViewListener<Device>) item -> {
+            Log.w(LOG_TAG, "onItemClick()" + item);
+            confirmRemoveDeviceRegister(item);
         });
         mRegisteredRecyclerView.setAdapter(mAdapterDeviceRegistered);
     }
@@ -278,12 +272,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
                 new LinearLayoutManager(this).getOrientation())
         );
 
-        mAdapterDeviceAvailable.setListener(new OnRecyclerViewListener<Device>() {
-            @Override
-            public void onItemClick(Device item) {
-                openRegister(item);
-            }
-        });
+        mAdapterDeviceAvailable.setListener((OnRecyclerViewListener<Device>) item -> openRegister(item));
         mAvailableRecyclerView.setAdapter(mAdapterDeviceAvailable);
     }
 
@@ -296,14 +285,11 @@ public class DeviceManagerActivity extends AppCompatActivity {
         mAdapterDeviceRegistered.clearItems();
         mAdapterDeviceRegistered.addItems(devicesRegistered);
 
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (devicesRegistered.isEmpty()) {
-                    mNoRegisteredDevices.setVisibility(View.VISIBLE);
-                } else {
-                    mNoRegisteredDevices.setVisibility(View.GONE);
-                }
+        runOnUiThread(() -> {
+            if (devicesRegistered.isEmpty()) {
+                mNoRegisteredDevices.setVisibility(View.VISIBLE);
+            } else {
+                mNoRegisteredDevices.setVisibility(View.GONE);
             }
         });
     }
@@ -318,27 +304,27 @@ public class DeviceManagerActivity extends AppCompatActivity {
 
         devicesAvailable.add(new Device("Ear Thermometer ".concat(NUMBER_MODEL_THERM_DL8740),
                 "Philips", NUMBER_MODEL_THERM_DL8740,
-                R.drawable.device_thermometer_philips_dl8740));
+                R.drawable.device_thermometer_philips_dl8740, DeviceType.THERMOMETER));
 
         devicesAvailable.add(new Device("Accu-Chek ".concat(NUMBER_MODEL_GLUCOMETER_PERFORMA),
                 "Accu-Chek", NUMBER_MODEL_GLUCOMETER_PERFORMA,
-                R.drawable.device_glucose_accuchek));
+                R.drawable.device_glucose_accuchek, DeviceType.GLUCOMETER));
 
         devicesAvailable.add(new Device("Scale YUNMAI Mini ".concat(NUMBER_MODEL_SCALE_1501),
                 "Yunmai", NUMBER_MODEL_SCALE_1501,
-                R.drawable.device_scale_yunmai_mini_color));
+                R.drawable.device_scale_yunmai_mini_color, DeviceType.BODY_COMPOSITION));
 
         devicesAvailable.add(new Device("Heart Rate Sensor ".concat(NUMBER_MODEL_HEART_RATE_H7),
                 "Polar", NUMBER_MODEL_HEART_RATE_H7,
-                R.drawable.device_heart_rate_h7));
+                R.drawable.device_heart_rate_h7, DeviceType.HEART_RATE));
 
         devicesAvailable.add(new Device("Heart Rate Sensor ".concat(NUMBER_MODEL_HEART_RATE_H10),
                 "Polar", NUMBER_MODEL_HEART_RATE_H10,
-                R.drawable.device_heart_rate_h10));
+                R.drawable.device_heart_rate_h10, DeviceType.HEART_RATE));
 
         devicesAvailable.add(new Device("Smartband ".concat(NUMBER_MODEL_SMARTBAND_MI2),
                 "Xiaomi", NUMBER_MODEL_SMARTBAND_MI2,
-                R.drawable.device_smartband_miband2));
+                R.drawable.device_smartband_miband2, DeviceType.SMARTBAND));
 
 
         devicesAvailable = mergeDevicesAvailableRegistered(devicesRegistered, devicesAvailable);
@@ -377,6 +363,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
 
     @SuppressLint("ResourceType")
     private void confirmRemoveDeviceRegister(Device device) {
+        AlertDialog alert;
         //Create the AlertDialog generator
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
@@ -396,6 +383,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
         //define a button how to cancel.
         builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface arg0, int arg1) {
+                return;
             }
         });
         //create the AlertDialog

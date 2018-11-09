@@ -11,10 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.text.Layout;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,10 +24,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
@@ -66,10 +67,6 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     private DeviceDAO mDeviceDAO;
     private Server server;
     private Session session;
-    //private ActionBar mActionBar;
-
-//    @BindView(R.id.toolbar)
-//    Toolbar mToolbar;
 
     @BindView(R.id.box_scanner)
     FrameLayout boxScanner;
@@ -121,7 +118,6 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         setContentView(R.layout.activity_device_register);
         ButterKnife.bind(this);
 
-
         initComponents();
 
         server = Server.getInstance(this);
@@ -137,11 +133,10 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
 
         //Initialize scanner settings
         mScanner = new SimpleBleScanner.Builder()
-                .addFilterServiceUuid(getServiceUuidDevice(mDevice.getName()))
                 .addScanPeriod(15000) // 15s
+                .addFilterServiceUuid(getServiceUuidDevice(mDevice.getName()))
                 .build();
     }
-
 
     //start scanner library ble
     @Override
@@ -262,25 +257,8 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
      * Initialize the components.
      */
     private void initComponents() {
-        //initToolBar();
         populateView();
     }
-
-//    /**
-//     * Initialize toolbar and insert title.
-//     */
-//    private void initToolBar() {
-//        setSupportActionBar(mToolbar);
-//        mActionBar = getSupportActionBar();
-//        mActionBar.setTitle(getString(R.string.devices));
-//        mActionBar.setDisplayShowTitleEnabled(true);
-//        mActionBar.setHomeAsUpIndicator(R.drawable.ic_close);
-//        mActionBar.setDisplayHomeAsUpEnabled(true);
-//    }
-
-//    private void initToolBarDetails() {
-//        mActionBar.setTitle(getString(R.string.details));
-//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -322,8 +300,6 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     public void deviceAvailable(BluetoothDevice device) throws JSONException {
         if (device != null) {
             mDevice.setAddress(device.getAddress());
-
-            // initToolBarDetails();
             mScanner.stopScan();
             mPulsatorLayout.stop();
             deviceSuccessfullyRegistered.setText(getString(R.string.device_registered_success,
@@ -364,6 +340,8 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         if (id == R.id.btn_device_register_scanner) {
             Log.d(TAG, "onClick: start scanner");
             if (mScanner != null) {
+                //removes a device from the local database and server
+                removeDeviceForType(mDevice);
                 mScanner.stopScan();
                 animationScanner(true);
                 mScanner.startScan(mScanCallback);
@@ -415,6 +393,65 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
             public void onSuccess(JSONObject result) {
                 Device deviceGson = new Gson().fromJson(deviceToJson(device), Device.class);
                 mDeviceDAO.save(deviceGson);
+            }
+        });
+    }
+
+    /**
+     * Deserialize json in a list of devices.
+     * If any error occurs it will be returned List empty.
+     *
+     * @param json {@link JSONObject}
+     * @return {@link List<Device>}
+     */
+    private List<Device> jsonToListDevice(JSONObject json) {
+        if (json == null || !json.has("devices")) return new ArrayList<>();
+
+        Type typeUserAccess = new TypeToken<List<Device>>() {
+        }.getType();
+
+        try {
+            JSONArray jsonArray = json.getJSONArray("devices");
+            return new Gson().fromJson(jsonArray.toString(), typeUserAccess);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
+
+
+    /**
+     * check during the scanner whether a device is already saved on the server and removes from the local DB server
+     **/
+    public void removeDeviceForType(Device device) {
+        String path = "devices/users/".concat(session.get_idLogged());
+        server.get(path, new Server.Callback() {
+            @Override
+            public void onError(JSONObject result) {
+            }
+
+            @Override
+            public void onSuccess(JSONObject result) {
+                List<Device> devicesRegistered = jsonToListDevice(result);
+
+                if (devicesRegistered.contains(device.getTypeId())) {
+                    removeDeviceRegister(device);
+                }
+            }
+        });
+    }
+
+    private void removeDeviceRegister(Device device) {
+        String path = "devices/".concat(device.get_id()).concat("/users/").concat(session.get_idLogged());
+        server.delete(path, new Server.Callback() {
+            @Override
+            public void onError(JSONObject result) {
+
+            }
+
+            @Override
+            public void onSuccess(JSONObject result) {
+                mDeviceDAO.remove(device.getAddress());
             }
         });
     }

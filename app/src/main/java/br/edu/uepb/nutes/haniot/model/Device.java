@@ -52,11 +52,12 @@ public class Device implements Parcelable {
         this.user.setTarget(user);
     }
 
-    public Device(String name, String manufacturer, String modelNumber, int img) {
+    public Device(String name, String manufacturer, String modelNumber, int img, int typeId) {
         this.name = name;
         this.manufacturer = manufacturer;
         this.modelNumber = modelNumber;
         this.img = img;
+        this.typeId = typeId;
     }
 
     protected Device(Parcel in) {

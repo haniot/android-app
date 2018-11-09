@@ -21,3 +21,11 @@ _
 /app/src/main/res/layout/layout_box_response.xml,d\6\d67ee0a38cdd41531a2f058e8183bca80bf45671
 S
 #app/src/main/res/values/strings.xml,d\2\d2281fbb3027de2722081a53408dd77628bf080e
+@
+app/build.gradle,f\4\f4a01d6a4fcb971362ec00a83903fd3902f52164
+s
+Capp/src/main/java/br/edu/uepb/nutes/haniot/model/dao/DeviceDAO.java,5\2\5239306070102b40e0fa9bd103475a9cd1459fc8
+ƒ
+Sapp/src/main/java/br/edu/uepb/nutes/haniot/adapter/base/OnRecyclerViewListener.java,3\b\3ba406f0e8353391b218957a770be5179395189b
+<
+build.gradle,f\0\f07866736216be0ee2aba49e392191aeae700a35
