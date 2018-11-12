@@ -2,12 +2,6 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory android:title="@string/settings_account">
-        <!--<PreferenceScreen-->
-        <!--android:summary="@string/settings_summary_your_data"-->
-        <!--android:title="@string/settings_your_data">-->
-        <!--<intent android:actibr.edu.uepb.nutes.haniot.activityvity.account.SignupActivity" />-->
-        <!--</PreferenceScreen>-->
-
         <Preference
             android:key="@string/key_your_data"
             android:summary="@string/settings_summary_your_data"
@@ -18,22 +12,13 @@
             android:summary="@string/settings_summary_signout"
             android:title="@string/settings_signout" />
 
-        <!--<PreferenceScreen-->
-        <!--android:key="@string/key_close_account"-->
-        <!--android:summary="@string/settings_summary_close_account"-->
-        <!--android:title="@string/settings_close_account" />-->
-
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/settings_server">
-        <EditTextPreference
-            android:defaultValue=""
-            android:dialogMessage="@string/settings_summary_full_server_address"
-            android:dialogTitle="@string/settings_server_address"
-            android:inputType="textUri"
-            android:key="@string/key_url_server"
-            android:summary="@string/settings_summary_server_address"
-            android:title="@string/settings_server_address" />
+    <PreferenceCategory android:title="@string/devices">
+        <PreferenceScreen
+            android:key="@string/key_manager_device"
+            android:summary="@string/settings_summary_configure_device"
+            android:title="@string/settings_configure_device" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/settings_about">

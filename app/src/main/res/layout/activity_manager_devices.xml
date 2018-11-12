@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".devices.register.DeviceManagerActivity">
+
+    <!-- The ActionBar displayed at the top -->
+    <include layout="@layout/toolbar" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbarSize="3sp"
+        android:scrollbarThumbVertical="@color/colorAccent"
+        android:scrollbars="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/activity_horizontal_margin"
+            android:orientation="vertical">
+
+            <ProgressBar
+                android:id="@+id/devices_progressBar"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/activity_horizontal_margin"
+                android:indeterminate="true"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/message_alert_textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="20dp"
+                android:gravity="center"
+                android:text="@string/connect_network_try_again"
+                android:visibility="gone" />
+
+            <!-- BOX REGISTERED DEVICES -->
+            <LinearLayout
+                android:id="@+id/box_devices_registered"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/activity_horizontal_margin"
+                android:paddingTop="@dimen/activity_horizontal_margin">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                    android:orientation="vertical"
+                    android:text="@string/title_devices_registered"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorPrimary" />
+
+                <TextView
+                    android:id="@+id/no_registered_devices_textView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginTop="20dp"
+                    android:gravity="center"
+                    android:text="@string/no_devices_registered"
+                    android:visibility="gone" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/registered_devices_recyclerview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scrollbars="none"
+                    tools:listitem="@layout/item_device" />
+            </LinearLayout>
+            <!-- END BOX REGISTERED DEVICES -->
+
+            <!-- BOX AVAILABLE DEVICES -->
+            <LinearLayout
+                android:id="@+id/box_devices_available"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/activity_horizontal_margin">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                    android:orientation="vertical"
+                    android:text="@string/title_devices_available"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorPrimary" />
+
+                <TextView
+                    android:id="@+id/no_available_devices_textView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginTop="20dp"
+                    android:gravity="center"
+                    android:text="@string/no_devices_available"
+                    android:visibility="gone" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/available_devices_recyclerview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scrollbars="none"
+                    tools:listitem="@layout/item_device" />
+            </LinearLayout>
+            <!-- END BOX AVAILABLE DEVICES -->
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

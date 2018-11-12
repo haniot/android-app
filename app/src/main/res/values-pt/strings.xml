@@ -91,6 +91,10 @@
     <string name="format_number_float">#.0</string>
     <string name="format_number_integer">#</string>
     <string name="format_number2">##.0</string>
+    <string name="date_format_year">yyyy</string>
+    <string name="date_format_month">MMMM</string>
+    <string name="date_format_week">w</string>
+    <string name="date_format_info">yyyy/MMM/dd</string>
 
     <!-- SIGNUP -->
     <string name="name">Nome</string>
@@ -164,6 +168,7 @@
     <string name="key_send_feedback">key_send_feedback</string>
     <string name="key_url_server">key_url_server</string>
     <string name="key_signout">key_signout</string>
+    <string name="key_manager_device">key_manager_device</string>
     <string name="key_close_account">key_close_account</string>
     <string name="key_about">key_about</string>
     <string name="url_about">http://nutes.uepb.edu.br/quem-somos/</string>
@@ -311,7 +316,6 @@
     <string name="search">Pesquisar</string>
     <string name="id">id: </string>
     <string name="date">Data: </string>
-    <string name="no_data_available">Nenhum dado aqui...</string>
     <string name="id_last_child">id_last_child</string>
     <string name="name_last_child">name_last_child</string>
     <string name="childId">childId</string>
@@ -437,6 +441,7 @@
     <!-- END ELDERLY FORM -->
 
     <!-- ELDERLY SURVEY RISK FALL -->
+    <string name="fall_risk_answer_question">Answer the question to go to next!</string>
     <string name="fall_risk_title_group1">Quedas</string>
     <string name="fall_risk_title_group2">Uso de dispositivo para auxílio da marcha</string>
     <string name="fall_risk_title_group3">Uso de medicamentos</string>
@@ -472,7 +477,7 @@
     <string name="cancel_text">Cancelar</string>
 
     <!-- ARRAY QUESTIONS RISK FALL -->
-    <string-array name="risk_questions_array">
+    <string-array name="fall_risk_questions_array">
         <item>@string/fall_risk_description_q1</item>
         <item>@string/fall_risk_description_q2</item>
         <item>@string/fall_risk_description_q3</item>
@@ -621,4 +626,135 @@
         <item>Distancia</item>
         <item>Calorias</item>
     </string-array>
+
+    <!-- REGISTERED DEVICES -->
+    <string name="title_devices_registered">Cadastrados</string>
+    <string name="title_devices_available">Disponíveis</string>
+    <string name="thermometer">Termometro</string>
+    <string name="find_device">Localizar Dispositivo</string>
+    <string name="remove_device">Deseja remover o %s da sua lista ?</string>
+    <string name="remove">Remover</string>
+    <string name="start_scanner">Iniciar scanner</string>
+    <string name="stop_scanner">Parar scanner</string>
+    <string name="details">Detalhes</string>
+    <string name="remove_device_register">Remover Dispositivo</string>
+    <string name="device_not_found_try_again">Dispositivo não encontrado tente novamente</string>
+    <string name="no_devices_registered">Não há didpositivos cadastrados&#8230;</string>
+    <string name="no_devices_available">Nenhum dispositivo disponível. Em breve a lista será atualizada&#8230;</string>
+    <string name="device_registered_success">Dispositivo %s cadastrado com sucesso!</string>
+    <string name="connection">Conectando, segure o telefone perto do dispositivo</string>
+    <string name="come_back">Voltar</string>
+    <string name="attention">Atenção</string>
+    <string name="model">Modelo</string>
+    <string name="other">Outro</string>
+    <string name="model_device">Modelo do dispositivo</string>
+    <string name="name_device">Nome do dispositivo</string>
+    <string name="settings_configure_device">Configurar Dispositivos</string>
+    <string name="settings_summary_configure_device">Gerencie seus dispositivos registrados ou insira novos.</string>
+
+    <!--GLUCOSE STATUS ANNUNCIATION-->
+    <string name="glucose_status_annunciation_battery_low">Device battery low at time of measurement</string>
+    <string name="glucose_status_annunciation_sensor_malfunction">Sensor malfunction or faulting at time of measurement</string>
+    <string name="glucose_status_annunciation_sample_size_insufficient">Sample size for blood or control solution insufficient at time of measurement</string>
+    <string name="glucose_status_annunciation_strip_insertion_error">Strip insertion error</string>
+    <string name="glucose_status_annunciation_strip_incorrect">Strip typeId incorrect for device</string>
+    <string name="glucose_status_annunciation_result_high">Sensor result higher than the device can process</string>
+    <string name="glucose_status_annunciation_result_lower">Sensor result lower than the device can process</string>
+    <string name="glucose_status_annunciation_sensor_temperature_high">Sensor temperature too high for valid test/result at time of measurement</string>
+    <string name="glucose_status_annunciation_sensor_temperature_lower">Sensor temperature too low for valid test/result at time of measurement</string>
+    <string name="glucose_status_annunciation_sensor_read_interrupted">Sensor read interrupted because strip was pulled too soon at time of measurement</string>
+    <string name="glucose_status_annunciation_general_device_fault">General device fault has occurred in the sensor</string>
+    <string name="glucose_status_annunciation_sensor_time_fault">Time fault has occurred in the sensor and time may be inaccurate</string>
+
+    <!--GLUCOSE LOCATION-->
+    <string name="glucose_location_finger">Finger</string>
+    <string name="glucose_location_alternate">Alternate Site Test (AST)</string>
+    <string name="glucose_location_earlobe">Earlobe</string>
+    <string name="glucose_location_control_solution">Contril solution</string>
+    <string name="glucose_location_sample_not_available">Sample Location valueId not available</string>
+
+    <!--GLUCOSE TYPE-->
+    <string name="glucose_type_capillary_whole">Capillary Whole blood</string>
+    <string name="glucose_type_capillary_plasma">Capillary Plasma</string>
+    <string name="glucose_type_venous_whole">Venous Whole blood</string>
+    <string name="glucose_type_venous_plasma">Venous Plasma</string>
+    <string name="glucose_type_arterial_whole">Arterial Whole blood</string>
+    <string name="glucose_type_arterial_plama">Arterial Plasma</string>
+    <string name="glucose_type_undertermined_whole">Undetermined Whole blood</string>
+    <string name="glucose_type_undertermined_plasma">Undetermined Plasma</string>
+    <string name="glucose_type_interstitial">Interstitial Fluid (ISF)</string>
+    <string name="glucose_type_control_solution">Control Solution</string>
+
+    <string name="black_space_4">\t\t\t\t\t\</string>
+    <string name="no_data_available">No data to display&#8230;</string>
+
+    <!-- SYNCHRONIZATION -->
+    <string name="synchronization_failed">Data synchronization failed!</string>
+    <string name="synchronization_success">Successful data synchronization!</string>
+    <string name="synchronization_data">Synchronizing data&#8230;</string>
+    <string name="synchronization_no_data_to_send">There is no data to send&#8230;</string>
+
+    <!--UNITS-->
+    <string name="unit_kcal">cal</string>
+    <string name="unit_meters">m</string>
+
+    <!--LOGIN-->
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="password_confirm">Confirm password</string>
+    <string name="login">Sign in</string>
+    <string name="no_account_yet">No account yet? Create one</string>
+
+    <string name="temperatre_type_ear">Ear (usually ear lobe)</string>
+    <string name="temperatre_type_finger">Finger</string>
+    <string name="temperatre_type_gastro">Gastro-intestinal Tract</string>
+    <string name="temperatre_type_mouth">Mouth</string>
+    <string name="temperatre_type_rectum">Rectum</string>
+    <string name="temperatre_type_toe">Toe</string>
+    <string name="temperatre_type_typanum">Tympanum (ear drum)</string>
+
+    <!--GLUCOSE CARBOHYDRATE-->
+    <string name="glucose_carbohydrate_breakfast">Breakfast</string>
+    <string name="glucose_carbohydrate_lunch">Lunch</string>
+    <string name="glucose_carbohydrate_dinner">Dinner</string>
+    <string name="glucose_carbohydrate_snakck">Snack</string>
+    <string name="glucose_carbohydrate_drink">Drink</string>
+    <string name="glucose_carbohydrate_supper">Supper</string>
+    <string name="glucose_carbohydrate_brunch">Brunch</string>
+
+    <string name="title_activity_manage_children">ManageChildrenActivity</string>
+
+    <!-- Strings related to Settings -->
+
+    <!-- Example General settings -->
+    <string name="pref_header_general">General</string>
+
+    <string name="pref_title_social_recommendations">Enable social recommendations</string>
+    <string name="pref_description_social_recommendations">Recommendations for people to contact
+        based on your message history
+    </string>
+
+    <string name="pref_title_display_name">Display name</string>
+    <string name="pref_default_display_name">John Smith</string>
+
+    <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
+    <!-- Example settings for Data & Sync -->
+    <string name="pref_header_data_sync">Data &amp; sync</string>
+
+    <string name="pref_title_sync_frequency">Sync frequency</string>
+
+    <string name="pref_title_system_sync_settings">System sync settings</string>
+
+    <!-- Example settings for Notifications -->
+    <string name="pref_header_notifications">Notifications</string>
+
+    <string name="pref_title_new_message_notifications">New message notifications</string>
+
+    <string name="pref_title_ringtone">Ringtone</string>
+    <string name="pref_ringtone_silent">Silent</string>
+
+    <string name="pref_title_vibrate">Vibrate</string>
+
+    <string name="title_activity_manually_add_measurement">activity_manually_add_measurement
+    </string>
 </resources>

@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private final int REQUEST_ENABLE_BLUETOOTH = 1;
     private final int REQUEST_ENABLE_LOCATION = 2;
 
-    private String tabTitle ;
+    private String tabTitle;
     private String id = "";
     private String lastNameSelected = "";
     private Session session;
@@ -77,10 +77,9 @@ public class MainActivity extends AppCompatActivity {
 
         checkLastChildAndUpdateTabTitle();
 
-
         newMeasureButton.setOnClickListener(v -> {
-          Intent it = new Intent(this, SettingsActivity.class);
-            it.putExtra("settingType",2);
+            Intent it = new Intent(this, SettingsActivity.class);
+            it.putExtra("settingType", 2);
             startActivity(it);
         });
     }
@@ -219,15 +218,13 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
-        int id = item.getItemId();
-        switch (id) {
+        switch (item.getItemId()) {
             case R.id.btnManageChildren:
                 startActivity(new Intent(getApplicationContext(), ManageChildrenActivity.class));
                 break;
             case R.id.btnMenuMainSettings:
                 Intent it = new Intent(this, SettingsActivity.class);
-                it.putExtra("settingType",1);
+                it.putExtra("settingType", 1);
                 startActivity(it);
                 break;
             default:
@@ -255,5 +252,4 @@ public class MainActivity extends AppCompatActivity {
         this.finishAffinity();
         System.exit(0);
     }
-
 }

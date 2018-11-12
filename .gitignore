@@ -51,6 +51,7 @@ captures/
 .idea/copyright/profiles_settings.xml
 .idea/codeStyles/codeStyleConfig.xml
 .idea/sonarlint
+.idea/caches/
 
 # External native build folder generated in Android Studio 2.2 and later
 .externalNativeBuild

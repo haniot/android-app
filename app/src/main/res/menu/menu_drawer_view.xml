@@ -26,5 +26,9 @@
             android:id="@+id/action_settings"
             android:icon="@drawable/ic_action_settings"
             android:title="@string/action_settings" />
+
+        <item
+            android:id="@+id/action_manager_devices"
+            android:title="Manager Devices" />
     </group>
 </menu>

@@ -10,9 +10,11 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.support.v7.app.AlertDialog;
 import android.widget.Toast;
+
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.account.LoginActivity;
 import br.edu.uepb.nutes.haniot.activity.account.SignupActivity;
+import br.edu.uepb.nutes.haniot.devices.register.DeviceManagerActivity;
 
 /**
  * MyPreferenceFragment implementation.
@@ -93,6 +95,15 @@ public class MyPreferenceFragment extends PreferenceFragment {
                 getActivity().startActivity(intent);
                 getActivity().finish();
 
+                return true;
+            }
+        });
+
+        // Manager devices data
+        Preference prefDeviceManager = findPreference(getString(R.string.key_manager_device));
+        prefDeviceManager.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            public boolean onPreferenceClick(Preference preference) {
+                getActivity().startActivity(new Intent(getActivity(), DeviceManagerActivity.class));
                 return true;
             }
         });
