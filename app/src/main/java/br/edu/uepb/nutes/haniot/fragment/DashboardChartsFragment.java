@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Locale;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
-import br.edu.uepb.nutes.haniot.model.DateEvent;
+import br.edu.uepb.nutes.haniot.model.DateChangedEvent;
 import br.edu.uepb.nutes.haniot.model.Measurement;
 import br.edu.uepb.nutes.haniot.model.MeasurementType;
 import br.edu.uepb.nutes.haniot.server.historical.CallbackHistorical;
@@ -91,6 +91,17 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
 
     private EventBus _eventBus;
 
+    private boolean measurementSteps = false;
+    private boolean measurementHeartRate = false;
+    private boolean measurementSleep = false;
+    private boolean measurementTemperature = false;
+    private boolean measurementWeight = false;
+    private boolean measurementBloodPressure = false;
+    private boolean measurementBloodGlucose = false;
+    private boolean measurementActivity = false;
+
+    private DateChangedEvent eventMeasurement;
+
     public DashboardChartsFragment() {
         // Required empty public constructor
     }
@@ -106,7 +117,7 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
 
         //Inicia a sessão com o ID logado e pega as medições do tipo STEPS
         session = new Session(getContext());
-        params = new Params(session.get_idLogged(), MeasurementType.STEPS);
+        params = new Params(session.get_idLogged(), -1);
 
         //Formata a data para o dia / mes / ano
         simpleDateFormat = new SimpleDateFormat(getResources().getString(R.string.date_format));
@@ -215,7 +226,7 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
     }
 
     @Subscribe
-    public void onDateChanged(DateEvent e){ }
+    public void onDateChanged(DateChangedEvent e){ }
 
     @Override
     public void onResume() {
@@ -231,6 +242,38 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
         textDate.setText(dateFormatted);
     }
 
+    private void setupEvent(int type, String value){
+
+        if (type == -1){
+            this.eventMeasurement.setHeartRate(null);
+            this.eventMeasurement.setGlucose(null);
+            this.eventMeasurement.setPressure(null);
+            this.eventMeasurement.setTemperature(null);
+            this.eventMeasurement.setWeight(null);
+            measurementSteps = false;
+            measurementHeartRate = false;
+            measurementSleep = false;
+            measurementTemperature = false;
+            measurementWeight = false;
+            measurementBloodPressure = false;
+            measurementBloodGlucose = false;
+            measurementActivity = false;
+            return;
+        }
+
+        if (type == MeasurementType.HEART_RATE && !measurementHeartRate){
+            this.eventMeasurement.setHeartRate(value);
+        }else if (type == MeasurementType.BODY_MASS && !measurementWeight){
+            this.eventMeasurement.setWeight(value);
+        }else if (type == MeasurementType.TEMPERATURE && !measurementTemperature) {
+            this.eventMeasurement.setTemperature(value);
+        }else if (type == MeasurementType.BLOOD_PRESSURE_DIASTOLIC && !measurementBloodPressure){
+            this.eventMeasurement.setPressure(value);
+        }else if(type == MeasurementType.BLOOD_GLUCOSE && !measurementBloodGlucose){
+            this.eventMeasurement.setGlucose(value);
+        }
+    }
+
     //Get the data from server
     public void loadServerData() throws ParseException {
 
@@ -244,10 +287,10 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
 
         //Prepara a querry e filtra a data para apenas UM dia, a paginação é 1 pois só é apresentado 1 medição por vez no dashboard
         Historical historical = new Historical.Query()
-                .type(HistoricalType.MEASUREMENTS_TYPE_USER)
+                .type(HistoricalType.MEASUREMENTS_USER)
                 .params(params) // Measurements of the temperature type, associated to the user
                 .filterDate(timeInit, timeEnd)
-                .pagination(0, 1)
+                .pagination(0, 100)
                 .build();
 
         historical.request(getContext(), new CallbackHistorical<Measurement>() {
@@ -257,26 +300,48 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
 
             @Override
             public void onError(JSONObject result) {
+                Log.d("TESTE","Erro ao solicitar dados ao servidor");
             }
 
             @Override
             public void onResult(List<Measurement> result) {
-
                 if (result != null && result.size() > 0) {
-                    Measurement measurementCurrent = result.get(0);
-                    int steps = (int) measurementCurrent.getValue();
-                    int distance = (int) measurementCurrent.getMeasurements().get(0).getValue();
-                    int calories = (int) measurementCurrent.getMeasurements().get(1).getValue();
+
+                    int steps =0 ;
+                    int calories = 0;
+                    int distance = 0;
+
+                    for(Measurement measurement : result){
+                        int type = measurement.getTypeId();
+                        String value = "";
+                        if (type == MeasurementType.HEART_RATE && !measurementHeartRate) {
+                            Log.d("TESTE","Encontrei valor de bpm na data: "+DateUtils.formatDate(measurement.getRegistrationDate(),"dd/MM/yyyy"));
+                            value = String.valueOf(measurement.getValue());
+                        }else if (type == MeasurementType.BODY_MASS && !measurementWeight){
+                            value = String.valueOf(measurement.getValue());
+                        }else if (type == MeasurementType.TEMPERATURE&& !measurementTemperature){
+                            value = String.valueOf(measurement.getValue());
+                        }else if (type == MeasurementType.BLOOD_PRESSURE_DIASTOLIC && !measurementBloodPressure){
+                            value = String.valueOf(measurement.getValue());
+                        }else if (type == MeasurementType.BLOOD_GLUCOSE && !measurementBloodGlucose){
+                            value = String.valueOf(measurement.getValue());
+                        }
+                        setupEvent(type,value);
+                    }
+
 
                     if (getActivity() == null) return;
 
                     if (getActivity() != null) {
+                        int finalSteps = steps;
+                        int finalCalories = calories;
+                        int finalDistance = distance;
                         new Handler(getContext().getMainLooper()).postDelayed(new Runnable() {
 
                             @Override
                             public void run() {
                                 try {
-                                    setDataProgress(steps, calories, distance);
+                                    setDataProgress(finalSteps, finalCalories, finalDistance);
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -284,6 +349,8 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
                         }, 200);
                     }
                 } else {
+                    setupEvent(-1,"");
+                    Log.d("TESTE","Resultado é null ou igual a zero");
                     try {
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
@@ -304,7 +371,6 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
 
             @Override
             public void onAfterSend() {
-
                 if (getContext() != null) {
                     new Handler(getContext().getMainLooper()).postDelayed(new Runnable() {
 
@@ -333,7 +399,7 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
             btnArrowRight.setBackground(getResources().getDrawable(R.mipmap.ic_arrow_right_disabled));
         }
 
-        postEvent(new DateEvent(getSelectedData()));
+        postEvent(this.eventMeasurement);
         return calendar.getTime();
     }
 
@@ -351,7 +417,7 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
         calendar.add(Calendar.DATE, -1);
         this.date = simpleDateFormat.format(calendar.getTime());
 
-        postEvent(new DateEvent(getSelectedData()));
+        postEvent(this.eventMeasurement);
         return calendar.getTime();
     }
 
@@ -368,8 +434,7 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
         scale = AnimationUtils.loadAnimation(getContext(), R.anim.click);
 
         calendarAux = Calendar.getInstance();
-
-        postEvent(new DateEvent(getSelectedData()));
+        eventMeasurement = new DateChangedEvent();
 
         //Seta o progresso máximo
         stepsProgressBar.setProgressMax(highProgressBarGoal);
@@ -516,7 +581,7 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
         ((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE))
                 .showSoftInput(textDate, InputMethodManager.SHOW_IMPLICIT);
 
-        postEvent(new DateEvent(getSelectedData()));
+        postEvent(this.eventMeasurement);
 
     }
 

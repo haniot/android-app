@@ -3,6 +3,7 @@ package br.edu.uepb.nutes.haniot.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Canvas;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.DrawableRes;
@@ -11,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -36,7 +38,7 @@ import br.edu.uepb.nutes.haniot.devices.HeartRateActivity;
 import br.edu.uepb.nutes.haniot.devices.ScaleActivity;
 import br.edu.uepb.nutes.haniot.devices.ThermometerActivity;
 import br.edu.uepb.nutes.haniot.devices.hdp.BloodPressureHDPActivity;
-import br.edu.uepb.nutes.haniot.model.DateEvent;
+import br.edu.uepb.nutes.haniot.model.DateChangedEvent;
 import br.edu.uepb.nutes.haniot.model.ItemGrid;
 import br.edu.uepb.nutes.haniot.model.ItemGridType;
 import butterknife.BindView;
@@ -48,6 +50,7 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
     private List<Integer> iconList = new ArrayList<>();
     private List<String> descriptionList = new ArrayList<>();
     private List<String> nameList = new ArrayList<>();
+    private List<String> measurementList = new ArrayList<>();
     private List<Boolean> listaSwitchPressionados = new ArrayList<>();
 
     private List<ItemGrid> buttonList = new ArrayList<>();
@@ -116,6 +119,15 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
         nameList.add(getResources().getString(R.string.body_composition_analyze_description));
         nameList.add(getResources().getString(R.string.body_composition_monitor_description));
 
+        measurementList.add("--");
+        measurementList.add("--");
+        measurementList.add("--");
+        measurementList.add("--");
+        measurementList.add("--");
+        measurementList.add("--");
+        measurementList.add("--");
+        measurementList.add("--");
+
         this.activity = getResources().getString(R.string.activity);
         this.glucose = getResources().getString(R.string.blood_glucose);
         this.pressure = getResources().getString(R.string.blood_pressure);
@@ -128,7 +140,6 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
         SimpleDateFormat spn = new SimpleDateFormat(getResources().getString(R.string.date_format));
 
         this.measurementDate = spn.format(date);
-        Log.d("TESTE","Initial date: "+this.measurementDate);
     }
 
     // Add button on the list of the grid
@@ -160,6 +171,8 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
     private void initComponents() {
         initRecyclerView();
         updateGrid();
+
+
     }
 
     private void initRecyclerView() {
@@ -180,6 +193,44 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
 
         mAdapter.setListener(this);
         gridMeasurement.setAdapter(mAdapter);
+
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0,
+                ItemTouchHelper.RIGHT) {
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+// remove item from adapter
+
+                Log.d("TESTE","Info about the item: "+viewHolder.itemView.getId());
+                mAdapter.notifyItemRemoved(viewHolder.getAdapterPosition());
+            }
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder,
+                                  RecyclerView.ViewHolder target) {
+                final int fromPos = viewHolder.getAdapterPosition();
+                final int toPos = target.getAdapterPosition();
+                mAdapter.notifyItemMoved(fromPos,toPos);
+
+// move item in `fromPos` to `toPos` in adapter.
+                return true;// true if moved, false otherwise
+            }
+
+            @Override
+            public void onChildDraw(Canvas c, RecyclerView recyclerView,
+                                    RecyclerView.ViewHolder viewHolder, float dX, float dY,
+                                    int actionState, boolean isCurrentlyActive) {
+
+                if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE){
+                    float alpha = 1 - (Math.abs(dX) / recyclerView.getWidth());
+                    viewHolder.itemView.setAlpha(alpha);
+                }
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+            }
+
+        };
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+        itemTouchHelper.attachToRecyclerView(gridMeasurement);
     }
 
     private void getMeasurementsFromServer(){
@@ -269,7 +320,7 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
                             iconList.get(i),
                             descriptionList.get(i),
                             nameList.get(i),
-                            "--",
+                            measurementList.get(i),
                             itemType);
                 }else{
                     return;
@@ -404,9 +455,21 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void updateDate(DateEvent e){
-        this.measurementDate = e.getDate();
-        Log.d("TESTE","Recebi: "+e.getDate());
+    public void updateDate(DateChangedEvent e){
+        measurementList.clear();
+        measurementList.add("--");
+        measurementList.add(e.getGlucose() != null ? e.getGlucose():"--");
+        measurementList.add(e.getPressure() != null ?  e.getPressure():"--");
+        measurementList.add(e.getTemperature() != null ? e.getTemperature():"--");
+        measurementList.add(e.getWeight() != null ? e.getWeight():"--");
+        measurementList.add("--");
+        measurementList.add(e.getHeartRate() != null ? e.getHeartRate():"--");
+
+        updateGrid();
+
+        Log.d("TESTE","\n Medições da data "+e.getDate()+": \n"+" Glicose: "+e.getGlucose()+"\n Pressão: "+e.getPressure()
+        +"\n Temperatura: "+e.getTemperature()+"\n Peso: "+e.getWeight()+" \n Batimento Cardiacos: "
+                +e.getHeartRate());
     }
 
 }

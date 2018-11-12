@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import br.edu.uepb.nutes.haniot.R;
 
+import java.util.Collections;
 import java.util.List;
 
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
@@ -24,7 +25,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import br.edu.uepb.nutes.haniot.adapter.base.BaseAdapter;
 
-public class GridDashAdapter extends BaseAdapter<ItemGrid> {
+public class GridDashAdapter extends BaseAdapter<ItemGrid>{
     private Context context;
 
     public GridDashAdapter(Context context) {
@@ -71,6 +72,10 @@ public class GridDashAdapter extends BaseAdapter<ItemGrid> {
 
             setAnimation(h.mView, position);
         }
+    }
+
+    public void onItemMoved(int oldPosition, int newPosition){
+        super.notifyItemMoved(oldPosition,newPosition);
     }
 
     @Override

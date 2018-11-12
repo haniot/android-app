@@ -12,8 +12,8 @@ import br.edu.uepb.nutes.haniot.R;
  * @copyright Copyright (c) 2017, NUTES UEPB
  */
 public class MeasurementType {
-    public static final int TEMPERATURE = 1;
     public static final int BLOOD_GLUCOSE = 2;
+    public static final int TEMPERATURE = 1;
     public static final int BODY_MASS = 3;
     public static final int BODY_FAT = 4;
     public static final int BLOOD_PRESSURE_SYSTOLIC = 5;
