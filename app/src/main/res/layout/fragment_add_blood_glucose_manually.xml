@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragment.AddBloodGlucoseManuallyFragment">
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:fillViewport="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/textChooseGlucose"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:textSize="18dp"
+                android:text="@string/choose_glucose"/>
+
+            <View
+                android:id="@+id/divGlucose"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_toEndOf="@id/textChooseGlucose"
+                android:layout_alignBaseline="@id/textChooseGlucose"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="?android:attr/listDivider" />
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/botGlucose"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@id/textChooseGlucose"
+                android:drawableStart="@drawable/ic_blood_glucose_128"
+                android:padding="50dp"
+                android:text="@string/unit_glucose_mg_dL"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/textStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/botGlucose"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="16dp"
+                android:textSize="18dp"
+                android:text="@string/choose_status"/>
+
+            <View
+                android:id="@+id/divider8"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_toEndOf="@id/textStatus"
+                android:layout_alignBaseline="@id/textStatus"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="?android:attr/listDivider" />
+
+            <HorizontalScrollView
+                android:id="@+id/horizontalViewGlucose"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/textStatus">
+
+                <RadioGroup
+                    android:id="@+id/radioGlucoseStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="15dp"
+                    android:divider="@drawable/radio_group_divider"
+                    android:showDividers="middle">
+
+                    <RadioButton
+                        android:id="@+id/radioFasting"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/toogle_button_background"
+                        android:drawableTop="@drawable/ic_fasting"
+                        android:button="@color/transparent"
+                        android:text="@string/glucose_meal_fasting"
+                        android:textAlignment="center"
+                        android:checked="false"/>
+
+                    <RadioButton
+                        android:id="@+id/radioCasual"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/toogle_button_background"
+                        android:drawableTop="@drawable/ic_snacs"
+                        android:button="@color/transparent"
+                        android:text="@string/glucose_meal_casual"
+                        android:textAlignment="center"
+                        android:checked="false"/>
+
+                    <RadioButton
+                        android:id="@+id/radioBedtime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/toogle_button_background"
+                        android:drawableTop="@drawable/ic_sleep"
+                        android:button="@color/transparent"
+                        android:text="@string/glucose_meal_bedtime"
+                        android:textAlignment="center"
+                        android:checked="false"/>
+
+                    <RadioButton
+                        android:id="@+id/radioPrepandial"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/toogle_button_background"
+                        android:drawableTop="@drawable/ic_food"
+                        android:button="@color/transparent"
+                        android:text="@string/glucose_meal_preprandial"
+                        android:textAlignment="center"
+                        android:checked="false"/>
+
+                    <RadioButton
+                        android:id="@+id/radioPostprandial"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/toogle_button_background"
+                        android:drawableTop="@drawable/ic_after_lunch"
+                        android:button="@color/transparent"
+                        android:text="@string/glucose_meal_postprandial"
+                        android:textAlignment="center"
+                        android:checked="false"/>
+
+                </RadioGroup>
+
+            </HorizontalScrollView>
+
+            <View
+                android:id="@+id/botDivider"
+                android:layout_width="1dp"
+                android:layout_height="1dp"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@id/horizontalViewGlucose"
+                android:background="@color/transparent"
+                android:layout_marginTop="15dp"/>
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/btnCancel"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toStartOf="@id/botDivider"
+                android:layout_below="@id/botDivider"
+                android:layout_marginEnd="15dp"
+                android:padding="20dp"
+                android:text="@string/cancel" />
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/btnConfirm"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/botDivider"
+                android:layout_below="@id/botDivider"
+                android:layout_marginStart="15dp"
+                android:padding="20dp"
+                android:text="@string/confirm"
+                android:textColor="@color/colorTextDark" />
+
+        </RelativeLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+</RelativeLayout>

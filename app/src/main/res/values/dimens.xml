@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="nav_header_vertical_spacing">16dp</dimen>
+    <dimen name="nav_header_height">160dp</dimen>
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="profile_width">75dp</dimen>
+    <dimen name="profile_height">75dp</dimen>
+    <dimen name="spinner_answer_margin">40dp</dimen>
+    <dimen name="spinner_answer_margin_simple">20dp</dimen>
+
+    <dimen name="height_logo_drawer">90dp</dimen>
+
+    <dimen name="button_radius">10dp</dimen>
+    <dimen name="button_padding">10dp</dimen>
+    <dimen name="radio_button_horizontal_padding">15dp</dimen>
+
+    <dimen name="button_assessment_radius">50dp</dimen>
+    <dimen name="button_assessment_padding">15dp</dimen>
+    <dimen name="radio_button_assessment_horizontal_padding">40dp</dimen>
+
+    <dimen name="item_dimen_dashboard">24dp</dimen>
+</resources>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".devices.register.DeviceRegisterActivity">
+
+    <FrameLayout
+        android:id="@+id/box_register"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible">
+        <include layout="@layout/layout_box_register"/>
+    </FrameLayout>
+
+
+    <!--animation pulsator -->
+    <FrameLayout
+        android:id="@+id/box_scanner"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+        <include layout="@layout/layout_box_scanner"/>
+    </FrameLayout>
+
+
+    <!-- search result -->
+    <FrameLayout
+        android:id="@+id/box_response"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+        <include layout="@layout/layout_box_response"/>
+    </FrameLayout>
+
+
+</RelativeLayout>

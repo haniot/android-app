@@ -1,0 +1,102 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="br.edu.uepb.nutes.haniot.fragment.ConnectDeviceFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/device_thermometer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/temperature_measurement"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/device_thermometer" />
+
+        <ImageView
+            android:id="@+id/device_glucose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/glucose_measurement"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/device_glucose" />
+
+        <ImageView
+            android:id="@+id/device_scale_ble"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/body_weight_scale"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/device_scale_yunmai_mini" />
+
+        <ImageView
+            android:id="@+id/device_heart_rate_h10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/heart_rate_measurement"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/device_heart_rate_sensor" />
+
+        <ImageView
+            android:id="@+id/device_heart_rate_h7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/heart_rate_measurement"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/device_heart_rate_sensor_h7" />
+
+        <ImageView
+            android:id="@+id/device_miband2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/smart_band"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/device_smart_band" />
+
+        <!--<ImageView-->
+        <!--android:id="@+id/device_blood_pressure"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginBottom="5dp"-->
+        <!--android:adjustViewBounds="true"-->
+        <!--android:scaleType="centerInside"-->
+        <!--app:srcCompat="@image/device_blood_pressure" />-->
+
+        <ImageView
+            android:id="@+id/device_blood_pressure_hdp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/blood_pressure_measurement"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/device_blood_pressure_classic" />
+
+        <ImageView
+            android:id="@+id/device_body_composition_hdp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/body_composition_measurement"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/device_balance" />
+
+    </LinearLayout>
+</ScrollView>

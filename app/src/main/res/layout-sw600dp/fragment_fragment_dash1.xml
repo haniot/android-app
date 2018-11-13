@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#E0F2F1">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/textDate"
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:textAlignment="center"
+            android:textSize="16sp"/>
+
+        <android.support.v7.widget.AppCompatImageButton
+            android:id="@+id/buttonArrowLeft"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginEnd="30dp"
+            android:layout_marginTop="100dp"
+            android:layout_toStartOf="@+id/stepsProgressBar"
+            android:background="@mipmap/ic_arrow_left"
+            android:clickable="true"
+            android:contentDescription="@string/LeftButton"
+            android:focusable="true" />
+
+        <com.mikhaellopez.circularprogressbar.CircularProgressBar
+            android:id="@+id/stepsProgressBar"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="40dp"
+            android:background="@drawable/ic_feet"
+            app:cpb_progress="0"
+            app:cpb_background_progressbar_color="@color/colorGrey"
+            app:cpb_background_progressbar_width="7dp"
+            app:cpb_progressbar_color="@color/colorPrimary"
+            app:cpb_progressbar_width="4dp" />
+
+        <com.mikhaellopez.circularprogressbar.CircularProgressBar
+            android:id="@+id/loadingDataProgressBar"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_below="@id/textSteps"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:visibility="invisible"
+            app:cpb_background_progressbar_color="@color/colorGrey"
+            app:cpb_background_progressbar_width="4dp"
+            app:cpb_indeterminate_mode="true"
+            app:cpb_progressbar_color="@color/colorPrimary"
+            app:cpb_progressbar_width="4dp" />
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/buttonArrowRight"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/buttonArrowLeft"
+            android:layout_marginStart="30dp"
+            android:layout_toEndOf="@+id/stepsProgressBar"
+            android:background="@mipmap/ic_arrow_right"
+            android:clickable="true"
+            android:contentDescription="@string/rightbutton"
+            android:focusable="true" />
+
+        <com.mikhaellopez.circularprogressbar.CircularProgressBar
+            android:id="@+id/lightProgress1"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignTop="@+id/textSteps"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/ic_calories"
+            app:cpb_progress="0"
+            app:cpb_background_progressbar_color="@color/colorGrey"
+            app:cpb_background_progressbar_width="7dp"
+            app:cpb_progressbar_color="@color/colorPrimary"
+            app:cpb_progressbar_width="4dp" />
+
+        <com.mikhaellopez.circularprogressbar.CircularProgressBar
+            android:id="@+id/lightProgress2"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignTop="@+id/lightProgress1"
+            android:layout_marginEnd="50dp"
+            android:background="@drawable/ic_distance"
+            app:cpb_progress="0"
+            app:cpb_background_progressbar_color="@color/colorGrey"
+            app:cpb_background_progressbar_width="7dp"
+            app:cpb_progressbar_color="@color/colorPrimary"
+            app:cpb_progressbar_width="4dp" />
+
+        <TextView
+            android:id="@+id/textCalories"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@id/lightProgress1"
+            android:layout_alignStart="@id/lightProgress1"
+            android:layout_below="@+id/lightProgress1"
+            android:textAlignment="center"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/textDistance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@id/lightProgress2"
+            android:layout_alignStart="@id/lightProgress2"
+            android:layout_below="@+id/lightProgress2"
+            android:textAlignment="center"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/textSteps"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@id/stepsProgressBar"
+            android:layout_alignStart="@+id/stepsProgressBar"
+            android:layout_below="@+id/stepsProgressBar"
+            android:layout_marginTop="5dp"
+            android:textAlignment="center"
+            android:textSize="18sp" />
+
+        <View
+            android:id="@+id/divider2"
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/textCalories"
+            android:background="@android:color/transparent" />
+
+    </RelativeLayout>
+
+</android.support.design.widget.CoordinatorLayout>
