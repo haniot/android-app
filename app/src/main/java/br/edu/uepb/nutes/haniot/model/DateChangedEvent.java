@@ -2,14 +2,32 @@ package br.edu.uepb.nutes.haniot.model;
 
 public class DateChangedEvent {
 
-    private String date;
-    private String glucose;
-    private String pressure;
-    private String temperature;
-    private String weight;
-    private String heartRate;
+    private String date = "--";
+    private String activity = "--";
+    private String sleep = "--";
+    private String glucose = "--";
+    private String pressure = "--";
+    private String temperature = "--";
+    private String weight = "--";
+    private String heartRate = "--";
 
     public DateChangedEvent(){}
+
+    public String getActivity() {
+        return activity;
+    }
+
+    public void setActivity(String activity) {
+        this.activity = activity;
+    }
+
+    public String getSleep() {
+        return sleep;
+    }
+
+    public void setSleep(String sleep) {
+        this.sleep = sleep;
+    }
 
     public String getDate() {
         return date;

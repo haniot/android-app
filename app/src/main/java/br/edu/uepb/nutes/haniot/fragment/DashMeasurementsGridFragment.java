@@ -26,6 +26,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -46,12 +47,13 @@ import butterknife.ButterKnife;
 
 public class DashMeasurementsGridFragment extends Fragment implements OnRecyclerViewListener<ItemGrid>{
 
-    //List of items that will be placed in grid;
-    private List<Integer> iconList = new ArrayList<>();
-    private List<String> descriptionList = new ArrayList<>();
-    private List<String> nameList = new ArrayList<>();
-    private List<String> measurementList = new ArrayList<>();
-    private List<Boolean> listaSwitchPressionados = new ArrayList<>();
+    private ItemGrid igActivity;
+    private ItemGrid igGlucose;
+    private ItemGrid igPressure;
+    private ItemGrid igTemperature;
+    private ItemGrid igWeight;
+    private ItemGrid igSleep;
+    private ItemGrid igHearRate;
 
     private List<ItemGrid> buttonList = new ArrayList<>();
     private Context mContext;
@@ -77,6 +79,8 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
     @BindView(R.id.gridMeasurement)
     RecyclerView gridMeasurement;
 
+    private DateChangedEvent measurementsValues;
+
     public DashMeasurementsGridFragment() {
     }
 
@@ -92,41 +96,57 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
         PreferenceManager.setDefaultValues(
                 getActivity(), R.xml.pref_manage_measurements, false);
         this.preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+//        Ajeitar para primeira vez que abrir o app;
+        this.measurementsValues = new DateChangedEvent();
 
-        //Create the icon list of grid items
-        iconList.add(R.drawable.ic_activity);
-        iconList.add(R.drawable.ic_blood_glucose);
-        iconList.add(R.drawable.ic_blood_pressure_64);
-        iconList.add(R.drawable.ic_temperature);
-        iconList.add(R.drawable.ic_weight);
-        iconList.add(R.drawable.ic_sleeping);
-        iconList.add(R.drawable.ic_heart_rate_64);
-        //Create the name list of grid items
-        descriptionList.add(getResources().getString(R.string.activity));
-        descriptionList.add(getResources().getString(R.string.blood_glucose));
-        descriptionList.add(getResources().getString(R.string.blood_pressure));
-        descriptionList.add(getResources().getString(R.string.temperature));
-        descriptionList.add(getResources().getString(R.string.weight));
-        descriptionList.add(getResources().getString(R.string.sleep));
-        descriptionList.add(getResources().getString(R.string.heart_rate));
-        //Create the description list of grid items
-        nameList.add(getResources().getString(R.string.blood_pressure_monitor_description));
-        nameList.add(getResources().getString(R.string.heart_rate_sensor_description_h7));
-        nameList.add(getResources().getString(R.string.heart_rate_sensor_description_h10));
-        nameList.add(getResources().getString(R.string.smartband_description));
-        nameList.add(getResources().getString(R.string.ear_thermometer_description));
-        nameList.add(getResources().getString(R.string.accu_check_description));
-        nameList.add(getResources().getString(R.string.body_composition_analyze_description));
-        nameList.add(getResources().getString(R.string.body_composition_monitor_description));
+        this.igActivity = new ItemGrid();
+        igActivity.setContext(getContext());
+        igActivity.setIcon(R.drawable.ic_activity);
+        igActivity.setDescription(getResources().getString(R.string.activity));
+        igActivity.setMeasurementValue(this.measurementsValues.getActivity());
+        igActivity.setType(ItemGridType.ACTIVITY);
 
-        measurementList.add("--");
-        measurementList.add("--");
-        measurementList.add("--");
-        measurementList.add("--");
-        measurementList.add("--");
-        measurementList.add("--");
-        measurementList.add("--");
-        measurementList.add("--");
+        this.igGlucose = new ItemGrid();
+        igGlucose.setContext(getContext());
+        igGlucose.setIcon(R.drawable.ic_blood_glucose);
+        igGlucose.setDescription(getResources().getString(R.string.blood_glucose));
+        igGlucose.setMeasurementValue(this.measurementsValues.getGlucose());
+        igGlucose.setType(ItemGridType.BLOOD_GLUCOSE);
+
+        this.igPressure = new ItemGrid();
+        igPressure.setContext(getContext());
+        igPressure.setIcon(R.drawable.ic_blood_pressure_64);
+        igPressure.setDescription(getResources().getString(R.string.blood_pressure));
+        igPressure.setMeasurementValue(this.measurementsValues.getPressure());
+        igPressure.setType(ItemGridType.BLOOD_PRESSURE);
+
+        this.igTemperature = new ItemGrid();
+        igTemperature.setContext(getContext());
+        igTemperature.setIcon(R.drawable.ic_temperature);
+        igTemperature.setDescription(getResources().getString(R.string.temperature));
+        igTemperature.setMeasurementValue(this.measurementsValues.getTemperature());
+        igTemperature.setType(ItemGridType.TEMPERATURE);
+
+        this.igWeight = new ItemGrid();
+        igWeight.setContext(getContext());
+        igWeight.setIcon(R.drawable.ic_weight);
+        igWeight.setDescription(getResources().getString(R.string.weight));
+        igWeight.setMeasurementValue(this.measurementsValues.getWeight());
+        igWeight.setType(ItemGridType.WEIGHT);
+
+        this.igSleep = new ItemGrid();
+        igSleep.setContext(getContext());
+        igSleep.setIcon(R.drawable.ic_sleeping);
+        igSleep.setDescription(getResources().getString(R.string.sleep));
+        igSleep.setMeasurementValue(this.measurementsValues.getSleep());
+        igSleep.setType(ItemGridType.SLEEP);
+
+        this.igHearRate = new ItemGrid();
+        igHearRate.setContext(getContext());
+        igHearRate.setIcon(R.drawable.ic_heart_rate_64);
+        igHearRate.setDescription(getResources().getString(R.string.heart_rate));
+        igHearRate.setMeasurementValue(this.measurementsValues.getHeartRate());
+        igHearRate.setType(ItemGridType.HEART_RATE);
 
         this.activity = getResources().getString(R.string.activity);
         this.glucose = getResources().getString(R.string.blood_glucose);
@@ -159,7 +179,8 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_fragment_dash2, container, false);
         ButterKnife.bind(this, view);
-
+        initRecyclerView();
+        initComponents();
         return view;
     }
 
@@ -169,10 +190,8 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
     }
 
     private void initComponents() {
-        initRecyclerView();
+//        initRecyclerView();
         updateGrid();
-
-
     }
 
     private void initRecyclerView() {
@@ -195,60 +214,59 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
         gridMeasurement.setAdapter(mAdapter);
 
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0,
-                ItemTouchHelper.RIGHT) {
+                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
 
             @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
-// remove item from adapter
-
-                Log.d("TESTE","Info about the item: "+viewHolder.itemView.getId());
-                mAdapter.notifyItemRemoved(viewHolder.getAdapterPosition());
-            }
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) { }
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder,
                                   RecyclerView.ViewHolder target) {
-                final int fromPos = viewHolder.getAdapterPosition();
-                final int toPos = target.getAdapterPosition();
-                mAdapter.notifyItemMoved(fromPos,toPos);
 
-// move item in `fromPos` to `toPos` in adapter.
-                return true;// true if moved, false otherwise
+                Collections.swap(buttonList, viewHolder.getAdapterPosition(), target.getAdapterPosition());
+                // and notify the adapter that its dataset has changed
+                mAdapter.notifyItemMoved(viewHolder.getAdapterPosition(), target.getAdapterPosition());
+                return true;
             }
-
             @Override
-            public void onChildDraw(Canvas c, RecyclerView recyclerView,
-                                    RecyclerView.ViewHolder viewHolder, float dX, float dY,
-                                    int actionState, boolean isCurrentlyActive) {
-
-                if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE){
-                    float alpha = 1 - (Math.abs(dX) / recyclerView.getWidth());
-                    viewHolder.itemView.setAlpha(alpha);
-                }
-                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+            public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+                return makeFlag(ItemTouchHelper.ACTION_STATE_DRAG,
+                        ItemTouchHelper.DOWN | ItemTouchHelper.UP | ItemTouchHelper.START | ItemTouchHelper.END);
             }
-
         };
-
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(gridMeasurement);
-    }
 
-    private void getMeasurementsFromServer(){
-        for (ItemGrid item : buttonList){
-            Log.d("TESTE",item.getMeasurementInitials());
-        }
+// Extend the Callback class
+//        ItemTouchHelper.Callback _ithCallback = new ItemTouchHelper.Callback() {
+//            //and in your imlpementaion of
+//            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+//                // get the viewHolder's and target's positions in your adapter data, swap them
+//                Collections.swap(buttonList, viewHolder.getAdapterPosition(), target.getAdapterPosition());
+//                // and notify the adapter that its dataset has changed
+//                mAdapter.notifyItemMoved(viewHolder.getAdapterPosition(), target.getAdapterPosition());
+//                return true;
+//            }
+//
+//            @Override
+//            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+//                //TODO
+//            }
+//
+//            //defines the enabled move directions in each state (idle, swiping, dragging).
+//            @Override
+//            public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+//                return makeFlag(ItemTouchHelper.ACTION_STATE_DRAG,
+//                        ItemTouchHelper.DOWN | ItemTouchHelper.UP | ItemTouchHelper.START | ItemTouchHelper.END);
+//            }
+//        };
+//        ItemTouchHelper ith = new ItemTouchHelper(_ithCallback);
+//        ith.attachToRecyclerView(gridMeasurement);
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         mContext = context;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        initComponents();
     }
 
     public int calculateNoOfColumns(Context context) {
@@ -272,9 +290,6 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
     }
 
     public void updateGrid() {
-        //Limpa lista de botoes e a recyclerview
-        buttonList.clear();
-        gridMeasurement.removeAllViews();
 
         //Pega os dados que foram selecionados nas preferencias
         Boolean activity = getPreferenceBoolean(getResources()
@@ -298,51 +313,47 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
         Boolean heartRate = getPreferenceBoolean(getResources()
                 .getString(R.string.key_heart_rate));
 
-//        //Adiciona na lista de itens selecionados
-        this.listaSwitchPressionados.clear();
-        listaSwitchPressionados.add(activity);
-        listaSwitchPressionados.add(bloodGlucose);
-        listaSwitchPressionados.add(bloodPressure);
-        listaSwitchPressionados.add(temperature);
-        listaSwitchPressionados.add(weight);
-        listaSwitchPressionados.add(sleep);
-        listaSwitchPressionados.add(heartRate);
+        if (buttonList != null && buttonList.isEmpty()){
+            if (activity) buttonList.add(this.igActivity);
+            if (bloodGlucose) buttonList.add(this.igGlucose);
+            if (bloodPressure) buttonList.add(this.igPressure);
+            if (temperature) buttonList.add(this.igTemperature);
+            if (weight) buttonList.add(this.igWeight);
+            if (sleep) buttonList.add(this.igSleep);
+            if (heartRate) buttonList.add(this.igHearRate);
 
-        //Aqui a mágica acontece :D
-        for (int i = 0; i < listaSwitchPressionados.size(); i++) {
-            int itemType;
-            if (listaSwitchPressionados.get(i)) {
-
-                itemType = getInitials(descriptionList.get(i));
-
-                if (itemType != -1) {
-                    addButtomOnGrid(getContext(),
-                            iconList.get(i),
-                            descriptionList.get(i),
-                            nameList.get(i),
-                            measurementList.get(i),
-                            itemType);
-                }else{
-                    return;
-                }
+        }else if (buttonList != null){
+            if (activity){ buttonList.get(buttonList.lastIndexOf(this.igActivity)).setMeasurementValue(
+                    this.measurementsValues.getActivity());
+            }
+            if (bloodGlucose){
+                buttonList.get(buttonList.lastIndexOf(this.igGlucose)).setMeasurementValue(
+                        this.measurementsValues.getGlucose());
+            }
+            if (bloodPressure){
+                buttonList.get(buttonList.lastIndexOf(this.igPressure)).setMeasurementValue(
+                        this.measurementsValues.getPressure());
+            }
+            if (temperature){
+                buttonList.get(buttonList.lastIndexOf(this.igTemperature)).setMeasurementValue(
+                        this.measurementsValues.getTemperature());
+            }
+            if (weight){
+                buttonList.get(buttonList.lastIndexOf(this.igWeight)).setMeasurementValue(
+                        this.measurementsValues.getWeight());
+            }
+            if (sleep) {
+                buttonList.get(buttonList.lastIndexOf(this.igSleep)).setMeasurementValue(
+                        this.measurementsValues.getSleep());
+            }
+            if (heartRate) {
+                buttonList.get(buttonList.lastIndexOf(this.igHearRate)).setMeasurementValue(
+                        this.measurementsValues.getHeartRate());
             }
         }
-//        getMeasurementsFromServer();
+
         mAdapter.clearItems();
         mAdapter.addItems(buttonList);
-    }
-
-    //Getting meassurement type, used to get measurement initials
-    public int getInitials(String measurement){
-
-        if (measurement.equals(activity)) return ItemGridType.ACTIVITY;
-        else if (measurement.equals(glucose)) return ItemGridType.BLOOD_GLUCOSE;
-        else if (measurement.equals(pressure)) return ItemGridType.BLOOD_PRESSURE;
-        else if (measurement.equals(temperature)) return ItemGridType.TEMPERATURE;
-        else if (measurement.equals(weight)) return ItemGridType.WEIGHT;
-        else if (measurement.equals(sleep)) return ItemGridType.SLEEP;
-        else if (measurement.equals(heartRate)) return ItemGridType.HEART_RATE;
-        return -1;
     }
 
     //    Method used to get the preferences of sharedpreference screen
@@ -456,14 +467,7 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void updateDate(DateChangedEvent e){
-        measurementList.clear();
-        measurementList.add("--");
-        measurementList.add(e.getGlucose() != null ? e.getGlucose():"--");
-        measurementList.add(e.getPressure() != null ?  e.getPressure():"--");
-        measurementList.add(e.getTemperature() != null ? e.getTemperature():"--");
-        measurementList.add(e.getWeight() != null ? e.getWeight():"--");
-        measurementList.add("--");
-        measurementList.add(e.getHeartRate() != null ? e.getHeartRate():"--");
+        this.measurementsValues = e;
 
         updateGrid();
 

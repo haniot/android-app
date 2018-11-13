@@ -245,11 +245,13 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
     private void setupEvent(int type, String value){
 
         if (type == -1){
-            this.eventMeasurement.setHeartRate(null);
-            this.eventMeasurement.setGlucose(null);
-            this.eventMeasurement.setPressure(null);
-            this.eventMeasurement.setTemperature(null);
-            this.eventMeasurement.setWeight(null);
+            this.eventMeasurement.setHeartRate("--");
+            this.eventMeasurement.setGlucose("--");
+            this.eventMeasurement.setPressure("--");
+            this.eventMeasurement.setTemperature("--");
+            this.eventMeasurement.setWeight("--");
+            this.eventMeasurement.setSleep("--");
+            this.eventMeasurement.setActivity("--");
             measurementSteps = false;
             measurementHeartRate = false;
             measurementSleep = false;
