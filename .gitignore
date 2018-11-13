@@ -32,6 +32,9 @@ proguard/
 # Android Studio captures folder
 captures/
 
+# Crashlytics configuations
+com_crashlytics_export_strings.xml
+
 # IntelliJ
 *.iml
 .idea/.name
@@ -45,19 +48,19 @@ captures/
 .idea/tasks.xml
 .idea/gradle.xml
 .idea/assetWizardSettings.xml
-.idea/dictionaries
-.idea/libraries
-.idea/caches
 .idea/copyright/profiles_settings.xml
 .idea/codeStyles/codeStyleConfig.xml
-.idea/sonarlint
+.idea/dictionaries/
+.idea/libraries/
+.idea/caches/
+.idea/sonarlint/
 .idea/caches/
 
 # External native build folder generated in Android Studio 2.2 and later
 .externalNativeBuild
 
 # Google Services (e.g. APIs or Firebase)
-# google-services.json
+google-services.json
 
 # Local build properties
 # build.properties
