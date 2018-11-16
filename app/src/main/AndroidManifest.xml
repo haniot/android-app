@@ -35,15 +35,6 @@
             android:name=".activity.account.LoginActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".activity.account.SignupActivity"
-            android:windowSoftInputMode="stateHidden">
-            <intent-filter>
-                <action android:name="br.edu.uepb.nutes.ocariot.activity.account.SignupActivity" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
             android:name=".activity.MainActivity"
             android:screenOrientation="sensor" />
         <activity
