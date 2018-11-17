@@ -23,6 +23,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
+        <service
+            android:name=".service.TokenService" >
+        </service>
         <!-- ACTIVITIES -->
         <activity android:name=".activity.SplashScreenActivity">
             <intent-filter>

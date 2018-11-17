@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -241,8 +242,12 @@ public class Server {
                     // Adds the HTTP response code to the json object
                     result.put("code", response.code());
 
-                    if (!response.isSuccessful()) serverCallback.onError(result);
+                    if (!response.isSuccessful()){
+                        serverCallback.onError(result);
+                        EventBus.getDefault().post("Token expired");
+                    }
                     else serverCallback.onSuccess(result);
+                        EventBus.getDefault().post("Login");
 
                     Log.i("SERVER - onResponse()", result.toString());
                 } catch (JSONException err) {

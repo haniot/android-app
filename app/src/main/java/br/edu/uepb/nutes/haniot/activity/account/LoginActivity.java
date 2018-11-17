@@ -16,11 +16,17 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
+import com.auth0.android.jwt.Claim;
+import com.auth0.android.jwt.JWT;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Date;
+import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.MainActivity;
@@ -28,6 +34,7 @@ import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.model.User;
 import br.edu.uepb.nutes.haniot.model.dao.UserDAO;
 import br.edu.uepb.nutes.haniot.server.Server;
+import br.edu.uepb.nutes.haniot.service.TokenService;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -102,7 +109,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.text_view_signup:
-                startActivity(new Intent(getApplicationContext(), SignupActivity.class));
+                //startActivity(new Intent(getApplicationContext(), SignupActivity.class));
                 break;
             case R.id.btn_login:
                 login();
@@ -154,7 +161,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     if (user.get_id() != null && token != null) {
                         user.setToken(token);
                         User u = userDAO.get(user.getEmail());
-
                         if (u != null) {
                             userDAO.update(user);
                         } else {
@@ -169,7 +175,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             user.setToken(fcmToken);
                             sendFcmToken(fcmToken);
                         }
-
+                        Intent i = new Intent(LoginActivity.this, TokenService.class);
+                        LoginActivity.this.startService(i);
                         startActivity(new Intent(getApplicationContext(), MainActivity.class));
                         finish();
                     } else {
