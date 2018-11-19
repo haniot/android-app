@@ -352,7 +352,7 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
                     }
                 } else {
                     setupEvent(-1,"");
-                    Log.d("TESTE","Resultado é null ou igual a zero");
+//                    Log.d("TESTE","Resultado é null ou igual a zero");
                     try {
                         getActivity().runOnUiThread(new Runnable() {
                             @Override

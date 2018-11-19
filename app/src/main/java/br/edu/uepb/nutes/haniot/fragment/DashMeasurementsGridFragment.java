@@ -289,6 +289,60 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
         return noOfColumns;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateGrid();
+    }
+
+    private void updateItemsOfGrid(boolean status, ItemGrid item){
+        if (status){
+            if (!buttonList.contains(item)){
+                buttonList.add(item);
+            }
+            int index = buttonList.lastIndexOf(item);
+
+            switch (item.getType()){
+                case ItemGridType.ACTIVITY:
+                    buttonList.get(index).setMeasurementValue(this.measurementsValues.getActivity());
+                    break;
+
+                case ItemGridType.BLOOD_GLUCOSE:
+                    buttonList.get(index).setMeasurementValue(this.measurementsValues.getGlucose());
+                    break;
+
+                case ItemGridType.BLOOD_PRESSURE:
+                    buttonList.get(index).setMeasurementValue(this.measurementsValues.getPressure());
+                    break;
+
+                case ItemGridType.TEMPERATURE:
+                    buttonList.get(index).setMeasurementValue(this.measurementsValues
+                            .getTemperature());
+                    break;
+
+                case ItemGridType.WEIGHT:
+                    buttonList.get(index).setMeasurementValue(this.measurementsValues.getWeight());
+                    break;
+
+                case ItemGridType.SLEEP:
+                    buttonList.get(index).setMeasurementValue(this.measurementsValues.getSleep());
+                    break;
+
+                case ItemGridType.HEART_RATE:
+                    buttonList.get(index).setMeasurementValue(this.measurementsValues
+                            .getHeartRate());
+                    break;
+            }
+        }else{
+
+            int index = buttonList.lastIndexOf(item);
+            if (index >= 0){
+                buttonList.remove(index);
+            }
+
+        }
+    }
+
     public void updateGrid() {
 
         //Pega os dados que foram selecionados nas preferencias
@@ -314,6 +368,7 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
                 .getString(R.string.key_heart_rate));
 
         if (buttonList != null && buttonList.isEmpty()){
+            Log.d("TESTE","Entrei");
             if (activity) buttonList.add(this.igActivity);
             if (bloodGlucose) buttonList.add(this.igGlucose);
             if (bloodPressure) buttonList.add(this.igPressure);
@@ -323,33 +378,14 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
             if (heartRate) buttonList.add(this.igHearRate);
 
         }else if (buttonList != null){
-            if (activity){ buttonList.get(buttonList.lastIndexOf(this.igActivity)).setMeasurementValue(
-                    this.measurementsValues.getActivity());
-            }
-            if (bloodGlucose){
-                buttonList.get(buttonList.lastIndexOf(this.igGlucose)).setMeasurementValue(
-                        this.measurementsValues.getGlucose());
-            }
-            if (bloodPressure){
-                buttonList.get(buttonList.lastIndexOf(this.igPressure)).setMeasurementValue(
-                        this.measurementsValues.getPressure());
-            }
-            if (temperature){
-                buttonList.get(buttonList.lastIndexOf(this.igTemperature)).setMeasurementValue(
-                        this.measurementsValues.getTemperature());
-            }
-            if (weight){
-                buttonList.get(buttonList.lastIndexOf(this.igWeight)).setMeasurementValue(
-                        this.measurementsValues.getWeight());
-            }
-            if (sleep) {
-                buttonList.get(buttonList.lastIndexOf(this.igSleep)).setMeasurementValue(
-                        this.measurementsValues.getSleep());
-            }
-            if (heartRate) {
-                buttonList.get(buttonList.lastIndexOf(this.igHearRate)).setMeasurementValue(
-                        this.measurementsValues.getHeartRate());
-            }
+
+            updateItemsOfGrid(activity,igActivity);
+            updateItemsOfGrid(bloodGlucose,igGlucose);
+            updateItemsOfGrid(bloodPressure,igPressure);
+            updateItemsOfGrid(temperature,igTemperature);
+            updateItemsOfGrid(weight,igWeight);
+            updateItemsOfGrid(sleep,igSleep);
+            updateItemsOfGrid(heartRate,igHearRate);
         }
 
         mAdapter.clearItems();
