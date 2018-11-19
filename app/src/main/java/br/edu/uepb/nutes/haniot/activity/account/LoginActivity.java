@@ -1,11 +1,15 @@
 package br.edu.uepb.nutes.haniot.activity.account;
 
 import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.renderscript.ScriptGroup;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -16,17 +20,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
-import com.auth0.android.jwt.Claim;
-import com.auth0.android.jwt.JWT;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.Date;
-import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.MainActivity;
@@ -71,6 +69,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private Session session;
     private UserDAO userDAO;
+    private TokenService tokenService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,12 +96,19 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             return false;
         });
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         checkConnectivity();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbindService(mServiceConnection);
     }
 
     @Override
@@ -136,6 +142,30 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         authenticationInServer();
     }
+
+    private void startTokenService(String token) {
+        startService(new Intent(LoginActivity.this, TokenService.class));
+        bindService(new Intent(this, TokenService.class),
+                mServiceConnection,
+                Context.BIND_AUTO_CREATE);
+        //tokenService = TokenService.LocalBinder).getService();
+    }
+
+    // Code to manage Service lifecycle.
+    private final ServiceConnection mServiceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName componentName, IBinder service) {
+            Log.i("JWT", "onServiceConnected()");
+            tokenService = ((TokenService.LocalBinder) service).getService();
+            tokenService.startTokenMonitor(session.getTokenLogged());
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName componentName) {
+            Log.i("JWT", "onServiceDisconnected()");
+            tokenService = null;
+        }
+    };
 
     /**
      * Authenticates the user on the remote server
@@ -175,9 +205,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             user.setToken(fcmToken);
                             sendFcmToken(fcmToken);
                         }
-                        Intent i = new Intent(LoginActivity.this, TokenService.class);
-                        LoginActivity.this.startService(i);
-                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+
+                        if (token != null) startTokenService(token);
+                        // Necessária a mudança de senha
+                        if (result.getString("code").equals("403"))
+                            startActivity(new Intent(LoginActivity.this, ChangePasswordActivity.class));
+                        else
+                            startActivity(new Intent(getApplicationContext(), MainActivity.class));
                         finish();
                     } else {
                         printMessage(result);
