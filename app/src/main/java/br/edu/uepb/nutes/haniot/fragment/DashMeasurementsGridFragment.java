@@ -3,10 +3,8 @@ package br.edu.uepb.nutes.haniot.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Canvas;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -71,7 +69,6 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
     private String sleep = "";
     private String heartRate = "";
 
-    private ArrayList<String> measurements = new ArrayList<>();
     private String measurementDate = "";
 
     private String deviceTypeTag;
@@ -160,18 +157,6 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
         SimpleDateFormat spn = new SimpleDateFormat(getResources().getString(R.string.date_format));
 
         this.measurementDate = spn.format(date);
-    }
-
-    // Add button on the list of the grid
-    public void addButtomOnGrid(Context context,
-                                @DrawableRes int drawable,
-                                String description,
-                                String name,
-                                String measurement,
-                                int type) {
-
-        ItemGrid button = new ItemGrid(context, drawable, description, name, measurement, type);
-        buttonList.add(button);
     }
 
     @Override
@@ -368,7 +353,6 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
                 .getString(R.string.key_heart_rate));
 
         if (buttonList != null && buttonList.isEmpty()){
-            Log.d("TESTE","Entrei");
             if (activity) buttonList.add(this.igActivity);
             if (bloodGlucose) buttonList.add(this.igGlucose);
             if (bloodPressure) buttonList.add(this.igPressure);
@@ -502,14 +486,19 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void updateDate(DateChangedEvent e){
+    public void updateDate(final DateChangedEvent e){
         this.measurementsValues = e;
 
         updateGrid();
 
-        Log.d("TESTE","\n Medições da data "+e.getDate()+": \n"+" Glicose: "+e.getGlucose()+"\n Pressão: "+e.getPressure()
-        +"\n Temperatura: "+e.getTemperature()+"\n Peso: "+e.getWeight()+" \n Batimento Cardiacos: "
-                +e.getHeartRate());
+        Log.d("TESTE","\n recebi o evento no grid agora e vou imprimir o do grid!");
+        e.printValues();
+        if (e.getTemperature().equals("--"))
+            Log.d("TESTE","TEMP NULL");
+
+//        Log.d("TESTE","\n"+" Glicose: "+e.getGlucose()+"\n Pressão: "+e.getPressure()
+//        +"\n Temperatura: "+e.getTemperature()+"\n Peso: "+e.getWeight()+" \n Batimento Cardiacos: "
+//                +e.getHeartRate());
     }
 
 }
