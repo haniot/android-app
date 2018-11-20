@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.renderscript.ScriptGroup;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -64,12 +63,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @BindView(R.id.btn_login)
     Button buttonLogin;
 
-    @BindView(R.id.text_view_signup)
-    TextView signupTextView;
-
     private Session session;
     private UserDAO userDAO;
     private TokenService tokenService;
+    private boolean mIsBound;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +77,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         session = new Session(this);
         userDAO = UserDAO.getInstance(this);
 
-        signupTextView.setOnClickListener(this);
         buttonLogin.setOnClickListener(this);
 
         /**
@@ -108,15 +104,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unbindService(mServiceConnection);
+        doUnbindService();
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.text_view_signup:
-                //startActivity(new Intent(getApplicationContext(), SignupActivity.class));
-                break;
             case R.id.btn_login:
                 login();
                 break;
@@ -144,11 +137,25 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void startTokenService(String token) {
+        Log.i("JWT", "Starting token service");
         startService(new Intent(LoginActivity.this, TokenService.class));
+        doBindService();
+    }
+
+    public void doBindService() {
+        Log.i("JWT", "Starting service and binding");
         bindService(new Intent(this, TokenService.class),
                 mServiceConnection,
                 Context.BIND_AUTO_CREATE);
-        //tokenService = TokenService.LocalBinder).getService();
+        mIsBound = true;
+    }
+
+    public void doUnbindService() {
+        if (mIsBound) {
+            Log.i("JWT", "Stoping service and unbinding");
+            unbindService(mServiceConnection);
+            mIsBound = false;
+        }
     }
 
     // Code to manage Service lifecycle.
@@ -171,6 +178,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
      * Authenticates the user on the remote server
      */
     private void authenticationInServer() {
+        //TODO remove comments
         Log.i(TAG, "authenticationInServer()");
         loadingSend(true);
 
@@ -206,10 +214,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             sendFcmToken(fcmToken);
                         }
 
-                        if (token != null) startTokenService(token);
+                        if (token != null){
+                            Log.i("JWT", "Token not null, starting Token Monitor Service");
+                            startTokenService(token);
+                        }
                         // Necessária a mudança de senha
-                        if (result.getString("code").equals("403"))
+                        if (result.getString("code").equals("403")){
+                            //TODO Colocar no serviço
+                            Log.i("JWT", "403 - Need change password");
                             startActivity(new Intent(LoginActivity.this, ChangePasswordActivity.class));
+                        }
                         else
                             startActivity(new Intent(getApplicationContext(), MainActivity.class));
                         finish();

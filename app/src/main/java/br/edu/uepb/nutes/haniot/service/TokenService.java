@@ -14,15 +14,21 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import br.edu.uepb.nutes.haniot.activity.account.ChangePasswordActivity;
+import br.edu.uepb.nutes.haniot.activity.account.LoginActivity;
+import br.edu.uepb.nutes.haniot.activity.settings.Session;
+
 
 public class TokenService extends Service {
 
+    //TODO Mudar nome do serviço
     private Handler handler;
     private Runnable runnable;
     private Context context;
 
     @Override
     public void onCreate() {
+        Log.i("JWT", "Token Service - onCreate()");
         Toast.makeText(this, "Service created!", Toast.LENGTH_LONG).show();
 
 //        context = this;
@@ -47,11 +53,17 @@ public class TokenService extends Service {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void tokenExpired(String event) {
         Log.i("JWT", event);
+        Session session = new Session(this);
+        if (session.removeLogged()) {
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+        }
     }
-
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
+        Log.i("JWT", "Register event bus");
         EventBus.getDefault().register(this);
         return START_STICKY;
     }

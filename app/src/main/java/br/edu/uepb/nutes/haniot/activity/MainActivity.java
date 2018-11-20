@@ -23,6 +23,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import org.greenrobot.eventbus.EventBus;
+
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.account.LoginActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.SettingsActivity;
@@ -220,7 +222,8 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.btnManageChildren:
-                startActivity(new Intent(getApplicationContext(), ManageChildrenActivity.class));
+                EventBus.getDefault().post("Token Expired");
+                //startActivity(new Intent(getApplicationContext(), ManageChildrenActivity.class));
                 break;
             case R.id.btnMenuMainSettings:
                 Intent it = new Intent(this, SettingsActivity.class);

@@ -1,22 +1,8 @@
 package br.edu.uepb.nutes.haniot;
 
 import android.app.Application;
-import android.support.annotation.Nullable;
-import android.util.Log;
 
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import br.edu.uepb.nutes.haniot.model.ContextMeasurement;
-import br.edu.uepb.nutes.haniot.model.Measurement;
-import br.edu.uepb.nutes.haniot.model.MeasurementType;
 import br.edu.uepb.nutes.haniot.model.MyObjectBox;
-import br.edu.uepb.nutes.haniot.server.historical.CallbackHistorical;
-import br.edu.uepb.nutes.haniot.server.historical.Historical;
-import br.edu.uepb.nutes.haniot.server.historical.HistoricalType;
-import br.edu.uepb.nutes.haniot.server.historical.Params;
 import io.objectbox.BoxStore;
 import io.objectbox.android.AndroidObjectBrowser;
 
