@@ -320,65 +320,45 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
 
                 if (result != null && result.size() > 0) {
 
-                    int steps =0 ;
-                    int calories = 0;
-                    int distance = 0;
+                    float steps = 0;
+                    float calories = 0;
+                    float distance = 0;
 
                     for(Measurement measurement : result){
                         int type = measurement.getTypeId();
                         String value = "";
                         if (type == MeasurementType.HEART_RATE && !measurementHeartRate) {
-                            value = String.valueOf(measurement.getValue());
+                            value = String.format("%.0f",measurement.getValue());
                         }else if (type == MeasurementType.BODY_MASS && !measurementWeight){
-                            value = String.valueOf(measurement.getValue());
-                        }else if (type == MeasurementType.TEMPERATURE&& !measurementTemperature){
-                            value = String.valueOf(measurement.getValue());
+                            value = String.format("%.2f",measurement.getValue());
+                        }else if (type == MeasurementType.TEMPERATURE && !measurementTemperature){
+                            value = String.format("%.0f",measurement.getValue());
                         }else if (type == MeasurementType.BLOOD_PRESSURE_DIASTOLIC && !measurementBloodPressure){
-                            value = String.valueOf(measurement.getValue());
+                            value = String.format("%.2f",measurement.getValue());
                         }else if (type == MeasurementType.BLOOD_GLUCOSE && !measurementBloodGlucose){
-                            value = String.valueOf(measurement.getValue());
+                            value = String.format("%.2f",measurement.getValue());
+                        }else if (type == MeasurementType.STEPS && !measurementSteps){
+                            steps = (float)measurement.getValue();
+                            calories = (float) measurement.getMeasurements().get(0)
+                                    .getValue();
+                            distance = (float) measurement.getMeasurements().get(1)
+                                    .getValue();
+                            measurementSteps = true;
+                            float tes = (float) measurement.getValue();
                         }
                         setupEvent(type,value);
                     }
+                    if (getActivity() != null){
+                        updateCharts(calories,steps,distance);
+                    }
                     postEvent();
-
 
                     if (getActivity() == null) return;
 
-                    if (getActivity() != null) {
-                        int finalSteps = steps;
-                        int finalCalories = calories;
-                        int finalDistance = distance;
-                        new Handler(getContext().getMainLooper()).postDelayed(new Runnable() {
-
-                            @Override
-                            public void run() {
-                                try {
-                                    setDataProgress(finalSteps, finalCalories, finalDistance);
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        }, 200);
-                    }
                 } else {
                     setupEvent(-1,"");
                     postEvent();
-                    try {
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                //No caso de não encontrar valores, o dashboard é zerado
-                                try {
-                                    setDataProgress(0, 0, 0);
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        });
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    updateCharts(0,0,0);
                 }
             }
 
@@ -399,6 +379,26 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
 
         });
 
+    }
+
+    private void updateCharts(float calories, float steps, float distance){
+        try {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        setDataProgress( steps, calories, distance);
+                        measurementSteps = true;
+                    } catch (Exception e) {
+                        Log.d("TESTE",e.getMessage());
+                        e.printStackTrace();
+                    }
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.d("TESTE",e.getMessage());
+        }
     }
 
     //Sum a day
@@ -458,19 +458,24 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
     }
 
     //Update the data of progressbar of dashboard
-    public void setDataProgress(int numberOfSteps, int numberOfCalories, int distance) throws Exception{
+    public void setDataProgress(float numberOfSteps, float numberOfCalories,
+                                float distance) throws Exception{
 
-        stepsProgressBar.setProgressWithAnimation(numberOfSteps, 2500);
-        caloriesProgressBar.setProgressWithAnimation(numberOfCalories, 3000);
-        distanceProgressBar.setProgressWithAnimation(distance, 3000);
+        int steps = (int) numberOfSteps;
+        int calories = (int) numberOfCalories;
+        int dist = (int) distance;
+
+        stepsProgressBar.setProgressWithAnimation(steps, 2500);
+        caloriesProgressBar.setProgressWithAnimation(calories, 3000);
+        distanceProgressBar.setProgressWithAnimation(dist, 3000);
 
         //Seta os dados nos textos abaixo da progressbar
-        textSteps.setText(numberOfSteps + " " + measurementTypeArray[12]);
-        textCalories.setText(numberOfCalories + " " + measurementTypeArray[14]);
-        if (distance < 1000) {
-            textDistance.setText(distance + getResources().getString(R.string.unit_meters));
+        textSteps.setText(steps + " " + measurementTypeArray[12]);
+        textCalories.setText(calories + " " + measurementTypeArray[14]);
+        if (dist < 1000) {
+            textDistance.setText(dist+ getResources().getString(R.string.unit_meters));
         } else {
-            float distanceKm = distance / 1000;
+            float distanceKm = dist / 1000;
             textDistance.setText(distanceKm + getResources().getString(R.string.unit_kilometer));
         }
 
