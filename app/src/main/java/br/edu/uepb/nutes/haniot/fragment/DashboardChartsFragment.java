@@ -218,6 +218,11 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
     public void onStart() {
         super.onStart();
         _eventBus.register(this);
+        try {
+            loadServerData();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
