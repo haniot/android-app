@@ -11,6 +11,8 @@ public class DateChangedEvent {
     private String temperature = "--";
     private String weight = "--";
     private String heartRate = "--";
+    private String height = "--";
+    private String circumference = "--";
 
     public DateChangedEvent(){}
 
@@ -36,6 +38,12 @@ public class DateChangedEvent {
         if (!this.heartRate.equals("--")){
             Log.d("TESTE","Valor da medição batimento cardiaco: "+this.heartRate);
         }
+        if (!this.height.equals("--")){
+            Log.d("TESTE","Valor da medição altura: "+this.height);
+        }
+        if (!this.circumference.equals("--")){
+            Log.d("TESTE","Valor da medição circunferencia: "+this.circumference);
+        }
     }
 
     public void resetAllValues(){
@@ -46,6 +54,24 @@ public class DateChangedEvent {
         this.temperature = "--";
         this.weight = "--";
         this.heartRate = "--";
+        this.circumference = "--";
+        this.height = "--";
+    }
+
+    public String getHeight() {
+        return height;
+    }
+
+    public void setHeight(String height) {
+        this.height = height;
+    }
+
+    public String getCircumference() {
+        return circumference;
+    }
+
+    public void setCircumference(String circumference) {
+        this.circumference = circumference;
     }
 
     public String getActivity() {

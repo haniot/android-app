@@ -440,6 +440,8 @@
     <string name="choose_blood_pressure">Choose the pressure</string>
     <string name="choose_pulse">Chosse the pulse</string>
     <string name="unit_min">/min</string>
+    <string name="key_anthropometric">key_anthropometric</string>
+    <string name="anthropometric">Anthropometric measurements</string>
 
     <!-- END OF STRINGS FOR TABLET -->
 
@@ -893,4 +895,7 @@
     <string name="accu_check_pref">accu_check</string>
     <string name="body_composition_yunmai_pref">body_composition_yunmai</string>
     <string name="body_composition_omron_pref">body_composition_omron</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

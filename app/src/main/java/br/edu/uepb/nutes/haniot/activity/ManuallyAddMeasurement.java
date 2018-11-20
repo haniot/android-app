@@ -22,6 +22,7 @@ import java.util.Date;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
+import br.edu.uepb.nutes.haniot.fragment.AddAnthropometricsFragment;
 import br.edu.uepb.nutes.haniot.fragment.AddBloodGlucoseManuallyFragment;
 import br.edu.uepb.nutes.haniot.fragment.AddBloodPressureManuallyFragment;
 import br.edu.uepb.nutes.haniot.fragment.AddHeartRateManuallyFragment;
@@ -240,6 +241,13 @@ public class ManuallyAddMeasurement extends AppCompatActivity implements View.On
             case ItemGridType.BLOOD_PRESSURE:
 
                 myFragment = new AddBloodPressureManuallyFragment();
+                getSupportFragmentManager().beginTransaction().replace(R.id.frame_measurement,
+                        myFragment).commit();
+                break;
+
+            case ItemGridType.ANTHROPOMETRIC:
+
+                myFragment = new AddAnthropometricsFragment();
                 getSupportFragmentManager().beginTransaction().replace(R.id.frame_measurement,
                         myFragment).commit();
                 break;

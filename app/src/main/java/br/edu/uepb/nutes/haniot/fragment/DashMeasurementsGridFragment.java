@@ -52,6 +52,7 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
     private ItemGrid igWeight;
     private ItemGrid igSleep;
     private ItemGrid igHearRate;
+    private ItemGrid igAnthropometric;
 
     private List<ItemGrid> buttonList = new ArrayList<>();
     private Context mContext;
@@ -145,6 +146,14 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
         igHearRate.setMeasurementValue(this.measurementsValues.getHeartRate());
         igHearRate.setType(ItemGridType.HEART_RATE);
 
+        this.igAnthropometric = new ItemGrid();
+        igAnthropometric.setContext(getContext());
+        igAnthropometric.setIcon(R.drawable.ic_ruler_64);
+        igAnthropometric.setDescription(getResources().getString(R.string.anthropometric));
+        igAnthropometric.setMeasurementValue(this.measurementsValues.getHeight());
+        igAnthropometric.setType(ItemGridType.ANTHROPOMETRIC);
+
+
         this.activity = getResources().getString(R.string.activity);
         this.glucose = getResources().getString(R.string.blood_glucose);
         this.pressure = getResources().getString(R.string.blood_pressure);
@@ -175,7 +184,6 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
     }
 
     private void initComponents() {
-//        initRecyclerView();
         updateGrid();
     }
 
@@ -352,6 +360,10 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
         Boolean heartRate = getPreferenceBoolean(getResources()
                 .getString(R.string.key_heart_rate));
 
+        Boolean anthropometric = getPreferenceBoolean(getResources()
+            .getString(R.string.key_anthropometric));
+
+//        If the list is empty, just add the items
         if (buttonList != null && buttonList.isEmpty()){
             if (activity) buttonList.add(this.igActivity);
             if (bloodGlucose) buttonList.add(this.igGlucose);
@@ -360,7 +372,9 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
             if (weight) buttonList.add(this.igWeight);
             if (sleep) buttonList.add(this.igSleep);
             if (heartRate) buttonList.add(this.igHearRate);
+            if (anthropometric) buttonList.add(this.igAnthropometric);
 
+//            if the list is not empty, call updateItemsOfGrid to update the items
         }else if (buttonList != null){
 
             updateItemsOfGrid(activity,igActivity);
@@ -370,6 +384,7 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
             updateItemsOfGrid(weight,igWeight);
             updateItemsOfGrid(sleep,igSleep);
             updateItemsOfGrid(heartRate,igHearRate);
+            updateItemsOfGrid(anthropometric,igAnthropometric);
         }
 
         mAdapter.clearItems();
@@ -430,7 +445,11 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
 
         int type = item.getType();
         Intent it = new Intent(getContext(), ManuallyAddMeasurement.class);
+        if (ItemGridType.typeSupported(type)) {
+            Log.d("TESTE","Tipo: "+type);
+        }
         switch (type){
+
             case ItemGridType.ACTIVITY:
                 it.putExtra(getResources().getString(R.string.measurementType),ItemGridType.ACTIVITY);
                 startActivity(it);
@@ -462,7 +481,14 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
                 break;
 
             case ItemGridType.HEART_RATE:
-                it.putExtra(getResources().getString(R.string.measurementType),ItemGridType.HEART_RATE);
+                it.putExtra(getResources().getString(R.string.measurementType),
+                        ItemGridType.HEART_RATE);
+                startActivity(it);
+                break;
+
+            case ItemGridType.ANTHROPOMETRIC:
+                it.putExtra(getResources().getString(R.string.measurementType),
+                        ItemGridType.ANTHROPOMETRIC);
                 startActivity(it);
                 break;
 

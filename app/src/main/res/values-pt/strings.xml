@@ -379,6 +379,8 @@
     <string name="choose_blood_pressure">Escolha o valor da pressão</string>
     <string name="choose_pulse">Escolha o pulso</string>
     <string name="unit_min">/min</string>
+    <string name="key_anthropometric">key_anthropometric</string>
+    <string name="anthropometric">Medidas antropométricas</string>
 
     <!-- END OF STRINGS FOR TABLET -->
 

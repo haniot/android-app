@@ -86,17 +86,6 @@ public class GridDashAdapter extends BaseAdapter<ItemGrid>{
     public class ViewHolder extends RecyclerView.ViewHolder {
         final View mView;
 
-        /*@BindView(R.id.imageIten)
-        ImageView imageIten;
-        @BindView(R.id.textDescription)
-        TextView textDescription;
-        @BindView(R.id.textName)
-        TextView textName;
-        @BindView(R.id.layoutItemGrid)
-        RelativeLayout layoutItemGrid;
-        @BindView(R.id.itemGridProgressBar)
-        CircularProgressBar itemGridProgressBar;*/
-
         @BindView(R.id.imageIten)
         ImageView imageIten;
         @BindView(R.id.textDescription)
