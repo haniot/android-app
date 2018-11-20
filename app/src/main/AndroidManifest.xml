@@ -24,7 +24,7 @@
         android:theme="@style/AppTheme">
 
         <service
-            android:name=".service.TokenService" >
+            android:name=".service.AccountService" >
         </service>
         <!-- ACTIVITIES -->
         <activity android:name=".activity.SplashScreenActivity">
@@ -37,6 +37,14 @@
         <activity
             android:name=".activity.account.LoginActivity"
             android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activity.account.ChangeDataActivity"
+            android:windowSoftInputMode="stateHidden">
+            <intent-filter>
+                <action android:name="br.edu.uepb.nutes.ocariot.activity.account.ChangeDataActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".activity.MainActivity"
             android:screenOrientation="sensor" />

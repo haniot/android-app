@@ -88,7 +88,7 @@ public class MyPreferenceFragment extends PreferenceFragment {
         Preference prefYourdata = findPreference(getString(R.string.key_your_data));
         prefYourdata.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
-                //Intent intent = new Intent(getActivity(), SignupActivity.class);
+                //Intent intent = new Intent(getActivity(), ChangeDataActivity.class);
                 //intent.putExtra(FORM_UPDATE, true);
 
                // getActivity().startActivity(intent);

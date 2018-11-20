@@ -26,6 +26,7 @@ import android.widget.Toast;
 import org.greenrobot.eventbus.EventBus;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.activity.account.ChangeDataActivity;
 import br.edu.uepb.nutes.haniot.activity.account.LoginActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.SettingsActivity;
 import br.edu.uepb.nutes.haniot.adapter.FragmentPageAdapter;
@@ -222,7 +223,9 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.btnManageChildren:
-                EventBus.getDefault().post("Token Expired");
+                //TODO Apagar teste ao finalizar
+                //EventBus.getDefault().post("Token Expired");
+                startActivity(new Intent(getApplicationContext(), ChangeDataActivity.class));
                 //startActivity(new Intent(getApplicationContext(), ManageChildrenActivity.class));
                 break;
             case R.id.btnMenuMainSettings:

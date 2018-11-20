@@ -16,12 +16,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -31,7 +31,7 @@ import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.model.User;
 import br.edu.uepb.nutes.haniot.model.dao.UserDAO;
 import br.edu.uepb.nutes.haniot.server.Server;
-import br.edu.uepb.nutes.haniot.service.TokenService;
+import br.edu.uepb.nutes.haniot.service.AccountService;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -65,7 +65,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private Session session;
     private UserDAO userDAO;
-    private TokenService tokenService;
+    private AccountService accountService;
     private boolean mIsBound;
 
     @Override
@@ -136,44 +136,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         authenticationInServer();
     }
 
-    private void startTokenService(String token) {
-        Log.i("JWT", "Starting token service");
-        startService(new Intent(LoginActivity.this, TokenService.class));
-        doBindService();
-    }
-
-    public void doBindService() {
-        Log.i("JWT", "Starting service and binding");
-        bindService(new Intent(this, TokenService.class),
-                mServiceConnection,
-                Context.BIND_AUTO_CREATE);
-        mIsBound = true;
-    }
-
-    public void doUnbindService() {
-        if (mIsBound) {
-            Log.i("JWT", "Stoping service and unbinding");
-            unbindService(mServiceConnection);
-            mIsBound = false;
-        }
-    }
-
-    // Code to manage Service lifecycle.
-    private final ServiceConnection mServiceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName componentName, IBinder service) {
-            Log.i("JWT", "onServiceConnected()");
-            tokenService = ((TokenService.LocalBinder) service).getService();
-            tokenService.startTokenMonitor(session.getTokenLogged());
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName componentName) {
-            Log.i("JWT", "onServiceDisconnected()");
-            tokenService = null;
-        }
-    };
-
     /**
      * Authenticates the user on the remote server
      */
@@ -216,13 +178,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                         if (token != null) {
                             Log.i("JWT", "Token not null, starting Token Monitor Service");
-                            startTokenService(token);
+                            startAccountService();
                         }
                         // Necessária a mudança de senha
                         if (result.getString("code").equals("403")) {
-                            //TODO Colocar no serviço
+                            //TODO criar strings para os eventos
                             Log.i("JWT", "403 - Need change password");
-                            startActivity(new Intent(LoginActivity.this, ChangePasswordActivity.class));
+                            EventBus.getDefault().post("403");
                         } else
                             startActivity(new Intent(getApplicationContext(), MainActivity.class));
                         finish();
@@ -362,4 +324,52 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         return true;
     }
 
+    /**
+     *  Start Account Service.
+     */
+    private void startAccountService() {
+        Log.i("JWT", "Starting token service");
+        startService(new Intent(LoginActivity.this, AccountService.class));
+        doBindService();
+    }
+
+    /**
+     *  Bind service.
+     */
+    public void doBindService() {
+        Log.i("JWT", "Starting service and binding");
+        bindService(new Intent(this, AccountService.class),
+                mServiceConnection,
+                Context.BIND_AUTO_CREATE);
+        mIsBound = true;
+    }
+
+    /**
+     *  Unbind service.
+     */
+    public void doUnbindService() {
+        if (mIsBound) {
+            Log.i("JWT", "Stoping service and unbinding");
+            unbindService(mServiceConnection);
+            mIsBound = false;
+        }
+    }
+
+    /**
+     *  Code to manage Service lifecycle.
+     */
+    private final ServiceConnection mServiceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName componentName, IBinder service) {
+            Log.i("JWT", "onServiceConnected()");
+            accountService = ((AccountService.LocalBinder) service).getService();
+            accountService.startTokenMonitor(session.getTokenLogged());
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName componentName) {
+            Log.i("JWT", "onServiceDisconnected()");
+            accountService = null;
+        }
+    };
 }

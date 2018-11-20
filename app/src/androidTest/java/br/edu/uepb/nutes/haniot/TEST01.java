@@ -97,7 +97,7 @@ public class TEST01 {
 //    public void task05(){
 //        Intents.init();
 //
-//        Matcher<Intent> matcher = hasComponent(SignupActivity.class.getName());
+//        Matcher<Intent> matcher = hasComponent(ChangeDataActivity.class.getName());
 //        Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.
 //          RESULT_OK, null);
 //        intending(matcher).respondWith(result);

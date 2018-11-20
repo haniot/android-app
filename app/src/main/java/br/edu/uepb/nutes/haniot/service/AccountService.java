@@ -14,31 +14,23 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import br.edu.uepb.nutes.haniot.activity.account.ChangePasswordActivity;
 import br.edu.uepb.nutes.haniot.activity.account.LoginActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 
 
-public class TokenService extends Service {
+public class AccountService extends Service {
 
     //TODO Mudar nome do serviço
+    private final String TAG = "Account Service";
     private Handler handler;
     private Runnable runnable;
     private Context context;
 
     @Override
     public void onCreate() {
-        Log.i("JWT", "Token Service - onCreate()");
+        Log.i(TAG, "Token Service - onCreate()");
         Toast.makeText(this, "Service created!", Toast.LENGTH_LONG).show();
 
-//        context = this;
-//        handler = new Handler();
-//        runnable = new Runnable() {
-//            public void run() {
-//                Toast.makeText(context, "Service is still running", Toast.LENGTH_LONG).show();
-//                handler.postDelayed(runnable, 10000);
-//            }
-//        };
     }
 
     @Override
@@ -46,13 +38,46 @@ public class TokenService extends Service {
         /* IF YOU WANT THIS SERVICE KILLED WITH THE APP THEN UNCOMMENT THE FOLLOWING LINE */
         //handler.removeCallbacks(runnable);
         EventBus.getDefault().unregister(this);
-
-        Toast.makeText(this, "Service stopped", Toast.LENGTH_LONG).show();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void tokenExpired(String event) {
-        Log.i("JWT", event);
+    public void eventReceiver(String event) {
+        Log.i(TAG, event);
+
+        switch (event) {
+            case "Unauthorized":
+                tokenExpired();
+                break;
+            case "403":
+                changePassword();
+                break;
+            default:
+                break;
+        }
+
+    }
+
+    /**
+     * Need change password of account.
+     */
+    private void changePassword() {
+        Log.i(TAG, "Change password");
+
+    }
+
+    /**
+     * Start the monitor for token expiration
+     */
+    private void initTokenMonitor() {
+        Log.i(TAG, "Initializing Token Monitor");
+
+    }
+
+    /**
+     * When token is expired.
+     */
+    private void tokenExpired() {
+        Log.i(TAG, "Token Expired");
         Session session = new Session(this);
         if (session.removeLogged()) {
             Intent intent = new Intent(this, LoginActivity.class);
@@ -60,21 +85,22 @@ public class TokenService extends Service {
             startActivity(intent);
         }
     }
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
-        Log.i("JWT", "Register event bus");
+        Log.i(TAG, "Register event bus");
         EventBus.getDefault().register(this);
         return START_STICKY;
     }
 
-    public void startTokenMonitor(String token){
-        Log.i("JWT", "Monitorando o token: "+token);
+    public void startTokenMonitor(String token) {
+        Log.i(TAG, "Monitorando o token: " + token);
     }
 
     public class LocalBinder extends Binder {
-        public TokenService getService() {
-            return TokenService.this;
+        public AccountService getService() {
+            return AccountService.this;
         }
     }
 
