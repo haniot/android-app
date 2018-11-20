@@ -318,8 +318,6 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
             @Override
             public void onResult(List<Measurement> result) {
 
-                Log.d("TESTE","\n ------------------------------");
-
                 if (result != null && result.size() > 0) {
 
                     int steps =0 ;
@@ -342,7 +340,6 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
                         }
                         setupEvent(type,value);
                     }
-                    Log.d("TESTE","Evento vai ser postado agora e vou imprimir");
                     postEvent();
 
 
@@ -367,7 +364,6 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
                 } else {
                     setupEvent(-1,"");
                     postEvent();
-//                    Log.d("TESTE","Resultado é null ou igual a zero");
                     try {
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
@@ -389,6 +385,7 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
             @Override
             public void onAfterSend() {
                 if (getContext() != null) {
+                    resetValues();
                     resetMeasurementStatus();
                     new Handler(getContext().getMainLooper()).postDelayed(new Runnable() {
 
@@ -565,14 +562,14 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
         return this.today;
     }
 
-    private void postEvent(Object event){
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    private void postEvent(){
+        DateChangedEvent event = new DateChangedEvent();
+        event = this.eventMeasurement;
         EventBus.getDefault().post(event);
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    private void postEvent(){
-        EventBus.getDefault().post(this.eventMeasurement);
-        this.eventMeasurement.printValues();
+    private void resetValues(){
         this.eventMeasurement.resetAllValues();
     }
 
@@ -607,7 +604,6 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
         ((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE))
                 .showSoftInput(textDate, InputMethodManager.SHOW_IMPLICIT);
 
-        Log.d("TESTE","Vou postar o evento com a data: "+this.calendar.getTime());
 //        postEvent(this.eventMeasurement);
 
     }

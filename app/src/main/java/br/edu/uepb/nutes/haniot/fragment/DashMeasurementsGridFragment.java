@@ -486,19 +486,10 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void updateDate(final DateChangedEvent e){
+    public void updateDate(DateChangedEvent e){
         this.measurementsValues = e;
 
         updateGrid();
-
-        Log.d("TESTE","\n recebi o evento no grid agora e vou imprimir o do grid!");
-        e.printValues();
-        if (e.getTemperature().equals("--"))
-            Log.d("TESTE","TEMP NULL");
-
-//        Log.d("TESTE","\n"+" Glicose: "+e.getGlucose()+"\n Pressão: "+e.getPressure()
-//        +"\n Temperatura: "+e.getTemperature()+"\n Peso: "+e.getWeight()+" \n Batimento Cardiacos: "
-//                +e.getHeartRate());
     }
 
 }
