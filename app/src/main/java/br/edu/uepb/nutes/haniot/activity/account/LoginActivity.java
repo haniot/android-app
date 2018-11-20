@@ -214,17 +214,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             sendFcmToken(fcmToken);
                         }
 
-                        if (token != null){
+                        if (token != null) {
                             Log.i("JWT", "Token not null, starting Token Monitor Service");
                             startTokenService(token);
                         }
                         // Necessária a mudança de senha
-                        if (result.getString("code").equals("403")){
+                        if (result.getString("code").equals("403")) {
                             //TODO Colocar no serviço
                             Log.i("JWT", "403 - Need change password");
                             startActivity(new Intent(LoginActivity.this, ChangePasswordActivity.class));
-                        }
-                        else
+                        } else
                             startActivity(new Intent(getApplicationContext(), MainActivity.class));
                         finish();
                     } else {
@@ -301,6 +300,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             valid = false;
         } else {
             emailEditText.setError(null);
+        }
+        if (password.isEmpty()) {
+            passwordEditText.setError(getString(R.string.required_field));
+            valid = false;
+            if (emailEditText.getError() == null) passwordEditText.requestFocus();
+        } else {
+            passwordEditText.setError(null);
         }
 
         return valid;
