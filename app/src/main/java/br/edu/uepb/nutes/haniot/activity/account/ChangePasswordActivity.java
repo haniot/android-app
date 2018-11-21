@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -63,6 +64,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
     private Menu menu;
     private Session session;
     private UserDAO userDAO;
+    private boolean isFirstLogin = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +75,10 @@ public class ChangePasswordActivity extends AppCompatActivity {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle(R.string.change_password);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        Intent intent = getIntent();
+        if (intent.getBooleanExtra(String.valueOf(R.string.first_login), true)) {
+            isFirstLogin = true;
+        }
         confirmPasswordEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
@@ -306,4 +311,19 @@ public class ChangePasswordActivity extends AppCompatActivity {
 
         return true;
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+//        if (isFirstLogin) {
+//            Log.i(TAG, "Is first login, please change password...");
+//            if (session.removeLogged()) {
+//                Intent intent = new Intent(this, LoginActivity.class);
+//                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                startActivity(intent);
+//            }
+//        }
+    }
+
+
 }

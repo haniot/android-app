@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="br.edu.uepb.nutes.haniot.activity.account.ChangeDataActivity">
+    tools:context="br.edu.uepb.nutes.haniot.activity.account.UpdateDataActivity">
 
     <include layout="@layout/toolbar" />
 

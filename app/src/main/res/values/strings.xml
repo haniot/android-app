@@ -893,4 +893,8 @@
     <string name="accu_check_pref">accu_check</string>
     <string name="body_composition_yunmai_pref">body_composition_yunmai</string>
     <string name="body_composition_omron_pref">body_composition_omron</string>
+
+    <!-- AccountService -->
+    <string name="token_expired" translatable="false">Token Expired</string>
+    <string name="first_login" translatable="false">First login</string>
 </resources>

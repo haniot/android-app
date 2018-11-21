@@ -1,6 +1,7 @@
 package br.edu.uepb.nutes.haniot.activity.account;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -18,6 +19,7 @@ import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.auth0.android.jwt.JWT;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 
@@ -158,6 +160,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     User user = result.has("user") ? new Gson().fromJson(result.getString("user"), User.class) : null;
                     final String token = result.has("token") ? new Gson().fromJson(result.getString("token"), String.class) : null;
 
+                    JWT jwt =  new JWT(token);
+                    Log.i(TAG, jwt.toString());
+                    if (jwt.getExpiresAt() == null) Log.i(TAG, "Is null");
                     if (user.get_id() != null && token != null) {
                         user.setToken(token);
                         User u = userDAO.get(user.getEmail());
@@ -178,16 +183,19 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                         if (token != null) {
                             Log.i("JWT", "Token not null, starting Token Monitor Service");
+                            if (!isMyServiceRunning(AccountService.class))
                             startAccountService();
                         }
                         // Necessária a mudança de senha
-                        if (result.getString("code").equals("403")) {
+                        //if (result.getString("code").equals("403")) {
+                        if (true) {
                             //TODO criar strings para os eventos
                             Log.i("JWT", "403 - Need change password");
                             EventBus.getDefault().post("403");
-                        } else
+                        } else {
                             startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                        finish();
+                            finish();
+                        }
                     } else {
                         printMessage(result);
                     }
@@ -200,6 +208,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         });
     }
 
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
     /**
      * Send token in FCM.
      *
@@ -325,7 +342,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     /**
-     *  Start Account Service.
+     * Start Account Service.
      */
     private void startAccountService() {
         Log.i("JWT", "Starting token service");
@@ -334,7 +351,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     /**
-     *  Bind service.
+     * Bind service.
      */
     public void doBindService() {
         Log.i("JWT", "Starting service and binding");
@@ -345,7 +362,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     /**
-     *  Unbind service.
+     * Unbind service.
      */
     public void doUnbindService() {
         if (mIsBound) {
@@ -356,7 +373,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     /**
-     *  Code to manage Service lifecycle.
+     * Code to manage Service lifecycle.
      */
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
         @Override

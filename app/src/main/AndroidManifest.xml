@@ -38,7 +38,7 @@
             android:name=".activity.account.LoginActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".activity.account.ChangeDataActivity"
+            android:name=".activity.account.UpdateDataActivity"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="br.edu.uepb.nutes.ocariot.activity.account.ChangeDataActivity" />

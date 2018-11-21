@@ -233,8 +233,9 @@ public class Server {
                     String jsonString = response.body().string();
                     if (jsonString.equals("Unauthorized")) {
                         result.put("unauthorized", mContext.getString(R.string.validate_unauthorized_access));
-                        //TODO Criar string e verificar se essa é a melhor implementação (Ou por code)
-                        EventBus.getDefault().post("Unauthorized");
+                        //TODO Verificar se essa é a melhor implementação (Ou por code)
+                        Log.i("JWT", "Unaun");
+                        EventBus.getDefault().post("token expired");
                     } else if (!jsonString.isEmpty()) {
                         Object json = new JSONTokener(jsonString).nextValue();
                         if(json instanceof JSONObject)

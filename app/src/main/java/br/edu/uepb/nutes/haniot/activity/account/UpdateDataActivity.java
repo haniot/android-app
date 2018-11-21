@@ -1,58 +1,47 @@
 package br.edu.uepb.nutes.haniot.activity.account;
 
-import android.app.DatePickerDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
+
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.activity.settings.MyPreferenceFragment;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.fragment.GenericDialogFragment;
 import br.edu.uepb.nutes.haniot.model.User;
 import br.edu.uepb.nutes.haniot.model.dao.UserDAO;
 import br.edu.uepb.nutes.haniot.server.Server;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
-import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
 import com.google.gson.Gson;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Calendar;
-import java.util.regex.Pattern;
-
 /**
- * ChangeDataActivity implementation.
+ * UpdateDataActivity implementation.
  *
  * @author Douglas Rafael <douglas.rafael@nutes.uepb.edu.br>
  * @version 1.0
  * @copyright Copyright (c) 2017, NUTES UEPB
  */
-public class ChangeDataActivity extends AppCompatActivity implements View.OnClickListener, DatePickerDialog.OnDateSetListener, GenericDialogFragment.OnClickDialogListener {
+public class UpdateDataActivity extends AppCompatActivity implements View.OnClickListener, GenericDialogFragment.OnClickDialogListener {
     public final int DIALOG_HAS_CHANGE = 1;
 
-    private final String TAG = "ChangeDataActivity";
+    private final String TAG = "UpdateDataActivity";
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
 
     @BindView(R.id.progressBarToolbar)
     ProgressBar mProgressBar;
-
-    @BindView(R.id.box_signup)
-    LinearLayout mBoxSignUp;
 
     @BindView(R.id.alert_error_connectivity)
     FrameLayout mAlertConnectivity;
@@ -63,13 +52,13 @@ public class ChangeDataActivity extends AppCompatActivity implements View.OnClic
     @BindView(R.id.edit_text_email)
     EditText emailEditText;
 
+    @BindView(R.id.btn_change_passsword)
+    Button buttonChangePassword;
+
     private User user;
     private Session session;
     private UserDAO userDAO;
-    private Calendar calendar;
-    private DatePickerDialog datePickerDialog;
     private Menu menu;
-    private boolean isUpdate = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,21 +68,16 @@ public class ChangeDataActivity extends AppCompatActivity implements View.OnClic
 
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle(R.string.update_account);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        buttonChangePassword.setOnClickListener(this);
 
         user = new User();
         session = new Session(this);
         userDAO = UserDAO.getInstance(this);
-        calendar = Calendar.getInstance();
 
-        /**
-         * Check if it's to edit
-         */
-        Intent intent = getIntent();
-        if (intent.getBooleanExtra(MyPreferenceFragment.FORM_UPDATE, false)) {
-            isUpdate = true;
-            prepareEditing();
+        prepareEditing();
 
-        }
     }
 
     @Override
@@ -122,7 +106,7 @@ public class ChangeDataActivity extends AppCompatActivity implements View.OnClic
                 closeActivity();
                 break;
             case R.id.action_save:
-                signup();
+                update();
                 break;
             default:
                 break;
@@ -133,12 +117,6 @@ public class ChangeDataActivity extends AppCompatActivity implements View.OnClic
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-//            case R.id.text_view_already_account:
-//                closeActivity();
-//                break;
-//            case R.id.edit_text_date_of_birth:
-//                openDatePicker();
-//                break;
             case R.id.btn_change_passsword:
                 if (user != null) {
                     Intent intent = new Intent(this, ChangePasswordActivity.class);
@@ -150,21 +128,6 @@ public class ChangeDataActivity extends AppCompatActivity implements View.OnClic
     }
 
     @Override
-    public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-        calendar.set(year, month, day, 0, 0, 0);
-
-        user.setDateOfBirth(calendar.getTimeInMillis());
-      //  dateOfBirthEditText.setText(DateUtils.calendarToString(calendar, getString(R.string.date_format)));
-
-        /**
-         * open keyboard
-         */
-//        ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
-//                .showSoftInput(heightEditText, InputMethodManager.SHOW_IMPLICIT);
-//        requestFocus(heightEditText);
-    }
-
-    @Override
     public void onClickDialog(int id, int button) {
         if (id == DIALOG_HAS_CHANGE) {
             if (button == DialogInterface.BUTTON_POSITIVE)
@@ -173,41 +136,9 @@ public class ChangeDataActivity extends AppCompatActivity implements View.OnClic
     }
 
     /**
-     * Open datepicker.
-     */
-    private void openDatePicker() {
-        int year = calendar.get(Calendar.YEAR) - 20;
-        int month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-
-        if (user != null && user.getDateOfBirth() > 0) {
-            int[] dateVelues = DateUtils.getDateValues(user.getDateOfBirth());
-            year = dateVelues[0];
-            month = dateVelues[1];
-            day = dateVelues[2];
-        }
-        datePickerDialog = new DatePickerDialog(ChangeDataActivity.this, this, year, month, day);
-        datePickerDialog.show();
-
-        /**
-         * Close keyboard
-//         */
-//        ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
-//                .hideSoftInputFromWindow(dateOfBirthEditText.getWindowToken(), 0);
-    }
-
-    /**
      * Prepare the view for editing the data
      */
     private void prepareEditing() {
-        getSupportActionBar().setTitle(R.string.update_account);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-//        alreadyAccountTextView.setOnClickListener(null);
-//        alreadyAccountTextView.setVisibility(View.GONE);
-//        passwordTextInputLayout.setVisibility(View.GONE);
-//        passwordConfirmTextInputLayout.setVisibility(View.GONE);
-//        buttonChangePassword.setVisibility(View.VISIBLE);
         emailEditText.setEnabled(false);
         emailEditText.setFocusable(false);
         emailEditText.setFocusableInTouchMode(false);
@@ -257,9 +188,9 @@ public class ChangeDataActivity extends AppCompatActivity implements View.OnClic
     }
 
     /**
-     * Add user or update
+     * Add user or updateInServer
      */
-    private void signup() {
+    private void update() {
         /**
          * Check if you have an internet connection.
          * If yes, it sends the data to the remote server.
@@ -267,53 +198,13 @@ public class ChangeDataActivity extends AppCompatActivity implements View.OnClic
         if (!checkConnectivity() || !validate())
             return;
 
-        /**
-         * Sign Up or Update
-         */
-        if (!isUpdate) {
-            signUpInServer();
-        } else {
-            update();
-        }
-    }
-
-    /**
-     * Authenticates the user on the remote server
-     */
-    private void signUpInServer() {
-        loading(true);
-
-        // Send for remote server /users/signup
-        Server.getInstance(this).post("users/signup",
-                new Gson().toJson(getUserView()), new Server.Callback() {
-                    @Override
-                    public void onError(JSONObject result) {
-                        printMessage(result);
-                        loading(false);
-                    }
-
-                    @Override
-                    public void onSuccess(JSONObject result) {
-                        try {
-                            final User user = new Gson().fromJson(result.getString("user"), User.class);
-                            if (user.getEmail() != null) {
-                                userDAO.save(user); // save in local
-                                finish(); // to back login activity
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        } finally {
-                            loading(false);
-                            printMessage(result);
-                        }
-                    }
-                });
+        updateInServer();
     }
 
     /**
      * Update user in server
      */
-    private void update() {
+    private void updateInServer() {
         if (user == null)
             return;
 
@@ -357,8 +248,6 @@ public class ChangeDataActivity extends AppCompatActivity implements View.OnClic
                     if (response.has("code") && !response.has("unauthorized")) {
                         if (response.getInt("code") == 409) { // duplicate
                             Toast.makeText(getApplicationContext(), R.string.validate_register_user_not_duplicate, Toast.LENGTH_LONG).show();
-                        } else if (!isUpdate && response.getInt("code") == 201) {
-                            Toast.makeText(getApplicationContext(), R.string.register_success, Toast.LENGTH_SHORT).show();
                         } else if (response.getInt("code") == 201) {
                             Toast.makeText(getApplicationContext(), R.string.update_success, Toast.LENGTH_SHORT).show();
                         } else { // error 500
@@ -381,30 +270,20 @@ public class ChangeDataActivity extends AppCompatActivity implements View.OnClic
      */
     private void populateView() {
         nameEditText.setText(user.getName());
-//        dateOfBirthEditText.setText(DateUtils.formatDate(user.getDateOfBirth(), getString(R.string.date_format)));
-//        heightEditText.setText(String.valueOf(user.getHeight()));
         emailEditText.setText(user.getEmail());
         emailEditText.setEnabled(false);
         emailEditText.setFocusable(false);
         emailEditText.setFocusableInTouchMode(false);
-
-//        if (user.getGender() == 1) {
-//            genderMaleRadioButton.setChecked(true);
-//        } else {
-//            genderFemaleRadioButton.setChecked(true);
-//        }
     }
 
     /**
      * Validade form.
-     * Note: "email" is not validated in the update. Because it should not be updated.
+     * Note: "email" is not validated in the updateInServer. Because it should not be updated.
      *
      * @return boolean
      */
     public boolean validate() {
         String name = nameEditText.getText().toString();
-//        String dateBirth = dateOfBirthEditText.getText().toString();
-//        String height = heightEditText.getText().toString();
         String email = emailEditText.getText().toString();
 
         if (name.isEmpty() || name.length() < 3) {
@@ -415,76 +294,12 @@ public class ChangeDataActivity extends AppCompatActivity implements View.OnClic
             nameEditText.setError(null);
         }
 
-//        if (dateBirth.isEmpty()) {
-//            dateOfBirthEditText.setError(getString(R.string.validate_not_null));
-//            requestFocus(dateOfBirthEditText);
-//            return false;
-//        } else {
-//            dateOfBirthEditText.setError(null);
-//        }
-//
-//        if (height.isEmpty() || Integer.valueOf(height) < 50 || Integer.valueOf(height) > 250) {
-//            heightEditText.setError(getString(R.string.validate_height));
-//            requestFocus(heightEditText);
-//            return false;
-//        } else {
-//            heightEditText.setError(null);
-//        }
-
-        if (!isUpdate) {
-            if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                emailEditText.setError(getString(R.string.validate_email));
-                requestFocus(emailEditText);
-                return false;
-            } else {
-                emailEditText.setError(null);
-            }
-        }
-
-        return validatePassword();
-    }
-
-    /**
-     * Validate EditText password.
-     * Note: "password" is not validated in the update.
-     * Because it has a specific screen for updating.
-     *
-     * @return boolean
-     */
-    public boolean validatePassword() {
-        if (!isUpdate) {
-//            String password = passwordEditText.getText().toString();
-//            String passwordConfirm = passwordConfirmEditText.getText().toString();
-
-            /**
-             * Regular expression to check if the password contains the default:
-             *   - at least 1 number
-             *   - At least 1 letter
-             *   - At least 1 special character among the allowed: @#$%*<space>!?._+-
-             *   - At least 6 characters
-             */
-            Pattern check1 = Pattern.compile("((?=.*[a-zA-Z0-9])(?=.*[@#$%* !?._+-]).{6,})");
-
-            /**
-             * Regular expression to check
-             */
-            Pattern check2 = Pattern.compile("([^a-zA-Z0-9@#$%&* !?._+-])");
-
-//            if (!check1.matcher(password).matches() || check2.matcher(password).find()) {
-//                passwordEditText.setError(getString(R.string.validate_password));
-//                requestFocus(passwordEditText);
-//                return false;
-//            } else {
-//                passwordEditText.setError(null);
-//            }
-//
-//            if (!password.isEmpty() && !password.equals(passwordConfirm)) {
-//                passwordConfirmEditText.setError(getString(R.string.validate_password_not_match_new));
-//                requestFocus(passwordConfirmEditText);
-//                return false;
-//            } else {
-//                passwordConfirmEditText.setError(null);
-//            }
+        if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            emailEditText.setError(getString(R.string.validate_email));
+            requestFocus(emailEditText);
+            return false;
+        } else {
+            emailEditText.setError(null);
         }
 
         return true;
@@ -520,8 +335,7 @@ public class ChangeDataActivity extends AppCompatActivity implements View.OnClic
                     final MenuItem menuItem = menu.findItem(R.id.action_save);
                     menuItem.setEnabled(!enabled);
                 }
-                //buttonChangePassword.setEnabled(!enabled);
-
+                buttonChangePassword.setEnabled(!enabled);
                 if (enabled) mProgressBar.setVisibility(View.VISIBLE);
                 else mProgressBar.setVisibility(View.GONE);
             }
@@ -538,11 +352,7 @@ public class ChangeDataActivity extends AppCompatActivity implements View.OnClic
             @Override
             public void run() {
                 nameEditText.setEnabled(enabled);
-//                dateOfBirthEditText.setEnabled(enabled);
-//                heightEditText.setEnabled(enabled);
-//                buttonChangePassword.setEnabled(enabled);
-//                genderMaleRadioButton.setEnabled(enabled);
-//                genderFemaleRadioButton.setEnabled(enabled);
+                buttonChangePassword.setEnabled(enabled);
             }
         });
     }
@@ -571,14 +381,8 @@ public class ChangeDataActivity extends AppCompatActivity implements View.OnClic
      */
     private User getUserView() {
         user.setName(String.valueOf(nameEditText.getText()));
-//        user.setHeight(Integer.valueOf(heightEditText.getText().toString()));
-//        user.setGender(genderRadioGroup.getCheckedRadioButtonId() == R.id.radio_gender_male ? 1 : 2);
         user.setGroupId(2); // common user
-
-        if (!isUpdate) {
-            user.setEmail(String.valueOf(emailEditText.getText()));
-            //user.setPassword(String.valueOf(passwordEditText.getText()));
-        }
+        user.setEmail(String.valueOf(emailEditText.getText()));
 
         return user;
     }
