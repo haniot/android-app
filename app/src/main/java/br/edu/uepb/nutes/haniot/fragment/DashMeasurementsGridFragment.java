@@ -445,9 +445,6 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
 
         int type = item.getType();
         Intent it = new Intent(getContext(), ManuallyAddMeasurement.class);
-        if (ItemGridType.typeSupported(type)) {
-            Log.d("TESTE","Tipo: "+type);
-        }
         switch (type){
 
             case ItemGridType.ACTIVITY:

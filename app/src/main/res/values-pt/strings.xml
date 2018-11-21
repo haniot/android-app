@@ -381,6 +381,8 @@
     <string name="unit_min">/min</string>
     <string name="key_anthropometric">key_anthropometric</string>
     <string name="anthropometric">Medidas antropométricas</string>
+    <string name="choose_height">Escolha a altura</string>
+    <string name="choose_circumference">Escolha a circunferência</string>
 
     <!-- END OF STRINGS FOR TABLET -->
 

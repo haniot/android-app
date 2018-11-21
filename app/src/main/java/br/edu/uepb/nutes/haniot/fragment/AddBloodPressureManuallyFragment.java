@@ -48,15 +48,9 @@ public class AddBloodPressureManuallyFragment extends Fragment implements View.O
 
     public AddBloodPressureManuallyFragment() {}
 
-    public static AddBloodPressureManuallyFragment newInstance(String param1, String param2) {
-        AddBloodPressureManuallyFragment fragment = new AddBloodPressureManuallyFragment();
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -158,8 +152,9 @@ public class AddBloodPressureManuallyFragment extends Fragment implements View.O
     private void setupPickerPressure(){
 
         try{
-            Pair<Integer,Integer> lastPressure = new Pair<>(Integer.valueOf(session.getString("lastPressure1")),
-                    Integer.valueOf(session.getString("lastPressure2")));
+            Pair<Integer,Integer> lastPressure = new Pair<>(Integer.valueOf(session
+                    .getString("lastPressure1")),Integer.valueOf(session
+                    .getString("lastPressure2")));
             this.numberPickerDialogPressure.setLastMeasurements(new ArrayList<Integer>(){{
                 add(lastPressure.first);
                 add(lastPressure.second);
