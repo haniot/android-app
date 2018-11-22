@@ -472,26 +472,29 @@ public class ManuallyAddMeasurement extends AppCompatActivity implements View.On
     @Override
     public void onSendMessageAnthropometric(double height, double circumference) {
 
-        if (height != -1){
-            Measurement measurementHeight = new Measurement();
-            measurementHeight.setUser(session.getUserLogged());
-            measurementHeight.setValue(height);
-            measurementHeight.setTypeId(MeasurementType.HEIGHT);
-            measurementHeight.setUnit(getResources().getString(R.string.unit_meters));
+        if (height != -1 && circumference != -1) {
+            if (height != -1) {
+                Measurement measurementHeight = new Measurement();
+                measurementHeight.setUser(session.getUserLogged());
+                measurementHeight.setValue(height);
+                measurementHeight.setTypeId(MeasurementType.HEIGHT);
+                measurementHeight.setUnit(getResources().getString(R.string.unit_meters));
 
-            saveMeasurement(measurementHeight);
-        }
-        if (circumference != -1){
-            Measurement measurementCircumference = new Measurement();
-            measurementCircumference.setUser(session.getUserLogged());
-            measurementCircumference.setValue(circumference);
-            measurementCircumference.setTypeId(MeasurementType.CIRCUMFERENCE);
-            measurementCircumference.setUnit(getResources().getString(R.string.unit_meters));
+                saveMeasurement(measurementHeight);
+            }
+            if (circumference != -1) {
+                Measurement measurementCircumference = new Measurement();
+                measurementCircumference.setUser(session.getUserLogged());
+                measurementCircumference.setValue(circumference);
+                measurementCircumference.setTypeId(MeasurementType.CIRCUMFERENCE);
+                measurementCircumference.setUnit(getResources().getString(R.string.unit_meters));
 
-            saveMeasurement(measurementCircumference);
+                saveMeasurement(measurementCircumference);
+            }
+            finish();
+            return;
         }
-        finish();
-        return;
+        showToast(getResources().getString(R.string.error_insering_measurement));
 
     }
 }

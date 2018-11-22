@@ -491,9 +491,7 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
 
             default:
                 return;
-
         }
-
     }
 
     @Override

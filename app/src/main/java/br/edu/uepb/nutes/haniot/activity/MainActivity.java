@@ -84,6 +84,10 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    public void hideBtn(){
+        newMeasureButton.hide();
+    }
+
     @Override
     protected void onResume() {
         super.onResume();

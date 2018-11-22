@@ -33,6 +33,7 @@ import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.model.DateChangedEvent;
 import br.edu.uepb.nutes.haniot.model.Measurement;
 import br.edu.uepb.nutes.haniot.model.MeasurementType;
+import br.edu.uepb.nutes.haniot.model.SwipeEvent;
 import br.edu.uepb.nutes.haniot.server.historical.CallbackHistorical;
 import br.edu.uepb.nutes.haniot.server.historical.Historical;
 import br.edu.uepb.nutes.haniot.server.historical.HistoricalType;
@@ -386,6 +387,15 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
 
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void swipeUpdate(SwipeEvent event){
+        try {
+            loadServerData();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void updateCharts(float calories, float steps, float distance){
         try {
             getActivity().runOnUiThread(new Runnable() {
@@ -613,8 +623,6 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
          */
         ((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE))
                 .showSoftInput(textDate, InputMethodManager.SHOW_IMPLICIT);
-
-//        postEvent(this.eventMeasurement);
 
     }
 

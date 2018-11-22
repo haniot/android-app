@@ -2,22 +2,27 @@ package br.edu.uepb.nutes.haniot.fragment;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import br.edu.uepb.nutes.haniot.R;
 
+import br.edu.uepb.nutes.haniot.model.SwipeEvent;
 import br.edu.uepb.nutes.haniot.utils.Log;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class FragmentDashMain extends Fragment{
-
-    private OnFragmentInteractionListener mListener;
 
     @BindView(R.id.frame1)
     FrameLayout frame1;
@@ -25,15 +30,17 @@ public class FragmentDashMain extends Fragment{
     @BindView(R.id.frame2)
     FrameLayout frame2;
 
+    @BindView(R.id.dash_swiperefresh)
+    SwipeRefreshLayout swipe;
+
     private DashboardChartsFragment dashboardChartsFragment;
     private DashMeasurementsGridFragment fragmentDash2;
 
-    private String dateFrag1;
+    private EventBus _eventBus;
+
     private final String TAG_FRAG1 = "fragment1";
 
-    public FragmentDashMain() {
-        // Required empty public constructor
-    }
+    public FragmentDashMain() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -78,22 +85,45 @@ public class FragmentDashMain extends Fragment{
 
         getFragmentManager().beginTransaction().replace(R.id.frame2, this.fragmentDash2, fragmentDash2.getTag())
                  .commit();
+        _eventBus = EventBus.getDefault();
+
+        swipe.setOnRefreshListener(() -> {
+            onSwipEvent();
+        });
+
         return view;
     }
 
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
+    @Subscribe
+    public void onSwip(SwipeEvent event){
+
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onSwipEvent(){
+
+        EventBus.getDefault().post(new SwipeEvent());
+
+        new Handler(getContext().getMainLooper()).postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                swipe.setRefreshing(false);
+            }
+        }, 1000);
+
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
+    public void onStart() {
+        super.onStart();
+        _eventBus.register(this);
     }
 
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Uri uri);
+    @Override
+    public void onStop() {
+        super.onStop();
+        _eventBus.unregister(this);
     }
+
 }
