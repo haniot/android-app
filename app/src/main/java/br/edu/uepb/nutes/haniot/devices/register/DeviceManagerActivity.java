@@ -160,10 +160,9 @@ public class DeviceManagerActivity extends AppCompatActivity {
 
             @Override
             public void onSuccess(JSONObject result) {
-
                 List<Device> devicesRegistered = jsonToListDevice(result);
                 populateDevicesRegistered(newList(devicesRegistered));
-                populateDevicesAvailable(mDeviceDAO.list(mDevice.getId()));
+                populateDevicesAvailable(mDeviceDAO.list(session.getUserLogged().getId()));
                 displayLoading(false);
             }
         });
@@ -260,12 +259,10 @@ public class DeviceManagerActivity extends AppCompatActivity {
 
             @Override
             public void onLongItemClick(View v, Device item) {
-
             }
 
             @Override
             public void onMenuContextClick(View v, Device item) {
-
             }
         });
         mRegisteredRecyclerView.setAdapter(mAdapterDeviceRegistered);
@@ -377,8 +374,9 @@ public class DeviceManagerActivity extends AppCompatActivity {
          * Add only devices that have not been registered
          */
         for (Device d : registeredList) {
-            if (availableList.contains(d))
+            if (availableList.contains(d)) {
                 availableList.remove(d);
+            }
         }
         return availableList;
     }
