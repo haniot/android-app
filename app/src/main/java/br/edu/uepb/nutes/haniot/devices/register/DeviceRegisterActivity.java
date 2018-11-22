@@ -118,8 +118,6 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         setContentView(R.layout.activity_device_register);
         ButterKnife.bind(this);
 
-        initComponents();
-
         server = Server.getInstance(this);
         session = new Session(this);
         mDeviceDAO = DeviceDAO.getInstance(this);
@@ -136,6 +134,8 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
                 .addScanPeriod(15000) // 15s
                 .addFilterServiceUuid(getServiceUuidDevice(mDevice.getName()))
                 .build();
+
+        initComponents();
     }
 
     //start scanner library ble
@@ -216,17 +216,15 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
                 device = scanResult.getDevice();
             }
+
             if (device == null) {
                 mScanner.stopScan();
                 return;
             }
             Log.d(TAG, "onScanResult: " + device.getAddress());
 
-            try {
-                deviceAvailable(device);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            mScanner.stopScan();
+            deviceAvailable(device);
         }
 
         @Override
@@ -237,11 +235,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         @Override
         public void onFinish() {
             animationScanner(false);
-            try {
-                deviceAvailable(null);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            deviceAvailable(null);
             Log.d("MainActivity", "onFinish()");
         }
 
@@ -269,7 +263,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     }
 
     public void populateView() {
-        mDevice = getIntent().getParcelableExtra(DeviceManagerActivity.EXTRA_DEVICE);
+        if (mDevice == null) return;
         nameDeviceScannerRegister.setText(mDevice.getName());
         imgDeviceRegister.setImageResource(mDevice.getImg());
     }
@@ -297,13 +291,14 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     }
 
 
-    public void deviceAvailable(BluetoothDevice device) throws JSONException {
+    public void deviceAvailable(BluetoothDevice device) {
         if (device != null) {
             mDevice.setAddress(device.getAddress());
-            mScanner.stopScan();
             mPulsatorLayout.stop();
-            deviceSuccessfullyRegistered.setText(getString(R.string.device_registered_success,
-                    device.getName()));
+            deviceSuccessfullyRegistered.setText(
+                    getString(R.string.device_registered_success,
+                            device.getName())
+            );
             boxRegister.setVisibility(View.GONE);
             boxScanner.setVisibility(View.GONE);
             boxResponse.setVisibility(View.VISIBLE);
@@ -342,6 +337,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
             if (mScanner != null) {
                 //removes a device from the local database and server
                 removeDeviceForType(mDevice);
+
                 mScanner.stopScan();
                 animationScanner(true);
                 mScanner.startScan(mScanCallback);
@@ -364,26 +360,22 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
      * @throws JSONException
      */
     public String deviceToJson(Device device) {
-        mDevice = getIntent().getParcelableExtra(DeviceManagerActivity.EXTRA_DEVICE);
         JSONObject result = new JSONObject();
         try {
-
-            result.put("typeId", mDevice.getTypeId());
+            result.put("typeId", device.getTypeId());
             result.put("address", device.getAddress());
-            result.put("name", mDevice.getName());
-            result.put("manufacturer", mDevice.getManufacturer());
-            result.put("modelNumber", mDevice.getModelNumber());
-            result.put("img", device.getImg());
-
+            result.put("name", device.getName());
+            result.put("manufacturer", device.getManufacturer());
+            result.put("modelNumber", device.getModelNumber());
         } catch (JSONException e) {
             e.printStackTrace();
         }
         return String.valueOf(result);
     }
 
-    public void saveDeviceRegister(Device device) {
+    public void saveDeviceRegister(final Device device) {
         String path = "devices/".concat("/users/").concat(session.get_idLogged());
-        server.post(path, deviceToJson(device), new Server.Callback() {
+        server.post(path, this.deviceToJson(device), new Server.Callback() {
             @Override
             public void onError(JSONObject result) {
                 Log.d(TAG, "onError:");
@@ -391,68 +383,44 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
 
             @Override
             public void onSuccess(JSONObject result) {
-                Device deviceGson = new Gson().fromJson(deviceToJson(device), Device.class);
-                mDeviceDAO.save(deviceGson);
+                Device mDevice = new Gson().fromJson(String.valueOf(result), Device.class);
+                mDevice.setImg(device.getImg());
+                mDevice.setUser(session.getUserLogged());
+                mDeviceDAO.save(mDevice);
             }
         });
     }
-
-    /**
-     * Deserialize json in a list of devices.
-     * If any error occurs it will be returned List empty.
-     *
-     * @param json {@link JSONObject}
-     * @return {@link List<Device>}
-     */
-    private List<Device> jsonToListDevice(JSONObject json) {
-        if (json == null || !json.has("devices")) return new ArrayList<>();
-
-        Type typeUserAccess = new TypeToken<List<Device>>() {
-        }.getType();
-
-        try {
-            JSONArray jsonArray = json.getJSONArray("devices");
-            return new Gson().fromJson(jsonArray.toString(), typeUserAccess);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return new ArrayList<>();
-    }
-
 
     /**
      * check during the scanner whether a device is already saved on the server and removes from the local DB server
      **/
     public void removeDeviceForType(Device device) {
-        String path = "devices/users/".concat(session.get_idLogged());
-        server.get(path, new Server.Callback() {
-            @Override
-            public void onError(JSONObject result) {
+        for (Device d : mDeviceDAO.list(session.getIdLogged())) {
+            if (d.getTypeId() == device.getTypeId()) {
+                String path = "devices/"
+                        .concat(d.get_id())
+                        .concat("/users/")
+                        .concat(session.get_idLogged());
+
+                server.delete(path, new Server.Callback() {
+                    @Override
+                    public void onError(JSONObject result) {
+                    }
+
+                    @Override
+                    public void onSuccess(JSONObject result) {
+                        try {
+                            if (result.has("code") && result.getInt("code") == 204) {
+                                mDeviceDAO.remove(d.getAddress());
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
             }
-
-            @Override
-            public void onSuccess(JSONObject result) {
-                List<Device> devicesRegistered = jsonToListDevice(result);
-
-                if (devicesRegistered.contains(device.getTypeId())) {
-                    removeDeviceRegister(device);
-                }
-            }
-        });
-    }
-
-    private void removeDeviceRegister(Device device) {
-        String path = "devices/".concat(device.get_id()).concat("/users/").concat(session.get_idLogged());
-        server.delete(path, new Server.Callback() {
-            @Override
-            public void onError(JSONObject result) {
-
-            }
-
-            @Override
-            public void onSuccess(JSONObject result) {
-                mDeviceDAO.remove(device.getAddress());
-            }
-        });
+        }
     }
 }
+
+
