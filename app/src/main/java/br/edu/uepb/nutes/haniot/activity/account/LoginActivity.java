@@ -346,8 +346,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             @Override
             public void onSuccess(JSONObject result) {
-
                 List<Device> devicesRegistered = jsonToListDevice(result);
+                mDeviceDAO.removeAll(session.getUserLogged().getId());
                 if (!devicesRegistered.isEmpty()) {
                     mDeviceDAO.removeAll(session.getUserLogged().getId());
                     for (Device d : devicesRegistered) {
