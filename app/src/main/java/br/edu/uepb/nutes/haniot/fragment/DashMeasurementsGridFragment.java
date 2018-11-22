@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.DisplayMetrics;
@@ -198,8 +199,12 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
          * Set a grid layout to recyclerview,
          * the calculateNoOfColumns was used to set the grid autospacing
          */
-        gridMeasurement.setLayoutManager(new GridLayoutManager(mContext,
-                calculateNoOfColumns(mContext)));
+        if (deviceTypeTag.equals("tablet")) {
+            gridMeasurement.setLayoutManager(new GridLayoutManager(mContext,
+                    calculateNoOfColumns(mContext)));
+        }else{
+            gridMeasurement.setLayoutManager(new LinearLayoutManager(getContext()));
+        }
         gridMeasurement.setItemAnimator(new DefaultItemAnimator());
         gridMeasurement.setNestedScrollingEnabled(false);
 

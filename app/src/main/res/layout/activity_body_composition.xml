@@ -169,7 +169,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
         android:layout_margin="16dp"
-        app:backgroundTint="@color/colorPrimary"
+        app:backgroundTint="@color/colorAccent"
         app:srcCompat="@mipmap/ic_new_measurement"/>
 
     <LinearLayout
