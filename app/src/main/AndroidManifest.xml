@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="br.edu.uepb.nutes.haniot">
 
     <!-- PERMISSIONS -->
@@ -23,12 +22,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <!-- RECEIVER ACCOUNT SERVICE -->
-        <receiver
-            android:name=".service.TokenAlarmReceiver" />
-        <!-- ACCOUNT SERVICE -->
-        <service
-            android:name=".service.AccountService" >
-        </service>
+        <receiver android:name=".service.TokenExpirationService$TokenAlarmReceiver" />
         <!-- ACTIVITIES -->
         <activity android:name=".activity.SplashScreenActivity">
             <intent-filter>
@@ -136,6 +130,7 @@
         <!-- END ACTIVITIES REGISTER DEVICES -->
 
         <!-- SERVICES -->
+        <service android:name=".service.TokenExpirationService"/>
         <service
             android:name=".service.BluetoothLeService"
             android:enabled="true" />

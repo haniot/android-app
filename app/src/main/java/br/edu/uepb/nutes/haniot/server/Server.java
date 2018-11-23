@@ -232,9 +232,8 @@ public class Server {
                 JSONObject result = new JSONObject();
                 try {
                     String jsonString = response.body().string();
-                    if (jsonString.equals("Unauthorized")) {
+                    if (response.code() == 401) {
                         result.put("unauthorized", mContext.getString(R.string.validate_unauthorized_access));
-                        Log.i("Account", "Unauthorized access! Please contact support");
                         EventBus.getDefault().post("unauthorized");
                     } else if (!jsonString.isEmpty()) {
                         Object json = new JSONTokener(jsonString).nextValue();
@@ -244,7 +243,7 @@ public class Server {
 
                     // Adds the HTTP response code to the json object
                     result.put("code", response.code());
-                    Log.i("JWT", "Chegou " +response.code());
+                    Log.i("JWT", "JSON: "+result.toString());
                     if (!response.isSuccessful()) serverCallback.onError(result);
                     else serverCallback.onSuccess(result);
 
