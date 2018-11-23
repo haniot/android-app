@@ -228,6 +228,7 @@ public class Server {
 
             @Override
             public void onResponse(Call call, final Response response) throws IOException {
+                Log.i("JWT", "Response code: "+response.code());
                 JSONObject result = new JSONObject();
                 try {
                     String jsonString = response.body().string();

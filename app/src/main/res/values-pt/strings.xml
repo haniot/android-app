@@ -757,4 +757,5 @@
 
     <string name="title_activity_manually_add_measurement">activity_manually_add_measurement
     </string>
+    <string name="error_403">A senha do usuário precisa ser alterada!</string>
 </resources>

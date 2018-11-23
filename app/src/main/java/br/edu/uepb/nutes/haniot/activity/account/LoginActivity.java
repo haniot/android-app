@@ -157,6 +157,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             public void onError(JSONObject result) {
                 printMessage(result);
                 loadingSend(false);
+                try {
+                    if (result.getString("code").equals("403")) {
+                        Log.i("JWT", "403 - Need change password");
+                        EventBus.getDefault().post("403");
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
@@ -187,13 +195,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             user.setToken(fcmToken);
                             sendFcmToken(fcmToken);
                         }
-                        if (result.getString("code").equals("403")) {
-                            Log.i("JWT", "403 - Need change password");
-                            EventBus.getDefault().post("403");
-                        } else {
-                            accountService.initTokenMonitor();
-                            startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                        }
+                        accountService.initTokenMonitor();
+                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
                     } else {
                         printMessage(result);
                     }
@@ -242,6 +245,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 try {
                     if (response.has("code") && response.getInt("code") == 401) {
                         Toast.makeText(getApplicationContext(), R.string.validate_invalid_email_or_password, Toast.LENGTH_LONG).show();
+                    }
+                    if (response.has("code") && response.getInt("code") == 403) {
+                        Toast.makeText(getApplicationContext(), R.string.error_403, Toast.LENGTH_LONG).show();
                     } else {
                         Toast.makeText(getApplicationContext(), R.string.error_500, Toast.LENGTH_LONG).show();
                     }

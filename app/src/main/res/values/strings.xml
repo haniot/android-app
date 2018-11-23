@@ -277,6 +277,7 @@
     <!-- ERROR MESSAGES -->
     <string name="error_sign_out">There was an error while trying to quit&#8230;</string>
     <string name="error_500">Could not complete request! Please try again later&#8230;</string>
+    <string name="error_403">User password must be changed!</string>
     <string name="error_internal_device">Could not complete request! Please try again later&#8230;</string>
     <string name="error_connectivity">There was an error communicating with our servers.\nPlease, check your phone
         connectivity and try again later.
