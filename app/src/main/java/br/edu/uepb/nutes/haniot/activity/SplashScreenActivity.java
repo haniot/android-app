@@ -9,6 +9,7 @@ import android.widget.TextView;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.account.LoginActivity;
 import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
+import br.edu.uepb.nutes.haniot.service.AccountService;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import org.json.JSONObject;
@@ -31,7 +32,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
         ButterKnife.bind(this);
-
+        startService(new Intent(this, AccountService.class));
         Animation animationStart = AnimationUtils.loadAnimation(this, R.anim.slide_up);
         appNameTextView.startAnimation(animationStart);
     }

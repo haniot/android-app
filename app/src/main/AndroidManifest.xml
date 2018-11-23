@@ -22,7 +22,10 @@
         android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
+        <!-- RECEIVER ACCOUNT SERVICE -->
+        <receiver
+            android:name=".service.TokenAlarmReceiver" />
+        <!-- ACCOUNT SERVICE -->
         <service
             android:name=".service.AccountService" >
         </service>

@@ -76,18 +76,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_login);
 
         ButterKnife.bind(this);
+        startAccountService();
         session = new Session(this);
         userDAO = UserDAO.getInstance(this);
 
         buttonLogin.setOnClickListener(this);
-
-        /**
-         * Checks if user is in session and redirect to main screen.
-         */
-        if (session.isLogged()) {
-            startActivity(new Intent(this, MainActivity.class));
-            finish();
-        }
 
         passwordEditText.setOnEditorActionListener((textView, actionId, keyEvent) -> {
             if (actionId == EditorInfo.IME_ACTION_SEND) login();
@@ -95,6 +88,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             return false;
         });
 
+    }
+
+    public void startAccountService() {
+        emailEditText.setEnabled(false);
+        passwordEditText.setEnabled(false);
+        loadingSend(true);
+        doBindService();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
     }
 
     @Override
@@ -160,9 +165,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     User user = result.has("user") ? new Gson().fromJson(result.getString("user"), User.class) : null;
                     final String token = result.has("token") ? new Gson().fromJson(result.getString("token"), String.class) : null;
 
-                    JWT jwt =  new JWT(token);
+                    JWT jwt = new JWT(token);
                     Log.i(TAG, jwt.toString());
                     if (jwt.getExpiresAt() == null) Log.i(TAG, "Is null");
+                    else Log.i(TAG, "Expira em: " + jwt.getExpiresAt().toString());
                     if (user.get_id() != null && token != null) {
                         user.setToken(token);
                         User u = userDAO.get(user.getEmail());
@@ -181,20 +187,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             sendFcmToken(fcmToken);
                         }
 
-                        if (token != null) {
-                            Log.i("JWT", "Token not null, starting Token Monitor Service");
-                            if (!isMyServiceRunning(AccountService.class))
-                            startAccountService();
-                        }
-                        // Necessária a mudança de senha
-                        //if (result.getString("code").equals("403")) {
-                        if (true) {
-                            //TODO criar strings para os eventos
+                        if (result.getString("code").equals("403")) {
                             Log.i("JWT", "403 - Need change password");
                             EventBus.getDefault().post("403");
                         } else {
+                            accountService.initTokenMonitor();
                             startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                            finish();
                         }
                     } else {
                         printMessage(result);
@@ -208,15 +206,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         });
     }
 
-    private boolean isMyServiceRunning(Class<?> serviceClass) {
-        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (serviceClass.getName().equals(service.service.getClassName())) {
-                return true;
-            }
-        }
-        return false;
-    }
     /**
      * Send token in FCM.
      *
@@ -342,27 +331,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     /**
-     * Start Account Service.
-     */
-    private void startAccountService() {
-        Log.i("JWT", "Starting token service");
-        startService(new Intent(LoginActivity.this, AccountService.class));
-        doBindService();
-    }
-
-    /**
-     * Bind service.
+     * Bind Account Service.
      */
     public void doBindService() {
         Log.i("JWT", "Starting service and binding");
         bindService(new Intent(this, AccountService.class),
                 mServiceConnection,
-                Context.BIND_AUTO_CREATE);
+                BIND_AUTO_CREATE);
         mIsBound = true;
     }
 
     /**
-     * Unbind service.
+     * Unbind Account Service.
      */
     public void doUnbindService() {
         if (mIsBound) {
@@ -380,7 +360,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         public void onServiceConnected(ComponentName componentName, IBinder service) {
             Log.i("JWT", "onServiceConnected()");
             accountService = ((AccountService.LocalBinder) service).getService();
-            accountService.startTokenMonitor(session.getTokenLogged());
+            /**
+             * Checks if user is in session and redirect to main screen.
+             */
+            if (session.isLogged()) {
+                accountService.initTokenMonitor();
+                startActivity(new Intent(LoginActivity.this, MainActivity.class));
+            }
+            loadingSend(false);
+            emailEditText.setEnabled(true);
+            passwordEditText.setEnabled(true);
         }
 
         @Override

@@ -77,6 +77,8 @@ public class ChangePasswordActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Intent intent = getIntent();
         if (intent.getBooleanExtra(String.valueOf(R.string.first_login), true)) {
+            //TODO Remover log
+            Log.i("Account", "getIntent() - First login");
             isFirstLogin = true;
         }
         confirmPasswordEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -315,15 +317,11 @@ public class ChangePasswordActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-//        if (isFirstLogin) {
-//            Log.i(TAG, "Is first login, please change password...");
-//            if (session.removeLogged()) {
-//                Intent intent = new Intent(this, LoginActivity.class);
-//                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                startActivity(intent);
-//            }
-//        }
+        if (isFirstLogin) {
+            //TODO Remover log
+            Log.i("Account", "Is first login, please change password...");
+            session.removeLogged();
+            finish();
+        }
     }
-
-
 }
