@@ -1,11 +1,8 @@
 package br.edu.uepb.nutes.haniot.service;
 
-import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
@@ -16,11 +13,9 @@ import com.auth0.android.jwt.JWT;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.account.ChangePasswordActivity;
@@ -37,15 +32,12 @@ public class AccountService extends Service {
     public void onCreate() {
         Log.i(TAG, "Token Service - onCreate()");
         EventBus.getDefault().register(this);
-        //Toast.makeText(this, "Service created!", Toast.LENGTH_LONG).show();
 
     }
 
     @Override
     public void onDestroy() {
         Log.i(TAG, "onDestroy()");
-        /* IF YOU WANT THIS SERVICE KILLED WITH THE APP THEN UNCOMMENT THE FOLLOWING LINE */
-        //handler.removeCallbacks(runnable);
         EventBus.getDefault().unregister(this);
     }
 
@@ -53,11 +45,16 @@ public class AccountService extends Service {
     public void eventReceiver(String event) {
         Log.i(TAG, "eventReceiver()");
         Log.i(TAG, event);
-        if (event.equals("unauthorized")) redirectToLogin();
-        else if (event.equals("403")) {
-            changePassword();
-        } else if (event.equals("Token Expired")) {
-            redirectToLogin();
+        switch (event) {
+            case "unauthorized":
+                redirectToLogin();
+                break;
+            case "403":
+                changePassword();
+                break;
+            case "Token Expired":
+                redirectToLogin();
+                break;
         }
     }
 
@@ -132,10 +129,10 @@ public class AccountService extends Service {
         Log.i("JWT", "Tempo atual: " + c.getTime().toString());
         c.add(Calendar.SECOND, 20);
         Log.i("JWT", "Alarme: " + c.getTime().toString());
-        long time = c.getTimeInMillis();
+        //long time = c.getTimeInMillis();
 
 
-        //long time = expireAt.getTime();
+        long time = expireAt.getTime();
 
 
         AlarmManager alarme = (AlarmManager) getSystemService(ALARM_SERVICE);

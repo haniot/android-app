@@ -164,6 +164,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 try {
                     User user = result.has("user") ? new Gson().fromJson(result.getString("user"), User.class) : null;
                     final String token = result.has("token") ? new Gson().fromJson(result.getString("token"), String.class) : null;
+//                    Log.i("JWT", result.getString("code") + " - " + result.getString("message"));
 
                     JWT jwt = new JWT(token);
                     Log.i(TAG, jwt.toString());
@@ -186,7 +187,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             user.setToken(fcmToken);
                             sendFcmToken(fcmToken);
                         }
-
                         if (result.getString("code").equals("403")) {
                             Log.i("JWT", "403 - Need change password");
                             EventBus.getDefault().post("403");

@@ -243,6 +243,7 @@ public class Server {
 
                     // Adds the HTTP response code to the json object
                     result.put("code", response.code());
+                    Log.i("JWT", "Chegou " +response.code());
                     if (!response.isSuccessful()) serverCallback.onError(result);
                     else serverCallback.onSuccess(result);
 
