@@ -1,9 +1,7 @@
 package br.edu.uepb.nutes.haniot.activity.account;
 
 import android.app.Activity;
-import android.app.ActivityManager;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
@@ -23,7 +21,6 @@ import com.auth0.android.jwt.JWT;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 
-import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -33,7 +30,7 @@ import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.model.User;
 import br.edu.uepb.nutes.haniot.model.dao.UserDAO;
 import br.edu.uepb.nutes.haniot.server.Server;
-import br.edu.uepb.nutes.haniot.service.AccountService;
+import br.edu.uepb.nutes.haniot.service.TokenExpirationService;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -41,14 +38,12 @@ import butterknife.ButterKnife;
 /**
  * LoginActivity implementation.
  *
- * @author Douglas Rafael <douglas.rafael@nutes.uepb.edu.br>
+ * @author Douglas Rafael <douglas.rafael@nutes.uepb.edu.br>, Fábio Júnior <fabio.pequeno@nutes.uepb.edu.br>
  * @version 1.0
  * @copyright Copyright (c) 2017, NUTES UEPB
  */
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
-
     private final String TAG = "LoginActivity";
-
 
     @BindView(R.id.progressBarLogin)
     ProgressBar mProgressBar;
@@ -67,7 +62,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private Session session;
     private UserDAO userDAO;
-    private AccountService accountService;
+    private TokenExpirationService tokenExpirationService;
     private boolean mIsBound;
 
     @Override
@@ -76,7 +71,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_login);
 
         ButterKnife.bind(this);
-        startAccountService();
+        doBindService();
         session = new Session(this);
         userDAO = UserDAO.getInstance(this);
 
@@ -87,14 +82,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             return false;
         });
-
-    }
-
-    public void startAccountService() {
-        emailEditText.setEnabled(false);
-        passwordEditText.setEnabled(false);
-        loadingSend(true);
-        doBindService();
     }
 
     @Override
@@ -160,7 +147,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 try {
                     if (result.getString("code").equals("403")) {
                         Log.i("JWT", "403 - Need change password");
-                        EventBus.getDefault().post("403");
+                        Intent intent = new Intent(LoginActivity.this, ChangePasswordActivity.class);
+                        intent.putExtra("email", emailEditText.getText().toString());
+                        startActivity(intent);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -172,7 +161,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 try {
                     User user = result.has("user") ? new Gson().fromJson(result.getString("user"), User.class) : null;
                     final String token = result.has("token") ? new Gson().fromJson(result.getString("token"), String.class) : null;
-//                    Log.i("JWT", result.getString("code") + " - " + result.getString("message"));
 
                     JWT jwt = new JWT(token);
                     Log.i(TAG, jwt.toString());
@@ -195,7 +183,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             user.setToken(fcmToken);
                             sendFcmToken(fcmToken);
                         }
-                        accountService.initTokenMonitor();
+                        tokenExpirationService.initTokenMonitor();
                         startActivity(new Intent(getApplicationContext(), MainActivity.class));
                     } else {
                         printMessage(result);
@@ -245,9 +233,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 try {
                     if (response.has("code") && response.getInt("code") == 401) {
                         Toast.makeText(getApplicationContext(), R.string.validate_invalid_email_or_password, Toast.LENGTH_LONG).show();
-                    }
-                    if (response.has("code") && response.getInt("code") == 403) {
-                        Toast.makeText(getApplicationContext(), R.string.error_403, Toast.LENGTH_LONG).show();
                     } else {
                         Toast.makeText(getApplicationContext(), R.string.error_500, Toast.LENGTH_LONG).show();
                     }
@@ -341,7 +326,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
      */
     public void doBindService() {
         Log.i("JWT", "Starting service and binding");
-        bindService(new Intent(this, AccountService.class),
+        bindService(new Intent(this, TokenExpirationService.class),
                 mServiceConnection,
                 BIND_AUTO_CREATE);
         mIsBound = true;
@@ -365,23 +350,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder service) {
             Log.i("JWT", "onServiceConnected()");
-            accountService = ((AccountService.LocalBinder) service).getService();
-            /**
-             * Checks if user is in session and redirect to main screen.
-             */
-            if (session.isLogged()) {
-                accountService.initTokenMonitor();
-                startActivity(new Intent(LoginActivity.this, MainActivity.class));
-            }
-            loadingSend(false);
-            emailEditText.setEnabled(true);
-            passwordEditText.setEnabled(true);
+            tokenExpirationService = ((TokenExpirationService.LocalBinder) service).getService();
         }
 
         @Override
         public void onServiceDisconnected(ComponentName componentName) {
             Log.i("JWT", "onServiceDisconnected()");
-            accountService = null;
+            tokenExpirationService = null;
         }
     };
 }

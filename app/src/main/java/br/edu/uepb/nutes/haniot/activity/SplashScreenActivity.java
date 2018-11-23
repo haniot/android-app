@@ -6,13 +6,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
+
+import org.json.JSONObject;
+
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.account.LoginActivity;
+import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
-import br.edu.uepb.nutes.haniot.service.AccountService;
+import br.edu.uepb.nutes.haniot.service.TokenExpirationService;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import org.json.JSONObject;
 
 /**
  * Activity SplashScreenActivity.
@@ -27,12 +30,15 @@ public class SplashScreenActivity extends AppCompatActivity {
     @BindView(R.id.text_view_app_name)
     TextView appNameTextView;
 
+    private Session session;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
         ButterKnife.bind(this);
-        startService(new Intent(this, AccountService.class));
+        session = new Session(this);
+        startService(new Intent(this, TokenExpirationService.class));
         Animation animationStart = AnimationUtils.loadAnimation(this, R.anim.slide_up);
         appNameTextView.startAnimation(animationStart);
     }
@@ -44,18 +50,19 @@ public class SplashScreenActivity extends AppCompatActivity {
         SynchronizationServer.getInstance(this).run(new SynchronizationServer.Callback() {
             @Override
             public void onError(JSONObject result) {
-                openLoginActivity();
+                openActivity();
             }
 
             @Override
             public void onSuccess(JSONObject result) {
-                openLoginActivity();
+                openActivity();
             }
         });
     }
 
-    private void openLoginActivity() {
-        startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+    private void openActivity() {
+        if (session.isLogged()) startActivity(new Intent(getApplicationContext(), MainActivity.class));
+        else startActivity(new Intent(getApplicationContext(), LoginActivity.class));
         finish();
     }
 }
