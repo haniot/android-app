@@ -28,7 +28,9 @@ import org.json.JSONObject;
 /**
  * UpdateDataActivity implementation.
  *
- * @author Douglas Rafael <douglas.rafael@nutes.uepb.edu.br>
+ * @author Douglas Rafael <douglas.rafael@nutes.uepb.edu.br>,
+ * Fábio Júnior <fabio.pequeno@nutes.uepb.edu.br>,
+ * Arthur Stevam <arthurstevam.ac@gmail.com>
  * @version 1.0
  * @copyright Copyright (c) 2017, NUTES UEPB
  */
@@ -352,6 +354,7 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
             @Override
             public void run() {
                 nameEditText.setEnabled(enabled);
+                emailEditText.setEnabled(enabled);
                 buttonChangePassword.setEnabled(enabled);
             }
         });

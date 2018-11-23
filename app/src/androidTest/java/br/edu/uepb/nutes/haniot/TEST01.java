@@ -2,8 +2,6 @@ package br.edu.uepb.nutes.haniot;
 
 
 import android.content.Context;
-
-
 import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.rule.ActivityTestRule;
 import android.widget.EditText;
