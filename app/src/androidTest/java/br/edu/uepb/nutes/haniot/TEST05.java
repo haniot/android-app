@@ -80,8 +80,7 @@ public class TEST05 {
 
     @Test
     public void task01empty(){
-        onView(withId(R.id.edit_text_name)).perform(clearText(),
-                closeSoftKeyboard());
+        onView(withId(R.id.edit_text_name)).perform(clearText(), closeSoftKeyboard());
         onView(withId(R.id.action_save)).perform(click());
         assertNotNull(name.getError());
     }
@@ -101,17 +100,34 @@ public class TEST05 {
     }
 
     @Test
-    public void task02empty(){
-        onView(withId(R.id.edit_text_email)).perform(clearText(),
-                closeSoftKeyboard());
+    public void task02empty() throws InterruptedException {
+        Thread.sleep(1000);
+        onView(withId(R.id.edit_text_email)).perform(clearText(), closeSoftKeyboard());
         onView(withId(R.id.action_save)).perform(click());
         assertNotNull(email.getError());
     }
     @Test
-    public void task02(){
+    public void task02notValid() throws InterruptedException {
+        Thread.sleep(1000);
         onView(withId(R.id.edit_text_email)).perform(clearText(),
-                typeText("testesnutes@mail.com"), closeSoftKeyboard());
+                typeText("testesnutesmail.com"), closeSoftKeyboard());
         onView(withId(R.id.action_save)).perform(click());
         assertNotNull(email.getError());
     }
+    @Test
+    public void task02valid() throws InterruptedException {
+        Thread.sleep(1000);
+        onView(withId(R.id.edit_text_email)).perform(clearText(),
+                typeText("testesnutes@mail.com"), closeSoftKeyboard());
+        onView(withId(R.id.action_save)).perform(click());
+        assertNull(email.getError());
+    }
+//    @Test
+//    public void task03empty(){
+//        onView(withId(R.id.edit_text_name)).perform(clearText(), closeSoftKeyboard());
+//        onView(withId(R.id.edit_text_email)).perform(clearText(), closeSoftKeyboard());
+//        onView(withId(R.id.action_save)).perform(click());
+//        assertNotNull(name.getError());
+//        assertNotNull(email.getError());
+//    }
 }

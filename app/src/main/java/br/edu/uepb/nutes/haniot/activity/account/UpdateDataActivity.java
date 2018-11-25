@@ -141,9 +141,10 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
      * Prepare the view for editing the data
      */
     private void prepareEditing() {
-        emailEditText.setEnabled(false);
-        emailEditText.setFocusable(false);
-        emailEditText.setFocusableInTouchMode(false);
+        //TODO comentado para resolver aquele problema de não ser possivel selecionar
+//        emailEditText.setEnabled(false);
+//        emailEditText.setFocusable(false);
+//        emailEditText.setFocusableInTouchMode(false);
 
         enabledView(false);
 
@@ -273,9 +274,10 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
     private void populateView() {
         nameEditText.setText(user.getName());
         emailEditText.setText(user.getEmail());
-        emailEditText.setEnabled(false);
-        emailEditText.setFocusable(false);
-        emailEditText.setFocusableInTouchMode(false);
+        //TODO comentado para resolver aquele problema de não ser possivel selecionar
+//        emailEditText.setEnabled(false);
+//        emailEditText.setFocusable(false);
+//        emailEditText.setFocusableInTouchMode(false);
     }
 
     /**
