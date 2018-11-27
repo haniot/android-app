@@ -79,20 +79,23 @@ public class TEST05 {
     }
 
     @Test
-    public void task01empty(){
+    public void task01empty() throws InterruptedException {
+        Thread.sleep(1000);
         onView(withId(R.id.edit_text_name)).perform(clearText(), closeSoftKeyboard());
         onView(withId(R.id.action_save)).perform(click());
         assertNotNull(name.getError());
     }
     @Test
-    public void task01size(){
+    public void task01size() throws InterruptedException {
+        Thread.sleep(1000);
         onView(withId(R.id.edit_text_name)).perform(clearText(), typeText("Te"),
                 closeSoftKeyboard());
         onView(withId(R.id.action_save)).perform(click());
         assertNotNull(name.getError());
     }
     @Test
-    public void task01sucess(){
+    public void task01sucess() throws InterruptedException {
+        Thread.sleep(1000);
         onView(withId(R.id.edit_text_name)).perform(clearText(), typeText("Teste"),
                 closeSoftKeyboard());
         onView(withId(R.id.action_save)).perform(click());
