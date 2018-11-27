@@ -1,10 +1,13 @@
 package br.edu.uepb.nutes.haniot.fragment;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatImageButton;
@@ -67,9 +70,16 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
     @BindView(R.id.loadingDataProgressBar)
     CircularProgressBar loadingDataProgressBar;
 
+//    default values of goals
     private int highProgressBarGoal = 200;
     private int lightProgressBar1Goal = 300;
     private int lightProgressBar2Goal = 800;
+
+    private final int DIALOG_TYPE_STEPS = 1;
+    private final int DIALOG_TYPE_CALORIES = 2;
+    private final int DIALOG_TYPE_DISTANCE = 3;
+
+    private String textDialogTitle = "";
 
     //Date part
     private Calendar calendar;
@@ -171,6 +181,9 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
         btnArrowLeft.setOnClickListener(this);
         btnArrowRight.setOnClickListener(this);
         textDate.setOnClickListener(this);
+        stepsProgressBar.setOnClickListener(this);
+        caloriesProgressBar.setOnClickListener(this);
+        distanceProgressBar.setOnClickListener(this);
 
         getChildId();
         return view;
@@ -465,6 +478,16 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
         calendarAux = Calendar.getInstance();
         eventMeasurement = new DateChangedEvent();
 
+        String goalSteps = session.getString("goalSteps");
+        if (!goalSteps.equals(""))
+            highProgressBarGoal = Integer.parseInt(goalSteps);
+        String goalCalories = session.getString("goalCalories");
+        if (!goalCalories.equals(""))
+            lightProgressBar1Goal = Integer.parseInt(goalCalories);
+        String goalDistance = session.getString("goalDistance");
+        if (!goalDistance.equals(""))
+            lightProgressBar2Goal = Integer.parseInt(goalDistance);
+
         //Seta o progresso máximo
         stepsProgressBar.setProgressMax(highProgressBarGoal);
         caloriesProgressBar.setProgressMax(lightProgressBar1Goal);
@@ -502,7 +525,6 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
             btnArrowLeft.startAnimation(scale);
             updateTextDate(decreaseDay(this.date));
             loadServerData();
-//            postEvent(this.eventMeasurement);
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -513,7 +535,6 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
             btnArrowRight.startAnimation(scale);
             updateTextDate(increaseDay(this.date));
             loadServerData();
-//            postEvent(this.eventMeasurement);
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -526,6 +547,73 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void createGoalsDialog(int dialogType){
+
+        LayoutInflater li = LayoutInflater.from(getContext());
+        View promptView = li.inflate(R.layout.dialog_dashboard_goals, null);
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
+        alertDialogBuilder.setView(promptView);
+
+        final TextInputEditText userInput = (TextInputEditText) promptView.findViewById(
+                R.id.goalsInput);
+
+        TextView dialogTitle = (TextView) promptView.findViewById(R.id.textGoals);
+
+        switch (dialogType) {
+            case DIALOG_TYPE_STEPS:
+                this.textDialogTitle = getResources().getString(R.string.goals_steps);
+                userInput.setHint("/"+String.valueOf(this.highProgressBarGoal));
+                break;
+            case DIALOG_TYPE_CALORIES:
+                this.textDialogTitle = getResources().getString(R.string.goals_calories);
+                userInput.setHint("/"+String.valueOf(this.lightProgressBar1Goal));
+                break;
+            case DIALOG_TYPE_DISTANCE:
+                this.textDialogTitle = getResources().getString(R.string.goals_distance);
+                userInput.setHint("/"+String.valueOf(this.lightProgressBar2Goal));
+                break;
+        }
+
+        alertDialogBuilder
+                .setCancelable(false)
+                .setPositiveButton(getResources().getString(R.string.bt_ok), (dialogInterface, i) -> {
+
+                    String value = userInput.getText().toString();
+                    switch (dialogType){
+
+                        case DIALOG_TYPE_STEPS:
+                            session.putString("goalSteps",value);
+                            if (value!= null && !value.equals("")) {
+                                this.highProgressBarGoal = Integer.parseInt(value);
+                                stepsProgressBar.setProgressMax(Float.parseFloat(value));
+                            }
+                            break;
+                        case DIALOG_TYPE_CALORIES:
+                            session.putString("goalCalories",value);
+                            if (value!= null && !value.equals("")) {
+                                this.lightProgressBar1Goal = Integer.parseInt(value);
+                                caloriesProgressBar.setProgressMax(Float.parseFloat(value));
+                            }
+                            break;
+                        case DIALOG_TYPE_DISTANCE:
+                            session.putString("goalDistance",value);
+                            if (value!= null && !value.equals("")) {
+                                this.lightProgressBar2Goal = Integer.parseInt(value);
+                                distanceProgressBar.setProgressMax(Float.parseFloat(value));
+                            }
+                            break;
+                    }
+                })
+                .setNegativeButton(getResources().getString(R.string.bt_cancel), (dialogInterface, i) -> {
+                    dialogInterface.cancel();
+                });
+        dialogTitle.setText(this.textDialogTitle);
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+
     }
 
     @Override
@@ -544,6 +632,21 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
             // TextView of date
             case R.id.textDate:
                 animTextDate();
+                break;
+
+            case R.id.stepsProgressBar:
+                stepsProgressBar.startAnimation(scale);
+                createGoalsDialog(DIALOG_TYPE_STEPS);
+                break;
+
+            case R.id.lightProgress1:
+                caloriesProgressBar.startAnimation(scale);
+                createGoalsDialog(DIALOG_TYPE_CALORIES);
+                break;
+
+            case R.id.lightProgress2:
+                distanceProgressBar.startAnimation(scale);
+                createGoalsDialog(DIALOG_TYPE_DISTANCE);
                 break;
         }
     }
