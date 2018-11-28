@@ -22,22 +22,21 @@ import io.objectbox.relation.ToMany;
 @Entity
 public class User {
     @Id
-    @Expose(serialize = false)
     private long id;
 
     @Index
     @SerializedName("id")
-    private String _id; // _id in server remote (UUID)
+    @Expose private String _id; // _id in server remote (UUID)
 
     @SerializedName("name")
-    private String name;
+    @Expose private String name;
 
     @Index
     @SerializedName("email")
-    private String email;
+    @Expose private String email;
 
     @SerializedName("token")
-    private String token; // provide by the server
+    @Expose private String token; // provide by the server
 
     /**
      * RELATIONS

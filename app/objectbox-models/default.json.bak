@@ -472,10 +472,6 @@
       "name": "User",
       "properties": [
         {
-          "id": "1:6416227043786149677",
-          "name": "id"
-        },
-        {
           "id": "2:4133386030426964905",
           "indexId": "22:404414256196580576",
           "name": "_id"
@@ -488,22 +484,6 @@
           "id": "4:1216381543040020542",
           "indexId": "23:152734205251629500",
           "name": "email"
-        },
-        {
-          "id": "5:6310452791733585550",
-          "name": "password"
-        },
-        {
-          "id": "6:5201915036578598733",
-          "name": "gender"
-        },
-        {
-          "id": "7:2133648461927968477",
-          "name": "dateOfBirth"
-        },
-        {
-          "id": "8:3655012271888568165",
-          "name": "height"
         },
         {
           "id": "9:3754480995105372944",
@@ -525,7 +505,13 @@
   "modelVersionParserMinimum": 4,
   "retiredEntityUids": [],
   "retiredIndexUids": [],
-  "retiredPropertyUids": [],
+  "retiredPropertyUids": [
+    6310452791733585550,
+    5201915036578598733,
+    2133648461927968477,
+    3655012271888568165,
+    6416227043786149677
+  ],
   "retiredRelationUids": [],
   "version": 1
 }

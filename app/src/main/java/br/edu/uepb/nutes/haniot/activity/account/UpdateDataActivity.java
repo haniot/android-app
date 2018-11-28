@@ -22,6 +22,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -171,7 +172,7 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
             @Override
             public void onSuccess(JSONObject result) {
                 try {
-                    user = new Gson().fromJson(result.getString("user"), User.class);
+                    user = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create().fromJson(result.toString(), User.class);
 
                     if (user.getEmail() != null) {
                         runOnUiThread(new Runnable() {
@@ -181,7 +182,7 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
                             }
                         });
                     }
-                } catch (JSONException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
                     enabledView(true);
@@ -216,7 +217,7 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
 
         // Send for remote server /users/:userId
         Server.getInstance(this).patch("users/".concat(session.get_idLogged()),
-                new Gson().toJson(getUserView()), new Server.Callback() {
+                new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create().toJson(getUserView()), new Server.Callback() {
                     @Override
                     public void onError(JSONObject result) {
                         printMessage(result);
@@ -226,11 +227,12 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
                     @Override
                     public void onSuccess(JSONObject result) {
                         try {
-                            final User userUpdate = new Gson().fromJson(result.getString("user"), User.class);
+                            final User userUpdate = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create().fromJson(result.toString(), User.class);
                             if (userUpdate.getEmail() != null)
                                 userDAO.update(user); // save in local
                             Log.i("Account", "Updated: " + userDAO.get(userUpdate.get_id()).toString());
-                        } catch (JSONException e) {
+                            finish();
+                        } catch (Exception e) {
                             e.printStackTrace();
                         } finally {
                             loading(false);
@@ -278,10 +280,6 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
         nameEditText.setText(user.getName());
         if (user.getEmail() != null)
         emailEditText.setText(user.getEmail());
-        //TODO comentado para resolver aquele problema de não ser possivel selecionar
-//        emailEditText.setEnabled(false);
-//        emailEditText.setFocusable(false);
-//        emailEditText.setFocusableInTouchMode(false);
     }
 
     /**
