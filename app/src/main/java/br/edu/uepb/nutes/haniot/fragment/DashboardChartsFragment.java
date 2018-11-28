@@ -1,9 +1,11 @@
 package br.edu.uepb.nutes.haniot.fragment;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -14,6 +16,7 @@ import android.support.v7.widget.AppCompatImageButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
@@ -87,7 +90,13 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
     private SimpleDateFormat simpleDateFormat;
     private String date;
     private String today;
+
+//    Annimation part
     private Animation scale;
+    private AlphaAnimation alphaAnimation;
+    private Boolean animSteps = false;
+    private Boolean animCalories = false;
+    private Boolean animDistance = false;
 
     private DatePickerDialog datePickerDialog;
     private int year;
@@ -113,6 +122,10 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
     private boolean measurementActivity = false;
 
     private DateChangedEvent eventMeasurement;
+
+    private float steps;
+    private float calories;
+    private float distance;
 
     public DashboardChartsFragment() {
         // Required empty public constructor
@@ -369,6 +382,7 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
                     }
                     if (getActivity() != null){
                         updateCharts(calories,steps,distance);
+                        setChartsVariables(steps,calories,distance);
                     }
                     postEvent();
 
@@ -378,6 +392,7 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
                     setupEvent(-1,"");
                     postEvent();
                     updateCharts(0,0,0);
+                    setChartsVariables(0,0,0);
                 }
             }
 
@@ -474,6 +489,10 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
             btnArrowRight.setEnabled(true);
         }
         scale = AnimationUtils.loadAnimation(getContext(), R.anim.click);
+        this.alphaAnimation = new AlphaAnimation(1.0f, 0.0f);
+        this.alphaAnimation.setDuration(500);
+        this.alphaAnimation.setRepeatMode(Animation.REVERSE);
+
 
         calendarAux = Calendar.getInstance();
         eventMeasurement = new DateChangedEvent();
@@ -495,6 +514,47 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
 
     }
 
+//    blink the progressbar and change icon to green flag
+    private void updateChartIcon(boolean steps, boolean calories, boolean distance){
+
+        this.alphaAnimation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {}
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                if (steps && !animSteps) {
+                    stepsProgressBar.setBackground(
+                            getResources().getDrawable(R.drawable.ic_green_flag));
+                    animSteps = !animSteps;
+                }
+                if (calories && !animCalories) {
+                    caloriesProgressBar.setBackground(
+                            getResources().getDrawable(R.drawable.ic_green_flag));
+                    animCalories = !animCalories;
+                }
+                if (distance && !animDistance) {
+                    distanceProgressBar.setBackground(
+                            getResources().getDrawable(R.drawable.ic_green_flag));
+                    animDistance = !animDistance;
+                }
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {}
+        });
+
+        new Handler(getContext().getMainLooper()).postDelayed(() -> {
+            if (steps && !animSteps)
+                stepsProgressBar.startAnimation(alphaAnimation);
+            if (calories && !animCalories)
+                caloriesProgressBar.startAnimation(alphaAnimation);
+            if (distance && !animDistance)
+                distanceProgressBar.startAnimation(alphaAnimation);
+        }, 3000);
+
+    }
+
     //Update the data of progressbar of dashboard
     public void setDataProgress(float numberOfSteps, float numberOfCalories,
                                 float distance) throws Exception{
@@ -504,8 +564,32 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
         int dist = (int) distance;
 
         stepsProgressBar.setProgressWithAnimation(steps, 2500);
+
+        boolean stepsAchieved = false;
+        boolean caloriesAchieved = false;
+        boolean distanceAchieved = false;
+
+        if (steps >= this.highProgressBarGoal){
+            stepsAchieved = true;
+        }else{
+            stepsProgressBar.setBackground(getResources().getDrawable(R.drawable.ic_feet));
+        }
+
         caloriesProgressBar.setProgressWithAnimation(calories, 3000);
+        if (calories >= this.lightProgressBar1Goal ){
+            caloriesAchieved = true;
+        }else{
+            caloriesProgressBar.setBackground(getResources().getDrawable(R.drawable.ic_calories));
+        }
+
         distanceProgressBar.setProgressWithAnimation(dist, 3000);
+        if (distance >= this.lightProgressBar2Goal ){
+            distanceAchieved = true;
+        }else{
+            distanceProgressBar.setBackground(getResources().getDrawable(R.drawable.ic_distance));
+        }
+
+        updateChartIcon(stepsAchieved,caloriesAchieved,distanceAchieved);
 
         //Seta os dados nos textos abaixo da progressbar
         textSteps.setText(steps + " " + measurementTypeArray[12]);
@@ -519,10 +603,19 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
 
     }
 
+    private void setChartsVariables(float steps, float calories, float distance){
+        this.steps = steps;
+        this.calories = calories;
+        this.distance = distance;
+    }
+
     //Anims for buttons and textview of date
     private void animLeftBtn(){
         try {
             btnArrowLeft.startAnimation(scale);
+            animSteps = false;
+            animCalories = false;
+            animDistance = false;
             updateTextDate(decreaseDay(this.date));
             loadServerData();
         } catch (ParseException e) {
@@ -533,6 +626,9 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
     private void animRightBtn(){
         try {
             btnArrowRight.startAnimation(scale);
+            animSteps = false;
+            animCalories = false;
+            animDistance = false;
             updateTextDate(increaseDay(this.date));
             loadServerData();
         } catch (ParseException e) {
@@ -587,22 +683,49 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
                         case DIALOG_TYPE_STEPS:
                             session.putString("goalSteps",value);
                             if (value!= null && !value.equals("")) {
+                                float maxProgress = Float.parseFloat(value);
                                 this.highProgressBarGoal = Integer.parseInt(value);
-                                stepsProgressBar.setProgressMax(Float.parseFloat(value));
+                                stepsProgressBar.setProgressMax(maxProgress);
+                                if (maxProgress > this.steps){
+                                    this.animSteps = false;
+                                }
+                                try {
+                                    setDataProgress(this.steps,this.calories,this.distance);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
                             }
                             break;
                         case DIALOG_TYPE_CALORIES:
                             session.putString("goalCalories",value);
                             if (value!= null && !value.equals("")) {
+                                float maxProgress = Float.parseFloat(value);
                                 this.lightProgressBar1Goal = Integer.parseInt(value);
-                                caloriesProgressBar.setProgressMax(Float.parseFloat(value));
+                                caloriesProgressBar.setProgressMax(maxProgress);
+                                if (maxProgress > this.calories){
+                                    this.animCalories = false;
+                                }
+                                try {
+                                    setDataProgress(this.steps,this.calories,this.distance);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
                             }
                             break;
                         case DIALOG_TYPE_DISTANCE:
                             session.putString("goalDistance",value);
                             if (value!= null && !value.equals("")) {
+                                float maxProgress = Float.parseFloat(value);
                                 this.lightProgressBar2Goal = Integer.parseInt(value);
-                                distanceProgressBar.setProgressMax(Float.parseFloat(value));
+                                distanceProgressBar.setProgressMax(maxProgress);
+                                if (maxProgress > this.distance){
+                                    this.animDistance = false;
+                                }
+                                try {
+                                    setDataProgress(this.steps,this.calories,this.distance);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
                             }
                             break;
                     }
@@ -715,6 +838,9 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
             btnArrowRight.setBackground(getResources().getDrawable(R.mipmap.ic_arrow_right_disabled));
         }
         loadingDataProgressBar.setVisibility(View.VISIBLE);
+        animSteps = false;
+        animCalories = false;
+        animDistance = false;
         try {
             loadServerData();
         } catch (ParseException e) {
