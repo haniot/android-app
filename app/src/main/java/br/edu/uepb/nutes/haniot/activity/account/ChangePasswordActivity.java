@@ -212,8 +212,8 @@ public class ChangePasswordActivity extends AppCompatActivity {
          */
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("currentPassword", String.valueOf(currentPasswordEditText.getText()));
-            jsonObject.put("newPassword", String.valueOf(newPasswordEditText.getText()));
+            jsonObject.put("old_password", String.valueOf(currentPasswordEditText.getText()));
+            jsonObject.put("new_password", String.valueOf(newPasswordEditText.getText()));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -225,12 +225,14 @@ public class ChangePasswordActivity extends AppCompatActivity {
                     jsonObject.toString(), new Server.Callback() {
                         @Override
                         public void onError(JSONObject result) {
+                            Log.i("Account", "erro");
                             printMessage(result);
                             loadingSend(false);
                         }
 
                         @Override
                         public void onSuccess(JSONObject result) {
+                            Log.i("Account", "Password changed for redirect");
                             signOut(result);
                         }
                     });
@@ -240,12 +242,14 @@ public class ChangePasswordActivity extends AppCompatActivity {
                     jsonObject.toString(), new Server.Callback() {
                         @Override
                         public void onError(JSONObject result) {
+                            Log.i("Account", "erro");
                             printMessage(result);
                             loadingSend(false);
                         }
 
                         @Override
                         public void onSuccess(JSONObject result) {
+                            Log.i("Account", "Password changed for redirect");
                             signOut(result);
                         }
                     });
@@ -254,25 +258,22 @@ public class ChangePasswordActivity extends AppCompatActivity {
     }
 
     private void signOut(JSONObject result) {
-        try {
-            final User userUpdate = new Gson().fromJson(result.getString("user"), User.class);
-            Log.i("Account", userUpdate.toString());
-            if (userUpdate != null) {
-                /**
-                 * Remove user from session and redirect to login screen.
-                 */
-                if (session.isLogged()) session.removeLogged();
-                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-                finish();
+        Log.i("Account", "Removing user");
+
+            Log.i("Account", "Dentro");
+            /**
+             * Remove user from session and redirect to login screen.
+             */
+            if (session.isLogged()) {
+                Log.i("Account", "logado...saindo");
+                session.removeLogged();
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } finally {
-            loadingSend(false);
-            printMessage(result);
-        }
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+            startActivity(intent);
+            finish();
+
     }
 
     /**

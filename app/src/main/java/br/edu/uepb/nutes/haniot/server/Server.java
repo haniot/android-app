@@ -179,7 +179,6 @@ public class Server {
                 .headers(headers)
                 .tag(mContext.getClass().getName())
                 .build();
-
         sendRequest(request, serverCallback);
     }
 
