@@ -237,7 +237,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 try {
                     if (response.has("code") && response.getInt("code") == 401) {
                         Toast.makeText(getApplicationContext(), R.string.validate_invalid_email_or_password, Toast.LENGTH_LONG).show();
-                    } else {
+                    } else if (response.has("code") && response.getInt("code") == 403){
+                        Toast.makeText(getApplicationContext(), R.string.error_403, Toast.LENGTH_LONG).show();
+                    }else{
                         Toast.makeText(getApplicationContext(), R.string.error_500, Toast.LENGTH_LONG).show();
                     }
                 } catch (JSONException e) {

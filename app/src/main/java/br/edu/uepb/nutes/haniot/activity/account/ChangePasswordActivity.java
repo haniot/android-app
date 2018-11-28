@@ -260,19 +260,19 @@ public class ChangePasswordActivity extends AppCompatActivity {
     private void signOut(JSONObject result) {
         Log.i("Account", "Removing user");
 
-            Log.i("Account", "Dentro");
-            /**
-             * Remove user from session and redirect to login screen.
-             */
-            if (session.isLogged()) {
-                Log.i("Account", "logado...saindo");
-                session.removeLogged();
-            }
-            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        Log.i("Account", "Dentro");
+        /**
+         * Remove user from session and redirect to login screen.
+         */
+        if (session.isLogged()) {
+            Log.i("Account", "logado...saindo");
+            session.removeLogged();
+        }
+        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
-            startActivity(intent);
-            finish();
+        startActivity(intent);
+        finish();
 
     }
 
@@ -291,6 +291,8 @@ public class ChangePasswordActivity extends AppCompatActivity {
                             Toast.makeText(getApplicationContext(), R.string.update_success, Toast.LENGTH_SHORT).show();
                         } else if (response.getInt("code") == 401) {
                             Toast.makeText(getApplicationContext(), R.string.validate_password_not_match_current, Toast.LENGTH_LONG).show();
+                        } else if (response.getInt("code") == 400) {
+                            Toast.makeText(getApplicationContext(), R.string.error_400, Toast.LENGTH_LONG).show();
                         } else { // error 500
                             Toast.makeText(getApplicationContext(), R.string.error_500, Toast.LENGTH_LONG).show();
                         }
