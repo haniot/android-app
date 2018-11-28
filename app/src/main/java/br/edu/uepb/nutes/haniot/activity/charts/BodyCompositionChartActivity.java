@@ -47,7 +47,7 @@ public class BodyCompositionChartActivity extends BaseChartActivity {
                 .setTextValuesColor(Color.WHITE)
                 .colorFontDescription(Color.WHITE)
                 .highlightStyle(Color.TRANSPARENT, 0.7f)
-                .createLimit("Obesity", getLimitObesity(OBESITY_OVERWEIGHT), Color.RED)
+                //.createLimit("Obesity", getLimitObesity(OBESITY_OVERWEIGHT), Color.RED)
                 .build();
 
         requestData(CHART_TYPE_MONTH);
@@ -89,7 +89,7 @@ public class BodyCompositionChartActivity extends BaseChartActivity {
         lineChart.setVisibility(View.VISIBLE);
     }
 
-    public float getLimitObesity(float IMC){
-        return (float) (IMC*Math.pow(session.getUserLogged().getHeight(), 2));
-    }
+//    public float getLimitObesity(float IMC){
+//        return (float) (IMC*Math.pow(session.getUserLogged().getHeight(), 2));
+//    }
 }

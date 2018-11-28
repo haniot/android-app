@@ -60,13 +60,11 @@ public class ChangePasswordActivity extends AppCompatActivity {
     @BindView(R.id.edit_text_confirm_password)
     EditText confirmPasswordEditText;
 
-    private User user;
     private Menu menu;
     private Session session;
-    private UserDAO userDAO;
-    private boolean isFirstLogin = false;
-    //temp
-    String email;
+    private boolean isRedirect = false;
+    private String pathRedirectLink;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,12 +76,13 @@ public class ChangePasswordActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(R.string.change_password);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Intent intent = getIntent();
-        //temp
-        email = "teste@mail.com";
-        if (intent.hasExtra("email")) {
+
+        if (intent.hasExtra("pathRedirectLink")) {
             Log.i("Account", "getIntent() - First login");
-            email = intent.getStringExtra("email");
-            isFirstLogin = true;
+            pathRedirectLink = intent.getStringExtra("pathRedirectLink");
+            pathRedirectLink = pathRedirectLink.replace("/api/v1", "");
+            isRedirect = true;
+            Log.i("Account", "pathRedirectLink: " + pathRedirectLink);
         }
         confirmPasswordEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -96,18 +95,17 @@ public class ChangePasswordActivity extends AppCompatActivity {
         });
 
         session = new Session(this);
-        userDAO = UserDAO.getInstance(this);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
 
-       //user = session.getUserLogged();
+        //user = session.getUserLogged();
         //if (user == null) {
         //    Toast.makeText(getApplicationContext(), R.string.error_connectivity, Toast.LENGTH_LONG).show();
         //    finish();
-       // }
+        // }
     }
 
     @Override
@@ -204,7 +202,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
      * Change password
      */
     private void changePassword() {
-        if (!checkConnectivity() || !validate() || user == null)
+        if (!checkConnectivity() || !validate())
             return;
 
         loadingSend(true);
@@ -221,38 +219,60 @@ public class ChangePasswordActivity extends AppCompatActivity {
         }
 
         // Send for remote server /users/:userId/password
-        //Server.getInstance(this).put("users/".concat(session.get_idLogged()) + "/password",
-        Server.getInstance(this).put("users/".concat(email) + "/password",
-                jsonObject.toString(), new Server.Callback() {
-                    @Override
-                    public void onError(JSONObject result) {
-                        printMessage(result);
-                        loadingSend(false);
-                    }
-
-                    @Override
-                    public void onSuccess(JSONObject result) {
-                        try {
-                            final User userUpdate = new Gson().fromJson(result.getString("user"), User.class);
-
-                            if (userUpdate != null) {
-                                /**
-                                 * Remove user from session and redirect to login screen.
-                                 */
-                                if (session.isLogged()) session.removeLogged();
-                                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                startActivity(intent);
-                                finish();
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        } finally {
-                            loadingSend(false);
+        if (!isRedirect) {
+            Log.i("Account", "Is not first login");
+            Server.getInstance(this).patch("users/".concat(session.get_idLogged()) + "/password",
+                    jsonObject.toString(), new Server.Callback() {
+                        @Override
+                        public void onError(JSONObject result) {
                             printMessage(result);
+                            loadingSend(false);
                         }
-                    }
-                });
+
+                        @Override
+                        public void onSuccess(JSONObject result) {
+                            signOut(result);
+                        }
+                    });
+        } else {
+            Log.i("Account", "Is first login");
+            Server.getInstance(this).patch(pathRedirectLink,
+                    jsonObject.toString(), new Server.Callback() {
+                        @Override
+                        public void onError(JSONObject result) {
+                            printMessage(result);
+                            loadingSend(false);
+                        }
+
+                        @Override
+                        public void onSuccess(JSONObject result) {
+                            signOut(result);
+                        }
+                    });
+        }
+
+    }
+
+    private void signOut(JSONObject result) {
+        try {
+            final User userUpdate = new Gson().fromJson(result.getString("user"), User.class);
+            Log.i("Account", userUpdate.toString());
+            if (userUpdate != null) {
+                /**
+                 * Remove user from session and redirect to login screen.
+                 */
+                if (session.isLogged()) session.removeLogged();
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } finally {
+            loadingSend(false);
+            printMessage(result);
+        }
     }
 
     /**
@@ -322,7 +342,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-//        if (isFirstLogin) {
+//        if (isRedirect) {
 //            //TODO Remover log
 //            Log.i("Account", "Is first login, please change password...");
 //            session.removeLogged();

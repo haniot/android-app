@@ -48,8 +48,8 @@ public class Server {
     /**
      * If you set a url it will be used as default and not entered by the user in the application settings
      */
-    /* HEROKU */ private final String URI_DEFAULT = "https://haniot-api.herokuapp.com/api/v1";
-//    /* PC HOME */ private final String URI_DEFAULT = "https://192.168.31.113/api/v1";
+    /* HEROKU  private final String URI_DEFAULT = "https://haniot-api.herokuapp.com/api/v1";
+//    /* PC HOME */ private final String URI_DEFAULT = "http://192.168.1.102:80/api/v1";
 //      /* PC WIFI */ private final String URI_DEFAULT = "http://192.168.50.175:8000/api/v1";
 
     private final String MEDIA_TYPE = "application/json; charset=utf-8";
@@ -160,6 +160,39 @@ public class Server {
      */
     public void put(String path, String json, Callback serverCallback) {
         put(path, json, getHeadersDefault(), serverCallback);
+    }
+    /**
+     * Action PATCH.
+     *
+     * @param path           String
+     * @param json           String
+     * @param headers        Headers
+     * @param serverCallback Callback
+     */
+
+    public void patch(String path, String json, Headers headers, Callback serverCallback) {
+        RequestBody body = RequestBody.create(MediaType.parse(MEDIA_TYPE), json);
+
+        Request request = new Request.Builder()
+                .patch(body)
+                .url(urlParser(path))
+                .headers(headers)
+                .tag(mContext.getClass().getName())
+                .build();
+
+        sendRequest(request, serverCallback);
+    }
+
+    /**
+     * Action PATCH.
+     * The default header will be used {@link #getHeadersDefault()}.
+     *
+     * @param path
+     * @param json
+     * @param serverCallback
+     */
+    public void patch(String path, String json, Callback serverCallback) {
+        patch(path, json, getHeadersDefault(), serverCallback);
     }
 
     /**

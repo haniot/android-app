@@ -1,5 +1,8 @@
 package br.edu.uepb.nutes.haniot.model;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.model.elderly.Elderly;
@@ -19,21 +22,21 @@ import io.objectbox.relation.ToMany;
 @Entity
 public class User {
     @Id
+    @Expose(serialize = false)
     private long id;
 
     @Index
+    @SerializedName("id")
     private String _id; // _id in server remote (UUID)
 
+    @SerializedName("name")
     private String name;
 
     @Index
+    @SerializedName("email")
     private String email;
 
-    private String password;
-    private int gender;
-    private long dateOfBirth;
-    private int height; // in cm
-
+    @SerializedName("token")
     private String token; // provide by the server
 
     /**
@@ -57,12 +60,9 @@ public class User {
     public User() {
     }
 
-    public User(String name, String email, int gender, long dateOfBirth, int height, int groupId) {
+    public User(String name, String email, int groupId) {
         this.name = name;
         this.email = email;
-        this.gender = gender;
-        this.dateOfBirth = dateOfBirth;
-        this.height = height;
         this.groupId = groupId;
     }
 
@@ -96,38 +96,6 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public int getGender() {
-        return gender;
-    }
-
-    public void setGender(int gender) {
-        this.gender = gender;
-    }
-
-    public long getDateOfBirth() {
-        return dateOfBirth;
-    }
-
-    public void setDateOfBirth(long dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public void setHeight(int height) {
-        this.height = height;
     }
 
     public String getToken() {
@@ -183,10 +151,6 @@ public class User {
                 ", _id='" + _id + '\'' +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", gender=" + gender +
-                ", dateOfBirth=" + dateOfBirth +
-                ", height=" + height +
                 ", token='" + token + '\'' +
                 ", measurements=" + measurements +
                 ", elderlies=" + elderlies +

@@ -139,7 +139,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         loadingSend(true);
 
         // Send for remote server /users/authenticate
-        Server.getInstance(this).post("users/authenticate", getJsonData(), new Server.Callback() {
+        Server.getInstance(this).post("users/auth", getJsonData(), new Server.Callback() {
             @Override
             public void onError(JSONObject result) {
                 printMessage(result);
@@ -148,7 +148,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     if (result.getString("code").equals("403")) {
                         Log.i("JWT", "403 - Need change password");
                         Intent intent = new Intent(LoginActivity.this, ChangePasswordActivity.class);
-                        intent.putExtra("email", emailEditText.getText().toString());
+                        intent.putExtra("pathRedirectLink", result.get("redirect_link").toString());
                         startActivity(intent);
                     }
                 } catch (JSONException e) {
@@ -159,21 +159,25 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void onSuccess(JSONObject result) {
                 try {
-                    User user = result.has("user") ? new Gson().fromJson(result.getString("user"), User.class) : null;
+                    User user = new User();
                     final String token = result.has("token") ? new Gson().fromJson(result.getString("token"), String.class) : null;
-
-                    JWT jwt = new JWT(token);
-                    Log.i(TAG, jwt.toString());
-                    if (jwt.getExpiresAt() == null) Log.i(TAG, "Is null");
-                    else Log.i(TAG, "Expira em: " + jwt.getExpiresAt().toString());
-                    if (user.get_id() != null && token != null) {
+                    if (token != null) {
+                        JWT jwt = new JWT(token);
+                        String _id = jwt.getSubject();
+                        user.set_id(_id);
                         user.setToken(token);
-                        User u = userDAO.get(user.getEmail());
+                        Log.i(TAG, "JWT: " + jwt.toString());
+                        Log.i(TAG, "_id: " + _id);
+                        Log.i(TAG, "token: " + token);
+                        Log.i(TAG, "token expires at: " + jwt.getExpiresAt());
+
+                        User u = userDAO.get(user.get_id());
                         if (u != null) {
+                            user.setId(u.getId());
                             userDAO.update(user);
                         } else {
                             userDAO.save(user);
-                            user = userDAO.get(user.getEmail());
+                            user = userDAO.get(user.get_id());
                         }
                         session.setLogged(user.getId(), token);
 

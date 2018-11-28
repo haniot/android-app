@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -214,7 +215,7 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
         loading(true);
 
         // Send for remote server /users/:userId
-        Server.getInstance(this).put("users/".concat(session.get_idLogged()),
+        Server.getInstance(this).patch("users/".concat(session.get_idLogged()),
                 new Gson().toJson(getUserView()), new Server.Callback() {
                     @Override
                     public void onError(JSONObject result) {
@@ -228,6 +229,7 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
                             final User userUpdate = new Gson().fromJson(result.getString("user"), User.class);
                             if (userUpdate.getEmail() != null)
                                 userDAO.update(user); // save in local
+                            Log.i("Account", "Updated: " + userDAO.get(userUpdate.get_id()).toString());
                         } catch (JSONException e) {
                             e.printStackTrace();
                         } finally {
@@ -272,7 +274,9 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
      * Populate elements of the view
      */
     private void populateView() {
+        if (user.getName() != null)
         nameEditText.setText(user.getName());
+        if (user.getEmail() != null)
         emailEditText.setText(user.getEmail());
         //TODO comentado para resolver aquele problema de não ser possivel selecionar
 //        emailEditText.setEnabled(false);

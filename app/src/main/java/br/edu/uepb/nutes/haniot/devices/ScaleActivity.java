@@ -669,7 +669,8 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
      * @return double
      */
     private double calcBMI(double bodyMass) {
-        double height = (session.getUserLogged().getHeight()) / 100D;
+        //double height = (session.getUserLogged().getHeight()) / 100D;
+        double height = 1.0;
         return bodyMass / (Math.pow(height, 2));
     }
 

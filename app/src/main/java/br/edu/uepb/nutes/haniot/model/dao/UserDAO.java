@@ -37,13 +37,13 @@ public class UserDAO {
     }
 
     /**
-     * get user for email.
+     * get user for _id.
      *
-     * @param email String
+     * @param _id String
      * @return User
      */
-    public User get(@NonNull String email) {
-        return userBox.query().equal(User_.email, email).build().findFirst();
+    public User get(@NonNull String _id) {
+        return userBox.query().equal(User_._id, _id).build().findFirst();
     }
 
     /**
@@ -77,18 +77,15 @@ public class UserDAO {
      * @return boolean
      */
     public boolean update(@NonNull User user) {
-        if (user.getId() == 0) {
-            User userUp = get(user.getEmail());
+        User userUp = get(user.get_id());
+        /**
+         * Id is required for an update
+         * Otherwise it will be an insert
+         */
+        if (userUp == null) return false;
 
-            /**
-             * Id is required for an update
-             * Otherwise it will be an insert
-             */
-            if (userUp == null) return false;
-
-            user.setId(userUp.getId());
-            if (user.get_id() == null) user.set_id(userUp.get_id());
-        }
+        user.setId(userUp.getId());
+        if (user.get_id() == null) user.set_id(userUp.get_id());
 
         return save(user); // update
     }

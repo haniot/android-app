@@ -490,22 +490,6 @@
           "name": "email"
         },
         {
-          "id": "5:6310452791733585550",
-          "name": "password"
-        },
-        {
-          "id": "6:5201915036578598733",
-          "name": "gender"
-        },
-        {
-          "id": "7:2133648461927968477",
-          "name": "dateOfBirth"
-        },
-        {
-          "id": "8:3655012271888568165",
-          "name": "height"
-        },
-        {
           "id": "9:3754480995105372944",
           "name": "token"
         },
@@ -525,7 +509,12 @@
   "modelVersionParserMinimum": 4,
   "retiredEntityUids": [],
   "retiredIndexUids": [],
-  "retiredPropertyUids": [],
+  "retiredPropertyUids": [
+    6310452791733585550,
+    5201915036578598733,
+    2133648461927968477,
+    3655012271888568165
+  ],
   "retiredRelationUids": [],
   "version": 1
 }
