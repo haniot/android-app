@@ -233,6 +233,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess(JSONObject result) {
                             Log.i("Account", "Password changed for redirect");
+                            printMessage(result);
                             signOut(result);
                         }
                     });
@@ -250,6 +251,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess(JSONObject result) {
                             Log.i("Account", "Password changed for redirect");
+                            printMessage(result);
                             signOut(result);
                         }
                     });
@@ -287,12 +289,12 @@ public class ChangePasswordActivity extends AppCompatActivity {
             public void run() {
                 try {
                     if (response.has("code") && !response.has("unauthorized")) {
-                        if (response.getInt("code") == 201) {
+                        if (response.getInt("code") == 204) {
                             Toast.makeText(getApplicationContext(), R.string.update_success, Toast.LENGTH_SHORT).show();
                         } else if (response.getInt("code") == 401) {
                             Toast.makeText(getApplicationContext(), R.string.validate_password_not_match_current, Toast.LENGTH_LONG).show();
                         } else if (response.getInt("code") == 400) {
-                            Toast.makeText(getApplicationContext(), R.string.error_400, Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), R.string.error_incorret_password, Toast.LENGTH_LONG).show();
                         } else { // error 500
                             Toast.makeText(getApplicationContext(), R.string.error_500, Toast.LENGTH_LONG).show();
                         }
