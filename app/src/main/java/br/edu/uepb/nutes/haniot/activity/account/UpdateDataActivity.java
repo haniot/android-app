@@ -255,7 +255,7 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
                     if (response.has("code") && !response.has("unauthorized")) {
                         if (response.getInt("code") == 409) { // duplicate
                             Toast.makeText(getApplicationContext(), R.string.validate_register_user_not_duplicate, Toast.LENGTH_LONG).show();
-                        } else if (response.getInt("code") == 201) {
+                        } else if (response.getInt("code") == 200) {
                             Toast.makeText(getApplicationContext(), R.string.update_success, Toast.LENGTH_SHORT).show();
                         } else { // error 500
                             Toast.makeText(getApplicationContext(), R.string.error_500, Toast.LENGTH_LONG).show();

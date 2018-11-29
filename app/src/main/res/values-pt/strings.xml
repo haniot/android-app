@@ -145,7 +145,8 @@
     <string name="error_connectivity">Aconteceu um erro na comunicação com nossos servidores. Por favor, verifique a conectividade do seu telefone e tente novamente mais tarde.</string>
     <string name="connect_network_try_again">Conecte-se a uma rede e tente novamente&#8230;</string>
     <string name="error_403">A senha do usuário precisa ser alterada!</string>
-    <string name="error_400">Senha não pode ser senha atualizada. Verifique se os dados estão corretos!</string>
+    <string name="error_incorret_password">Senha não pode ser atualizada senha. Certifique-se de que os dados estão corretos!</string>
+
     <!-- END ERROR MESSAGES -->
 
     <!-- SETTINGS -->
@@ -704,7 +705,7 @@
     <string name="email">Email</string>
     <string name="password">Senha</string>
     <string name="password_confirm">Confirmar senha</string>
-    <string name="login">Cadastrar</string>
+    <string name="login">Entrar</string>
     <string name="no_account_yet">Ainda não possui conta? Se cadastre!</string>
 
     <string name="temperatre_type_ear">Ear (usually ear lobe)</string>
