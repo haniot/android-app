@@ -13,6 +13,7 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import br.edu.uepb.nutes.haniot.activity.account.UpdateDataActivity;
+import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.activity.settings.SettingsActivity;
 
 import static android.support.test.espresso.Espresso.onData;
@@ -33,12 +34,15 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withTagKey;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static br.edu.uepb.nutes.haniot.activity.settings.MyPreferenceFragment.FORM_UPDATE;
+import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
+import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsAnything.anything;
+import static org.hamcrest.core.IsNot.not;
 
 
 public class TEST05 {
@@ -52,18 +56,22 @@ public class TEST05 {
 
     private EditText name;
     private EditText email;
+    private Session session;
+    private String afterEmail, afterName;
+    private Intent it ;
 
     @Before
     public void setUp()  {
-
-        Intent it = new Intent();
+        it = new Intent();
         it.putExtra(FORM_UPDATE, true);
         myActivityTestRule.launchActivity(it);
         context = myActivityTestRule.getActivity().getApplicationContext();
         updateDataActivity = myActivityTestRule.getActivity();
         name = updateDataActivity.findViewById(R.id.edit_text_name);
         email = updateDataActivity.findViewById(R.id.edit_text_email);
-
+        session = new Session(context);
+        afterEmail = "testesnutes@mail.com";
+        afterName = "Testes Nutes";
     }
 
     @After
@@ -93,6 +101,7 @@ public class TEST05 {
         onView(withId(R.id.action_save)).perform(click());
         assertNotNull(name.getError());
     }
+
     @Test
     public void task01sucess() throws InterruptedException {
         Thread.sleep(1000);
@@ -100,6 +109,7 @@ public class TEST05 {
                 closeSoftKeyboard());
         onView(withId(R.id.action_save)).perform(click());
         assertNull(name.getError());
+        assertEquals("Teste", session.getUserLogged().getName());
     }
 
     @Test
@@ -117,20 +127,42 @@ public class TEST05 {
         onView(withId(R.id.action_save)).perform(click());
         assertNotNull(email.getError());
     }
+
     @Test
     public void task02valid() throws InterruptedException {
         Thread.sleep(1000);
         onView(withId(R.id.edit_text_email)).perform(clearText(),
-                typeText("testesnutes@mail.com"), closeSoftKeyboard());
+                typeText("testemail@mail.com"), closeSoftKeyboard());
         onView(withId(R.id.action_save)).perform(click());
         assertNull(email.getError());
+        Thread.sleep(2000);
+        assertEquals("testemail@mail.com", session.getUserLogged().getEmail());
     }
-//    @Test
-//    public void task03empty(){
-//        onView(withId(R.id.edit_text_name)).perform(clearText(), closeSoftKeyboard());
-//        onView(withId(R.id.edit_text_email)).perform(clearText(), closeSoftKeyboard());
-//        onView(withId(R.id.action_save)).perform(click());
-//        assertNotNull(name.getError());
-//        assertNotNull(email.getError());
-//    }
+    @Test
+    public void task03empty() throws InterruptedException {
+        Thread.sleep(1000);
+        onView(withId(R.id.edit_text_name)).perform(clearText(), closeSoftKeyboard());
+        onView(withId(R.id.edit_text_email)).perform(clearText(), closeSoftKeyboard());
+        onView(withId(R.id.action_save)).perform(click());
+        assertNotNull(name.getError());
+    }
+
+    @Test
+    public void task03valid() throws InterruptedException{
+        Thread.sleep(1000);
+        onView(withId(R.id.edit_text_name)).perform(clearText(), typeText(
+                afterName),
+                closeSoftKeyboard());
+        onView(withId(R.id.edit_text_email)).perform(clearText(), typeText(
+                afterEmail),
+                closeSoftKeyboard());
+        onView(withId(R.id.action_save)).perform(click());
+        assertNull(name.getError());
+        assertNull(email.getError());
+        Thread.sleep(2000);
+        assertEquals(afterEmail, session.getUserLogged().getEmail());
+        assertEquals(afterName, session.getUserLogged().getName());
+    }
+
+
 }
