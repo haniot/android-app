@@ -9,7 +9,6 @@ import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -22,6 +21,9 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
+
+import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.account.LoginActivity;
@@ -57,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
     ViewPager viewPager;
     @BindView(R.id.newMeasureButton)
     FloatingActionButton newMeasureButton;
+    @BindView(R.id.floating_menu_main)
+    FloatingActionMenu floatingMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,10 +88,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void hideBtn(){
-        newMeasureButton.hide();
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -98,6 +98,9 @@ public class MainActivity extends AppCompatActivity {
         if (!(new Session(this).isLogged())) {
             startActivity(new Intent(this, LoginActivity.class));
             finish();
+        }
+        if (floatingMenu.isOpened()){
+            floatingMenu.close(true);
         }
         checkLastChildAndUpdateTabTitle();
     }

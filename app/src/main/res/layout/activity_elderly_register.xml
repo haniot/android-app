@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><!-- This DrawerLayout has two children at the root  -->
+<?xml version="1.0" encoding="utf-8"?><!-- This DrawerLayout has two patient at the root  -->
 <android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/drawer_layout"

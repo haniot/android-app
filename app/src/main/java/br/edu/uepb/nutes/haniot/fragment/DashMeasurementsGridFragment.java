@@ -3,6 +3,7 @@ package br.edu.uepb.nutes.haniot.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -10,11 +11,13 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -234,31 +237,6 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(gridMeasurement);
 
-// Extend the Callback class
-//        ItemTouchHelper.Callback _ithCallback = new ItemTouchHelper.Callback() {
-//            //and in your imlpementaion of
-//            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-//                // get the viewHolder's and target's positions in your adapter data, swap them
-//                Collections.swap(buttonList, viewHolder.getAdapterPosition(), target.getAdapterPosition());
-//                // and notify the adapter that its dataset has changed
-//                mAdapter.notifyItemMoved(viewHolder.getAdapterPosition(), target.getAdapterPosition());
-//                return true;
-//            }
-//
-//            @Override
-//            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-//                //TODO
-//            }
-//
-//            //defines the enabled move directions in each state (idle, swiping, dragging).
-//            @Override
-//            public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-//                return makeFlag(ItemTouchHelper.ACTION_STATE_DRAG,
-//                        ItemTouchHelper.DOWN | ItemTouchHelper.UP | ItemTouchHelper.START | ItemTouchHelper.END);
-//            }
-//        };
-//        ItemTouchHelper ith = new ItemTouchHelper(_ithCallback);
-//        ith.attachToRecyclerView(gridMeasurement);
     }
 
     @Override
@@ -432,7 +410,7 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
 
             Intent intent = new Intent(getContext(), HeartRateActivity.class);
             intent.putExtra(HeartRateActivity.EXTRA_DEVICE_ADDRESS, "E9:50:60:1F:31:D2");
-            intent.putExtra(HeartRateActivity.EXTRA_DEVICE_INFORMATIONS, new String[]{"POLAR", "H10"});
+            intent.putExtra(HeartRateActivity.EXTRA_DEVICE_INFORMATIONS, new String[]{"POLAR","H10"});
             startActivity(intent);
 
         } else {

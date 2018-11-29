@@ -309,7 +309,9 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
         }else if (type == MeasurementType.TEMPERATURE && !measurementTemperature) {
             this.eventMeasurement.setTemperature(value);
             this.measurementTemperature = true;
-        }else if (type == MeasurementType.BLOOD_PRESSURE_DIASTOLIC && !measurementBloodPressure){
+        }else if ((type == MeasurementType.BLOOD_PRESSURE_SYSTOLIC ||
+                type == MeasurementType.BLOOD_PRESSURE_DIASTOLIC)
+                && !measurementBloodPressure){
             this.eventMeasurement.setPressure(value);
             this.measurementBloodPressure = true;
         }else if(type == MeasurementType.BLOOD_GLUCOSE && !measurementBloodGlucose){
@@ -334,7 +336,7 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
                 .type(HistoricalType.MEASUREMENTS_USER)
                 .params(params) // Measurements of the temperature type, associated to the user
                 .filterDate(timeInit, timeEnd)
-                .pagination(0, 200)
+                .pagination(0, 500)
                 .build();
 
         historical.request(getContext(), new CallbackHistorical<Measurement>() {
@@ -365,8 +367,12 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
                             value = String.format("%.2f",measurement.getValue());
                         }else if (type == MeasurementType.TEMPERATURE && !measurementTemperature){
                             value = String.format("%.0f",measurement.getValue());
-                        }else if (type == MeasurementType.BLOOD_PRESSURE_DIASTOLIC && !measurementBloodPressure){
-                            value = String.format("%.2f",measurement.getValue());
+                        }else if ((type == MeasurementType.BLOOD_PRESSURE_SYSTOLIC ||
+                                type == MeasurementType.BLOOD_PRESSURE_DIASTOLIC)
+                                && !measurementBloodPressure){
+                            value = String.format("%.0f",measurement.getValue());
+                            value = value+" / "+ String
+                                    .format("%.0f",measurement.getMeasurements().get(0).getValue());
                         }else if (type == MeasurementType.BLOOD_GLUCOSE && !measurementBloodGlucose){
                             value = String.format("%.2f",measurement.getValue());
                         }else if (type == MeasurementType.STEPS && !measurementSteps){
@@ -376,7 +382,6 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
                             distance = (float) measurement.getMeasurements().get(1)
                                     .getValue();
                             measurementSteps = true;
-                            float tes = (float) measurement.getValue();
                         }
                         setupEvent(type,value);
                     }

@@ -386,6 +386,7 @@
     <string name="goals_steps">Escolha a meta de passos</string>
     <string name="goals_calories">Escolha a meta de calorias</string>
     <string name="goals_distance">Escolha a meta de distância</string>
+    <string name="send_measurements_to_server">Salvar medições</string>
 
     <!-- END OF STRINGS FOR TABLET -->
 

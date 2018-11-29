@@ -8,7 +8,7 @@ import io.objectbox.relation.ToMany;
 import io.objectbox.relation.ToOne;
 
 @Entity
-public class Children {
+public class Patient {
 
     @Id
     private long id;
@@ -33,7 +33,7 @@ public class Children {
     @Backlink(to = "children")
     ToMany<Measurement> measurements;
 
-    public Children(){
+    public Patient(){
 
     }
 

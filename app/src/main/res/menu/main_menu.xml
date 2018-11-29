@@ -11,16 +11,12 @@
         app:showAsAction="ifRoom" />
     <item
         android:icon="@drawable/ic_profile"
-        android:orderInCategory="3"
+        android:orderInCategory="2"
         android:title="@string/profile"
         app:showAsAction="never" />
-    <item
-        android:icon="@drawable/ic_stethoscope"
-        android:orderInCategory="2"
-        android:title="@string/connect_device"
-        app:showAsAction="ifRoom" />
+
     <item
         android:id="@+id/btnMenuMainSettings"
-        android:orderInCategory="4"
+        android:orderInCategory="3"
         android:title="@string/action_settings" />
 </menu>

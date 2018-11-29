@@ -1,13 +1,10 @@
 package br.edu.uepb.nutes.haniot.adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -23,25 +20,23 @@ import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.MainActivity;
-import br.edu.uepb.nutes.haniot.activity.ManageChildrenActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
-import br.edu.uepb.nutes.haniot.model.Children;
-import br.edu.uepb.nutes.haniot.utils.Log;
+import br.edu.uepb.nutes.haniot.model.Patient;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class ManageChildrenAdapter extends RecyclerView.Adapter<ManageChildrenAdapter.ManageChildrenViewHolder> implements Filterable{
 
-    private List<Children> itemList;
-    private List<Children> itemListFiltered;
+    private List<Patient> itemList;
+    private List<Patient> itemListFiltered;
     private Context context;
     private String searchQuerry = "";
     private Session session;
 
-    public ManageChildrenAdapter(List<Children> childrenList, Context context){
+    public ManageChildrenAdapter(List<Patient> patientList, Context context){
 
-        this.itemList = childrenList;
-        this.itemListFiltered = childrenList;
+        this.itemList = patientList;
+        this.itemListFiltered = patientList;
         this.context = context;
         session = new Session(context);
     }
@@ -64,44 +59,44 @@ public class ManageChildrenAdapter extends RecyclerView.Adapter<ManageChildrenAd
 
         if (itemListFiltered != null && itemListFiltered.size() > 0){
 
-            Children children = itemListFiltered.get(position);
+            Patient patient = itemListFiltered.get(position);
 
-            if(position == getItemCount()-1){
-                holder.divChildren.setBackgroundColor(Color.TRANSPARENT);
-            }
+//            if(position == getItemCount()-1){
+//                holder.divChildren.setBackgroundColor(Color.TRANSPARENT);
+//            }
 
-            String nameText = String.valueOf(children.getName().charAt(0));
+            String nameText = String.valueOf(patient.getName().charAt(0));
 
             holder.textLetter.setText(nameText);
-            holder.textId.setText(children.get_id());
+            holder.textId.setText(patient.get_id());
             holder.textId.setTextColor(context.getResources().getColor(R.color.colorBlackGrey));
-            holder.textName.setText(children.getName());
+            holder.textName.setText(patient.getName());
             holder.btnSelect.setOnClickListener( c -> {
 
                 //Código abaixo funcional!
                 Intent it = new Intent(context,MainActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putString(context.getResources().getString(R.string.id_last_child),children.get_id());
-                bundle.putString(context.getResources().getString(R.string.name_last_child),children.getName());
+                bundle.putString(context.getResources().getString(R.string.id_last_child), patient.get_id());
+                bundle.putString(context.getResources().getString(R.string.name_last_child), patient.getName());
                 it.putExtras(bundle);
                 it.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
                 String id = context.getResources().getString(R.string.id_last_child);
                 String name = context.getResources().getString(R.string.name_last_child);
-                session.putString(id,children.get_id());
-                session.putString(name,children.getName());
+                session.putString(id, patient.get_id());
+                session.putString(name, patient.getName());
 
                 context.startActivity(it);
 
             });
             holder.btnDelete.setOnClickListener( d -> {
 
-                int oldId = searchPositionByChildrenId(children.get_id());
+                int oldId = searchPositionByChildrenId(patient.get_id());
                 if (oldId != -1) {
                     removeChild(oldId);
                     String idLastChild = context.getResources().getString(R.string.id_last_child);
                     String lastId = session.getString(idLastChild);
-                    if (children.get_id().equals(lastId)) {
+                    if (patient.get_id().equals(lastId)) {
                         String id = context.getResources().getString(R.string.id_last_child);
                         String name = context.getResources().getString(R.string.name_last_child);
                         session.putString(id,"");
@@ -160,8 +155,8 @@ public class ManageChildrenAdapter extends RecyclerView.Adapter<ManageChildrenAd
                 if (querry.isEmpty() || querry.equals("")){
                     itemListFiltered = itemList;
                 }else{
-                    List<Children> filteredList = new ArrayList<>();
-                    for (Children child : itemList){
+                    List<Patient> filteredList = new ArrayList<>();
+                    for (Patient child : itemList){
 
                         //O filtro é aplicado aqui
                         if (child.get_id().toLowerCase().contains(querry.toLowerCase())
@@ -181,7 +176,7 @@ public class ManageChildrenAdapter extends RecyclerView.Adapter<ManageChildrenAd
 
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
-                itemListFiltered = (ArrayList<Children>)results.values;
+                itemListFiltered = (ArrayList<Patient>)results.values;
                 notifyDataSetChanged();
             }
         };

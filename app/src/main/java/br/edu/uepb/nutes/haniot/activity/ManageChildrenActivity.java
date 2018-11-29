@@ -12,7 +12,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
@@ -22,7 +21,7 @@ import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.adapter.ManageChildrenAdapter;
-import br.edu.uepb.nutes.haniot.model.Children;
+import br.edu.uepb.nutes.haniot.model.Patient;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -33,7 +32,7 @@ public class ManageChildrenActivity extends AppCompatActivity {
     @BindView(R.id.recyclerViewChildren)
     RecyclerView recyclerViewChildren;
 
-    private List<Children> childrenList = new ArrayList<>();
+    private List<Patient> patientList = new ArrayList<>();
     private ManageChildrenAdapter adapter;
 
     @Override
@@ -48,7 +47,7 @@ public class ManageChildrenActivity extends AppCompatActivity {
 
         loadData();
 
-        adapter = new ManageChildrenAdapter(this.childrenList, getApplicationContext());
+        adapter = new ManageChildrenAdapter(this.patientList, getApplicationContext());
         recyclerViewChildren.setHasFixedSize(true);
         recyclerViewChildren.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewChildren.setItemAnimator(new DefaultItemAnimator());
@@ -69,14 +68,14 @@ public class ManageChildrenActivity extends AppCompatActivity {
         l.add("luis");
         l.add("josue");
 
-        Children child;
+        Patient child;
         SimpleDateFormat spn = new SimpleDateFormat("dd/MM/yyyy");
         for (int i = 0; i < 10; i++) {
-            child = new Children();
+            child = new Patient();
             child.set_id(String.valueOf(i * 65478));
             child.setRegisterDate(spn.format(Calendar.getInstance().getTime()));
             child.setName(l.get(i));
-            childrenList.add(child);
+            patientList.add(child);
         }
     }
 
