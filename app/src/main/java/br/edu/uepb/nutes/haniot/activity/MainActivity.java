@@ -221,9 +221,6 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.btnManageChildren:
-                //TODO Apagar teste ao finalizar
-                //EventBus.getDefault().post("Token Expired");
-                //startActivity(new Intent(getApplicationContext(), UpdateDataActivity.class));
                 startActivity(new Intent(getApplicationContext(), ManageChildrenActivity.class));
                 break;
             case R.id.btnMenuMainSettings:

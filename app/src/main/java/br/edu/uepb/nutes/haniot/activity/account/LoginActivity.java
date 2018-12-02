@@ -134,7 +134,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
      * Authenticates the user on the remote server
      */
     private void authenticationInServer() {
-        //TODO remove comments
         Log.i(TAG, "authenticationInServer()");
         loadingSend(true);
 
@@ -146,7 +145,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 loadingSend(false);
                 try {
                     if (result.getString("code").equals("403")) {
-                        Log.i("JWT", "403 - Need change password");
                         Intent intent = new Intent(LoginActivity.this, ChangePasswordActivity.class);
                         intent.putExtra("pathRedirectLink", result.get("redirect_link").toString());
                         startActivity(intent);
@@ -166,10 +164,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         String _id = jwt.getSubject();
                         user.set_id(_id);
                         user.setToken(token);
-                        Log.i(TAG, "JWT: " + jwt.toString());
-                        Log.i(TAG, "_id: " + _id);
-                        Log.i(TAG, "token: " + token);
-                        Log.i(TAG, "token expires at: " + jwt.getExpiresAt());
 
                         User u = userDAO.get(user.get_id());
                         if (u != null) {
@@ -331,7 +325,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
      * Bind Account Service.
      */
     public void doBindService() {
-        Log.i("JWT", "Starting service and binding");
         bindService(new Intent(this, TokenExpirationService.class),
                 mServiceConnection,
                 BIND_AUTO_CREATE);
@@ -343,7 +336,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
      */
     public void doUnbindService() {
         if (mIsBound) {
-            Log.i("JWT", "Stoping service and unbinding");
             unbindService(mServiceConnection);
             mIsBound = false;
         }
@@ -355,13 +347,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder service) {
-            Log.i("JWT", "onServiceConnected()");
             tokenExpirationService = ((TokenExpirationService.LocalBinder) service).getService();
         }
 
         @Override
         public void onServiceDisconnected(ComponentName componentName) {
-            Log.i("JWT", "onServiceDisconnected()");
             tokenExpirationService = null;
         }
     };

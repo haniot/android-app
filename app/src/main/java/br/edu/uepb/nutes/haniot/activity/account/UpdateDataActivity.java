@@ -143,11 +143,6 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
      * Prepare the view for editing the data
      */
     private void prepareEditing() {
-        //TODO comentado para resolver aquele problema de não ser possivel selecionar
-//        emailEditText.setEnabled(false);
-//        emailEditText.setFocusable(false);
-//        emailEditText.setFocusableInTouchMode(false);
-
         enabledView(false);
 
         // get user local
@@ -382,13 +377,11 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
     /**
      * Retrieve the user data contained in the view.
      * <p>
-     * Note: "dateOfBirth" is populated in the change event of datepicker
      *
      * @return User
      */
     private User getUserView() {
         user.setName(String.valueOf(nameEditText.getText()));
-        user.setGroupId(2); // common user
         user.setEmail(String.valueOf(emailEditText.getText()));
 
         return user;

@@ -78,11 +78,9 @@ public class ChangePasswordActivity extends AppCompatActivity {
         Intent intent = getIntent();
 
         if (intent.hasExtra("pathRedirectLink")) {
-            Log.i("Account", "getIntent() - First login");
             pathRedirectLink = intent.getStringExtra("pathRedirectLink");
             pathRedirectLink = pathRedirectLink.replace("/api/v1", "");
             isRedirect = true;
-            Log.i("Account", "pathRedirectLink: " + pathRedirectLink);
         }
         confirmPasswordEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -101,11 +99,6 @@ public class ChangePasswordActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        //user = session.getUserLogged();
-        //if (user == null) {
-        //    Toast.makeText(getApplicationContext(), R.string.error_connectivity, Toast.LENGTH_LONG).show();
-        //    finish();
-        // }
     }
 
     @Override
@@ -220,30 +213,25 @@ public class ChangePasswordActivity extends AppCompatActivity {
 
         // Send for remote server /users/:userId/password
         if (!isRedirect) {
-            Log.i("Account", "Is not first login");
             Server.getInstance(this).patch("users/".concat(session.get_idLogged()) + "/password",
                     jsonObject.toString(), new Server.Callback() {
                         @Override
                         public void onError(JSONObject result) {
-                            Log.i("Account", "erro");
                             printMessage(result);
                             loadingSend(false);
                         }
 
                         @Override
                         public void onSuccess(JSONObject result) {
-                            Log.i("Account", "Password changed for redirect");
                             printMessage(result);
                             signOut(result);
                         }
                     });
         } else {
-            Log.i("Account", "Is first login");
             Server.getInstance(this).patch(pathRedirectLink,
                     jsonObject.toString(), new Server.Callback() {
                         @Override
                         public void onError(JSONObject result) {
-                            Log.i("Account", "erro");
                             printMessage(result);
                             loadingSend(false);
                         }
@@ -260,14 +248,10 @@ public class ChangePasswordActivity extends AppCompatActivity {
     }
 
     private void signOut(JSONObject result) {
-        Log.i("Account", "Removing user");
-
-        Log.i("Account", "Dentro");
         /**
          * Remove user from session and redirect to login screen.
          */
         if (session.isLogged()) {
-            Log.i("Account", "logado...saindo");
             session.removeLogged();
         }
         Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
@@ -347,11 +331,5 @@ public class ChangePasswordActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-//        if (isRedirect) {
-//            //TODO Remover log
-//            Log.i("Account", "Is first login, please change password...");
-//            session.removeLogged();
-//            finish();
-//        }
     }
 }

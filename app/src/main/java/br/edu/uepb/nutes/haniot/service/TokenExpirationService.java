@@ -118,8 +118,6 @@ public class TokenExpirationService extends Service {
         JWT jwt = new JWT(session.getTokenLogged());
         Log.i(TAG, "token: " + session.getTokenLogged());
         long expiresAt = jwt.getExpiresAt().getTime();
-        //if (isExpired(expiresAt)) redirectToLogin();
-        //else
         setScheduler(jwt.getExpiresAt());
     }
 
@@ -132,13 +130,6 @@ public class TokenExpirationService extends Service {
         Intent it = new Intent(this, TokenAlarmReceiver.class);
         PendingIntent p = PendingIntent.getBroadcast(this, 0, it, 0);
         long time = expireAt.getTime();
-        //For test
-//        Calendar c = Calendar.getInstance();
-//        c.setTimeInMillis(System.currentTimeMillis());
-//        Log.i("JWT", "Tempo atual: " + c.getTime().toString());
-//        c.add(Calendar.SECOND, 20);
-//        Log.i("JWT", "Alarme: " + c.getTime().toString());
-//        long time = c.getTimeInMillis();
         AlarmManager tokenAlarm = (AlarmManager) getSystemService(ALARM_SERVICE);
         tokenAlarm.set(AlarmManager.RTC_WAKEUP, time, p);
     }
@@ -149,7 +140,6 @@ public class TokenExpirationService extends Service {
     private void redirectToLogin() {
         Log.i(TAG, "Token Expired");
         if (session.removeLogged()) {
-            Log.i(TAG, "Deslogando");
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
         }
@@ -170,7 +160,6 @@ public class TokenExpirationService extends Service {
     public class TokenAlarmReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.i("JWT", "Intent recebida");
             EventBus.getDefault().post("unauthorized");
         }
     }
