@@ -33,7 +33,7 @@ public class TEST01 {
     private EditText email;
     private EditText password;
     private Context context;
-    private String emailLogin = "testenutes@mail.com";
+    private String emailLogin = "testesnutes@mail.com";
     private String senhaLogin = "abc*123";
 
     @Before
