@@ -260,7 +260,6 @@ public class Server {
 
             @Override
             public void onResponse(Call call, final Response response) throws IOException {
-                Log.i("JWT", "Response code: "+response.code());
                 JSONObject result = new JSONObject();
                 try {
                     String jsonString = response.body().string();
@@ -275,7 +274,6 @@ public class Server {
 
                     // Adds the HTTP response code to the json object
                     result.put("code", response.code());
-                    Log.i("JWT", "JSON: "+result.toString());
                     if (!response.isSuccessful()) serverCallback.onError(result);
                     else serverCallback.onSuccess(result);
 
