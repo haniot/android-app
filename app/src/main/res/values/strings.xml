@@ -390,8 +390,8 @@
     <string name="search">Search</string>
     <string name="date">Date: </string>
     <string name="id">id: </string>
-    <string name="id_last_child">id_last_child</string>
-    <string name="name_last_child">name_last_child</string>
+    <string name="id_last_patient">id_last_patient</string>
+    <string name="name_last_patient">name_last_patient</string>
     <string name="childId">childId</string>
     <string name="childName">childName</string>
     <string name="noPatientSelected">No patient selected</string>
@@ -448,6 +448,9 @@
     <string name="goals_calories">Choose the calories goals</string>
     <string name="goals_distance">Choose the distance goals</string>
     <string name="send_measurements_to_server">Save measurements</string>
+    <string name="last_patient_deleted">last_patient_deleted</string>
+    <string name="patient_removed">Patient removed</string>
+    <string name="undo">Undo</string>
 
     <!-- END OF STRINGS FOR TABLET -->
 

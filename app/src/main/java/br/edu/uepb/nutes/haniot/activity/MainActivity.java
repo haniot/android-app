@@ -79,11 +79,12 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setOffscreenPageLimit(2);
         tabLayout.setupWithViewPager(viewPager);
 
-        checkLastChildAndUpdateTabTitle();
+        checkLastPatientAndUpdateTabTitle();
 
         newMeasureButton.setOnClickListener(v -> {
             Intent it = new Intent(this, SettingsActivity.class);
             it.putExtra("settingType", 2);
+            floatingMenu.close(false);
             startActivity(it);
         });
     }
@@ -102,18 +103,18 @@ public class MainActivity extends AppCompatActivity {
         if (floatingMenu.isOpened()){
             floatingMenu.close(true);
         }
-        checkLastChildAndUpdateTabTitle();
+        checkLastPatientAndUpdateTabTitle();
     }
 
-    /* Test if there is some children saved on bundle or on shared preferences
-        if some children is finded, the title is updated.
+    /* Test if there is some patient saved on bundle or on shared preferences
+        if some patient is finded, the title is updated.
     */
-    public void checkLastChildAndUpdateTabTitle() {
+    public void checkLastPatientAndUpdateTabTitle() {
         //caso a tela seja restaurada
         Bundle params = getIntent().getExtras();
         if (params != null) {
-            String idExtra = params.getString(getResources().getString(R.string.id_last_child));
-            String nameExtra = params.getString(getResources().getString(R.string.name_last_child));
+            String idExtra = params.getString(getResources().getString(R.string.id_last_patient));
+            String nameExtra = params.getString(getResources().getString(R.string.name_last_patient));
             if (idExtra != null && !idExtra.equals("")
                     && nameExtra != null && !nameExtra.equals("")) {
                 this.id = idExtra;
@@ -124,8 +125,8 @@ public class MainActivity extends AppCompatActivity {
             this.id = "";
             this.lastNameSelected = "";
         }
-        String id = getResources().getString(R.string.id_last_child);
-        String name = getResources().getString(R.string.name_last_child);
+        String id = getResources().getString(R.string.id_last_patient);
+        String name = getResources().getString(R.string.name_last_patient);
         String lastIdSelected = session.getString(id);
         String lastName = session.getString(name);
         if (!lastIdSelected.equals("") && !lastName.equals("")) {
@@ -226,8 +227,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.btnManageChildren:
-                startActivity(new Intent(getApplicationContext(), ManageChildrenActivity.class));
+            case R.id.btnManagePatient:
+                startActivity(new Intent(getApplicationContext(), ManagePatientsActivity.class));
                 break;
             case R.id.btnMenuMainSettings:
                 Intent it = new Intent(this, SettingsActivity.class);

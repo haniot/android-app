@@ -106,7 +106,7 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
     //Server part
     private Params params;
     private Session session;
-    private String childId = "";
+    private String patientId = "";
 
     private String[] measurementTypeArray;
 
@@ -198,14 +198,14 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
         caloriesProgressBar.setOnClickListener(this);
         distanceProgressBar.setOnClickListener(this);
 
-        getChildId();
+        getPatientId();
         return view;
     }
-    //Get the child id and enable/disable the control buttons of dashboard
-    public void getChildId() {
-        String lastId = session.getString(getResources().getString(R.string.id_last_child));
+    //Get the patient id and enable/disable the control buttons of dashboard
+    public void getPatientId() {
+        String lastId = session.getString(getResources().getString(R.string.id_last_patient));
         if (!lastId.equals("")) {
-            this.childId = lastId;
+            this.patientId = lastId;
             if (this.date.equals(this.today)) {
                 btnArrowRight.setEnabled(false);
                 btnArrowRight.setBackground(getResources().getDrawable(R.mipmap.ic_arrow_right_disabled));
@@ -264,7 +264,7 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
     @Override
     public void onResume() {
         super.onResume();
-        getChildId();
+        getPatientId();
     }
 
     //Formatt the date of dashboard
