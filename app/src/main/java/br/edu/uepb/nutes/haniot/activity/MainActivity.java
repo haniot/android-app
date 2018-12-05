@@ -30,7 +30,9 @@ import br.edu.uepb.nutes.haniot.activity.account.LoginActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.SettingsActivity;
 import br.edu.uepb.nutes.haniot.adapter.FragmentPageAdapter;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
+import br.edu.uepb.nutes.haniot.model.Patient;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
+import br.edu.uepb.nutes.haniot.utils.Log;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -80,6 +82,16 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
 
         checkLastPatientAndUpdateTabTitle();
+
+        Patient patient = getIntent().getParcelableExtra("Patient");
+        if (patient != null && patient instanceof Patient){
+            Log.d("TESTE","Paciente recebido nome: "+patient.getName());
+            Log.d("TESTE","Paciente recebido id: "+patient.get_id());
+            Log.d("TESTE","Paciente recebido idade: "+patient.getAge());
+            Log.d("TESTE","Paciente recebido sexo: "+patient.getSex());
+            Log.d("TESTE","Paciente recebido cor: "+patient.getColor());
+            Log.d("TESTE","Paciente recebido data de registro: "+patient.getRegisterDate());
+        }
 
         newMeasureButton.setOnClickListener(v -> {
             Intent it = new Intent(this, SettingsActivity.class);

@@ -1,11 +1,20 @@
 package br.edu.uepb.nutes.haniot.adapter;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.TransitionDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +29,9 @@ import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.MainActivity;
+import br.edu.uepb.nutes.haniot.activity.PatientHistoricalActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
+import br.edu.uepb.nutes.haniot.devices.ScaleActivity;
 import br.edu.uepb.nutes.haniot.model.Patient;
 import br.edu.uepb.nutes.haniot.model.dao.PatientDAO;
 import br.edu.uepb.nutes.haniot.utils.Log;
@@ -113,7 +124,18 @@ public class ManagePatientAdapter extends RecyclerView.Adapter<ManagePatientAdap
                 }
             });
             holder.itemView.setOnClickListener( c -> {
-                Log.d("TESTE","Nome: "+patient.getName());
+
+                final Intent intent = new Intent(context,PatientHistoricalActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                Bundle bundle = ActivityOptionsCompat.makeScaleUpAnimation(holder.itemView,
+                        0,
+                        0,
+                        holder.itemView.getWidth(),
+                        holder.itemView.getHeight()).toBundle();
+                intent.putExtra("Patient",patient);
+
+                context.startActivity(intent,bundle);
+
             });
         }
 

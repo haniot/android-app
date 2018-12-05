@@ -1,5 +1,10 @@
 package br.edu.uepb.nutes.haniot.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.io.Serializable;
+
 import io.objectbox.annotation.Backlink;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
@@ -8,7 +13,7 @@ import io.objectbox.relation.ToMany;
 import io.objectbox.relation.ToOne;
 
 @Entity
-public class Patient {
+public class Patient implements Parcelable {
 
     @Id
     private long id;
@@ -36,6 +41,29 @@ public class Patient {
     public Patient(){
 
     }
+
+    protected Patient(Parcel in) {
+        id = in.readLong();
+        _id = in.readString();
+        name = in.readString();
+        sex = in.readString();
+        color = in.readString();
+        age = in.readInt();
+        registerDate = in.readString();
+        idProfessionalSponsor = in.readLong();
+    }
+
+    public static final Creator<Patient> CREATOR = new Creator<Patient>() {
+        @Override
+        public Patient createFromParcel(Parcel in) {
+            return new Patient(in);
+        }
+
+        @Override
+        public Patient[] newArray(int size) {
+            return new Patient[size];
+        }
+    };
 
     public ToMany<Measurement> getMeasurements() {
         return measurements;
@@ -107,6 +135,23 @@ public class Patient {
 
     public void setIdProfessionalSponsor(long idProfessionalSponsor) {
         this.idProfessionalSponsor = idProfessionalSponsor;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeLong(id);
+        parcel.writeString(_id);
+        parcel.writeString(name);
+        parcel.writeString(sex);
+        parcel.writeString(color);
+        parcel.writeInt(age);
+        parcel.writeString(registerDate);
+        parcel.writeLong(idProfessionalSponsor);
     }
 
 }

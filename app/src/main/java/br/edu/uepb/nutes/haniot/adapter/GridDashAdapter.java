@@ -74,10 +74,6 @@ public class GridDashAdapter extends BaseAdapter<ItemGrid>{
         }
     }
 
-    public void onItemMoved(int oldPosition, int newPosition){
-        super.notifyItemMoved(oldPosition,newPosition);
-    }
-
     @Override
     public void clearAnimation(RecyclerView.ViewHolder holder) {
         ((ViewHolder) holder).clearAnimation();

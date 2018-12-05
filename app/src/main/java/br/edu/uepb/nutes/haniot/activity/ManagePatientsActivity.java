@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.adapter.ManagePatientAdapter;
@@ -141,6 +142,10 @@ public class ManagePatientsActivity extends AppCompatActivity {
         l.add("luis");
         l.add("josue");
 
+        List<String> l2 = new ArrayList<String>();
+        l2.add("Masculino");
+        l2.add("Feminino");
+
         Patient patient;
         SimpleDateFormat spn = new SimpleDateFormat("dd/MM/yyyy");
         for (int i = 0; i < 10; i++) {
@@ -148,6 +153,8 @@ public class ManagePatientsActivity extends AppCompatActivity {
             patient.set_id(String.valueOf(i * 65478));
             patient.setRegisterDate(spn.format(Calendar.getInstance().getTime()));
             patient.setName(l.get(i));
+            patient.setAge(i);
+            patient.setSex(l2.get((int )(Math.random() * 1 + 0)));
             patientList.add(patient);
         }
     }

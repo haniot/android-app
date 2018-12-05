@@ -20,6 +20,7 @@ public class PatientDAO {
 
     private PatientDAO (){}
 
+//    Singleton
     public static synchronized PatientDAO getInstance(@Nullable Context context){
         if (instance == null) instance = new PatientDAO();
 
@@ -29,22 +30,27 @@ public class PatientDAO {
         return instance;
     }
 
+//    Search patient by name
     public Patient get(@NonNull String name){
         return patientBox.query().equal(Patient_.name,name).build().findFirst();
     }
 
+//    Search patient by id
     public Patient get(@NonNull long id){
         return patientBox.query().equal(Patient_.id,id).build().findFirst();
     }
 
+//    get all patient on database
     public List<Patient> get(){
         return patientBox.query().build().find();
     }
 
+//    save patient
     public boolean save(@NonNull Patient patient){
         return patientBox.put(patient) > 0;
     }
 
+//    update patient
     public boolean update(@NonNull Patient patient){
         if (patient.getId() == 0){
             Patient patientUp = get(patient.getName());
@@ -57,6 +63,7 @@ public class PatientDAO {
         return save(patient);
     }
 
+//    remove patient
     public boolean remove (@NonNull Patient patient){
         return patientBox.query().equal(Patient_.id,patient.getId()).build().remove() > 0;
     }
