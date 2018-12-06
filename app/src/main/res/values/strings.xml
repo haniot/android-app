@@ -385,7 +385,7 @@
     <string name="body_composition_monitor_description">OMRON HBF-206ITH</string>
     <string name="body_composition2">Body Composition Monitor</string>
     <string name="icon_manage_measurement">Manage measurement icon</string>
-    <string name="manage_children">Manage patient</string>
+    <string name="manage_patient">Manage patient</string>
     <string name="add">Add</string>
     <string name="search">Search</string>
     <string name="date">Date: </string>
@@ -451,6 +451,7 @@
     <string name="last_patient_deleted">last_patient_deleted</string>
     <string name="patient_removed">Patient removed</string>
     <string name="undo">Undo</string>
+    <string name="patient_profile">Patient profile</string>
 
     <!-- END OF STRINGS FOR TABLET -->
 

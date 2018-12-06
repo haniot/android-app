@@ -38,18 +38,22 @@ import br.edu.uepb.nutes.haniot.utils.Log;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ManagePatientAdapter extends RecyclerView.Adapter<ManagePatientAdapter.ManagePatientViewHolder> implements Filterable{
+public class ManagePatientAdapter extends RecyclerView.Adapter<ManagePatientAdapter.ManagePatientViewHolder> {
+//        implements Filterable{
 
     private List<Patient> itemList;
-    private List<Patient> itemListFiltered;
+//    private List<Patient> itemListFiltered;
+    private List<Patient> itemListCopy = new ArrayList<>();
     private Context context;
     private String searchQuerry = "";
     private Session session;
+    private String t = "TESTE";
 
     public ManagePatientAdapter(List<Patient> patientList, Context context){
 
         this.itemList = patientList;
-        this.itemListFiltered = patientList;
+//        this.itemListFiltered = patientList;
+        this.itemListCopy.addAll(patientList);
         this.context = context;
         session = new Session(context);
     }
@@ -70,74 +74,72 @@ public class ManagePatientAdapter extends RecyclerView.Adapter<ManagePatientAdap
     @Override
     public void onBindViewHolder(@NonNull ManagePatientViewHolder holder, int position) {
 
-        if (itemListFiltered != null && itemListFiltered.size() > 0){
+        Patient patient = itemList.get(position);
 
-            Patient patient = itemListFiltered.get(position);
+        String nameText = String.valueOf(patient.getName().charAt(0));
 
-            String nameText = String.valueOf(patient.getName().charAt(0));
+        holder.textLetter.setText(nameText);
+        holder.textId.setText(patient.get_id());
+        holder.textId.setTextColor(context.getResources().getColor(R.color.colorBlackGrey));
+        holder.textName.setText(patient.getName());
+        holder.btnSelect.setOnClickListener( c -> {
 
-            holder.textLetter.setText(nameText);
-            holder.textId.setText(patient.get_id());
-            holder.textId.setTextColor(context.getResources().getColor(R.color.colorBlackGrey));
-            holder.textName.setText(patient.getName());
-            holder.btnSelect.setOnClickListener( c -> {
+            //Código abaixo funcional!
+            Intent it = new Intent(context,MainActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putString(context.getResources().getString(R.string.id_last_patient), patient.get_id());
+            bundle.putString(context.getResources().getString(R.string.name_last_patient), patient.getName());
+            it.putExtras(bundle);
+            it.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-                //Código abaixo funcional!
-                Intent it = new Intent(context,MainActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putString(context.getResources().getString(R.string.id_last_patient), patient.get_id());
-                bundle.putString(context.getResources().getString(R.string.name_last_patient), patient.getName());
-                it.putExtras(bundle);
-                it.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            String id = context.getResources().getString(R.string.id_last_patient);
+            String name = context.getResources().getString(R.string.name_last_patient);
+            session.putString(id, patient.get_id());
+            session.putString(name, patient.getName());
 
-                String id = context.getResources().getString(R.string.id_last_patient);
-                String name = context.getResources().getString(R.string.name_last_patient);
-                session.putString(id, patient.get_id());
-                session.putString(name, patient.getName());
+            context.startActivity(it);
 
-                context.startActivity(it);
+        });
+        holder.btnDelete.setOnClickListener( d -> {
 
-            });
-            holder.btnDelete.setOnClickListener( d -> {
-
-                int oldId = searchPositionByChildrenId(patient.get_id());
-                if (oldId != -1) {
-                    removeItem(patient,oldId);
-                    String idLastChild = context.getResources().getString(R.string.id_last_patient);
-                    String lastId = session.getString(idLastChild);
-                    if (patient.get_id().equals(lastId)) {
-                        String id = context.getResources().getString(R.string.id_last_patient);
-                        String name = context.getResources().getString(R.string.name_last_patient);
-                        session.putString(id,"");
-                        session.putString(name,"");
-                    }
-                    Snackbar snackbar = Snackbar
-                            .make(holder.itemView, context.getResources().getString(R.string.patient_removed)
-                                    , Snackbar.LENGTH_LONG).setAction(context.getResources()
-                                    .getString(R.string.undo), view -> {
-                                restoreItem(patient,position);
-                            });
-                    snackbar.show();
-                    if (getItemListFilteredSize() == 0){
-                        Toast.makeText(context,context.getResources().getString(R.string.no_data_available),Toast.LENGTH_SHORT).show();
-                    }
+            int oldId = searchPositionByChildrenId(patient.get_id());
+            if (oldId != -1) {
+                removeItem(patient,oldId);
+                String idLastChild = context.getResources().getString(R.string.id_last_patient);
+                String lastId = session.getString(idLastChild);
+                if (patient.get_id().equals(lastId)) {
+                    String id = context.getResources().getString(R.string.id_last_patient);
+                    String name = context.getResources().getString(R.string.name_last_patient);
+                    session.putString(id,"");
+                    session.putString(name,"");
                 }
-            });
-            holder.itemView.setOnClickListener( c -> {
+                Snackbar snackbar = Snackbar
+                        .make(holder.itemView, context.getResources().getString(R.string.patient_removed)
+                                , Snackbar.LENGTH_LONG).setAction(context.getResources()
+                                .getString(R.string.undo), view -> {
+                            restoreItem(patient,position);
+                        });
+                snackbar.show();
+                if (itemListCopy.size() == 0){
+                    Toast.makeText(context,context.getResources().getString(R.string.no_data_available),Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        holder.itemView.setOnClickListener( c -> {
 
-                final Intent intent = new Intent(context,PatientHistoricalActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                Bundle bundle = ActivityOptionsCompat.makeScaleUpAnimation(holder.itemView,
-                        0,
-                        0,
-                        holder.itemView.getWidth(),
-                        holder.itemView.getHeight()).toBundle();
-                intent.putExtra("Patient",patient);
+//                final Intent intent = new Intent(context,PatientHistoricalActivity.class);
+//                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                Bundle bundle = ActivityOptionsCompat.makeScaleUpAnimation(holder.itemView,
+//                        0,
+//                        0,
+//                        holder.itemView.getWidth(),
+//                        holder.itemView.getHeight()).toBundle();
+//                intent.putExtra("Patient",patient);
+//
+//                context.startActivity(intent,bundle);
+            Log.d("TESTE","Nome do paciente: "+patient.getName()+" Posição: "+holder.getAdapterPosition());
 
-                context.startActivity(intent,bundle);
-
-            });
-        }
+        });
 
     }
 
@@ -147,11 +149,20 @@ public class ManagePatientAdapter extends RecyclerView.Adapter<ManagePatientAdap
                 return i;
             }
         }
+
         return -1;
+    }
+
+    public int searchOldPatientPosition(Patient patient){
+        return itemListCopy.lastIndexOf(patient);
     }
 
     public void setSearchQuerry(String searchQuerry) {
         this.searchQuerry = searchQuerry;
+    }
+
+    public String getSearchQuerry() {
+        return searchQuerry;
     }
 
     public void restoreItem(Patient patient, int index){
@@ -178,9 +189,9 @@ public class ManagePatientAdapter extends RecyclerView.Adapter<ManagePatientAdap
         }
     }
 
-    public void removeItem(Patient patient, int oldId){
+    public void removeItem(Patient patient, int oldPosition){
 
-        if (this.itemList.size()> 0) {
+        if (this.itemListCopy.size()> 0) {
             String idPatient = patient.get_id();
             String idLastPatient = context.getResources().getString(R.string.id_last_patient);
             String lastId = session.getString(idLastPatient);
@@ -198,12 +209,18 @@ public class ManagePatientAdapter extends RecyclerView.Adapter<ManagePatientAdap
                     session.putString(idLastPatientDeleted,"");
                 }
 
-                Log.d("TESTE","Paciente "+patient.getName()+" removido!");
+                this.itemListCopy.remove(patient);
                 this.itemList.remove(patient);
-                this.itemListFiltered = this.itemList;
-                getFilter().filter(this.searchQuerry);
-                notifyItemRemoved(oldId);
-                notifyItemRangeChanged(oldId, itemList.size());
+                notifyItemRemoved(oldPosition);
+//                notifyItemRangeChanged(oldPosition+1, getItemCount());
+                Log.d("TESTE","Função notifyItemRemoved pos: "+oldPosition);
+                Log.d(t,"");
+
+//                notifyDataSetChanged();
+
+//                this.itemListFiltered = this.itemList;
+//                filter(this.searchQuerry);
+//                notifyItemRemoved(oldPosition);
             }
         }
     }
@@ -213,59 +230,76 @@ public class ManagePatientAdapter extends RecyclerView.Adapter<ManagePatientAdap
     }
 
     public Patient getPatient(int index){
-        Log.d("TESTE","Size of listFiltered: "+itemListFiltered.size());
-        Log.d("TESTE","index: "+index);
 
-        if (itemListFiltered.size()>0 && itemListFiltered.size() >= index){
-            return itemListFiltered.get(index);
+        if (itemList.size()>0 && itemList.size() >= index){
+            return itemList.get(index);
         }
         return null;
     }
 
     @Override
     public int getItemCount() {
-        return itemListFiltered == null ? 0 : itemListFiltered.size();
+        return itemList.size();
     }
 
-    public int getItemListFilteredSize(){
-        return this.itemListFiltered.size();
-    }
+    public void filter(String text){
+        if (text.isEmpty()){
+            itemList.clear();
+            itemList.addAll(itemListCopy);
+        } else{
+            ArrayList<Patient> result = new ArrayList<>();
+            for (Patient patient : itemListCopy){
+                if (patient.get_id().toLowerCase().contains(text.toLowerCase())
+                        || patient.getRegisterDate().toLowerCase().equalsIgnoreCase(text.toLowerCase())
+                        || patient.getName().toLowerCase().contains(text.toLowerCase())){
 
-    @Override
-    public Filter getFilter() {
-        return new Filter() {
-            @Override
-            protected FilterResults performFiltering(CharSequence constraint) {
-                String querry = constraint.toString();
-                if (querry.isEmpty() || querry.equals("")){
-                    itemListFiltered = itemList;
-                }else{
-                    List<Patient> filteredList = new ArrayList<>();
-                    for (Patient child : itemList){
-
-                        //O filtro é aplicado aqui
-                        if (child.get_id().toLowerCase().contains(querry.toLowerCase())
-                                || child.getRegisterDate().toLowerCase().equalsIgnoreCase(querry.toLowerCase())
-                                || child.getName().toLowerCase().contains(querry.toLowerCase())){
-                            filteredList.add(child);
-                        }
-                    }
-                    itemListFiltered = filteredList;
+                    result.add(patient);
+                    Log.d("TESTE",patient.getName());
                 }
-
-                FilterResults filterResults = new FilterResults();
-                filterResults.values = itemListFiltered;
-                filterResults.count = itemListFiltered.size();
-                return filterResults;
             }
-
-            @Override
-            protected void publishResults(CharSequence constraint, FilterResults results) {
-                itemListFiltered = (ArrayList<Patient>)results.values;
-                notifyDataSetChanged();
-            }
-        };
+            itemList.clear();
+            itemList.addAll(result);
+        }
+        notifyDataSetChanged();
     }
+//
+//    @Override
+//    public Filter getFilter() {
+//        return new Filter() {
+//            @Override
+//            protected FilterResults performFiltering(CharSequence constraint) {
+//                String querry = constraint.toString();
+//                if (querry.isEmpty() || querry.equals("")){
+//                    itemListFiltered = itemList;
+//                }else{
+//                    List<Patient> filteredList = new ArrayList<>();
+//                    for (Patient patient : itemList){
+//
+//                        //O filtro é aplicado aqui
+//                        if (patient.get_id().toLowerCase().contains(querry.toLowerCase())
+//                                || patient.getRegisterDate().toLowerCase().equalsIgnoreCase(querry.toLowerCase())
+//                                || patient.getName().toLowerCase().contains(querry.toLowerCase())){
+//                            filteredList.add(patient);
+//                            Log.d("TESTE","Paciente da lista filtrada: "+patient.getName());
+//                            Log.d("TESTE"," ");
+//                        }
+//                    }
+//                    itemListFiltered = filteredList;
+//                }
+//
+//                FilterResults filterResults = new FilterResults();
+//                filterResults.values = itemListFiltered;
+//                filterResults.count = itemListFiltered.size();
+//                return filterResults;
+//            }
+//
+//            @Override
+//            protected void publishResults(CharSequence constraint, FilterResults results) {
+//                itemListFiltered = (ArrayList<Patient>)results.values;
+//                notifyDataSetChanged();
+//            }
+//        };
+//    }
 
     public static class ManagePatientViewHolder extends RecyclerView.ViewHolder{
 

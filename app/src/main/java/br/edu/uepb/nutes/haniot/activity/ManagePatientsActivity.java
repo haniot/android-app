@@ -42,6 +42,7 @@ public class ManagePatientsActivity extends AppCompatActivity {
 
     private List<Patient> patientList = new ArrayList<>();
     private ManagePatientAdapter adapter;
+    private SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +50,7 @@ public class ManagePatientsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_manage_patient);
         ButterKnife.bind(this);
 
-        toolbar.setTitle(getResources().getString(R.string.manage_children));
+        toolbar.setTitle(getResources().getString(R.string.manage_patient));
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -83,10 +84,13 @@ public class ManagePatientsActivity extends AppCompatActivity {
                 Patient patient = adapter.getPatient(position);
 
                 if (patient != null) {
-                    Log.d("TESTE", "Activity, enviando paciente para ser removido: " + patient.getName());
-                    adapter.removeItem(patient,adapter.searchPositionByChildrenId(patient.get_id()));
+                    Log.d("TESTE","Removendo o paciente "+patient.getName());
+                    adapter.removeItem(patient, adapter.searchOldPatientPosition(patient));
+                    adapter.filter("");
+                    searchView.clearFocus();
+                    searchView.setQuery("",true);
                 }else{
-                    Log.d("TESTE", "Paciente null");
+                    Log.d("TESTE","Não encontrei o paciente");
                 }
 
                 Snackbar snackbar = Snackbar
@@ -168,7 +172,7 @@ public class ManagePatientsActivity extends AppCompatActivity {
 
         //Botão search na toolbar
         MenuItem searchBtn = menu.findItem(R.id.btnSearchPatient);
-        final SearchView searchView = (SearchView) searchBtn.getActionView();
+        this.searchView = (SearchView) searchBtn.getActionView();
         searchView.setIconifiedByDefault(true);
         searchView.setMaxWidth(Integer.MAX_VALUE);
         searchView.setIconified(false);
@@ -181,18 +185,21 @@ public class ManagePatientsActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 // use this method when query submitted
-                Toast.makeText(getApplicationContext(), query, Toast.LENGTH_SHORT).show();
+//                adapter.getFilter().filter(query);
+                adapter.setSearchQuerry("");
+                adapter.filter(query);
 
-                adapter.getFilter().filter(query);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
                 adapter.setSearchQuerry(newText);
-                adapter.getFilter().filter(newText);
+//                adapter.getFilter().filter(newText);
+                adapter.filter(newText);
                 return false;
             }
+
         });
 
         return super.onCreateOptionsMenu(menu);

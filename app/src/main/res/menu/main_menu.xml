@@ -7,7 +7,7 @@
         android:id="@+id/btnManagePatient"
         android:icon="@drawable/ic_children"
         android:orderInCategory="1"
-        android:title="@string/manage_children"
+        android:title="@string/manage_patient"
         app:showAsAction="ifRoom" />
 
     <item
