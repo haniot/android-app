@@ -391,6 +391,8 @@
     <string name="patient_removed">Paciente removido</string>
     <string name="undo">Desfazer</string>
     <string name="patient_profile">Perfil do paciente</string>
+    <string name="no_patient_registered">Nenhum paciente encontrado</string>
+    <string name="try_again_later">Tente novamente mais tarde</string>
 
     <!-- END OF STRINGS FOR TABLET -->
 

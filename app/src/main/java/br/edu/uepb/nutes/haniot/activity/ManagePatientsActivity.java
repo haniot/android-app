@@ -15,6 +15,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -65,15 +67,17 @@ public class ManagePatientsActivity extends AppCompatActivity {
 
         patients = PatientDAO.getInstance(getApplicationContext()).get();
 
-        if (patients.size() <= 0) {
-            adapter = new ManagePatientAdapter(this.patientList, getApplicationContext());
-        }else{
-            adapter = new ManagePatientAdapter(patients, getApplicationContext());
-        }
+        adapter = new ManagePatientAdapter(patients, getApplicationContext());
+
         recyclerViewPatient.setHasFixedSize(true);
         recyclerViewPatient.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewPatient.setItemAnimator(new DefaultItemAnimator());
         recyclerViewPatient.setAdapter(adapter);
+
+        int resId = R.anim.layout_animation_fall_down;
+        LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(
+                getApplicationContext(), resId);
+        recyclerViewPatient.setLayoutAnimation(animation);
 
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0,
                 ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
@@ -83,24 +87,35 @@ public class ManagePatientsActivity extends AppCompatActivity {
                 final int position = viewHolder.getAdapterPosition();
                 Patient patient = adapter.getPatient(position);
 
+                Snackbar snackbar = null;
                 if (patient != null) {
                     Log.d("TESTE","Removendo o paciente "+patient.getName());
-                    adapter.removeItem(patient, adapter.searchOldPatientPosition(patient));
-                    adapter.filter("");
-                    searchView.clearFocus();
-                    searchView.setQuery("",true);
+                    if (adapter.getSearchQuerry().isEmpty()) {
+                        int newPosition = adapter.searchOldPatientPosition(patient);
+
+                        adapter.removeItem(patient, newPosition
+                                ,adapter.REMOVE_TYPE_NOT_FILTERED);
+                        snackbar = Snackbar
+                                .make(recyclerViewPatient, getResources().getString(R.string.patient_removed)
+                                        , Snackbar.LENGTH_LONG).setAction(getResources()
+                                        .getString(R.string.undo), view -> {
+                                    adapter.restoreItem(patient,newPosition,viewHolder.itemView);
+                                });
+                    }else{
+                        adapter.removeItem(patient, viewHolder.getAdapterPosition()
+                                ,adapter.REMOVE_TYPE_FILTERED);
+                        snackbar = Snackbar
+                                .make(recyclerViewPatient, getResources().getString(R.string.patient_removed)
+                                        , Snackbar.LENGTH_LONG).setAction(getResources()
+                                        .getString(R.string.undo), view -> {
+                                    adapter.restoreItem(patient,position,viewHolder.itemView);
+                                });
+                    }
                 }else{
                     Log.d("TESTE","Não encontrei o paciente");
                 }
 
-                Snackbar snackbar = Snackbar
-                        .make(recyclerViewPatient, getResources().getString(R.string.patient_removed)
-                                , Snackbar.LENGTH_LONG).setAction(getResources()
-                                .getString(R.string.undo), view -> {
-                            adapter.restoreItem(patient,position);
-                            recyclerViewPatient.scrollToPosition(position);
-                        });
-                snackbar.show();
+                if (snackbar != null) snackbar.show();
             }
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder,
@@ -186,7 +201,7 @@ public class ManagePatientsActivity extends AppCompatActivity {
             public boolean onQueryTextSubmit(String query) {
                 // use this method when query submitted
 //                adapter.getFilter().filter(query);
-                adapter.setSearchQuerry("");
+                adapter.setSearchQuerry(query);
                 adapter.filter(query);
 
                 return false;

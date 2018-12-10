@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/patiengImg"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:background="@drawable/patient_large"
+        android:layout_centerInParent="true"
+        android:alpha=".50"/>
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/text_empty_patient"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/no_patient_registered"
+        android:layout_below="@id/patiengImg"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:textSize="28sp"/>
+
+    <android.support.v7.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/try_again_later"
+        android:layout_below="@id/text_empty_patient"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:textSize="18sp"/>
+
+</RelativeLayout>

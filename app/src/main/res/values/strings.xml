@@ -452,6 +452,8 @@
     <string name="patient_removed">Patient removed</string>
     <string name="undo">Undo</string>
     <string name="patient_profile">Patient profile</string>
+    <string name="no_patient_registered">No patient finded</string>
+    <string name="try_again_later">Try again later</string>
 
     <!-- END OF STRINGS FOR TABLET -->
 
