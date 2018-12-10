@@ -230,8 +230,13 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
             }
             @Override
             public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-                return makeFlag(ItemTouchHelper.ACTION_STATE_DRAG,
-                        ItemTouchHelper.DOWN | ItemTouchHelper.UP | ItemTouchHelper.START | ItemTouchHelper.END);
+                if (deviceTypeTag.equals("tablet")) {
+                    return makeFlag(ItemTouchHelper.ACTION_STATE_DRAG,
+                            ItemTouchHelper.DOWN | ItemTouchHelper.UP | ItemTouchHelper.START | ItemTouchHelper.END);
+                }else{
+                    return makeFlag(ItemTouchHelper.ACTION_STATE_DRAG,
+                            ItemTouchHelper.UP | ItemTouchHelper.DOWN);
+                }
             }
         };
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
