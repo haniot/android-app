@@ -124,8 +124,11 @@ public class ManagePatientsActivity extends AppCompatActivity {
             }
             @Override
             public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-                return makeFlag(ItemTouchHelper.ACTION_STATE_SWIPE,ItemTouchHelper.START |
-                        ItemTouchHelper.END);
+                if (adapter.getItemsSize() > 0) {
+                    return makeFlag(ItemTouchHelper.ACTION_STATE_SWIPE, ItemTouchHelper.START |
+                            ItemTouchHelper.END);
+                }
+                return makeFlag(ItemTouchHelper.ACTION_STATE_SWIPE, 0);
             }
 
             @Override

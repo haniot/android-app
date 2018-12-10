@@ -174,6 +174,10 @@ public class ManagePatientAdapter extends RecyclerView.Adapter<ManagePatientAdap
         return -1;
     }
 
+    public int getItemsSize(){
+        return this.itemList.size();
+    }
+
     public int searchOldPatientPosition(Patient patient){
         return itemListCopy.lastIndexOf(patient);
     }
