@@ -23,9 +23,8 @@
                 <FrameLayout
                     android:id="@+id/frame1"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@android:color/transparent"
-                    android:layout_weight="0.6">
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent">
 
                 </FrameLayout>
 
@@ -33,8 +32,7 @@
                     android:id="@+id/frame2"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@android:color/transparent"
-                    android:layout_weight="0.4">
+                    android:background="@android:color/transparent">
 
                 </FrameLayout>
 
