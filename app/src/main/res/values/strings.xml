@@ -454,6 +454,12 @@
     <string name="patient_profile">Patient profile</string>
     <string name="no_patient_registered">No patient finded</string>
     <string name="try_again_later">Try again later</string>
+    <string name="color">Color</string>
+    <string name="age">Age</string>
+    <string name="idProfessional">Id professional:</string>
+    <string name="dateMask">####/##/##</string>
+    <string name="survey">Survey</string>
+    <string name="edit">Edit</string>
 
     <!-- END OF STRINGS FOR TABLET -->
 

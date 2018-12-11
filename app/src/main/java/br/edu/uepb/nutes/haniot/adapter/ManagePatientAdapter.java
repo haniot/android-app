@@ -1,40 +1,26 @@
 package br.edu.uepb.nutes.haniot.adapter;
 
-import android.app.Activity;
-import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.TransitionDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.AppCompatButton;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.ScaleAnimation;
-import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.Inflater;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.MainActivity;
 import br.edu.uepb.nutes.haniot.activity.PatientHistoricalActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
-import br.edu.uepb.nutes.haniot.devices.ScaleActivity;
 import br.edu.uepb.nutes.haniot.model.Patient;
 import br.edu.uepb.nutes.haniot.model.dao.PatientDAO;
 import br.edu.uepb.nutes.haniot.utils.Log;
@@ -42,7 +28,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class ManagePatientAdapter extends RecyclerView.Adapter<ManagePatientAdapter.ManagePatientViewHolder> {
-//        implements Filterable{
 
     private List<Patient> itemList;
     private List<Patient> itemListCopy = new ArrayList<>();
@@ -57,7 +42,6 @@ public class ManagePatientAdapter extends RecyclerView.Adapter<ManagePatientAdap
     public ManagePatientAdapter(List<Patient> patientList, Context context){
 
         this.itemList = patientList;
-//        this.itemListFiltered = patientList;
         this.itemListCopy.addAll(patientList);
         this.context = context;
         session = new Session(context);
@@ -147,16 +131,16 @@ public class ManagePatientAdapter extends RecyclerView.Adapter<ManagePatientAdap
             });
             holder.itemView.setOnClickListener(c -> {
 
-//                final Intent intent = new Intent(context,PatientHistoricalActivity.class);
-//                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                Bundle bundle = ActivityOptionsCompat.makeScaleUpAnimation(holder.itemView,
-//                        0,
-//                        0,
-//                        holder.itemView.getWidth(),
-//                        holder.itemView.getHeight()).toBundle();
-//                intent.putExtra("Patient",patient);
-//
-//                context.startActivity(intent,bundle);
+                final Intent intent = new Intent(context,PatientHistoricalActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                Bundle bundle = ActivityOptionsCompat.makeScaleUpAnimation(holder.itemView,
+                        0,
+                        0,
+                        holder.itemView.getWidth(),
+                        holder.itemView.getHeight()).toBundle();
+                intent.putExtra("Patient",patient);
+
+                context.startActivity(intent,bundle);
                 Log.d("TESTE", "Nome do paciente: " + patient.getName() + " Posição: " + holder.getAdapterPosition());
 
             });
@@ -254,11 +238,6 @@ public class ManagePatientAdapter extends RecyclerView.Adapter<ManagePatientAdap
                     notifyItemRangeChanged(oldPosition, itemListCopy.size());
                 }
 
-//                notifyDataSetChanged();
-
-//                this.itemListFiltered = this.itemList;
-//                filter(this.searchQuerry);
-//                notifyItemRemoved(oldPosition);
             }
         }
     }
@@ -308,44 +287,6 @@ public class ManagePatientAdapter extends RecyclerView.Adapter<ManagePatientAdap
         }
         notifyDataSetChanged();
     }
-//
-//    @Override
-//    public Filter getFilter() {
-//        return new Filter() {
-//            @Override
-//            protected FilterResults performFiltering(CharSequence constraint) {
-//                String querry = constraint.toString();
-//                if (querry.isEmpty() || querry.equals("")){
-//                    itemListFiltered = itemList;
-//                }else{
-//                    List<Patient> filteredList = new ArrayList<>();
-//                    for (Patient patient : itemList){
-//
-//                        //O filtro é aplicado aqui
-//                        if (patient.get_id().toLowerCase().contains(querry.toLowerCase())
-//                                || patient.getRegisterDate().toLowerCase().equalsIgnoreCase(querry.toLowerCase())
-//                                || patient.getName().toLowerCase().contains(querry.toLowerCase())){
-//                            filteredList.add(patient);
-//                            Log.d("TESTE","Paciente da lista filtrada: "+patient.getName());
-//                            Log.d("TESTE"," ");
-//                        }
-//                    }
-//                    itemListFiltered = filteredList;
-//                }
-//
-//                FilterResults filterResults = new FilterResults();
-//                filterResults.values = itemListFiltered;
-//                filterResults.count = itemListFiltered.size();
-//                return filterResults;
-//            }
-//
-//            @Override
-//            protected void publishResults(CharSequence constraint, FilterResults results) {
-//                itemListFiltered = (ArrayList<Patient>)results.values;
-//                notifyDataSetChanged();
-//            }
-//        };
-//    }
 
     public static class ManagePatientViewHolder extends RecyclerView.ViewHolder{
 

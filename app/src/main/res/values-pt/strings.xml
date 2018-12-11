@@ -393,6 +393,12 @@
     <string name="patient_profile">Perfil do paciente</string>
     <string name="no_patient_registered">Nenhum paciente encontrado</string>
     <string name="try_again_later">Tente novamente mais tarde</string>
+    <string name="color">Cor</string>
+    <string name="age">Idade</string>
+    <string name="idProfessional">Id profissional:</string>
+    <string name="dateMask">##/##/####</string>
+    <string name="survey">Questionário</string>
+    <string name="edit">Editar</string>
 
     <!-- END OF STRINGS FOR TABLET -->
 

@@ -26,7 +26,7 @@ public class Patient implements Parcelable {
     private String color;
     private int age;
     private String registerDate;
-    private long idProfessionalSponsor;
+    private long idProfessionalResponsible;
 
     /**
      * RELATIONS
@@ -50,7 +50,7 @@ public class Patient implements Parcelable {
         color = in.readString();
         age = in.readInt();
         registerDate = in.readString();
-        idProfessionalSponsor = in.readLong();
+        idProfessionalResponsible = in.readLong();
     }
 
     public static final Creator<Patient> CREATOR = new Creator<Patient>() {
@@ -129,12 +129,12 @@ public class Patient implements Parcelable {
         this.registerDate = registerDate;
     }
 
-    public long getIdProfessionalSponsor() {
-        return idProfessionalSponsor;
+    public long getIdProfessionalResponsible() {
+        return idProfessionalResponsible;
     }
 
-    public void setIdProfessionalSponsor(long idProfessionalSponsor) {
-        this.idProfessionalSponsor = idProfessionalSponsor;
+    public void setIdProfessionalResponsible(long idProfessionalResponsible) {
+        this.idProfessionalResponsible = idProfessionalResponsible;
     }
 
     @Override
@@ -151,7 +151,7 @@ public class Patient implements Parcelable {
         parcel.writeString(color);
         parcel.writeInt(age);
         parcel.writeString(registerDate);
-        parcel.writeLong(idProfessionalSponsor);
+        parcel.writeLong(idProfessionalResponsible);
     }
 
 }
