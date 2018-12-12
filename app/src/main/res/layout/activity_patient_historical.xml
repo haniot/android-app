@@ -132,7 +132,8 @@
                     android:hint="@string/age"
                     android:inputType="number"
                     android:textColor="@color/colorPrimary"
-                    android:enabled="false"/>
+                    android:enabled="false"
+                    />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -143,15 +144,23 @@
                 android:layout_margin="16dp"
                 android:layout_below="@id/layoutAge">
 
-                <com.vicmikhailau.maskededittext.MaskedEditText
+                <android.support.design.widget.TextInputEditText
                     android:id="@+id/textRegisterDate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/date"
                     android:layout_below="@id/layoutAge"
-                    android:inputType="date"
-                    app:mask="@string/dateMask"
+                    android:inputType="none"
                     android:enabled="false"/>
+
+                <!--<com.vicmikhailau.maskededittext.MaskedEditText-->
+                    <!--android:id="@+id/textRegisterDate"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:hint="@string/date"-->
+                    <!--android:layout_below="@id/layoutAge"-->
+                    <!--app:mask="@string/dateMask"-->
+                    <!--android:enabled="false"/>-->
 
             </android.support.design.widget.TextInputLayout>
 

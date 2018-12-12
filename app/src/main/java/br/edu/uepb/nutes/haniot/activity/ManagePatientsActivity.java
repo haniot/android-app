@@ -182,6 +182,12 @@ public class ManagePatientsActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        initComponents();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
         //Adiciona o menu a activity

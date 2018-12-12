@@ -141,7 +141,6 @@ public class ManagePatientAdapter extends RecyclerView.Adapter<ManagePatientAdap
                 intent.putExtra("Patient",patient);
 
                 context.startActivity(intent,bundle);
-                Log.d("TESTE", "Nome do paciente: " + patient.getName() + " Posição: " + holder.getAdapterPosition());
 
             });
 

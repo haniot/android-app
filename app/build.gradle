@@ -76,9 +76,6 @@ dependencies {
     // EVENT BUS
     implementation 'org.greenrobot:eventbus:3.0.0'
 
-    // MaskedEditText
-    implementation 'com.vicmikhailau:MaskedEditText:2.0.4'
-
     // TEST
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
