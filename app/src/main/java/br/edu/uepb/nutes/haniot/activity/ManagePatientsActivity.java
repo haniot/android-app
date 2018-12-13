@@ -241,11 +241,11 @@ public class ManagePatientsActivity extends AppCompatActivity {
 
             case R.id.btnAddPatient:
 
-                for (Patient patient : patientList) {
-                    if (PatientDAO.getInstance(getApplicationContext()).save(patient)){
-
-                    }
-                }
+//                for (Patient patient : patientList) {
+//                    if (PatientDAO.getInstance(getApplicationContext()).save(patient)){
+//
+//                    }
+//                }
                 break;
 
         }

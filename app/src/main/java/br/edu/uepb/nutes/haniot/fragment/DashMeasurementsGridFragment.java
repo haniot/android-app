@@ -1,6 +1,7 @@
 package br.edu.uepb.nutes.haniot.fragment;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -8,6 +9,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,6 +22,7 @@ import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -33,7 +36,9 @@ import java.util.Date;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.activity.MainActivity;
 import br.edu.uepb.nutes.haniot.activity.ManuallyAddMeasurement;
+import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.GridDashAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
 import br.edu.uepb.nutes.haniot.devices.GlucoseActivity;
@@ -44,6 +49,8 @@ import br.edu.uepb.nutes.haniot.devices.hdp.BloodPressureHDPActivity;
 import br.edu.uepb.nutes.haniot.model.DateChangedEvent;
 import br.edu.uepb.nutes.haniot.model.ItemGrid;
 import br.edu.uepb.nutes.haniot.model.ItemGridType;
+import br.edu.uepb.nutes.haniot.model.SendMeasurementsEvent;
+import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -77,6 +84,8 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
     private String measurementDate = "";
 
     private String deviceTypeTag;
+
+    private Session session;
 
     @BindView(R.id.gridMeasurement)
     RecyclerView gridMeasurement;
@@ -188,6 +197,9 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
     }
 
     private void initComponents() {
+
+        session = new Session(getContext());
+
         updateGrid();
     }
 
@@ -499,6 +511,71 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
         this.measurementsValues = e;
 
         updateGrid();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void sendMeasurement(SendMeasurementsEvent e){
+        openConfirmMeasurementsDialog();
+        Log.d("TESTE", "Evento recebido no grid, Heart: " + this.measurementsValues.getHeartRate());
+    }
+
+    /**
+     * Performs routine for data synchronization with server.
+     */
+    private void synchronizeWithServer() {
+        SynchronizationServer.getInstance(getContext()).run();
+    }
+
+    private void openConfirmMeasurementsDialog(){
+
+        LayoutInflater li = LayoutInflater.from(getContext());
+        View view = li.inflate(R.layout.confirm_measurements_layout, null);
+        String name = getContext().getResources().getString(R.string.name_last_patient);
+
+        String patientName = session.getString(name);
+        Character t = patientName.charAt(0);
+        patientName = patientName.substring(1);
+        String first = t.toString().toUpperCase();
+        patientName = first+patientName;
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle(getResources().getString(R.string.save_measurements_of)+" "
+                +patientName);
+
+        builder.setView(view);
+
+        TextView textActivity = view.findViewById(R.id.textActivity);
+        textActivity.setText(this.measurementsValues.getActivity());
+
+        TextView textSleep = view.findViewById(R.id.textSleep);
+        textSleep.setText(this.measurementsValues.getSleep());
+
+        TextView textGlucose = view.findViewById(R.id.textGlucose);
+        textGlucose.setText(this.measurementsValues.getGlucose());
+
+        TextView textPressure = view.findViewById(R.id.textPressure);
+        textPressure.setText(this.measurementsValues.getPressure());
+
+        TextView textTemperature = view.findViewById(R.id.textTemperature);
+        textTemperature.setText(this.measurementsValues.getTemperature());
+
+        TextView textWeight = view.findViewById(R.id.textWeight);
+        textWeight.setText(this.measurementsValues.getWeight());
+
+        TextView textHeart = view.findViewById(R.id.textHeartRate);
+        textHeart.setText(this.measurementsValues.getHeartRate());
+
+        TextView textHeight = view.findViewById(R.id.textHeight);
+        textHeight.setText(this.measurementsValues.getHeight());
+
+        TextView textCircumference = view.findViewById(R.id.textCircumference);
+        textCircumference.setText(this.measurementsValues.getCircumference());
+
+        builder.setPositiveButton(getResources().getString(R.string.confirm), (dialog, id) ->
+//                Colocar filtro por paciente no sincronizar
+                synchronizeWithServer());
+        builder.setNegativeButton(getResources().getString(R.string.cancel), null);
+        builder.show();
     }
 
 }

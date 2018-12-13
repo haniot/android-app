@@ -25,12 +25,19 @@ import android.widget.Toast;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.account.LoginActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.SettingsActivity;
 import br.edu.uepb.nutes.haniot.adapter.FragmentPageAdapter;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
+import br.edu.uepb.nutes.haniot.model.DateChangedEvent;
+import br.edu.uepb.nutes.haniot.model.SendMeasurementsEvent;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
+import br.edu.uepb.nutes.haniot.utils.Log;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -51,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
     private String lastNameSelected = "";
     private Session session;
 
+    private EventBus _eventBus;
+
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.tabLayout)
@@ -61,6 +70,8 @@ public class MainActivity extends AppCompatActivity {
     FloatingActionButton newMeasureButton;
     @BindView(R.id.floating_menu_main)
     FloatingActionMenu floatingMenu;
+    @BindView(R.id.sendToServerButton)
+    FloatingActionButton btnSendMeasurement;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,12 +92,32 @@ public class MainActivity extends AppCompatActivity {
 
         checkLastPatientAndUpdateTabTitle();
 
+        this._eventBus = EventBus.getDefault();
+
         newMeasureButton.setOnClickListener(v -> {
             Intent it = new Intent(this, SettingsActivity.class);
             it.putExtra("settingType", 2);
             floatingMenu.close(false);
             startActivity(it);
         });
+
+
+        btnSendMeasurement.setOnClickListener(c -> {
+            postEvent();
+        });
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        _eventBus.register(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        _eventBus.unregister(this);
     }
 
     @Override
@@ -260,4 +291,15 @@ public class MainActivity extends AppCompatActivity {
         this.finishAffinity();
         System.exit(0);
     }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onSendMeasurements(final SendMeasurementsEvent e){
+
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    private void postEvent(){
+        EventBus.getDefault().post(new SendMeasurementsEvent());
+    }
+
 }

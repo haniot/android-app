@@ -401,6 +401,8 @@
     <string name="edit">Editar</string>
     <string name="error_remove_patient">Erro ao remover o paciente, por favor,
         tente novamente mais tarde</string>
+    <string name="save_measurements_of">Salvar medições de:</string>
+    <string name="circumference">Circunferencia</string>
 
     <!-- END OF STRINGS FOR TABLET -->
 

@@ -461,6 +461,8 @@
     <string name="survey">Survey</string>
     <string name="edit">Edit</string>
     <string name="error_remove_patient">Error to remove patient, please try again later</string>
+    <string name="save_measurements_of">Save measurements of:</string>
+    <string name="circumference">Circumference</string>
 
     <!-- END OF STRINGS FOR TABLET -->
 
