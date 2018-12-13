@@ -460,6 +460,7 @@
     <string name="dateMask">####/##/##</string>
     <string name="survey">Survey</string>
     <string name="edit">Edit</string>
+    <string name="error_remove_patient">Error to remove patient, please try again later</string>
 
     <!-- END OF STRINGS FOR TABLET -->
 

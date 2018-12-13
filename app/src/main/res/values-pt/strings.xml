@@ -399,6 +399,8 @@
     <string name="dateMask">##/##/####</string>
     <string name="survey">Questionário</string>
     <string name="edit">Editar</string>
+    <string name="error_remove_patient">Erro ao remover o paciente, por favor,
+        tente novamente mais tarde</string>
 
     <!-- END OF STRINGS FOR TABLET -->
 

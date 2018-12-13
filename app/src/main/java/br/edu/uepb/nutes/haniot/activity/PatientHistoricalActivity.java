@@ -11,6 +11,7 @@ import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatRadioButton;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -18,6 +19,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.DatePicker;
+import android.widget.Toast;
 
 import java.util.Calendar;
 
@@ -256,6 +258,21 @@ public class PatientHistoricalActivity extends AppCompatActivity implements View
         btnConfirm.setEnabled(true);
     }
 
+    private Boolean deletePatient(Patient patient){
+        return PatientDAO.getInstance(getApplicationContext()).remove(patient);
+    }
+
+    private void showToast(final String menssage) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast toast = Toast.makeText(getApplicationContext(), menssage, Toast.LENGTH_LONG);
+                toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 150);
+                toast.show();
+            }
+        });
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -268,6 +285,13 @@ public class PatientHistoricalActivity extends AppCompatActivity implements View
                 break;
             case R.id.btnEdit:
                 enableButtons();
+                break;
+            case R.id.btnDelete:
+                if (deletePatient(this.patient)){
+                    finish();
+                }else{
+                    showToast(getResources().getString(R.string.error_remove_patient));
+                }
                 break;
         }
 
