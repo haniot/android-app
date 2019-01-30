@@ -387,13 +387,13 @@
     <string name="body_composition_monitor_description">OMRON HBF-206ITH</string>
     <string name="body_composition2">Body Composition Monitor</string>
     <string name="icon_manage_measurement">Manage measurement icon</string>
-    <string name="manage_children">Manage children</string>
+    <string name="manage_patient">Manage children</string>
     <string name="add">Add</string>
     <string name="search">Search</string>
     <string name="date">Date: </string>
     <string name="id">id: </string>
-    <string name="id_last_child">id_last_child</string>
-    <string name="name_last_child">name_last_child</string>
+    <string name="id_last_patient">id_last_child</string>
+    <string name="name_last_patient">name_last_child</string>
     <string name="childId">childId</string>
     <string name="childName">childName</string>
     <string name="noPatientSelected">No patient selected</string>

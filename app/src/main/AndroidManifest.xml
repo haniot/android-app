@@ -91,37 +91,6 @@
         <activity android:name=".activity.charts.SmartBandChartActivity" />
 
         <!-- ACTIVITIES ELDERLY -->
-        <activity
-            android:name=".elderly.ElderlyMonitoredActivity"
-            android:parentActivityName=".activity.MainActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppThemeSecondary">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.MainActivity" />
-        </activity>
-        <activity
-            android:name=".elderly.ElderlyRegisterActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppThemeSecondary" />
-        <activity
-            android:name=".elderly.FallRiskActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppThemeSecondary" />
-        <activity
-            android:name=".elderly.FallRiskResultActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppThemeSecondary" />
-        <activity
-            android:name=".elderly.FallCharacterizationActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppThemeSecondary" />
-        <activity
-            android:name=".elderly.ElderlyFallActivity"
-            android:theme="@style/AppThemeSecondary" />
-        <activity
-            android:name=".elderly.ElderlyPreviewActivity"
-            android:theme="@style/AppThemeSecondary" />
         <!-- END ELDERLY -->
 
 
