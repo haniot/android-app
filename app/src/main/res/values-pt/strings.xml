@@ -145,7 +145,7 @@
     <string name="error_connectivity">Aconteceu um erro na comunicação com nossos servidores. Por favor, verifique a conectividade do seu telefone e tente novamente mais tarde.</string>
     <string name="connect_network_try_again">Conecte-se a uma rede e tente novamente&#8230;</string>
     <string name="error_403">A senha do usuário precisa ser alterada!</string>
-    <string name="error_incorret_password">Senha não pode ser atualizada senha. Certifique-se de que os dados estão corretos!</string>
+    <string name="error_incorret_password">Senha não pode ser atualizada. Certifique-se de que os dados estão corretos!</string>
 
     <!-- END ERROR MESSAGES -->
 
