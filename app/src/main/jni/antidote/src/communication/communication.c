@@ -1070,7 +1070,7 @@ void communication_connection_loop(Context *ctx)
 		return;
 	}
 
-	set_connection_loop_active(ctx, 1); // activate loop flag
+	set_connection_loop_active(ctx, 1); // activate loop ic_green_flag
 
 	DEBUG(" communication:Waiting for data\n");
 

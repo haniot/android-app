@@ -41,12 +41,14 @@ import java.util.Locale;
 import java.util.UUID;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.activity.ManuallyAddMeasurement;
 import br.edu.uepb.nutes.haniot.activity.charts.TemperatureChartActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.TemperatureAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
 import br.edu.uepb.nutes.haniot.model.Device;
 import br.edu.uepb.nutes.haniot.model.DeviceType;
+import br.edu.uepb.nutes.haniot.model.ItemGridType;
 import br.edu.uepb.nutes.haniot.model.Measurement;
 import br.edu.uepb.nutes.haniot.model.MeasurementType;
 import br.edu.uepb.nutes.haniot.model.dao.DeviceDAO;
@@ -129,6 +131,9 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
     @BindView(R.id.chart_floating_button)
     FloatingActionButton mChartButton;
 
+    @BindView(R.id.add_floating_button)
+    FloatingActionButton mAddButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -147,6 +152,7 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
 
         animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
         mChartButton.setOnClickListener(this);
+        mAddButton.setOnClickListener(this);
 
         Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
@@ -226,6 +232,7 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 if (dy > 0) {
+                    mAddButton.hide();
                     // Recycle view scrolling downwards...
                     // this if statement detects when user reaches the end of recyclerView, this is only time we should load more
                     if (!recyclerView.canScrollVertically(RecyclerView.FOCUS_DOWN)) {
@@ -233,6 +240,8 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
                         // we must check if itShouldLoadMore variable is true [unlocked]
                         if (itShouldLoadMore) loadMoreData();
                     }
+                }else{
+                    mAddButton.show();
                 }
             }
         });
@@ -631,6 +640,12 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
         switch (v.getId()) {
             case R.id.chart_floating_button:
                 startActivity(new Intent(getApplicationContext(), TemperatureChartActivity.class));
+                break;
+            case R.id.add_floating_button:
+                Intent it = new Intent(getApplicationContext(), ManuallyAddMeasurement.class);
+                it.putExtra(getResources().getString(R.string.measurementType),
+                        ItemGridType.TEMPERATURE);
+                startActivity(it);
                 break;
             default:
                 break;

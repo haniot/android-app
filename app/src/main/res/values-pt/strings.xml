@@ -314,13 +314,13 @@
     <string name="body_composition_monitor_description">OMRON HBF-206ITH</string>
     <string name="body_composition2">Monitor de Composição Corporal</string>
     <string name="icon_manage_measurement">Icone de Gerenciar Medições</string>
-    <string name="manage_children">Gerenciar Crianças</string>
+    <string name="manage_patient">Gerenciar pacientes</string>
     <string name="add">Add</string>
     <string name="search">Pesquisar</string>
     <string name="id">id: </string>
     <string name="date">Data: </string>
-    <string name="id_last_child">id_last_child</string>
-    <string name="name_last_child">name_last_child</string>
+    <string name="id_last_patient">id_last_patient</string>
+    <string name="name_last_patient">name_last_patient</string>
     <string name="childId">childId</string>
     <string name="childName">childName</string>
     <string name="noPatientSelected">Nenhum paciente selecionado</string>
@@ -382,6 +382,30 @@
     <string name="choose_blood_pressure">Escolha o valor da pressão</string>
     <string name="choose_pulse">Escolha o pulso</string>
     <string name="unit_min">/min</string>
+    <string name="key_anthropometric">key_anthropometric</string>
+    <string name="anthropometric">Medidas antropométricas</string>
+    <string name="choose_height">Escolha a altura</string>
+    <string name="choose_circumference">Escolha a circunferência</string>
+    <string name="goals_steps">Escolha a meta de passos</string>
+    <string name="goals_calories">Escolha a meta de calorias</string>
+    <string name="goals_distance">Escolha a meta de distância</string>
+    <string name="send_measurements_to_server">Salvar medições</string>
+    <string name="last_patient_deleted">last_patient_deleted</string>
+    <string name="patient_removed">Paciente removido</string>
+    <string name="undo">Desfazer</string>
+    <string name="patient_profile">Perfil do paciente</string>
+    <string name="no_patient_registered">Nenhum paciente encontrado</string>
+    <string name="try_again_later">Tente novamente mais tarde</string>
+    <string name="color">Cor</string>
+    <string name="age">Idade</string>
+    <string name="idProfessional">Id profissional:</string>
+    <string name="dateMask">##/##/####</string>
+    <string name="survey">Questionário</string>
+    <string name="edit">Editar</string>
+    <string name="error_remove_patient">Erro ao remover o paciente, por favor,
+        tente novamente mais tarde</string>
+    <string name="save_measurements_of">Salvar medições de:</string>
+    <string name="circumference">Circunferencia</string>
 
     <!-- END OF STRINGS FOR TABLET -->
 

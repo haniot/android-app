@@ -17,17 +17,25 @@ import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.auth0.android.jwt.JWT;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.auth0.android.jwt.JWT;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.MainActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
+import br.edu.uepb.nutes.haniot.model.Device;
 import br.edu.uepb.nutes.haniot.model.User;
+import br.edu.uepb.nutes.haniot.model.dao.DeviceDAO;
 import br.edu.uepb.nutes.haniot.model.dao.UserDAO;
 import br.edu.uepb.nutes.haniot.server.Server;
 import br.edu.uepb.nutes.haniot.service.TokenExpirationService;
@@ -64,6 +72,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private UserDAO userDAO;
     private TokenExpirationService tokenExpirationService;
     private boolean mIsBound;
+    private Server server;
+    private DeviceDAO mDeviceDAO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +84,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         doBindService();
         session = new Session(this);
         userDAO = UserDAO.getInstance(this);
+        mDeviceDAO = DeviceDAO.getInstance(this);
+        server = Server.getInstance(this);
 
         buttonLogin.setOnClickListener(this);
 
@@ -182,6 +194,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             sendFcmToken(fcmToken);
                         }
                         tokenExpirationService.initTokenMonitor();
+                        syncDevices();
                         startActivity(new Intent(getApplicationContext(), MainActivity.class));
                     } else {
                         printMessage(result);
@@ -355,4 +368,48 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             tokenExpirationService = null;
         }
     };
+    /**
+     * Deserialize json in a list of devices.
+     * If any error occurs it will be returned List empty.
+     *
+     * @param json {@link JSONObject}
+     * @return {@link List<Device>}
+     */
+    private List<Device> jsonToListDevice(JSONObject json) {
+        if (json == null || !json.has("devices")) return new ArrayList<>();
+
+        Type typeUserAccess = new TypeToken<List<Device>>() {
+        }.getType();
+
+        try {
+            JSONArray jsonArray = json.getJSONArray("devices");
+            return new Gson().fromJson(jsonArray.toString(), typeUserAccess);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
+
+    //check devices saved on the server
+    public void syncDevices() {
+        String path = "devices/users/".concat(session.get_idLogged());
+        server.get(path, new Server.Callback() {
+            @Override
+            public void onError(JSONObject result) {
+            }
+
+            @Override
+            public void onSuccess(JSONObject result) {
+                List<Device> devicesRegistered = jsonToListDevice(result);
+                mDeviceDAO.removeAll(session.getUserLogged().getId());
+                if (!devicesRegistered.isEmpty()) {
+                    mDeviceDAO.removeAll(session.getUserLogged().getId());
+                    for (Device d : devicesRegistered) {
+                        d.setUser(session.getUserLogged());
+                        mDeviceDAO.save(d);
+                    }
+                }
+            }
+        });
+    }
 }

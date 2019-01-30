@@ -1,8 +1,9 @@
 package br.edu.uepb.nutes.haniot.model;
 
+import br.edu.uepb.nutes.haniot.utils.Log;
+
 public class DateChangedEvent {
 
-    private String date = "--";
     private String activity = "--";
     private String sleep = "--";
     private String glucose = "--";
@@ -10,8 +11,68 @@ public class DateChangedEvent {
     private String temperature = "--";
     private String weight = "--";
     private String heartRate = "--";
+    private String height = "--";
+    private String circumference = "--";
 
     public DateChangedEvent(){}
+
+    public void printValues(){
+        if (!this.activity.equals("--")){
+            Log.d("TESTE","Valor da medição activity: "+this.activity);
+        }
+        if (!this.sleep.equals("--")){
+            Log.d("TESTE","Valor da medição sleep: "+this.sleep);
+        }
+        if (!this.glucose.equals("--")){
+            Log.d("TESTE","Valor da medição glicose: "+this.glucose);
+        }
+        if (!this.pressure.equals("--")){
+            Log.d("TESTE","Valor da medição pressão: "+this.pressure);
+        }
+        if (!this.temperature.equals("--")){
+            Log.d("TESTE","Valor da medição temperatura: "+this.temperature);
+        }
+        if (!this.weight.equals("--")){
+            Log.d("TESTE","Valor da medição peso: "+this.weight);
+        }
+        if (!this.heartRate.equals("--")){
+            Log.d("TESTE","Valor da medição batimento cardiaco: "+this.heartRate);
+        }
+        if (!this.height.equals("--")){
+            Log.d("TESTE","Valor da medição altura: "+this.height);
+        }
+        if (!this.circumference.equals("--")){
+            Log.d("TESTE","Valor da medição circunferencia: "+this.circumference);
+        }
+    }
+
+    public void resetAllValues(){
+        this.activity = "--";
+        this.sleep = "--";
+        this.glucose = "--";
+        this.pressure = "--";
+        this.temperature = "--";
+        this.weight = "--";
+        this.heartRate = "--";
+        this.circumference = "--";
+        this.height = "--";
+    }
+
+    public String getHeight() {
+        return height;
+    }
+
+    public void setHeight(String height) {
+        this.height = height;
+    }
+
+    public String getCircumference() {
+        return circumference;
+    }
+
+    public void setCircumference(String circumference) {
+        this.circumference = circumference;
+    }
 
     public String getActivity() {
         return activity;
@@ -27,14 +88,6 @@ public class DateChangedEvent {
 
     public void setSleep(String sleep) {
         this.sleep = sleep;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
     }
 
     public String getGlucose() {
@@ -76,4 +129,5 @@ public class DateChangedEvent {
     public void setHeartRate(String heartRate) {
         this.heartRate = heartRate;
     }
+
 }

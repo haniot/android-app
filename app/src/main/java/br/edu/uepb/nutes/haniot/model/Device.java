@@ -160,8 +160,8 @@ public class Device implements Parcelable {
         return user;
     }
 
-    public void setUser(ToOne<User> user) {
-        this.user = user;
+    public void setUser(User user) {
+        this.user.setTarget(user);
     }
 
     public int getImg() {

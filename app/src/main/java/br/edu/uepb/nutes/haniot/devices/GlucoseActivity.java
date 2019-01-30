@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.UUID;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.activity.ManuallyAddMeasurement;
 import br.edu.uepb.nutes.haniot.activity.charts.GlucoseChartActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.GlucoseAdapter;
@@ -49,6 +50,7 @@ import br.edu.uepb.nutes.haniot.model.ContextMeasurementType;
 import br.edu.uepb.nutes.haniot.model.ContextMeasurementValueType;
 import br.edu.uepb.nutes.haniot.model.Device;
 import br.edu.uepb.nutes.haniot.model.DeviceType;
+import br.edu.uepb.nutes.haniot.model.ItemGridType;
 import br.edu.uepb.nutes.haniot.model.Measurement;
 import br.edu.uepb.nutes.haniot.model.MeasurementType;
 import br.edu.uepb.nutes.haniot.model.dao.DeviceDAO;
@@ -138,6 +140,9 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
     @BindView(R.id.chart_floating_button)
     FloatingActionButton mChartButton;
 
+    @BindView(R.id.add_floating_button)
+    FloatingActionButton mAddButton;
+
     private ProgressDialog progressDialog;
     private boolean isGetAllMonitor;
 
@@ -158,6 +163,7 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
 
         animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
         mChartButton.setOnClickListener(this);
+        mAddButton.setOnClickListener(this);
 
         Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
@@ -237,6 +243,7 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 if (dy > 0) {
+                    mAddButton.hide();
                     // Recycle view scrolling downwards...
                     // this if statement detects when user reaches the end of recyclerView, this is only time we should load more
                     if (!recyclerView.canScrollVertically(RecyclerView.FOCUS_DOWN)) {
@@ -244,6 +251,8 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
                         // we must check if itShouldLoadMore variable is true [unlocked]
                         if (itShouldLoadMore) loadMoreData();
                     }
+                }else{
+                    mAddButton.show();
                 }
             }
         });
@@ -760,6 +769,12 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
         switch (v.getId()) {
             case R.id.chart_floating_button:
                 startActivity(new Intent(getApplicationContext(), GlucoseChartActivity.class));
+                break;
+            case R.id.add_floating_button:
+                Intent it = new Intent(getApplicationContext(), ManuallyAddMeasurement.class);
+                it.putExtra(getResources().getString(R.string.measurementType),
+                        ItemGridType.BLOOD_GLUCOSE);
+                startActivity(it);
                 break;
             default:
                 break;

@@ -124,10 +124,12 @@
             android:theme="@style/AppThemeSecondary" />
         <!-- END ELDERLY -->
 
+
         <!-- ACTIVITIES REGISTER DEVICES -->
         <activity android:name=".devices.register.DeviceRegisterActivity" />
         <activity android:name=".devices.register.DeviceManagerActivity" />
         <!-- END ACTIVITIES REGISTER DEVICES -->
+
 
         <!-- SERVICES -->
         <service android:name=".service.TokenExpirationService"/>
@@ -153,10 +155,14 @@
         <!-- END SERVICES -->
 
         <activity
-            android:name=".activity.ManageChildrenActivity"
+            android:name=".activity.ManagePatientsActivity"
             android:label="@string/title_activity_manage_children"
             android:theme="@style/AppTheme" />
         <activity android:name=".activity.ManuallyAddMeasurement" />
+        <activity
+            android:name=".activity.PatientHistoricalActivity"
+            android:label="@string/title_activity_patient_historical"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>

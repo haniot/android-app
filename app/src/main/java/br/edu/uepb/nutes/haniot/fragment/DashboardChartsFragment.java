@@ -1,16 +1,22 @@
 package br.edu.uepb.nutes.haniot.fragment;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatImageButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
@@ -20,6 +26,7 @@ import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONObject;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -32,6 +39,7 @@ import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.model.DateChangedEvent;
 import br.edu.uepb.nutes.haniot.model.Measurement;
 import br.edu.uepb.nutes.haniot.model.MeasurementType;
+import br.edu.uepb.nutes.haniot.model.SwipeEvent;
 import br.edu.uepb.nutes.haniot.server.historical.CallbackHistorical;
 import br.edu.uepb.nutes.haniot.server.historical.Historical;
 import br.edu.uepb.nutes.haniot.server.historical.HistoricalType;
@@ -65,9 +73,16 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
     @BindView(R.id.loadingDataProgressBar)
     CircularProgressBar loadingDataProgressBar;
 
+//    default values of goals
     private int highProgressBarGoal = 200;
     private int lightProgressBar1Goal = 300;
     private int lightProgressBar2Goal = 800;
+
+    private final int DIALOG_TYPE_STEPS = 1;
+    private final int DIALOG_TYPE_CALORIES = 2;
+    private final int DIALOG_TYPE_DISTANCE = 3;
+
+    private String textDialogTitle = "";
 
     //Date part
     private Calendar calendar;
@@ -75,7 +90,13 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
     private SimpleDateFormat simpleDateFormat;
     private String date;
     private String today;
+
+//    Annimation part
     private Animation scale;
+    private AlphaAnimation alphaAnimation;
+    private Boolean animSteps = false;
+    private Boolean animCalories = false;
+    private Boolean animDistance = false;
 
     private DatePickerDialog datePickerDialog;
     private int year;
@@ -85,7 +106,7 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
     //Server part
     private Params params;
     private Session session;
-    private String childId = "";
+    private String patientId = "";
 
     private String[] measurementTypeArray;
 
@@ -101,6 +122,10 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
     private boolean measurementActivity = false;
 
     private DateChangedEvent eventMeasurement;
+
+    private float steps;
+    private float calories;
+    private float distance;
 
     public DashboardChartsFragment() {
         // Required empty public constructor
@@ -169,15 +194,18 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
         btnArrowLeft.setOnClickListener(this);
         btnArrowRight.setOnClickListener(this);
         textDate.setOnClickListener(this);
+        stepsProgressBar.setOnClickListener(this);
+        caloriesProgressBar.setOnClickListener(this);
+        distanceProgressBar.setOnClickListener(this);
 
-        getChildId();
+        getPatientId();
         return view;
     }
-    //Get the child id and enable/disable the control buttons of dashboard
-    public void getChildId() {
-        String lastId = session.getString(getResources().getString(R.string.id_last_child));
+    //Get the patient id and enable/disable the control buttons of dashboard
+    public void getPatientId() {
+        String lastId = session.getString(getResources().getString(R.string.id_last_patient));
         if (!lastId.equals("")) {
-            this.childId = lastId;
+            this.patientId = lastId;
             if (this.date.equals(this.today)) {
                 btnArrowRight.setEnabled(false);
                 btnArrowRight.setBackground(getResources().getDrawable(R.mipmap.ic_arrow_right_disabled));
@@ -217,6 +245,11 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
     public void onStart() {
         super.onStart();
         _eventBus.register(this);
+        try {
+            loadServerData();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -231,7 +264,7 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
     @Override
     public void onResume() {
         super.onResume();
-        getChildId();
+        getPatientId();
     }
 
     //Formatt the date of dashboard
@@ -240,6 +273,17 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(getResources().getString(R.string.date_format_week_day_year), current);
         String dateFormatted = simpleDateFormat.format(dateToText);
         textDate.setText(dateFormatted);
+    }
+
+    private void resetMeasurementStatus(){
+        measurementSteps = false;
+        measurementHeartRate = false;
+        measurementSleep = false;
+        measurementTemperature = false;
+        measurementWeight = false;
+        measurementBloodPressure = false;
+        measurementBloodGlucose = false;
+        measurementActivity = false;
     }
 
     private void setupEvent(int type, String value){
@@ -252,27 +296,27 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
             this.eventMeasurement.setWeight("--");
             this.eventMeasurement.setSleep("--");
             this.eventMeasurement.setActivity("--");
-            measurementSteps = false;
-            measurementHeartRate = false;
-            measurementSleep = false;
-            measurementTemperature = false;
-            measurementWeight = false;
-            measurementBloodPressure = false;
-            measurementBloodGlucose = false;
-            measurementActivity = false;
+            resetMeasurementStatus();
             return;
         }
 
         if (type == MeasurementType.HEART_RATE && !measurementHeartRate){
             this.eventMeasurement.setHeartRate(value);
+            this.measurementHeartRate = true;
         }else if (type == MeasurementType.BODY_MASS && !measurementWeight){
             this.eventMeasurement.setWeight(value);
+            this.measurementWeight = true;
         }else if (type == MeasurementType.TEMPERATURE && !measurementTemperature) {
             this.eventMeasurement.setTemperature(value);
-        }else if (type == MeasurementType.BLOOD_PRESSURE_DIASTOLIC && !measurementBloodPressure){
+            this.measurementTemperature = true;
+        }else if ((type == MeasurementType.BLOOD_PRESSURE_SYSTOLIC ||
+                type == MeasurementType.BLOOD_PRESSURE_DIASTOLIC)
+                && !measurementBloodPressure){
             this.eventMeasurement.setPressure(value);
+            this.measurementBloodPressure = true;
         }else if(type == MeasurementType.BLOOD_GLUCOSE && !measurementBloodGlucose){
             this.eventMeasurement.setGlucose(value);
+            this.measurementBloodGlucose = true;
         }
     }
 
@@ -292,7 +336,7 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
                 .type(HistoricalType.MEASUREMENTS_USER)
                 .params(params) // Measurements of the temperature type, associated to the user
                 .filterDate(timeInit, timeEnd)
-                .pagination(0, 100)
+                .pagination(0, 500)
                 .build();
 
         historical.request(getContext(), new CallbackHistorical<Measurement>() {
@@ -307,73 +351,61 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
 
             @Override
             public void onResult(List<Measurement> result) {
+
                 if (result != null && result.size() > 0) {
 
-                    int steps =0 ;
-                    int calories = 0;
-                    int distance = 0;
+                    float steps = 0;
+                    float calories = 0;
+                    float distance = 0;
 
                     for(Measurement measurement : result){
                         int type = measurement.getTypeId();
                         String value = "";
                         if (type == MeasurementType.HEART_RATE && !measurementHeartRate) {
-                            Log.d("TESTE","Encontrei valor de bpm na data: "+DateUtils.formatDate(measurement.getRegistrationDate(),"dd/MM/yyyy"));
-                            value = String.valueOf(measurement.getValue());
+                            value = String.format("%.0f",measurement.getValue());
                         }else if (type == MeasurementType.BODY_MASS && !measurementWeight){
-                            value = String.valueOf(measurement.getValue());
-                        }else if (type == MeasurementType.TEMPERATURE&& !measurementTemperature){
-                            value = String.valueOf(measurement.getValue());
-                        }else if (type == MeasurementType.BLOOD_PRESSURE_DIASTOLIC && !measurementBloodPressure){
-                            value = String.valueOf(measurement.getValue());
+                            value = String.format("%.2f",measurement.getValue());
+                        }else if (type == MeasurementType.TEMPERATURE && !measurementTemperature){
+                            value = String.format("%.0f",measurement.getValue());
+                        }else if ((type == MeasurementType.BLOOD_PRESSURE_SYSTOLIC ||
+                                type == MeasurementType.BLOOD_PRESSURE_DIASTOLIC)
+                                && !measurementBloodPressure){
+                            value = String.format("%.0f",measurement.getValue());
+                            value = value+" / "+ String
+                                    .format("%.0f",measurement.getMeasurements().get(0).getValue());
                         }else if (type == MeasurementType.BLOOD_GLUCOSE && !measurementBloodGlucose){
-                            value = String.valueOf(measurement.getValue());
+                            value = String.format("%.2f",measurement.getValue());
+                        }else if (type == MeasurementType.STEPS && !measurementSteps){
+                            steps = (float)measurement.getValue();
+                            calories = (float) measurement.getMeasurements().get(0)
+                                    .getValue();
+                            distance = (float) measurement.getMeasurements().get(1)
+                                    .getValue();
+                            measurementSteps = true;
                         }
                         setupEvent(type,value);
                     }
-
+                    if (getActivity() != null){
+                        updateCharts(calories,steps,distance);
+                        setChartsVariables(steps,calories,distance);
+                    }
+                    postEvent();
 
                     if (getActivity() == null) return;
 
-                    if (getActivity() != null) {
-                        int finalSteps = steps;
-                        int finalCalories = calories;
-                        int finalDistance = distance;
-                        new Handler(getContext().getMainLooper()).postDelayed(new Runnable() {
-
-                            @Override
-                            public void run() {
-                                try {
-                                    setDataProgress(finalSteps, finalCalories, finalDistance);
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        }, 200);
-                    }
                 } else {
                     setupEvent(-1,"");
-                    Log.d("TESTE","Resultado é null ou igual a zero");
-                    try {
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                //No caso de não encontrar valores, o dashboard é zerado
-                                try {
-                                    setDataProgress(0, 0, 0);
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        });
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    postEvent();
+                    updateCharts(0,0,0);
+                    setChartsVariables(0,0,0);
                 }
             }
 
             @Override
             public void onAfterSend() {
                 if (getContext() != null) {
+                    resetValues();
+                    resetMeasurementStatus();
                     new Handler(getContext().getMainLooper()).postDelayed(new Runnable() {
 
                         @Override
@@ -383,8 +415,38 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
                     }, 200);
                 }
             }
+
         });
 
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void swipeUpdate(SwipeEvent event){
+        try {
+            loadServerData();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void updateCharts(float calories, float steps, float distance){
+        try {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        setDataProgress( steps, calories, distance);
+                        measurementSteps = true;
+                    } catch (Exception e) {
+                        Log.d("TESTE",e.getMessage());
+                        e.printStackTrace();
+                    }
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.d("TESTE",e.getMessage());
+        }
     }
 
     //Sum a day
@@ -401,7 +463,6 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
             btnArrowRight.setBackground(getResources().getDrawable(R.mipmap.ic_arrow_right_disabled));
         }
 
-        postEvent(this.eventMeasurement);
         return calendar.getTime();
     }
 
@@ -419,7 +480,6 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
         calendar.add(Calendar.DATE, -1);
         this.date = simpleDateFormat.format(calendar.getTime());
 
-        postEvent(this.eventMeasurement);
         return calendar.getTime();
     }
 
@@ -434,9 +494,23 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
             btnArrowRight.setEnabled(true);
         }
         scale = AnimationUtils.loadAnimation(getContext(), R.anim.click);
+        this.alphaAnimation = new AlphaAnimation(1.0f, 0.0f);
+        this.alphaAnimation.setDuration(500);
+        this.alphaAnimation.setRepeatMode(Animation.REVERSE);
+
 
         calendarAux = Calendar.getInstance();
         eventMeasurement = new DateChangedEvent();
+
+        String goalSteps = session.getString("goalSteps");
+        if (!goalSteps.equals(""))
+            highProgressBarGoal = Integer.parseInt(goalSteps);
+        String goalCalories = session.getString("goalCalories");
+        if (!goalCalories.equals(""))
+            lightProgressBar1Goal = Integer.parseInt(goalCalories);
+        String goalDistance = session.getString("goalDistance");
+        if (!goalDistance.equals(""))
+            lightProgressBar2Goal = Integer.parseInt(goalDistance);
 
         //Seta o progresso máximo
         stepsProgressBar.setProgressMax(highProgressBarGoal);
@@ -445,29 +519,108 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
 
     }
 
-    //Update the data of progressbar of dashboard
-    public void setDataProgress(int numberOfSteps, int numberOfCalories, int distance) throws Exception{
+//    blink the progressbar and change icon to green flag
+    private void updateChartIcon(boolean steps, boolean calories, boolean distance){
 
-        stepsProgressBar.setProgressWithAnimation(numberOfSteps, 2500);
-        caloriesProgressBar.setProgressWithAnimation(numberOfCalories, 3000);
-        distanceProgressBar.setProgressWithAnimation(distance, 3000);
+        this.alphaAnimation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {}
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                if (steps && !animSteps) {
+                    stepsProgressBar.setBackground(
+                            getResources().getDrawable(R.drawable.ic_green_flag));
+                    animSteps = !animSteps;
+                }
+                if (calories && !animCalories) {
+                    caloriesProgressBar.setBackground(
+                            getResources().getDrawable(R.drawable.ic_green_flag));
+                    animCalories = !animCalories;
+                }
+                if (distance && !animDistance) {
+                    distanceProgressBar.setBackground(
+                            getResources().getDrawable(R.drawable.ic_green_flag));
+                    animDistance = !animDistance;
+                }
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {}
+        });
+
+        new Handler(getContext().getMainLooper()).postDelayed(() -> {
+            if (steps && !animSteps)
+                stepsProgressBar.startAnimation(alphaAnimation);
+            if (calories && !animCalories)
+                caloriesProgressBar.startAnimation(alphaAnimation);
+            if (distance && !animDistance)
+                distanceProgressBar.startAnimation(alphaAnimation);
+        }, 3000);
+
+    }
+
+    //Update the data of progressbar of dashboard
+    public void setDataProgress(float numberOfSteps, float numberOfCalories,
+                                float distance) throws Exception{
+
+        int steps = (int) numberOfSteps;
+        int calories = (int) numberOfCalories;
+        int dist = (int) distance;
+
+        stepsProgressBar.setProgressWithAnimation(steps, 2500);
+
+        boolean stepsAchieved = false;
+        boolean caloriesAchieved = false;
+        boolean distanceAchieved = false;
+
+        if (steps >= this.highProgressBarGoal){
+            stepsAchieved = true;
+        }else{
+            stepsProgressBar.setBackground(getResources().getDrawable(R.drawable.ic_feet));
+        }
+
+        caloriesProgressBar.setProgressWithAnimation(calories, 3000);
+        if (calories >= this.lightProgressBar1Goal ){
+            caloriesAchieved = true;
+        }else{
+            caloriesProgressBar.setBackground(getResources().getDrawable(R.drawable.ic_calories));
+        }
+
+        distanceProgressBar.setProgressWithAnimation(dist, 3000);
+        if (distance >= this.lightProgressBar2Goal ){
+            distanceAchieved = true;
+        }else{
+            distanceProgressBar.setBackground(getResources().getDrawable(R.drawable.ic_distance));
+        }
+
+        updateChartIcon(stepsAchieved,caloriesAchieved,distanceAchieved);
 
         //Seta os dados nos textos abaixo da progressbar
-        textSteps.setText(numberOfSteps + " " + measurementTypeArray[12]);
-        textCalories.setText(numberOfCalories + " " + measurementTypeArray[14]);
-        if (distance < 1000) {
-            textDistance.setText(distance + getResources().getString(R.string.unit_meters));
+        textSteps.setText(steps + " " + measurementTypeArray[12]);
+        textCalories.setText(calories + " " + measurementTypeArray[14]);
+        if (dist < 1000) {
+            textDistance.setText(dist+ getResources().getString(R.string.unit_meters));
         } else {
-            float distanceKm = distance / 1000;
+            float distanceKm = dist / 1000;
             textDistance.setText(distanceKm + getResources().getString(R.string.unit_kilometer));
         }
 
+    }
+
+    private void setChartsVariables(float steps, float calories, float distance){
+        this.steps = steps;
+        this.calories = calories;
+        this.distance = distance;
     }
 
     //Anims for buttons and textview of date
     private void animLeftBtn(){
         try {
             btnArrowLeft.startAnimation(scale);
+            animSteps = false;
+            animCalories = false;
+            animDistance = false;
             updateTextDate(decreaseDay(this.date));
             loadServerData();
         } catch (ParseException e) {
@@ -478,6 +631,9 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
     private void animRightBtn(){
         try {
             btnArrowRight.startAnimation(scale);
+            animSteps = false;
+            animCalories = false;
+            animDistance = false;
             updateTextDate(increaseDay(this.date));
             loadServerData();
         } catch (ParseException e) {
@@ -492,6 +648,100 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void createGoalsDialog(int dialogType){
+
+        LayoutInflater li = LayoutInflater.from(getContext());
+        View promptView = li.inflate(R.layout.dialog_dashboard_goals, null);
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
+        alertDialogBuilder.setView(promptView);
+
+        final TextInputEditText userInput = (TextInputEditText) promptView.findViewById(
+                R.id.goalsInput);
+
+        TextView dialogTitle = (TextView) promptView.findViewById(R.id.textGoals);
+
+        switch (dialogType) {
+            case DIALOG_TYPE_STEPS:
+                this.textDialogTitle = getResources().getString(R.string.goals_steps);
+                userInput.setHint("/"+String.valueOf(this.highProgressBarGoal));
+                break;
+            case DIALOG_TYPE_CALORIES:
+                this.textDialogTitle = getResources().getString(R.string.goals_calories);
+                userInput.setHint("/"+String.valueOf(this.lightProgressBar1Goal));
+                break;
+            case DIALOG_TYPE_DISTANCE:
+                this.textDialogTitle = getResources().getString(R.string.goals_distance);
+                userInput.setHint("/"+String.valueOf(this.lightProgressBar2Goal));
+                break;
+        }
+
+        alertDialogBuilder
+                .setCancelable(false)
+                .setPositiveButton(getResources().getString(R.string.bt_ok), (dialogInterface, i) -> {
+
+                    String value = userInput.getText().toString();
+                    switch (dialogType){
+
+                        case DIALOG_TYPE_STEPS:
+                            session.putString("goalSteps",value);
+                            if (value!= null && !value.equals("")) {
+                                float maxProgress = Float.parseFloat(value);
+                                this.highProgressBarGoal = Integer.parseInt(value);
+                                stepsProgressBar.setProgressMax(maxProgress);
+                                if (maxProgress > this.steps){
+                                    this.animSteps = false;
+                                }
+                                try {
+                                    setDataProgress(this.steps,this.calories,this.distance);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            break;
+                        case DIALOG_TYPE_CALORIES:
+                            session.putString("goalCalories",value);
+                            if (value!= null && !value.equals("")) {
+                                float maxProgress = Float.parseFloat(value);
+                                this.lightProgressBar1Goal = Integer.parseInt(value);
+                                caloriesProgressBar.setProgressMax(maxProgress);
+                                if (maxProgress > this.calories){
+                                    this.animCalories = false;
+                                }
+                                try {
+                                    setDataProgress(this.steps,this.calories,this.distance);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            break;
+                        case DIALOG_TYPE_DISTANCE:
+                            session.putString("goalDistance",value);
+                            if (value!= null && !value.equals("")) {
+                                float maxProgress = Float.parseFloat(value);
+                                this.lightProgressBar2Goal = Integer.parseInt(value);
+                                distanceProgressBar.setProgressMax(maxProgress);
+                                if (maxProgress > this.distance){
+                                    this.animDistance = false;
+                                }
+                                try {
+                                    setDataProgress(this.steps,this.calories,this.distance);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            break;
+                    }
+                })
+                .setNegativeButton(getResources().getString(R.string.bt_cancel), (dialogInterface, i) -> {
+                    dialogInterface.cancel();
+                });
+        dialogTitle.setText(this.textDialogTitle);
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+
     }
 
     @Override
@@ -510,6 +760,21 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
             // TextView of date
             case R.id.textDate:
                 animTextDate();
+                break;
+
+            case R.id.stepsProgressBar:
+                stepsProgressBar.startAnimation(scale);
+                createGoalsDialog(DIALOG_TYPE_STEPS);
+                break;
+
+            case R.id.lightProgress1:
+                caloriesProgressBar.startAnimation(scale);
+                createGoalsDialog(DIALOG_TYPE_CALORIES);
+                break;
+
+            case R.id.lightProgress2:
+                distanceProgressBar.startAnimation(scale);
+                createGoalsDialog(DIALOG_TYPE_DISTANCE);
                 break;
         }
     }
@@ -548,14 +813,21 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
         return this.today;
     }
 
-    private void postEvent(Object event){
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    private void postEvent(){
+        DateChangedEvent event = new DateChangedEvent();
+        event = this.eventMeasurement;
         EventBus.getDefault().post(event);
+    }
+
+    private void resetValues(){
+        this.eventMeasurement.resetAllValues();
     }
 
     private String getSelectedData(){
         SimpleDateFormat spn = new SimpleDateFormat(getResources()
                 .getString(R.string.date_format));
-        return spn.format(calendar.getTime());
+        return spn.format(this.calendar.getTime());
     }
 
     @Override
@@ -571,6 +843,9 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
             btnArrowRight.setBackground(getResources().getDrawable(R.mipmap.ic_arrow_right_disabled));
         }
         loadingDataProgressBar.setVisibility(View.VISIBLE);
+        animSteps = false;
+        animCalories = false;
+        animDistance = false;
         try {
             loadServerData();
         } catch (ParseException e) {
@@ -582,8 +857,6 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
          */
         ((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE))
                 .showSoftInput(textDate, InputMethodManager.SHOW_IMPLICIT);
-
-        postEvent(this.eventMeasurement);
 
     }
 

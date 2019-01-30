@@ -9,7 +9,6 @@ import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -24,12 +23,22 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.account.LoginActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.SettingsActivity;
 import br.edu.uepb.nutes.haniot.adapter.FragmentPageAdapter;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
+import br.edu.uepb.nutes.haniot.model.DateChangedEvent;
+import br.edu.uepb.nutes.haniot.model.SendMeasurementsEvent;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
+import br.edu.uepb.nutes.haniot.utils.Log;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -50,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
     private String lastNameSelected = "";
     private Session session;
 
+    private EventBus _eventBus;
+
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.tabLayout)
@@ -58,6 +69,10 @@ public class MainActivity extends AppCompatActivity {
     ViewPager viewPager;
     @BindView(R.id.newMeasureButton)
     FloatingActionButton newMeasureButton;
+    @BindView(R.id.floating_menu_main)
+    FloatingActionMenu floatingMenu;
+    @BindView(R.id.sendToServerButton)
+    FloatingActionButton btnSendMeasurement;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,13 +91,34 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setOffscreenPageLimit(2);
         tabLayout.setupWithViewPager(viewPager);
 
-        checkLastChildAndUpdateTabTitle();
+        checkLastPatientAndUpdateTabTitle();
+
+        this._eventBus = EventBus.getDefault();
 
         newMeasureButton.setOnClickListener(v -> {
             Intent it = new Intent(this, SettingsActivity.class);
             it.putExtra("settingType", 2);
+            floatingMenu.close(false);
             startActivity(it);
         });
+
+
+        btnSendMeasurement.setOnClickListener(c -> {
+            postEvent();
+        });
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        _eventBus.register(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        _eventBus.unregister(this);
     }
 
     @Override
@@ -96,18 +132,21 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(this, LoginActivity.class));
             finish();
         }
-        checkLastChildAndUpdateTabTitle();
+        if (floatingMenu.isOpened()){
+            floatingMenu.close(true);
+        }
+        checkLastPatientAndUpdateTabTitle();
     }
 
-    /* Test if there is some children saved on bundle or on shared preferences
-        if some children is finded, the title is updated.
+    /* Test if there is some patient saved on bundle or on shared preferences
+        if some patient is finded, the title is updated.
     */
-    public void checkLastChildAndUpdateTabTitle() {
+    public void checkLastPatientAndUpdateTabTitle() {
         //caso a tela seja restaurada
         Bundle params = getIntent().getExtras();
         if (params != null) {
-            String idExtra = params.getString(getResources().getString(R.string.id_last_child));
-            String nameExtra = params.getString(getResources().getString(R.string.name_last_child));
+            String idExtra = params.getString(getResources().getString(R.string.id_last_patient));
+            String nameExtra = params.getString(getResources().getString(R.string.name_last_patient));
             if (idExtra != null && !idExtra.equals("")
                     && nameExtra != null && !nameExtra.equals("")) {
                 this.id = idExtra;
@@ -118,8 +157,8 @@ public class MainActivity extends AppCompatActivity {
             this.id = "";
             this.lastNameSelected = "";
         }
-        String id = getResources().getString(R.string.id_last_child);
-        String name = getResources().getString(R.string.name_last_child);
+        String id = getResources().getString(R.string.id_last_patient);
+        String name = getResources().getString(R.string.name_last_patient);
         String lastIdSelected = session.getString(id);
         String lastName = session.getString(name);
         if (!lastIdSelected.equals("") && !lastName.equals("")) {
@@ -220,8 +259,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.btnManageChildren:
-                startActivity(new Intent(getApplicationContext(), ManageChildrenActivity.class));
+            case R.id.btnManagePatient:
+                startActivity(new Intent(getApplicationContext(), ManagePatientsActivity.class));
                 break;
             case R.id.btnMenuMainSettings:
                 Intent it = new Intent(this, SettingsActivity.class);
@@ -253,4 +292,15 @@ public class MainActivity extends AppCompatActivity {
         this.finishAffinity();
         System.exit(0);
     }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onSendMeasurements(final SendMeasurementsEvent e){
+
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    private void postEvent(){
+        EventBus.getDefault().post(new SendMeasurementsEvent());
+    }
+
 }

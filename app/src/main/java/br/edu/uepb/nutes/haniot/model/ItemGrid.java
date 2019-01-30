@@ -18,65 +18,6 @@ public class ItemGrid {
     public ItemGrid() {
     }
 
-    public ItemGrid(Context context,
-                    int icon,
-                    String description,
-                    String name,
-                    String measurementValue,
-                    int type) {
-
-        this.context = context;
-        this.icon = icon;
-        this.description = description;
-        this.name = name;
-        this.measurementValue = measurementValue;
-        switch (type){
-
-            case ItemGridType.HEART_RATE:
-
-                measurementInitials = context.getResources().getString(R.string.unit_pulse);
-                this.type = ItemGridType.HEART_RATE;
-                break;
-
-            case ItemGridType.BLOOD_GLUCOSE:
-
-                this.type = ItemGridType.BLOOD_GLUCOSE;
-                measurementInitials = context.getResources().getString(R.string.unit_glucose_mg_dL);
-                break;
-
-            case ItemGridType.BLOOD_PRESSURE:
-
-                this.type = ItemGridType.BLOOD_PRESSURE;
-                measurementInitials = context.getResources().getString(R.string.unit_pressure);
-                break;
-
-            case ItemGridType.TEMPERATURE:
-
-                this.type = ItemGridType.TEMPERATURE;
-                measurementInitials = context.getResources()
-                            .getString(R.string.unit_temperature);
-                break;
-
-            case ItemGridType.WEIGHT:
-
-                this.type = ItemGridType.WEIGHT;
-                measurementInitials = context.getResources().getString(R.string.unit_weight);
-                break;
-
-            case ItemGridType.SLEEP:
-
-                this.type = ItemGridType.SLEEP;
-                measurementInitials = context.getResources().getString(R.string.unit_hour);
-                break;
-
-            case ItemGridType.ACTIVITY:
-
-                this.type = ItemGridType.ACTIVITY;
-                measurementInitials = context.getResources().getString(R.string.unit_kilometer);
-                break;
-        }
-    }
-
     public Context getContext() {
         return context;
     }
@@ -89,6 +30,7 @@ public class ItemGrid {
         return type;
     }
 
+//    To each new button on grid, add the type here
     public void setType(int type) {
         switch (type){
 
@@ -133,6 +75,12 @@ public class ItemGrid {
 
                 this.type = ItemGridType.ACTIVITY;
                 measurementInitials = context.getResources().getString(R.string.unit_kilometer);
+                break;
+
+            case ItemGridType.ANTHROPOMETRIC:
+
+                this.type = ItemGridType.ANTHROPOMETRIC;
+                measurementInitials = context.getResources().getString(R.string.unit_meters);
                 break;
         }
     }

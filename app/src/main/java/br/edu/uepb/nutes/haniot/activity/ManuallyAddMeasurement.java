@@ -15,13 +15,13 @@ import android.widget.DatePicker;
 import android.widget.Toast;
 
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
+import br.edu.uepb.nutes.haniot.fragment.AddAnthropometricsFragment;
 import br.edu.uepb.nutes.haniot.fragment.AddBloodGlucoseManuallyFragment;
 import br.edu.uepb.nutes.haniot.fragment.AddBloodPressureManuallyFragment;
 import br.edu.uepb.nutes.haniot.fragment.AddHeartRateManuallyFragment;
@@ -29,9 +29,6 @@ import br.edu.uepb.nutes.haniot.fragment.AddTemperatureManuallyFragment;
 import br.edu.uepb.nutes.haniot.fragment.AddWeightManuallyFragment;
 import br.edu.uepb.nutes.haniot.model.ContextMeasurement;
 import br.edu.uepb.nutes.haniot.model.ContextMeasurementType;
-import br.edu.uepb.nutes.haniot.model.ContextMeasurementValueType;
-import br.edu.uepb.nutes.haniot.model.Device;
-import br.edu.uepb.nutes.haniot.model.DeviceType;
 import br.edu.uepb.nutes.haniot.model.ItemGridType;
 import br.edu.uepb.nutes.haniot.model.Measurement;
 import br.edu.uepb.nutes.haniot.model.MeasurementType;
@@ -48,7 +45,8 @@ public class ManuallyAddMeasurement extends AppCompatActivity implements View.On
         AddBloodGlucoseManuallyFragment.SendMessageListener,
         AddHeartRateManuallyFragment.SendMessageListener,
         AddTemperatureManuallyFragment.SendMessageListener,
-        AddBloodPressureManuallyFragment.SendMessageListener {
+        AddBloodPressureManuallyFragment.SendMessageListener,
+        AddAnthropometricsFragment.SendMessageListener{
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -240,6 +238,13 @@ public class ManuallyAddMeasurement extends AppCompatActivity implements View.On
             case ItemGridType.BLOOD_PRESSURE:
 
                 myFragment = new AddBloodPressureManuallyFragment();
+                getSupportFragmentManager().beginTransaction().replace(R.id.frame_measurement,
+                        myFragment).commit();
+                break;
+
+            case ItemGridType.ANTHROPOMETRIC:
+
+                myFragment = new AddAnthropometricsFragment();
                 getSupportFragmentManager().beginTransaction().replace(R.id.frame_measurement,
                         myFragment).commit();
                 break;
@@ -464,4 +469,32 @@ public class ManuallyAddMeasurement extends AppCompatActivity implements View.On
         showToast(getResources().getString(R.string.error_insering_measurement));
     }
 
+    @Override
+    public void onSendMessageAnthropometric(double height, double circumference) {
+
+        if (height != -1 && circumference != -1) {
+            if (height != -1) {
+                Measurement measurementHeight = new Measurement();
+                measurementHeight.setUser(session.getUserLogged());
+                measurementHeight.setValue(height);
+                measurementHeight.setTypeId(MeasurementType.HEIGHT);
+                measurementHeight.setUnit(getResources().getString(R.string.unit_meters));
+
+                saveMeasurement(measurementHeight);
+            }
+            if (circumference != -1) {
+                Measurement measurementCircumference = new Measurement();
+                measurementCircumference.setUser(session.getUserLogged());
+                measurementCircumference.setValue(circumference);
+                measurementCircumference.setTypeId(MeasurementType.CIRCUMFERENCE);
+                measurementCircumference.setUnit(getResources().getString(R.string.unit_meters));
+
+                saveMeasurement(measurementCircumference);
+            }
+            finish();
+            return;
+        }
+        showToast(getResources().getString(R.string.error_insering_measurement));
+
+    }
 }

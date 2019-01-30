@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/btnSearchChild"
+        android:id="@+id/btnSearchPatient"
         android:enabled="true"
         android:icon="@android:drawable/ic_menu_search"
         android:orderInCategory="1"
@@ -12,7 +12,7 @@
         app:actionViewClass="android.support.v7.widget.SearchView"
         app:showAsAction="ifRoom|collapseActionView" />
     <item
-        android:id="@+id/btnAddChild"
+        android:id="@+id/btnAddPatient"
         android:icon="@drawable/ic_add"
         android:orderInCategory="2"
         android:title="@string/add"

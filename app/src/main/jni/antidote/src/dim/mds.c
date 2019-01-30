@@ -461,7 +461,7 @@ Request *mds_get_pmstore(Context *ctx, int handle, service_request_callback requ
  *
  * \param ctx context Operating ContextMeasurement
  * \param config_obj_list Configuration object list
- * \param manager Manager flag
+ * \param manager Manager ic_green_flag
  */
 void mds_configure_operating(Context *ctx, ConfigObjectList *config_obj_list,
 				int manager)

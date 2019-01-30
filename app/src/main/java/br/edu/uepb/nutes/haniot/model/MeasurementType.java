@@ -28,6 +28,8 @@ public class MeasurementType {
     public static final int STEPS = 14;
     public static final int DISTANCE = 15;
     public static final int CALORIES_BURNED = 16;
+    public static final int HEIGHT = 17;
+    public static final int CIRCUMFERENCE = 18;
 
     public static int[] SUPPORTED_TYPES = {
             TEMPERATURE,
@@ -42,7 +44,9 @@ public class MeasurementType {
             BMR,
             MUSCLE_MASS,
             VISCERAL_FAT,
-            BODY_AGE
+            BODY_AGE,
+            HEIGHT,
+            CIRCUMFERENCE
     };
 
     /**

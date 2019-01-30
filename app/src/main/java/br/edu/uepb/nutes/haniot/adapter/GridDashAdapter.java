@@ -74,10 +74,6 @@ public class GridDashAdapter extends BaseAdapter<ItemGrid>{
         }
     }
 
-    public void onItemMoved(int oldPosition, int newPosition){
-        super.notifyItemMoved(oldPosition,newPosition);
-    }
-
     @Override
     public void clearAnimation(RecyclerView.ViewHolder holder) {
         ((ViewHolder) holder).clearAnimation();
@@ -85,17 +81,6 @@ public class GridDashAdapter extends BaseAdapter<ItemGrid>{
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         final View mView;
-
-        /*@BindView(R.id.imageIten)
-        ImageView imageIten;
-        @BindView(R.id.textDescription)
-        TextView textDescription;
-        @BindView(R.id.textName)
-        TextView textName;
-        @BindView(R.id.layoutItemGrid)
-        RelativeLayout layoutItemGrid;
-        @BindView(R.id.itemGridProgressBar)
-        CircularProgressBar itemGridProgressBar;*/
 
         @BindView(R.id.imageIten)
         ImageView imageIten;

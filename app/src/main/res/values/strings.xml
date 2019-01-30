@@ -442,6 +442,29 @@
     <string name="choose_blood_pressure">Choose the pressure</string>
     <string name="choose_pulse">Chosse the pulse</string>
     <string name="unit_min">/min</string>
+    <string name="key_anthropometric">key_anthropometric</string>
+    <string name="anthropometric">Anthropometric measurements</string>
+    <string name="choose_height">Choose the height</string>
+    <string name="choose_circumference">Choose the circumference</string>
+    <string name="goals_steps">Choose the steps goals</string>
+    <string name="goals_calories">Choose the calories goals</string>
+    <string name="goals_distance">Choose the distance goals</string>
+    <string name="send_measurements_to_server">Save measurements</string>
+    <string name="last_patient_deleted">last_patient_deleted</string>
+    <string name="patient_removed">Patient removed</string>
+    <string name="undo">Undo</string>
+    <string name="patient_profile">Patient profile</string>
+    <string name="no_patient_registered">No patient finded</string>
+    <string name="try_again_later">Try again later</string>
+    <string name="color">Color</string>
+    <string name="age">Age</string>
+    <string name="idProfessional">Id professional:</string>
+    <string name="dateMask">####/##/##</string>
+    <string name="survey">Survey</string>
+    <string name="edit">Edit</string>
+    <string name="error_remove_patient">Error to remove patient, please try again later</string>
+    <string name="save_measurements_of">Save measurements of:</string>
+    <string name="circumference">Circumference</string>
 
     <!-- END OF STRINGS FOR TABLET -->
 
@@ -895,6 +918,10 @@
     <string name="accu_check_pref">accu_check</string>
     <string name="body_composition_yunmai_pref">body_composition_yunmai</string>
     <string name="body_composition_omron_pref">body_composition_omron</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_patient_historical">PatientHistoricalActivity</string>
 
     <!-- TokenExpirationService -->
     <string name="token_expired" translatable="false">Token Expired</string>

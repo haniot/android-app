@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.UUID;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.activity.ManuallyAddMeasurement;
 import br.edu.uepb.nutes.haniot.activity.charts.HeartRateChartActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.HeartRateAdapter;
@@ -47,6 +48,7 @@ import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
 import br.edu.uepb.nutes.haniot.fragment.GenericDialogFragment;
 import br.edu.uepb.nutes.haniot.model.Device;
 import br.edu.uepb.nutes.haniot.model.DeviceType;
+import br.edu.uepb.nutes.haniot.model.ItemGridType;
 import br.edu.uepb.nutes.haniot.model.Measurement;
 import br.edu.uepb.nutes.haniot.model.MeasurementType;
 import br.edu.uepb.nutes.haniot.model.dao.DeviceDAO;
@@ -139,6 +141,9 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
     @BindView(R.id.heart_imageview)
     ImageView mHeartImageView;
 
+    @BindView(R.id.add_floating_button)
+    FloatingActionButton mAddMeasurementButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -155,6 +160,7 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
 
         mChartButton.setOnClickListener(this);
         mRecordHeartRateButton.setOnClickListener(this);
+        mAddMeasurementButton.setOnClickListener(this);
 
         mDeviceAddress = getIntent().getStringExtra(EXTRA_DEVICE_ADDRESS);
         deviceInformations = getIntent().getStringArrayExtra(EXTRA_DEVICE_INFORMATIONS);
@@ -253,6 +259,9 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 if (dy > 0) {
+
+                    mAddMeasurementButton.hide();
+
                     // Recycle view scrolling downwards...
                     // this if statement detects when user reaches the end of recyclerView, this is only time we should load more
                     if (!recyclerView.canScrollVertically(RecyclerView.FOCUS_DOWN)) {
@@ -260,6 +269,8 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
                         // we must check if itShouldLoadMore variable is true [unlocked]
                         if (itShouldLoadMore) loadMoreData();
                     }
+                }else {
+                    mAddMeasurementButton.show();
                 }
             }
         });
@@ -653,6 +664,12 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
                 break;
             case R.id.chart_floating_button:
                 startActivity(new Intent(getApplicationContext(), HeartRateChartActivity.class));
+                break;
+            case R.id.add_floating_button:
+                Intent it = new Intent(getApplicationContext(), ManuallyAddMeasurement.class);
+                it.putExtra(getResources().getString(R.string.measurementType),
+                        ItemGridType.HEART_RATE);
+                startActivity(it);
                 break;
             default:
                 break;
