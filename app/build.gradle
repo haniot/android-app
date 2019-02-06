@@ -79,5 +79,9 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.2'
+
+    //Android BLE Nordic
+    implementation 'no.nordicsemi.android:ble:2.1.0'
+
 }
 apply plugin: 'com.google.gms.google-services'

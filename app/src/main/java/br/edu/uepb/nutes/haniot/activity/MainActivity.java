@@ -3,6 +3,7 @@ package br.edu.uepb.nutes.haniot.activity;
 import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
@@ -17,6 +18,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,17 +31,18 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.Calendar;
+
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.account.LoginActivity;
+import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.activity.settings.SettingsActivity;
 import br.edu.uepb.nutes.haniot.adapter.FragmentPageAdapter;
-import br.edu.uepb.nutes.haniot.activity.settings.Session;
-import br.edu.uepb.nutes.haniot.model.DateChangedEvent;
 import br.edu.uepb.nutes.haniot.model.SendMeasurementsEvent;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
-import br.edu.uepb.nutes.haniot.utils.Log;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import no.nordicsemi.android.ble.data.Data;
 
 /**
  * Main activity, application start.
@@ -59,7 +62,6 @@ public class MainActivity extends AppCompatActivity {
     private Session session;
 
     private EventBus _eventBus;
-
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.tabLayout)
@@ -79,11 +81,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+
         this.session = new Session(getApplicationContext());
 
         toolbar.setTitle(getResources().getString(R.string.app_name));
         setSupportActionBar(toolbar);
-
         new FragmentPageAdapter(getSupportFragmentManager()).saveState();
 
         viewPager.setAdapter(new FragmentPageAdapter(getSupportFragmentManager()));
@@ -100,17 +102,128 @@ public class MainActivity extends AppCompatActivity {
             floatingMenu.close(false);
             startActivity(it);
         });
-
-
         btnSendMeasurement.setOnClickListener(c -> {
             postEvent();
         });
-
+        Manager manager = new Manager(this);
+        manager.setGattCallbacks(bleManagerCallbacks);
+        BluetoothDevice device = BluetoothAdapter.getDefaultAdapter().getRemoteDevice("1C:87:74:01:73:10");
+        manager.connectDevice(device);
     }
+
+    ManagerCallback bleManagerCallbacks = new ManagerCallback() {
+        @Override
+        public void measurementReceiver(@androidx.annotation.NonNull BluetoothDevice device, @androidx.annotation.NonNull Data data) {
+
+//            if (data.size() < 5) {
+//                onInvalidDataReceived(device, data);
+//                return;
+//            }
+
+            int offset = 0;
+            final int flags = data.getIntValue(Data.FORMAT_UINT8, offset);
+         //   final int unit = (flags & 0x01) == UNIT_C ? UNIT_C : UNIT_F;
+            final boolean timestampPresent = (flags & 0x02) != 0;
+            final boolean temperatureTypePresent = (flags & 0x04) != 0;
+            offset += 1;
+
+
+            final float temperature = data.getFloatValue(Data.FORMAT_FLOAT, 1);
+            offset += 4;
+
+            Calendar calendar = null;
+//            if (timestampPresent) {
+//                calendar = DateTimeDataCallback.readDateTime(data, offset);
+//                offset += 7;
+//            }
+
+            Integer type = null;
+            if (temperatureTypePresent) {
+                type = data.getIntValue(Data.FORMAT_UINT8, offset);
+                // offset += 1;
+            }
+
+            Log.i(TAG, "Received measurent from " + device.getName() + ": " + temperature);
+
+
+        }
+
+        @Override
+        public void onDeviceConnecting(@androidx.annotation.NonNull BluetoothDevice device) {
+            Log.i(TAG, "Connecting to " + device.getName());
+            showToast("Connecting to " + device.getName());
+        }
+
+        @Override
+        public void onDeviceConnected(@androidx.annotation.NonNull BluetoothDevice device) {
+            Log.i(TAG, "Connected to " + device.getName());
+            showToast("Connected to " + device.getName());
+
+        }
+
+        @Override
+        public void onDeviceDisconnecting(@androidx.annotation.NonNull BluetoothDevice device) {
+            Log.i(TAG, "Disconnecting from " + device.getName());
+            showToast("Disconnecting from " + device.getName());
+
+        }
+
+        @Override
+        public void onDeviceDisconnected(@androidx.annotation.NonNull BluetoothDevice device) {
+            Log.i(TAG, "Disconnected from " + device.getName());
+            showToast("Disconnected to " + device.getName());
+
+        }
+
+        @Override
+        public void onLinkLossOccurred(@androidx.annotation.NonNull BluetoothDevice device) {
+
+        }
+
+        @Override
+        public void onServicesDiscovered(@androidx.annotation.NonNull BluetoothDevice device, boolean optionalServicesFound) {
+            Log.i(TAG, "Services Discovered from " + device.getName());
+            showToast("Services Discovered from " + device.getName());
+
+        }
+
+        @Override
+        public void onDeviceReady(@androidx.annotation.NonNull BluetoothDevice device) {
+
+        }
+
+        @Override
+        public void onBondingRequired(@androidx.annotation.NonNull BluetoothDevice device) {
+
+        }
+
+        @Override
+        public void onBonded(@androidx.annotation.NonNull BluetoothDevice device) {
+
+        }
+
+        @Override
+        public void onBondingFailed(@androidx.annotation.NonNull BluetoothDevice device) {
+
+        }
+
+        @Override
+        public void onError(@androidx.annotation.NonNull BluetoothDevice device, @androidx.annotation.NonNull String message, int errorCode) {
+            Log.i(TAG, "Error from " + device.getName() + " - " + message);
+            showToast("Error from " + device.getName() + " - " + message);
+
+        }
+
+        @Override
+        public void onDeviceNotSupported(@androidx.annotation.NonNull BluetoothDevice device) {
+
+        }
+    };
 
     @Override
     protected void onStart() {
         super.onStart();
+
         _eventBus.register(this);
     }
 
@@ -131,7 +244,7 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(this, LoginActivity.class));
             finish();
         }
-        if (floatingMenu.isOpened()){
+        if (floatingMenu.isOpened()) {
             floatingMenu.close(true);
         }
         checkLastPatientAndUpdateTabTitle();
@@ -293,13 +406,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onSendMeasurements(final SendMeasurementsEvent e){
+    public void onSendMeasurements(final SendMeasurementsEvent e) {
 
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    private void postEvent(){
+    private void postEvent() {
         EventBus.getDefault().post(new SendMeasurementsEvent());
     }
-
 }
