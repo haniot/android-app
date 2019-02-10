@@ -7,12 +7,11 @@ import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import br.edu.uepb.nutes.haniot.service.ManagerDevices.Callback.ManagerCallback;
 import no.nordicsemi.android.ble.BleManager;
 import no.nordicsemi.android.ble.callback.DataReceivedCallback;
 import no.nordicsemi.android.ble.data.Data;
 
-public class BluetoohManager extends BleManager<ManagerCallback> {
+public abstract class BluetoohManager extends BleManager<ManagerCallback> {
     protected final String TAG = "ManagerDevices";
     protected BluetoothGattCharacteristic mCharacteristic;
 
@@ -22,9 +21,9 @@ public class BluetoohManager extends BleManager<ManagerCallback> {
 
 
     public void connectDevice(BluetoothDevice device) {
-        Log.i("BluetoohManager", "Called connect");
+        Log.i(TAG, "Called connect");
         super.connect(device)
-                .retry(3, 100)
+                .retry(10, 100)
                 .useAutoConnect(true)
                 .enqueue();
     }
@@ -109,28 +108,29 @@ public class BluetoohManager extends BleManager<ManagerCallback> {
 
         @Override
         public void onDataReceived(@NonNull BluetoothDevice device, @NonNull Data data) {
-            Log.i("gatt", "onDataReceived");
+            Log.i(TAG, "onDataReceived()");
             mCallbacks.measurementReceiver(device, data);
         }
     };
 
-    protected void initialize() {
-
+    public void disconnectDevice() {
+        disconnect();
     }
 
-    protected void setCharacteristicWrite(BluetoothGatt gatt) {
+    protected abstract void initialize();
 
-    }
+    protected abstract void setCharacteristicWrite(BluetoothGatt gatt);
 
     /**
      * BluetoothGatt callbacks object.
      */
     private boolean mSupported;
+
     private final BleManagerGattCallback mGattCallback = new BleManagerGattCallback() {
 
         @Override
         protected void initialize() {
-            Log.i("gattService", "iniatialize()");
+            Log.i(TAG, "iniatialize()");
             initialize();
 
             //readCharacteristic(mLedCharacteristic).with(mLedCallback).enqueue();
@@ -141,11 +141,11 @@ public class BluetoohManager extends BleManager<ManagerCallback> {
 
         @Override
         public boolean isRequiredServiceSupported(@NonNull final BluetoothGatt gatt) {
-            Log.i("gattService", "isSupported");
+            Log.i(TAG, "isSupported");
             setCharacteristicWrite(gatt);
             boolean writeRequest = false;
             if (mCharacteristic != null) {
-                Log.i("gattService", "Não nulo");
+                Log.i(TAG, "Characteristic check");
 
                 final int rxProperties = mCharacteristic.getProperties();
                 writeRequest = (rxProperties & BluetoothGattCharacteristic.PROPERTY_WRITE) > 0;

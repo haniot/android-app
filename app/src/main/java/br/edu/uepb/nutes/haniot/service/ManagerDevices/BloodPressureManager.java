@@ -13,8 +13,8 @@ import java.util.Calendar;
 import java.util.UUID;
 
 import androidx.annotation.NonNull;
+import br.edu.uepb.nutes.haniot.model.Measurement;
 import br.edu.uepb.nutes.haniot.model.MeasurementType;
-import br.edu.uepb.nutes.haniot.service.ManagerDevices.Callback.ManagerCallback;
 import br.edu.uepb.nutes.haniot.utils.GattAttributes;
 import no.nordicsemi.android.ble.data.Data;
 
@@ -29,14 +29,14 @@ public class BloodPressureManager extends BluetoohManager {
     protected void setCharacteristicWrite(BluetoothGatt gatt) {
         final BluetoothGattService service = gatt.getService(UUID.fromString(GattAttributes.SERVICE_BLOOD_PRESSURE));
         if (service != null) {
-            Log.i("gattService", "Não nulo");
+            Log.i(TAG, "Service Check");
             mCharacteristic = service.getCharacteristic(UUID.fromString(GattAttributes.CHARACTERISTIC_BLOOD_PRESSURE_MEASUREMENT));
         }
     }
 
     @Override
     protected void initialize() {
-        Log.i("gattService", "iniatialize()");
+        Log.i(TAG, "iniatialize()");
         setIndicationCallback(mCharacteristic).with(dataReceivedCallback);
         enableIndications(mCharacteristic).enqueue();
     }
@@ -80,6 +80,8 @@ public class BloodPressureManager extends BluetoohManager {
             Intent intent = new Intent("Measurement");
             intent.putExtra("Device", MeasurementType.BLOOD_PRESSURE_SYSTOLIC);
             intent.putExtra("Value", value);
+            //Measurement measurement = new Measurement();
+
             EventBus.getDefault().post(intent);
         }
 
@@ -136,16 +138,19 @@ public class BloodPressureManager extends BluetoohManager {
 
         @Override
         public void onBondingRequired(@androidx.annotation.NonNull BluetoothDevice device) {
+            Log.i(TAG, "on bonding requerid in " + device.getName());
 
         }
 
         @Override
         public void onBonded(@androidx.annotation.NonNull BluetoothDevice device) {
+            Log.i(TAG, "on bonded in " + device.getName());
 
         }
 
         @Override
         public void onBondingFailed(@androidx.annotation.NonNull BluetoothDevice device) {
+            Log.i(TAG, "on bonding failed in " + device.getName());
 
         }
 

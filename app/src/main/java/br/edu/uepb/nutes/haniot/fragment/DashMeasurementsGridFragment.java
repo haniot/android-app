@@ -1,6 +1,7 @@
 package br.edu.uepb.nutes.haniot.fragment;
 
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -48,10 +49,14 @@ import br.edu.uepb.nutes.haniot.devices.ScaleActivity;
 import br.edu.uepb.nutes.haniot.devices.ThermometerActivity;
 import br.edu.uepb.nutes.haniot.devices.hdp.BloodPressureHDPActivity;
 import br.edu.uepb.nutes.haniot.model.DateChangedEvent;
+import br.edu.uepb.nutes.haniot.model.Device;
+import br.edu.uepb.nutes.haniot.model.DeviceType;
 import br.edu.uepb.nutes.haniot.model.ItemGrid;
 import br.edu.uepb.nutes.haniot.model.ItemGridType;
+import br.edu.uepb.nutes.haniot.model.Measurement;
 import br.edu.uepb.nutes.haniot.model.MeasurementType;
 import br.edu.uepb.nutes.haniot.model.SendMeasurementsEvent;
+import br.edu.uepb.nutes.haniot.model.dao.DeviceDAO;
 import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.BloodPressureManager;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.GlucoseManager;
@@ -98,6 +103,8 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
 
     private Session session;
 
+    List<Device> devices;
+
     @BindView(R.id.gridMeasurement)
     RecyclerView gridMeasurement;
 
@@ -118,6 +125,7 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
         PreferenceManager.setDefaultValues(
                 getActivity(), R.xml.pref_manage_measurements, false);
         this.preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        devices = DeviceDAO.getInstance(getContext()).list(session.getIdLogged());
 //        Ajeitar para primeira vez que abrir o app;
         this.measurementsValues = new DateChangedEvent();
 
@@ -215,7 +223,13 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void update(Intent intent) {
+    public void receiverMeasurement(Measurement measurement) {
+
+        //measurement.getTypeId();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void updateStatus(Intent intent) {
         if (intent.getIntExtra("Device", -1) != -1) {
             ItemGrid itemGrid = null;
             switch (intent.getIntExtra("Device", 0)) {
@@ -250,6 +264,7 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
                     //itemGrid.setLoading(false);
                     //itemGrid.setStatus(true);
                 } else if (action.equals("Disconnected")) {
+
                     //Em breve
                     //itemGrid.setLoading(false);
                     //itemGrid.setStatus(false);
@@ -260,6 +275,7 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
             }
         }
     }
+
 
     private void initRecyclerView() {
         mAdapter = new GridDashAdapter(mContext);
@@ -397,6 +413,15 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
         }
     }
 
+    public BluetoothDevice getDevice(int measurementType) {
+        for (Device device : devices) {
+            if (device.getTypeId() == measurementType) return BluetoothAdapter
+                    .getDefaultAdapter()
+                    .getRemoteDevice(device.getAddress());
+        }
+        return null;
+    }
+
     public void updateGrid() {
 
         //Pega os dados que foram selecionados nas preferencias
@@ -430,30 +455,36 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
             if (bloodGlucose) {
                 buttonList.add(this.igGlucose);
                 glucoseManager = new GlucoseManager(getContext());
-                glucoseManager.connectDevice(BluetoothAdapter
-                        .getDefaultAdapter()
-                        .getRemoteDevice("00:60:19:60:68:62"));
+                BluetoothDevice bluetoothDevice = getDevice(DeviceType.GLUCOMETER);
+                if (bluetoothDevice != null)
+                    glucoseManager.connectDevice(bluetoothDevice);
             }
             if (bloodPressure) buttonList.add(this.igPressure);
             if (temperature) buttonList.add(this.igTemperature);
             if (weight) {
                 buttonList.add(this.igWeight);
                 scaleManager = new ScaleManager(getContext());
-                scaleManager.connectDevice(BluetoothAdapter
-                        .getDefaultAdapter()
-                        .getRemoteDevice("D4:36:39:91:75:71"));
+             //   scaleManager.connectDevice(BluetoothAdapter
+                    //    .getDefaultAdapter()
+                       // .getRemoteDevice("D4:36:39:91:75:71"));
+                BluetoothDevice bluetoothDevice = getDevice(DeviceType.BODY_COMPOSITION);
+                if (bluetoothDevice != null)
+                    scaleManager.connectDevice(bluetoothDevice);
             }
             if (sleep) buttonList.add(this.igSleep);
             if (heartRate) {
                 buttonList.add(this.igHearRate);
                 heartRateManager = new HeartRateManager(getContext());
-                heartRateManager.connectDevice(BluetoothAdapter
-                        .getDefaultAdapter()
-                        .getRemoteDevice("E9:50:60:1F:31:D2"));
+               // heartRateManager.connectDevice(BluetoothAdapter
+               //         .getDefaultAdapter()
+                 //       .getRemoteDevice("E9:50:60:1F:31:D2"));
+                BluetoothDevice bluetoothDevice = getDevice(DeviceType.HEART_RATE);
+                if (bluetoothDevice != null)
+                    heartRateManager.connectDevice(bluetoothDevice);
             }
             if (anthropometric) buttonList.add(this.igAnthropometric);
 
-//            if the list is not empty, call updateItemsOfGrid to update the items
+//            if the list is not empty, call updateItemsOfGrid to updateStatus the items
         } else if (buttonList != null) {
 
             updateItemsOfGrid(activity, igActivity);

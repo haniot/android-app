@@ -14,7 +14,6 @@ import java.util.UUID;
 
 import androidx.annotation.NonNull;
 import br.edu.uepb.nutes.haniot.model.MeasurementType;
-import br.edu.uepb.nutes.haniot.service.ManagerDevices.Callback.ManagerCallback;
 import br.edu.uepb.nutes.haniot.utils.GattAttributes;
 import no.nordicsemi.android.ble.data.Data;
 
