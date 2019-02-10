@@ -1,4 +1,4 @@
-package br.edu.uepb.nutes.haniot.activity;
+package br.edu.uepb.nutes.haniot.service.ManagerDevices.Callback;
 
 import android.bluetooth.BluetoothDevice;
 

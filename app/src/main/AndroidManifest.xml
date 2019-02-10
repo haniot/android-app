@@ -105,17 +105,6 @@
         <service
             android:name=".service.BluetoothLeService"
             android:enabled="true" />
-        <service
-            android:name="com.signove.health.service.HealthService"
-            android:enabled="true"
-            android:exported="true"
-            android:permission="android.permission.BLUETOOTH"
-            android:stopWithTask="false">
-            <intent-filter>
-                <action android:name="com.signove.health.service.HealthService" />
-            </intent-filter>
-        </service>
-        <service android:name="com.signove.health.service.BluetoothHDPService" />
         <service android:name=".service.FCMService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

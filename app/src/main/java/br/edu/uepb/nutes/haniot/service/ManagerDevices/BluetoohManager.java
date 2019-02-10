@@ -1,31 +1,28 @@
-package br.edu.uepb.nutes.haniot.activity;
+package br.edu.uepb.nutes.haniot.service.ManagerDevices;
 
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
-import android.bluetooth.BluetoothGattService;
 import android.content.Context;
 import android.util.Log;
 
-import java.util.UUID;
-
 import androidx.annotation.NonNull;
-import br.edu.uepb.nutes.haniot.utils.GattAttributes;
+import br.edu.uepb.nutes.haniot.service.ManagerDevices.Callback.ManagerCallback;
 import no.nordicsemi.android.ble.BleManager;
 import no.nordicsemi.android.ble.callback.DataReceivedCallback;
 import no.nordicsemi.android.ble.data.Data;
 
-public class Manager extends BleManager<ManagerCallback> {
-    private final String TAG = "ManagerDevices";
-    private BluetoothGattCharacteristic mTemperatureCharacteristic;
+public class BluetoohManager extends BleManager<ManagerCallback> {
+    protected final String TAG = "ManagerDevices";
+    protected BluetoothGattCharacteristic mCharacteristic;
 
-    public Manager(@NonNull Context context) {
+    public BluetoohManager(@NonNull Context context) {
         super(context);
     }
 
 
     public void connectDevice(BluetoothDevice device) {
-        Log.i("Manager", "Called connect");
+        Log.i("BluetoohManager", "Called connect");
         super.connect(device)
                 .retry(3, 100)
                 .useAutoConnect(true)
@@ -38,7 +35,6 @@ public class Manager extends BleManager<ManagerCallback> {
         return mGattCallback;
     }
 
-    public final static UUID LBS_UUID_SERVICE = UUID.fromString(GattAttributes.CHARACTERISTIC_TEMPERATURE_MEASUREMENT);
 //    private final DevicesCallback mLedCallback = new DevicesCallback() {
 //        @Override
 //        public void onDeviceConnecting(@android.support.annotation.NonNull BluetoothDevice device) {
@@ -114,10 +110,18 @@ public class Manager extends BleManager<ManagerCallback> {
         @Override
         public void onDataReceived(@NonNull BluetoothDevice device, @NonNull Data data) {
             Log.i("gatt", "onDataReceived");
-
             mCallbacks.measurementReceiver(device, data);
         }
     };
+
+    protected void initialize() {
+
+    }
+
+    protected void setCharacteristicWrite(BluetoothGatt gatt) {
+
+    }
+
     /**
      * BluetoothGatt callbacks object.
      */
@@ -126,10 +130,8 @@ public class Manager extends BleManager<ManagerCallback> {
 
         @Override
         protected void initialize() {
-
             Log.i("gattService", "iniatialize()");
-            setIndicationCallback(mTemperatureCharacteristic).with(dataReceivedCallback);
-            enableIndications(mTemperatureCharacteristic).enqueue();
+            initialize();
 
             //readCharacteristic(mLedCharacteristic).with(mLedCallback).enqueue();
             // readCharacteristic(mButtonCharacteristic).with(mButtonCallback).enqueue();
@@ -140,27 +142,22 @@ public class Manager extends BleManager<ManagerCallback> {
         @Override
         public boolean isRequiredServiceSupported(@NonNull final BluetoothGatt gatt) {
             Log.i("gattService", "isSupported");
-            final BluetoothGattService service = gatt.getService(UUID.fromString(GattAttributes.SERVICE_HEALTH_THERMOMETER));
-            if (service != null) {
-                Log.i("gattService", "Não nulo");
-                mTemperatureCharacteristic = service.getCharacteristic(UUID.fromString(GattAttributes.CHARACTERISTIC_TEMPERATURE_MEASUREMENT));
-            }
-
+            setCharacteristicWrite(gatt);
             boolean writeRequest = false;
-            if (mTemperatureCharacteristic != null) {
+            if (mCharacteristic != null) {
                 Log.i("gattService", "Não nulo");
 
-                final int rxProperties = mTemperatureCharacteristic.getProperties();
+                final int rxProperties = mCharacteristic.getProperties();
                 writeRequest = (rxProperties & BluetoothGattCharacteristic.PROPERTY_WRITE) > 0;
             }
 
-            mSupported = mTemperatureCharacteristic != null && writeRequest;
+            mSupported = mCharacteristic != null && writeRequest;
             return true;
         }
 
         @Override
         protected void onDeviceDisconnected() {
-            mTemperatureCharacteristic = null;
+            mCharacteristic = null;
         }
     };
 
@@ -180,5 +177,6 @@ public class Manager extends BleManager<ManagerCallback> {
 //        writeCharacteristic(mLedCharacteristic, on ? BlinkyLED.turnOn() : BlinkyLED.turnOff())
 //                .with(mLedCallback).enqueue();
 //    }
+
 
 }

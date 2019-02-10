@@ -1,5 +1,6 @@
 package br.edu.uepb.nutes.haniot.fragment;
 
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -49,12 +50,17 @@ import br.edu.uepb.nutes.haniot.devices.hdp.BloodPressureHDPActivity;
 import br.edu.uepb.nutes.haniot.model.DateChangedEvent;
 import br.edu.uepb.nutes.haniot.model.ItemGrid;
 import br.edu.uepb.nutes.haniot.model.ItemGridType;
+import br.edu.uepb.nutes.haniot.model.MeasurementType;
 import br.edu.uepb.nutes.haniot.model.SendMeasurementsEvent;
 import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
+import br.edu.uepb.nutes.haniot.service.ManagerDevices.BloodPressureManager;
+import br.edu.uepb.nutes.haniot.service.ManagerDevices.GlucoseManager;
+import br.edu.uepb.nutes.haniot.service.ManagerDevices.HeartRateManager;
+import br.edu.uepb.nutes.haniot.service.ManagerDevices.ScaleManager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class DashMeasurementsGridFragment extends Fragment implements OnRecyclerViewListener<ItemGrid>{
+public class DashMeasurementsGridFragment extends Fragment implements OnRecyclerViewListener<ItemGrid> {
 
     private ItemGrid igActivity;
     private ItemGrid igGlucose;
@@ -64,6 +70,11 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
     private ItemGrid igSleep;
     private ItemGrid igHearRate;
     private ItemGrid igAnthropometric;
+
+    private ScaleManager scaleManager;
+    private HeartRateManager heartRateManager;
+    private GlucoseManager glucoseManager;
+    private BloodPressureManager bloodPressureManager;
 
     private List<ItemGrid> buttonList = new ArrayList<>();
     private Context mContext;
@@ -203,6 +214,53 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
         updateGrid();
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void update(Intent intent) {
+        if (intent.getIntExtra("Device", -1) != -1) {
+            ItemGrid itemGrid = null;
+            switch (intent.getIntExtra("Device", 0)) {
+                case MeasurementType
+                        .HEART_RATE:
+                    itemGrid = igHearRate;
+                    break;
+                case MeasurementType
+                        .BODY_FAT:
+                    itemGrid = igWeight;
+                    break;
+                case MeasurementType
+                        .BLOOD_PRESSURE_SYSTOLIC:
+                    itemGrid = igPressure;
+                    break;
+                case MeasurementType
+                        .BLOOD_GLUCOSE:
+                    itemGrid = igGlucose;
+                    break;
+                case MeasurementType
+                        .TEMPERATURE:
+                    itemGrid = igTemperature;
+                    break;
+            }
+            String action = intent.getAction();
+            if (itemGrid != null) {
+                if (action.equals("Connecting")) {
+                    //Em breve
+                    //itemGrid.setLoading(true);
+                } else if (action.equals("Connected")) {
+                    //Em breve
+                    //itemGrid.setLoading(false);
+                    //itemGrid.setStatus(true);
+                } else if (action.equals("Disconnected")) {
+                    //Em breve
+                    //itemGrid.setLoading(false);
+                    //itemGrid.setStatus(false);
+                } else if (action.equals("Measurement")) {
+                    float value = intent.getFloatExtra("value", 0);
+                    itemGrid.setMeasurementValue(String.valueOf(value));
+                }
+            }
+        }
+    }
+
     private void initRecyclerView() {
         mAdapter = new GridDashAdapter(mContext);
         mAdapter.setHasStableIds(true);
@@ -217,7 +275,7 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
         if (deviceTypeTag.equals("tablet")) {
             gridMeasurement.setLayoutManager(new GridLayoutManager(mContext,
                     calculateNoOfColumns(mContext)));
-        }else{
+        } else {
             gridMeasurement.setLayoutManager(new LinearLayoutManager(getContext()));
         }
         gridMeasurement.setItemAnimator(new DefaultItemAnimator());
@@ -230,7 +288,9 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
                 ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
 
             @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) { }
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+            }
+
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder,
                                   RecyclerView.ViewHolder target) {
@@ -240,12 +300,13 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
                 mAdapter.notifyItemMoved(viewHolder.getAdapterPosition(), target.getAdapterPosition());
                 return true;
             }
+
             @Override
             public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
                 if (deviceTypeTag.equals("tablet")) {
                     return makeFlag(ItemTouchHelper.ACTION_STATE_DRAG,
                             ItemTouchHelper.DOWN | ItemTouchHelper.UP | ItemTouchHelper.START | ItemTouchHelper.END);
-                }else{
+                } else {
                     return makeFlag(ItemTouchHelper.ACTION_STATE_DRAG,
                             ItemTouchHelper.UP | ItemTouchHelper.DOWN);
                 }
@@ -268,12 +329,12 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
         float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
         int noOfColumns = 1;
 
-        if (this.deviceTypeTag.equals("tablet")){
+        if (this.deviceTypeTag.equals("tablet")) {
 
 //            260 is the size for tablets
             noOfColumns = (int) (dpWidth / 260);
 
-        }else{
+        } else {
 
 //            160 is the size for smartphones
             noOfColumns = (int) (dpWidth / 160);
@@ -288,14 +349,14 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
         updateGrid();
     }
 
-    private void updateItemsOfGrid(boolean status, ItemGrid item){
-        if (status){
-            if (!buttonList.contains(item)){
+    private void updateItemsOfGrid(boolean status, ItemGrid item) {
+        if (status) {
+            if (!buttonList.contains(item)) {
                 buttonList.add(item);
             }
             int index = buttonList.lastIndexOf(item);
 
-            switch (item.getType()){
+            switch (item.getType()) {
                 case ItemGridType.ACTIVITY:
                     buttonList.get(index).setMeasurementValue(this.measurementsValues.getActivity());
                     break;
@@ -326,10 +387,10 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
                             .getHeartRate());
                     break;
             }
-        }else{
+        } else {
 
             int index = buttonList.lastIndexOf(item);
-            if (index >= 0){
+            if (index >= 0) {
                 buttonList.remove(index);
             }
 
@@ -361,30 +422,48 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
                 .getString(R.string.key_heart_rate));
 
         Boolean anthropometric = getPreferenceBoolean(getResources()
-            .getString(R.string.key_anthropometric));
+                .getString(R.string.key_anthropometric));
 
 //        If the list is empty, just add the items
-        if (buttonList != null && buttonList.isEmpty()){
+        if (buttonList != null && buttonList.isEmpty()) {
             if (activity) buttonList.add(this.igActivity);
-            if (bloodGlucose) buttonList.add(this.igGlucose);
+            if (bloodGlucose) {
+                buttonList.add(this.igGlucose);
+                glucoseManager = new GlucoseManager(getContext());
+                glucoseManager.connectDevice(BluetoothAdapter
+                        .getDefaultAdapter()
+                        .getRemoteDevice("00:60:19:60:68:62"));
+            }
             if (bloodPressure) buttonList.add(this.igPressure);
             if (temperature) buttonList.add(this.igTemperature);
-            if (weight) buttonList.add(this.igWeight);
+            if (weight) {
+                buttonList.add(this.igWeight);
+                scaleManager = new ScaleManager(getContext());
+                scaleManager.connectDevice(BluetoothAdapter
+                        .getDefaultAdapter()
+                        .getRemoteDevice("D4:36:39:91:75:71"));
+            }
             if (sleep) buttonList.add(this.igSleep);
-            if (heartRate) buttonList.add(this.igHearRate);
+            if (heartRate) {
+                buttonList.add(this.igHearRate);
+                heartRateManager = new HeartRateManager(getContext());
+                heartRateManager.connectDevice(BluetoothAdapter
+                        .getDefaultAdapter()
+                        .getRemoteDevice("E9:50:60:1F:31:D2"));
+            }
             if (anthropometric) buttonList.add(this.igAnthropometric);
 
 //            if the list is not empty, call updateItemsOfGrid to update the items
-        }else if (buttonList != null){
+        } else if (buttonList != null) {
 
-            updateItemsOfGrid(activity,igActivity);
-            updateItemsOfGrid(bloodGlucose,igGlucose);
-            updateItemsOfGrid(bloodPressure,igPressure);
-            updateItemsOfGrid(temperature,igTemperature);
-            updateItemsOfGrid(weight,igWeight);
-            updateItemsOfGrid(sleep,igSleep);
-            updateItemsOfGrid(heartRate,igHearRate);
-            updateItemsOfGrid(anthropometric,igAnthropometric);
+            updateItemsOfGrid(activity, igActivity);
+            updateItemsOfGrid(bloodGlucose, igGlucose);
+            updateItemsOfGrid(bloodPressure, igPressure);
+            updateItemsOfGrid(temperature, igTemperature);
+            updateItemsOfGrid(weight, igWeight);
+            updateItemsOfGrid(sleep, igSleep);
+            updateItemsOfGrid(heartRate, igHearRate);
+            updateItemsOfGrid(anthropometric, igAnthropometric);
         }
 
         mAdapter.clearItems();
@@ -427,7 +506,7 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
 
             Intent intent = new Intent(getContext(), HeartRateActivity.class);
             intent.putExtra(HeartRateActivity.EXTRA_DEVICE_ADDRESS, "E9:50:60:1F:31:D2");
-            intent.putExtra(HeartRateActivity.EXTRA_DEVICE_INFORMATIONS, new String[]{"POLAR","H10"});
+            intent.putExtra(HeartRateActivity.EXTRA_DEVICE_INFORMATIONS, new String[]{"POLAR", "H10"});
             startActivity(intent);
 
         } else {
@@ -439,41 +518,41 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
         throw new UnsupportedOperationException();
     }
 
-//    Methods to manually add measurement button
+    //    Methods to manually add measurement button
     @Override
     public void onMenuContextClick(View v, ItemGrid item) {
 
         int type = item.getType();
         Intent it = new Intent(getContext(), ManuallyAddMeasurement.class);
-        switch (type){
+        switch (type) {
 
             case ItemGridType.ACTIVITY:
-                it.putExtra(getResources().getString(R.string.measurementType),ItemGridType.ACTIVITY);
+                it.putExtra(getResources().getString(R.string.measurementType), ItemGridType.ACTIVITY);
                 startActivity(it);
                 break;
 
             case ItemGridType.BLOOD_GLUCOSE:
-                it.putExtra(getResources().getString(R.string.measurementType),ItemGridType.BLOOD_GLUCOSE);
+                it.putExtra(getResources().getString(R.string.measurementType), ItemGridType.BLOOD_GLUCOSE);
                 startActivity(it);
                 break;
 
             case ItemGridType.BLOOD_PRESSURE:
-                it.putExtra(getResources().getString(R.string.measurementType),ItemGridType.BLOOD_PRESSURE);
+                it.putExtra(getResources().getString(R.string.measurementType), ItemGridType.BLOOD_PRESSURE);
                 startActivity(it);
                 break;
 
             case ItemGridType.TEMPERATURE:
-                it.putExtra(getResources().getString(R.string.measurementType),ItemGridType.TEMPERATURE);
+                it.putExtra(getResources().getString(R.string.measurementType), ItemGridType.TEMPERATURE);
                 startActivity(it);
                 break;
 
             case ItemGridType.WEIGHT:
-                it.putExtra(getResources().getString(R.string.measurementType),ItemGridType.WEIGHT);
+                it.putExtra(getResources().getString(R.string.measurementType), ItemGridType.WEIGHT);
                 startActivity(it);
                 break;
 
             case ItemGridType.SLEEP:
-                it.putExtra(getResources().getString(R.string.measurementType),ItemGridType.SLEEP);
+                it.putExtra(getResources().getString(R.string.measurementType), ItemGridType.SLEEP);
                 startActivity(it);
                 break;
 
@@ -507,14 +586,14 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void updateDate(DateChangedEvent e){
+    public void updateDate(DateChangedEvent e) {
         this.measurementsValues = e;
 
         updateGrid();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void sendMeasurement(SendMeasurementsEvent e){
+    public void sendMeasurement(SendMeasurementsEvent e) {
         openConfirmMeasurementsDialog();
         Log.d("TESTE", "Evento recebido no grid, Heart: " + this.measurementsValues.getHeartRate());
     }
@@ -526,7 +605,7 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
         SynchronizationServer.getInstance(getContext()).run();
     }
 
-    private void openConfirmMeasurementsDialog(){
+    private void openConfirmMeasurementsDialog() {
 
         LayoutInflater li = LayoutInflater.from(getContext());
         View view = li.inflate(R.layout.confirm_measurements_layout, null);
@@ -536,11 +615,11 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
         Character t = patientName.charAt(0);
         patientName = patientName.substring(1);
         String first = t.toString().toUpperCase();
-        patientName = first+patientName;
+        patientName = first + patientName;
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle(getResources().getString(R.string.save_measurements_of)+" "
-                +patientName);
+        builder.setTitle(getResources().getString(R.string.save_measurements_of) + " "
+                + patientName);
 
         builder.setView(view);
 
