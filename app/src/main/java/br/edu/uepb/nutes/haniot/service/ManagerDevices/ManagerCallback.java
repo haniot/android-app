@@ -1,8 +1,8 @@
 package br.edu.uepb.nutes.haniot.service.ManagerDevices;
 
 import android.bluetooth.BluetoothDevice;
+import android.support.annotation.NonNull;
 
-import androidx.annotation.NonNull;
 import no.nordicsemi.android.ble.data.Data;
 
 public interface ManagerCallback extends no.nordicsemi.android.ble.BleManagerCallbacks {

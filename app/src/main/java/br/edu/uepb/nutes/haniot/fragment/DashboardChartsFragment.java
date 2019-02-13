@@ -64,8 +64,8 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
     AppCompatImageButton btnArrowLeft;
     @BindView(R.id.buttonArrowRight)
     AppCompatButton btnArrowRight;
-    @BindView(R.id.stepsProgressBar)
-    CircularProgressBar stepsProgressBar;
+   // @BindView(R.id.lightProgress)
+   // CircularProgressBar//stepsProgressBar;
     @BindView(R.id.lightProgress1)
     CircularProgressBar caloriesProgressBar;
     @BindView(R.id.lightProgress2)
@@ -194,7 +194,7 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
         btnArrowLeft.setOnClickListener(this);
         btnArrowRight.setOnClickListener(this);
         textDate.setOnClickListener(this);
-        stepsProgressBar.setOnClickListener(this);
+       //stepsProgressBar.setOnClickListener(this);
         caloriesProgressBar.setOnClickListener(this);
         distanceProgressBar.setOnClickListener(this);
 
@@ -216,7 +216,7 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
             btnArrowLeft.setEnabled(true);
             btnArrowLeft.setBackground(getResources().getDrawable(R.mipmap.ic_arrow_left));
             textDate.setEnabled(true);
-            stepsProgressBar.setEnabled(true);
+           ////stepsProgressBar.setEnabled(true);
             caloriesProgressBar.setEnabled(true);
             distanceProgressBar.setEnabled(true);
             try {
@@ -235,7 +235,7 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            stepsProgressBar.setEnabled(false);
+            //stepsProgressBar.setEnabled(false);
             caloriesProgressBar.setEnabled(false);
             distanceProgressBar.setEnabled(false);
         }
@@ -513,7 +513,7 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
             lightProgressBar2Goal = Integer.parseInt(goalDistance);
 
         //Seta o progresso máximo
-        stepsProgressBar.setProgressMax(highProgressBarGoal);
+       //stepsProgressBar.setProgressMax(highProgressBarGoal);
         caloriesProgressBar.setProgressMax(lightProgressBar1Goal);
         distanceProgressBar.setProgressMax(lightProgressBar2Goal);
 
@@ -529,8 +529,8 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
             @Override
             public void onAnimationEnd(Animation animation) {
                 if (steps && !animSteps) {
-                    stepsProgressBar.setBackground(
-                            getResources().getDrawable(R.drawable.ic_green_flag));
+                   //stepsProgressBar.setBackground(
+                   //         getResources().getDrawable(R.drawable.ic_green_flag));
                     animSteps = !animSteps;
                 }
                 if (calories && !animCalories) {
@@ -551,7 +551,7 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
 
         new Handler(getContext().getMainLooper()).postDelayed(() -> {
             if (steps && !animSteps)
-                stepsProgressBar.startAnimation(alphaAnimation);
+               //stepsProgressBar.startAnimation(alphaAnimation);
             if (calories && !animCalories)
                 caloriesProgressBar.startAnimation(alphaAnimation);
             if (distance && !animDistance)
@@ -568,7 +568,7 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
         int calories = (int) numberOfCalories;
         int dist = (int) distance;
 
-        stepsProgressBar.setProgressWithAnimation(steps, 2500);
+       //stepsProgressBar.setProgressWithAnimation(steps, 2500);
 
         boolean stepsAchieved = false;
         boolean caloriesAchieved = false;
@@ -577,7 +577,7 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
         if (steps >= this.highProgressBarGoal){
             stepsAchieved = true;
         }else{
-            stepsProgressBar.setBackground(getResources().getDrawable(R.drawable.ic_feet));
+           //stepsProgressBar.setBackground(getResources().getDrawable(R.drawable.ic_feet));
         }
 
         caloriesProgressBar.setProgressWithAnimation(calories, 3000);
@@ -690,7 +690,7 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
                             if (value!= null && !value.equals("")) {
                                 float maxProgress = Float.parseFloat(value);
                                 this.highProgressBarGoal = Integer.parseInt(value);
-                                stepsProgressBar.setProgressMax(maxProgress);
+                               //stepsProgressBar.setProgressMax(maxProgress);
                                 if (maxProgress > this.steps){
                                     this.animSteps = false;
                                 }
@@ -762,10 +762,10 @@ public class DashboardChartsFragment extends Fragment implements View.OnClickLis
                 animTextDate();
                 break;
 
-            case R.id.stepsProgressBar:
-                stepsProgressBar.startAnimation(scale);
-                createGoalsDialog(DIALOG_TYPE_STEPS);
-                break;
+            //case R.id.lightProgress:
+               //stepsProgressBar.startAnimation(scale);
+            //    createGoalsDialog(DIALOG_TYPE_STEPS);
+             //   break;
 
             case R.id.lightProgress1:
                 caloriesProgressBar.startAnimation(scale);

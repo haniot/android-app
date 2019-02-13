@@ -162,7 +162,8 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
         mRecordHeartRateButton.setOnClickListener(this);
         mAddMeasurementButton.setOnClickListener(this);
 
-        mDeviceAddress = getIntent().getStringExtra(EXTRA_DEVICE_ADDRESS);
+        mDeviceAddress = "E9:50:60:1F:31:D2";
+                //= getIntent().getStringExtra(EXTRA_DEVICE_ADDRESS);
         deviceInformations = getIntent().getStringArrayExtra(EXTRA_DEVICE_INFORMATIONS);
 
         Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
@@ -563,7 +564,7 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
         public void onServiceConnected(ComponentName componentName, IBinder service) {
             mBluetoothLeService = ((BluetoothLeService.LocalBinder) service).getService();
             if (!mBluetoothLeService.initialize()) {
-                Log.e(TAG, "Unable to initialize Bluetooth");
+                Log.e(TAG, "Unable to initializeCharacteristic Bluetooth");
                 finish();
             }
             // Conecta-se automaticamente ao dispositivo após a inicialização bem-sucedida.

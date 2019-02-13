@@ -550,7 +550,7 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
         public void onServiceConnected(ComponentName componentName, IBinder service) {
             mBluetoothLeService = ((BluetoothLeService.LocalBinder) service).getService();
             if (!mBluetoothLeService.initialize()) {
-                Log.e(TAG, "Unable to initialize Bluetooth");
+                Log.e(TAG, "Unable to initializeCharacteristic Bluetooth");
                 finish();
             }
             // Tenta conecta-se automaticamente ao dispositivo após a inicialização bem-sucedida do service.

@@ -211,7 +211,7 @@ public class BluetoothLeService extends Service {
         if (mBluetoothManager == null) {
             mBluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
             if (mBluetoothManager == null) {
-                Log.e(LOG, "Unable to initialize BluetoothManager.");
+                Log.e(LOG, "Unable to initializeCharacteristic BluetoothManager.");
                 return false;
             }
         }

@@ -13,12 +13,12 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -42,8 +42,6 @@ import br.edu.uepb.nutes.haniot.server.Server;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static br.edu.uepb.nutes.haniot.R.drawable.ic_action_warning;
 
 public class DeviceManagerActivity extends AppCompatActivity {
     private final String LOG_TAG = getClass().getSimpleName();
@@ -156,6 +154,11 @@ public class DeviceManagerActivity extends AppCompatActivity {
             @Override
             public void onError(JSONObject result) {
                 displayLoading(false);
+
+                runOnUiThread(() -> {
+                    Toast.makeText(DeviceManagerActivity.this, R.string.error_500,
+                            Toast.LENGTH_LONG).show();
+                });
             }
 
             @Override

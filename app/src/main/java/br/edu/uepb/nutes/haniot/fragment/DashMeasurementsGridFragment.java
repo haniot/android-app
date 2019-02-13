@@ -3,10 +3,8 @@ package br.edu.uepb.nutes.haniot.fragment;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -15,13 +13,11 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -38,7 +34,6 @@ import java.util.Date;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.activity.MainActivity;
 import br.edu.uepb.nutes.haniot.activity.ManuallyAddMeasurement;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.GridDashAdapter;
@@ -50,7 +45,6 @@ import br.edu.uepb.nutes.haniot.devices.ThermometerActivity;
 import br.edu.uepb.nutes.haniot.devices.hdp.BloodPressureHDPActivity;
 import br.edu.uepb.nutes.haniot.model.DateChangedEvent;
 import br.edu.uepb.nutes.haniot.model.Device;
-import br.edu.uepb.nutes.haniot.model.DeviceType;
 import br.edu.uepb.nutes.haniot.model.ItemGrid;
 import br.edu.uepb.nutes.haniot.model.ItemGridType;
 import br.edu.uepb.nutes.haniot.model.Measurement;
@@ -62,11 +56,16 @@ import br.edu.uepb.nutes.haniot.service.ManagerDevices.BloodPressureManager;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.GlucoseManager;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.HeartRateManager;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.ScaleManager;
+import br.edu.uepb.nutes.haniot.service.ManagerDevices.ThermometerManager;
+import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.BloodPressureDataCallback;
+import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.ScaleDataCallback;
+import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.TemperatureDataCallback;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class DashMeasurementsGridFragment extends Fragment implements OnRecyclerViewListener<ItemGrid> {
 
+    private final String TAG = "ManagerDevices";
     private ItemGrid igActivity;
     private ItemGrid igGlucose;
     private ItemGrid igPressure;
@@ -77,6 +76,7 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
     private ItemGrid igAnthropometric;
 
     private ScaleManager scaleManager;
+    private ThermometerManager temperatureManager;
     private HeartRateManager heartRateManager;
     private GlucoseManager glucoseManager;
     private BloodPressureManager bloodPressureManager;
@@ -125,7 +125,6 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
         PreferenceManager.setDefaultValues(
                 getActivity(), R.xml.pref_manage_measurements, false);
         this.preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        devices = DeviceDAO.getInstance(getContext()).list(session.getIdLogged());
 //        Ajeitar para primeira vez que abrir o app;
         this.measurementsValues = new DateChangedEvent();
 
@@ -213,6 +212,8 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        devices = DeviceDAO.getInstance(getContext()).list(session.getIdLogged());
+
     }
 
     private void initComponents() {
@@ -264,13 +265,15 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
                     //itemGrid.setLoading(false);
                     //itemGrid.setStatus(true);
                 } else if (action.equals("Disconnected")) {
-
                     //Em breve
                     //itemGrid.setLoading(false);
                     //itemGrid.setStatus(false);
                 } else if (action.equals("Measurement")) {
-                    float value = intent.getFloatExtra("value", 0);
-                    itemGrid.setMeasurementValue(String.valueOf(value));
+                    float value = intent.getFloatExtra("Value", 0);
+                    Log.i(TAG, "Setting Measurement " + value);
+                    measurementsValues.setTemperature(String.valueOf(value));
+                    //updateItemsOfGrid(true, igWeight);
+                    updateGrid();
                 }
             }
         }
@@ -454,33 +457,41 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
             if (activity) buttonList.add(this.igActivity);
             if (bloodGlucose) {
                 buttonList.add(this.igGlucose);
-                glucoseManager = new GlucoseManager(getContext());
-                BluetoothDevice bluetoothDevice = getDevice(DeviceType.GLUCOMETER);
-                if (bluetoothDevice != null)
-                    glucoseManager.connectDevice(bluetoothDevice);
+//                glucoseManager = new GlucoseManager(getContext());
+//                BluetoothDevice bluetoothDevice = getDevice(DeviceType.GLUCOMETER);
+//                if (bluetoothDevice != null)
+//                    glucoseManager.connectDevice(bluetoothDevice);
             }
             if (bloodPressure) buttonList.add(this.igPressure);
-            if (temperature) buttonList.add(this.igTemperature);
+            if (temperature) {
+                buttonList.add(this.igTemperature);
+                temperatureManager = new ThermometerManager(getContext());
+                temperatureManager.connectDevice(BluetoothAdapter
+                        .getDefaultAdapter()
+                        .getRemoteDevice("1C:87:74:01:73:10"));
+            }
             if (weight) {
                 buttonList.add(this.igWeight);
                 scaleManager = new ScaleManager(getContext());
-             //   scaleManager.connectDevice(BluetoothAdapter
-                    //    .getDefaultAdapter()
-                       // .getRemoteDevice("D4:36:39:91:75:71"));
-                BluetoothDevice bluetoothDevice = getDevice(DeviceType.BODY_COMPOSITION);
-                if (bluetoothDevice != null)
-                    scaleManager.connectDevice(bluetoothDevice);
+                scaleManager.setSimpleCallback(scaleDataCallback);
+                scaleManager.connectDevice(BluetoothAdapter
+                        .getDefaultAdapter()
+                        .getRemoteDevice("D4:36:39:91:75:71"));
+//                BluetoothDevice bluetoothDevice = getDevice(DeviceType.BODY_COMPOSITION);
+//                if (bluetoothDevice != null)
+                // scaleManager.connectDevice(bluetoothDevice);
             }
             if (sleep) buttonList.add(this.igSleep);
             if (heartRate) {
                 buttonList.add(this.igHearRate);
                 heartRateManager = new HeartRateManager(getContext());
-               // heartRateManager.connectDevice(BluetoothAdapter
-               //         .getDefaultAdapter()
-                 //       .getRemoteDevice("E9:50:60:1F:31:D2"));
-                BluetoothDevice bluetoothDevice = getDevice(DeviceType.HEART_RATE);
-                if (bluetoothDevice != null)
-                    heartRateManager.connectDevice(bluetoothDevice);
+                heartRateManager.connectDevice(BluetoothAdapter
+                        .getDefaultAdapter()
+                        .getRemoteDevice("A8:96:75:B0:28:D2"));
+//                        .getRemoteDevice("E9:50:60:1F:31:D2"));
+//                BluetoothDevice bluetoothDevice = getDevice(DeviceType.HEART_RATE);
+//                if (bluetoothDevice != null)
+//                    heartRateManager.connectDevice(bluetoothDevice);
             }
             if (anthropometric) buttonList.add(this.igAnthropometric);
 
@@ -500,6 +511,59 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
         mAdapter.clearItems();
         mAdapter.addItems(buttonList);
     }
+
+    BloodPressureDataCallback bloodPressureDataCallback = new BloodPressureDataCallback() {
+        @Override
+        public void onConnected() {
+
+        }
+
+        @Override
+        public void onDisconnected() {
+
+        }
+
+        @Override
+        public void onMeasurementReceiver(Measurement measurementBloodPressure) {
+            igPressure.setMeasurementValue(String.valueOf(measurementBloodPressure.getValue()));
+            mAdapter.notifyDataSetChanged();
+        }
+    };
+
+    TemperatureDataCallback temperatureDataCallback = new TemperatureDataCallback() {
+        @Override
+        public void onConnected(BluetoothDevice device) {
+
+        }
+
+        @Override
+        public void onDisconnected(BluetoothDevice device) {
+
+        }
+
+        @Override
+        public void onMeasurementReceiver(Measurement measurementTemperature) {
+
+        }
+    };
+
+    ScaleDataCallback scaleDataCallback = new ScaleDataCallback() {
+        @Override
+        public void onConnected() {
+
+        }
+
+        @Override
+        public void onDisconnected() {
+
+        }
+
+        @Override
+        public void onMeasurementReceiver(Measurement measurementScale) {
+            igWeight.setMeasurementValue(String.format( "%.2f", measurementScale.getValue()));
+            mAdapter.notifyDataSetChanged();
+        }
+    };
 
     //    Method used to get the preferences of sharedpreference screen
     public Boolean getPreferenceBoolean(String key) {

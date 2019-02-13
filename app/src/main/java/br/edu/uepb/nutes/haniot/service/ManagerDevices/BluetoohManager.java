@@ -4,9 +4,9 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
 import no.nordicsemi.android.ble.BleManager;
 import no.nordicsemi.android.ble.callback.DataReceivedCallback;
 import no.nordicsemi.android.ble.data.Data;
@@ -24,7 +24,7 @@ public abstract class BluetoohManager extends BleManager<ManagerCallback> {
         Log.i(TAG, "Called connect");
         super.connect(device)
                 .retry(10, 100)
-                .useAutoConnect(true)
+                .useAutoConnect(false)
                 .enqueue();
     }
 
@@ -117,7 +117,7 @@ public abstract class BluetoohManager extends BleManager<ManagerCallback> {
         disconnect();
     }
 
-    protected abstract void initialize();
+    protected abstract void initializeCharacteristic();
 
     protected abstract void setCharacteristicWrite(BluetoothGatt gatt);
 
@@ -131,7 +131,7 @@ public abstract class BluetoohManager extends BleManager<ManagerCallback> {
         @Override
         protected void initialize() {
             Log.i(TAG, "iniatialize()");
-            initialize();
+            initializeCharacteristic();
 
             //readCharacteristic(mLedCharacteristic).with(mLedCallback).enqueue();
             // readCharacteristic(mButtonCharacteristic).with(mButtonCallback).enqueue();
@@ -157,7 +157,9 @@ public abstract class BluetoohManager extends BleManager<ManagerCallback> {
 
         @Override
         protected void onDeviceDisconnected() {
-            mCharacteristic = null;
+            Log.i(TAG, "onDeviceDisconnected()");
+//            connect(getBluetoothDevice());
+            //mCharacteristic = null;
         }
     };
 

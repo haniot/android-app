@@ -48,8 +48,8 @@ public class Server {
     /**
      * If you set a url it will be used as default and not entered by the user in the application settings
      */
-    /* HEROKU */ private final String URI_DEFAULT = "http://192.168.50.38:80/api/v1/";
-//    /* PC HOME */ private final String URI_DEFAULT = "https://192.168.31.113/api/v1";
+    /* PC  private */ final String URI_DEFAULT = "http://192.168.50.38:80/api/v1/";
+//    /*  HEROKU */ private final String URI_DEFAULT = "https://haniot-api.herokuapp.com/api/v1";
 //      /* PC WIFI */ private final String URI_DEFAULT = "http://192.168.50.175:8000/api/v1";
 
     private final String MEDIA_TYPE = "application/json; charset=utf-8";
@@ -161,6 +161,7 @@ public class Server {
     public void put(String path, String json, Callback serverCallback) {
         put(path, json, getHeadersDefault(), serverCallback);
     }
+
     /**
      * Action PATCH.
      *
@@ -268,7 +269,7 @@ public class Server {
                         EventBus.getDefault().post("unauthorized");
                     } else if (!jsonString.isEmpty()) {
                         Object json = new JSONTokener(jsonString).nextValue();
-                        if(json instanceof JSONObject)
+                        if (json instanceof JSONObject)
                             result = new JSONObject(jsonString);
                     }
 

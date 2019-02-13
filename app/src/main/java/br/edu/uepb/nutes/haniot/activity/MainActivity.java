@@ -102,9 +102,9 @@ public class MainActivity extends AppCompatActivity {
         btnSendMeasurement.setOnClickListener(c -> {
             postEvent();
         });
-        BluetoohManager bluetoohManager = new BluetoohManager(this);
-        BluetoothDevice device = BluetoothAdapter.getDefaultAdapter().getRemoteDevice("1C:87:74:01:73:10");
-        bluetoohManager.connectDevice(device);
+       // BluetoohManager bluetoohManager = new BluetoohManager(this);
+       // BluetoothDevice device = BluetoothAdapter.getDefaultAdapter().getRemoteDevice("1C:87:74:01:73:10");
+        //bluetoohManager.connectDevice(device);
     }
 
     @Override

@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattService;
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import org.greenrobot.eventbus.EventBus;
@@ -12,8 +13,6 @@ import org.greenrobot.eventbus.EventBus;
 import java.util.Calendar;
 import java.util.UUID;
 
-import androidx.annotation.NonNull;
-import br.edu.uepb.nutes.haniot.model.Measurement;
 import br.edu.uepb.nutes.haniot.model.MeasurementType;
 import br.edu.uepb.nutes.haniot.utils.GattAttributes;
 import no.nordicsemi.android.ble.data.Data;
@@ -35,7 +34,7 @@ public class BloodPressureManager extends BluetoohManager {
     }
 
     @Override
-    protected void initialize() {
+    protected void initializeCharacteristic() {
         Log.i(TAG, "iniatialize()");
         setIndicationCallback(mCharacteristic).with(dataReceivedCallback);
         enableIndications(mCharacteristic).enqueue();
@@ -43,7 +42,7 @@ public class BloodPressureManager extends BluetoohManager {
 
     ManagerCallback bleManagerCallbacks = new ManagerCallback() {
         @Override
-        public void measurementReceiver(@androidx.annotation.NonNull BluetoothDevice device, @androidx.annotation.NonNull Data data) {
+        public void measurementReceiver(@NonNull BluetoothDevice device, @NonNull Data data) {
             //Parse
 
 //            if (data.size() < 5) {
@@ -86,7 +85,7 @@ public class BloodPressureManager extends BluetoohManager {
         }
 
         @Override
-        public void onDeviceConnecting(@androidx.annotation.NonNull BluetoothDevice device) {
+        public void onDeviceConnecting(@NonNull BluetoothDevice device) {
             Log.i(TAG, "Connecting to " + device.getName());
             //showToast("Connecting to " + device.getName());
             Intent intent = new Intent("Connecting");
@@ -95,7 +94,7 @@ public class BloodPressureManager extends BluetoohManager {
         }
 
         @Override
-        public void onDeviceConnected(@androidx.annotation.NonNull BluetoothDevice device) {
+        public void onDeviceConnected(@NonNull BluetoothDevice device) {
             Log.i(TAG, "Connected to " + device.getName());
             //showToast("Connected to " + device.getName());
             Intent intent = new Intent("Connected");
@@ -104,14 +103,14 @@ public class BloodPressureManager extends BluetoohManager {
         }
 
         @Override
-        public void onDeviceDisconnecting(@androidx.annotation.NonNull BluetoothDevice device) {
+        public void onDeviceDisconnecting(@NonNull BluetoothDevice device) {
             Log.i(TAG, "Disconnecting from " + device.getName());
             //showToast("Disconnecting from " + device.getName());
 
         }
 
         @Override
-        public void onDeviceDisconnected(@androidx.annotation.NonNull BluetoothDevice device) {
+        public void onDeviceDisconnected(@NonNull BluetoothDevice device) {
             Log.i(TAG, "Disconnected from " + device.getName());
             //showToast("Disconnected to " + device.getName());
             Intent intent = new Intent("Disconnected");
@@ -120,49 +119,49 @@ public class BloodPressureManager extends BluetoohManager {
         }
 
         @Override
-        public void onLinkLossOccurred(@androidx.annotation.NonNull BluetoothDevice device) {
+        public void onLinkLossOccurred(@NonNull BluetoothDevice device) {
 
         }
 
         @Override
-        public void onServicesDiscovered(@androidx.annotation.NonNull BluetoothDevice device, boolean optionalServicesFound) {
+        public void onServicesDiscovered(@NonNull BluetoothDevice device, boolean optionalServicesFound) {
             Log.i(TAG, "Services Discovered from " + device.getName());
             //showToast("Services Discovered from " + device.getName());
 
         }
 
         @Override
-        public void onDeviceReady(@androidx.annotation.NonNull BluetoothDevice device) {
+        public void onDeviceReady(@NonNull BluetoothDevice device) {
 
         }
 
         @Override
-        public void onBondingRequired(@androidx.annotation.NonNull BluetoothDevice device) {
+        public void onBondingRequired(@NonNull BluetoothDevice device) {
             Log.i(TAG, "on bonding requerid in " + device.getName());
 
         }
 
         @Override
-        public void onBonded(@androidx.annotation.NonNull BluetoothDevice device) {
+        public void onBonded(@NonNull BluetoothDevice device) {
             Log.i(TAG, "on bonded in " + device.getName());
 
         }
 
         @Override
-        public void onBondingFailed(@androidx.annotation.NonNull BluetoothDevice device) {
+        public void onBondingFailed(@NonNull BluetoothDevice device) {
             Log.i(TAG, "on bonding failed in " + device.getName());
 
         }
 
         @Override
-        public void onError(@androidx.annotation.NonNull BluetoothDevice device, @androidx.annotation.NonNull String message, int errorCode) {
+        public void onError(@NonNull BluetoothDevice device, @NonNull String message, int errorCode) {
             Log.i(TAG, "Error from " + device.getName() + " - " + message);
             //showToast("Error from " + device.getName() + " - " + message);
 
         }
 
         @Override
-        public void onDeviceNotSupported(@androidx.annotation.NonNull BluetoothDevice device) {
+        public void onDeviceNotSupported(@NonNull BluetoothDevice device) {
 
         }
     };

@@ -72,7 +72,7 @@ public class DeviceInforActivity extends AppCompatActivity implements Expandable
         public void onServiceConnected(ComponentName componentName, IBinder service) {
             mBluetoothLeService = ((BluetoothLeService.LocalBinder) service).getService();
             if (!mBluetoothLeService.initialize()) {
-                Log.e(LOG, "Unable to initialize Bluetooth");
+                Log.e(LOG, "Unable to initializeCharacteristic Bluetooth");
                 finish();
             }
             // Conecta-se automaticamente ao dispositivo após a inicialização bem-sucedida.

@@ -2,7 +2,6 @@ package br.edu.uepb.nutes.haniot.service.ManagerDevices;
 
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
-import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 import android.content.Context;
 import android.content.Intent;
@@ -18,46 +17,27 @@ import br.edu.uepb.nutes.haniot.model.MeasurementType;
 import br.edu.uepb.nutes.haniot.utils.GattAttributes;
 import no.nordicsemi.android.ble.data.Data;
 
-public class GlucoseManager extends BluetoohManager {
+public class ThermometerManager extends BluetoohManager {
 
-    BluetoothGattCharacteristic characteristicRecordAccess;
-    BluetoothGattCharacteristic characteristicWrite;
-    byte[] data = new byte[2];
-
-    public GlucoseManager(@NonNull Context context) {
+    public ThermometerManager(@NonNull Context context) {
         super(context);
         setGattCallbacks(bleManagerCallbacks);
     }
 
     @Override
     protected void setCharacteristicWrite(BluetoothGatt gatt) {
-        final BluetoothGattService service = gatt.getService(UUID.fromString(GattAttributes.SERVICE_GLUCOSE));
+        final BluetoothGattService service = gatt.getService(UUID.fromString(GattAttributes.SERVICE_HEALTH_THERMOMETER));
         if (service != null) {
-
-            characteristicWrite = service.getCharacteristic(UUID.fromString(GattAttributes.CHARACTERISTIC_GLUSOSE_RECORD_ACCESS_CONTROL));
-            byte[] data = new byte[2];
-            data[0] = 0x01; // Report Stored records
-            data[1] = 0x06; // last record
-
-
-            if (characteristicRecordAccess == null) {
-                characteristicRecordAccess = service.getCharacteristic(UUID.fromString(GattAttributes.CHARACTERISTIC_GLUSOSE_RECORD_ACCESS_CONTROL)); // read
-            }
-
-            Log.i("gattService", "Não nulo");
-            mCharacteristic = service.getCharacteristic(UUID.fromString(GattAttributes.CHARACTERISTIC_GLUSOSE_MEASUREMENT));
+            Log.i(TAG, "Não nulo");
+            mCharacteristic = service.getCharacteristic(UUID.fromString(GattAttributes.CHARACTERISTIC_TEMPERATURE_MEASUREMENT));
         }
     }
 
     @Override
     protected void initializeCharacteristic() {
-        Log.i("gattService", "iniatialize()");
-        //setNotificationCallback(characteristicRecordAccess).with(dataReceivedCallback);
-        writeCharacteristic(characteristicWrite, data);
-        readCharacteristic(characteristicRecordAccess).with(dataReceivedCallback);
-        setIndicationCallback(characteristicRecordAccess).with(dataReceivedCallback);
-        enableIndications(mCharacteristic).enqueue();
-        //setIndicationCallback(mCharacteristic).with(dataReceivedCallback);
+        Log.i(TAG, "iniatialize()");
+        setNotificationCallback(mCharacteristic).with(dataReceivedCallback);
+        enableNotifications(mCharacteristic).enqueue();
     }
 
     ManagerCallback bleManagerCallbacks = new ManagerCallback() {
@@ -97,9 +77,10 @@ public class GlucoseManager extends BluetoohManager {
 
             float value = 0.0f;
             Intent intent = new Intent("Measurement");
-            intent.putExtra("Device", MeasurementType.BLOOD_GLUCOSE);
+            intent.putExtra("Device", MeasurementType.TEMPERATURE);
             intent.putExtra("Value", value);
             EventBus.getDefault().post(intent);
+//            listaneassva.on()
         }
 
         @Override
@@ -107,7 +88,7 @@ public class GlucoseManager extends BluetoohManager {
             Log.i(TAG, "Connecting to " + device.getName());
             //showToast("Connecting to " + device.getName());
             Intent intent = new Intent("Connecting");
-            intent.putExtra("device", MeasurementType.BLOOD_GLUCOSE);
+            intent.putExtra("device", MeasurementType.TEMPERATURE);
             EventBus.getDefault().post(intent);
         }
 
@@ -116,7 +97,7 @@ public class GlucoseManager extends BluetoohManager {
             Log.i(TAG, "Connected to " + device.getName());
             //showToast("Connected to " + device.getName());
             Intent intent = new Intent("Connected");
-            intent.putExtra("device", MeasurementType.BLOOD_GLUCOSE);
+            intent.putExtra("device", MeasurementType.TEMPERATURE);
             EventBus.getDefault().post(intent);
         }
 
@@ -132,7 +113,7 @@ public class GlucoseManager extends BluetoohManager {
             Log.i(TAG, "Disconnected from " + device.getName());
             //showToast("Disconnected to " + device.getName());
             Intent intent = new Intent("Disconnected");
-            intent.putExtra("device", MeasurementType.BLOOD_GLUCOSE);
+            intent.putExtra("device", MeasurementType.TEMPERATURE);
             EventBus.getDefault().post(intent);
         }
 
