@@ -15,11 +15,13 @@ import java.util.Calendar;
 import java.util.UUID;
 
 import br.edu.uepb.nutes.haniot.model.MeasurementType;
+import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.GlucoseDataCallback;
 import br.edu.uepb.nutes.haniot.utils.GattAttributes;
 import no.nordicsemi.android.ble.data.Data;
 
 public class GlucoseManager extends BluetoohManager {
 
+    GlucoseDataCallback glucoseDataCallback;
     BluetoothGattCharacteristic characteristicRecordAccess;
     BluetoothGattCharacteristic characteristicWrite;
     byte[] data = new byte[2];
@@ -27,6 +29,10 @@ public class GlucoseManager extends BluetoohManager {
     public GlucoseManager(@NonNull Context context) {
         super(context);
         setGattCallbacks(bleManagerCallbacks);
+    }
+
+    public void setSimpleCallback(GlucoseDataCallback simpleCallback) {
+        this.glucoseDataCallback = simpleCallback;
     }
 
     @Override
@@ -64,6 +70,7 @@ public class GlucoseManager extends BluetoohManager {
         @Override
         public void measurementReceiver(@NonNull BluetoothDevice device, @NonNull Data data) {
             //Parse
+            Log.i("MEDI", "Gluc yes");
 
 //            if (data.size() < 5) {
 //                onInvalidDataReceived(device, data);

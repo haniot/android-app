@@ -14,14 +14,21 @@ import java.util.Calendar;
 import java.util.UUID;
 
 import br.edu.uepb.nutes.haniot.model.MeasurementType;
+import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.HeartRateDataCallback;
 import br.edu.uepb.nutes.haniot.utils.GattAttributes;
 import no.nordicsemi.android.ble.data.Data;
 
 public class HeartRateManager extends BluetoohManager {
 
+    HeartRateDataCallback heartRateDataCallback;
+
     public HeartRateManager(@NonNull Context context) {
         super(context);
         setGattCallbacks(bleManagerCallbacks);
+    }
+
+    public void setSimpleCallback(HeartRateDataCallback simpleCallback) {
+        this.heartRateDataCallback = simpleCallback;
     }
 
     @Override
@@ -44,7 +51,7 @@ public class HeartRateManager extends BluetoohManager {
         @Override
         public void measurementReceiver(@NonNull BluetoothDevice device, @NonNull Data data) {
             //Parse
-
+            Log.i("MEDI", "heart yes");
 //            if (data.size() < 5) {
 //                onInvalidDataReceived(device, data);
 //                return;
@@ -80,6 +87,8 @@ public class HeartRateManager extends BluetoohManager {
             intent.putExtra("Device", MeasurementType.HEART_RATE);
             intent.putExtra("Value", value);
             EventBus.getDefault().post(intent);
+
+//            heartRateDataCallback.onMeasurementReceiver();
 //            listaneassva.on()
         }
 

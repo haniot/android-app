@@ -14,14 +14,22 @@ import java.util.Calendar;
 import java.util.UUID;
 
 import br.edu.uepb.nutes.haniot.model.MeasurementType;
+import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.BloodPressureDataCallback;
 import br.edu.uepb.nutes.haniot.utils.GattAttributes;
 import no.nordicsemi.android.ble.data.Data;
 
 public class BloodPressureManager extends BluetoohManager {
 
+    BloodPressureDataCallback bloodPressureDataCallback;
+
     public BloodPressureManager(@NonNull Context context) {
         super(context);
         setGattCallbacks(bleManagerCallbacks);
+    }
+
+
+    public void setSimpleCallback(BloodPressureDataCallback simpleCallback) {
+        this.bloodPressureDataCallback = simpleCallback;
     }
 
     @Override
@@ -44,6 +52,7 @@ public class BloodPressureManager extends BluetoohManager {
         @Override
         public void measurementReceiver(@NonNull BluetoothDevice device, @NonNull Data data) {
             //Parse
+            Log.i("MEDI", "Blood yes");
 
 //            if (data.size() < 5) {
 //                onInvalidDataReceived(device, data);

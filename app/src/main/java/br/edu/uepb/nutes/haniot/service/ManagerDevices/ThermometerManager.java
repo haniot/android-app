@@ -14,14 +14,22 @@ import java.util.Calendar;
 import java.util.UUID;
 
 import br.edu.uepb.nutes.haniot.model.MeasurementType;
+import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.TemperatureDataCallback;
 import br.edu.uepb.nutes.haniot.utils.GattAttributes;
 import no.nordicsemi.android.ble.data.Data;
 
 public class ThermometerManager extends BluetoohManager {
 
+    TemperatureDataCallback temperatureDataCallback;
+
     public ThermometerManager(@NonNull Context context) {
         super(context);
         setGattCallbacks(bleManagerCallbacks);
+    }
+
+
+    public void setSimpleCallback(TemperatureDataCallback temperatureDataCallback) {
+        this.temperatureDataCallback = temperatureDataCallback;
     }
 
     @Override
@@ -161,4 +169,5 @@ public class ThermometerManager extends BluetoohManager {
 
         }
     };
+
 }
