@@ -18,7 +18,6 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -154,18 +153,13 @@ public class DeviceManagerActivity extends AppCompatActivity {
             @Override
             public void onError(JSONObject result) {
                 displayLoading(false);
-
-                runOnUiThread(() -> {
-                    Toast.makeText(DeviceManagerActivity.this, R.string.error_500,
-                            Toast.LENGTH_LONG).show();
-                });
             }
 
             @Override
             public void onSuccess(JSONObject result) {
                 List<Device> devicesRegistered = jsonToListDevice(result);
                 populateDevicesRegistered(newList(devicesRegistered));
-                populateDevicesAvailable(mDeviceDAO.list(session.getUserLogged().getId()));
+                populateDevicesAvailable(mDeviceDAO.list(session.getUserLogged().getIdDb()));
                 displayLoading(false);
             }
         });

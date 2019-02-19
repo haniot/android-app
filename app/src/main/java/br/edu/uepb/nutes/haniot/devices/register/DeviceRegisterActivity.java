@@ -422,5 +422,3 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         }
     }
 }
-
-

@@ -2,7 +2,6 @@ package br.edu.uepb.nutes.haniot.model.dao;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import java.util.List;
 
@@ -53,7 +52,7 @@ public class UserDAO {
      * @return User
      */
     public User get(@NonNull long id) {
-        return userBox.query().equal(User_.id, id).build().findFirst();
+        return userBox.query().equal(User_.idDb, id).build().findFirst();
     }
 
     public List<User> listAll() {
@@ -84,7 +83,7 @@ public class UserDAO {
          */
         if (userUp == null) return false;
 
-        user.setId(userUp.getId());
+        user.setIdDb(userUp.getIdDb());
         if (user.get_id() == null) user.set_id(userUp.get_id());
 
         return save(user); // update
@@ -97,6 +96,6 @@ public class UserDAO {
      * @return boolean
      */
     public boolean remove(@NonNull long id) {
-        return userBox.query().equal(User_.id, id).build().remove() > 0;
+        return userBox.query().equal(User_.idDb, id).build().remove() > 0;
     }
 }
