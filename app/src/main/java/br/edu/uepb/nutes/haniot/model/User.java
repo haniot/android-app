@@ -21,21 +21,22 @@ import io.objectbox.relation.ToMany;
 @Entity
 public class User {
     @Id
-    private long id;
+    @Expose(serialize = false)
+    private long idDb;
 
     @Index
     @SerializedName("id")
-    @Expose private String _id; // _id in server remote (UUID)
+    private String _id; // _id in server remote (UUID)
 
     @SerializedName("name")
-    @Expose private String name;
+    private String name;
 
     @Index
     @SerializedName("email")
-    @Expose private String email;
+    private String email;
 
     @SerializedName("token")
-    @Expose private String token; // provide by the server
+    private String token; // provide by the server
 
     /**
      * RELATIONS
@@ -62,12 +63,12 @@ public class User {
         this.groupId = groupId;
     }
 
-    public long getId() {
-        return id;
+    public long getIdDb() {
+        return idDb;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setIdDb(long id) {
+        this.idDb = id;
     }
 
     public String get_id() {
@@ -132,7 +133,7 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "id=" + id +
+                "id=" + idDb +
                 ", _id='" + _id + '\'' +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +

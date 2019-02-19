@@ -104,7 +104,6 @@ public class TokenExpirationService extends Service {
      * @return {@link boolean}
      */
     private boolean isExpired(long expiresAt) {
-        Log.i(TAG, "Token expires in: " + expiresAt);
         long timeActual = System.currentTimeMillis();
         return timeActual >= expiresAt;
     }
@@ -116,7 +115,6 @@ public class TokenExpirationService extends Service {
         Log.i(TAG, "Initializing Token Monitor");
         Session session = new Session(this);
         JWT jwt = new JWT(session.getTokenLogged());
-        Log.i(TAG, "token: " + session.getTokenLogged());
         long expiresAt = jwt.getExpiresAt().getTime();
         setScheduler(jwt.getExpiresAt());
     }

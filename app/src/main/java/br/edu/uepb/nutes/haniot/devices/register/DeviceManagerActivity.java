@@ -13,7 +13,6 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -42,8 +41,6 @@ import br.edu.uepb.nutes.haniot.server.Server;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static br.edu.uepb.nutes.haniot.R.drawable.ic_action_warning;
 
 public class DeviceManagerActivity extends AppCompatActivity {
     private final String LOG_TAG = getClass().getSimpleName();
@@ -162,7 +159,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
             public void onSuccess(JSONObject result) {
                 List<Device> devicesRegistered = jsonToListDevice(result);
                 populateDevicesRegistered(newList(devicesRegistered));
-                populateDevicesAvailable(mDeviceDAO.list(session.getUserLogged().getId()));
+                populateDevicesAvailable(mDeviceDAO.list(session.getUserLogged().getIdDb()));
                 displayLoading(false);
             }
         });

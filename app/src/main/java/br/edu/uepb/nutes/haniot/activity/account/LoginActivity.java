@@ -179,13 +179,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                         User u = userDAO.get(user.get_id());
                         if (u != null) {
-                            user.setId(u.getId());
+                            user.setIdDb(u.getIdDb());
                             userDAO.update(user);
                         } else {
                             userDAO.save(user);
                             user = userDAO.get(user.get_id());
                         }
-                        session.setLogged(user.getId(), token);
+                        session.setLogged(user.getIdDb(), token);
 
                         // FCM TOKEN
                         String fcmToken = FirebaseInstanceId.getInstance().getToken();
@@ -214,8 +214,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
      * @param fcmToken
      */
     private void sendFcmToken(String fcmToken) {
-        Log.d(TAG, "FCM_TOKEN:" + fcmToken);
-
         String path = "users/".concat(session.get_idLogged()).concat("/fcm");
         String jsonToken = "{\"fcmToken\":\"".concat(fcmToken).concat("\"}");
 
@@ -401,9 +399,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void onSuccess(JSONObject result) {
                 List<Device> devicesRegistered = jsonToListDevice(result);
-                mDeviceDAO.removeAll(session.getUserLogged().getId());
+                mDeviceDAO.removeAll(session.getUserLogged().getIdDb());
                 if (!devicesRegistered.isEmpty()) {
-                    mDeviceDAO.removeAll(session.getUserLogged().getId());
+                    mDeviceDAO.removeAll(session.getUserLogged().getIdDb());
                     for (Device d : devicesRegistered) {
                         d.setUser(session.getUserLogged());
                         mDeviceDAO.save(d);
