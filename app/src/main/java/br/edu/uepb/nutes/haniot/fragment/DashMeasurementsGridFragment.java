@@ -2,6 +2,7 @@ package br.edu.uepb.nutes.haniot.fragment;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGatt;
 import android.bluetooth.le.ScanResult;
 import android.content.Context;
 import android.content.Intent;
@@ -46,6 +47,7 @@ import br.edu.uepb.nutes.haniot.devices.ThermometerActivity;
 import br.edu.uepb.nutes.haniot.devices.hdp.BloodPressureHDPActivity;
 import br.edu.uepb.nutes.haniot.model.DateChangedEvent;
 import br.edu.uepb.nutes.haniot.model.Device;
+import br.edu.uepb.nutes.haniot.model.DeviceType;
 import br.edu.uepb.nutes.haniot.model.ItemGrid;
 import br.edu.uepb.nutes.haniot.model.ItemGridType;
 import br.edu.uepb.nutes.haniot.model.Measurement;
@@ -161,84 +163,11 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
         bloodPressureManager.setSimpleCallback(bloodPressureDataCallback);
 
 
-        deviceDAO = DeviceDAO.getInstance(getContext());
-        SimpleBleScanner.Builder builder = new SimpleBleScanner.Builder();
-//        for (Device device : deviceDAO.list(session.getIdLogged())) {
-//            builder.addFilterAddress(device.getAddress());
-//        }
+//        builder.addFilterAddress(heartRateAddress);
+//        builder.addFilterAddress(scaleAddress);
+//        builder.addFilterAddress(bloodPressureAddress);
+//        builder.addFilterAddress(glucoseAdress);
 
-        builder.addFilterAddress(heartRateAddress);
-        builder.addFilterAddress(scaleAddress);
-        builder.addFilterAddress(bloodPressureAddress);
-        builder.addFilterAddress(glucoseAdress);
-
-        simpleBleScanner = builder.build();
-
-        simpleBleScanner.startScan(new SimpleScanCallback() {
-            @Override
-            public void onScanResult(int i, ScanResult scanResult) {
-                String address = scanResult.getDevice().getAddress();
-
-                Log.w("Scan", scanResult.getDevice().toString());
-//                int type = deviceDAO.get(address, session.getIdLogged()).getTypeId();
-//                switch (type) {
-//                    case DeviceType
-//                            .BLOOD_PRESSURE:
-//                        if (bloodPressureManager.getConnectionState() != BluetoothGatt.STATE_CONNECTED)
-//                            bloodPressureManager.connectDevice(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(address));
-//                        break;
-//                    case DeviceType
-//                            .GLUCOMETER:
-//                        if (glucoseManager.getConnectionState() != BluetoothGatt.STATE_CONNECTED)
-//                            glucoseManager.connectDevice(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(address));
-//                        break;
-//                    case DeviceType
-//                            .BODY_COMPOSITION:
-//                        if (scaleManager.getConnectionState() != BluetoothGatt.STATE_CONNECTED)
-//                            scaleManager.connectDevice(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(address));
-//                        break;
-//                    case DeviceType
-//                            .HEART_RATE:
-//                        if (heartRateManager.getConnectionState() != BluetoothGatt.STATE_CONNECTED)
-//                            heartRateManager.connectDevice(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(address));
-//                        break;
-//                }
-
-
-                switch (address) {
-                    case glucoseAdress:
-                        glucoseManager.connectDevice(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(glucoseAdress));
-                        break;
-                    case heartRateAddress:
-                        heartRateManager.connectDevice(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(heartRateAddress));
-
-                        break;
-                    case scaleAddress:
-                        scaleManager.connectDevice(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(scaleAddress));
-
-                        break;
-                    case bloodPressureAddress:
-                        bloodPressureManager.connectDevice(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(bloodPressureAddress));
-
-                        break;
-                }
-            }
-
-            @Override
-            public void onBatchScanResults(List<ScanResult> list) {
-
-            }
-
-            @Override
-            public void onScanFailed(int i) {
-
-            }
-
-            @Override
-            public void onFinish() {
-
-            }
-        });
 
         bloodPressureManager = new BloodPressureManager(getContext());
         this.igActivity = new ItemGrid();
@@ -319,7 +248,90 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
         ButterKnife.bind(this, view);
         initRecyclerView();
         initComponents();
+        initScanner();
         return view;
+    }
+
+    public void initScanner() {
+        deviceDAO = DeviceDAO.getInstance(getContext());
+        SimpleBleScanner.Builder builder = new SimpleBleScanner.Builder();
+        for (Device device : deviceDAO.list(session.getIdLogged())) {
+            if (!device.getAddress().equals("D4:A7:1B:3B:41:55")) {
+
+                Log.i("Devices", "Salvo: " + device.getName() + " - " + device.getAddress() + " - " + device.getTypeId());
+                builder.addFilterAddress(device.getAddress());
+            }
+        }
+        simpleBleScanner = builder.build();
+
+        simpleBleScanner.startScan(new SimpleScanCallback() {
+            @Override
+            public void onScanResult(int i, ScanResult scanResult) {
+                String address = scanResult.getDevice().getAddress();
+
+                Log.w("Scan", scanResult.getDevice().toString());
+                int type = deviceDAO.get(address, session.getIdLogged()).getTypeId();
+                Log.i("Devices", "Type search: " + type + " - Requerid: " + DeviceType.GLUCOMETER);
+                switch (type) {
+                    case DeviceType
+                            .BLOOD_PRESSURE:
+                        if (bloodPressureManager.getConnectionState() != BluetoothGatt.STATE_CONNECTED)
+                            bloodPressureManager.connectDevice(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(address));
+                        break;
+                    case DeviceType
+                            .GLUCOMETER:
+                        if (glucoseManager.getConnectionState() != BluetoothGatt.STATE_CONNECTED)
+                            glucoseManager.connectDevice(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(address));
+                        break;
+                    case DeviceType
+                            .BODY_COMPOSITION:
+                        if (scaleManager.getConnectionState() != BluetoothGatt.STATE_CONNECTED) {
+                            scaleManager.connectDevice(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(address));
+                            Log.i("Devices", "Connecting Scale...");
+                        }
+                        break;
+                    case DeviceType
+                            .HEART_RATE:
+                        if (heartRateManager.getConnectionState() != BluetoothGatt.STATE_CONNECTED)
+                            heartRateManager.connectDevice(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(address));
+                        break;
+                }
+
+
+//                switch (address) {
+//                    case glucoseAdress:
+//                        glucoseManager.connectDevice(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(glucoseAdress));
+//                        break;
+//                    case heartRateAddress:
+//                        heartRateManager.connectDevice(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(heartRateAddress));
+//
+//                        break;
+//                    case scaleAddress:
+//                        scaleManager.connectDevice(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(scaleAddress));
+//
+//                        break;
+//                    case bloodPressureAddress:
+//                        bloodPressureManager.connectDevice(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(bloodPressureAddress));
+//
+//                        break;
+//                }
+            }
+
+            @Override
+            public void onBatchScanResults(List<ScanResult> list) {
+
+            }
+
+            @Override
+            public void onScanFailed(int i) {
+
+            }
+
+            @Override
+            public void onFinish() {
+
+            }
+        });
     }
 
     @Override
@@ -706,7 +718,8 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
 
         @Override
         public void onMeasurementReceiver(Measurement measurementHeartRate) {
-
+            igHearRate.setMeasurementValue(String.format("%.2f", measurementHeartRate.getValue()));
+            mAdapter.notifyDataSetChanged();
         }
     };
 

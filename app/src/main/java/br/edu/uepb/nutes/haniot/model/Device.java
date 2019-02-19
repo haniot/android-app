@@ -61,9 +61,9 @@ public class Device implements Parcelable {
     }
 
     protected Device(Parcel in) {
-
-        address = in.readString(); id = in.readLong();
+        id = in.readLong();
         _id = in.readString();
+        address = in.readString();
         name = in.readString();
         manufacturer = in.readString();
         modelNumber = in.readString();

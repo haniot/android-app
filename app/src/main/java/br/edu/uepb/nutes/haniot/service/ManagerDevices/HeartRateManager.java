@@ -2,6 +2,7 @@ package br.edu.uepb.nutes.haniot.service.ManagerDevices;
 
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
+import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 import android.content.Context;
 import android.content.Intent;
@@ -9,16 +10,20 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import org.greenrobot.eventbus.EventBus;
+import org.json.JSONObject;
 
 import java.util.Calendar;
 import java.util.UUID;
 
+import br.edu.uepb.nutes.haniot.model.Measurement;
 import br.edu.uepb.nutes.haniot.model.MeasurementType;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.HeartRateDataCallback;
+import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import br.edu.uepb.nutes.haniot.utils.GattAttributes;
 import no.nordicsemi.android.ble.data.Data;
 
 public class HeartRateManager extends BluetoohManager {
+    private static final byte HEART_RATE_VALUE_FORMAT = 0x01; // 1 bit
 
     HeartRateDataCallback heartRateDataCallback;
 
@@ -52,44 +57,32 @@ public class HeartRateManager extends BluetoohManager {
         public void measurementReceiver(@NonNull BluetoothDevice device, @NonNull Data data) {
             //Parse
             Log.i("MEDI", "heart yes");
-//            if (data.size() < 5) {
-//                onInvalidDataReceived(device, data);
-//                return;
-//            }
-
+            JSONObject result = new JSONObject();
             int offset = 0;
-            final int flags = data.getIntValue(Data.FORMAT_UINT8, offset);
-            //   final int unit = (flags & 0x01) == UNIT_C ? UNIT_C : UNIT_F;
-            final boolean timestampPresent = (flags & 0x02) != 0;
-            final boolean temperatureTypePresent = (flags & 0x04) != 0;
-            offset += 1;
+            int heartRateValue = 0;
 
+            final int flags = data.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, offset++);
 
-            final float temperature = data.getFloatValue(Data.FORMAT_FLOAT, 1);
-            offset += 4;
+            /*
+             * false 	Heart Rate Value Format is set to UINT8. Units: beats per minute (bpm)
+             * true 	Heart Rate Value Format is set to UINT16. Units: beats per minute (bpm)
+             */
+            final boolean value16bit = (flags & HEART_RATE_VALUE_FORMAT) > 0;
 
-            Calendar calendar = null;
-//            if (timestampPresent) {
-//                calendar = DateTimeDataCallback.readDateTime(data, offset);
-//                offset += 7;
-//            }
+            // heart rate value is 8 or 16 bit long
+            heartRateValue = data.getIntValue(value16bit ? BluetoothGattCharacteristic.FORMAT_UINT16 :
+                    BluetoothGattCharacteristic.FORMAT_UINT8, offset++); // bits per minute
 
-            Integer type = null;
-            if (temperatureTypePresent) {
-                type = data.getIntValue(Data.FORMAT_UINT8, offset);
-                // offset += 1;
-            }
+            /**
+             * Populating the JSON
+             */
+            Measurement measurement = new Measurement();
+            measurement.setValue(heartRateValue);
+            measurement.setUnit("bpm");
+            measurement.setRegistrationDate(DateUtils.getCurrentDatetime());
 
-            Log.i(TAG, "Received measurent from " + device.getName() + ": " + temperature);
+            heartRateDataCallback.onMeasurementReceiver(measurement);
 
-            float value = 0.0f;
-            Intent intent = new Intent("Measurement");
-            intent.putExtra("Device", MeasurementType.HEART_RATE);
-            intent.putExtra("Value", value);
-            EventBus.getDefault().post(intent);
-
-//            heartRateDataCallback.onMeasurementReceiver();
-//            listaneassva.on()
         }
 
         @Override

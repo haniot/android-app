@@ -7,10 +7,20 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
 import java.util.UUID;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.model.Measurement;
+import br.edu.uepb.nutes.haniot.model.MeasurementType;
+import br.edu.uepb.nutes.haniot.model.User;
+import br.edu.uepb.nutes.haniot.parse.JsonToMeasurementParser;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.ScaleDataCallback;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import br.edu.uepb.nutes.haniot.utils.GattAttributes;
@@ -19,10 +29,13 @@ import no.nordicsemi.android.ble.data.Data;
 public class ScaleManager extends BluetoohManager {
 
     private ScaleDataCallback scaleDataCallback;
+    private DecimalFormat decimalFormat;
 
     public ScaleManager(@NonNull Context context) {
         super(context);
         setGattCallbacks(bleManagerCallbacks);
+        decimalFormat = new DecimalFormat(context.getString(R.string.format_number2), new DecimalFormatSymbols(Locale.US));
+
     }
 
     public void setSimpleCallback(ScaleDataCallback simpleCallback) {
@@ -48,65 +61,64 @@ public class ScaleManager extends BluetoohManager {
     ManagerCallback bleManagerCallbacks = new ManagerCallback() {
         @Override
         public void measurementReceiver(@NonNull BluetoothDevice device, @NonNull Data dataa) {
-            byte[] data = dataa.getValue();
-            if (data.length > 0) {
-                Measurement measurement = new Measurement();
-                /**
-                 * Timestamp current
-                 */
-                measurement.setRegistrationDate(DateUtils.getCurrentDatetime());
-//                result.put("timestamp", DateUtils.getCurrentDatetime());
+            try {
+                final byte[] data = dataa.getValue();
+                JSONObject result = new JSONObject();
+                double bodyMass = 0f;
 
-                /**
-                 * 03: response type
-                 *     01 - unfinished weighing
-                 *     02 - finished weighing
-                 */
-                boolean isFinalized = String.format("%02X", data[3]).equals("02");
-//                result.put("isFinalized", isFinalized);
-
-                /**
-                 * unfinished weighing
-                 * 08-09: weight - BE uint16 times 0.01
-                 */
-                double bodyMass = Integer.valueOf(String.format("%02X", data[8]) + String.format("%02X", data[9]), 16) * 0.01f;
-                measurement.setValue(bodyMass);
-//                result.put("bodyMass", bodyMass);
-                // Body Mass Unit default
-                measurement.setUnit(getContext().getString(R.string.unit_kg));
-                // result.put("bodyMassUnit", "kg");
-
-                // Finalized
-                if (isFinalized) {
-                    Measurement measurementFat = new Measurement();
+                if (data.length > 0) {
                     /**
-                     * finished weighing
-                     * 13-14: weight - BE uint16 times 0.01
+                     * Timestamp current
                      */
-                    bodyMass = Integer.valueOf(String.format("%02X", data[13]) + String.format("%02X", data[14]), 16) * 0.01f;
-                    measurementFat.setValue(bodyMass);
-                    // result.put("bodyMass", bodyMass);
+                    result.put("timestamp", DateUtils.getCurrentDatetime());
+
 
                     /**
-                     * 15-16: resistance - BE uint 16
+                     * 03: response type
+                     *     01 - unfinished weighing
+                     *     02 - finished weighing
                      */
-                    final double resistance = Integer.valueOf(String.format("%02X", data[15]) + String.format("%02X", data[16]), 16);
-//                    result.put("resistance", resistance);
+                    boolean isFinalized = String.format("%02X", data[3]).equals("02");
+                    result.put("isFinalized", isFinalized);
 
                     /**
-                     * Body Fat in percentage
-                     *
-                     * 17-18: - BE uint16 times 0.01
+                     * unfinished weighing
+                     * 08-09: weight - BE uint16 times 0.01
                      */
-                    final double bodyFat = Integer.valueOf(String.format("%02X", data[17]) + String.format("%02X", data[18]), 16) * 0.01f;
-//                    result.put("bodyFat", bodyFat);
-//                    result.put("bodyFatUnit", "%"); // value fixed
+                    bodyMass = Integer.valueOf(String.format("%02X", data[8]) + String.format("%02X", data[9]), 16) * 0.01f;
+                    result.put("bodyMass", bodyMass);
 
-//                    measurement.addMeasurement();
-                    /**
-                     * USER ID
-                     * 09-12: recognized userID - BE uint32
-                     */
+                    // Body Mass Unit default
+                    result.put("bodyMassUnit", "kg");
+
+                    // Finalized
+                    if (isFinalized) {
+                        /**
+                         * finished weighing
+                         * 13-14: weight - BE uint16 times 0.01
+                         */
+                        bodyMass = Integer.valueOf(String.format("%02X", data[13]) + String.format("%02X", data[14]), 16) * 0.01f;
+                        result.put("bodyMass", bodyMass);
+
+                        /**
+                         * 15-16: resistance - BE uint 16
+                         */
+                        final double resistance = Integer.valueOf(String.format("%02X", data[15]) + String.format("%02X", data[16]), 16);
+                        result.put("resistance", resistance);
+
+                        /**
+                         * Body Fat in percentage
+                         *
+                         * 17-18: - BE uint16 times 0.01
+                         */
+                        final double bodyFat = Integer.valueOf(String.format("%02X", data[17]) + String.format("%02X", data[18]), 16) * 0.01f;
+                        result.put("bodyFat", bodyFat);
+                        result.put("bodyFatUnit", "%"); // value fixed
+
+                        /**
+                         * USER ID
+                         * 09-12: recognized userID - BE uint32
+                         */
 //                Integer userID = Integer.valueOf(String.format("%02X", data[9]) +
 //                        String.format("%02X", data[10]) +
 //                        String.format("%02X", data[11]) +
@@ -114,16 +126,49 @@ public class ScaleManager extends BluetoohManager {
 //                );
 //
 //                result.put("userID", userID);
-                }
+                    }
+                    Log.i(TAG, "Received measurent from Scale" + device.getName() + ": " + result.get("bodyMass"));
 
-                Log.i(TAG, "Received measurent from Scale" + device.getName() + ": " + measurement);
+                    //final String bodyMassMeasurement = formatNumber(result.getDouble("bodyMass"));
+                    //inal String bodyMassUnit = result.getString("bodyMassUnit");
 
-                scaleDataCallback.onMeasurementReceiver(measurement);
-            }
+                    //bodyMassTextView.setText(bodyMassMeasurement);
+                    //.setText(bodyMassUnit);
+
+                    //if (isFinalized) {
+                    // showAnimation = false;
+                    Session session = new Session(getContext());
+                    User user = session.getUserLogged();
+
+                    Measurement bodyMassMeasurement = JsonToMeasurementParser.bodyMass(result.toString());
+                    bodyMassMeasurement.setUser(user);
+                    //bodyMass.setDevice(mDevice);
+
+                    Measurement bmi = new Measurement(calcBMI(bodyMassMeasurement.getValue()),
+                            "kg/m2", bodyMassMeasurement.getRegistrationDate(), MeasurementType.BMI);
+                    bmi.setUser(user);
+                    //  bmi.setDevice(mDevice);
+
+                    Measurement bodyFatMeasurement = JsonToMeasurementParser.bodyFat(result.toString());
+                    bodyFatMeasurement.setUser(user);
+                    //  bodyFat.setDevice(mDevice);
+
+                    /**
+                     * Add relationships
+                     */
+                    bodyMassMeasurement.addMeasurement(bmi, bodyFatMeasurement);
+
+
+                    scaleDataCallback.onMeasurementReceiver(bodyMassMeasurement);
+                    //  }
 //            Intent intent = new Intent("Measurement");
 //            intent.putExtra("Device", MeasurementType.BODY_FAT);
 //            intent.putExtra("Value", temperature);
 //            EventBus.getDefault().post(intent);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
 
         @Override
@@ -208,4 +253,29 @@ public class ScaleManager extends BluetoohManager {
 
         }
     };
+
+    /**
+     * Format value for XX.X
+     *
+     * @param value double
+     * @return String
+     */
+    private String formatNumber(double value) {
+        String result = decimalFormat.format(value);
+        return result.equals(".0") ? "00.0" : result;
+    }
+
+    /**
+     * Return value of BMI.
+     * formula: bodyMass(kg)/height(m)^2
+     *
+     * @param bodyMass double
+     * @return double
+     */
+    private double calcBMI(double bodyMass) {
+        //double height = (session.getUserLogged().getHeight()) / 100D;
+        double height = 1.0;
+        return bodyMass / (Math.pow(height, 2));
+    }
+
 }
