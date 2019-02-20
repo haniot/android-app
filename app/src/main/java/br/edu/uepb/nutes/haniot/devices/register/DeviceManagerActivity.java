@@ -1,6 +1,8 @@
 package br.edu.uepb.nutes.haniot.devices.register;
 
 import android.annotation.SuppressLint;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,6 +15,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -26,12 +29,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
+import br.edu.uepb.nutes.haniot.adapter.BluetoothDeviceAdapter;
 import br.edu.uepb.nutes.haniot.adapter.DeviceAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
 import br.edu.uepb.nutes.haniot.model.Device;
@@ -89,6 +94,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
 
     private DeviceDAO mDeviceDAO;
     private Device mDevice;
+    private BluetoothDevice bthDevice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -397,22 +403,19 @@ public class DeviceManagerActivity extends AppCompatActivity {
         //sets the message
         builder.setMessage(getString(R.string.remove_device, device.getName()));
         //define a button how to remove
-        builder.setPositiveButton(R.string.remove, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface arg0, int arg1) {
-                //removes the device from the server database
-                removeDeviceRegister(device);
-            }
+        builder.setPositiveButton(R.string.remove, (arg0, arg1) -> {
+            //removes the device from the server database
+            removeDeviceRegister(device);
         });
         //define a button how to cancel.
-        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface arg0, int arg1) {
-                return;
-            }
+        builder.setNegativeButton(R.string.cancel, (arg0, arg1) -> {
+            return;
         });
         //create the AlertDialog
         alert = builder.create();
         alert.show();
     }
+
 
     private void removeDeviceRegister(Device device) {
         displayLoading(true);
@@ -426,9 +429,19 @@ public class DeviceManagerActivity extends AppCompatActivity {
             @Override
             public void onSuccess(JSONObject result) {
                 mDeviceDAO.remove(device.getAddress());
+                unpairDevice(device);
                 populateView();
             }
         });
+    }
+    private void unpairDevice(Device device) {
+        try {
+            Method m = device.getClass()
+                    .getMethod("removeBond", (Class[]) null);
+            m.invoke(device, (Object[]) null);
+        } catch (Exception e) {
+            Log.d(LOG_TAG,"error remover pareamento"+ e.getMessage());
+        }
     }
 
 }

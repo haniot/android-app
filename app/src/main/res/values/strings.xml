@@ -831,6 +831,7 @@
     <string name="model">Model</string>
     <string name="settings_configure_device">Configure Devices</string>
     <string name="settings_summary_configure_device">Manage your registered devices or insert new ones.</string>
+    <string name="message_device_not_registered">device not registered, check the pin you entered</string>
 
     <string name="title_activity_manage_children">ManageChildrenActivity</string>
 

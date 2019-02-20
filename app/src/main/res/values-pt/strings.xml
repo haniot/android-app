@@ -678,6 +678,7 @@
     <string name="name_device">Nome do dispositivo</string>
     <string name="settings_configure_device">Configurar Dispositivos</string>
     <string name="settings_summary_configure_device">Gerencie seus dispositivos registrados ou insira novos.</string>
+    <string name="message_device_not_registered">Dispositivo não cadastrado, verificar o pin digitado</string>
 
     <!--GLUCOSE STATUS ANNUNCIATION-->
     <string name="glucose_status_annunciation_battery_low">Device battery low at time of measurement</string>

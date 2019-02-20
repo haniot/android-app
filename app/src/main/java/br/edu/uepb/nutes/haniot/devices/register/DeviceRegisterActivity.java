@@ -5,7 +5,10 @@ import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.le.ScanResult;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,17 +24,14 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
@@ -61,12 +61,12 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     private static final int REQUEST_ENABLE_BLUETOOTH = 1;
     private static final int REQUEST_ENABLE_LOCATION = 2;
 
-
     private SimpleBleScanner mScanner;
     private Device mDevice;
     private DeviceDAO mDeviceDAO;
     private Server server;
     private Session session;
+    BluetoothDevice mBTDevice;
 
     @BindView(R.id.box_scanner)
     FrameLayout boxScanner;
@@ -107,6 +107,9 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     @BindView(R.id.pulsator)
     PulsatorLayout mPulsatorLayout;
 
+    @BindView(R.id.devices_progressBar_bonded)
+    ProgressBar progressBarBonded;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -122,6 +125,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         session = new Session(this);
         mDeviceDAO = DeviceDAO.getInstance(this);
 
+
         btnDeviceRegisterScanner.setOnClickListener(this);
         btnDeviceRegisterStop.setOnClickListener(this);
         btnCloseRegister.setOnClickListener(this);
@@ -134,6 +138,10 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
                 .addScanPeriod(15000) // 15s
                 .addFilterServiceUuid(getServiceUuidDevice(mDevice.getName()))
                 .build();
+
+        //Broadcasts when bond state changes (ie:pairing)
+        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
+        registerReceiver(mBroadcastReceiver, filter);
 
         initComponents();
     }
@@ -221,10 +229,10 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
                 mScanner.stopScan();
                 return;
             }
-            Log.d(TAG, "onScanResult: " + device.getAddress());
+            Log.d(TAG, "onScanResult: " + device.getName());
 
             mScanner.stopScan();
-            deviceAvailable(device);
+            device.createBond();
         }
 
         @Override
@@ -244,6 +252,37 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
             Log.d("MainActivity", "onScanFailed() " + errorCode);
         }
     };
+
+    /**
+     * Broadcast Receiver that detects bond state changes (Pairing status changes)
+     */
+
+    private final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
+
+            if (action.equals(BluetoothDevice.ACTION_BOND_STATE_CHANGED)) {
+                BluetoothDevice mDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+
+                //case1: bonded already
+                if (mDevice.getBondState() == BluetoothDevice.BOND_BONDED) {
+                    progressBarBonded.setVisibility(View.GONE);
+                    deviceAvailable(mDevice);
+                }
+                //case2: creating a bone
+                if (mDevice.getBondState() == BluetoothDevice.BOND_BONDING) {
+                    progressBarBonded.setVisibility(View.VISIBLE);
+                    Log.d(TAG, "BroadcastReceiver: BOND_BONDING.");
+                }
+                //case3: breaking a bond
+                if (mDevice.getBondState() == BluetoothDevice.BOND_NONE) {
+                    Log.d(TAG, "BroadcastReceiver: BOND_NONE.");
+                }
+            }
+        }
+    };
+
 
     //end scanner library ble
 
