@@ -256,11 +256,9 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
         deviceDAO = DeviceDAO.getInstance(getContext());
         SimpleBleScanner.Builder builder = new SimpleBleScanner.Builder();
         for (Device device : deviceDAO.list(session.getIdLogged())) {
-            if (!device.getAddress().equals("D4:A7:1B:3B:41:55")) {
 
-                Log.i("Devices", "Salvo: " + device.getName() + " - " + device.getAddress() + " - " + device.getTypeId());
-                builder.addFilterAddress(device.getAddress());
-            }
+            Log.i("Devices", "Salvo: " + device.getName() + " - " + device.getAddress() + " - " + device.getTypeId());
+            builder.addFilterAddress(device.getAddress());
         }
         simpleBleScanner = builder.build();
 
@@ -270,32 +268,34 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
                 String address = scanResult.getDevice().getAddress();
 
                 Log.w("Scan", scanResult.getDevice().toString());
-                int type = deviceDAO.get(address, session.getIdLogged()).getTypeId();
-                Log.i("Devices", "Type search: " + type + " - Requerid: " + DeviceType.GLUCOMETER);
-                switch (type) {
-                    case DeviceType
-                            .BLOOD_PRESSURE:
-                        if (bloodPressureManager.getConnectionState() != BluetoothGatt.STATE_CONNECTED)
-                            bloodPressureManager.connectDevice(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(address));
-                        break;
-                    case DeviceType
-                            .GLUCOMETER:
-                        if (glucoseManager.getConnectionState() != BluetoothGatt.STATE_CONNECTED)
-                            glucoseManager.connectDevice(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(address));
-                        break;
-                    case DeviceType
-                            .BODY_COMPOSITION:
-                        if (scaleManager.getConnectionState() != BluetoothGatt.STATE_CONNECTED) {
-                            scaleManager.connectDevice(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(address));
-                            Log.i("Devices", "Connecting Scale...");
-                        }
-                        break;
-                    case DeviceType
-                            .HEART_RATE:
-                        if (heartRateManager.getConnectionState() != BluetoothGatt.STATE_CONNECTED)
-                            heartRateManager.connectDevice(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(address));
-                        break;
-                }
+                Device device = deviceDAO.get(address, session.getIdLogged());
+                if (device != null) {
+                    int type = device.getTypeId();
+                    Log.i("Devices", "Type search: " + type + " - Requerid: " + DeviceType.GLUCOMETER);
+                    switch (type) {
+                        case DeviceType
+                                .BLOOD_PRESSURE:
+                            if (bloodPressureManager.getConnectionState() != BluetoothGatt.STATE_CONNECTED)
+                                bloodPressureManager.connectDevice(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(address));
+                            break;
+                        case DeviceType
+                                .GLUCOMETER:
+                            if (glucoseManager.getConnectionState() != BluetoothGatt.STATE_CONNECTED)
+                                glucoseManager.connectDevice(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(address));
+                            break;
+                        case DeviceType
+                                .BODY_COMPOSITION:
+                            if (scaleManager.getConnectionState() != BluetoothGatt.STATE_CONNECTED) {
+                                scaleManager.connectDevice(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(address));
+                                Log.i("Devices", "Connecting Scale...");
+                            }
+                            break;
+                        case DeviceType
+                                .HEART_RATE:
+                            if (heartRateManager.getConnectionState() != BluetoothGatt.STATE_CONNECTED)
+                                heartRateManager.connectDevice(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(address));
+                            break;
+                    }
 
 
 //                switch (address) {
@@ -315,6 +315,7 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
 //
 //                        break;
 //                }
+                }
             }
 
             @Override
@@ -699,7 +700,7 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
         @Override
         public void onMeasurementReceiver(Measurement measurementGlucose) {
 
-            igGlucose.setMeasurementValue(String.format("%.2f", measurementGlucose.getValue()));
+            igGlucose.setMeasurementValue(GlucoseManager.parse(measurementGlucose));
             mAdapter.notifyDataSetChanged();
         }
     };

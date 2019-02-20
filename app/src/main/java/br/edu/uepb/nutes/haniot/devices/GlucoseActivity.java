@@ -23,6 +23,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -86,7 +87,6 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
     private boolean mConnected = false;
 
     private BluetoothGattService mGattService;
-    private String mDeviceAddress;
     private Animation animation;
     private Device mDevice;
     private Session session;
@@ -155,8 +155,11 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
         // synchronization with server
         synchronizeWithServer();
 
-        mDeviceAddress = "00:60:19:60:68:62";
         session = new Session(this);
+        for (Device device : DeviceDAO.getInstance(this).list(session.getIdLogged()))
+            if (device.getTypeId() == DeviceType.GLUCOMETER) mDevice = device;
+
+        if (mDevice == null) Log.i(TAG, "No device registered");
         measurementDAO = MeasurementDAO.getInstance(this);
         deviceDAO = DeviceDAO.getInstance(this);
         params = new Params(session.get_idLogged(), MeasurementType.BLOOD_GLUCOSE);
@@ -251,7 +254,7 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
                         // we must check if itShouldLoadMore variable is true [unlocked]
                         if (itShouldLoadMore) loadMoreData();
                     }
-                }else{
+                } else {
                     mAddButton.show();
                 }
             }
@@ -460,16 +463,6 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     protected void onStart() {
         super.onStart();
-
-        // TODO REMOVER!!! Pois o cadastro do device deverá ser no processo de emparelhamento
-        mDevice = deviceDAO.get(mDeviceAddress, session.getIdLogged());
-
-        if (mDevice == null) {
-            mDevice = new Device(mDeviceAddress, "ACCU-CHEK PERFORMA CONNECT", "ACCU-CHEK", "", DeviceType.GLUCOMETER, session.getUserLogged());
-            mDevice.set_id("5a62c1a1d6f33400146c9b68");
-            if (!deviceDAO.save(mDevice)) finish();
-            mDevice = deviceDAO.get(mDeviceAddress, session.getIdLogged());
-        }
     }
 
     @Override
@@ -477,7 +470,7 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
         super.onResume();
         registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
 
-        if (mBluetoothLeService != null) mBluetoothLeService.connect(mDeviceAddress);
+        if (mBluetoothLeService != null && mDevice != null) mBluetoothLeService.connect(mDevice.getAddress());
     }
 
     @Override
@@ -585,7 +578,8 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
                 finish();
             }
             // Conecta-se automaticamente ao dispositivo após a inicialização bem-sucedida.
-            mBluetoothLeService.connect(mDeviceAddress);
+            if (mDevice != null)
+            mBluetoothLeService.connect(mDevice.getAddress());
         }
 
         @Override
@@ -744,16 +738,13 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
     private void updateUILastMeasurement(Measurement measurement, boolean applyAnimation) {
         if (measurement == null) return;
 
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mBloodGlucoseTextView.setText(String.valueOf((int) measurement.getValue()));
-                mUnitBloodGlucoseTextView.setText(measurement.getUnit());
-                mDateLastMeasurement.setText(DateUtils.abbreviatedDate(
-                        getApplicationContext(), measurement.getRegistrationDate()));
+        runOnUiThread(() -> {
+            mBloodGlucoseTextView.setText(valueToString(measurement));
+            mUnitBloodGlucoseTextView.setText(measurement.getUnit());
+            mDateLastMeasurement.setText(DateUtils.abbreviatedDate(
+                    getApplicationContext(), measurement.getRegistrationDate()));
 
-                if (applyAnimation) mBloodGlucoseTextView.startAnimation(animation);
-            }
+            if (applyAnimation) mBloodGlucoseTextView.startAnimation(animation);
         });
     }
 
