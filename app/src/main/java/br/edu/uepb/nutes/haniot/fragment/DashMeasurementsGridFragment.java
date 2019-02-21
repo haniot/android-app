@@ -51,7 +51,6 @@ import br.edu.uepb.nutes.haniot.model.DeviceType;
 import br.edu.uepb.nutes.haniot.model.ItemGrid;
 import br.edu.uepb.nutes.haniot.model.ItemGridType;
 import br.edu.uepb.nutes.haniot.model.Measurement;
-import br.edu.uepb.nutes.haniot.model.MeasurementType;
 import br.edu.uepb.nutes.haniot.model.SendMeasurementsEvent;
 import br.edu.uepb.nutes.haniot.model.dao.DeviceDAO;
 import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
@@ -59,7 +58,6 @@ import br.edu.uepb.nutes.haniot.service.ManagerDevices.BloodPressureManager;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.GlucoseManager;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.HeartRateManager;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.ScaleManager;
-import br.edu.uepb.nutes.haniot.service.ManagerDevices.ThermometerManager;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.BloodPressureDataCallback;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.GlucoseDataCallback;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.HeartRateDataCallback;
@@ -83,7 +81,6 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
     private ItemGrid igAnthropometric;
 
     private ScaleManager scaleManager;
-    private ThermometerManager temperatureManager;
     private HeartRateManager heartRateManager;
     private GlucoseManager glucoseManager;
     private BloodPressureManager bloodPressureManager;
@@ -142,25 +139,6 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
         this.preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 //        Ajeitar para primeira vez que abrir o app;
         this.measurementsValues = new DateChangedEvent();
-
-
-        scaleManager = new ScaleManager(getContext());
-        scaleManager.setSimpleCallback(scaleDataCallback);
-        //scaleManager.connectDevice(BluetoothAdapter.getDefaultAdapter().getRemoteDevice("D4:36:39:91:75:71"));
-
-        heartRateManager = new HeartRateManager(getContext());
-        heartRateManager.setSimpleCallback(heartRateDataCallback);
-        //heartRateManager.connectDevice(BluetoothAdapter.getDefaultAdapter().getRemoteDevice("A8:96:75:B0:28:D2"));
-
-        temperatureManager = new ThermometerManager(getContext());
-        temperatureManager.setSimpleCallback(temperatureDataCallback);
-        //temperatureManager.connectDevice(BluetoothAdapter.getDefaultAdapter().getRemoteDevice("1C:87:74:01:73:10"));
-
-        glucoseManager = new GlucoseManager(getContext());
-        glucoseManager.setSimpleCallback(glucoseDataCallback);
-
-        bloodPressureManager = new BloodPressureManager(getContext());
-        bloodPressureManager.setSimpleCallback(bloodPressureDataCallback);
 
 
 //        builder.addFilterAddress(heartRateAddress);
@@ -248,15 +226,71 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
         ButterKnife.bind(this, view);
         initRecyclerView();
         initComponents();
-        initScanner();
         return view;
     }
 
+    public void initManagerBLE() {
+
+        //Pega os dados que foram selecionados nas preferencias
+        Boolean activity = getPreferenceBoolean(getResources()
+                .getString(R.string.key_activity));
+
+        Boolean bloodGlucose = getPreferenceBoolean(getResources()
+                .getString(R.string.key_blood_glucose));
+
+        Boolean bloodPressure = getPreferenceBoolean(getResources()
+                .getString(R.string.key_blood_pressure));
+
+        Boolean temperature = getPreferenceBoolean(getResources()
+                .getString(R.string.key_temperature));
+
+        Boolean weight = getPreferenceBoolean(getResources()
+                .getString(R.string.key_weight));
+
+        Boolean sleep = getPreferenceBoolean(getResources()
+                .getString(R.string.key_sleep));
+
+        Boolean heartRate = getPreferenceBoolean(getResources()
+                .getString(R.string.key_heart_rate));
+
+        Boolean anthropometric = getPreferenceBoolean(getResources()
+                .getString(R.string.key_anthropometric));
+
+        if (getPreferenceBoolean(getResources()
+                .getString(R.string.key_weight))) {
+            scaleManager = new ScaleManager(getContext());
+            scaleManager.setSimpleCallback(scaleDataCallback);
+        }
+        //scaleManager.connectDevice(BluetoothAdapter.getDefaultAdapter().getRemoteDevice("D4:36:39:91:75:71"));
+
+        if (getPreferenceBoolean(getResources()
+                .getString(R.string.key_heart_rate))) {
+            heartRateManager = new HeartRateManager(getContext());
+            heartRateManager.setSimpleCallback(heartRateDataCallback);
+        }
+        //heartRateManager.connectDevice(BluetoothAdapter.getDefaultAdapter().getRemoteDevice("A8:96:75:B0:28:D2"));
+
+        if (getPreferenceBoolean(getResources()
+                .getString(R.string.key_blood_pressure))) {
+            glucoseManager = new GlucoseManager(getContext());
+            glucoseManager.setSimpleCallback(glucoseDataCallback);
+        }
+
+        if (getPreferenceBoolean(getResources()
+                .getString(R.string.key_blood_pressure))) {
+            bloodPressureManager = new BloodPressureManager(getContext());
+            bloodPressureManager.setSimpleCallback(bloodPressureDataCallback);
+        }
+
+    }
+
     public void initScanner() {
+        //TODO onStart()
         deviceDAO = DeviceDAO.getInstance(getContext());
         SimpleBleScanner.Builder builder = new SimpleBleScanner.Builder();
+        builder.addScanPeriod(100000000);
         for (Device device : deviceDAO.list(session.getIdLogged())) {
-
+            //TODO Escanear somente os que estão habilitados
             Log.i("Devices", "Salvo: " + device.getName() + " - " + device.getAddress() + " - " + device.getTypeId());
             builder.addFilterAddress(device.getAddress());
         }
@@ -275,24 +309,29 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
                     switch (type) {
                         case DeviceType
                                 .BLOOD_PRESSURE:
-                            if (bloodPressureManager.getConnectionState() != BluetoothGatt.STATE_CONNECTED)
-                                bloodPressureManager.connectDevice(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(address));
+                            //TODO Melhorar isso na reafatoração
+                            if (bloodPressureManager != null)
+                                if (bloodPressureManager.getConnectionState() != BluetoothGatt.STATE_CONNECTED)
+                                    bloodPressureManager.connectDevice(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(address));
                             break;
                         case DeviceType
                                 .GLUCOMETER:
-                            if (glucoseManager.getConnectionState() != BluetoothGatt.STATE_CONNECTED)
-                                glucoseManager.connectDevice(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(address));
+                            if (glucoseManager != null)
+                                if (glucoseManager.getConnectionState() != BluetoothGatt.STATE_CONNECTED)
+                                    glucoseManager.connectDevice(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(address));
                             break;
                         case DeviceType
                                 .BODY_COMPOSITION:
-                            if (scaleManager.getConnectionState() != BluetoothGatt.STATE_CONNECTED) {
-                                scaleManager.connectDevice(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(address));
-                                Log.i("Devices", "Connecting Scale...");
-                            }
+                            if (scaleManager != null)
+                                if (scaleManager.getConnectionState() != BluetoothGatt.STATE_CONNECTED) {
+                                    scaleManager.connectDevice(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(address));
+                                    Log.i("Devices", "Connecting Scale...");
+                                }
                             break;
                         case DeviceType
                                 .HEART_RATE:
-                            if (heartRateManager.getConnectionState() != BluetoothGatt.STATE_CONNECTED)
+                            if (heartRateManager != null)
+                                if (heartRateManager.getConnectionState() != BluetoothGatt.STATE_CONNECTED)
                                 heartRateManager.connectDevice(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(address));
                             break;
                     }
@@ -339,6 +378,8 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         devices = DeviceDAO.getInstance(getContext()).list(session.getIdLogged());
+        initManagerBLE();
+        initScanner();
 
     }
 
@@ -349,62 +390,15 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
         updateGrid();
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void receiverMeasurement(Measurement measurement) {
-
-        //measurement.getTypeId();
+    @Override
+    public void onPause() {
+        super.onPause();
+        scaleManager = null;
+        bloodPressureManager = null;
+        glucoseManager = null;
+        heartRateManager = null;
+        simpleBleScanner.stopScan();
     }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void updateStatus(Intent intent) {
-        if (intent.getIntExtra("Device", -1) != -1) {
-            ItemGrid itemGrid = null;
-            switch (intent.getIntExtra("Device", 0)) {
-                case MeasurementType
-                        .HEART_RATE:
-                    itemGrid = igHearRate;
-                    break;
-                case MeasurementType
-                        .BODY_FAT:
-                    itemGrid = igWeight;
-                    break;
-                case MeasurementType
-                        .BLOOD_PRESSURE_SYSTOLIC:
-                    itemGrid = igPressure;
-                    break;
-                case MeasurementType
-                        .BLOOD_GLUCOSE:
-                    itemGrid = igGlucose;
-                    break;
-                case MeasurementType
-                        .TEMPERATURE:
-                    itemGrid = igTemperature;
-                    break;
-            }
-            String action = intent.getAction();
-            if (itemGrid != null) {
-                if (action.equals("Connecting")) {
-                    //Em breve
-                    //itemGrid.setLoading(true);
-                } else if (action.equals("Connected")) {
-                    //Em breve
-                    //itemGrid.setLoading(false);
-                    //itemGrid.setStatus(true);
-                } else if (action.equals("Disconnected")) {
-                    //Em breve
-                    //itemGrid.setLoading(false);
-                    //itemGrid.setStatus(false);
-                } else if (action.equals("Measurement")) {
-                    float value = intent.getFloatExtra("Value", 0);
-                    Log.i(TAG, "Setting Measurement " + value);
-                    measurementsValues.setTemperature(String.valueOf(value));
-                    //updateItemsOfGrid(true, igWeight);
-                    updateGrid();
-                }
-            }
-        }
-    }
-
 
     private void initRecyclerView() {
         mAdapter = new GridDashAdapter(mContext);
@@ -491,6 +485,8 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
     @Override
     public void onResume() {
         super.onResume();
+        initManagerBLE();
+        initScanner();
         updateGrid();
     }
 
@@ -680,6 +676,12 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
         @Override
         public void onMeasurementReceiver(Measurement measurementScale) {
             igWeight.setMeasurementValue(String.format("%.2f", measurementScale.getValue()));
+            mAdapter.notifyDataSetChanged();
+        }
+
+        @Override
+        public void onMeasurementReceiving(String bodyMassMeasurement, String bodyMassUnit) {
+            igWeight.setMeasurementValue(bodyMassMeasurement);
             mAdapter.notifyDataSetChanged();
         }
     };

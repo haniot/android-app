@@ -2,18 +2,12 @@ package br.edu.uepb.nutes.haniot.devices;
 
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothGattCharacteristic;
-import android.bluetooth.BluetoothGattDescriptor;
-import android.bluetooth.BluetoothGattService;
-import android.content.BroadcastReceiver;
-import android.content.ComponentName;
-import android.content.Context;
+import android.bluetooth.BluetoothProfile;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -33,11 +27,9 @@ import android.widget.Toast;
 
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
-import java.util.UUID;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.ManuallyAddMeasurement;
@@ -53,16 +45,16 @@ import br.edu.uepb.nutes.haniot.model.Measurement;
 import br.edu.uepb.nutes.haniot.model.MeasurementType;
 import br.edu.uepb.nutes.haniot.model.dao.DeviceDAO;
 import br.edu.uepb.nutes.haniot.model.dao.MeasurementDAO;
-import br.edu.uepb.nutes.haniot.parse.JsonToMeasurementParser;
 import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
 import br.edu.uepb.nutes.haniot.server.historical.CallbackHistorical;
 import br.edu.uepb.nutes.haniot.server.historical.Historical;
 import br.edu.uepb.nutes.haniot.server.historical.HistoricalType;
 import br.edu.uepb.nutes.haniot.server.historical.Params;
 import br.edu.uepb.nutes.haniot.service.BluetoothLeService;
+import br.edu.uepb.nutes.haniot.service.ManagerDevices.HeartRateManager;
+import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.HeartRateDataCallback;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
-import br.edu.uepb.nutes.haniot.utils.GattAttributes;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -84,7 +76,6 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
     private boolean mConnected = false;
     private BluetoothGattCharacteristic mNotifyCharacteristic;
 
-    private String mDeviceAddress;
     private String[] deviceInformations;
     private ObjectAnimator heartAnimation;
     private Device mDevice;
@@ -94,7 +85,7 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
     private HeartRateAdapter mAdapter;
     private Params params;
     private Measurement measurementSave, measurement;
-
+    private HeartRateManager heartRateManager;
     /**
      * We need this variable to lock and unlock loading more.
      * We should not charge more when a request has already been made.
@@ -157,21 +148,41 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
         measurementDAO = MeasurementDAO.getInstance(this);
         deviceDAO = DeviceDAO.getInstance(this);
         params = new Params(session.get_idLogged(), MeasurementType.HEART_RATE);
-
+        heartRateManager = new HeartRateManager(this);
+        heartRateManager.setSimpleCallback(heartRateDataCallback);
+        for (Device device : deviceDAO.list(session.getIdLogged())) {
+            if (device.getTypeId() == DeviceType.HEART_RATE)
+                mDevice = device;
+        }
         mChartButton.setOnClickListener(this);
         mRecordHeartRateButton.setOnClickListener(this);
         mAddMeasurementButton.setOnClickListener(this);
 
-        mDeviceAddress = "E9:50:60:1F:31:D2";
-                //= getIntent().getStringExtra(EXTRA_DEVICE_ADDRESS);
+        //= getIntent().getStringExtra(EXTRA_DEVICE_ADDRESS);
         deviceInformations = getIntent().getStringArrayExtra(EXTRA_DEVICE_INFORMATIONS);
-
-        Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
-        bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
 
         initComponents();
     }
 
+    HeartRateDataCallback heartRateDataCallback = new HeartRateDataCallback() {
+        @Override
+        public void onConnected() {
+            mConnected = true;
+            updateConnectionState(true);
+        }
+
+        @Override
+        public void onDisconnected() {
+            mConnected = false;
+            updateConnectionState(false);
+        }
+
+        @Override
+        public void onMeasurementReceiver(Measurement measurementHeartRate) {
+            updateUILastMeasurement(measurement, true);
+
+        }
+    };
 
     /**
      * Initialize components
@@ -270,7 +281,7 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
                         // we must check if itShouldLoadMore variable is true [unlocked]
                         if (itShouldLoadMore) loadMoreData();
                     }
-                }else {
+                } else {
                     mAddMeasurementButton.show();
                 }
             }
@@ -283,11 +294,8 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
      * Initialize SwipeRefresh
      */
     private void initDataSwipeRefresh() {
-        mDataSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                if (itShouldLoadMore) loadData();
-            }
+        mDataSwipeRefresh.setOnRefreshListener(() -> {
+            if (itShouldLoadMore) loadData();
         });
     }
 
@@ -406,16 +414,13 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
      * @param enabled boolean
      */
     private void toggleLoading(boolean enabled) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (!enabled) {
-                    mDataSwipeRefresh.setRefreshing(false);
-                    itShouldLoadMore = true;
-                } else {
-                    mDataSwipeRefresh.setRefreshing(true);
-                    itShouldLoadMore = false;
-                }
+        runOnUiThread(() -> {
+            if (!enabled) {
+                mDataSwipeRefresh.setRefreshing(false);
+                itShouldLoadMore = true;
+            } else {
+                mDataSwipeRefresh.setRefreshing(true);
+                itShouldLoadMore = false;
             }
         });
     }
@@ -426,19 +431,16 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
      * @param visible boolean
      */
     private void toggleNoDataMessage(boolean visible) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (visible) {
-                    if (!ConnectionUtils.internetIsEnabled(getApplicationContext())) {
-                        noDataMessage.setText(getString(R.string.connect_network_try_again));
-                    } else {
-                        noDataMessage.setText(getString(R.string.no_data_available));
-                    }
-                    noDataMessage.setVisibility(View.VISIBLE);
+        runOnUiThread(() -> {
+            if (visible) {
+                if (!ConnectionUtils.internetIsEnabled(getApplicationContext())) {
+                    noDataMessage.setText(getString(R.string.connect_network_try_again));
                 } else {
-                    noDataMessage.setVisibility(View.GONE);
+                    noDataMessage.setText(getString(R.string.no_data_available));
                 }
+                noDataMessage.setVisibility(View.VISIBLE);
+            } else {
+                noDataMessage.setVisibility(View.GONE);
             }
         });
     }
@@ -449,57 +451,40 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
      * @param message
      */
     private void printMessage(String message) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
-            }
-        });
+        runOnUiThread(() -> Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show());
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-
-        // TODO REMOVER!!! Pois o cadastro do device deverá ser no processo de emparelhamento
-        mDevice = deviceDAO.get(mDeviceAddress, session.getIdLogged());
-
-        if (mDevice == null) {
-            mDevice = new Device(mDeviceAddress, "HEART RATE SENSOR", deviceInformations[0], deviceInformations[1], DeviceType.HEART_RATE, session.getUserLogged());
-            if (deviceInformations[1].equals("H10")) mDevice.set_id("5a62c149d6f33400146c9b66");
-            else mDevice.set_id("5a62c161d6f33400146c9b67");
-
-            if (!deviceDAO.save(mDevice)) finish();
-        }
+        if (heartRateManager.getConnectionState() == BluetoothProfile.STATE_DISCONNECTED && mDevice != null)
+            heartRateManager.connectDevice(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(mDevice.getAddress()));
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
 
-        if (mBluetoothLeService != null)
-            mBluetoothLeService.connect(mDeviceAddress);
+        if (heartRateManager.getConnectionState() == BluetoothProfile.STATE_DISCONNECTED && mDevice != null)
+            heartRateManager.connectDevice(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(mDevice.getAddress()));
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterReceiver(mGattUpdateReceiver);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unbindService(mServiceConnection);
-        mBluetoothLeService = null;
+
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                mBluetoothLeService.disconnect();
+                heartRateManager.disconnect();
                 super.onBackPressed();
                 break;
         }
@@ -507,125 +492,21 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
     }
 
     private void updateConnectionState(final boolean isConnected) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mCircularProgressBar.setProgress(0);
-                mCircularProgressBar.setProgressWithAnimation(100); // Default animate duration = 1500ms
+        runOnUiThread(() -> {
+            mCircularProgressBar.setProgress(0);
+            mCircularProgressBar.setProgressWithAnimation(100); // Default animate duration = 1500ms
 
-                if (isConnected) {
-                    heartAnimation.start();
-                    mCircularProgressBar.setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
-                    mCircularProgressBar.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAlertDanger));
-                } else {
-                    heartAnimation.pause();
-                    mCircularProgressBar.setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAlertDanger));
-                    mCircularProgressBar.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
-                }
+            if (isConnected) {
+                heartAnimation.start();
+                mCircularProgressBar.setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
+                mCircularProgressBar.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAlertDanger));
+            } else {
+                heartAnimation.pause();
+                mCircularProgressBar.setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAlertDanger));
+                mCircularProgressBar.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
             }
         });
     }
-
-    private static IntentFilter makeGattUpdateIntentFilter() {
-        final IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(BluetoothLeService.ACTION_GATT_CONNECTED);
-        intentFilter.addAction(BluetoothLeService.ACTION_GATT_DISCONNECTED);
-        intentFilter.addAction(BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED);
-        intentFilter.addAction(BluetoothLeService.ACTION_DATA_AVAILABLE);
-
-        return intentFilter;
-    }
-
-    public boolean setCharacteristicNotification(BluetoothGattCharacteristic characteristic) {
-        if (characteristic != null) {
-            final int charaProp = characteristic.getProperties();
-            if ((charaProp | BluetoothGattCharacteristic.PROPERTY_READ) > 0) {
-                // Se houver uma notificação ativa sobre uma característica, primeiro limpe-a,
-                // caso contrário não atualiza o campo de dados na interface do usuário.
-                if (mNotifyCharacteristic != null) {
-                    mBluetoothLeService.setCharacteristicNotification(mNotifyCharacteristic, BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE, false);
-                    mNotifyCharacteristic = null;
-                }
-                mBluetoothLeService.readCharacteristic(characteristic);
-            }
-            if ((charaProp | BluetoothGattCharacteristic.PROPERTY_NOTIFY) > 0) {
-                mNotifyCharacteristic = characteristic;
-                mBluetoothLeService.setCharacteristicNotification(characteristic, BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE, true);
-            }
-            return true;
-        }
-        return false;
-    }
-
-
-    // Code to manage Service lifecycle.
-    private final ServiceConnection mServiceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName componentName, IBinder service) {
-            mBluetoothLeService = ((BluetoothLeService.LocalBinder) service).getService();
-            if (!mBluetoothLeService.initialize()) {
-                Log.e(TAG, "Unable to initializeCharacteristic Bluetooth");
-                finish();
-            }
-            // Conecta-se automaticamente ao dispositivo após a inicialização bem-sucedida.
-            mBluetoothLeService.connect(mDeviceAddress);
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName componentName) {
-            mBluetoothLeService = null;
-        }
-    };
-
-    public String getAction() {
-        return action;
-    }
-
-    /**
-     * Manipula vários eventos desencadeados pelo Serviço.
-     * <p>
-     * ACTION_GATT_CONNECTED: conectado a um servidor GATT.
-     * ACTION_GATT_DISCONNECTED: desconectado a um servidor GATT.
-     * ACTION_GATT_SERVICES_DISCOVERED: serviços GATT descobertos.
-     * ACTION_DATA_AVAILABLE: recebeu dados do dispositivo. Pode ser resultado de operações de leitura ou notificação.
-     */
-    String action;
-    private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            action = intent.getAction();
-
-            if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
-                mConnected = true;
-                updateConnectionState(true);
-            } else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
-                mConnected = false;
-                updateConnectionState(false);
-            } else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
-                BluetoothGattService gattService = mBluetoothLeService.getGattService(UUID.fromString(GattAttributes.SERVICE_HEART_RATE));
-
-                if (gattService != null) {
-                    BluetoothGattCharacteristic characteristic = gattService.getCharacteristic(UUID.fromString(GattAttributes.CHARACTERISTIC_HEART_RATE_MEASUREMENT));
-                    if (characteristic != null)
-                        setCharacteristicNotification(characteristic);
-                }
-            } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            measurement = JsonToMeasurementParser.heartRate(intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
-                            Log.i("MeasurementTO", measurement.toString());
-
-                            updateUILastMeasurement(measurement, true);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-            }
-        }
-    };
 
     /**
      * updateOrSave the UI with the last measurement.
@@ -635,15 +516,12 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
     private void updateUILastMeasurement(Measurement measurement, boolean applyAnimation) {
         if (measurement == null) return;
 
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mHeartRateTextView.setText(String.format("%03d", (int) measurement.getValue()));
-                mUnitHeartRateTextView.setText(measurement.getUnit());
-                mDateLastMeasurement.setText(DateUtils.abbreviatedDate(
-                        getApplicationContext(), measurement.getRegistrationDate()));
-                mHeartImageView.setVisibility(View.VISIBLE);
-            }
+        runOnUiThread(() -> {
+            mHeartRateTextView.setText(String.format("%03d", (int) measurement.getValue()));
+            mUnitHeartRateTextView.setText(measurement.getUnit());
+            mDateLastMeasurement.setText(DateUtils.abbreviatedDate(
+                    getApplicationContext(), measurement.getRegistrationDate()));
+            mHeartImageView.setVisibility(View.VISIBLE);
         });
     }
 
@@ -659,8 +537,8 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
         switch (view.getId()) {
             case R.id.record_floating_button:
                 Intent intent = new Intent(this, RecordHeartRateActivity.class);
-                intent.putExtra(HeartRateActivity.EXTRA_DEVICE_ADDRESS, mDeviceAddress);
-                intent.putExtra(HeartRateActivity.EXTRA_DEVICE_INFORMATIONS, deviceInformations);
+                if (mDevice != null)
+                    intent.putExtra(HeartRateActivity.EXTRA_DEVICE_ADDRESS, mDevice.getAddress());
                 startActivity(intent);
                 break;
             case R.id.chart_floating_button:
@@ -684,7 +562,8 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
              * Add relations
              */
             measurementSave.setUser(session.getUserLogged());
-            measurementSave.setDevice(mDevice);
+            if (mDevice != null)
+                measurementSave.setDevice(mDevice);
 
             /**
              * Save in local

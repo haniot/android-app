@@ -62,6 +62,7 @@ public class ScaleManager extends BluetoohManager {
         @Override
         public void measurementReceiver(@NonNull BluetoothDevice device, @NonNull Data dataa) {
             try {
+
                 final byte[] data = dataa.getValue();
                 JSONObject result = new JSONObject();
                 double bodyMass = 0f;
@@ -71,7 +72,6 @@ public class ScaleManager extends BluetoohManager {
                      * Timestamp current
                      */
                     result.put("timestamp", DateUtils.getCurrentDatetime());
-
 
                     /**
                      * 03: response type
@@ -115,56 +115,150 @@ public class ScaleManager extends BluetoohManager {
                         result.put("bodyFat", bodyFat);
                         result.put("bodyFatUnit", "%"); // value fixed
 
-                        /**
-                         * USER ID
-                         * 09-12: recognized userID - BE uint32
-                         */
-//                Integer userID = Integer.valueOf(String.format("%02X", data[9]) +
-//                        String.format("%02X", data[10]) +
-//                        String.format("%02X", data[11]) +
-//                        String.format("%02X", data[12]), 32
-//                );
-//
-//                result.put("userID", userID);
                     }
-                    Log.i(TAG, "Received measurent from Scale" + device.getName() + ": " + result.get("bodyMass"));
+                    JSONObject jsonData = result;
 
-                    //final String bodyMassMeasurement = formatNumber(result.getDouble("bodyMass"));
-                    //inal String bodyMassUnit = result.getString("bodyMassUnit");
+                    isFinalized = jsonData.getBoolean("isFinalized");
+                    final String bodyMassMeasurement = formatNumber(jsonData.getDouble("bodyMass"));
+                    final String bodyMassUnit = jsonData.getString("bodyMassUnit");
 
-                    //bodyMassTextView.setText(bodyMassMeasurement);
-                    //.setText(bodyMassUnit);
+//                    bodyMassTextView.setText(bodyMassMeasurement);
+//                    bodyMassUnitTextView.setText(bodyMassUnit);
+                    scaleDataCallback.onMeasurementReceiving(bodyMassMeasurement, bodyMassUnit);
 
-                    //if (isFinalized) {
-                    // showAnimation = false;
-                    Session session = new Session(getContext());
-                    User user = session.getUserLogged();
+                    if (isFinalized) {
 
-                    Measurement bodyMassMeasurement = JsonToMeasurementParser.bodyMass(result.toString());
-                    bodyMassMeasurement.setUser(user);
-                    //bodyMass.setDevice(mDevice);
+                        Session session = new Session(getContext());
+                        User user = session.getUserLogged();
 
-                    Measurement bmi = new Measurement(calcBMI(bodyMassMeasurement.getValue()),
-                            "kg/m2", bodyMassMeasurement.getRegistrationDate(), MeasurementType.BMI);
-                    bmi.setUser(user);
-                    //  bmi.setDevice(mDevice);
+                        Measurement MeasurementBodyMass = JsonToMeasurementParser.bodyMass(jsonData.toString());
+                        MeasurementBodyMass.setUser(user);
+//                        MeasurementBodyMass.setDevice(mDevice);
 
-                    Measurement bodyFatMeasurement = JsonToMeasurementParser.bodyFat(result.toString());
-                    bodyFatMeasurement.setUser(user);
-                    //  bodyFat.setDevice(mDevice);
+                        Measurement bmi = new Measurement(calcBMI(MeasurementBodyMass.getValue()),
+                                "kg/m2", MeasurementBodyMass.getRegistrationDate(), MeasurementType.BMI);
+                        bmi.setUser(user);
+//                        bmi.setDevice(mDevice);
 
-                    /**
-                     * Add relationships
-                     */
-                    bodyMassMeasurement.addMeasurement(bmi, bodyFatMeasurement);
+                        Measurement bodyFat = JsonToMeasurementParser.bodyFat(jsonData.toString());
+                        bodyFat.setUser(user);
+//                        bodyFat.setDevice(mDevice);
+
+                        /**
+                         * Add relationships
+                         */
+                        MeasurementBodyMass.addMeasurement(bmi, bodyFat);
+                        Log.i(TAG, "Received measurent from Scale" + device.getName() + ": " + result.get("bodyMass"));
+                        scaleDataCallback.onMeasurementReceiver(MeasurementBodyMass);
+                        /**
+                         * Update UI
+                         */
+//                        updateUILastMeasurement(MeasurementBodyMass, true);
+
+//                final byte[] data = dataa.getValue();
+//                JSONObject result = new JSONObject();
+//                double bodyMass = 0f;
+//
+//                if (data.length > 0) {
+//                    /**
+//                     * Timestamp current
+//                     */
+//                    result.put("timestamp", DateUtils.getCurrentDatetime());
+//
+//
+//                    /**
+//                     * 03: response type
+//                     *     01 - unfinished weighing
+//                     *     02 - finished weighing
+//                     */
+//                    boolean isFinalized = String.format("%02X", data[3]).equals("02");
+//                    result.put("isFinalized", isFinalized);
+//
+//                    /**
+//                     * unfinished weighing
+//                     * 08-09: weight - BE uint16 times 0.01
+//                     */
+//                    bodyMass = Integer.valueOf(String.format("%02X", data[8]) + String.format("%02X", data[9]), 16) * 0.01f;
+//                    result.put("bodyMass", bodyMass);
+//
+//                    // Body Mass Unit default
+//                    result.put("bodyMassUnit", "kg");
+//
+//                    // Finalized
+//                    if (isFinalized) {
+//                        /**
+//                         * finished weighing
+//                         * 13-14: weight - BE uint16 times 0.01
+//                         */
+//                        bodyMass = Integer.valueOf(String.format("%02X", data[13]) + String.format("%02X", data[14]), 16) * 0.01f;
+//                        result.put("bodyMass", bodyMass);
+//
+//                        /**
+//                         * 15-16: resistance - BE uint 16
+//                         */
+//                        final double resistance = Integer.valueOf(String.format("%02X", data[15]) + String.format("%02X", data[16]), 16);
+//                        result.put("resistance", resistance);
+//
+//                        /**
+//                         * Body Fat in percentage
+//                         *
+//                         * 17-18: - BE uint16 times 0.01
+//                         */
+//                        final double bodyFat = Integer.valueOf(String.format("%02X", data[17]) + String.format("%02X", data[18]), 16) * 0.01f;
+//                        result.put("bodyFat", bodyFat);
+//                        result.put("bodyFatUnit", "%"); // value fixed
+//
+//                        /**
+//                         * USER ID
+//                         * 09-12: recognized userID - BE uint32
+//                         */
+////                Integer userID = Integer.valueOf(String.format("%02X", data[9]) +
+////                        String.format("%02X", data[10]) +
+////                        String.format("%02X", data[11]) +
+////                        String.format("%02X", data[12]), 32
+////                );
+////
+////                result.put("userID", userID);
+//                    }
+
+//
+//                        //final String bodyMassMeasurement = formatNumber(result.getDouble("bodyMass"));
+//                        //inal String bodyMassUnit = result.getString("bodyMassUnit");
+//
+//                        //bodyMassTextView.setText(bodyMassMeasurement);
+//                        //.setText(bodyMassUnit);
+//
+//                        //if (isFinalized) {
+//                        // showAnimation = false;
+//                        Session session = new Session(getContext());
+//                        User user = session.getUserLogged();
+//
+//                        Measurement bodyMassMeasurement = JsonToMeasurementParser.bodyMass(result.toString());
+//                        bodyMassMeasurement.setUser(user);
+//                        //bodyMass.setDevice(mDevice);
+//
+//                        Measurement bmi = new Measurement(calcBMI(bodyMassMeasurement.getValue()),
+//                                "kg/m2", bodyMassMeasurement.getRegistrationDate(), MeasurementType.BMI);
+//                        bmi.setUser(user);
+//                        //  bmi.setDevice(mDevice);
+//
+//                        Measurement bodyFatMeasurement = JsonToMeasurementParser.bodyFat(result.toString());
+//                        bodyFatMeasurement.setUser(user);
+//                        //  bodyFat.setDevice(mDevice);
+//
+//                        /**
+//                         * Add relationships
+//                         */
+//                        bodyMassMeasurement.addMeasurement(bmi, bodyFatMeasurement);
 
 
-                    scaleDataCallback.onMeasurementReceiver(bodyMassMeasurement);
-                    //  }
+                        //  }
 //            Intent intent = new Intent("Measurement");
 //            intent.putExtra("Device", MeasurementType.BODY_FAT);
 //            intent.putExtra("Value", temperature);
 //            EventBus.getDefault().post(intent);
+
+                    }
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
