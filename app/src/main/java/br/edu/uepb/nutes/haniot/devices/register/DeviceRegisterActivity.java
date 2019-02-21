@@ -32,6 +32,7 @@ import com.google.gson.Gson;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
@@ -57,6 +58,8 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     private final String NAME_DEVICE_HEART_RATE_H10 = "Heart Rate Sensor H10";
     private final String NAME_DEVICE_SMARTBAND_MI2 = "Smartband MI Band 2";
     private final String SERVICE_SCALE_1501 = "00001310-0000-1000-8000-00805f9b34fb";
+    private final String PIN_YUNMAI = "000000";
+    private final static byte[] PIN_YUNMAI2 = {0, 0, 0, 0, 0, 0};
 
     private static final int REQUEST_ENABLE_BLUETOOTH = 1;
     private static final int REQUEST_ENABLE_LOCATION = 2;
@@ -66,7 +69,6 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     private DeviceDAO mDeviceDAO;
     private Server server;
     private Session session;
-    BluetoothDevice mBTDevice;
 
     @BindView(R.id.box_scanner)
     FrameLayout boxScanner;
@@ -153,6 +155,14 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         checkPermissions();
     }
 
+    @Override
+
+    protected void onDestroy() {
+        Log.d(TAG, "onDestroy: called.");
+        super.onDestroy();
+        unregisterReceiver(mBroadcastReceiver);
+    }
+
     /**
      * Checks if you have permission to use.
      * Required bluetooth ble and location.
@@ -221,7 +231,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         @Override
         public void onScanResult(int callbackType, ScanResult scanResult) {
             BluetoothDevice device = null;
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 device = scanResult.getDevice();
             }
 
@@ -267,14 +277,16 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
 
                 //case1: bonded already
                 if (mDevice.getBondState() == BluetoothDevice.BOND_BONDED) {
-                    progressBarBonded.setVisibility(View.GONE);
+                    //progressBarBonded.setVisibility(View.GONE);
                     deviceAvailable(mDevice);
                 }
                 //case2: creating a bone
                 if (mDevice.getBondState() == BluetoothDevice.BOND_BONDING) {
-                    progressBarBonded.setVisibility(View.VISIBLE);
-                    Log.d(TAG, "BroadcastReceiver: BOND_BONDING.");
+                    mDevice.setPin(PIN_YUNMAI2);
+                    //progressBarBonded.setVisibility(View.VISIBLE);
+                    Log.d(TAG, "BroadcastReceiver: BOND_BONDING." + PIN_YUNMAI2);
                 }
+
                 //case3: breaking a bond
                 if (mDevice.getBondState() == BluetoothDevice.BOND_NONE) {
                     Log.d(TAG, "BroadcastReceiver: BOND_NONE.");

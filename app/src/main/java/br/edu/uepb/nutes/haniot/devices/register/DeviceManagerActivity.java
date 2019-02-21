@@ -434,13 +434,16 @@ public class DeviceManagerActivity extends AppCompatActivity {
             }
         });
     }
+
     private void unpairDevice(Device device) {
+        BluetoothDevice mBluetoothDevice = BluetoothAdapter.getDefaultAdapter().
+                getRemoteDevice(String.valueOf(device.getAddress()));
         try {
-            Method m = device.getClass()
+            Method m = mBluetoothDevice.getClass()
                     .getMethod("removeBond", (Class[]) null);
-            m.invoke(device, (Object[]) null);
+            m.invoke(mBluetoothDevice, (Object[]) null);
         } catch (Exception e) {
-            Log.d(LOG_TAG,"error remover pareamento"+ e.getMessage());
+            Log.d(LOG_TAG, "error removing pairing " + e.getMessage());
         }
     }
 
