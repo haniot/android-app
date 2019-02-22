@@ -1,6 +1,7 @@
 package br.edu.uepb.nutes.haniot.devices.register;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -33,6 +34,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Method;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
@@ -240,7 +242,6 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
                 return;
             }
             Log.d(TAG, "onScanResult: " + device.getName());
-
             mScanner.stopScan();
             device.createBond();
         }
@@ -268,27 +269,37 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
      */
 
     private final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+        @SuppressLint("MissingPermission")
         @Override
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
 
             if (action.equals(BluetoothDevice.ACTION_BOND_STATE_CHANGED)) {
-                BluetoothDevice mDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                BluetoothDevice mBluetoothDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 
                 //case1: bonded already
-                if (mDevice.getBondState() == BluetoothDevice.BOND_BONDED) {
-                    //progressBarBonded.setVisibility(View.GONE);
-                    deviceAvailable(mDevice);
+                if (mBluetoothDevice.getBondState() == BluetoothDevice.BOND_BONDED) {
+                    Log.d(TAG, "BroadcastReceiver: BOND_BONDED.");
+                    deviceAvailable(mBluetoothDevice);
                 }
                 //case2: creating a bone
-                if (mDevice.getBondState() == BluetoothDevice.BOND_BONDING) {
-                    mDevice.setPin(PIN_YUNMAI2);
-                    //progressBarBonded.setVisibility(View.VISIBLE);
-                    Log.d(TAG, "BroadcastReceiver: BOND_BONDING." + PIN_YUNMAI2);
+                if (mBluetoothDevice.getBondState() == BluetoothDevice.BOND_BONDING) {
+                    Log.d(TAG, "BroadcastReceiver: BOND_BONDING.");
+
+                    if (mBluetoothDevice.getAddress().equals("D4:36:39:91:75:71")) {
+                        try {
+                            Log.d("setPin()", "Try to set the PIN");
+                            Method m = mBluetoothDevice.getClass().getMethod("setPin", byte[].class);
+                            m.invoke(mBluetoothDevice, PIN_YUNMAI2);
+                            Log.d("setPin()", "Success to add the PIN " + PIN_YUNMAI2);
+                        } catch (Exception e) {
+                            Log.e("setPin()", e.getMessage());
+                        }
+                    }
                 }
 
                 //case3: breaking a bond
-                if (mDevice.getBondState() == BluetoothDevice.BOND_NONE) {
+                if (mBluetoothDevice.getBondState() == BluetoothDevice.BOND_NONE) {
                     Log.d(TAG, "BroadcastReceiver: BOND_NONE.");
                 }
             }
@@ -345,6 +356,8 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     public void deviceAvailable(BluetoothDevice device) {
         if (device != null) {
             mDevice.setAddress(device.getAddress());
+            // Save in the server
+            saveDeviceRegister(mDevice);
             mPulsatorLayout.stop();
             deviceSuccessfullyRegistered.setText(
                     getString(R.string.device_registered_success,
@@ -353,9 +366,6 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
             boxRegister.setVisibility(View.GONE);
             boxScanner.setVisibility(View.GONE);
             boxResponse.setVisibility(View.VISIBLE);
-
-            // Save in the server
-            saveDeviceRegister(mDevice);
         } else {
             nameDeviceScannerRegister.setText(mDevice.getName());
             deviceNotFound.setText(R.string.device_not_found_try_again);
