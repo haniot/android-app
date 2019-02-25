@@ -61,7 +61,6 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     private final String NAME_DEVICE_SMARTBAND_MI2 = "Smartband MI Band 2";
     private final String SERVICE_SCALE_1501 = "00001310-0000-1000-8000-00805f9b34fb";
     private final String PIN_YUNMAI = "000000";
-    private final static byte[] PIN_YUNMAI2 = {0, 0, 0, 0, 0, 0};
 
     private static final int REQUEST_ENABLE_BLUETOOTH = 1;
     private static final int REQUEST_ENABLE_LOCATION = 2;
@@ -71,6 +70,8 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     private DeviceDAO mDeviceDAO;
     private Server server;
     private Session session;
+    private IntentFilter intentFilter;
+    private BluetoothDevice btDevice;
 
     @BindView(R.id.box_scanner)
     FrameLayout boxScanner;
@@ -147,6 +148,10 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
         registerReceiver(mBroadcastReceiver, filter);
 
+        //Broadcasts for balance pairing yunmai
+        intentFilter = new IntentFilter(BluetoothDevice.ACTION_PAIRING_REQUEST);
+        intentFilter.setPriority(IntentFilter.SYSTEM_HIGH_PRIORITY);
+
         initComponents();
     }
 
@@ -163,6 +168,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         Log.d(TAG, "onDestroy: called.");
         super.onDestroy();
         unregisterReceiver(mBroadcastReceiver);
+        unregisterReceiver(broadCastReceiver);
     }
 
     /**
@@ -232,18 +238,18 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
 
         @Override
         public void onScanResult(int callbackType, ScanResult scanResult) {
-            BluetoothDevice device = null;
+            //BluetoothDevice device = null;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                device = scanResult.getDevice();
+                btDevice = scanResult.getDevice();
             }
 
-            if (device == null) {
+            if (btDevice == null) {
                 mScanner.stopScan();
                 return;
             }
-            Log.d(TAG, "onScanResult: " + device.getName());
+            Log.d(TAG, "onScanResult: " + btDevice.getName());
             mScanner.stopScan();
-            device.createBond();
+            btDevice.createBond();
         }
 
         @Override
@@ -284,20 +290,12 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
                 }
                 //case2: creating a bone
                 if (mBluetoothDevice.getBondState() == BluetoothDevice.BOND_BONDING) {
-                    Log.d(TAG, "BroadcastReceiver: BOND_BONDING.");
+                    Log.d(TAG, "BroadcastReceiver: BOND_BONDING. " + btDevice.getName());
 
-                    if (mBluetoothDevice.getAddress().equals("D4:36:39:91:75:71")) {
-                        try {
-                            Log.d("setPin()", "Try to set the PIN");
-                            Method m = mBluetoothDevice.getClass().getMethod("setPin", byte[].class);
-                            m.invoke(mBluetoothDevice, PIN_YUNMAI2);
-                            Log.d("setPin()", "Success to add the PIN " + PIN_YUNMAI2);
-                        } catch (Exception e) {
-                            Log.e("setPin()", e.getMessage());
-                        }
+                    if (mBluetoothDevice.getName().equals(btDevice.getName())) {
+                        registerReceiver(broadCastReceiver, intentFilter);
                     }
                 }
-
                 //case3: breaking a bond
                 if (mBluetoothDevice.getBondState() == BluetoothDevice.BOND_NONE) {
                     Log.d(TAG, "BroadcastReceiver: BOND_NONE.");
@@ -306,7 +304,20 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         }
     };
 
-
+    /**
+     * method for balance pairing yunmai
+     */
+    private BroadcastReceiver broadCastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (BluetoothDevice.ACTION_PAIRING_REQUEST.equals(action)) {
+                BluetoothDevice bluetoothDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                bluetoothDevice.setPin(PIN_YUNMAI.getBytes());
+                Log.e(TAG, "Auto-entering pin: " + PIN_YUNMAI);
+            }
+        }
+    };
     //end scanner library ble
 
     /**

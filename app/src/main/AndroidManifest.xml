@@ -95,7 +95,7 @@
 
 
         <!-- ACTIVITIES REGISTER DEVICES -->
-        <activity android:name=".devices.register.DeviceRegisterActivity" />
+        <activity android:name=".devices.register.DeviceRegisterActivity"/>
         <activity android:name=".devices.register.DeviceManagerActivity" />
         <!-- END ACTIVITIES REGISTER DEVICES -->
 
