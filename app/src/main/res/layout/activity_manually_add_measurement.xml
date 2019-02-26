@@ -4,19 +4,35 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity_manually_add_measurement">
+    android:background="@color/cardview_light_background"
+    tools:context=".activity.ManuallyAddMeasurement">
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/floatingActionButton2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="28dp"
+        android:clickable="true"
+        android:src="@drawable/z_check"
+        android:tint="@color/cardview_light_background" />
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        android:background="@color/cardview_light_background"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:elevation="0dp">
         <!--Esses temas são importantes-->
+
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="wrap_content"
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
@@ -32,73 +48,188 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:paddingTop="20dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/background_light">
+
+                <ImageView
+                    android:id="@+id/icon_type"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="false"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginTop="11dp"
+                    android:layout_marginEnd="0dp"
+                    android:cropToPadding="false"
+                    android:src="@drawable/xglucosemeter"
+                    android:tint="@color/text_submenu" />
+
+                <TextView
+                    android:id="@+id/text_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginTop="9dp"
+                    android:layout_toEndOf="@+id/icon_type"
+                    android:text="Glicose"
+                    android:textAlignment="center"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="20sp" />
+
+            </RelativeLayout>
 
             <TextView
-                android:id="@+id/textChooseDate"
+                android:id="@+id/text_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
+                android:layout_below="@+id/icon_calendar"
                 android:layout_alignParentStart="true"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:textSize="18dp"
-                android:text="Escolha a data"/>
+                android:layout_marginStart="72dp"
+                android:layout_marginTop="2dp"
+                android:text="Hoje"
+                android:textColor="@color/colorPrimary"
+                android:textSize="22sp" />
+
+            <TextView
+                android:id="@+id/text_measurement"
+                android:layout_width="115dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/icon_calendar"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="140dp"
+                android:layout_marginTop="71dp"
+                android:text="200"
+                android:textAllCaps="true"
+                android:textColor="@color/colorPrimary"
+                android:textSize="60sp" />
+
+            //
+
+            <TextView
+                android:id="@+id/text_unit"
+                android:layout_width="56dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/text_measurement"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="-25dp"
+                android:layout_marginTop="-11dp"
+                android:layout_marginEnd="97dp"
+                android:layout_toEndOf="@+id/text_measurement"
+                android:text="mg/dl"
+                android:textColor="@color/text_submenu"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/text_value"
+                android:layout_width="122dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/icon_calendar"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_centerHorizontal="false"
+                android:layout_marginStart="130dp"
+                android:layout_marginTop="60dp"
+                android:layout_marginEnd="158dp"
+                android:text="Valor"
+                android:textAlignment="center"
+                android:textColor="@color/text_submenu"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/text_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/icon_time"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="2dp"
+                android:layout_marginEnd="69dp"
+                android:text="18:40"
+                android:textColor="@color/colorPrimary"
+                android:textSize="22sp" />
 
             <View
                 android:id="@+id/divDate"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_toEndOf="@id/textChooseDate"
-                android:layout_alignBaseline="@id/textChooseDate"
+                android:layout_alignBaseline="@id/text_date"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
-                android:background="?android:attr/listDivider" />
+                android:layout_toEndOf="@id/text_date"
+                android:background="?android:attr/listDivider"
+                android:visibility="invisible" />
 
-            <android.support.v7.widget.AppCompatButton
-                android:id="@+id/btnCalendar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/ic_calendar_128"
-                android:padding="50dp"
-                android:layout_marginTop="16dp"
-                android:layout_below="@id/textChooseDate"
-                style="@style/Widget.AppCompat.Button.Borderless"/>
 
             <TextView
                 android:id="@+id/textChooseTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_below="@id/btnCalendar"
-                android:textSize="18dp"
-                android:text="Escolha a hora"/>
+                android:layout_marginStart="56dp"
+                android:layout_marginTop="21dp"
+                android:layout_toEndOf="@+id/icon_time"
+                android:text="Hora"
+                android:textColor="@color/text_submenu"
+                android:textSize="18dp" />
 
             <View
                 android:id="@+id/divGlucose"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_toEndOf="@id/textChooseTime"
                 android:layout_alignBaseline="@id/textChooseTime"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="0dp"
                 android:layout_marginEnd="16dp"
-                android:background="?android:attr/listDivider" />
+                android:layout_toEndOf="@id/textChooseTime"
+                android:background="?android:attr/listDivider"
+                android:visibility="invisible" />
 
-            <android.support.v7.widget.AppCompatButton
-                android:id="@+id/btnClock"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/clock"
-                android:padding="50dp"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_below="@id/textChooseTime"/>
 
             <FrameLayout
                 android:id="@+id/frame_measurement"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_below="@id/btnClock"/>
+                android:layout_height="0dp"
+                android:layout_marginTop="0dp"
+                android:visibility="invisible">
+
+            </FrameLayout>
+
+            <ImageView
+                android:id="@+id/icon_calendar"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="86dp"
+                android:layout_marginTop="80dp"
+                android:src="@drawable/calen"
+                android:tint="@color/text_submenu" />
+
+            <ImageView
+                android:id="@+id/icon_time"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="80dp"
+                android:layout_marginEnd="86dp"
+                android:src="@drawable/cclock"
+                android:tint="@color/text_submenu" />
+
+            <include
+                layout="@layout/fragment_glucose_measurement"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/text_measurement"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="0dp"
+                android:layout_marginEnd="0dp" />
 
         </RelativeLayout>
     </android.support.v4.widget.NestedScrollView>
