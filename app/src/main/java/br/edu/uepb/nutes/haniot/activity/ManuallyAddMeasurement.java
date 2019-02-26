@@ -1,41 +1,33 @@
 package br.edu.uepb.nutes.haniot.activity;
 
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.Toolbar;
-import android.util.Pair;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.DatePicker;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.NumberPicker;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
+import java.util.Locale;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.fragment.AddAnthropometricsFragment;
-import br.edu.uepb.nutes.haniot.fragment.AddBloodGlucoseManuallyFragment;
 import br.edu.uepb.nutes.haniot.fragment.AddBloodPressureManuallyFragment;
 import br.edu.uepb.nutes.haniot.fragment.AddHeartRateManuallyFragment;
 import br.edu.uepb.nutes.haniot.fragment.AddTemperatureManuallyFragment;
 import br.edu.uepb.nutes.haniot.fragment.AddWeightManuallyFragment;
-import br.edu.uepb.nutes.haniot.model.ContextMeasurement;
-import br.edu.uepb.nutes.haniot.model.ContextMeasurementType;
 import br.edu.uepb.nutes.haniot.model.ItemGridType;
-import br.edu.uepb.nutes.haniot.model.Measurement;
-import br.edu.uepb.nutes.haniot.model.MeasurementType;
-import br.edu.uepb.nutes.haniot.model.dao.MeasurementDAO;
 import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
-import br.edu.uepb.nutes.haniot.utils.DateUtils;
-import br.edu.uepb.nutes.haniot.utils.Log;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -52,7 +44,28 @@ public class ManuallyAddMeasurement extends AppCompatActivity
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-//    @BindView(R.id.btnCalendar)
+
+    @BindView(R.id.icon_calendar)
+    ImageView icon_calendar;
+
+    @BindView(R.id.icon_time)
+    ImageView iconTime;
+
+    @BindView(R.id.text_date)
+    TextView textDate;
+
+    @BindView(R.id.text_time)
+    TextView textTime;
+
+    @BindView(R.id.text_measurement)
+    EditText textMeasurement;
+
+    @BindView(R.id.text_unit)
+    TextView textUnit;
+
+    final Calendar myCalendar = Calendar.getInstance();
+
+    //    @BindView(R.id.btnCalendar)
 //    AppCompatButton btnCalendar;
 //    @BindView(R.id.btnClock)
 //    AppCompatButton btnClock;
@@ -70,8 +83,8 @@ public class ManuallyAddMeasurement extends AppCompatActivity
 //    private MeasurementDAO measurementDAO;
 //
 //    //    Fragment to be replaced
-//    private Fragment myFragment;
-//    private int type = -1;
+    private Fragment myFragment;
+    private int type = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,30 +93,44 @@ public class ManuallyAddMeasurement extends AppCompatActivity
         ButterKnife.bind(this);
 
 //        Default methods for toolbar, remember of use themes on layout xml
-        toolbar.setTitle(getResources().getString(R.string.manually_add_measurement));
+        toolbar.setTitle("Adicionar glicose");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        openDataPicker();
+        textMeasurement.setSelection(textMeasurement.getText().length());
+//        FragmentManager fm = getSupportFragmentManager();
+//// Substitui um Fragment
+//        FragmentTransaction ft = fm.beginTransaction();
+//        ft.add(R.id.extra, new FragmentGlucose());
+//        ft.commit();
+        // openMeasurementPicker();
+//        Spinner picker = new Spinner(this);
+//        ArrayList<String> strings = new ArrayList<>();
+//        for (int i = 0; i <= 200; i++)
+//            strings.add(String.valueOf(i));
+//        ArrayAdapter<String> adapter = new ArrayAdapter<>(ManuallyAddMeasurement.this, android.R.layout.simple_spinner_item, strings);
+//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        picker.setAdapter(adapter);
 //        initComponents();
 //
-//
-//        final Intent intent = getIntent();
-//        intent.getExtras();
-////        get the type of measurement to replace the fragment
-//        this.type = intent.getExtras().getInt(getResources().getString(R.string.measurementType));
-//        if (type == -1) {
-//            finish();
-//        } else {
-//            if (ItemGridType.typeSupported(type)) {
-//                replaceFragment(type);
-//            } else {
-//                finish();
-//            }
-//        }
+
+        final Intent intent = getIntent();
+        intent.getExtras();
+//        get the type of measurement to replace the fragment
+        this.type = intent.getExtras().getInt(getResources().getString(R.string.measurementType));
+        if (type == -1) {
+            finish();
+        } else {
+            if (ItemGridType.typeSupported(type)) {
+                replaceFragment(type);
+            } else {
+                finish();
+            }
+        }
 
     }
 
-//    private void initComponents() {
+    //    private void initComponents() {
 //
 //        calendar = Calendar.getInstance();
 //        session = new Session(getApplicationContext());
@@ -204,54 +231,138 @@ public class ManuallyAddMeasurement extends AppCompatActivity
 //        this.dateHour = dateHour;
 //    }
 //
-//    //    Here the fragment of the measurement is replaced;
-//    public void replaceFragment(int measurementType) {
-//        switch (measurementType) {
-//            case ItemGridType.WEIGHT:
-//
-//                myFragment = new AddWeightManuallyFragment();
-//                getSupportFragmentManager().beginTransaction().replace(R.id.frame_measurement,
+    //    Here the fragment of the measurement is replaced;
+    public void replaceFragment(int measurementType) {
+        switch (measurementType) {
+            case ItemGridType.WEIGHT:
+                textUnit.setText(getString(R.string.unit_kg));
+//                myFragment = new Add();
+//                getSupportFragmentManager().beginTransaction().replace(R.id.extra,
 //                        myFragment)
 //                        .commit();
-//                break;
-//
-//            case ItemGridType.BLOOD_GLUCOSE:
-//
-//                myFragment = new AddBloodGlucoseManuallyFragment();
-//                getSupportFragmentManager().beginTransaction().replace(R.id.frame_measurement,
-//                        myFragment)
-//                        .commit();
-//                break;
-//
-//            case ItemGridType.HEART_RATE:
-//
-//                myFragment = new AddHeartRateManuallyFragment();
-//                getSupportFragmentManager().beginTransaction().replace(R.id.frame_measurement,
-//                        myFragment).commit();
-//                break;
-//
-//            case ItemGridType.TEMPERATURE:
-//
-//                myFragment = new AddTemperatureManuallyFragment();
-//                getSupportFragmentManager().beginTransaction().replace(R.id.frame_measurement,
-//                        myFragment).commit();
-//                break;
-//
-//            case ItemGridType.BLOOD_PRESSURE:
-//
-//                myFragment = new AddBloodPressureManuallyFragment();
-//                getSupportFragmentManager().beginTransaction().replace(R.id.frame_measurement,
-//                        myFragment).commit();
-//                break;
-//
-//            case ItemGridType.ANTHROPOMETRIC:
-//
-//                myFragment = new AddAnthropometricsFragment();
-//                getSupportFragmentManager().beginTransaction().replace(R.id.frame_measurement,
-//                        myFragment).commit();
-//                break;
-//        }
-//    }
+                break;
+
+            case ItemGridType.BLOOD_GLUCOSE:
+                textUnit.setText(getString(R.string.unit_glucose_mg_dL));
+                myFragment = new FragmentGlucose();
+                getSupportFragmentManager().beginTransaction().replace(R.id.extra,
+                        myFragment)
+                        .commit();
+                break;
+
+            case ItemGridType.HEART_RATE:
+                textUnit.setText(getString(R.string.unit_heart_rate));
+                myFragment = new AddHeartRateManuallyFragment();
+                getSupportFragmentManager().beginTransaction().replace(R.id.extra,
+                        myFragment).commit();
+                break;
+
+            case ItemGridType.TEMPERATURE:
+
+                myFragment = new AddTemperatureManuallyFragment();
+                getSupportFragmentManager().beginTransaction().replace(R.id.extra,
+                        myFragment).commit();
+                break;
+
+            case ItemGridType.BLOOD_PRESSURE:
+                textUnit.setText(getString(R.string.unit_pressure));
+                myFragment = new FragmentBloodPressure();
+                getSupportFragmentManager().beginTransaction().replace(R.id.extra,
+                        myFragment).commit();
+                break;
+
+            case ItemGridType.ANTHROPOMETRIC:
+
+                myFragment = new AddAnthropometricsFragment();
+                getSupportFragmentManager().beginTransaction().replace(R.id.extra,
+                        myFragment).commit();
+                break;
+        }
+    }
+
+    public void openMeasurementPicker() {
+
+        final Dialog d = new Dialog(ManuallyAddMeasurement.this);
+        d.setTitle("Choose value of measurement:");
+        d.setContentView(R.layout.measurement_picker_dialog);
+        Button b1 = (Button) d.findViewById(R.id.button1);
+        Button b2 = (Button) d.findViewById(R.id.button2);
+        final NumberPicker np = d.findViewById(R.id.numberPicker1);
+        np.setMaxValue(100); // max value 100
+        np.setMinValue(0);   // min value 0
+        np.setWrapSelectorWheel(false);
+        np.setOnValueChangedListener((picker, oldVal, newVal) -> {
+
+        });
+        b1.setOnClickListener(v -> {
+            textMeasurement.setText(String.valueOf(np.getValue())); //set the value to textview
+            d.dismiss();
+        });
+        b2.setOnClickListener(v -> {
+            d.dismiss(); // dismiss the dialog
+        });
+        d.show();
+
+
+//        final AlertDialog.Builder d = new AlertDialog.Builder(ManuallyAddMeasurement.this);
+//        LayoutInflater inflater = this.getLayoutInflater();
+//        View dialogView = inflater.inflate(R.layout.number_picker_dialog, null);
+//        d.setTitle("Title");
+//        d.setMessage("Message");
+//        d.setView(dialogView);
+//        final NumberPicker numberPicker = (NumberPicker) dialogView.findViewById(R.id.dialog_number_picker);
+//        numberPicker.setMaxValue(50);
+//        numberPicker.setMinValue(1);
+//        numberPicker.setWrapSelectorWheel(false);
+//        numberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+//            @Override
+//            public void onValueChange(NumberPicker numberPicker, int i, int i1) {
+//                Log.d(TAG, "onValueChange: ");
+//            }
+//        });
+//        d.setPositiveButton("Done", (dialogInterface, i) -> Log.d(TAG, "onClick: " + numberPicker.getValue()));
+//        d.setNegativeButton("Cancel", (dialogInterface, i) -> {
+//        });
+//        AlertDialog alertDialog = d.create();
+//        alertDialog.show();
+    }
+
+    public void openDataPicker() {
+        // Get Current Time
+        final Calendar c = Calendar.getInstance();
+        int mHour = c.get(Calendar.HOUR_OF_DAY);
+        int mMinute = c.get(Calendar.MINUTE);
+
+        // Launch Time Picker Dialog
+        iconTime.setOnClickListener(v -> {
+
+            TimePickerDialog timePickerDialog = new TimePickerDialog(ManuallyAddMeasurement.this,
+                    (view, hourOfDay, minute) ->
+                            textTime.setText(hourOfDay + ":" + minute), mHour, mMinute, false);
+            timePickerDialog.show();
+        });
+        icon_calendar.setOnClickListener(v -> {
+            // TODO Auto-generated method stub
+            new DatePickerDialog(ManuallyAddMeasurement.this, date, myCalendar
+                    .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                    myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+        });
+    }
+
+    DatePickerDialog.OnDateSetListener date = (view, year, monthOfYear, dayOfMonth) -> {
+        // TODO Auto-generated method stub
+        myCalendar.set(Calendar.YEAR, year);
+        myCalendar.set(Calendar.MONTH, monthOfYear);
+        myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        updateLabel();
+    };
+
+    private void updateLabel() {
+        String myFormat = "dd/MM/yy"; //In which you need put here
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+
+        textDate.setText(sdf.format(myCalendar.getTime()));
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

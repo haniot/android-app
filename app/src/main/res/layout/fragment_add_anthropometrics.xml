@@ -28,15 +28,15 @@
                 android:textSize="18dp"
                 android:text="@string/choose_height"/>
 
-            <View
-                android:id="@+id/divHeight"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_toEndOf="@id/textChooseBloodPressure"
-                android:layout_alignBaseline="@id/textChooseBloodPressure"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:background="?android:attr/listDivider" />
+            <!--<View-->
+                <!--android:id="@+id/divHeight"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="1dp"-->
+                <!--android:layout_toEndOf="@id/textChooseBloodPressure"-->
+                <!--android:layout_alignBaseline="@id/textChooseBloodPressure"-->
+                <!--android:layout_marginStart="16dp"-->
+                <!--android:layout_marginEnd="16dp"-->
+                <!--android:background="?android:attr/listDivider" />-->
 
             <android.support.v7.widget.AppCompatButton
                 android:id="@+id/botHeight"
@@ -71,15 +71,15 @@
                 android:text="@string/cm"
                 android:textAlignment="center" />
 
-            <View
-                android:id="@+id/divCircumference"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_toEndOf="@id/textChoosePulse"
-                android:layout_alignBaseline="@id/textChoosePulse"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:background="?android:attr/listDivider" />
+            <!--<View-->
+                <!--android:id="@+id/divCircumference"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="1dp"-->
+                <!--android:layout_toEndOf="@id/textChoosePulse"-->
+                <!--android:layout_alignBaseline="@id/textChoosePulse"-->
+                <!--android:layout_marginStart="16dp"-->
+                <!--android:layout_marginEnd="16dp"-->
+                <!--android:background="?android:attr/listDivider" />-->
 
             <View
                 android:id="@+id/botDivider"

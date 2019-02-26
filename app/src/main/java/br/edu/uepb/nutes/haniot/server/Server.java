@@ -418,7 +418,7 @@ public class Server {
             return new Headers.Builder().build();
 
         return new Headers.Builder()
-                .add("Authorization", "Baerer ".concat(session.getTokenLogged()))
+                .add("Authorization", "Bearer ".concat(session.getTokenLogged()))
                 .build();
     }
 

@@ -49,144 +49,54 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="20dp">
+            android:paddingTop="10dp">
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:color/background_light">
 
-                <ImageView
-                    android:id="@+id/icon_type"
-                    android:layout_width="22dp"
-                    android:layout_height="22dp"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentEnd="false"
-                    android:layout_marginStart="40dp"
-                    android:layout_marginTop="11dp"
-                    android:layout_marginEnd="0dp"
-                    android:cropToPadding="false"
-                    android:src="@drawable/xglucosemeter"
-                    android:tint="@color/text_submenu" />
-
-                <TextView
-                    android:id="@+id/text_type"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginStart="4dp"
-                    android:layout_marginTop="9dp"
-                    android:layout_toEndOf="@+id/icon_type"
-                    android:text="Glicose"
-                    android:textAlignment="center"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="20sp" />
-
-            </RelativeLayout>
-
-            <TextView
-                android:id="@+id/text_date"
+            <EditText
+                android:id="@+id/text_measurement"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/icon_calendar"
-                android:layout_alignParentStart="true"
-                android:layout_marginStart="72dp"
-                android:layout_marginTop="2dp"
-                android:text="Hoje"
+                android:layout_below="@+id/box_time"
+                android:layout_alignParentStart="false"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp"
+                android:background="@android:color/transparent"
+                android:ellipsize="start"
+                android:gravity="center_horizontal"
+                android:inputType="number|numberDecimal"
+                android:text="0"
                 android:textColor="@color/colorPrimary"
-                android:textSize="22sp" />
+                android:textSize="80sp" />
 
-            <TextView
-                android:id="@+id/text_measurement"
-                android:layout_width="115dp"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/icon_calendar"
-                android:layout_alignParentStart="true"
-                android:layout_marginStart="140dp"
-                android:layout_marginTop="71dp"
-                android:text="200"
-                android:textAllCaps="true"
-                android:textColor="@color/colorPrimary"
-                android:textSize="60sp" />
-
-            //
 
             <TextView
                 android:id="@+id/text_unit"
                 android:layout_width="56dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/text_measurement"
+                android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"
-                android:layout_marginStart="-25dp"
+                android:layout_marginStart="216dp"
                 android:layout_marginTop="-11dp"
                 android:layout_marginEnd="97dp"
-                android:layout_toEndOf="@+id/text_measurement"
                 android:text="mg/dl"
-                android:textColor="@color/text_submenu"
+                android:textColor="@color/colorSubmenu"
                 android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/text_value"
                 android:layout_width="122dp"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/icon_calendar"
+                android:layout_below="@+id/box_time"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"
-                android:layout_centerHorizontal="false"
-                android:layout_marginStart="130dp"
-                android:layout_marginTop="60dp"
-                android:layout_marginEnd="158dp"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="10dp"
                 android:text="Valor"
                 android:textAlignment="center"
-                android:textColor="@color/text_submenu"
-                android:textSize="14sp" />
-
-            <TextView
-                android:id="@+id/text_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/icon_time"
-                android:layout_alignParentEnd="true"
-                android:layout_marginTop="2dp"
-                android:layout_marginEnd="69dp"
-                android:text="18:40"
-                android:textColor="@color/colorPrimary"
-                android:textSize="22sp" />
-
-            <View
-                android:id="@+id/divDate"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_alignBaseline="@id/text_date"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_toEndOf="@id/text_date"
-                android:background="?android:attr/listDivider"
-                android:visibility="invisible" />
-
-
-            <TextView
-                android:id="@+id/textChooseTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="56dp"
-                android:layout_marginTop="21dp"
-                android:layout_toEndOf="@+id/icon_time"
-                android:text="Hora"
-                android:textColor="@color/text_submenu"
-                android:textSize="18dp" />
-
-            <View
-                android:id="@+id/divGlucose"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_alignBaseline="@id/textChooseTime"
-                android:layout_marginStart="0dp"
-                android:layout_marginEnd="16dp"
-                android:layout_toEndOf="@id/textChooseTime"
-                android:background="?android:attr/listDivider"
-                android:visibility="invisible" />
+                android:textColor="@color/colorSubmenu"
+                android:textSize="18sp" />
 
 
             <FrameLayout
@@ -198,38 +108,76 @@
 
             </FrameLayout>
 
-            <ImageView
-                android:id="@+id/icon_calendar"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="86dp"
-                android:layout_marginTop="80dp"
-                android:src="@drawable/calen"
-                android:tint="@color/text_submenu" />
+            <RelativeLayout
+                android:id="@+id/box_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-            <ImageView
-                android:id="@+id/icon_time"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginTop="80dp"
-                android:layout_marginEnd="86dp"
-                android:src="@drawable/cclock"
-                android:tint="@color/text_submenu" />
+                <ImageView
+                    android:id="@+id/icon_calendar"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginStart="100dp"
+                    android:layout_marginTop="35dp"
+                    android:src="@drawable/calen"
+                    android:tint="@color/colorSubmenu" />
 
-            <include
-                layout="@layout/fragment_glucose_measurement"
+                <TextView
+                    android:id="@+id/text_date"
+                    android:layout_width="105dp"
+                    android:layout_height="45dp"
+                    android:layout_below="@+id/icon_calendar"
+                    android:layout_alignStart="@+id/icon_calendar"
+                    android:layout_alignEnd="@+id/icon_calendar"
+                    android:layout_marginStart="-43dp"
+                    android:layout_marginEnd="-42dp"
+                    android:gravity="center"
+                    android:text="Hoje"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="22sp" />
+
+                <ImageView
+                    android:id="@+id/icon_time"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="35dp"
+                    android:layout_marginEnd="100dp"
+                    android:src="@drawable/cclock"
+                    android:tint="@color/colorSubmenu" />
+
+                <TextView
+                    android:id="@+id/text_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="45dp"
+                    android:layout_below="@+id/icon_time"
+                    android:layout_alignStart="@+id/icon_time"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginStart="-27dp"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginEnd="75dp"
+                    android:gravity="center"
+                    android:text="18:40"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="22sp" />
+            </RelativeLayout>
+
+            <FrameLayout
+                android:id="@+id/extra"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/text_measurement"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
                 android:layout_marginStart="0dp"
-                android:layout_marginEnd="0dp" />
+                android:layout_marginTop="50dp"
+                android:layout_marginEnd="0dp"
+                android:foregroundGravity="center" />
 
         </RelativeLayout>
     </android.support.v4.widget.NestedScrollView>
