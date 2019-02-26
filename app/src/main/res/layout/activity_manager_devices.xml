@@ -9,6 +9,16 @@
     <!-- The ActionBar displayed at the top -->
     <include layout="@layout/toolbar" />
 
+    <TextView
+        android:id="@+id/message_server_disconnected"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:text="@string/connect_network_try_again"
+        android:visibility="gone" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -56,6 +56,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     private final String NAME_DEVICE_THERM_DL8740 = "Ear Thermometer DL8740";
     private final String NAME_DEVICE_GLUCOMETER_PERFORMA = "Accu-Chek Performa Connect";
     private final String NAME_DEVICE_SCALE_1501 = "Scale YUNMAI Mini 1501";
+    private final String NAME_DEVICE_YUNMAI = "YUNMAI-SIGNAL-M1US";
     private final String NAME_DEVICE_HEART_RATE_H7 = "Heart Rate Sensor H7";
     private final String NAME_DEVICE_HEART_RATE_H10 = "Heart Rate Sensor H10";
     private final String NAME_DEVICE_SMARTBAND_MI2 = "Smartband MI Band 2";
@@ -70,7 +71,6 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     private DeviceDAO mDeviceDAO;
     private Server server;
     private Session session;
-    private IntentFilter intentFilter;
     private BluetoothDevice btDevice;
 
     @BindView(R.id.box_scanner)
@@ -115,6 +115,8 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     @BindView(R.id.devices_progressBar_bonded)
     ProgressBar progressBarBonded;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -148,10 +150,6 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
         registerReceiver(mBroadcastReceiver, filter);
 
-        //Broadcasts for balance pairing yunmai
-        intentFilter = new IntentFilter(BluetoothDevice.ACTION_PAIRING_REQUEST);
-        intentFilter.setPriority(IntentFilter.SYSTEM_HIGH_PRIORITY);
-
         initComponents();
     }
 
@@ -168,7 +166,6 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         Log.d(TAG, "onDestroy: called.");
         super.onDestroy();
         unregisterReceiver(mBroadcastReceiver);
-        unregisterReceiver(broadCastReceiver);
     }
 
     /**
@@ -238,11 +235,9 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
 
         @Override
         public void onScanResult(int callbackType, ScanResult scanResult) {
-            //BluetoothDevice device = null;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 btDevice = scanResult.getDevice();
             }
-
             if (btDevice == null) {
                 mScanner.stopScan();
                 return;
@@ -287,12 +282,19 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
                 if (mBluetoothDevice.getBondState() == BluetoothDevice.BOND_BONDED) {
                     Log.d(TAG, "BroadcastReceiver: BOND_BONDED.");
                     deviceAvailable(mBluetoothDevice);
+
+                    if (mBluetoothDevice.getName().equals(NAME_DEVICE_YUNMAI)) {
+                        unregisterReceiver(broadCastReceiver);
+                    }
                 }
                 //case2: creating a bone
                 if (mBluetoothDevice.getBondState() == BluetoothDevice.BOND_BONDING) {
-                    Log.d(TAG, "BroadcastReceiver: BOND_BONDING. " + btDevice.getName());
+                    Log.d(TAG, "BroadcastReceiver: BOND_BONDING. " + mBluetoothDevice.getName());
 
-                    if (mBluetoothDevice.getName().equals(btDevice.getName())) {
+                    if (mBluetoothDevice.getName().equals(NAME_DEVICE_YUNMAI)) {
+                        //Broadcasts for balance pairing yunmai
+                        IntentFilter intentFilter = new IntentFilter(BluetoothDevice.ACTION_PAIRING_REQUEST);
+                        intentFilter.setPriority(IntentFilter.SYSTEM_HIGH_PRIORITY);
                         registerReceiver(broadCastReceiver, intentFilter);
                     }
                 }
