@@ -82,7 +82,7 @@ public class GridDashAdapter extends BaseAdapter<ItemGrid>{
     public class ViewHolder extends RecyclerView.ViewHolder {
         final View mView;
 
-        @BindView(R.id.imageIten)
+        @BindView(R.id.imageItem)
         ImageView imageIten;
         @BindView(R.id.textDescription)
         TextView textDescription;
@@ -90,8 +90,8 @@ public class GridDashAdapter extends BaseAdapter<ItemGrid>{
         TextView textMeasurement;
         @BindView(R.id.textMeasurementType)
         TextView textMeasurementType;
-        @BindView(R.id.botAddMeasurement)
-        Button botAddMeasurement;
+        @BindView(R.id.btn_add_measurement)
+        TextView botAddMeasurement;
 
         public ViewHolder(View itemView) {
             super(itemView);

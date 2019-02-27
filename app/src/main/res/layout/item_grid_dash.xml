@@ -4,78 +4,166 @@
     android:id="@+id/layoutItemGrid"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:padding="5dp">
+    android:background="?android:attr/selectableItemBackground">
 
     <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:id="@+id/card_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerInParent="true"
-        android:layout_centerVertical="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
         android:layout_gravity="center"
-        android:foreground="?android:attr/selectableItemBackground"
-        card_view:cardBackgroundColor="@color/colorCard"
-        card_view:cardCornerRadius="20dp"
-        card_view:cardElevation="2dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:padding="8dp"
+        card_view:cardCornerRadius="6dp"
+        card_view:cardElevation="1dp"
         card_view:cardPreventCornerOverlap="false"
         card_view:cardUseCompatPadding="true">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginLeft="6dp"
+            android:layout_marginRight="6dp"
+            android:layout_marginBottom="5dp"
             android:orientation="vertical"
             android:padding="8dp">
 
             <ImageView
-                android:id="@+id/imageIten"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:id="@+id/imageItem"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
                 android:layout_marginStart="10dp"
-                android:contentDescription="@string/dash_item_description" />
+                android:layout_marginTop="5dp"
+                android:contentDescription="@string/dash_item_description"
+                android:src="@drawable/xcardiogram"
+                android:tint="@color/colorPrimary" />
 
             <TextView
                 android:id="@+id/textDescription"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_below="@id/imageIten"
-                android:layout_toEndOf="@id/imageIten"
-                android:layout_alignParentEnd="true"
-                android:layout_marginEnd="10dp"
-                android:textAlignment="textEnd"
-                android:text="Batimento Cardiaco" />
+                android:layout_below="@+id/imageItem"
+                android:layout_marginStart="7dp"
+                android:layout_marginTop="-22dp"
+                android:layout_marginEnd="1dp"
+                android:layout_toEndOf="@id/imageItem"
+                android:text="Batimento Cardiaco"
+                android:textAlignment="textStart"
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/textMeasurement"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
                 android:layout_alignBottom="@id/botAddMeasurement"
-                android:text="096"
-                android:textSize="20dp"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="41dp"
+                android:layout_marginBottom="-16dp"
+                android:text="--"
+                android:textSize="24sp"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/textMeasurementType"
-                android:layout_width="wrap_content"
+                android:layout_width="52dp"
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@id/textMeasurement"
-                android:layout_marginStart="5dp"
+                android:layout_marginStart="2dp"
+                android:layout_marginBottom="3dp"
                 android:layout_toEndOf="@id/textMeasurement"
-                android:text="bpm" />
+                android:text="bpm"
+                android:textAlignment="textStart"
+                android:textSize="16sp" />
 
             <Button
                 android:id="@+id/botAddMeasurement"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_below="@id/textDescription"
-                android:layout_marginTop="20dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignTop="@+id/textDescription"
                 android:layout_alignParentEnd="true"
-                android:layout_marginEnd="10dp"
-                android:background="@android:drawable/ic_input_add" />
+                android:layout_marginTop="46dp"
+                android:layout_marginEnd="113dp"
+                android:background="@drawable/zaddarrow"
+                android:visibility="invisible" />
+
+            <TextView
+                android:id="@+id/btn_add_measurement"
+                android:layout_width="69dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="false"
+                android:layout_alignParentLeft="false"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="280dp"
+                android:layout_marginTop="65dp"
+                android:layout_marginEnd="0dp"
+                android:layout_marginRight="0dp"
+                android:text="Adicionar"
+                android:textSize="12sp"
+                android:visibility="visible" />
+
+            <TextView
+                android:id="@+id/text_last_measurement"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="41dp"
+                android:layout_marginTop="35dp"
+                android:text="Última medição:"
+                android:textSize="12sp"
+                android:visibility="visible" />
+
+            <TextView
+                android:id="@+id/text_time_measurement"
+                android:layout_width="64dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="64dp"
+                android:layout_toEndOf="@+id/time_measuerement"
+                android:text="12:30"
+                android:textSize="12sp"
+                android:visibility="visible" />
+
+            <ProgressBar
+                android:id="@+id/receiving_data"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="8dp"
+                android:visibility="invisible" />
+
+            <ImageView
+                android:id="@+id/status"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="8dp"
+                android:elevation="2dp"
+                android:tint="@color/colorAccent"
+                android:visibility="invisible"
+                app:srcCompat="@drawable/zonline" />
+
+            <ImageView
+                android:id="@+id/time_measuerement"
+                android:layout_width="13dp"
+                android:layout_height="25dp"
+                android:layout_alignTop="@+id/textMeasurementType"
+                android:layout_marginLeft="5dp"
+                android:layout_toEndOf="@+id/textMeasurementType"
+                android:tint="@color/cardview_dark_background"
+                app:srcCompat="@drawable/zclock" />
 
         </RelativeLayout>
     </android.support.v7.widget.CardView>

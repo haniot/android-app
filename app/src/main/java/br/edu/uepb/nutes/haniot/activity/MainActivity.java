@@ -61,8 +61,6 @@ public class MainActivity extends AppCompatActivity {
     private EventBus _eventBus;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @BindView(R.id.tabLayout)
-    TabLayout tabLayout;
     @BindView(R.id.viewpager)
     ViewPager viewPager;
     @BindView(R.id.newMeasureButton)
@@ -87,7 +85,6 @@ public class MainActivity extends AppCompatActivity {
 
         viewPager.setAdapter(new FragmentPageAdapter(getSupportFragmentManager()));
         viewPager.setOffscreenPageLimit(2);
-        tabLayout.setupWithViewPager(viewPager);
 
         checkLastPatientAndUpdateTabTitle();
 
@@ -168,22 +165,10 @@ public class MainActivity extends AppCompatActivity {
             this.lastNameSelected = "";
         }
         //caso nao tenha encontrado uma crianca selecionada no sharedpreferences
-        if (this.id.equals("")) {
-            this.id = getResources().getString(R.string.noPatientSelected);
-            this.lastNameSelected = getResources().getString(R.string.noPatientSelected);
-            tabLayout.setTabTextColors(ContextCompat
-                    .getColorStateList(this, R.color.colorRed));
-        }
 
         tabTitle = getResources().getString(R.string.dashboard) + " - " + this.lastNameSelected;
 
         //Coloca o texto na aba
-        if (tabLayout.getTabAt(0) != null) {
-
-            SpannableString dash = new SpannableString(tabTitle);
-            dash.setSpan(new StyleSpan(Typeface.BOLD), tabTitle.length(), dash.length(), 0);
-            tabLayout.getTabAt(0).setText(dash);
-        }
 
     }
 

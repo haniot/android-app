@@ -22,10 +22,7 @@ import java.util.Locale;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.fragment.AddAnthropometricsFragment;
-import br.edu.uepb.nutes.haniot.fragment.AddBloodPressureManuallyFragment;
 import br.edu.uepb.nutes.haniot.fragment.AddHeartRateManuallyFragment;
-import br.edu.uepb.nutes.haniot.fragment.AddTemperatureManuallyFragment;
-import br.edu.uepb.nutes.haniot.fragment.AddWeightManuallyFragment;
 import br.edu.uepb.nutes.haniot.model.ItemGridType;
 import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
 import butterknife.BindView;
@@ -235,6 +232,7 @@ public class ManuallyAddMeasurement extends AppCompatActivity
     public void replaceFragment(int measurementType) {
         switch (measurementType) {
             case ItemGridType.WEIGHT:
+                getSupportActionBar().setTitle("Inserir Peso");
                 textUnit.setText(getString(R.string.unit_kg));
 //                myFragment = new Add();
 //                getSupportFragmentManager().beginTransaction().replace(R.id.extra,
@@ -243,6 +241,7 @@ public class ManuallyAddMeasurement extends AppCompatActivity
                 break;
 
             case ItemGridType.BLOOD_GLUCOSE:
+                getSupportActionBar().setTitle("Inserir Glicose");
                 textUnit.setText(getString(R.string.unit_glucose_mg_dL));
                 myFragment = new FragmentGlucose();
                 getSupportFragmentManager().beginTransaction().replace(R.id.extra,
@@ -251,20 +250,16 @@ public class ManuallyAddMeasurement extends AppCompatActivity
                 break;
 
             case ItemGridType.HEART_RATE:
+                getSupportActionBar().setTitle("Inserir Batimentos Cardíacos");
                 textUnit.setText(getString(R.string.unit_heart_rate));
                 myFragment = new AddHeartRateManuallyFragment();
                 getSupportFragmentManager().beginTransaction().replace(R.id.extra,
-                        myFragment).commit();
-                break;
-
-            case ItemGridType.TEMPERATURE:
-
-                myFragment = new AddTemperatureManuallyFragment();
-                getSupportFragmentManager().beginTransaction().replace(R.id.extra,
-                        myFragment).commit();
+                        myFragment)
+                        .commit();
                 break;
 
             case ItemGridType.BLOOD_PRESSURE:
+                getSupportActionBar().setTitle("Inserir Pressão Arterial");
                 textUnit.setText(getString(R.string.unit_pressure));
                 myFragment = new FragmentBloodPressure();
                 getSupportFragmentManager().beginTransaction().replace(R.id.extra,
@@ -272,7 +267,7 @@ public class ManuallyAddMeasurement extends AppCompatActivity
                 break;
 
             case ItemGridType.ANTHROPOMETRIC:
-
+                getSupportActionBar().setTitle("Inserir Medidas Antropométricas");
                 myFragment = new AddAnthropometricsFragment();
                 getSupportFragmentManager().beginTransaction().replace(R.id.extra,
                         myFragment).commit();

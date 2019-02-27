@@ -37,7 +37,6 @@ public class AddWeightManuallyFragment extends Fragment implements View.OnClickL
     AppCompatButton botWeight;
     @BindView(R.id.btnCancel)
     AppCompatButton btnCancel;
-    @BindView(R.id.textChooseWeight)
     TextView textChooseWeight;
 
 //    NumberPicker things

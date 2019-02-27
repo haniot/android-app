@@ -1,119 +1,154 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".fragment.AddBloodPressureManuallyFragment">
+    android:layout_height="match_parent">
 
-    <android.support.v4.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+
+    <ImageView
+        android:id="@+id/boy"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_below="@+id/altura"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="34dp"
+        android:layout_marginTop="24dp"
+        android:src="@drawable/girl" />
+
+
+    <ImageView
+        android:id="@+id/boy2"
+        android:layout_width="80dp"
+        android:layout_height="100dp"
+        android:layout_below="@+id/altura2"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="38dp"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/reduce" />
+
+
+    <EditText
+        android:id="@+id/meters"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/height"
+        android:layout_marginStart="85dp"
+        android:layout_marginTop="28dp"
+        android:layout_toEndOf="@+id/boy"
+        android:background="@android:color/transparent"
+        android:focusable="false"
+        android:text="1,54"
+        android:textColor="@color/colorPrimary"
+        android:textSize="50sp" />
+
+    <EditText
+        android:id="@+id/meters2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/meters"
+        android:layout_marginStart="99dp"
+        android:layout_marginTop="110dp"
+        android:layout_toEndOf="@+id/boy"
+        android:background="@android:color/transparent"
+        android:focusable="false"
+        android:text="1,54"
+        android:textColor="@color/colorPrimary"
+        android:textSize="50sp" />
+
+    <TextView
+        android:id="@+id/unit2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/meters"
+        android:layout_marginStart="9dp"
+        android:layout_marginTop="29dp"
+        android:layout_toEndOf="@+id/meters"
+        android:text="m "
+        android:textColor="@color/colorPrimary"
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/unit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/unit2"
+        android:layout_marginStart="17dp"
+        android:layout_marginTop="139dp"
+        android:layout_toEndOf="@+id/meters"
+        android:text="m "
+        android:textColor="@color/colorPrimary"
+        android:textSize="24sp" />
+
+    <SeekBar
+        android:id="@+id/height"
+        android:layout_width="97dp"
+        android:layout_height="125dp"
+        android:layout_alignTop="@+id/boy"
+        android:layout_alignBottom="@+id/boy"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="-3dp"
+        android:layout_marginTop="-8dp"
+        android:layout_marginEnd="155dp"
+        android:layout_marginBottom="-17dp"
+        android:layout_toEndOf="@+id/boy"
+        android:max="150"
+        android:padding="0dp"
+        android:paddingStart="0dp"
+        android:paddingLeft="0dp"
+        android:paddingTop="0dp"
+        android:paddingEnd="0dp"
+        android:paddingRight="0dp"
+        android:paddingBottom="0dp"
+        android:progress="90"
+        android:rotation="270"
+        android:soundEffectsEnabled="true"
+        android:thumb="@drawable/measuring_tape" />
+
+    <SeekBar
+        android:id="@+id/height2"
+        android:layout_width="97dp"
+        android:layout_height="125dp"
+        android:layout_below="@+id/height"
+        android:layout_alignBottom="@+id/boy"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="55dp"
+        android:layout_marginEnd="154dp"
+        android:layout_marginBottom="-195dp"
+        android:layout_toEndOf="@+id/boy2"
+        android:max="150"
+        android:padding="0dp"
+        android:paddingStart="0dp"
+        android:paddingLeft="0dp"
+        android:paddingTop="0dp"
+        android:paddingEnd="0dp"
+        android:paddingRight="0dp"
+        android:paddingBottom="0dp"
+        android:progress="90"
+        android:rotation="270"
+        android:soundEffectsEnabled="true"
+        android:thumb="@drawable/measuring_tape" />
+
+    <TextView
+        android:id="@+id/altura"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:fillViewport="true">
+        android:layout_marginStart="41dp"
+        android:layout_marginTop="16dp"
+        android:text="Altura"
+        android:textColor="@color/colorSubmenu"
+        android:textSize="18sp" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:id="@+id/textChooseHeight"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentStart="true"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:textSize="18dp"
-                android:text="@string/choose_height"/>
-
-            <!--<View-->
-                <!--android:id="@+id/divHeight"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="1dp"-->
-                <!--android:layout_toEndOf="@id/textChooseBloodPressure"-->
-                <!--android:layout_alignBaseline="@id/textChooseBloodPressure"-->
-                <!--android:layout_marginStart="16dp"-->
-                <!--android:layout_marginEnd="16dp"-->
-                <!--android:background="?android:attr/listDivider" />-->
-
-            <android.support.v7.widget.AppCompatButton
-                android:id="@+id/botHeight"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_below="@id/textChooseHeight"
-                android:drawableStart="@drawable/ic_ruler_128"
-                android:padding="50dp"
-                android:text="@string/unit_meters"
-                android:textAlignment="center" />
-
-            <TextView
-                android:id="@+id/textChooseCircumference"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/botHeight"
-                android:layout_marginStart="16dp"
-                android:textSize="18dp"
-                android:text="@string/choose_circumference"/>
-
-            <android.support.v7.widget.AppCompatButton
-                android:id="@+id/botCircumference"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_below="@id/textChooseCircumference"
-                android:drawableStart="@drawable/ic_ruler_128"
-                android:padding="45dp"
-                android:text="@string/cm"
-                android:textAlignment="center" />
-
-            <!--<View-->
-                <!--android:id="@+id/divCircumference"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="1dp"-->
-                <!--android:layout_toEndOf="@id/textChoosePulse"-->
-                <!--android:layout_alignBaseline="@id/textChoosePulse"-->
-                <!--android:layout_marginStart="16dp"-->
-                <!--android:layout_marginEnd="16dp"-->
-                <!--android:background="?android:attr/listDivider" />-->
-
-            <View
-                android:id="@+id/botDivider"
-                android:layout_width="1dp"
-                android:layout_height="1dp"
-                android:layout_centerHorizontal="true"
-                android:layout_below="@id/botCircumference"
-                android:background="@color/transparent"/>
-
-            <android.support.v7.widget.AppCompatButton
-                android:id="@+id/btnCancel"
-                style="@style/Widget.AppCompat.Button.Colored"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toStartOf="@id/botDivider"
-                android:layout_below="@id/botDivider"
-                android:layout_marginEnd="15dp"
-                android:padding="20dp"
-                android:text="@string/cancel" />
-
-            <android.support.v7.widget.AppCompatButton
-                android:id="@+id/btnConfirm"
-                style="@style/Widget.AppCompat.Button.Colored"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/botDivider"
-                android:layout_below="@id/botDivider"
-                android:layout_marginStart="15dp"
-                android:padding="20dp"
-                android:text="@string/confirm"
-                android:textColor="@color/colorTextDark" />
-
-        </RelativeLayout>
-
-    </android.support.v4.widget.NestedScrollView>
-
+    <TextView
+        android:id="@+id/altura2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/boy"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="41dp"
+        android:layout_marginTop="50dp"
+        android:text="Cintura"
+        android:textColor="@color/colorSubmenu"
+        android:textSize="18sp" />
 </RelativeLayout>

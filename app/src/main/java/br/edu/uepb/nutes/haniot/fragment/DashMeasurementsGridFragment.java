@@ -150,56 +150,56 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
         bloodPressureManager = new BloodPressureManager(getContext());
         this.igActivity = new ItemGrid();
         igActivity.setContext(getContext());
-        igActivity.setIcon(R.drawable.ic_activity);
+        igActivity.setIcon(R.drawable.xrunning);
         igActivity.setDescription(getResources().getString(R.string.activity));
         igActivity.setMeasurementValue(this.measurementsValues.getActivity());
         igActivity.setType(ItemGridType.ACTIVITY);
 
         this.igGlucose = new ItemGrid();
         igGlucose.setContext(getContext());
-        igGlucose.setIcon(R.drawable.ic_blood_glucose);
+        igGlucose.setIcon(R.drawable.xglucosemeter);
         igGlucose.setDescription(getResources().getString(R.string.blood_glucose));
         igGlucose.setMeasurementValue(this.measurementsValues.getGlucose());
         igGlucose.setType(ItemGridType.BLOOD_GLUCOSE);
 
         this.igPressure = new ItemGrid();
         igPressure.setContext(getContext());
-        igPressure.setIcon(R.drawable.ic_blood_pressure_64);
+        igPressure.setIcon(R.drawable.xblood_pressure);
         igPressure.setDescription(getResources().getString(R.string.blood_pressure));
         igPressure.setMeasurementValue(this.measurementsValues.getPressure());
         igPressure.setType(ItemGridType.BLOOD_PRESSURE);
 
         this.igTemperature = new ItemGrid();
         igTemperature.setContext(getContext());
-        igTemperature.setIcon(R.drawable.ic_temperature);
+        igTemperature.setIcon(R.drawable.xtemperature);
         igTemperature.setDescription(getResources().getString(R.string.temperature));
         igTemperature.setMeasurementValue(this.measurementsValues.getTemperature());
         igTemperature.setType(ItemGridType.TEMPERATURE);
 
         this.igWeight = new ItemGrid();
         igWeight.setContext(getContext());
-        igWeight.setIcon(R.drawable.ic_weight);
+        igWeight.setIcon(R.drawable.xweight);
         igWeight.setDescription(getResources().getString(R.string.weight));
         igWeight.setMeasurementValue(this.measurementsValues.getWeight());
         igWeight.setType(ItemGridType.WEIGHT);
 
         this.igSleep = new ItemGrid();
         igSleep.setContext(getContext());
-        igSleep.setIcon(R.drawable.ic_sleeping);
+        igSleep.setIcon(R.drawable.xsleep);
         igSleep.setDescription(getResources().getString(R.string.sleep));
         igSleep.setMeasurementValue(this.measurementsValues.getSleep());
         igSleep.setType(ItemGridType.SLEEP);
 
         this.igHearRate = new ItemGrid();
         igHearRate.setContext(getContext());
-        igHearRate.setIcon(R.drawable.ic_heart_rate_64);
+        igHearRate.setIcon(R.drawable.xcardiogram);
         igHearRate.setDescription(getResources().getString(R.string.heart_rate));
         igHearRate.setMeasurementValue(this.measurementsValues.getHeartRate());
         igHearRate.setType(ItemGridType.HEART_RATE);
 
         this.igAnthropometric = new ItemGrid();
         igAnthropometric.setContext(getContext());
-        igAnthropometric.setIcon(R.drawable.ic_ruler_64);
+        igAnthropometric.setIcon(R.drawable.xshape);
         igAnthropometric.setDescription(getResources().getString(R.string.anthropometric));
         igAnthropometric.setMeasurementValue(this.measurementsValues.getHeight());
         igAnthropometric.setType(ItemGridType.ANTHROPOMETRIC);

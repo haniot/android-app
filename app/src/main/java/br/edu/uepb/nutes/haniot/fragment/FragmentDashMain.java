@@ -58,11 +58,11 @@ public class FragmentDashMain extends Fragment{
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         String date;
-        date = dashboardChartsFragment.getData();
-        if (date == null || date.equals("")){
-            date = dashboardChartsFragment.getToday();
-        }
-        outState.putString("date",date);
+//        date = dashboardChartsFragment.getData();
+//        if (date == null || date.equals("")){
+//            date = dashboardChartsFragment.getToday();
+//        }
+//        outState.putString("date",date);
         dashboardChartsFragment = new DashboardChartsFragment();
         dashboardChartsFragment.setArguments(outState);
         if (dashboardChartsFragment.isAdded()) {
