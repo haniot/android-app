@@ -94,8 +94,8 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     @BindView(R.id.name_device_scanner_register)
     TextView nameDeviceScannerRegister;
 
-    @BindView(R.id.txt_device_not_found)
-    TextView deviceNotFound;
+    @BindView(R.id.device_connection_status)
+    TextView deviceConnectionStatus;
 
     @BindView(R.id.txt_device_successfully_registered)
     TextView deviceSuccessfullyRegistered;
@@ -114,7 +114,6 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
 
     @BindView(R.id.devices_progressBar_bonded)
     ProgressBar progressBarBonded;
-
 
 
     @Override
@@ -156,6 +155,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     //start scanner library ble
     @Override
     protected void onResume() {
+        Log.d(TAG, "onResume: ");
         super.onResume();
         checkPermissions();
     }
@@ -290,6 +290,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
                 //case2: creating a bone
                 if (mBluetoothDevice.getBondState() == BluetoothDevice.BOND_BONDING) {
                     Log.d(TAG, "BroadcastReceiver: BOND_BONDING. " + mBluetoothDevice.getName());
+                    deviceConnectionStatus.setText(R.string.pairing_device);
 
                     if (mBluetoothDevice.getName().equals(NAME_DEVICE_YUNMAI)) {
                         //Broadcasts for balance pairing yunmai
@@ -301,6 +302,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
                 //case3: breaking a bond
                 if (mBluetoothDevice.getBondState() == BluetoothDevice.BOND_NONE) {
                     Log.d(TAG, "BroadcastReceiver: BOND_NONE.");
+                    deviceConnectionStatus.setText(R.string.failed_pairing_device);
                 }
             }
         }
@@ -381,7 +383,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
             boxResponse.setVisibility(View.VISIBLE);
         } else {
             nameDeviceScannerRegister.setText(mDevice.getName());
-            deviceNotFound.setText(R.string.device_not_found_try_again);
+            deviceConnectionStatus.setText(R.string.device_not_found_try_again);
         }
     }
 

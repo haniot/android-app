@@ -86,8 +86,8 @@ public class DeviceManagerActivity extends AppCompatActivity {
     @BindView(R.id.devices_progressBar)
     ProgressBar mProgressBar;
 
-    @BindView(R.id.message_server_disconnected)
-    TextView messageServerDisconnected;
+    @BindView(R.id.message_error_server)
+    TextView messageErrorServer;
 
     private Server server;
     private Session session;
@@ -161,10 +161,15 @@ public class DeviceManagerActivity extends AppCompatActivity {
         server.get(path, new Server.Callback() {
             @Override
             public void onError(JSONObject result) {
-
+                Log.d(LOG_TAG, "onError: ");
                 try {
-                    if (result.has("code") && result.getInt("code") == 204) {
-                        messageServerDisconnected.setVisibility(View.VISIBLE);
+                    if (result.has("code") && result.getInt("code") == 404) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                messageErrorServer.setVisibility(View.VISIBLE);
+                            }
+                        });
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
