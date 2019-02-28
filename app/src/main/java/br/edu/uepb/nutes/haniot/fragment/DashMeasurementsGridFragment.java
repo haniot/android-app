@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -23,6 +22,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.github.clans.fab.FloatingActionMenu;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -120,6 +121,8 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
     @BindView(R.id.gridMeasurement)
     RecyclerView gridMeasurement;
 
+    FloatingActionMenu fab;
+
     private DateChangedEvent measurementsValues;
 
     public DashMeasurementsGridFragment() {
@@ -134,9 +137,7 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        PreferenceManager.setDefaultValues(
-                getActivity(), R.xml.pref_manage_measurements, false);
-        this.preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        this.preferences = mContext.getSharedPreferences("device_enabled", Context.MODE_PRIVATE);
 //        Ajeitar para primeira vez que abrir o app;
         this.measurementsValues = new DateChangedEvent();
 
@@ -224,6 +225,7 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_fragment_dash2, container, false);
         ButterKnife.bind(this, view);
+        fab = getActivity().findViewById(R.id.floating_menu_main);
         initRecyclerView();
         initComponents();
         return view;
@@ -332,7 +334,7 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
                                 .HEART_RATE:
                             if (heartRateManager != null)
                                 if (heartRateManager.getConnectionState() != BluetoothGatt.STATE_CONNECTED)
-                                heartRateManager.connectDevice(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(address));
+                                    heartRateManager.connectDevice(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(address));
                             break;
                     }
 
@@ -406,6 +408,22 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
 
         // This method set the same size to all items of grid
         gridMeasurement.setHasFixedSize(true);
+
+        gridMeasurement.addOnScrollListener(new RecyclerView.OnScrollListener() {
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0 || dy < 0 && fab.isShown())
+                    fab.hideMenu(true);
+            }
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE)
+                    fab.hideMenu(false);
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+        });
         deviceTypeTag = gridMeasurement.getTag().toString();
         /**
          * Set a grid layout to recyclerview,

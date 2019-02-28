@@ -14,7 +14,8 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_marginTop="35dp">
 
             <TextView
                 android:id="@+id/textView3"
@@ -67,5 +68,15 @@
             </android.support.v7.widget.RecyclerView>
         </RelativeLayout>
     </android.support.v4.widget.NestedScrollView>
+
+    <TextView
+        android:id="@+id/textView9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="5dp"
+        android:padding="5dp"
+        android:text="Editar"
+        android:textColor="@color/colorSubmenu" />
 
 </android.support.design.widget.CoordinatorLayout>

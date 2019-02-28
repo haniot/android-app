@@ -1,51 +1,20 @@
 package br.edu.uepb.nutes.haniot.fragment;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
-import android.app.AlertDialog;
-import android.app.DatePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.AppCompatButton;
-import android.support.v7.widget.AppCompatImageButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.DatePicker;
 import android.widget.TextView;
-import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-import org.json.JSONObject;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.activity.settings.Session;
+import br.edu.uepb.nutes.haniot.activity.MainActivity;
 import br.edu.uepb.nutes.haniot.model.DateChangedEvent;
 import br.edu.uepb.nutes.haniot.model.Measurement;
-import br.edu.uepb.nutes.haniot.model.MeasurementType;
-import br.edu.uepb.nutes.haniot.model.SwipeEvent;
-import br.edu.uepb.nutes.haniot.server.historical.CallbackHistorical;
-import br.edu.uepb.nutes.haniot.server.historical.Historical;
-import br.edu.uepb.nutes.haniot.server.historical.HistoricalType;
-import br.edu.uepb.nutes.haniot.server.historical.Params;
-import br.edu.uepb.nutes.haniot.utils.DateUtils;
-import br.edu.uepb.nutes.haniot.utils.Log;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -129,6 +98,9 @@ public class DashboardChartsFragment extends Fragment
 //    private float calories;
 //    private float distance;
 
+    @BindView(R.id.patientName)
+    TextView patientName;
+
     public DashboardChartsFragment() {
         // Required empty public constructor
     }
@@ -141,7 +113,6 @@ public class DashboardChartsFragment extends Fragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
 //        //Inicia a sessão com o ID logado e pega as medições do tipo STEPS
 //        session = new Session(getContext());
 //        params = new Params(session.get_idLogged(), -1);
@@ -158,6 +129,18 @@ public class DashboardChartsFragment extends Fragment
 //        }
 //
 //        _eventBus = EventBus.getDefault();
+
+
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnItemSelectedListener) {
+            listener = (OnItemSelectedListener) context;
+        } else {
+            throw new ClassCastException();
+        }
     }
 
     //This method is used when the user turn the screen
@@ -175,6 +158,9 @@ public class DashboardChartsFragment extends Fragment
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_fragment_dash1, container, false);
         ButterKnife.bind(this, view);
+        ((MainActivity) getActivity()).updateApi(updateFrag);
+        updateDetail("");
+
 //
 //        //Data é atual salva quando abre o aplicativo
 //        today = DateUtils.getCurrentDatetime(getResources().getString(R.string.date_format));
@@ -203,7 +189,8 @@ public class DashboardChartsFragment extends Fragment
 //        getPatientId();
         return view;
     }
-//    //Get the patient id and enable/disable the control buttons of dashboard
+
+    //    //Get the patient id and enable/disable the control buttons of dashboard
 //    public void getPatientId() {
 //        String lastId = session.getString(getResources().getString(R.string.id_last_patient));
 //        if (!lastId.equals("")) {
@@ -242,6 +229,17 @@ public class DashboardChartsFragment extends Fragment
 //            distanceProgressBar.setEnabled(false);
 //        }
 //    }
+    MainActivity.UpdateFrag updateFrag = new MainActivity.UpdateFrag() {
+        @Override
+        public void updateName(String name) {
+            patientName.setText(name);
+        }
+
+        @Override
+        public void updateMeasurement(Measurement measurement) {
+
+        }
+    };
 
     @Override
     public void onStart() {
@@ -261,7 +259,8 @@ public class DashboardChartsFragment extends Fragment
     }
 
     @Subscribe
-    public void onDateChanged(DateChangedEvent e){ }
+    public void onDateChanged(DateChangedEvent e) {
+    }
 
     @Override
     public void onResume() {
@@ -269,7 +268,7 @@ public class DashboardChartsFragment extends Fragment
 //        getPatientId();
     }
 
-//    //Formatt the date of dashboard
+    //    //Formatt the date of dashboard
 //    public void updateTextDate(Date dateToText) {
 //        Locale current = getResources().getConfiguration().locale;
 //        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(getResources().getString(R.string.date_format_week_day_year), current);
@@ -861,5 +860,14 @@ public class DashboardChartsFragment extends Fragment
 //                .showSoftInput(textDate, InputMethodManager.SHOW_IMPLICIT);
 //
 //    }
+// Dispara o metodo implementado pela Activity
+    public void updateDetail(String link) {
+        listener.onItemSelected(link);
+    }
 
+    private OnItemSelectedListener listener;
+
+    public interface OnItemSelectedListener {
+        public void onItemSelected(String link);
+    }
 }

@@ -3,21 +3,15 @@ package br.edu.uepb.nutes.haniot.activity;
 import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.SpannableString;
-import android.text.style.StyleSpan;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,11 +26,13 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.account.LoginActivity;
+import br.edu.uepb.nutes.haniot.activity.settings.ManagerMeasurementsActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.activity.settings.SettingsActivity;
 import br.edu.uepb.nutes.haniot.adapter.FragmentPageAdapter;
+import br.edu.uepb.nutes.haniot.fragment.DashboardChartsFragment;
+import br.edu.uepb.nutes.haniot.model.Measurement;
 import br.edu.uepb.nutes.haniot.model.SendMeasurementsEvent;
-import br.edu.uepb.nutes.haniot.service.ManagerDevices.BluetoohManager;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -48,7 +44,7 @@ import butterknife.ButterKnife;
  * @version 1.0
  * @copyright Copyright (c) 2017, NUTES UEPB
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements DashboardChartsFragment.OnItemSelectedListener {
     private final String TAG = "MainActivity";
     private final int REQUEST_ENABLE_BLUETOOTH = 1;
     private final int REQUEST_ENABLE_LOCATION = 2;
@@ -91,16 +87,17 @@ public class MainActivity extends AppCompatActivity {
         this._eventBus = EventBus.getDefault();
 
         newMeasureButton.setOnClickListener(v -> {
-            Intent it = new Intent(this, SettingsActivity.class);
-            it.putExtra("settingType", 2);
+            Intent it = new Intent(this, ManagerMeasurementsActivity.class);
             floatingMenu.close(false);
             startActivity(it);
         });
         btnSendMeasurement.setOnClickListener(c -> {
-            postEvent();
+
+//            postEvent();
         });
-       // BluetoohManager bluetoohManager = new BluetoohManager(this);
-       // BluetoothDevice device = BluetoothAdapter.getDefaultAdapter().getRemoteDevice("1C:87:74:01:73:10");
+
+        // BluetoohManager bluetoohManager = new BluetoohManager(this);
+        // BluetoothDevice device = BluetoothAdapter.getDefaultAdapter().getRemoteDevice("1C:87:74:01:73:10");
         //bluetoohManager.connectDevice(device);
     }
 
@@ -109,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
 
         _eventBus.register(this);
+
     }
 
     @Override
@@ -285,5 +283,24 @@ public class MainActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     private void postEvent() {
         EventBus.getDefault().post(new SendMeasurementsEvent());
+    }
+
+    @Override
+    public void onItemSelected(String link) {
+        updatfrag.updateName("Paola Leal");
+
+    }
+
+    public interface UpdateFrag {
+        void updateName(String name);
+
+        void updateMeasurement(Measurement measurement);
+
+    }
+
+    UpdateFrag updatfrag;
+
+    public void updateApi(UpdateFrag listener) {
+        updatfrag = listener;
     }
 }

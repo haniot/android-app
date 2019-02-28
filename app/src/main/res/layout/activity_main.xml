@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:fitsSystemWindows="true"
         android:layout_marginBottom="8dp"
+        app:elevation="0dp"
         app:layout_anchorGravity="top|start">
 
         <android.support.v7.widget.Toolbar
@@ -24,7 +25,7 @@
             android:minHeight="?attr/actionBarSize"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:elevation="0dp"
-            app:layout_scrollFlags="scroll|enterAlways"
+            app:layout_collapseMode="pin"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
             app:titleTextColor="@android:color/background_light" />
 
