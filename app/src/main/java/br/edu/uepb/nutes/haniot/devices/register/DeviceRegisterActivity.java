@@ -291,6 +291,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
                 if (mBluetoothDevice.getBondState() == BluetoothDevice.BOND_BONDING) {
                     Log.d(TAG, "BroadcastReceiver: BOND_BONDING. " + mBluetoothDevice.getName());
                     deviceConnectionStatus.setText(R.string.pairing_device);
+                    btnDeviceRegisterScanner.setEnabled(false);
 
                     if (mBluetoothDevice.getName().equals(NAME_DEVICE_YUNMAI)) {
                         //Broadcasts for balance pairing yunmai

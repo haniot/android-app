@@ -3,7 +3,6 @@ package br.edu.uepb.nutes.haniot.devices.register;
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -36,7 +35,6 @@ import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
-import br.edu.uepb.nutes.haniot.adapter.BluetoothDeviceAdapter;
 import br.edu.uepb.nutes.haniot.adapter.DeviceAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
 import br.edu.uepb.nutes.haniot.model.Device;
@@ -88,6 +86,10 @@ public class DeviceManagerActivity extends AppCompatActivity {
 
     @BindView(R.id.message_error_server)
     TextView messageErrorServer;
+
+    @BindView(R.id.devices_registered_available)
+    LinearLayout boxRegisteredAvailable;
+
 
     private Server server;
     private Session session;
@@ -162,18 +164,14 @@ public class DeviceManagerActivity extends AppCompatActivity {
             @Override
             public void onError(JSONObject result) {
                 Log.d(LOG_TAG, "onError: ");
-                try {
-                    if (result.has("code") && result.getInt("code") == 404) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                messageErrorServer.setVisibility(View.VISIBLE);
-                            }
-                        });
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        messageErrorServer.setVisibility(View.VISIBLE);
+                        boxRegisteredAvailable.setVisibility(View.INVISIBLE);
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                });
                 displayLoading(false);
             }
 
