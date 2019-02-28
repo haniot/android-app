@@ -99,7 +99,6 @@ public class DeviceManagerActivity extends AppCompatActivity {
 
     private DeviceDAO mDeviceDAO;
     private Device mDevice;
-    private BluetoothDevice bthDevice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

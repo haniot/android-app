@@ -112,9 +112,6 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     @BindView(R.id.pulsator)
     PulsatorLayout mPulsatorLayout;
 
-    @BindView(R.id.devices_progressBar_bonded)
-    ProgressBar progressBarBonded;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -303,6 +300,10 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
                 //case3: breaking a bond
                 if (mBluetoothDevice.getBondState() == BluetoothDevice.BOND_NONE) {
                     Log.d(TAG, "BroadcastReceiver: BOND_NONE.");
+
+                    if (mBluetoothDevice.getName().equals(NAME_DEVICE_YUNMAI)) {
+                        unregisterReceiver(broadCastReceiver);
+                    }
                     deviceConnectionStatus.setText(R.string.failed_pairing_device);
                 }
             }
@@ -319,6 +320,8 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
             if (BluetoothDevice.ACTION_PAIRING_REQUEST.equals(action)) {
                 BluetoothDevice bluetoothDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 bluetoothDevice.setPin(PIN_YUNMAI.getBytes());
+                //does not display the pairing request for the user
+                abortBroadcast();
                 Log.e(TAG, "Auto-entering pin: " + PIN_YUNMAI);
             }
         }
@@ -414,7 +417,6 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
             if (mScanner != null) {
                 //removes a device from the local database and server
                 removeDeviceForType(mDevice);
-
                 mScanner.stopScan();
                 animationScanner(true);
                 mScanner.startScan(mScanCallback);

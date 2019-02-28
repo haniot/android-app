@@ -680,9 +680,6 @@
     <string name="settings_summary_configure_device">Gerencie seus dispositivos registrados ou insira novos.</string>
     <string name="failed_pairing_device">Falha ao parear dispositivo</string>
     <string name="pairing_device">Pareando dispositivo...</string>
-    <string name="Error_requesting_data_server">Erro ao solicitar dados ao servidor</string>
-
-
 
 
     <!--GLUCOSE STATUS ANNUNCIATION-->

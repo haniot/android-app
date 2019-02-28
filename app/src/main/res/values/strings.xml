@@ -833,8 +833,6 @@
     <string name="settings_summary_configure_device">Manage your registered devices or insert new ones.</string>
     <string name="failed_pairing_device">Failed pairing device</string>
     <string name="pairing_device">Pairing device...</string>
-    <string name="Error_requesting_data_server">Error requesting data to server</string>
-
 
     <string name="title_activity_manage_children">ManageChildrenActivity</string>
 
