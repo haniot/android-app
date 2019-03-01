@@ -40,37 +40,5 @@
 
     </android.support.v4.view.ViewPager>
 
-    <com.github.clans.fab.FloatingActionMenu
-        android:id="@+id/floating_menu_main"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
-        fab:menu_labels_colorNormal="@color/cardview_light_background"
-        fab:menu_labels_ellipsize="end"
-        fab:menu_labels_singleLine="true"
-        fab:menu_labels_textColor="@color/cardview_dark_background"
-        app:menu_colorNormal="@color/colorPrimary"
-        app:menu_colorPressed="@color/colorPrimaryDark">
-
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/sendToServerButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_action_send"
-            app:fab_label="@string/send_measurements_to_server"
-            app:fab_colorNormal="@color/colorPrimary"
-            app:fab_colorPressed="@color/colorPrimaryDark"/>
-
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/newMeasureButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_stethoscope"
-            app:fab_label="@string/manage_measurement_title"
-            app:fab_colorNormal="@color/colorPrimary"
-            app:fab_colorPressed="@color/colorPrimaryDark"/>
-
-    </com.github.clans.fab.FloatingActionMenu>
 
 </android.support.design.widget.CoordinatorLayout>

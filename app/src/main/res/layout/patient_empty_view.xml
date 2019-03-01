@@ -5,30 +5,34 @@
 
     <ImageView
         android:id="@+id/patiengImg"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
-        android:background="@drawable/patient_large"
-        android:layout_centerInParent="true"
-        android:alpha=".50"/>
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="93dp"
+        android:alpha=".50"
+        android:background="@drawable/no_patient" />
 
-    <android.support.v7.widget.AppCompatTextView
+    <TextView
         android:id="@+id/text_empty_patient"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/no_patient_registered"
         android:layout_below="@id/patiengImg"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
-        android:textSize="28sp"
-        android:gravity="center"/>
+        android:gravity="center"
+        android:text="@string/no_patient_registered"
+        android:textColor="@color/colorSubmenu"
+        android:textSize="14sp" />
 
-    <android.support.v7.widget.AppCompatTextView
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/try_again_later"
         android:layout_below="@id/text_empty_patient"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"
-        android:textSize="18sp"/>
+        android:layout_alignEnd="@+id/patiengImg"
+        android:layout_marginTop="7dp"
+        android:text="Adicionar"
+        android:textColor="@color/colorPrimary"
+        android:textSize="14sp" />
 
 </RelativeLayout>

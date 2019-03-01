@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,20 +8,21 @@
     <!-- TODO: Update blank fragment layout -->
 
     <android.support.v4.widget.NestedScrollView
+        android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:fillViewport="true">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="35dp">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp">
 
             <TextView
-                android:id="@+id/textView3"
+                android:id="@+id/not_monitoring_message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/imageView2"
+                android:layout_below="@+id/icon_not_monitoring"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="12dp"
                 android:gravity="center"
@@ -30,10 +31,10 @@
                 android:textSize="14sp" />
 
             <TextView
-                android:id="@+id/textView7"
+                android:id="@+id/add_monitor"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/textView3"
+                android:layout_below="@+id/not_monitoring_message"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="7dp"
                 android:text="Adicionar"
@@ -41,7 +42,7 @@
                 android:textSize="14sp" />
 
             <ImageView
-                android:id="@+id/imageView2"
+                android:id="@+id/icon_not_monitoring"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_alignParentStart="true"
@@ -56,7 +57,7 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/gridMeasurement"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
                 android:background="@android:color/transparent"
@@ -70,13 +71,17 @@
     </android.support.v4.widget.NestedScrollView>
 
     <TextView
-        android:id="@+id/textView9"
+        android:id="@+id/edit_monitor"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="5dp"
+        android:layout_height="50dp"
+        android:layout_gravity="bottom|end"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="5dp"
         android:padding="5dp"
-        android:text="Editar"
-        android:textColor="@color/colorSubmenu" />
+        android:text="Gerenciar medições"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/nestedScrollView" />
 
-</android.support.design.widget.CoordinatorLayout>
+</android.support.constraint.ConstraintLayout>

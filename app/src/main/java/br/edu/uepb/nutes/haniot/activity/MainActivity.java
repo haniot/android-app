@@ -59,12 +59,6 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
     Toolbar toolbar;
     @BindView(R.id.viewpager)
     ViewPager viewPager;
-    @BindView(R.id.newMeasureButton)
-    FloatingActionButton newMeasureButton;
-    @BindView(R.id.floating_menu_main)
-    FloatingActionMenu floatingMenu;
-    @BindView(R.id.sendToServerButton)
-    FloatingActionButton btnSendMeasurement;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,15 +80,9 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
 
         this._eventBus = EventBus.getDefault();
 
-        newMeasureButton.setOnClickListener(v -> {
-            Intent it = new Intent(this, ManagerMeasurementsActivity.class);
-            floatingMenu.close(false);
-            startActivity(it);
-        });
-        btnSendMeasurement.setOnClickListener(c -> {
+       // newMeasureButton.setOnClickListener(v -> {
 
-//            postEvent();
-        });
+       // });
 
         // BluetoohManager bluetoohManager = new BluetoohManager(this);
         // BluetoothDevice device = BluetoothAdapter.getDefaultAdapter().getRemoteDevice("1C:87:74:01:73:10");
@@ -125,9 +113,6 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
         if (!(new Session(this).isLogged())) {
             startActivity(new Intent(this, LoginActivity.class));
             finish();
-        }
-        if (floatingMenu.isOpened()) {
-            floatingMenu.close(true);
         }
         checkLastPatientAndUpdateTabTitle();
     }

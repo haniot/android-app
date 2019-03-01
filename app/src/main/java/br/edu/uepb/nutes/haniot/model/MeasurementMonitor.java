@@ -4,18 +4,23 @@ import android.content.Context;
 
 import br.edu.uepb.nutes.haniot.R;
 
-public class ItemGrid {
-
+public class MeasurementMonitor {
+    public static final int CONNECTED = 0;
+    public static final int DISCONNECTED = 1;
+    public static final int NO_REGISTERED = 2;
+    public static final int RECEIVING = 3;
     private int icon;
     private String description;
     private String name;
     private String measurementValue;
     private String measurementInitials;
+    private String time;
     private int type;
+    private int status;
     //used to access strings
     private Context context;
 
-    public ItemGrid() {
+    public MeasurementMonitor() {
     }
 
     public Context getContext() {
@@ -30,9 +35,9 @@ public class ItemGrid {
         return type;
     }
 
-//    To each new button on grid, add the type here
+    //    To each new button on grid, add the type here
     public void setType(int type) {
-        switch (type){
+        switch (type) {
 
             case ItemGridType.HEART_RATE:
 
@@ -125,12 +130,25 @@ public class ItemGrid {
         this.measurementInitials = measurementInitials;
     }
 
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
     @Override
     public String toString() {
-        return "ItemGrid{" +
+        return "MeasurementMonitor{" +
                 "icon=" + icon +
                 ", description='" + description + '\'' +
                 ", name='" + name + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return this.type == ((MeasurementMonitor) obj).type;
     }
 }
