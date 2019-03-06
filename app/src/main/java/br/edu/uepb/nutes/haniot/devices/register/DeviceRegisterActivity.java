@@ -25,7 +25,6 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -33,8 +32,6 @@ import com.google.gson.Gson;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Method;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
@@ -42,16 +39,15 @@ import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.model.Device;
 import br.edu.uepb.nutes.haniot.model.dao.DeviceDAO;
 import br.edu.uepb.nutes.haniot.server.Server;
-import br.edu.uepb.nutes.simplebleconnect.scanner.SimpleBleScanner;
-import br.edu.uepb.nutes.simplebleconnect.scanner.SimpleScanCallback;
-import br.edu.uepb.nutes.simplebleconnect.utils.GattAttributes;
+import br.edu.uepb.nutes.haniot.utils.GattAttributes;
+import br.edu.uepb.nutes.simpleblescanner.SimpleBleScanner;
+import br.edu.uepb.nutes.simpleblescanner.SimpleScannerCallback;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import pl.bclogic.pulsator4droid.library.PulsatorLayout;
 
 public class DeviceRegisterActivity extends AppCompatActivity implements View.OnClickListener {
     private final String TAG = "DeviceRegisterActivity ";
-
 
     private final String NAME_DEVICE_THERM_DL8740 = "Ear Thermometer DL8740";
     private final String NAME_DEVICE_GLUCOMETER_PERFORMA = "Accu-Chek Performa Connect";
@@ -168,8 +164,6 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     /**
      * Checks if you have permission to use.
      * Required bluetooth ble and location.
-     *
-     * @return boolean
      */
     private void checkPermissions() {
         if (!BluetoothAdapter.getDefaultAdapter().isEnabled()) {
@@ -228,10 +222,9 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         }
     }
 
-    public final SimpleScanCallback mScanCallback = new SimpleScanCallback() {
-
+    public final SimpleScannerCallback mScanCallback = new SimpleScannerCallback() {
         @Override
-        public void onScanResult(int callbackType, ScanResult scanResult) {
+        public void onScanResult(int callbackType, @NonNull ScanResult scanResult) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 btDevice = scanResult.getDevice();
             }
@@ -245,7 +238,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         }
 
         @Override
-        public void onBatchScanResults(List<ScanResult> scanResults) {
+        public void onBatchScanResults(@NonNull List<ScanResult> scanResults) {
             throw new UnsupportedOperationException();
         }
 
@@ -272,7 +265,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
 
-            if (action.equals(BluetoothDevice.ACTION_BOND_STATE_CHANGED)) {
+            if (action != null && action.equals(BluetoothDevice.ACTION_BOND_STATE_CHANGED)) {
                 BluetoothDevice mBluetoothDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 
                 //case1: bonded already
@@ -346,25 +339,28 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     public void populateView() {
         if (mDevice == null) return;
         nameDeviceScannerRegister.setText(mDevice.getName());
+        if (mDevice.getName().equalsIgnoreCase(NAME_DEVICE_THERM_DL8740)) {
+            imgDeviceRegister.setImageResource(R.drawable.device_thermometer_philips_dl8740);
+            return;
+        }
         imgDeviceRegister.setImageResource(mDevice.getImg());
     }
-
 
     public String getServiceUuidDevice(String nameDevice) {
         String service = null;
 
         if (!nameDevice.isEmpty()) {
-            if (nameDevice.equals(NAME_DEVICE_THERM_DL8740)) {
+            if (nameDevice.equalsIgnoreCase(NAME_DEVICE_THERM_DL8740)) {
                 service = GattAttributes.SERVICE_HEALTH_THERMOMETER;
-            } else if (nameDevice.equals(NAME_DEVICE_GLUCOMETER_PERFORMA)) {
+            } else if (nameDevice.equalsIgnoreCase(NAME_DEVICE_GLUCOMETER_PERFORMA)) {
                 service = GattAttributes.SERVICE_GLUCOSE;
-            } else if (nameDevice.equals(NAME_DEVICE_SCALE_1501)) {
+            } else if (nameDevice.equalsIgnoreCase(NAME_DEVICE_SCALE_1501)) {
                 service = SERVICE_SCALE_1501;
-            } else if (nameDevice.equals(NAME_DEVICE_HEART_RATE_H7)) {
+            } else if (nameDevice.equalsIgnoreCase(NAME_DEVICE_HEART_RATE_H7)) {
                 service = GattAttributes.SERVICE_HEART_RATE;
-            } else if (nameDevice.equals(NAME_DEVICE_HEART_RATE_H10)) {
+            } else if (nameDevice.equalsIgnoreCase(NAME_DEVICE_HEART_RATE_H10)) {
                 service = GattAttributes.SERVICE_HEART_RATE;
-            } else if (nameDevice.equals(NAME_DEVICE_SMARTBAND_MI2)) {
+            } else if (nameDevice.equalsIgnoreCase(NAME_DEVICE_SMARTBAND_MI2)) {
                 service = GattAttributes.SERVICE_STEPS_DISTANCE_CALORIES;
             }
         }
@@ -434,9 +430,9 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     }
 
     /**
-     * @param device
-     * @return
-     * @throws JSONException
+     * Convert Device in JSON
+     *
+     * @param device {@link Device}
      */
     public String deviceToJson(Device device) {
         JSONObject result = new JSONObject();
@@ -452,12 +448,16 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         return String.valueOf(result);
     }
 
+    /**
+     * Save device in remote server.
+     *
+     * @param device {@link Device}
+     */
     public void saveDeviceRegister(final Device device) {
         String path = "devices/".concat("/users/").concat(session.get_idLogged());
         server.post(path, this.deviceToJson(device), new Server.Callback() {
             @Override
             public void onError(JSONObject result) {
-                Log.d(TAG, "onError:");
             }
 
             @Override
@@ -471,8 +471,11 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     }
 
     /**
-     * check during the scanner whether a device is already saved on the server and removes from the local DB server
-     **/
+     * Remove device according to its type.
+     * This ensures that only one device per type will be registered.
+     *
+     * @param device {@link Device}
+     */
     public void removeDeviceForType(Device device) {
         for (Device d : mDeviceDAO.list(session.getIdLogged())) {
             if (d.getTypeId() == device.getTypeId()) {

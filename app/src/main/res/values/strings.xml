@@ -815,7 +815,7 @@
     <string name="title_devices_available">Availables</string>
     <string name="thermometer">Thermometer</string>
     <string name="find_device">Find device</string>
-    <string name="remove_device">Do you want to remove the %s from your list?</string>
+    <string name="remove_device">Are you sure you want to remove %s?\nOnce removed, it will not be possible to recover the data from this device.</string>
     <string name="remove">Remove</string>
     <string name="start_scanner">Start scanner</string>
     <string name="stop_scanner">Stop scanner</string>
@@ -832,7 +832,7 @@
     <string name="settings_configure_device">Configure Devices</string>
     <string name="settings_summary_configure_device">Manage your registered devices or insert new ones.</string>
     <string name="failed_pairing_device">Failed pairing device</string>
-    <string name="pairing_device">Pairing device...</string>
+    <string name="pairing_device">Pairing device&#8230;</string>
 
     <string name="title_activity_manage_children">ManageChildrenActivity</string>
 
@@ -920,10 +920,6 @@
     <string name="accu_check_pref">accu_check</string>
     <string name="body_composition_yunmai_pref">body_composition_yunmai</string>
     <string name="body_composition_omron_pref">body_composition_omron</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_patient_historical">PatientHistoricalActivity</string>
 
     <!-- TokenExpirationService -->
     <string name="token_expired" translatable="false">Token Expired</string>
