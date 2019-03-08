@@ -209,7 +209,7 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
         }
 
         @Override
-        public void onMeasurementReceiving(String bodyMassMeasurement, String bodyMassUnit) {
+        public void onMeasurementReceiving(String bodyMassMeasurement, long timeStamp, String bodyMassUnit) {
             runOnUiThread(() -> {
                 bodyMassTextView.setText(bodyMassMeasurement);
                 bodyMassUnitTextView.setText(bodyMassUnit);

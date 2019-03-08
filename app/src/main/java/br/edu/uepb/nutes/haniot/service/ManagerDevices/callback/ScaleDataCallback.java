@@ -19,7 +19,7 @@ public interface ScaleDataCallback {
      */
     void onMeasurementReceiver(Measurement measurementScale);
 
-    void onMeasurementReceiving(String bodyMassMeasurement, String bodyMassUnit);
+    void onMeasurementReceiving(String bodyMassMeasurement, long timeStamp, String bodyMassUnit);
 
 
 }

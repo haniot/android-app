@@ -64,6 +64,7 @@ public class GridDashAdapter extends BaseAdapter<MeasurementMonitor> {
                 h.timeIcon.setVisibility(View.VISIBLE);
                 h.textMeasurement.setText(ig.getMeasurementValue());
                 h.textMeasurementType.setText(ig.getMeasurementInitials());
+                h.texTime.setText(ig.getTime());
             }
 
             if (ig.getStatus() == 0) {

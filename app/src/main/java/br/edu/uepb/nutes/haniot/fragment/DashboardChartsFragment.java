@@ -11,10 +11,11 @@ import android.widget.TextView;
 
 import org.greenrobot.eventbus.Subscribe;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.activity.MainActivity;
 import br.edu.uepb.nutes.haniot.model.DateChangedEvent;
-import br.edu.uepb.nutes.haniot.model.Measurement;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -101,32 +102,24 @@ public class DashboardChartsFragment extends Fragment
     @BindView(R.id.patientName)
     TextView patientName;
 
+    @BindView(R.id.textDate)
+    TextView textDate;
+
+    @BindView(R.id.textValueMeasurement)
+    TextView textValueMeasurement;
+
+    @BindView(R.id.textIMC)
+    TextView textIMC;
+
     public DashboardChartsFragment() {
         // Required empty public constructor
-    }
-
-    public static DashboardChartsFragment newInstance(String param1, String param2) {
-        DashboardChartsFragment fragment = new DashboardChartsFragment();
-        return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        //Inicia a sessão com o ID logado e pega as medições do tipo STEPS
-//        session = new Session(getContext());
-//        params = new Params(session.get_idLogged(), -1);
-//
-//        //Formata a data para o dia / mes / ano
-//        simpleDateFormat = new SimpleDateFormat(getResources().getString(R.string.date_format));
-//        calendar = Calendar.getInstance();
-//
-//        //Usado para quando virar a tela manter a data
-//        if (savedInstanceState != null) {
-//            this.date = savedInstanceState.getString("date");
-//        } else {
-//            this.date = simpleDateFormat.format(calendar.getTime());
-//        }
+
+
 //
 //        _eventBus = EventBus.getDefault();
 
@@ -136,11 +129,6 @@ public class DashboardChartsFragment extends Fragment
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnItemSelectedListener) {
-            listener = (OnItemSelectedListener) context;
-        } else {
-            throw new ClassCastException();
-        }
     }
 
     //This method is used when the user turn the screen
@@ -152,15 +140,32 @@ public class DashboardChartsFragment extends Fragment
 
     }
 
+    private double calcIMC(double weight) {
+        double altura = 1.9;
+        double imc = weight / (altura * altura);
+
+        return imc;
+    }
+
+    public void updateValueMeasurement(String valueMeasurement) {
+        textValueMeasurement.setText(valueMeasurement);
+        textIMC.setText(String.format("%.2f", calcIMC(Double.parseDouble(valueMeasurement))));
+    }
+
+    public void updateNamePatient(String name) {
+        patientName.setText(name);
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_fragment_dash1, container, false);
+        View view = inflater.inflate(R.layout.fragment_charts_dashboard, container, false);
         ButterKnife.bind(this, view);
-        ((MainActivity) getActivity()).updateApi(updateFrag);
-        updateDetail("");
 
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(getResources().getString(R.string.date_format2));
+        textDate.setText(simpleDateFormat.format(calendar.getTime()));
 //
 //        //Data é atual salva quando abre o aplicativo
 //        today = DateUtils.getCurrentDatetime(getResources().getString(R.string.date_format));
@@ -229,17 +234,6 @@ public class DashboardChartsFragment extends Fragment
 //            distanceProgressBar.setEnabled(false);
 //        }
 //    }
-    MainActivity.UpdateFrag updateFrag = new MainActivity.UpdateFrag() {
-        @Override
-        public void updateName(String name) {
-            patientName.setText(name);
-        }
-
-        @Override
-        public void updateMeasurement(Measurement measurement) {
-
-        }
-    };
 
     @Override
     public void onStart() {
@@ -861,13 +855,8 @@ public class DashboardChartsFragment extends Fragment
 //
 //    }
 // Dispara o metodo implementado pela Activity
-    public void updateDetail(String link) {
-        listener.onItemSelected(link);
-    }
 
-    private OnItemSelectedListener listener;
-
-    public interface OnItemSelectedListener {
-        public void onItemSelected(String link);
+    public interface Communicator {
+        void respond(String data);
     }
 }

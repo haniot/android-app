@@ -14,18 +14,14 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.adapter.ManagePatientAdapter;
@@ -61,7 +57,7 @@ public class ManagePatientsActivity extends AppCompatActivity {
 
     }
 
-    private void initComponents(){
+    private void initComponents() {
 
         List<Patient> patients;
 
@@ -89,39 +85,41 @@ public class ManagePatientsActivity extends AppCompatActivity {
 
                 Snackbar snackbar = null;
                 if (patient != null) {
-                    Log.d("TESTE","Removendo o paciente "+patient.getName());
+                    Log.d("TESTE", "Removendo o paciente " + patient.getName());
                     if (adapter.getSearchQuerry().isEmpty()) {
                         int newPosition = adapter.searchOldPatientPosition(patient);
 
                         adapter.removeItem(patient, newPosition
-                                ,adapter.REMOVE_TYPE_NOT_FILTERED);
+                                , adapter.REMOVE_TYPE_NOT_FILTERED);
                         snackbar = Snackbar
                                 .make(recyclerViewPatient, getResources().getString(R.string.patient_removed)
                                         , Snackbar.LENGTH_LONG).setAction(getResources()
                                         .getString(R.string.undo), view -> {
-                                    adapter.restoreItem(patient,newPosition,viewHolder.itemView);
+                                    adapter.restoreItem(patient, newPosition, viewHolder.itemView);
                                 });
-                    }else{
+                    } else {
                         adapter.removeItem(patient, viewHolder.getAdapterPosition()
-                                ,adapter.REMOVE_TYPE_FILTERED);
+                                , adapter.REMOVE_TYPE_FILTERED);
                         snackbar = Snackbar
                                 .make(recyclerViewPatient, getResources().getString(R.string.patient_removed)
                                         , Snackbar.LENGTH_LONG).setAction(getResources()
                                         .getString(R.string.undo), view -> {
-                                    adapter.restoreItem(patient,position,viewHolder.itemView);
+                                    adapter.restoreItem(patient, position, viewHolder.itemView);
                                 });
                     }
-                }else{
-                    Log.d("TESTE","Não encontrei o paciente");
+                } else {
+                    Log.d("TESTE", "Não encontrei o paciente");
                 }
 
                 if (snackbar != null) snackbar.show();
             }
+
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder,
                                   RecyclerView.ViewHolder target) {
                 return false;
             }
+
             @Override
             public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
                 if (adapter.getItemsSize() > 0) {
@@ -153,16 +151,12 @@ public class ManagePatientsActivity extends AppCompatActivity {
 
     private void loadData() {
         List<String> l = new ArrayList<String>();
-        l.add("joao");
-        l.add("tiago");
-        l.add("jonatas");
-        l.add("felipe");
-        l.add("maria");
-        l.add("jose");
-        l.add("lucas");
-        l.add("ramom");
-        l.add("luis");
-        l.add("josue");
+        l.add("Fábio Júnior");
+        l.add("Ana Beatriz");
+        l.add("Paulina Leal");
+        l.add("Douglas Rafael");
+        l.add("Isabele");
+        l.add("Paulo Barbosa");
 
         List<String> l2 = new ArrayList<String>();
         l2.add("Masculino");
@@ -170,13 +164,13 @@ public class ManagePatientsActivity extends AppCompatActivity {
 
         Patient patient;
         SimpleDateFormat spn = new SimpleDateFormat("dd/MM/yyyy");
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < l.size() - 1; i++) {
             patient = new Patient();
             patient.set_id(String.valueOf(i * 65478));
             patient.setRegisterDate(spn.format(Calendar.getInstance().getTime()));
             patient.setName(l.get(i));
             patient.setAge(i);
-            patient.setSex(l2.get((int )(Math.random() * 1 + 0)));
+            patient.setSex(l2.get((int) (Math.random() * 1 + 0)));
             patientList.add(patient);
         }
     }
@@ -241,13 +235,19 @@ public class ManagePatientsActivity extends AppCompatActivity {
 
             case R.id.btnAddPatient:
 
-//                for (Patient patient : patientList) {
-//                    if (PatientDAO.getInstance(getApplicationContext()).save(patient)){
-//
-//                    }
-//                }
-                break;
+                for (Patient patient : patientList) {
+                    if (PatientDAO.getInstance(getApplicationContext()).save(patient)) {
 
+                    }
+                }
+                break;
+            case R.id.add_patient:
+                for (Patient patient : patientList) {
+                    if (PatientDAO.getInstance(getApplicationContext()).save(patient)) {
+
+                    }
+                }
+                break;
         }
 
         return super.onOptionsItemSelected(item);

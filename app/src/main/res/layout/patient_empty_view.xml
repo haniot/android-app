@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ImageView
         android:id="@+id/patiengImg"
@@ -11,7 +12,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="93dp"
         android:alpha=".50"
-        android:background="@drawable/no_patient" />
+        android:src="@drawable/no_patient" />
 
     <TextView
         android:id="@+id/text_empty_patient"
@@ -26,6 +27,7 @@
         android:textSize="14sp" />
 
     <TextView
+        android:id="@+id/add_patient"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/text_empty_patient"

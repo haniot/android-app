@@ -5,15 +5,11 @@
 
     <!-- TODO: Update blank fragment layout -->
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/dash_swiperefresh"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
         <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fillViewport="true">
+            android:fillViewport="true"
+            >
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -21,7 +17,7 @@
                 android:orientation="vertical">
 
                 <FrameLayout
-                    android:id="@+id/frame1"
+                    android:id="@+id/frameCharts"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent">
@@ -29,7 +25,7 @@
                 </FrameLayout>
 
                 <FrameLayout
-                    android:id="@+id/frame2"
+                    android:id="@+id/frameMeasurements"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@android:color/transparent">
@@ -40,6 +36,5 @@
 
         </android.support.v4.widget.NestedScrollView>
 
-    </android.support.v4.widget.SwipeRefreshLayout>
 
 </android.support.design.widget.CoordinatorLayout>

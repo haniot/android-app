@@ -180,7 +180,7 @@
                 app:cpb_progressbar_width="1dp" />
 
             <TextView
-                android:id="@+id/textCalories"
+                android:id="@+id/textValueMeasurement"
                 android:layout_width="85dp"
                 android:layout_height="wrap_content"
                 android:layout_above="@+id/lightProgress2"
@@ -195,7 +195,7 @@
                 android:id="@+id/textUnit"
                 android:layout_width="85dp"
                 android:layout_height="wrap_content"
-                android:layout_above="@+id/textCalories"
+                android:layout_above="@+id/textValueMeasurement"
                 android:layout_centerHorizontal="true"
                 android:text="bpm"
                 android:textAlignment="center"

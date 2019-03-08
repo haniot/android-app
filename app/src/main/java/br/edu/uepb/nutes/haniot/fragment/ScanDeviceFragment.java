@@ -225,7 +225,7 @@ public class ScanDeviceFragment extends Fragment implements SwipeRefreshLayout.O
     }
 
     /**
-     * Procura por dispositivos bluetooth ou encerra ao busca de acordo com o valor passado como parâmentro.
+     * Procura por dispositivos bluetooth ou encerra ao busca de acordo communicator o valor passado como parâmentro.
      *
      * @param enable true para buscar, false para parar a busca.
      */
@@ -363,7 +363,7 @@ public class ScanDeviceFragment extends Fragment implements SwipeRefreshLayout.O
     }
 
     /**
-     * Efetua conexão com o dispositivo
+     * Efetua conexão communicator o dispositivo
      *
      * @param device Dispositivo a ser conectado
      */

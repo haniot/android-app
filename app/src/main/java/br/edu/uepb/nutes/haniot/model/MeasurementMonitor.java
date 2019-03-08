@@ -126,6 +126,14 @@ public class MeasurementMonitor {
         return measurementInitials;
     }
 
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
     public void setMeasurementInitials(String measurementInitials) {
         this.measurementInitials = measurementInitials;
     }

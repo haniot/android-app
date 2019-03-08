@@ -62,23 +62,16 @@ import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.GlucoseDataCallb
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.HeartRateDataCallback;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.ScaleDataCallback;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.TemperatureDataCallback;
+import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import br.edu.uepb.nutes.simpleblescanner.SimpleBleScanner;
 import br.edu.uepb.nutes.simpleblescanner.SimpleScannerCallback;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class DashMeasurementsGridFragment extends Fragment implements OnRecyclerViewListener<MeasurementMonitor> {
+public class MeasurementsGridFragment extends Fragment implements OnRecyclerViewListener<MeasurementMonitor> {
 
     private final String TAG = "ManagerDevices";
     List<MeasurementMonitor> measurementMonitors;
-    private MeasurementMonitor igActivity;
-    private MeasurementMonitor igGlucose;
-    private MeasurementMonitor igPressure;
-    private MeasurementMonitor igTemperature;
-    private MeasurementMonitor igWeight;
-    private MeasurementMonitor igSleep;
-    private MeasurementMonitor igHearRate;
-    private MeasurementMonitor igAnthropometric;
 
     private ScaleManager scaleManager;
     private HeartRateManager heartRateManager;
@@ -96,7 +89,7 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
     private List<MeasurementMonitor> buttonList = new ArrayList<>();
     private Context mContext;
     private GridDashAdapter mAdapter;
-
+    DashboardChartsFragment.Communicator communicator;
     //    This instance is used to get the preferences of preference screen
     private SharedPreferences preferences;
 
@@ -126,11 +119,11 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
 
     private DateChangedEvent measurementsValues;
 
-    public DashMeasurementsGridFragment() {
+    public MeasurementsGridFragment() {
     }
 
-    public static DashMeasurementsGridFragment newInstance() {
-        DashMeasurementsGridFragment fragment = new DashMeasurementsGridFragment();
+    public static MeasurementsGridFragment newInstance() {
+        MeasurementsGridFragment fragment = new MeasurementsGridFragment();
         return fragment;
     }
 
@@ -202,7 +195,7 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_fragment_dash2, container, false);
+        View view = inflater.inflate(R.layout.fragment_measurements_dashboard, container, false);
         ButterKnife.bind(this, view);
         initRecyclerView();
         initComponents();
@@ -500,6 +493,11 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
     public void onAttach(Context context) {
         super.onAttach(context);
         mContext = context;
+        try {
+            communicator = (DashboardChartsFragment.Communicator) context; //Reference to Main Activity
+        } catch (ClassCastException castException) {
+            Log.e("FragmentOne", "MainActivity didn't implement the Communicator interface");
+        }
     }
 
     public int calculateNoOfColumns(Context context) {
@@ -587,81 +585,81 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
         return null;
     }
 
-    public void updateGrid() {
-
-        //Pega os dados que foram selecionados nas preferencias
-        Boolean activity = getPreferenceBoolean(getResources()
-                .getString(R.string.key_activity));
-
-        Boolean bloodGlucose = getPreferenceBoolean(getResources()
-                .getString(R.string.key_blood_glucose));
-
-        Boolean bloodPressure = getPreferenceBoolean(getResources()
-                .getString(R.string.key_blood_pressure));
-
-        Boolean temperature = getPreferenceBoolean(getResources()
-                .getString(R.string.key_temperature));
-
-        Boolean weight = getPreferenceBoolean(getResources()
-                .getString(R.string.key_weight));
-
-        Boolean sleep = getPreferenceBoolean(getResources()
-                .getString(R.string.key_sleep));
-
-        Boolean heartRate = getPreferenceBoolean(getResources()
-                .getString(R.string.key_heart_rate));
-
-        Boolean anthropometric = getPreferenceBoolean(getResources()
-                .getString(R.string.key_anthropometric));
-
-//        If the list is empty, just add the items
-        if (buttonList != null && buttonList.isEmpty()) {
-            if (activity) buttonList.add(this.igActivity);
-            if (bloodGlucose) {
-                buttonList.add(this.igGlucose);
-//                glucoseManager = new GlucoseManager(getContext());
-//                BluetoothDevice bluetoothDevice = getDevice(DeviceType.GLUCOMETER);
-//                if (bluetoothDevice != null)
-//                    glucoseManager.connectDevice(bluetoothDevice);
-            }
-            if (bloodPressure) buttonList.add(this.igPressure);
-            if (temperature) {
-                buttonList.add(this.igTemperature);
-
-            }
-            if (weight) {
-                buttonList.add(this.igWeight);
-
-//                BluetoothDevice bluetoothDevice = getDevice(DeviceType.BODY_COMPOSITION);
-//                if (bluetoothDevice != null)
-                // scaleManager.connectDevice(bluetoothDevice);
-            }
-            if (sleep) buttonList.add(this.igSleep);
-            if (heartRate) {
-                buttonList.add(this.igHearRate);
-
-//                        .getRemoteDevice("E9:50:60:1F:31:D2"));
-//                BluetoothDevice bluetoothDevice = getDevice(DeviceType.HEART_RATE);
-//                if (bluetoothDevice != null)
-//                    heartRateManager.connectDevice(bluetoothDevice);
-            }
-            if (anthropometric) buttonList.add(this.igAnthropometric);
-
-//            if the list is not empty, call updateItemsOfGrid to updateStatus the items
-        } else if (buttonList != null) {
-
-            updateItemsOfGrid(activity, igActivity);
-            updateItemsOfGrid(bloodGlucose, igGlucose);
-            updateItemsOfGrid(bloodPressure, igPressure);
-            updateItemsOfGrid(temperature, igTemperature);
-            updateItemsOfGrid(weight, igWeight);
-            updateItemsOfGrid(sleep, igSleep);
-            updateItemsOfGrid(heartRate, igHearRate);
-            updateItemsOfGrid(anthropometric, igAnthropometric);
-        }
-
-
-    }
+//    public void updateGrid() {
+//
+//        //Pega os dados que foram selecionados nas preferencias
+//        Boolean activity = getPreferenceBoolean(getResources()
+//                .getString(R.string.key_activity));
+//
+//        Boolean bloodGlucose = getPreferenceBoolean(getResources()
+//                .getString(R.string.key_blood_glucose));
+//
+//        Boolean bloodPressure = getPreferenceBoolean(getResources()
+//                .getString(R.string.key_blood_pressure));
+//
+//        Boolean temperature = getPreferenceBoolean(getResources()
+//                .getString(R.string.key_temperature));
+//
+//        Boolean weight = getPreferenceBoolean(getResources()
+//                .getString(R.string.key_weight));
+//
+//        Boolean sleep = getPreferenceBoolean(getResources()
+//                .getString(R.string.key_sleep));
+//
+//        Boolean heartRate = getPreferenceBoolean(getResources()
+//                .getString(R.string.key_heart_rate));
+//
+//        Boolean anthropometric = getPreferenceBoolean(getResources()
+//                .getString(R.string.key_anthropometric));
+//
+////        If the list is empty, just add the items
+//        if (buttonList != null && buttonList.isEmpty()) {
+//            if (activity) buttonList.add(this.igActivity);
+//            if (bloodGlucose) {
+//                buttonList.add(this.igGlucose);
+////                glucoseManager = new GlucoseManager(getContext());
+////                BluetoothDevice bluetoothDevice = getDevice(DeviceType.GLUCOMETER);
+////                if (bluetoothDevice != null)
+////                    glucoseManager.connectDevice(bluetoothDevice);
+//            }
+//            if (bloodPressure) buttonList.add(this.igPressure);
+//            if (temperature) {
+//                buttonList.add(this.igTemperature);
+//
+//            }
+//            if (weight) {
+//                buttonList.add(this.igWeight);
+//
+////                BluetoothDevice bluetoothDevice = getDevice(DeviceType.BODY_COMPOSITION);
+////                if (bluetoothDevice != null)
+//                // scaleManager.connectDevice(bluetoothDevice);
+//            }
+//            if (sleep) buttonList.add(this.igSleep);
+//            if (heartRate) {
+//                buttonList.add(this.igHearRate);
+//
+////                        .getRemoteDevice("E9:50:60:1F:31:D2"));
+////                BluetoothDevice bluetoothDevice = getDevice(DeviceType.HEART_RATE);
+////                if (bluetoothDevice != null)
+////                    heartRateManager.connectDevice(bluetoothDevice);
+//            }
+//            if (anthropometric) buttonList.add(this.igAnthropometric);
+//
+////            if the list is not empty, call updateItemsOfGrid to updateStatus the items
+//        } else if (buttonList != null) {
+//
+//            updateItemsOfGrid(activity, igActivity);
+//            updateItemsOfGrid(bloodGlucose, igGlucose);
+//            updateItemsOfGrid(bloodPressure, igPressure);
+//            updateItemsOfGrid(temperature, igTemperature);
+//            updateItemsOfGrid(weight, igWeight);
+//            updateItemsOfGrid(sleep, igSleep);
+//            updateItemsOfGrid(heartRate, igHearRate);
+//            updateItemsOfGrid(anthropometric, igAnthropometric);
+//        }
+//
+//
+//    }
 
     BloodPressureDataCallback bloodPressureDataCallback = new BloodPressureDataCallback() {
         @Override
@@ -676,7 +674,7 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
 
         @Override
         public void onMeasurementReceiver(Measurement measurementBloodPressure) {
-            igPressure.setMeasurementValue(String.valueOf(measurementBloodPressure.getValue()));
+            //igPressure.setMeasurementValue(String.valueOf(measurementBloodPressure.getValue()));
             mAdapter.notifyDataSetChanged();
         }
     };
@@ -695,7 +693,7 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
 
         @Override
         public void onMeasurementReceiver(Measurement measurementTemperature) {
-            igTemperature.setMeasurementValue(String.format("%.2f", measurementTemperature.getValue()));
+            //igTemperature.setMeasurementValue(String.format("%.2f", measurementTemperature.getValue()));
             mAdapter.notifyDataSetChanged();
         }
     };
@@ -727,10 +725,12 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
         @Override
         public void onMeasurementReceiver(Measurement measurementScale) {
             updateMeasurement(measurementScale, ItemGridType.WEIGHT);
+            communicator.respond(String.format("%.2f", measurementScale.getValue()));
+
         }
 
         @Override
-        public void onMeasurementReceiving(String bodyMassMeasurement, String bodyMassUnit) {
+        public void onMeasurementReceiving(String bodyMassMeasurement, long timeStamp, String bodyMassUnit) {
             for (MeasurementMonitor measurementMonitor : measurementMonitors) {
                 if (measurementMonitor.getType() == ItemGridType.WEIGHT) {
                     measurementMonitor.setStatus(MeasurementMonitor.RECEIVING);
@@ -738,14 +738,16 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
                     break;
                 }
             }
-            updateMeasurement(bodyMassMeasurement, ItemGridType.WEIGHT);
+            communicator.respond(bodyMassMeasurement);
+            updateMeasurement(bodyMassMeasurement, timeStamp, ItemGridType.WEIGHT);
         }
     };
 
-    private void updateMeasurement(String value, int type) {
+    private void updateMeasurement(String value, long timeStamp, int type) {
         for (MeasurementMonitor measurementMonitor : measurementMonitors) {
             if (measurementMonitor.getType() == type) {
                 measurementMonitor.setMeasurementValue(value);
+                measurementMonitor.setTime(DateUtils.formatDate(timeStamp, getString(R.string.time_format_simple)));
                 mAdapter.notifyDataSetChanged();
                 break;
             }
@@ -756,6 +758,8 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
         for (MeasurementMonitor measurementMonitor : measurementMonitors) {
             if (measurementMonitor.getType() == type) {
                 measurementMonitor.setMeasurementValue(String.format("%.2f", measurement.getValue()));
+                Log.i("A", String.format("%.2f", measurement.getValue()));
+                measurementMonitor.setTime(DateUtils.formatDate(measurement.getRegistrationDate(), getString(R.string.time_format_simple)));
                 mAdapter.notifyDataSetChanged();
                 break;
             }
@@ -777,7 +781,7 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
         @Override
         public void onMeasurementReceiver(Measurement measurementGlucose) {
 
-            igGlucose.setMeasurementValue(GlucoseManager.parse(measurementGlucose));
+            //igGlucose.setMeasurementValue(GlucoseManager.parse(measurementGlucose));
             mAdapter.notifyDataSetChanged();
         }
     };
@@ -796,7 +800,7 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
 
         @Override
         public void onMeasurementReceiver(Measurement measurementHeartRate) {
-            igHearRate.setMeasurementValue(String.format("%.2f", measurementHeartRate.getValue()));
+            //igHearRate.setMeasurementValue(String.format("%.2f", measurementHeartRate.getValue()));
             mAdapter.notifyDataSetChanged();
         }
     };
@@ -909,7 +913,7 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
     public void updateDate(DateChangedEvent e) {
         this.measurementsValues = e;
 
-        updateGrid();
+        // updateGrid();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -977,4 +981,8 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
         builder.show();
     }
 
+
+    public void updateConnectionStatus(int deviceType, boolean connected) {
+
+    }
 }

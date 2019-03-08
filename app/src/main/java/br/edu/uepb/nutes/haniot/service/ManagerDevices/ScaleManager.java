@@ -121,10 +121,11 @@ public class ScaleManager extends BluetoohManager {
                     isFinalized = jsonData.getBoolean("isFinalized");
                     final String bodyMassMeasurement = formatNumber(jsonData.getDouble("bodyMass"));
                     final String bodyMassUnit = jsonData.getString("bodyMassUnit");
+                    final long timeStamp = jsonData.getLong("timestamp");
 
 //                    bodyMassTextView.setText(bodyMassMeasurement);
 //                    bodyMassUnitTextView.setText(bodyMassUnit);
-                    scaleDataCallback.onMeasurementReceiving(bodyMassMeasurement, bodyMassUnit);
+                    scaleDataCallback.onMeasurementReceiving(bodyMassMeasurement, timeStamp, bodyMassUnit);
 
                     if (isFinalized) {
 
