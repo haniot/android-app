@@ -680,6 +680,8 @@
     <string name="settings_summary_configure_device">Gerencie seus dispositivos registrados ou insira novos.</string>
     <string name="failed_pairing_device">Falha ao parear dispositivo</string>
     <string name="pairing_device">Pareando dispositivo&#8230;</string>
+    <string name="device_paired">O dispositivo já está pareado, remova-o da lista de dispositivos cadastrados e tente novamente&#8230;</string>
+
 
 
     <!--GLUCOSE STATUS ANNUNCIATION-->

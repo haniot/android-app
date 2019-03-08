@@ -25,13 +25,16 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
 
+import org.greenrobot.essentials.DateUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Method;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
@@ -107,6 +110,9 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
 
     @BindView(R.id.pulsator)
     PulsatorLayout mPulsatorLayout;
+
+    @BindView(R.id.progressBar_pairing)
+    ProgressBar progressBarPairing;
 
 
     @Override
@@ -234,7 +240,12 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
             }
             Log.d(TAG, "onScanResult: " + btDevice.getName());
             mScanner.stopScan();
+
+            //removes a device from the local database and server
+            removeDeviceForType(mDevice);
             btDevice.createBond();
+
+
         }
 
         @Override
@@ -281,6 +292,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
                 if (mBluetoothDevice.getBondState() == BluetoothDevice.BOND_BONDING) {
                     Log.d(TAG, "BroadcastReceiver: BOND_BONDING. " + mBluetoothDevice.getName());
                     deviceConnectionStatus.setText(R.string.pairing_device);
+                    progressBarPairing.setVisibility(View.VISIBLE);
                     btnDeviceRegisterScanner.setEnabled(false);
 
                     if (mBluetoothDevice.getName().equals(NAME_DEVICE_YUNMAI)) {
@@ -298,6 +310,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
                         unregisterReceiver(broadCastReceiver);
                     }
                     deviceConnectionStatus.setText(R.string.failed_pairing_device);
+                    progressBarPairing.setVisibility(View.INVISIBLE);
                 }
             }
         }
@@ -411,8 +424,6 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         if (id == R.id.btn_device_register_scanner) {
             Log.d(TAG, "onClick: start scanner");
             if (mScanner != null) {
-                //removes a device from the local database and server
-                removeDeviceForType(mDevice);
                 mScanner.stopScan();
                 animationScanner(true);
                 mScanner.startScan(mScanCallback);
@@ -493,7 +504,9 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
                     public void onSuccess(JSONObject result) {
                         try {
                             if (result.has("code") && result.getInt("code") == 204) {
+                                unpairDevice(d);
                                 mDeviceDAO.remove(d.getAddress());
+
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -501,6 +514,19 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
                     }
                 });
             }
+        }
+    }
+
+    private void unpairDevice(Device device) {
+        if (device.getAddress().isEmpty()) return;
+        BluetoothDevice mBluetoothDevice = BluetoothAdapter.getDefaultAdapter().
+                getRemoteDevice(device.getAddress());
+        try {
+            Method m = mBluetoothDevice.getClass()
+                    .getMethod("removeBond", (Class[]) null);
+            m.invoke(mBluetoothDevice, (Object[]) null);
+        } catch (Exception e) {
+            Log.d(TAG, "error removing pairing " + e.getMessage());
         }
     }
 }
