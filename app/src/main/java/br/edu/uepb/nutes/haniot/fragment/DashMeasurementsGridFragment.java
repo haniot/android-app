@@ -62,8 +62,8 @@ import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.GlucoseDataCallb
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.HeartRateDataCallback;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.ScaleDataCallback;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.TemperatureDataCallback;
-import br.edu.uepb.nutes.simplebleconnect.scanner.SimpleBleScanner;
-import br.edu.uepb.nutes.simplebleconnect.scanner.SimpleScanCallback;
+import br.edu.uepb.nutes.simpleblescanner.SimpleBleScanner;
+import br.edu.uepb.nutes.simpleblescanner.SimpleScannerCallback;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -321,7 +321,7 @@ public class DashMeasurementsGridFragment extends Fragment implements OnRecycler
         }
         simpleBleScanner = builder.build();
 
-        simpleBleScanner.startScan(new SimpleScanCallback() {
+        simpleBleScanner.startScan(new SimpleScannerCallback() {
             @Override
             public void onScanResult(int i, ScanResult scanResult) {
                 String address = scanResult.getDevice().getAddress();
