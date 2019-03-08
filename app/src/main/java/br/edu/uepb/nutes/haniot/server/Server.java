@@ -49,6 +49,7 @@ public class Server {
      * If you set a url it will be used as default and not entered by the user in the application settings
      */
     /* HEROKU */ private final String URI_DEFAULT = "https://haniot-frankenstein.herokuapp.com";
+//    /* HEROKU */ private final String URI_DEFAULT = "https://haniot-api.herokuapp.com";
 //    /* PC HOME */ private final String URI_DEFAULT = "https://192.168.31.113/api/v1";
 //      /* PC WIFI */ private final String URI_DEFAULT = "http://192.168.50.175:8000/api/v1";
 
@@ -161,6 +162,7 @@ public class Server {
     public void put(String path, String json, Callback serverCallback) {
         put(path, json, getHeadersDefault(), serverCallback);
     }
+
     /**
      * Action PATCH.
      *
@@ -264,15 +266,11 @@ public class Server {
                 try {
                     String jsonString = response.body().string();
                     if (response.code() == 401) {
-
-                        Log.i("Server", "Aqui CODE:"+response.code()+"- "+response.message());
                         result.put("unauthorized", mContext.getString(R.string.validate_unauthorized_access));
                         EventBus.getDefault().post("unauthorized");
                     } else if (!jsonString.isEmpty()) {
-                        Log.i("Server",jsonString);
                         Object json = new JSONTokener(jsonString).nextValue();
-
-                        if(json instanceof JSONObject)
+                        if (json instanceof JSONObject)
                             result = new JSONObject(jsonString);
                     }
 

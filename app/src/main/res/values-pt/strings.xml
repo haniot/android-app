@@ -291,7 +291,7 @@
     <string name="dash_item_description">Botão de Medição</string>
     <string name="distance">Distancia</string>
     <string name="Calories">Calorias</string>
-    <string name="StepsNumber">Numero De Passos</string>
+    <string name="StepsNumber">Número de Passos</string>
     <string name="title_activity_manage_measurements">Gerenciar Medições</string>
     <string name="manage_measurement_title">Gerenciar Medições</string>
     <string name="ear_thermometer">Termometro para Orelha</string>
@@ -659,25 +659,30 @@
     <string name="title_devices_available">Disponíveis</string>
     <string name="thermometer">Termometro</string>
     <string name="find_device">Localizar Dispositivo</string>
-    <string name="remove_device">Deseja remover o %s da sua lista ?</string>
+    <string name="remove_device">Tem certeza que deseja remover %s?\nUma vez removido, não será possível recuperar os dados desse dispositivo.</string>
     <string name="remove">Remover</string>
     <string name="start_scanner">Iniciar scanner</string>
     <string name="stop_scanner">Parar scanner</string>
     <string name="details">Detalhes</string>
     <string name="remove_device_register">Remover Dispositivo</string>
     <string name="device_not_found_try_again">Dispositivo não encontrado tente novamente</string>
-    <string name="no_devices_registered">Não há didpositivos cadastrados&#8230;</string>
+    <string name="no_devices_registered">Não há dispositivos cadastrados&#8230;</string>
     <string name="no_devices_available">Nenhum dispositivo disponível. Em breve a lista será atualizada&#8230;</string>
     <string name="device_registered_success">Dispositivo %s cadastrado com sucesso!</string>
     <string name="connection">Conectando, segure o telefone perto do dispositivo</string>
     <string name="come_back">Voltar</string>
     <string name="attention">Atenção</string>
-    <string name="model">Modelo</string>
+    <string name="model">Modelo</string>s
     <string name="other">Outro</string>
     <string name="model_device">Modelo do dispositivo</string>
     <string name="name_device">Nome do dispositivo</string>
     <string name="settings_configure_device">Configurar Dispositivos</string>
     <string name="settings_summary_configure_device">Gerencie seus dispositivos registrados ou insira novos.</string>
+    <string name="failed_pairing_device">Falha ao parear dispositivo</string>
+    <string name="pairing_device">Pareando dispositivo&#8230;</string>
+    <string name="device_paired">O dispositivo já está pareado, remova-o da lista de dispositivos cadastrados e tente novamente&#8230;</string>
+
+
 
     <!--GLUCOSE STATUS ANNUNCIATION-->
     <string name="glucose_status_annunciation_battery_low">Device battery low at time of measurement</string>

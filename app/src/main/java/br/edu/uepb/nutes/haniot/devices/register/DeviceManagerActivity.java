@@ -1,7 +1,8 @@
 package br.edu.uepb.nutes.haniot.devices.register;
 
 import android.annotation.SuppressLint;
-import android.content.DialogInterface;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,6 +14,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -26,6 +28,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -81,6 +84,13 @@ public class DeviceManagerActivity extends AppCompatActivity {
     @BindView(R.id.devices_progressBar)
     ProgressBar mProgressBar;
 
+    @BindView(R.id.message_error_server)
+    TextView messageErrorServer;
+
+    @BindView(R.id.devices_registered_available)
+    LinearLayout boxRegisteredAvailable;
+
+
     private Server server;
     private Session session;
 
@@ -88,7 +98,6 @@ public class DeviceManagerActivity extends AppCompatActivity {
     private DeviceAdapter mAdapterDeviceRegistered;
 
     private DeviceDAO mDeviceDAO;
-    private Device mDevice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +107,6 @@ public class DeviceManagerActivity extends AppCompatActivity {
         server = Server.getInstance(this);
         session = new Session(this);
         mDeviceDAO = DeviceDAO.getInstance(this);
-        mDevice = new Device();
 
         initComponents();
     }
@@ -152,6 +160,12 @@ public class DeviceManagerActivity extends AppCompatActivity {
         server.get(path, new Server.Callback() {
             @Override
             public void onError(JSONObject result) {
+                Log.d(LOG_TAG, "onError: ");
+
+                runOnUiThread(() -> {
+                    messageErrorServer.setVisibility(View.VISIBLE);
+                    boxRegisteredAvailable.setVisibility(View.INVISIBLE);
+                });
                 displayLoading(false);
             }
 
@@ -165,27 +179,32 @@ public class DeviceManagerActivity extends AppCompatActivity {
         });
     }
 
-    //returns a device with your image
+    /**
+     * Returns a device with your image.
+     *
+     * @param list {@link List<Device>}
+     * @return {@link List<Device>}
+     */
     public List<Device> newList(List<Device> list) {
-        List<Device> listDevices = new ArrayList<Device>();
+        List<Device> listDevices = new ArrayList<>();
 
         for (Device devices : list) {
-            if (devices.getName().equals("Ear Thermometer ".concat(NUMBER_MODEL_THERM_DL8740))) {
+            if (devices.getName().equalsIgnoreCase("Ear Thermometer ".concat(NUMBER_MODEL_THERM_DL8740))) {
                 devices.setImg(R.drawable.device_thermometer_philips_dl8740);
                 listDevices.add(devices);
-            } else if (devices.getName().equals("Accu-Chek ".concat(NUMBER_MODEL_GLUCOMETER_PERFORMA))) {
+            } else if (devices.getName().equalsIgnoreCase("Accu-Chek ".concat(NUMBER_MODEL_GLUCOMETER_PERFORMA))) {
                 devices.setImg(R.drawable.device_glucose_accuchek);
                 listDevices.add(devices);
-            } else if (devices.getName().equals("Scale YUNMAI Mini ".concat(NUMBER_MODEL_SCALE_1501))) {
+            } else if (devices.getName().equalsIgnoreCase("Scale YUNMAI Mini ".concat(NUMBER_MODEL_SCALE_1501))) {
                 devices.setImg(R.drawable.device_scale_yunmai_mini_color);
                 listDevices.add(devices);
-            } else if (devices.getName().equals("Heart Rate Sensor ".concat(NUMBER_MODEL_HEART_RATE_H7))) {
+            } else if (devices.getName().equalsIgnoreCase("Heart Rate Sensor ".concat(NUMBER_MODEL_HEART_RATE_H7))) {
                 devices.setImg(R.drawable.device_heart_rate_h7);
                 listDevices.add(devices);
-            } else if (devices.getName().equals("Heart Rate Sensor ".concat(NUMBER_MODEL_HEART_RATE_H10))) {
+            } else if (devices.getName().equalsIgnoreCase("Heart Rate Sensor ".concat(NUMBER_MODEL_HEART_RATE_H10))) {
                 devices.setImg(R.drawable.device_heart_rate_h10);
                 listDevices.add(devices);
-            } else if (devices.getName().equals("Smartband ".concat(NUMBER_MODEL_SMARTBAND_MI2))) {
+            } else if (devices.getName().equalsIgnoreCase("Smartband ".concat(NUMBER_MODEL_SMARTBAND_MI2))) {
                 devices.setImg(R.drawable.device_smartband_miband2);
                 listDevices.add(devices);
             }
@@ -301,7 +320,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
     /**
      * Populate devices registered.
      *
-     * @param devicesRegistered
+     * @param devicesRegistered {@link List<Device>}
      */
     public void populateDevicesRegistered(@NonNull List<Device> devicesRegistered) {
         mAdapterDeviceRegistered.clearItems();
@@ -319,14 +338,14 @@ public class DeviceManagerActivity extends AppCompatActivity {
     /**
      * Only those who have not been registered.
      *
-     * @param devicesRegistered
+     * @param devicesRegistered {@link List<Device>}
      */
     public void populateDevicesAvailable(@NonNull List<Device> devicesRegistered) {
         List<Device> devicesAvailable = new ArrayList<>();
 
         devicesAvailable.add(new Device("Ear Thermometer ".concat(NUMBER_MODEL_THERM_DL8740),
                 "Philips", NUMBER_MODEL_THERM_DL8740,
-                R.drawable.device_thermometer_philips_dl8740, DeviceType.THERMOMETER));
+                R.drawable.device_thermometer_philips_dl8740_mini, DeviceType.THERMOMETER));
 
         devicesAvailable.add(new Device("Accu-Chek ".concat(NUMBER_MODEL_GLUCOMETER_PERFORMA),
                 "Accu-Chek", NUMBER_MODEL_GLUCOMETER_PERFORMA,
@@ -348,11 +367,10 @@ public class DeviceManagerActivity extends AppCompatActivity {
                 "Xiaomi", NUMBER_MODEL_SMARTBAND_MI2,
                 R.drawable.device_smartband_miband2, DeviceType.SMARTBAND));
 
-
-        devicesAvailable = mergeDevicesAvailableRegistered(devicesRegistered, devicesAvailable);
-
         mAdapterDeviceAvailable.clearItems();
-        mAdapterDeviceAvailable.addItems(devicesAvailable);
+        mAdapterDeviceAvailable.addItems(
+                mergeDevicesAvailableRegistered(devicesRegistered, devicesAvailable)
+        );
 
         if (devicesAvailable.isEmpty()) {
             mNoAvailableDevices.setVisibility(View.VISIBLE);
@@ -367,9 +385,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
      * @return {@link List<Device>}
      */
     private List<Device> mergeDevicesAvailableRegistered(List<Device> registeredList, List<Device> availableList) {
-        /**
-         * Add only devices that have not been registered
-         */
+        // Add only devices that have not been registered
         for (Device d : registeredList) {
             if (availableList.contains(d)) {
                 availableList.remove(d);
@@ -397,22 +413,18 @@ public class DeviceManagerActivity extends AppCompatActivity {
         //sets the message
         builder.setMessage(getString(R.string.remove_device, device.getName()));
         //define a button how to remove
-        builder.setPositiveButton(R.string.remove, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface arg0, int arg1) {
-                //removes the device from the server database
-                removeDeviceRegister(device);
-            }
+        builder.setPositiveButton(R.string.remove, (arg0, arg1) -> {
+            //removes the device from the server database
+            removeDeviceRegister(device);
         });
         //define a button how to cancel.
-        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface arg0, int arg1) {
-                return;
-            }
+        builder.setNegativeButton(R.string.cancel, (arg0, arg1) -> {
         });
         //create the AlertDialog
         alert = builder.create();
         alert.show();
     }
+
 
     private void removeDeviceRegister(Device device) {
         displayLoading(true);
@@ -426,9 +438,23 @@ public class DeviceManagerActivity extends AppCompatActivity {
             @Override
             public void onSuccess(JSONObject result) {
                 mDeviceDAO.remove(device.getAddress());
+                unpairDevice(device);
                 populateView();
             }
         });
+    }
+
+    private void unpairDevice(Device device) {
+        if (device.getAddress().isEmpty()) return;
+        BluetoothDevice mBluetoothDevice = BluetoothAdapter.getDefaultAdapter().
+                getRemoteDevice(device.getAddress());
+        try {
+            Method m = mBluetoothDevice.getClass()
+                    .getMethod("removeBond", (Class[]) null);
+            m.invoke(mBluetoothDevice, (Object[]) null);
+        } catch (Exception e) {
+            Log.d(LOG_TAG, "error removing pairing " + e.getMessage());
+        }
     }
 
 }

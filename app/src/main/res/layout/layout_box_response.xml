@@ -38,11 +38,11 @@
             android:layout_weight="1">
 
             <ImageView
-                android:id="@+id/imageView5"
+                android:id="@+id/imageSuccess"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                app:srcCompat="@drawable/sucess" />
+                app:srcCompat="@drawable/success" />
             <!--END BOX IMAGE -->
         </LinearLayout>
 

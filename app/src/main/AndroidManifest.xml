@@ -99,7 +99,7 @@
 
 
         <!-- ACTIVITIES REGISTER DEVICES -->
-        <activity android:name=".devices.register.DeviceRegisterActivity" />
+        <activity android:name=".devices.register.DeviceRegisterActivity"/>
         <activity android:name=".devices.register.DeviceManagerActivity" />
         <!-- END ACTIVITIES REGISTER DEVICES -->
 
@@ -123,7 +123,6 @@
         <activity android:name=".activity.ManuallyAddMeasurement" />
         <activity
             android:name=".activity.PatientHistoricalActivity"
-            android:label="@string/title_activity_patient_historical"
             android:theme="@style/AppTheme"></activity>
     </application>
 
