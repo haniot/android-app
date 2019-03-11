@@ -3,23 +3,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="300dp"
+    android:layout_height="wrap_content"
     android:background="@color/colorPrimary">
 
     <!-- TODO: Update blank fragment layout -->
-    <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    <android.support.v7.widget.CardView
         android:id="@+id/card_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:layout_gravity="top|center_vertical|center"
+        android:layout_marginBottom="40dp"
         android:textAlignment="center"
-        card_view:cardBackgroundColor="@color/colorPrimary"
-        card_view:cardCornerRadius="6dp"
-        card_view:cardElevation="0dp"
-        card_view:cardPreventCornerOverlap="false"
-        card_view:cardUseCompatPadding="true">
+        app:cardBackgroundColor="@color/colorPrimary"
+        app:cardCornerRadius="6dp"
+        app:cardElevation="0dp"
+        app:cardPreventCornerOverlap="false"
+        app:cardUseCompatPadding="true">
 
         <RelativeLayout
             android:id="@+id/relativeLayout"
@@ -74,10 +75,10 @@
                 android:layout_height="100dp"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="65dp"
+                android:layout_marginTop="80dp"
                 app:pulse_color="@color/colorAccent"
-                app:pulse_count="4"
-                app:pulse_duration="2000"
+                app:pulse_count="5"
+                app:pulse_duration="3000"
                 app:pulse_repeat="10">
 
             </pl.bclogic.pulsator4droid.library.PulsatorLayout>
@@ -90,9 +91,8 @@
                 android:layout_above="@+id/lightProgress2"
                 android:layout_below="@+id/pulsator"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="1dp"
-                android:layout_marginBottom="17dp"
-                android:text="-"
+                android:layout_marginTop="10dp"
+                android:text="52.2"
                 android:textAlignment="center"
                 android:textColor="@color/cardview_light_background"
                 android:textSize="36sp" />
@@ -102,12 +102,14 @@
                 android:layout_width="85dp"
                 android:layout_height="wrap_content"
                 android:layout_above="@+id/textValueMeasurement"
+                android:layout_below="@+id/pulsator"
                 android:layout_alignStart="@+id/textValueMeasurement"
-                android:layout_marginBottom="-5dp"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="-4dp"
+                android:layout_marginBottom="-20dp"
                 android:text="@string/unit_kg"
                 android:textAlignment="center"
-                android:textColor="@color/cardview_light_background"
-                android:textSize="10sp" />
+                android:textColor="@color/cardview_light_background" />
 
             <TextView
                 android:id="@+id/textSteps"
@@ -116,8 +118,8 @@
                 android:layout_below="@+id/widget2"
                 android:layout_alignStart="@+id/widget2"
                 android:layout_alignEnd="@+id/widget2"
-                android:layout_marginStart="-10dp"
-                android:layout_marginTop="3dp"
+                android:layout_marginStart="-8dp"
+                android:layout_marginTop="-30dp"
                 android:layout_marginEnd="-10dp"
                 android:text="IMC"
                 android:textAlignment="center"
@@ -134,7 +136,7 @@
                 android:layout_marginStart="-1dp"
                 android:layout_marginTop="0dp"
                 android:layout_marginEnd="-2dp"
-                android:text="-"
+                android:text="1,5"
                 android:textAlignment="center"
                 android:textColor="@color/cardview_light_background"
                 android:textSize="18sp" />
@@ -142,16 +144,20 @@
 
             <ImageView
                 android:id="@+id/widget1"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
                 android:layout_alignStart="@+id/pulsator"
                 android:layout_alignTop="@+id/pulsator"
                 android:layout_alignEnd="@+id/pulsator"
                 android:layout_alignBottom="@+id/pulsator"
-                android:layout_margin="20dp"
+                android:layout_margin="10dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="20dp"
                 android:contentDescription="@string/unit_heart_rate"
                 android:elevation="2dp"
-                android:src="@drawable/weight" />
+                android:src="@drawable/scale" />
 
             <ImageView
                 android:id="@+id/widget2"
@@ -164,7 +170,8 @@
                 android:layout_marginEnd="62dp"
                 android:layout_toStartOf="@+id/pulsator"
                 android:contentDescription="@string/steps"
-                android:src="@drawable/imc" />
+                android:src="@drawable/imc"
+                android:visibility="invisible" />
 
             <ProgressBar
                 android:id="@+id/progressBar2"
@@ -177,6 +184,32 @@
                 android:layout_marginTop="9dp"
                 android:layout_marginEnd="39dp"
                 android:layout_marginBottom="10dp" />
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_above="@+id/textDate"
+                android:layout_alignTop="@+id/patientName"
+                android:layout_marginEnd="10dp"
+                android:layout_toStartOf="@+id/patientName"
+                android:background="@drawable/x_bg"
+                android:padding="2dp"
+                app:srcCompat="@drawable/x_boy" />
+
+            <ImageView
+                android:id="@+id/imageView3"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_above="@+id/textUnit"
+                android:layout_alignTop="@+id/pulsator"
+                android:layout_marginStart="56dp"
+                android:layout_marginTop="34dp"
+                android:layout_marginBottom="34dp"
+                android:layout_toEndOf="@+id/pulsator"
+                android:tint="@color/disconnected"
+                android:visibility="invisible"
+                app:srcCompat="@drawable/x_bg" />
 
         </RelativeLayout>
 

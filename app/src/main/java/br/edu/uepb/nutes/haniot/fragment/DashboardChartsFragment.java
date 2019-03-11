@@ -18,6 +18,7 @@ import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.model.DateChangedEvent;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import pl.bclogic.pulsator4droid.library.PulsatorLayout;
 
 public class DashboardChartsFragment extends Fragment
 //        implements View.OnClickListener,
@@ -111,6 +112,9 @@ public class DashboardChartsFragment extends Fragment
     @BindView(R.id.textIMC)
     TextView textIMC;
 
+    @BindView(R.id.pulsator)
+    PulsatorLayout pulsatorLayout;
+
     public DashboardChartsFragment() {
         // Required empty public constructor
     }
@@ -166,6 +170,7 @@ public class DashboardChartsFragment extends Fragment
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(getResources().getString(R.string.date_format2));
         textDate.setText(simpleDateFormat.format(calendar.getTime()));
+        pulsatorLayout.start();
 //
 //        //Data é atual salva quando abre o aplicativo
 //        today = DateUtils.getCurrentDatetime(getResources().getString(R.string.date_format));

@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -76,9 +77,8 @@ public class ManagePatientAdapter extends RecyclerView.Adapter<ManagePatientAdap
 
             Patient patient = itemList.get(position);
 
-            String nameText = String.valueOf(patient.getName().charAt(0));
 
-            holder.textLetter.setText(nameText);
+//            holder.textLetter.setText(nameText);
             holder.textId.setText(patient.get_id());
             holder.textId.setTextColor(context.getResources().getColor(R.color.colorBlackGrey));
             holder.textName.setText(patient.getName());
@@ -292,15 +292,13 @@ public class ManagePatientAdapter extends RecyclerView.Adapter<ManagePatientAdap
         @BindView(R.id.textIdNumberChildren)
         TextView textId;
         @BindView(R.id.btnSelectChildren)
-        AppCompatButton btnSelect;
+        ImageView btnSelect;
         @BindView(R.id.btnDeleteChild)
-        AppCompatButton btnDelete;
+        ImageView btnDelete;
         @BindView(R.id.textNameChildValue)
         TextView textName;
         @BindView(R.id.textLetter)
-        TextView textLetter;
-        @BindView(R.id.divChildren)
-        View divChildren;
+        ImageView textLetter;
 
         public ManagePatientViewHolder(View itemView, String type) {
             super(itemView);

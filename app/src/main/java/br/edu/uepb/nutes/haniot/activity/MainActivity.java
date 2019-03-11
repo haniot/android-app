@@ -124,6 +124,7 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
             dashboardChartsFragment.updateNamePatient(nameSelected);
         } else {
             showToast("Nenhum paciente selecionado!");
+            startActivity(new Intent(this, ManagePatientsActivity.class));
             //Solicitar paciente
         }
 

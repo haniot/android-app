@@ -49,6 +49,7 @@ public class ManagePatientsActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         toolbar.setTitle(getResources().getString(R.string.manage_patient));
+        toolbar.setTitle("Gerenciar Pacientes");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
