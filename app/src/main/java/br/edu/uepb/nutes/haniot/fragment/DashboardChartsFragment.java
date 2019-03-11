@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -16,6 +17,7 @@ import java.util.Calendar;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.model.DateChangedEvent;
+import br.edu.uepb.nutes.haniot.model.Patient;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import pl.bclogic.pulsator4droid.library.PulsatorLayout;
@@ -103,6 +105,9 @@ public class DashboardChartsFragment extends Fragment
     @BindView(R.id.patientName)
     TextView patientName;
 
+    @BindView(R.id.patientSex)
+    ImageView patientSex;
+
     @BindView(R.id.textDate)
     TextView textDate;
 
@@ -156,8 +161,12 @@ public class DashboardChartsFragment extends Fragment
         textIMC.setText(String.format("%.2f", calcIMC(Double.parseDouble(valueMeasurement))));
     }
 
-    public void updateNamePatient(String name) {
-        patientName.setText(name);
+    public void updateNamePatient(Patient patient) {
+        patientName.setText(patient.getName());
+        if (patient.getSex().equals("Masculino"))
+            patientSex.setImageResource(R.drawable.x_boy);
+        else
+            patientSex.setImageResource(R.drawable.x_girl);
     }
 
     @Override

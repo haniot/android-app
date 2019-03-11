@@ -13,6 +13,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,6 +27,7 @@ import br.edu.uepb.nutes.haniot.activity.settings.SettingsActivity;
 import br.edu.uepb.nutes.haniot.fragment.DashboardChartsFragment;
 import br.edu.uepb.nutes.haniot.fragment.MeasurementsGridFragment;
 import br.edu.uepb.nutes.haniot.model.Patient;
+import br.edu.uepb.nutes.haniot.model.dao.PatientDAO;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -110,24 +112,15 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
         if some patient is finded, the title is updated.
     */
     public void checkPatient() {
-        //TODO Mudar lógica inteira para o PatientDAO
-        patient = new Patient();
+        patient = PatientDAO.getInstance(this)
+                .getFromID(session.getString(getString(R.string.id_last_patient)));
 
-//        patient = PatientDAO.getInstance(this)
-//                .get(session.getString(getString(R.string.id_last_patient)));
-
-        String idSelected = session.getString(getResources().getString(R.string.id_last_patient));
-        String nameSelected = session.getString(getResources().getString(R.string.name_last_patient));
-        if (!idSelected.isEmpty() && !nameSelected.isEmpty()) {
-            patient.setName(nameSelected);
-            patient.set_id(idSelected);
-            dashboardChartsFragment.updateNamePatient(nameSelected);
+        if (patient != null) {
+            dashboardChartsFragment.updateNamePatient(patient);
         } else {
             showToast("Nenhum paciente selecionado!");
             startActivity(new Intent(this, ManagePatientsActivity.class));
-            //Solicitar paciente
         }
-
     }
 
     /**

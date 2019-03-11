@@ -151,29 +151,57 @@ public class ManagePatientsActivity extends AppCompatActivity {
     }
 
     private void loadData() {
-        List<String> l = new ArrayList<String>();
-        l.add("Fábio Júnior");
-        l.add("Ana Beatriz");
-        l.add("Paulina Leal");
-        l.add("Douglas Rafael");
-        l.add("Isabele");
-        l.add("Paulo Barbosa");
-
-        List<String> l2 = new ArrayList<String>();
-        l2.add("Masculino");
-        l2.add("Feminino");
 
         Patient patient;
         SimpleDateFormat spn = new SimpleDateFormat("dd/MM/yyyy");
-        for (int i = 0; i < l.size() - 1; i++) {
-            patient = new Patient();
-            patient.set_id(String.valueOf(i * 65478));
-            patient.setRegisterDate(spn.format(Calendar.getInstance().getTime()));
-            patient.setName(l.get(i));
-            patient.setAge(i);
-            patient.setSex(l2.get((int) (Math.random() * 1 + 0)));
-            patientList.add(patient);
-        }
+
+        patient = new Patient();
+        patient.setName("Fábio Júnior");
+        patient.set_id("123");
+        patient.setSex("Masculino");
+        patient.setAge(12);
+        patient.setRegisterDate(spn.format(Calendar.getInstance().getTime()));
+        patientList.add(patient);
+
+        patient = new Patient();
+        patient.setName("Paulo Barbosa");
+        patient.set_id("124");
+        patient.setSex("Masculino");
+        patient.setAge(13);
+        patient.setRegisterDate(spn.format(Calendar.getInstance().getTime()));
+        patientList.add(patient);
+
+        patient = new Patient();
+        patient.setName("Ana Beatriz");
+        patient.set_id("125");
+        patient.setSex("Feminino");
+        patient.setAge(12);
+        patient.setRegisterDate(spn.format(Calendar.getInstance().getTime()));
+        patientList.add(patient);
+
+        patient = new Patient();
+        patient.setName("Isabele");
+        patient.set_id("126");
+        patient.setSex("Feminino");
+        patient.setAge(13);
+        patient.setRegisterDate(spn.format(Calendar.getInstance().getTime()));
+        patientList.add(patient);
+
+        patient = new Patient();
+        patient.setName("Paulina Leal");
+        patient.set_id("127");
+        patient.setSex("Feminino");
+        patient.setAge(11);
+        patient.setRegisterDate(spn.format(Calendar.getInstance().getTime()));
+        patientList.add(patient);
+
+        patient = new Patient();
+        patient.setName("Douglas Rafael");
+        patient.set_id("128");
+        patient.setSex("Masculino");
+        patient.setAge(13);
+        patient.setRegisterDate(spn.format(Calendar.getInstance().getTime()));
+        patientList.add(patient);
     }
 
     @Override
@@ -195,10 +223,9 @@ public class ManagePatientsActivity extends AppCompatActivity {
         searchView.setIconifiedByDefault(true);
         searchView.setMaxWidth(Integer.MAX_VALUE);
         searchView.setIconified(false);
-        searchView.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+        searchView.setBackgroundColor(getResources().getColor(android.R.color.transparent));
         EditText searchEditText = searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
         searchEditText.setTextColor(Color.WHITE);
-        searchEditText.setHintTextColor(Color.LTGRAY);
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override

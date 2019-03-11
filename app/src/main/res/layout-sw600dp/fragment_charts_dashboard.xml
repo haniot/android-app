@@ -7,44 +7,33 @@
     android:background="@color/colorPrimary">
 
     <!-- TODO: Update blank fragment layout -->
-    <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    <android.support.v7.widget.CardView
         android:id="@+id/card_view"
         android:layout_width="match_parent"
-        android:layout_height="330dp"
+        android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:layout_gravity="top|center_vertical|center"
+        android:layout_marginBottom="40dp"
         android:textAlignment="center"
-        card_view:cardBackgroundColor="@color/colorPrimary"
-        card_view:cardCornerRadius="6dp"
-        card_view:cardElevation="0dp"
-        card_view:cardPreventCornerOverlap="false"
-        card_view:cardUseCompatPadding="true">
+        app:cardBackgroundColor="@color/colorPrimary"
+        app:cardCornerRadius="6dp"
+        app:cardElevation="0dp"
+        app:cardPreventCornerOverlap="false"
+        app:cardUseCompatPadding="true">
 
         <RelativeLayout
             android:id="@+id/relativeLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <ImageView
-                android:id="@+id/patient"
-                android:layout_width="30dp"
-                android:layout_height="0dp"
-                android:layout_alignStart="@+id/textDate"
-                android:layout_alignTop="@+id/loadingDataProgressBar"
-                android:layout_marginStart="158dp"
-                android:layout_marginTop="-7dp"
-                android:clickable="true"
-                android:visibility="invisible"
-                />
-
             <TextView
                 android:id="@+id/patientName"
-                android:layout_width="133dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="-81dp"
-                android:layout_marginTop="2dp"
+                android:layout_below="@+id/patient"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
                 android:layout_toEndOf="@+id/patient"
                 android:gravity="center"
                 android:text="Paulina Leal"
@@ -63,19 +52,6 @@
                 android:textAlignment="center"
                 android:textColor="@color/cardview_light_background" />
 
-            <ImageView
-                android:id="@+id/buttonArrowLeft"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_alignStart="@+id/lightProgress1"
-                android:layout_alignTop="@+id/buttonArrowRight"
-                android:layout_marginStart="0dp"
-                android:layout_marginTop="0dp"
-                android:clickable="true"
-                android:contentDescription="@string/LeftButton"
-                android:focusable="true"
-                android:visibility="invisible" />
-
             <com.mikhaellopez.circularprogressbar.CircularProgressBar
                 android:id="@+id/progressBar"
                 android:layout_width="100dp"
@@ -84,10 +60,6 @@
                 android:layout_alignTop="@+id/widget1"
                 android:layout_alignEnd="@+id/widget1"
                 android:layout_alignBottom="@+id/widget1"
-                android:layout_marginStart="-20dp"
-                android:layout_marginTop="-20dp"
-                android:layout_marginEnd="-20dp"
-                android:layout_marginBottom="-21dp"
                 android:visibility="invisible"
                 app:cpb_background_progressbar_color="@color/colorPrimary"
                 app:cpb_indeterminate_mode="true"
@@ -103,214 +75,143 @@
                 android:layout_height="100dp"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="83dp"
+                android:layout_marginTop="80dp"
                 app:pulse_color="@color/colorAccent"
-                app:pulse_count="4"
-                app:pulse_duration="2000"
-                app:pulse_repeat="0">
+                app:pulse_count="5"
+                app:pulse_duration="3000"
+                app:pulse_repeat="10">
 
             </pl.bclogic.pulsator4droid.library.PulsatorLayout>
 
-            <com.mikhaellopez.circularprogressbar.CircularProgressBar
-                android:id="@+id/loadingDataProgressBar"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="-2dp"
-                android:layout_marginTop="7dp"
-                android:layout_toEndOf="@+id/textSteps3"
-                app:cpb_background_progressbar_color="@color/transparent"
-                app:cpb_background_progressbar_width="4dp"
-                app:cpb_indeterminate_mode="true"
-                app:cpb_progressbar_color="@color/colorAccent"
-                app:cpb_progressbar_width="1dp" />
-
-            <ImageView
-                android:id="@+id/buttonArrowRight"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_alignEnd="@+id/widget4"
-                android:layout_alignParentTop="true"
-                android:layout_marginTop="120dp"
-                android:layout_marginEnd="0dp"
-                android:clickable="true"
-                android:contentDescription="@string/rightbutton"
-                android:focusable="true"
-                android:visibility="invisible" />
-
-            <com.mikhaellopez.circularprogressbar.CircularProgressBar
-                android:id="@+id/lightProgress1"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentBottom="true"
-                android:layout_marginStart="40dp"
-                android:layout_marginBottom="45dp"
-                android:visibility="invisible"
-                app:cpb_background_progressbar_color="@color/colorPrimary"
-                app:cpb_indeterminate_mode="true"
-                app:cpb_progressbar_color="@color/cardview_light_background"
-                app:cpb_progressbar_width="1dp" />
-
-            <com.mikhaellopez.circularprogressbar.CircularProgressBar
-                android:id="@+id/lightProgress2"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_alignTop="@+id/lightProgress1"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="18dp"
-                android:visibility="invisible"
-                app:cpb_background_progressbar_color="@color/colorPrimary"
-                app:cpb_indeterminate_mode="true"
-                app:cpb_progressbar_color="@color/cardview_light_background"
-                app:cpb_progressbar_width="1dp" />
-
-            <com.mikhaellopez.circularprogressbar.CircularProgressBar
-                android:id="@+id/lightProgress"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_alignTop="@+id/lightProgress1"
-                android:layout_alignParentEnd="true"
-                android:layout_marginEnd="40dp"
-                android:visibility="invisible"
-                app:cpb_background_progressbar_color="@color/colorPrimary"
-                app:cpb_indeterminate_mode="true"
-                app:cpb_progress="0"
-                app:cpb_progressbar_color="@color/cardview_light_background"
-                app:cpb_progressbar_width="1dp" />
 
             <TextView
                 android:id="@+id/textValueMeasurement"
                 android:layout_width="85dp"
                 android:layout_height="wrap_content"
                 android:layout_above="@+id/lightProgress2"
+                android:layout_below="@+id/pulsator"
                 android:layout_centerHorizontal="true"
-                android:layout_marginBottom="17dp"
-                android:text="0"
+                android:layout_marginTop="10dp"
+                android:text="-"
                 android:textAlignment="center"
                 android:textColor="@color/cardview_light_background"
-                android:textSize="30sp" />
+                android:textSize="36sp" />
 
             <TextView
                 android:id="@+id/textUnit"
                 android:layout_width="85dp"
                 android:layout_height="wrap_content"
                 android:layout_above="@+id/textValueMeasurement"
-                android:layout_centerHorizontal="true"
-                android:text="bpm"
+                android:layout_below="@+id/pulsator"
+                android:layout_alignStart="@+id/textValueMeasurement"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="-4dp"
+                android:layout_marginBottom="-20dp"
+                android:text="@string/unit_kg"
                 android:textAlignment="center"
-                android:textColor="@color/cardview_light_background"
-                android:textSize="10sp" />
-
-            <TextView
-                android:id="@+id/textDistance"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/widget3"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="-12dp"
-                android:layout_marginBottom="10dp"
-                android:text="0 kcal"
-                android:textAlignment="center"
-                android:textColor="@color/cardview_light_background"
-                android:visibility="visible" />
+                android:textColor="@color/cardview_light_background" />
 
             <TextView
                 android:id="@+id/textSteps"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="53dp"
+                android:layout_height="16dp"
                 android:layout_below="@+id/widget2"
-                android:layout_alignStart="@+id/buttonArrowLeft"
-                android:layout_alignParentStart="false"
-                android:layout_marginStart="-13dp"
-                android:layout_marginTop="-25dp"
-                android:text="0 passos"
+                android:layout_alignStart="@+id/widget2"
+                android:layout_alignEnd="@+id/widget2"
+                android:layout_marginStart="-8dp"
+                android:layout_marginTop="-30dp"
+                android:layout_marginEnd="-10dp"
+                android:text="IMC"
                 android:textAlignment="center"
-                android:textColor="@color/cardview_light_background" />
+                android:textColor="@color/cardview_light_background"
+                android:textSize="14sp"
+                android:visibility="visible" />
 
             <TextView
-                android:id="@+id/textSteps3"
+                android:id="@+id/textIMC"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/widget4"
-                android:layout_alignStart="@+id/buttonArrowRight"
-                android:layout_marginStart="2dp"
-                android:layout_marginTop="-25dp"
-                android:text="0 km"
+                android:layout_below="@+id/textSteps"
+                android:layout_alignStart="@+id/textSteps"
+                android:layout_alignEnd="@+id/textSteps"
+                android:layout_marginStart="-1dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="-2dp"
+                android:text="1,5"
                 android:textAlignment="center"
-                android:textColor="@color/cardview_light_background" />
+                android:textColor="@color/cardview_light_background"
+                android:textSize="18sp"
+                android:visibility="visible" />
 
-            <TextView
-                android:id="@+id/textSteps2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="-347dp"
-                android:layout_marginTop="1dp"
-                android:text="15 passos"
-                android:textAlignment="center"
-                android:textColor="@color/cardview_light_background" />
 
             <ImageView
                 android:id="@+id/widget1"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
                 android:layout_alignStart="@+id/pulsator"
                 android:layout_alignTop="@+id/pulsator"
                 android:layout_alignEnd="@+id/pulsator"
                 android:layout_alignBottom="@+id/pulsator"
+                android:layout_margin="10dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="20dp"
                 android:layout_marginBottom="20dp"
                 android:contentDescription="@string/unit_heart_rate"
                 android:elevation="2dp"
-                android:src="@drawable/ic_weight" />
+                android:src="@drawable/scale" />
 
             <ImageView
                 android:id="@+id/widget2"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
-                android:layout_alignStart="@+id/lightProgress1"
-                android:layout_alignTop="@+id/lightProgress1"
-                android:layout_alignEnd="@+id/lightProgress1"
-                android:layout_alignBottom="@+id/lightProgress1"
-                android:layout_marginStart="7dp"
-                android:layout_marginTop="-16dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="31dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="48dp"
+                android:layout_marginTop="101dp"
+                android:layout_marginEnd="62dp"
+                android:layout_toStartOf="@+id/pulsator"
                 android:contentDescription="@string/steps"
-                />
+                android:src="@drawable/imc"
+                android:visibility="invisible" />
 
-            <ImageView
-                android:id="@+id/widget3"
+            <ProgressBar
+                android:id="@+id/progressBar2"
+                style="?android:attr/progressBarStyle"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
-                android:layout_alignStart="@+id/lightProgress2"
-                android:layout_alignTop="@+id/lightProgress2"
-                android:layout_alignEnd="@+id/lightProgress2"
-                android:layout_alignBottom="@+id/lightProgress2"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="-7dp"
-                android:layout_marginEnd="7dp"
-                android:layout_marginBottom="22dp"
-                android:contentDescription="@string/unit_kcal"
-                />
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="9dp"
+                android:layout_marginEnd="39dp"
+                android:layout_marginBottom="10dp" />
 
             <ImageView
-                android:id="@+id/widget4"
-                android:layout_width="24dp"
-                android:layout_height="28dp"
-                android:layout_alignStart="@+id/lightProgress"
-                android:layout_alignTop="@+id/lightProgress"
-                android:layout_alignEnd="@+id/lightProgress"
-                android:layout_alignBottom="@+id/lightProgress"
-                android:layout_marginStart="7dp"
-                android:layout_marginTop="-18dp"
-                android:layout_marginEnd="9dp"
-                android:layout_marginBottom="31dp"
-                android:contentDescription="@string/unit_kilometer"
-                />
+                android:id="@+id/patientSex"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_above="@+id/textDate"
+                android:layout_alignTop="@+id/patientName"
+                android:layout_marginEnd="10dp"
+                android:layout_toStartOf="@+id/patientName"
+                android:background="@drawable/x_bg"
+                android:padding="2dp"
+                app:srcCompat="@drawable/x_boy" />
+
+            <ImageView
+                android:id="@+id/imageView3"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_above="@+id/textUnit"
+                android:layout_alignTop="@+id/pulsator"
+                android:layout_marginStart="56dp"
+                android:layout_marginTop="34dp"
+                android:layout_marginBottom="34dp"
+                android:layout_toEndOf="@+id/pulsator"
+                android:tint="@color/disconnected"
+                android:visibility="invisible"
+                app:srcCompat="@drawable/x_bg" />
 
         </RelativeLayout>
 

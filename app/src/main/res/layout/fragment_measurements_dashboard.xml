@@ -63,7 +63,7 @@
                 android:background="@android:color/transparent"
                 android:clipToPadding="false"
                 android:scrollbars="vertical"
-                android:tag="smartPhone"
+                android:tag="tablet"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             </android.support.v7.widget.RecyclerView>

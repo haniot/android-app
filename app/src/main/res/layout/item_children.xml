@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="72dp"
+    android:layout_height="wrap_content"
     android:background="?android:attr/selectableItemBackground"
     android:clickable="true"
     android:focusable="true"
-    android:gravity="center_vertical"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="8dp">
 
     <ImageView
         android:id="@+id/textLetter"
@@ -14,10 +14,8 @@
         android:layout_height="50dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_alignParentBottom="true"
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
         android:background="@mipmap/ic_circle"
         android:padding="8dp"
         android:src="@drawable/x_boy" />
@@ -26,40 +24,44 @@
         android:id="@+id/textNameChildValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_marginStart="16dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="17dp"
+        android:layout_marginTop="10dp"
         android:layout_toEndOf="@id/textLetter"
         android:gravity="center"
         android:text="Tiago santos"
         android:textSize="18dp" />
 
     <TextView
-        android:id="@+id/textIdNumberChildren"
+        android:id="@+id/textAge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/textNameChildValue"
         android:layout_alignStart="@id/textNameChildValue"
-        android:layout_alignParentBottom="true"
-        android:layout_marginTop="-3dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="2dp"
         android:gravity="center"
-        android:text="6546544"
+        android:text="12 anos"
         android:textColor="@color/colorSubmenu" />
 
     <ImageView
         android:id="@+id/btnSelectChildren"
         android:layout_width="30dp"
         android:layout_height="72dp"
+        android:layout_centerVertical="true"
         android:layout_marginEnd="10dp"
         android:layout_toStartOf="@id/btnDeleteChild"
-        android:src="@drawable/x_edit" />
+        android:padding="4dp"
+        android:src="@drawable/ic_edit_black_24dp" />
 
     <ImageView
         android:id="@+id/btnDeleteChild"
         android:layout_width="30dp"
         android:layout_height="72dp"
         android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
         android:layout_marginEnd="16dp"
-        android:src="@drawable/x_remove" />
+        android:padding="4dp"
+        android:src="@drawable/ic_delete_black_24dp" />
 
 </RelativeLayout>
