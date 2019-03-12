@@ -23,6 +23,15 @@ public class MeasurementMonitor {
     public MeasurementMonitor() {
     }
 
+    public MeasurementMonitor(Context context, int icon, String description, String measurementValue, int type, String measurementInitials ) {
+        this.context = context;
+        this.icon = icon;
+        this.description = description;
+        this.measurementValue = measurementValue;
+        this.type = type;
+        this.measurementInitials = measurementInitials;
+    }
+
     public Context getContext() {
         return context;
     }

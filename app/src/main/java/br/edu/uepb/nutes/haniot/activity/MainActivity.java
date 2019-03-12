@@ -13,7 +13,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -45,11 +44,10 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
     private final int REQUEST_ENABLE_LOCATION = 2;
 
     private Session session;
-    Patient patient;
+    private Patient patient;
+
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-//    @BindView(R.id.viewpager)
-//    ViewPager viewPager;
 
     @BindView(R.id.frameCharts)
     FrameLayout frameChart;
@@ -60,6 +58,10 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
     MeasurementsGridFragment measurementsGridFragment;
     DashboardChartsFragment dashboardChartsFragment;
 
+    /**
+     * On create.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,17 +85,18 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
         measurementsTransition.commit();
     }
 
+    /**
+     * On start.
+     */
     @Override
     protected void onStart() {
         super.onStart();
         checkPatient();
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
+    /**
+     * On resume.
+     */
     @Override
     protected void onResume() {
         super.onResume();
@@ -108,9 +111,9 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
         checkPatient();
     }
 
-    /* Test if there is some patient saved on bundle or on shared preferences
-        if some patient is finded, the title is updated.
-    */
+    /**
+     * Set patient selected.
+     */
     public void checkPatient() {
         patient = PatientDAO.getInstance(this)
                 .getFromID(session.getString(getString(R.string.id_last_patient)));
@@ -225,9 +228,13 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
         System.exit(0);
     }
 
+    /**
+     * Notify new measurement received to dashboard.
+     * @param valueMeasurement
+     */
     @Override
-    public void respond(String data) {
-        dashboardChartsFragment.updateValueMeasurement(data);
+    public void notifyNewMeasurement(String valueMeasurement) {
+        dashboardChartsFragment.updateValueMeasurement(valueMeasurement);
     }
 
 }

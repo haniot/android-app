@@ -17,6 +17,6 @@ public interface HeartRateDataCallback {
     /**
      * On receiver data of measurement from Heart Rate Device.
      */
-    void onMeasurementReceiver(Measurement measurementHeartRate);
+    void onMeasurementReceived(Measurement measurementHeartRate);
 
 }

@@ -17,5 +17,5 @@ public interface GlucoseDataCallback {
     /**
      * On receiver data of measurement from Glucose Device.
      */
-    void onMeasurementReceiver(Measurement measurementGlucose);
+    void onMeasurementReceived(Measurement measurementGlucose);
 }

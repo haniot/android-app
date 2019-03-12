@@ -197,7 +197,7 @@ public class GlucoseManager extends BluetoohManager {
                     }
 
 
-                    glucoseDataCallback.onMeasurementReceiver(glucose);
+                    glucoseDataCallback.onMeasurementReceived(glucose);
 
                     if (!glucose.getContextMeasurements().isEmpty()) {
                         StringBuilder contextString = new StringBuilder();

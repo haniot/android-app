@@ -30,15 +30,14 @@
             <TextView
                 android:id="@+id/patientName"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/patient"
+                android:layout_height="62dp"
+                android:layout_alignTop="@+id/progressBar2"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="10dp"
                 android:layout_toEndOf="@+id/patient"
                 android:gravity="center"
                 android:text="Paulina Leal"
                 android:textColor="@color/cardview_light_background"
-                android:textSize="20sp" />
+                android:textSize="30sp" />
 
             <TextView
                 android:id="@+id/textDate"
@@ -46,11 +45,12 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/patientName"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="2dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
                 android:text="segunda-feira, 24 dezembro, 2018"
                 android:textAlignment="center"
-                android:textColor="@color/cardview_light_background" />
+                android:textColor="@color/cardview_light_background"
+                android:textSize="18sp" />
 
             <com.mikhaellopez.circularprogressbar.CircularProgressBar
                 android:id="@+id/progressBar"
@@ -75,7 +75,7 @@
                 android:layout_height="100dp"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="80dp"
+                android:layout_marginTop="131dp"
                 app:pulse_color="@color/colorAccent"
                 app:pulse_count="5"
                 app:pulse_duration="3000"
@@ -86,16 +86,16 @@
 
             <TextView
                 android:id="@+id/textValueMeasurement"
-                android:layout_width="85dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_above="@+id/lightProgress2"
                 android:layout_below="@+id/pulsator"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="18dp"
                 android:text="-"
                 android:textAlignment="center"
                 android:textColor="@color/cardview_light_background"
-                android:textSize="36sp" />
+                android:textSize="40sp" />
 
             <TextView
                 android:id="@+id/textUnit"
@@ -103,13 +103,14 @@
                 android:layout_height="wrap_content"
                 android:layout_above="@+id/textValueMeasurement"
                 android:layout_below="@+id/pulsator"
-                android:layout_alignStart="@+id/textValueMeasurement"
-                android:layout_marginStart="0dp"
-                android:layout_marginTop="-4dp"
-                android:layout_marginBottom="-20dp"
+                android:layout_alignStart="@+id/pulsator"
+                android:layout_alignEnd="@+id/pulsator"
+                android:layout_marginTop="0dp"
+                android:layout_marginBottom="-30dp"
                 android:text="@string/unit_kg"
                 android:textAlignment="center"
-                android:textColor="@color/cardview_light_background" />
+                android:textColor="@color/cardview_light_background"
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/textSteps"
@@ -125,7 +126,7 @@
                 android:textAlignment="center"
                 android:textColor="@color/cardview_light_background"
                 android:textSize="14sp"
-                android:visibility="visible" />
+                android:visibility="invisible" />
 
             <TextView
                 android:id="@+id/textIMC"
@@ -141,22 +142,18 @@
                 android:textAlignment="center"
                 android:textColor="@color/cardview_light_background"
                 android:textSize="18sp"
-                android:visibility="visible" />
+                android:visibility="invisible" />
 
 
             <ImageView
                 android:id="@+id/widget1"
                 android:layout_width="120dp"
                 android:layout_height="120dp"
+                android:layout_below="@+id/textDate"
                 android:layout_alignStart="@+id/pulsator"
-                android:layout_alignTop="@+id/pulsator"
                 android:layout_alignEnd="@+id/pulsator"
                 android:layout_alignBottom="@+id/pulsator"
-                android:layout_margin="10dp"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="20dp"
-                android:layout_marginBottom="20dp"
+                android:layout_marginTop="12dp"
                 android:contentDescription="@string/unit_heart_rate"
                 android:elevation="2dp"
                 android:src="@drawable/scale" />
@@ -185,15 +182,16 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="9dp"
                 android:layout_marginEnd="39dp"
-                android:layout_marginBottom="10dp" />
+                android:layout_marginBottom="10dp"
+                android:visibility="invisible" />
 
             <ImageView
                 android:id="@+id/patientSex"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_above="@+id/textDate"
+                android:layout_width="54dp"
+                android:layout_height="52dp"
                 android:layout_alignTop="@+id/patientName"
-                android:layout_marginEnd="10dp"
+                android:layout_marginTop="3dp"
+                android:layout_marginEnd="15dp"
                 android:layout_toStartOf="@+id/patientName"
                 android:background="@drawable/x_bg"
                 android:padding="2dp"

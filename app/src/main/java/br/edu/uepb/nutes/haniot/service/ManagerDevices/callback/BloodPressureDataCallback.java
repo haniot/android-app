@@ -17,5 +17,5 @@ public interface BloodPressureDataCallback {
     /**
      * On receiver data of measurement from Blood Pressure Device.
      */
-    void onMeasurementReceiver(Measurement measurementBloodPressure);
+    void onMeasurementReceived(Measurement measurementBloodPressure);
 }

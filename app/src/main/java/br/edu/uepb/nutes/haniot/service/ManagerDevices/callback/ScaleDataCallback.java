@@ -17,7 +17,7 @@ public interface ScaleDataCallback {
     /**
      * On receiver data of measurement from Scale Device.
      */
-    void onMeasurementReceiver(Measurement measurementScale);
+    void onMeasurementReceived(Measurement measurementScale);
 
     void onMeasurementReceiving(String bodyMassMeasurement, long timeStamp, String bodyMassUnit);
 

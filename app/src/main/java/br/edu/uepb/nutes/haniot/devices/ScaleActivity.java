@@ -160,9 +160,14 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
         animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
         mChartButton.setOnClickListener(this);
         mAddButton.setOnClickListener(this);
+
+        Log.i(TAG, "tamanho: "+deviceDAO.list(session.getIdLogged()).size());
+        Log.i(TAG, "type: "+deviceDAO.list(session.getIdLogged()).get(0).getTypeId());
         for (Device device : deviceDAO.list(session.getIdLogged())) {
-            if (device.getTypeId() == DeviceType.BODY_COMPOSITION)
+            if (device.getTypeId() == DeviceType.BODY_COMPOSITION) {
                 mDevice = device;
+                Log.i(TAG, mDevice.getAddress());
+            }
         }
         scaleManager.setSimpleCallback(scaleDataCallback);
         initComponents();
@@ -182,7 +187,7 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
         }
 
         @Override
-        public void onMeasurementReceiver(Measurement measurementScale) {
+        public void onMeasurementReceived(Measurement measurementScale) {
             //bodyMass.setDevice(mDevice);
 
             if (mDevice != null)

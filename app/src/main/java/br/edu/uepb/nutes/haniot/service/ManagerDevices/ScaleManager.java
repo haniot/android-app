@@ -150,7 +150,7 @@ public class ScaleManager extends BluetoohManager {
                          */
                         MeasurementBodyMass.addMeasurement(bmi, bodyFat);
                         Log.i(TAG, "Received measurent from Scale" + device.getName() + ": " + result.get("bodyMass"));
-                        scaleDataCallback.onMeasurementReceiver(MeasurementBodyMass);
+                        scaleDataCallback.onMeasurementReceived(MeasurementBodyMass);
                         /**
                          * Update UI
                          */

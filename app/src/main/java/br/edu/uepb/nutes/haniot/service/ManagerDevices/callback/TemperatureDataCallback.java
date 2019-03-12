@@ -18,5 +18,5 @@ public interface TemperatureDataCallback {
     /**
      * On receiver data of measurement from Temperature Device.
      */
-    void onMeasurementReceiver(Measurement measurementTemperature);
+    void onMeasurementReceived(Measurement measurementTemperature);
 }

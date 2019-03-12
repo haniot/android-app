@@ -178,7 +178,7 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
         }
 
         @Override
-        public void onMeasurementReceiver(Measurement measurementHeartRate) {
+        public void onMeasurementReceived(Measurement measurementHeartRate) {
             updateUILastMeasurement(measurement, true);
 
         }

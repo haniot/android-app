@@ -12,7 +12,6 @@ import android.util.Log;
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONObject;
 
-import java.util.Calendar;
 import java.util.UUID;
 
 import br.edu.uepb.nutes.haniot.model.Measurement;
@@ -81,7 +80,7 @@ public class HeartRateManager extends BluetoohManager {
             measurement.setUnit("bpm");
             measurement.setRegistrationDate(DateUtils.getCurrentDatetime());
 
-            heartRateDataCallback.onMeasurementReceiver(measurement);
+            heartRateDataCallback.onMeasurementReceived(measurement);
 
         }
 

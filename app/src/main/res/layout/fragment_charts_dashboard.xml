@@ -92,7 +92,7 @@
                 android:layout_below="@+id/pulsator"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="10dp"
-                android:text="52.2"
+                android:text="-"
                 android:textAlignment="center"
                 android:textColor="@color/cardview_light_background"
                 android:textSize="36sp" />
@@ -125,7 +125,7 @@
                 android:textAlignment="center"
                 android:textColor="@color/cardview_light_background"
                 android:textSize="14sp"
-                android:visibility="visible" />
+                android:visibility="invisible" />
 
             <TextView
                 android:id="@+id/textIMC"
@@ -141,7 +141,7 @@
                 android:textAlignment="center"
                 android:textColor="@color/cardview_light_background"
                 android:textSize="18sp"
-                android:visibility="visible" />
+                android:visibility="invisible" />
 
 
             <ImageView
@@ -176,7 +176,7 @@
                 android:visibility="invisible" />
 
             <ProgressBar
-                android:id="@+id/progressBar2"
+                android:id="@+id/Receiving"
                 style="?android:attr/progressBarStyle"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
