@@ -242,10 +242,17 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
             mScanner.stopScan();
 
             //removes a device from the local database and server
-            removeDeviceForType(mDevice);
-            btDevice.createBond();
-
-
+            mDevice.setAddress(btDevice.getAddress());
+            if (removeDeviceForType(mDevice)) {
+                btDevice.createBond();
+            } else {
+                if (btDevice.getBondState() == BluetoothDevice.BOND_BONDED) {
+                    unpairDevice(mDevice);
+                    btDevice.createBond();
+                } else {
+                    btDevice.createBond();
+                }
+            }
         }
 
         @Override
@@ -487,9 +494,11 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
      *
      * @param device {@link Device}
      */
-    public void removeDeviceForType(Device device) {
+    public boolean removeDeviceForType(Device device) {
+        boolean confirmed = false;
         for (Device d : mDeviceDAO.list(session.getIdLogged())) {
             if (d.getTypeId() == device.getTypeId()) {
+                confirmed = true;
                 String path = "devices/"
                         .concat(d.get_id())
                         .concat("/users/")
@@ -498,15 +507,15 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
                 server.delete(path, new Server.Callback() {
                     @Override
                     public void onError(JSONObject result) {
+                        Log.d(TAG, "onError: ");
                     }
 
                     @Override
                     public void onSuccess(JSONObject result) {
                         try {
                             if (result.has("code") && result.getInt("code") == 204) {
-                                unpairDevice(d);
                                 mDeviceDAO.remove(d.getAddress());
-
+                                unpairDevice(d);
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -515,6 +524,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
                 });
             }
         }
+        return confirmed;
     }
 
     private void unpairDevice(Device device) {
