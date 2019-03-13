@@ -244,11 +244,14 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
             //removes a device from the local database and server
             mDevice.setAddress(btDevice.getAddress());
             if (removeDeviceForType(mDevice)) {
-                btDevice.createBond();
+                if (unpairDevice(mDevice)) {
+                    btDevice.createBond();
+                }
             } else {
                 if (btDevice.getBondState() == BluetoothDevice.BOND_BONDED) {
-                    unpairDevice(mDevice);
-                    btDevice.createBond();
+                    if (unpairDevice(mDevice)) {
+                        btDevice.createBond();
+                    }
                 } else {
                     btDevice.createBond();
                 }
@@ -515,7 +518,6 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
                         try {
                             if (result.has("code") && result.getInt("code") == 204) {
                                 mDeviceDAO.remove(d.getAddress());
-                                unpairDevice(d);
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -527,17 +529,21 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         return confirmed;
     }
 
-    private void unpairDevice(Device device) {
-        if (device.getAddress().isEmpty()) return;
-        BluetoothDevice mBluetoothDevice = BluetoothAdapter.getDefaultAdapter().
-                getRemoteDevice(device.getAddress());
-        try {
-            Method m = mBluetoothDevice.getClass()
-                    .getMethod("removeBond", (Class[]) null);
-            m.invoke(mBluetoothDevice, (Object[]) null);
-        } catch (Exception e) {
-            Log.d(TAG, "error removing pairing " + e.getMessage());
+    private boolean unpairDevice(Device device) {
+        boolean confirmed = false;
+        if (!device.getAddress().isEmpty()) {
+            BluetoothDevice mBluetoothDevice = BluetoothAdapter.getDefaultAdapter().
+                    getRemoteDevice(device.getAddress());
+            try {
+                Method m = mBluetoothDevice.getClass()
+                        .getMethod("removeBond", (Class[]) null);
+                m.invoke(mBluetoothDevice, (Object[]) null);
+                confirmed = true;
+            } catch (Exception e) {
+                Log.d(TAG, "error removing pairing " + e.getMessage());
+            }
         }
+        return confirmed;
     }
 }
 
