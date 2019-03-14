@@ -77,17 +77,6 @@
             android:text="@string/login"
             android:textColor="@color/colorTextDark" />
 
-        <TextView
-            android:id="@+id/text_view_signup"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            android:layout_marginTop="30dp"
-            android:gravity="center"
-            android:text="@string/no_account_yet"
-            android:textColor="@color/colorPrimary"
-            android:textSize="15sp" />
-
         <ProgressBar
             android:id="@+id/progressBarLogin"
             style="?android:attr/progressBarStyle"

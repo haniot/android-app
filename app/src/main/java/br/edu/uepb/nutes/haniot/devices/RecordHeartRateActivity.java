@@ -149,16 +149,6 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
     protected void onStart() {
         super.onStart();
 
-        // TODO REMOVER!!! Pois o cadastro do device deverá ser no processo de emparelhamento
-        mDevice = deviceDAO.get(mDeviceAddress, session.getIdLogged());
-
-        if (mDevice == null) {
-            mDevice = new Device(mDeviceAddress, "HEART RATE SENSOR", deviceInformations[0], deviceInformations[1], DeviceType.HEART_RATE, session.getUserLogged());
-            if(deviceInformations[1].equals("H10")) mDevice.set_id("5a62c149d6f33400146c9b66");
-            else mDevice.set_id("5a62c161d6f33400146c9b67");
-
-            if (!deviceDAO.save(mDevice)) finish();
-        }
     }
 
     @Override
@@ -306,7 +296,7 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
         public void onServiceConnected(ComponentName componentName, IBinder service) {
             mBluetoothLeService = ((BluetoothLeService.LocalBinder) service).getService();
             if (!mBluetoothLeService.initialize()) {
-                Log.e(TAG, "Unable to initialize Bluetooth");
+                Log.e(TAG, "Unable to initializeCharacteristic Bluetooth");
                 finish();
             }
             // Conecta-se automaticamente ao dispositivo após a inicialização bem-sucedida.

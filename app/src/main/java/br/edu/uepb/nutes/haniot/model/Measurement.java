@@ -5,7 +5,6 @@ import java.util.List;
 import io.objectbox.annotation.Backlink;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
-import io.objectbox.annotation.Index;
 import io.objectbox.relation.ToMany;
 import io.objectbox.relation.ToOne;
 
@@ -29,7 +28,7 @@ public class Measurement {
      * RELATIONS
      */
     private ToOne<User> user;
-    private ToOne<Children> children;
+    private ToOne<Patient> children;
     private ToOne<Device> device;
     private ToOne<Training> training;
     @Backlink(to = "measurement")
@@ -95,11 +94,11 @@ public class Measurement {
         this.registrationDate = registrationDate;
     }
 
-    public ToOne<Children> getChildren() {
+    public ToOne<Patient> getChildren() {
         return children;
     }
 
-    public void setChildren(ToOne<Children> children) {
+    public void setChildren(ToOne<Patient> children) {
         this.children = children;
     }
 

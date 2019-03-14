@@ -11,6 +11,7 @@ public class ItemGridType {
     public static final int BLOOD_PRESSURE = 6;
     public static final int HEART_RATE = 7;
     public static final int SLEEP = 8;
+    public static final int ANTHROPOMETRIC = 9;
 
     private ItemGridType(){
 
@@ -25,6 +26,7 @@ public class ItemGridType {
         add(BLOOD_PRESSURE);
         add(HEART_RATE);
         add(SLEEP);
+        add(ANTHROPOMETRIC);
     }};
 
     public static ArrayList<Integer> getSupportedTypes() {

@@ -3,7 +3,6 @@ package br.edu.uepb.nutes.haniot.service;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
@@ -18,8 +17,6 @@ import java.util.Map;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.MainActivity;
-import br.edu.uepb.nutes.haniot.elderly.ElderlyMonitoredActivity;
-import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import br.edu.uepb.nutes.haniot.utils.Log;
 
 /**
@@ -117,45 +114,45 @@ public class FCMService extends FirebaseMessagingService {
      * @param id   int
      */
     private void fallNotification(Map<String, String> data, int id) {
-        Intent intent = new Intent(this, ElderlyMonitoredActivity.class);
-        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(this);
-        taskStackBuilder.addParentStack(ElderlyMonitoredActivity.class);
-        taskStackBuilder.addNextIntent(intent);
+//        Intent intent = new Intent(this, ElderlyMonitoredActivity.class);
+//        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(this);
+//        taskStackBuilder.addParentStack(ElderlyMonitoredActivity.class);
+//        taskStackBuilder.addNextIntent(intent);
 
-        PendingIntent pendingIntent = taskStackBuilder.getPendingIntent(id, PendingIntent.FLAG_UPDATE_CURRENT);
+//        PendingIntent pendingIntent = taskStackBuilder.getPendingIntent(id, PendingIntent.FLAG_UPDATE_CURRENT);
 
         /**
          * Action emergency
          */
-        Intent emergencyIntent = new Intent(Intent.ACTION_DIAL,
-                Uri.parse("tel:".concat(getResources().getString(R.string.number_emergency))));
-        PendingIntent emergencyAction = PendingIntent.getActivity(this, 0, emergencyIntent, 0);
-
-        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        NotificationCompat.Builder notificationBuilder =
-                new NotificationCompat.Builder(this, CHANNEL_ID)
-                        .setSmallIcon(R.drawable.app_logo)
-                        .setContentTitle(data.get("title"))
-                        .setContentText(data.get("message"))
-                        .setSubText(String.format(getResources().getString(
-                                R.string.fall_register_time_title),
-                                DateUtils.formatDate(Long.parseLong(data.get("timestamp")),
-                                        getResources().getString(R.string.time_format_simple2))))
-                        .setAutoCancel(true)
-                        .setSound(defaultSoundUri)
-                        .setVibrate(new long[]{1000, 1000})
-                        .setContentIntent(pendingIntent)
-                        .setStyle(new NotificationCompat.BigTextStyle().bigText(data.get("message")))
-                        .addAction(R.drawable.ic_action_live_help,
-                                getResources().getString(R.string.call_emergency_title), emergencyAction);
-
-        /**
-         * Action contact
-         */
-        if (data.containsKey("phone"))
-            notificationBuilder.addAction(actionPhone(data.get("phone"), R.drawable.ic_person));
-
-        sendNotification(notificationBuilder, id);
+//        Intent emergencyIntent = new Intent(Intent.ACTION_DIAL,
+//                Uri.parse("tel:".concat(getResources().getString(R.string.number_emergency))));
+//        PendingIntent emergencyAction = PendingIntent.getActivity(this, 0, emergencyIntent, 0);
+//
+//        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+//        NotificationCompat.Builder notificationBuilder =
+//                new NotificationCompat.Builder(this, CHANNEL_ID)
+//                        .setSmallIcon(R.drawable.app_logo)
+//                        .setContentTitle(data.get("title"))
+//                        .setContentText(data.get("message"))
+//                        .setSubText(String.format(getResources().getString(
+//                                R.string.fall_register_time_title),
+//                                DateUtils.formatDate(Long.parseLong(data.get("timestamp")),
+//                                        getResources().getString(R.string.time_format_simple2))))
+//                        .setAutoCancel(true)
+//                        .setSound(defaultSoundUri)
+//                        .setVibrate(new long[]{1000, 1000})
+//                        .setContentIntent(pendingIntent)
+//                        .setStyle(new NotificationCompat.BigTextStyle().bigText(data.get("message")))
+//                        .addAction(R.drawable.ic_action_live_help,
+//                                getResources().getString(R.string.call_emergency_title), emergencyAction);
+//
+//        /**
+//         * Action contact
+//         */
+//        if (data.containsKey("phone"))
+//            notificationBuilder.addAction(actionPhone(data.get("phone"), R.drawable.ic_person));
+//
+//        sendNotification(notificationBuilder, id);
     }
 
 
@@ -166,36 +163,36 @@ public class FCMService extends FirebaseMessagingService {
      * @param id   int
      */
     private void alertNotification(Map<String, String> data, int id) {
-        Intent intent = new Intent(this, ElderlyMonitoredActivity.class);
-        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(this);
-        taskStackBuilder.addParentStack(ElderlyMonitoredActivity.class);
-        taskStackBuilder.addNextIntent(intent);
-
-        PendingIntent pendingIntent = taskStackBuilder.getPendingIntent(id, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        NotificationCompat.Builder notificationBuilder =
-                new NotificationCompat.Builder(this, CHANNEL_ID)
-                        .setSmallIcon(R.drawable.app_logo)
-                        .setContentTitle(data.get("title"))
-                        .setContentText(data.get("message"))
-                        .setSubText(String.format(getResources().getString(
-                                R.string.alert_register_time_title),
-                                DateUtils.formatDate(Long.parseLong(data.get("timestamp")),
-                                        getResources().getString(R.string.time_format_simple2))))
-                        .setAutoCancel(true)
-                        .setSound(defaultSoundUri)
-                        .setVibrate(new long[]{1000, 1000})
-                        .setContentIntent(pendingIntent)
-                        .setStyle(new NotificationCompat.BigTextStyle().bigText(data.get("message")));
-
-        /**
-         * Action contact
-         */
-        if (data.containsKey("phone"))
-            notificationBuilder.addAction(actionPhone(data.get("phone"), R.drawable.ic_person));
-
-        sendNotification(notificationBuilder, id);
+//        Intent intent = new Intent(this, ElderlyMonitoredActivity.class);
+//        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(this);
+//        taskStackBuilder.addParentStack(ElderlyMonitoredActivity.class);
+//        taskStackBuilder.addNextIntent(intent);
+//
+//        PendingIntent pendingIntent = taskStackBuilder.getPendingIntent(id, PendingIntent.FLAG_UPDATE_CURRENT);
+//
+//        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+//        NotificationCompat.Builder notificationBuilder =
+//                new NotificationCompat.Builder(this, CHANNEL_ID)
+//                        .setSmallIcon(R.drawable.app_logo)
+//                        .setContentTitle(data.get("title"))
+//                        .setContentText(data.get("message"))
+//                        .setSubText(String.format(getResources().getString(
+//                                R.string.alert_register_time_title),
+//                                DateUtils.formatDate(Long.parseLong(data.get("timestamp")),
+//                                        getResources().getString(R.string.time_format_simple2))))
+//                        .setAutoCancel(true)
+//                        .setSound(defaultSoundUri)
+//                        .setVibrate(new long[]{1000, 1000})
+//                        .setContentIntent(pendingIntent)
+//                        .setStyle(new NotificationCompat.BigTextStyle().bigText(data.get("message")));
+//
+//        /**
+//         * Action contact
+//         */
+//        if (data.containsKey("phone"))
+//            notificationBuilder.addAction(actionPhone(data.get("phone"), R.drawable.ic_person));
+//
+//        sendNotification(notificationBuilder, id);
     }
 
     /**

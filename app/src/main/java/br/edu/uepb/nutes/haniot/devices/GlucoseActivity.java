@@ -23,6 +23,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -40,6 +41,7 @@ import java.util.List;
 import java.util.UUID;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.activity.ManuallyAddMeasurement;
 import br.edu.uepb.nutes.haniot.activity.charts.GlucoseChartActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.GlucoseAdapter;
@@ -49,6 +51,7 @@ import br.edu.uepb.nutes.haniot.model.ContextMeasurementType;
 import br.edu.uepb.nutes.haniot.model.ContextMeasurementValueType;
 import br.edu.uepb.nutes.haniot.model.Device;
 import br.edu.uepb.nutes.haniot.model.DeviceType;
+import br.edu.uepb.nutes.haniot.model.ItemGridType;
 import br.edu.uepb.nutes.haniot.model.Measurement;
 import br.edu.uepb.nutes.haniot.model.MeasurementType;
 import br.edu.uepb.nutes.haniot.model.dao.DeviceDAO;
@@ -84,7 +87,6 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
     private boolean mConnected = false;
 
     private BluetoothGattService mGattService;
-    private String mDeviceAddress;
     private Animation animation;
     private Device mDevice;
     private Session session;
@@ -138,6 +140,9 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
     @BindView(R.id.chart_floating_button)
     FloatingActionButton mChartButton;
 
+    @BindView(R.id.add_floating_button)
+    FloatingActionButton mAddButton;
+
     private ProgressDialog progressDialog;
     private boolean isGetAllMonitor;
 
@@ -150,14 +155,18 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
         // synchronization with server
         synchronizeWithServer();
 
-        mDeviceAddress = "00:60:19:60:68:62";
         session = new Session(this);
+        for (Device device : DeviceDAO.getInstance(this).list(session.getIdLogged()))
+            if (device.getTypeId() == DeviceType.GLUCOMETER) mDevice = device;
+
+        if (mDevice == null) Log.i(TAG, "No device registered");
         measurementDAO = MeasurementDAO.getInstance(this);
         deviceDAO = DeviceDAO.getInstance(this);
         params = new Params(session.get_idLogged(), MeasurementType.BLOOD_GLUCOSE);
 
         animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
         mChartButton.setOnClickListener(this);
+        mAddButton.setOnClickListener(this);
 
         Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
@@ -237,6 +246,7 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 if (dy > 0) {
+                    mAddButton.hide();
                     // Recycle view scrolling downwards...
                     // this if statement detects when user reaches the end of recyclerView, this is only time we should load more
                     if (!recyclerView.canScrollVertically(RecyclerView.FOCUS_DOWN)) {
@@ -244,6 +254,8 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
                         // we must check if itShouldLoadMore variable is true [unlocked]
                         if (itShouldLoadMore) loadMoreData();
                     }
+                } else {
+                    mAddButton.show();
                 }
             }
         });
@@ -451,16 +463,6 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     protected void onStart() {
         super.onStart();
-
-        // TODO REMOVER!!! Pois o cadastro do device deverá ser no processo de emparelhamento
-        mDevice = deviceDAO.get(mDeviceAddress, session.getIdLogged());
-
-        if (mDevice == null) {
-            mDevice = new Device(mDeviceAddress, "ACCU-CHEK PERFORMA CONNECT", "ACCU-CHEK", "", DeviceType.GLUCOMETER, session.getUserLogged());
-            mDevice.set_id("5a62c1a1d6f33400146c9b68");
-            if (!deviceDAO.save(mDevice)) finish();
-            mDevice = deviceDAO.get(mDeviceAddress, session.getIdLogged());
-        }
     }
 
     @Override
@@ -468,7 +470,7 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
         super.onResume();
         registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
 
-        if (mBluetoothLeService != null) mBluetoothLeService.connect(mDeviceAddress);
+        if (mBluetoothLeService != null && mDevice != null) mBluetoothLeService.connect(mDevice.getAddress());
     }
 
     @Override
@@ -576,7 +578,8 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
                 finish();
             }
             // Conecta-se automaticamente ao dispositivo após a inicialização bem-sucedida.
-            mBluetoothLeService.connect(mDeviceAddress);
+            if (mDevice != null)
+            mBluetoothLeService.connect(mDevice.getAddress());
         }
 
         @Override
@@ -735,16 +738,13 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
     private void updateUILastMeasurement(Measurement measurement, boolean applyAnimation) {
         if (measurement == null) return;
 
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mBloodGlucoseTextView.setText(String.valueOf((int) measurement.getValue()));
-                mUnitBloodGlucoseTextView.setText(measurement.getUnit());
-                mDateLastMeasurement.setText(DateUtils.abbreviatedDate(
-                        getApplicationContext(), measurement.getRegistrationDate()));
+        runOnUiThread(() -> {
+            mBloodGlucoseTextView.setText(valueToString(measurement));
+            mUnitBloodGlucoseTextView.setText(measurement.getUnit());
+            mDateLastMeasurement.setText(DateUtils.abbreviatedDate(
+                    getApplicationContext(), measurement.getRegistrationDate()));
 
-                if (applyAnimation) mBloodGlucoseTextView.startAnimation(animation);
-            }
+            if (applyAnimation) mBloodGlucoseTextView.startAnimation(animation);
         });
     }
 
@@ -760,6 +760,12 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
         switch (v.getId()) {
             case R.id.chart_floating_button:
                 startActivity(new Intent(getApplicationContext(), GlucoseChartActivity.class));
+                break;
+            case R.id.add_floating_button:
+                Intent it = new Intent(getApplicationContext(), ManuallyAddMeasurement.class);
+                it.putExtra(getResources().getString(R.string.measurementType),
+                        ItemGridType.BLOOD_GLUCOSE);
+                startActivity(it);
                 break;
             default:
                 break;

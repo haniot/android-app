@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="br.edu.uepb.nutes.haniot">
 
     <!-- PERMISSIONS -->
@@ -22,7 +21,8 @@
         android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
+        <!-- RECEIVER ACCOUNT SERVICE -->
+        <receiver android:name=".service.TokenExpirationService$TokenAlarmReceiver" />
         <!-- ACTIVITIES -->
         <activity android:name=".activity.SplashScreenActivity">
             <intent-filter>
@@ -35,19 +35,22 @@
             android:name=".activity.account.LoginActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".activity.account.SignupActivity"
+            android:name=".activity.account.UpdateDataActivity"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
-                <action android:name="br.edu.uepb.nutes.ocariot.activity.account.SignupActivity" />
-
+                <action android:name="br.edu.uepb.nutes.ocariot.activity.account.ChangeDataActivity" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
             android:name=".activity.MainActivity"
-            android:screenOrientation="sensor" />
+            />
         <activity
             android:name=".activity.DeviceInforActivity"
+            android:parentActivityName=".activity.MainActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.settings.ManagerMeasurementsActivity"
             android:parentActivityName=".activity.MainActivity"
             android:screenOrientation="portrait" />
         <activity
@@ -92,59 +95,20 @@
         <activity android:name=".activity.charts.SmartBandChartActivity" />
 
         <!-- ACTIVITIES ELDERLY -->
-        <activity
-            android:name=".elderly.ElderlyMonitoredActivity"
-            android:parentActivityName=".activity.MainActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppThemeSecondary">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.MainActivity" />
-        </activity>
-        <activity
-            android:name=".elderly.ElderlyRegisterActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppThemeSecondary" />
-        <activity
-            android:name=".elderly.FallRiskActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppThemeSecondary" />
-        <activity
-            android:name=".elderly.FallRiskResultActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppThemeSecondary" />
-        <activity
-            android:name=".elderly.FallCharacterizationActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppThemeSecondary" />
-        <activity
-            android:name=".elderly.ElderlyFallActivity"
-            android:theme="@style/AppThemeSecondary" />
-        <activity
-            android:name=".elderly.ElderlyPreviewActivity"
-            android:theme="@style/AppThemeSecondary" />
         <!-- END ELDERLY -->
 
+
         <!-- ACTIVITIES REGISTER DEVICES -->
-        <activity android:name=".devices.register.DeviceRegisterActivity" />
+        <activity android:name=".devices.register.DeviceRegisterActivity"/>
         <activity android:name=".devices.register.DeviceManagerActivity" />
         <!-- END ACTIVITIES REGISTER DEVICES -->
 
+
         <!-- SERVICES -->
+        <service android:name=".service.TokenExpirationService"/>
         <service
             android:name=".service.BluetoothLeService"
             android:enabled="true" />
-        <service
-            android:name="com.signove.health.service.HealthService"
-            android:enabled="true"
-            android:exported="true"
-            android:permission="android.permission.BLUETOOTH"
-            android:stopWithTask="false">
-            <intent-filter>
-                <action android:name="com.signove.health.service.HealthService" />
-            </intent-filter>
-        </service>
-        <service android:name="com.signove.health.service.BluetoothHDPService" />
         <service android:name=".service.FCMService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
@@ -153,10 +117,13 @@
         <!-- END SERVICES -->
 
         <activity
-            android:name=".activity.ManageChildrenActivity"
+            android:name=".activity.ManagePatientsActivity"
             android:label="@string/title_activity_manage_children"
             android:theme="@style/AppTheme" />
         <activity android:name=".activity.ManuallyAddMeasurement" />
+        <activity
+            android:name=".activity.PatientHistoricalActivity"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>

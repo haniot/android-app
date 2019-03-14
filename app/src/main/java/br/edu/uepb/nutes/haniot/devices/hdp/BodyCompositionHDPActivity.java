@@ -26,8 +26,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
-import com.signove.health.service.HealthAgentAPI;
-import com.signove.health.service.HealthServiceAPI;
+//import com.signove.health.service.HealthAgentAPI;
+//import com.signove.health.service.HealthServiceAPI;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -76,7 +76,7 @@ public class BodyCompositionHDPActivity extends AppCompatActivity implements Vie
     private BodyCompositionAdapter mAdapter;
     private Params params;
     private Handler tm;
-    private HealthServiceAPI api;
+//    private HealthServiceAPI api;
     private int[] specs = {0x100F}; // 0x100F - Body Weight Scale
 
     /**
@@ -472,7 +472,7 @@ public class BodyCompositionHDPActivity extends AppCompatActivity implements Vie
         super.onDestroy();
         try {
             Log.w("HST", "Unconfiguring...");
-            api.Unconfigure(agent);
+//            api.Unconfigure(agent);
         } catch (Throwable t) {
             Log.w("HST", "Erro tentando desconectar");
         }
@@ -508,19 +508,19 @@ public class BodyCompositionHDPActivity extends AppCompatActivity implements Vie
     }
 
     private void RequestConfig(String dev) {
-        try {
-            String xmldata = api.GetConfiguration(dev);
-        } catch (RemoteException e) {
-            Log.w("HST", "Exception (RequestConfig)");
-        }
+//        try {
+//            String xmldata = api.GetConfiguration(dev);
+//        } catch (RemoteException e) {
+//            Log.w("HST", "Exception (RequestConfig)");
+//        }
     }
 
     private void RequestDeviceAttributes(String dev) {
-        try {
-            api.RequestDeviceAttributes(dev);
-        } catch (RemoteException e) {
-            Log.w("HST", "Exception (RequestDeviceAttributes)");
-        }
+//        try {
+//            api.RequestDeviceAttributes(dev);
+//        } catch (RemoteException e) {
+//            Log.w("HST", "Exception (RequestDeviceAttributes)");
+//        }
     }
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
@@ -529,12 +529,12 @@ public class BodyCompositionHDPActivity extends AppCompatActivity implements Vie
             Log.w("HST", "Service connection established");
 
             // that's how we get the client side of the IPC connection
-            api = HealthServiceAPI.Stub.asInterface(service);
-            try {
-                api.ConfigurePassive(agent, specs);
-            } catch (RemoteException e) {
-                Log.e("HST", "Failed to add listener", e);
-            }
+//            api = HealthServiceAPI.Stub.asInterface(service);
+//            try {
+//                api.ConfigurePassive(agent, specs);
+//            } catch (RemoteException e) {
+//                Log.e("HST", "Failed to add listener", e);
+//            }
         }
 
         @Override
@@ -543,70 +543,70 @@ public class BodyCompositionHDPActivity extends AppCompatActivity implements Vie
         }
     };
 
-    private HealthAgentAPI.Stub agent = new HealthAgentAPI.Stub() {
-        @Override
-        public void Connected(String dev, String addr) {
-            updateConnectionState(true);
-
-            // TODO REMOVER!!! Pois o cadastro do device deverá ser no processo de emparelhamento
-            mDevice = deviceDAO.get(addr, session.getIdLogged());
-
-            if (mDevice == null) {
-                mDevice = new Device(addr, "BODY WEIGHT SCALE", "OMRON", "HBF-206IT", DeviceType.BODY_COMPOSITION, session.getUserLogged());
-                mDevice.set_id("5a62c488d6f33400146c9b6b");
-                if (!deviceDAO.save(mDevice)) finish();
-                mDevice = deviceDAO.get(addr, session.getIdLogged());
-            }
-        }
-
-        @Override
-        public void Associated(String dev, String xmldata) {
-            Runnable req1 = new Runnable() {
-                public void run() {
-                    RequestConfig(dev);
-                }
-            };
-            Runnable req2 = new Runnable() {
-                public void run() {
-                    RequestDeviceAttributes(dev);
-                }
-            };
-            tm.postDelayed(req1, 1);
-            tm.postDelayed(req2, 500);
-        }
-
-        @Override
-        public void MeasurementData(String dev, String xmldata) {
-            br.edu.uepb.nutes.haniot.utils.Log.d(TAG, "MEASUREMENT: " + xmldata);
-
-            try {
-                JSONObject jsonObject = IEEE11073BCParser.parse(xmldata);
-                handleMeasurement(jsonObject.toString());
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } catch (XmlPullParserException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        @Override
-        public void DeviceAttributes(String dev, String xmldata) {
-            br.edu.uepb.nutes.haniot.utils.Log.d(TAG, "DeviceAttributes: " + xmldata);
-        }
-
-        @Override
-        public void Disassociated(String dev) {
-            Log.w("HST", "Disassociated " + dev);
-        }
-
-        @Override
-        public void Disconnected(String dev) {
-            Log.w("HST", "Disconnected " + dev);
-            updateConnectionState(false);
-        }
-    };
+//    private HealthAgentAPI.Stub agent = new HealthAgentAPI.Stub() {
+//        @Override
+//        public void Connected(String dev, String addr) {
+//            updateConnectionState(true);
+//
+//            // TODO REMOVER!!! Pois o cadastro do device deverá ser no processo de emparelhamento
+//            mDevice = deviceDAO.get(addr, session.getIdLogged());
+//
+//            if (mDevice == null) {
+//                mDevice = new Device(addr, "BODY WEIGHT SCALE", "OMRON", "HBF-206IT", DeviceType.BODY_COMPOSITION, session.getUserLogged());
+//                mDevice.set_id("5a62c488d6f33400146c9b6b");
+//                if (!deviceDAO.save(mDevice)) finish();
+//                mDevice = deviceDAO.get(addr, session.getIdLogged());
+//            }
+//        }
+//
+//        @Override
+//        public void Associated(String dev, String xmldata) {
+//            Runnable req1 = new Runnable() {
+//                public void run() {
+//                    RequestConfig(dev);
+//                }
+//            };
+//            Runnable req2 = new Runnable() {
+//                public void run() {
+//                    RequestDeviceAttributes(dev);
+//                }
+//            };
+//            tm.postDelayed(req1, 1);
+//            tm.postDelayed(req2, 500);
+//        }
+//
+//        @Override
+//        public void MeasurementData(String dev, String xmldata) {
+//            br.edu.uepb.nutes.haniot.utils.Log.d(TAG, "MEASUREMENT: " + xmldata);
+//
+//            try {
+//                JSONObject jsonObject = IEEE11073BCParser.parse(xmldata);
+//                handleMeasurement(jsonObject.toString());
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            } catch (XmlPullParserException e) {
+//                e.printStackTrace();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//
+//        @Override
+//        public void DeviceAttributes(String dev, String xmldata) {
+//            br.edu.uepb.nutes.haniot.utils.Log.d(TAG, "DeviceAttributes: " + xmldata);
+//        }
+//
+//        @Override
+//        public void Disassociated(String dev) {
+//            Log.w("HST", "Disassociated " + dev);
+//        }
+//
+//        @Override
+//        public void Disconnected(String dev) {
+//            Log.w("HST", "Disconnected " + dev);
+//            updateConnectionState(false);
+//        }
+//    };
 
     /**
      * Treats the measurement by breaking down types of measurements.

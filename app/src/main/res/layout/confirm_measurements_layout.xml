@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/labelActivity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:text="@string/activity"
+        android:textSize="18sp"/>
+
+    <TextView
+        android:id="@+id/textActivity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:text="@string/activity"
+        android:textSize="18sp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignBottom="@id/labelActivity"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/labelActivity"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="?android:attr/listDivider" />
+
+    <TextView
+        android:id="@+id/labelSleep"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="@string/sleep"
+        android:textSize="18sp"
+        android:layout_below="@id/labelActivity"/>
+
+    <TextView
+        android:id="@+id/textSleep"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:text="@string/sleep"
+        android:textSize="18sp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignBottom="@id/labelSleep"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/labelSleep"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="?android:attr/listDivider" />
+
+    <TextView
+        android:id="@+id/labelGlucose"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="@string/glucose"
+        android:textSize="18sp"
+        android:layout_below="@id/labelSleep"/>
+
+    <TextView
+        android:id="@+id/textGlucose"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:text="@string/glucose"
+        android:textSize="18sp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignBottom="@id/labelGlucose"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/labelGlucose"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="?android:attr/listDivider" />
+
+    <TextView
+        android:id="@+id/labelPressure"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="@string/blood_pressure"
+        android:textSize="18sp"
+        android:layout_below="@id/labelGlucose"/>
+
+    <TextView
+        android:id="@+id/textPressure"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:text="@string/blood_pressure"
+        android:textSize="18sp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignBottom="@id/labelPressure"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/labelPressure"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="?android:attr/listDivider" />
+
+    <TextView
+        android:id="@+id/labelTemperature"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="@string/temperature"
+        android:textSize="18sp"
+        android:layout_below="@id/labelPressure"/>
+
+    <TextView
+        android:id="@+id/textTemperature"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:text="@string/temperature"
+        android:textSize="18sp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignBottom="@id/labelTemperature"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/labelTemperature"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="?android:attr/listDivider" />
+
+    <TextView
+        android:id="@+id/labelWeight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="@string/weight"
+        android:textSize="18sp"
+        android:layout_below="@id/labelTemperature"/>
+
+    <TextView
+        android:id="@+id/textWeight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:text="@string/weight"
+        android:textSize="18sp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignBottom="@id/labelWeight"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/labelWeight"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="?android:attr/listDivider" />
+
+    <TextView
+        android:id="@+id/labelHeartRate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="@string/heart_rate"
+        android:textSize="18sp"
+        android:layout_below="@id/labelWeight"/>
+
+    <TextView
+        android:id="@+id/textHeartRate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:text="@string/heart_rate"
+        android:textSize="18sp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignBottom="@id/labelHeartRate"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/labelHeartRate"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="?android:attr/listDivider" />
+
+    <TextView
+        android:id="@+id/labelHeight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="@string/height"
+        android:textSize="18sp"
+        android:layout_below="@id/labelHeartRate"/>
+
+    <TextView
+        android:id="@+id/textHeight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:text="@string/height"
+        android:textSize="18sp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignBottom="@id/labelHeight"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/labelHeight"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="?android:attr/listDivider" />
+
+    <TextView
+        android:id="@+id/labelCircumference"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="@string/circumference"
+        android:textSize="18sp"
+        android:layout_below="@id/labelHeight"/>
+
+    <TextView
+        android:id="@+id/textCircumference"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:text="@string/circumference"
+        android:textSize="18sp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignBottom="@id/labelCircumference"/>
+
+</RelativeLayout>

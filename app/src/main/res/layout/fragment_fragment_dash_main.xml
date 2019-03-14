@@ -1,49 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <!-- TODO: Update blank fragment layout -->
 
-    <android.support.v4.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fillViewport="true">
-
-        <RelativeLayout
+        <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:fillViewport="true"
+            >
 
-            <FrameLayout
-                android:id="@+id/frame1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true">
-
-            </FrameLayout>
-
-            <View
-                android:id="@+id/divSpaceTransparent"
-                android:layout_width="match_parent"
-                android:layout_height="10dp"
-                android:layout_alignParentStart="true"
-                android:layout_below="@+id/frame1"
-                android:layout_marginTop="1dp"
-                android:background="@android:color/transparent" />
-
-            <FrameLayout
-                android:id="@+id/frame2"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@+id/divSpaceTransparent"
-                android:layout_centerHorizontal="true">
+                android:orientation="vertical">
 
-            </FrameLayout>
+                <FrameLayout
+                    android:id="@+id/frameCharts"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent">
 
-        </RelativeLayout>
-    </android.support.v4.widget.NestedScrollView>
+                </FrameLayout>
+
+                <FrameLayout
+                    android:id="@+id/frameMeasurements"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent">
+
+                </FrameLayout>
+
+            </LinearLayout>
+
+        </android.support.v4.widget.NestedScrollView>
+
 
 </android.support.design.widget.CoordinatorLayout>

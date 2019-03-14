@@ -1,6 +1,5 @@
 package br.edu.uepb.nutes.haniot.fragment;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -9,57 +8,56 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import org.greenrobot.eventbus.EventBus;
+
 import br.edu.uepb.nutes.haniot.R;
 
-import br.edu.uepb.nutes.haniot.utils.Log;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class FragmentDashMain extends Fragment{
 
-    private OnFragmentInteractionListener mListener;
+    @BindView(R.id.frameCharts)
+    FrameLayout frameChart;
 
-    @BindView(R.id.frame1)
-    FrameLayout frame1;
+    @BindView(R.id.frameMeasurements)
+    FrameLayout frameMeasurements;
 
-    @BindView(R.id.frame2)
-    FrameLayout frame2;
 
-    private DashboardChartsFragment dashboardChartsFragment;
-    private DashMeasurementsGridFragment fragmentDash2;
+    private DashboardChartsFragment chartsFragment;
+    private MeasurementsGridFragment measurementsFragment;
 
-    private String dateFrag1;
+    private EventBus _eventBus;
+
     private final String TAG_FRAG1 = "fragment1";
 
-    public FragmentDashMain() {
-        // Required empty public constructor
-    }
+    public FragmentDashMain() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        dashboardChartsFragment = new DashboardChartsFragment();
+        chartsFragment = new DashboardChartsFragment();
         if (savedInstanceState != null){
             Bundle bundle = new Bundle();
             bundle.putString("date",savedInstanceState.getString("date"));
-            dashboardChartsFragment.setArguments(bundle);
+            chartsFragment.setArguments(bundle);
         }
-        fragmentDash2 = new DashMeasurementsGridFragment();
+        measurementsFragment = new MeasurementsGridFragment();
     }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         String date;
-        date = dashboardChartsFragment.getData();
-        if (date == null || date.equals("")){
-            date = dashboardChartsFragment.getToday();
-        }
-        outState.putString("date",date);
-        dashboardChartsFragment = new DashboardChartsFragment();
-        dashboardChartsFragment.setArguments(outState);
-        if (dashboardChartsFragment.isAdded()) {
-            getFragmentManager().putFragment(outState, TAG_FRAG1, dashboardChartsFragment);
+//        date = chartsFragment.getData();
+//        if (date == null || date.equals("")){
+//            date = chartsFragment.getToday();
+//        }
+//        outState.putString("date",date);
+        chartsFragment = new DashboardChartsFragment();
+        chartsFragment.setArguments(outState);
+        if (chartsFragment.isAdded()) {
+            getFragmentManager().putFragment(outState, TAG_FRAG1, chartsFragment);
         }
     }
 
@@ -72,28 +70,26 @@ public class FragmentDashMain extends Fragment{
         //Addicting the two main fragmants to dashboard
 
         if (savedInstanceState == null){
-            getFragmentManager().beginTransaction().replace(R.id.frame1, this.dashboardChartsFragment, this.TAG_FRAG1)
+            getFragmentManager().beginTransaction().replace(R.id.frameCharts, this.chartsFragment, this.TAG_FRAG1)
                     .commit();
         }
 
-        getFragmentManager().beginTransaction().replace(R.id.frame2, this.fragmentDash2, fragmentDash2.getTag())
+        getFragmentManager().beginTransaction().replace(R.id.frameMeasurements, this.measurementsFragment, measurementsFragment.getTag())
                  .commit();
+
+
         return view;
     }
 
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
+
+    @Override
+    public void onStart() {
+        super.onStart();
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
+    public void onStop() {
+        super.onStop();
     }
 
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Uri uri);
-    }
 }

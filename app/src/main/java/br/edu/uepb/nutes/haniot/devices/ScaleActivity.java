@@ -1,16 +1,10 @@
 package br.edu.uepb.nutes.haniot.devices;
 
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothGattCharacteristic;
-import android.bluetooth.BluetoothGattDescriptor;
-import android.bluetooth.BluetoothGattService;
-import android.content.BroadcastReceiver;
-import android.content.ComponentName;
-import android.content.Context;
+import android.bluetooth.BluetoothProfile;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -31,37 +25,36 @@ import android.widget.Toast;
 
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.List;
 import java.util.Locale;
-import java.util.UUID;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.activity.ManuallyAddMeasurement;
 import br.edu.uepb.nutes.haniot.activity.charts.BodyCompositionChartActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.BodyCompositionAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
 import br.edu.uepb.nutes.haniot.model.Device;
 import br.edu.uepb.nutes.haniot.model.DeviceType;
+import br.edu.uepb.nutes.haniot.model.ItemGridType;
 import br.edu.uepb.nutes.haniot.model.Measurement;
 import br.edu.uepb.nutes.haniot.model.MeasurementType;
-import br.edu.uepb.nutes.haniot.model.User;
 import br.edu.uepb.nutes.haniot.model.dao.DeviceDAO;
 import br.edu.uepb.nutes.haniot.model.dao.MeasurementDAO;
-import br.edu.uepb.nutes.haniot.parse.JsonToMeasurementParser;
 import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
 import br.edu.uepb.nutes.haniot.server.historical.CallbackHistorical;
 import br.edu.uepb.nutes.haniot.server.historical.Historical;
 import br.edu.uepb.nutes.haniot.server.historical.HistoricalType;
 import br.edu.uepb.nutes.haniot.server.historical.Params;
 import br.edu.uepb.nutes.haniot.service.BluetoothLeService;
+import br.edu.uepb.nutes.haniot.service.ManagerDevices.ScaleManager;
+import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.ScaleDataCallback;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
-import br.edu.uepb.nutes.haniot.utils.GattAttributes;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -90,7 +83,7 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
     private DecimalFormat decimalFormat;
     private BodyCompositionAdapter mAdapter;
     private Params params;
-
+    private ScaleManager scaleManager;
     /**
      * We need this variable to lock and unlock loading more.
      * We should not charge more when a request has already been made.
@@ -146,6 +139,9 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
     @BindView(R.id.chart_floating_button)
     FloatingActionButton mChartButton;
 
+    @BindView(R.id.add_floating_button)
+    FloatingActionButton mAddButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -155,21 +151,76 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
         // synchronization with server
         synchronizeWithServer();
 
-        mDeviceAddress = "D4:36:39:91:75:71";
         session = new Session(this);
         measurementDAO = MeasurementDAO.getInstance(this);
         deviceDAO = DeviceDAO.getInstance(this);
         decimalFormat = new DecimalFormat(getString(R.string.format_number2), new DecimalFormatSymbols(Locale.US));
         params = new Params(session.get_idLogged(), MeasurementType.BODY_MASS);
-
+        scaleManager = new ScaleManager(this);
         animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
         mChartButton.setOnClickListener(this);
+        mAddButton.setOnClickListener(this);
 
-        Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
-        bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
-
+        Log.i(TAG, "tamanho: "+deviceDAO.list(session.getIdLogged()).size());
+        Log.i(TAG, "type: "+deviceDAO.list(session.getIdLogged()).get(0).getTypeId());
+        for (Device device : deviceDAO.list(session.getIdLogged())) {
+            if (device.getTypeId() == DeviceType.BODY_COMPOSITION) {
+                mDevice = device;
+                Log.i(TAG, mDevice.getAddress());
+            }
+        }
+        scaleManager.setSimpleCallback(scaleDataCallback);
         initComponents();
     }
+
+    ScaleDataCallback scaleDataCallback = new ScaleDataCallback() {
+        @Override
+        public void onConnected() {
+            mConnected = true;
+            updateConnectionState(true);
+        }
+
+        @Override
+        public void onDisconnected() {
+            mConnected = false;
+            updateConnectionState(false);
+        }
+
+        @Override
+        public void onMeasurementReceived(Measurement measurementScale) {
+            //bodyMass.setDevice(mDevice);
+
+            if (mDevice != null)
+                measurementScale.setDevice(mDevice);
+            //bmi.setDevice(mDevice);
+
+            //bodyFat.setDevice(mDevice);
+
+            /**
+             * Add relationships
+             */
+            //bodyMass.addMeasurement(bmi, bodyFat);
+
+
+            /**
+             * Save in local
+             * Send to server saved successfully
+             */
+            if (measurementDAO.save(measurementScale)) {
+                synchronizeWithServer();
+                loadData();
+            }
+            updateUILastMeasurement(measurementScale, true);
+        }
+
+        @Override
+        public void onMeasurementReceiving(String bodyMassMeasurement, long timeStamp, String bodyMassUnit) {
+            runOnUiThread(() -> {
+                bodyMassTextView.setText(bodyMassMeasurement);
+                bodyMassUnitTextView.setText(bodyMassUnit);
+            });
+        }
+    };
 
     /**
      * Initialize components
@@ -241,6 +292,7 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 if (dy > 0) {
+                    mAddButton.hide();
                     // Recycle view scrolling downwards...
                     // this if statement detects when user reaches the end of recyclerView, this is only time we should load more
                     if (!recyclerView.canScrollVertically(RecyclerView.FOCUS_DOWN)) {
@@ -248,6 +300,8 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
                         // we must check if itShouldLoadMore variable is true [unlocked]
                         if (itShouldLoadMore) loadMoreData();
                     }
+                } else {
+                    mAddButton.show();
                 }
             }
         });
@@ -259,12 +313,9 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
      * Initialize SwipeRefresh
      */
     private void initDataSwipeRefresh() {
-        mDataSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                if (itShouldLoadMore)
-                    loadData();
-            }
+        mDataSwipeRefresh.setOnRefreshListener(() -> {
+            if (itShouldLoadMore)
+                loadData();
         });
     }
 
@@ -383,16 +434,13 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
      * @param enabled boolean
      */
     private void toggleLoading(boolean enabled) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (!enabled) {
-                    mDataSwipeRefresh.setRefreshing(false);
-                    itShouldLoadMore = true;
-                } else {
-                    mDataSwipeRefresh.setRefreshing(true);
-                    itShouldLoadMore = false;
-                }
+        runOnUiThread(() -> {
+            if (!enabled) {
+                mDataSwipeRefresh.setRefreshing(false);
+                itShouldLoadMore = true;
+            } else {
+                mDataSwipeRefresh.setRefreshing(true);
+                itShouldLoadMore = false;
             }
         });
     }
@@ -403,19 +451,16 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
      * @param visible boolean
      */
     private void toggleNoDataMessage(boolean visible) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (visible) {
-                    if (!ConnectionUtils.internetIsEnabled(getApplicationContext())) {
-                        noDataMessage.setText(getString(R.string.connect_network_try_again));
-                    } else {
-                        noDataMessage.setText(getString(R.string.no_data_available));
-                    }
-                    noDataMessage.setVisibility(View.VISIBLE);
+        runOnUiThread(() -> {
+            if (visible) {
+                if (!ConnectionUtils.internetIsEnabled(getApplicationContext())) {
+                    noDataMessage.setText(getString(R.string.connect_network_try_again));
                 } else {
-                    noDataMessage.setVisibility(View.GONE);
+                    noDataMessage.setText(getString(R.string.no_data_available));
                 }
+                noDataMessage.setVisibility(View.VISIBLE);
+            } else {
+                noDataMessage.setVisibility(View.GONE);
             }
         });
     }
@@ -426,57 +471,42 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
      * @param message
      */
     private void printMessage(String message) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
-            }
-        });
+        runOnUiThread(() -> Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show());
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        if (mDevice != null)
+            scaleManager.connect(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(mDevice.getAddress())).useAutoConnect(true).enqueue();
 
-        // TODO REMOVER!!! Pois o cadastro do device deverá ser no processo de emparelhamento
-        mDevice = deviceDAO.get(mDeviceAddress, session.getIdLogged());
-
-        if (mDevice == null) {
-            mDevice = new Device(mDeviceAddress, "YUNMAI SCALE", "YUNMAI", "5031", DeviceType.BODY_COMPOSITION, session.getUserLogged());
-            mDevice.set_id("5a62bf80d6f33400146c9b64");
-            if (!deviceDAO.save(mDevice)) finish();
-            mDevice = deviceDAO.get(mDeviceAddress, session.getIdLogged());
-        }
+        //scaleManager.connectDevice(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(mDevice.getAddress()));
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
 
-        if (mBluetoothLeService != null) {
-            mBluetoothLeService.connect(mDeviceAddress);
+        if (scaleManager.getConnectionState() != BluetoothProfile.STATE_CONNECTED && mDevice != null) {
+            scaleManager.connect(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(mDevice.getAddress()));
         }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterReceiver(mGattUpdateReceiver);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unbindService(mServiceConnection);
-        mBluetoothLeService = null;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                mBluetoothLeService.disconnect();
+                scaleManager.disconnect();
                 super.onBackPressed();
                 break;
             default:
@@ -486,179 +516,18 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void updateConnectionState(final boolean isConnected) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mCircularProgressBar.setProgress(0);
-                mCircularProgressBar.setProgressWithAnimation(100); // Default animate duration = 1500ms
+        runOnUiThread(() -> {
+            mCircularProgressBar.setProgress(0);
+            mCircularProgressBar.setProgressWithAnimation(100); // Default animate duration = 1500ms
 
-                if (isConnected) {
-                    mCircularProgressBar.setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
-                    mCircularProgressBar.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAlertDanger));
-                } else {
-                    mCircularProgressBar.setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAlertDanger));
-                    mCircularProgressBar.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
-                }
+            if (isConnected) {
+                mCircularProgressBar.setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
+                mCircularProgressBar.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAlertDanger));
+            } else {
+                mCircularProgressBar.setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAlertDanger));
+                mCircularProgressBar.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
             }
         });
-    }
-
-    private static IntentFilter makeGattUpdateIntentFilter() {
-        final IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(BluetoothLeService.ACTION_GATT_CONNECTED);
-        intentFilter.addAction(BluetoothLeService.ACTION_GATT_DISCONNECTED);
-        intentFilter.addAction(BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED);
-        intentFilter.addAction(BluetoothLeService.ACTION_DATA_AVAILABLE);
-
-        return intentFilter;
-    }
-
-    public boolean setCharacteristicNotification(BluetoothGattCharacteristic characteristic) {
-        Log.w(TAG, "setCharacteristicNotification() " + characteristic.getUuid());
-        if (characteristic != null) {
-            final int charaProp = characteristic.getProperties();
-            if ((charaProp | BluetoothGattCharacteristic.PROPERTY_READ) > 0) {
-                if (mNotifyCharacteristic != null) {
-                    Log.w(TAG, "PROPERTY_READ");
-                    mBluetoothLeService.setCharacteristicNotification(mNotifyCharacteristic, BluetoothGattDescriptor.ENABLE_INDICATION_VALUE, false);
-                    mNotifyCharacteristic = null;
-                }
-                mBluetoothLeService.readCharacteristic(characteristic);
-            }
-            if ((charaProp | BluetoothGattCharacteristic.PROPERTY_NOTIFY) > 0) {
-                Log.w(TAG, "PROPERTY_NOTIFY");
-                mNotifyCharacteristic = characteristic;
-                mBluetoothLeService.setCharacteristicNotification(characteristic, BluetoothGattDescriptor.ENABLE_INDICATION_VALUE, true);
-            }
-            return true;
-        }
-        return false;
-    }
-
-    // Code to manage Service lifecycle.
-    private final ServiceConnection mServiceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName componentName, IBinder service) {
-            mBluetoothLeService = ((BluetoothLeService.LocalBinder) service).getService();
-            if (!mBluetoothLeService.initialize()) {
-                Log.e(TAG, "Unable to initialize Bluetooth");
-                finish();
-            }
-            // Tenta conecta-se automaticamente ao dispositivo após a inicialização bem-sucedida do service.
-            tryingConnect();
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName componentName) {
-            mBluetoothLeService = null;
-        }
-    };
-
-    public String getAction() {
-        return action;
-    }
-
-    /**
-     * Manipula vários eventos desencadeados pelo Serviço.
-     * <p>
-     * ACTION_GATT_CONNECTED: conectado a um servidor GATT.
-     * ACTION_GATT_DISCONNECTED: desconectado a um servidor GATT.
-     * ACTION_GATT_SERVICES_DISCOVERED: serviços GATT descobertos.
-     * ACTION_DATA_AVAILABLE: recebeu dados do dispositivo. Pode ser resultado de operações de leitura ou notificação.
-     */
-
-    String action;
-    private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            action = intent.getAction();
-
-            if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
-                Log.i(TAG, "ACTION_GATT_CONNECTED");
-                updateConnectionState(true);
-            } else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
-                Log.i(TAG, "ACTION_GATT_DISCONNECTED");
-                updateConnectionState(false);
-
-                tryingConnect();
-            } else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
-                Log.i(TAG, "ACTION_GATT_SERVICES_DISCOVERED");
-                BluetoothGattService gattService = mBluetoothLeService.getGattService(UUID.fromString(GattAttributes.SERVICE_SCALE));
-
-                if (gattService != null) {
-                    BluetoothGattCharacteristic characteristic = gattService.getCharacteristic(UUID.fromString(GattAttributes.CHARACTERISTIC_SCALE_MEASUREMENT));
-                    if (characteristic != null)
-                        setCharacteristicNotification(characteristic);
-                }
-            } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            JSONObject jsonData = new JSONObject(intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
-
-                            final boolean isFinalized = jsonData.getBoolean("isFinalized");
-                            final String bodyMassMeasurement = formatNumber(jsonData.getDouble("bodyMass"));
-                            final String bodyMassUnit = jsonData.getString("bodyMassUnit");
-
-                            bodyMassTextView.setText(bodyMassMeasurement);
-                            bodyMassUnitTextView.setText(bodyMassUnit);
-
-                            if (isFinalized && showAnimation) {
-                                showAnimation = false;
-
-                                User user = session.getUserLogged();
-
-                                Measurement bodyMass = JsonToMeasurementParser.bodyMass(jsonData.toString());
-                                bodyMass.setUser(user);
-                                bodyMass.setDevice(mDevice);
-
-                                Measurement bmi = new Measurement(calcBMI(bodyMass.getValue()),
-                                        "kg/m2", bodyMass.getRegistrationDate(), MeasurementType.BMI);
-                                bmi.setUser(user);
-                                bmi.setDevice(mDevice);
-
-                                Measurement bodyFat = JsonToMeasurementParser.bodyFat(jsonData.toString());
-                                bodyFat.setUser(user);
-                                bodyFat.setDevice(mDevice);
-
-                                /**
-                                 * Add relationships
-                                 */
-                                bodyMass.addMeasurement(bmi, bodyFat);
-
-                                /**
-                                 * Update UI
-                                 */
-                                updateUILastMeasurement(bodyMass, true);
-
-                                /**
-                                 * Save in local
-                                 * Send to server saved successfully
-                                 */
-                                if (measurementDAO.save(bodyMass)) {
-                                    synchronizeWithServer();
-                                    loadData();
-                                }
-                            } else {
-                                showAnimation = true;
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-            }
-        }
-    };
-
-    private boolean tryingConnect() {
-        Log.i(TAG, "tryingConnect()");
-        if (mBluetoothLeService != null) {
-            return mBluetoothLeService.connect(mDeviceAddress);
-        }
-
-        return false;
     }
 
     /**
@@ -669,7 +538,8 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
      * @return double
      */
     private double calcBMI(double bodyMass) {
-        double height = (session.getUserLogged().getHeight()) / 100D;
+        //double height = (session.getUserLogged().getHeight()) / 100D;
+        double height = 1.0;
         return bodyMass / (Math.pow(height, 2));
     }
 
@@ -692,30 +562,27 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
     private void updateUILastMeasurement(Measurement measurement, boolean applyAnimation) {
         if (measurement == null) return;
 
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                bodyMassTextView.setText(formatNumber(measurement.getValue()));
-                bodyMassUnitTextView.setText(measurement.getUnit());
-                mDateLastMeasurement.setText(DateUtils.abbreviatedDate(
-                        getApplicationContext(), measurement.getRegistrationDate()));
+        runOnUiThread(() -> {
+            bodyMassTextView.setText(formatNumber(measurement.getValue()));
+            bodyMassUnitTextView.setText(measurement.getUnit());
+            mDateLastMeasurement.setText(DateUtils.abbreviatedDate(
+                    getApplicationContext(), measurement.getRegistrationDate()));
 
-                /**
-                 * Relations
-                 */
-                for (Measurement m : measurement.getMeasurements()) {
-                    if (m.getTypeId() == MeasurementType.BMI) {
-                        bmiTextView.setText(formatNumber(m.getValue()));
-                        titleBmiTextView.setVisibility(View.VISIBLE);
-                    } else if (m.getTypeId() == MeasurementType.BODY_FAT) {
-                        bodyFatTextView.setText(formatNumber(m.getValue()));
-                        unitBodyFatTextView.setText(m.getUnit());
-                        titleBodyFatTextView.setVisibility(View.VISIBLE);
-                    }
+            /**
+             * Relations
+             */
+            for (Measurement m : measurement.getMeasurements()) {
+                if (m.getTypeId() == MeasurementType.BMI) {
+                    bmiTextView.setText(formatNumber(m.getValue()));
+                    titleBmiTextView.setVisibility(View.VISIBLE);
+                } else if (m.getTypeId() == MeasurementType.BODY_FAT) {
+                    bodyFatTextView.setText(formatNumber(m.getValue()));
+                    unitBodyFatTextView.setText(m.getUnit());
+                    titleBodyFatTextView.setVisibility(View.VISIBLE);
                 }
-
-                if (applyAnimation) bodyMassTextView.startAnimation(animation);
             }
+
+            if (applyAnimation) bodyMassTextView.startAnimation(animation);
         });
     }
 
@@ -731,6 +598,12 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
         switch (v.getId()) {
             case R.id.chart_floating_button:
                 startActivity(new Intent(getApplicationContext(), BodyCompositionChartActivity.class));
+                break;
+            case R.id.add_floating_button:
+                Intent it = new Intent(getApplicationContext(), ManuallyAddMeasurement.class);
+                it.putExtra(getResources().getString(R.string.measurementType),
+                        ItemGridType.WEIGHT);
+                startActivity(it);
                 break;
             default:
                 break;

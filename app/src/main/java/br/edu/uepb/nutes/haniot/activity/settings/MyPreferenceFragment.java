@@ -12,8 +12,8 @@ import android.support.v7.app.AlertDialog;
 import android.widget.Toast;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.activity.account.UpdateDataActivity;
 import br.edu.uepb.nutes.haniot.activity.account.LoginActivity;
-import br.edu.uepb.nutes.haniot.activity.account.SignupActivity;
 import br.edu.uepb.nutes.haniot.devices.register.DeviceManagerActivity;
 
 /**
@@ -89,7 +89,7 @@ public class MyPreferenceFragment extends PreferenceFragment {
         Preference prefYourdata = findPreference(getString(R.string.key_your_data));
         prefYourdata.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
-                Intent intent = new Intent(getActivity(), SignupActivity.class);
+                Intent intent = new Intent(getActivity(), UpdateDataActivity.class);
                 intent.putExtra(FORM_UPDATE, true);
 
                 getActivity().startActivity(intent);

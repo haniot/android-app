@@ -1,75 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="72dp"
+    android:layout_height="wrap_content"
     android:background="?android:attr/selectableItemBackground"
     android:clickable="true"
     android:focusable="true"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="8dp">
 
-    <TextView
+    <ImageView
         android:id="@+id/textLetter"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
         android:background="@mipmap/ic_circle"
-        android:textAllCaps="true"
-        android:textColor="@android:color/white"
-        android:textStyle="bold"
-        android:gravity="center"
-        android:textAlignment="center"
-        android:textSize="22dp"/>
+        android:padding="8dp"
+        android:src="@drawable/x_boy" />
 
     <TextView
         android:id="@+id/textNameChildValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@id/textLetter"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="17dp"
+        android:layout_marginTop="10dp"
         android:layout_toEndOf="@id/textLetter"
-        android:layout_marginStart="16dp"
+        android:gravity="center"
         android:text="Tiago santos"
-        android:textSize="18dp"
-        android:textStyle="bold"
-        android:gravity="center"/>
+        android:textSize="18dp" />
 
     <TextView
-        android:id="@+id/textIdNumberChildren"
+        android:id="@+id/textAge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/textNameChildValue"
+        android:layout_below="@+id/textNameChildValue"
         android:layout_alignStart="@id/textNameChildValue"
-        android:layout_alignBottom="@id/textLetter"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="2dp"
         android:gravity="center"
-        android:text="6546544" />
+        android:text="12 anos"
+        android:textColor="@color/colorSubmenu" />
 
-    <android.support.v7.widget.AppCompatButton
+    <ImageView
         android:id="@+id/btnSelectChildren"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="30dp"
+        android:layout_height="72dp"
         android:layout_centerVertical="true"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="10dp"
         android:layout_toStartOf="@id/btnDeleteChild"
-        android:background="@mipmap/ic_select_children" />
+        android:padding="4dp"
+        android:src="@drawable/ic_edit_black_24dp" />
 
-    <android.support.v7.widget.AppCompatButton
+    <ImageView
         android:id="@+id/btnDeleteChild"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="30dp"
+        android:layout_height="72dp"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:layout_marginEnd="16dp"
-        android:background="@mipmap/ic_trash" />
-
-    <View
-        android:id="@+id/divChildren"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_below="@id/textIdNumberChildren"
-        android:layout_marginTop="10dp"
-        android:background="@android:color/darker_gray"
-        android:layout_alignStart="@id/textNameChildValue"/>
+        android:padding="4dp"
+        android:src="@drawable/ic_delete_black_24dp" />
 
 </RelativeLayout>

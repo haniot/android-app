@@ -126,7 +126,17 @@
         app:layout_anchor="@id/box_bar_layout"
         app:layout_anchorGravity="bottom|right|end" />
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/add_floating_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_add"
+        app:backgroundTint="@color/colorAccent"/>
+
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -59,10 +60,11 @@ public class ChangePasswordActivity extends AppCompatActivity {
     @BindView(R.id.edit_text_confirm_password)
     EditText confirmPasswordEditText;
 
-    private User user;
     private Menu menu;
     private Session session;
-    private UserDAO userDAO;
+    private boolean isRedirect = false;
+    private String pathRedirectLink;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +75,13 @@ public class ChangePasswordActivity extends AppCompatActivity {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle(R.string.change_password);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Intent intent = getIntent();
 
+        if (intent.hasExtra("pathRedirectLink")) {
+            pathRedirectLink = intent.getStringExtra("pathRedirectLink");
+            pathRedirectLink = pathRedirectLink.replace("/api/v1", "");
+            isRedirect = true;
+        }
         confirmPasswordEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
@@ -85,18 +93,12 @@ public class ChangePasswordActivity extends AppCompatActivity {
         });
 
         session = new Session(this);
-        userDAO = UserDAO.getInstance(this);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
 
-        user = session.getUserLogged();
-        if (user == null) {
-            Toast.makeText(getApplicationContext(), R.string.error_connectivity, Toast.LENGTH_LONG).show();
-            finish();
-        }
     }
 
     @Override
@@ -193,7 +195,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
      * Change password
      */
     private void changePassword() {
-        if (!checkConnectivity() || !validate() || user == null)
+        if (!checkConnectivity() || !validate())
             return;
 
         loadingSend(true);
@@ -203,44 +205,61 @@ public class ChangePasswordActivity extends AppCompatActivity {
          */
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("currentPassword", String.valueOf(currentPasswordEditText.getText()));
-            jsonObject.put("newPassword", String.valueOf(newPasswordEditText.getText()));
+            jsonObject.put("old_password", String.valueOf(currentPasswordEditText.getText()));
+            jsonObject.put("new_password", String.valueOf(newPasswordEditText.getText()));
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
         // Send for remote server /users/:userId/password
-        Server.getInstance(this).put("users/".concat(session.get_idLogged()) + "/password",
-                jsonObject.toString(), new Server.Callback() {
-                    @Override
-                    public void onError(JSONObject result) {
-                        printMessage(result);
-                        loadingSend(false);
-                    }
-
-                    @Override
-                    public void onSuccess(JSONObject result) {
-                        try {
-                            final User userUpdate = new Gson().fromJson(result.getString("user"), User.class);
-
-                            if (userUpdate != null) {
-                                /**
-                                 * Remove user from session and redirect to login screen.
-                                 */
-                                session.removeLogged();
-                                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                startActivity(intent);
-                                finish();
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        } finally {
-                            loadingSend(false);
+        if (!isRedirect) {
+            Server.getInstance(this).patch("users/".concat(session.get_idLogged()) + "/password",
+                    jsonObject.toString(), new Server.Callback() {
+                        @Override
+                        public void onError(JSONObject result) {
                             printMessage(result);
+                            loadingSend(false);
                         }
-                    }
-                });
+
+                        @Override
+                        public void onSuccess(JSONObject result) {
+                            printMessage(result);
+                            signOut(result);
+                        }
+                    });
+        } else {
+            Server.getInstance(this).patch(pathRedirectLink,
+                    jsonObject.toString(), new Server.Callback() {
+                        @Override
+                        public void onError(JSONObject result) {
+                            printMessage(result);
+                            loadingSend(false);
+                        }
+
+                        @Override
+                        public void onSuccess(JSONObject result) {
+                            Log.i("Account", "Password changed for redirect");
+                            printMessage(result);
+                            signOut(result);
+                        }
+                    });
+        }
+
+    }
+
+    private void signOut(JSONObject result) {
+        /**
+         * Remove user from session and redirect to login screen.
+         */
+        if (session.isLogged()) {
+            session.removeLogged();
+        }
+        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+        startActivity(intent);
+        finish();
+
     }
 
     /**
@@ -254,10 +273,12 @@ public class ChangePasswordActivity extends AppCompatActivity {
             public void run() {
                 try {
                     if (response.has("code") && !response.has("unauthorized")) {
-                        if (response.getInt("code") == 201) {
+                        if (response.getInt("code") == 204) {
                             Toast.makeText(getApplicationContext(), R.string.update_success, Toast.LENGTH_SHORT).show();
                         } else if (response.getInt("code") == 401) {
                             Toast.makeText(getApplicationContext(), R.string.validate_password_not_match_current, Toast.LENGTH_LONG).show();
+                        } else if (response.getInt("code") == 400) {
+                            Toast.makeText(getApplicationContext(), R.string.error_incorret_password, Toast.LENGTH_LONG).show();
                         } else { // error 500
                             Toast.makeText(getApplicationContext(), R.string.error_500, Toast.LENGTH_LONG).show();
                         }
@@ -305,5 +326,10 @@ public class ChangePasswordActivity extends AppCompatActivity {
         mAlertConnectivity.setVisibility(View.GONE);
 
         return true;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }

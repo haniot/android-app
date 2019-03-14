@@ -277,7 +277,9 @@
     <!-- ERROR MESSAGES -->
     <string name="error_sign_out">There was an error while trying to quit&#8230;</string>
     <string name="error_500">Could not complete request! Please try again later&#8230;</string>
+    <string name="error_403">User password must be changed!</string>
     <string name="error_internal_device">Could not complete request! Please try again later&#8230;</string>
+    <string name="error_incorret_password">Password can not be updated password. Make sure the data is correct!</string>
     <string name="error_connectivity">There was an error communicating with our servers.\nPlease, check your phone
         connectivity and try again later.
     </string>
@@ -385,13 +387,13 @@
     <string name="body_composition_monitor_description">OMRON HBF-206ITH</string>
     <string name="body_composition2">Body Composition Monitor</string>
     <string name="icon_manage_measurement">Manage measurement icon</string>
-    <string name="manage_children">Manage children</string>
+    <string name="manage_patient">Manage children</string>
     <string name="add">Add</string>
     <string name="search">Search</string>
     <string name="date">Date: </string>
     <string name="id">id: </string>
-    <string name="id_last_child">id_last_child</string>
-    <string name="name_last_child">name_last_child</string>
+    <string name="id_last_patient">id_last_child</string>
+    <string name="name_last_patient">name_last_child</string>
     <string name="childId">childId</string>
     <string name="childName">childName</string>
     <string name="noPatientSelected">No patient selected</string>
@@ -440,6 +442,29 @@
     <string name="choose_blood_pressure">Choose the pressure</string>
     <string name="choose_pulse">Chosse the pulse</string>
     <string name="unit_min">/min</string>
+    <string name="key_anthropometric">key_anthropometric</string>
+    <string name="anthropometric">Anthropometric measurements</string>
+    <string name="choose_height">Choose the height</string>
+    <string name="choose_circumference">Choose the circumference</string>
+    <string name="goals_steps">Choose the steps goals</string>
+    <string name="goals_calories">Choose the calories goals</string>
+    <string name="goals_distance">Choose the distance goals</string>
+    <string name="send_measurements_to_server">Save measurements</string>
+    <string name="last_patient_deleted">last_patient_deleted</string>
+    <string name="patient_removed">Patient removed</string>
+    <string name="undo">Undo</string>
+    <string name="patient_profile">Patient profile</string>
+    <string name="no_patient_registered">No patient finded</string>
+    <string name="try_again_later">Try again later</string>
+    <string name="color">Color</string>
+    <string name="age">Age</string>
+    <string name="idProfessional">Id professional:</string>
+    <string name="dateMask">####/##/##</string>
+    <string name="survey">Survey</string>
+    <string name="edit">Edit</string>
+    <string name="error_remove_patient">Error to remove patient, please try again later</string>
+    <string name="save_measurements_of">Save measurements of:</string>
+    <string name="circumference">Circumference</string>
 
     <!-- END OF STRINGS FOR TABLET -->
 
@@ -790,7 +815,7 @@
     <string name="title_devices_available">Availables</string>
     <string name="thermometer">Thermometer</string>
     <string name="find_device">Find device</string>
-    <string name="remove_device">Do you want to remove the %s from your list?</string>
+    <string name="remove_device">Are you sure you want to remove %s?\nOnce removed, it will not be possible to recover the data from this device.</string>
     <string name="remove">Remove</string>
     <string name="start_scanner">Start scanner</string>
     <string name="stop_scanner">Stop scanner</string>
@@ -806,6 +831,9 @@
     <string name="model">Model</string>
     <string name="settings_configure_device">Configure Devices</string>
     <string name="settings_summary_configure_device">Manage your registered devices or insert new ones.</string>
+    <string name="failed_pairing_device">Failed pairing device</string>
+    <string name="pairing_device">Pairing device&#8230;</string>
+    <string name="device_paired">The device is already paired, remove from the list of registered devices, and try again&#8230;</string>
 
     <string name="title_activity_manage_children">ManageChildrenActivity</string>
 
@@ -893,4 +921,8 @@
     <string name="accu_check_pref">accu_check</string>
     <string name="body_composition_yunmai_pref">body_composition_yunmai</string>
     <string name="body_composition_omron_pref">body_composition_omron</string>
+
+    <!-- TokenExpirationService -->
+    <string name="token_expired" translatable="false">Token Expired</string>
+    <string name="first_login" translatable="false">First login</string>
 </resources>

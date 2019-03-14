@@ -26,8 +26,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
-import com.signove.health.service.HealthAgentAPI;
-import com.signove.health.service.HealthServiceAPI;
+//import com.signove.health.service.HealthAgentAPI;
+//import com.signove.health.service.HealthServiceAPI;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,12 +37,14 @@ import java.io.IOException;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.activity.ManuallyAddMeasurement;
 import br.edu.uepb.nutes.haniot.activity.charts.BloodPresssureChartActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.BloodPressureAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
 import br.edu.uepb.nutes.haniot.model.Device;
 import br.edu.uepb.nutes.haniot.model.DeviceType;
+import br.edu.uepb.nutes.haniot.model.ItemGridType;
 import br.edu.uepb.nutes.haniot.model.Measurement;
 import br.edu.uepb.nutes.haniot.model.MeasurementType;
 import br.edu.uepb.nutes.haniot.model.User;
@@ -81,7 +83,7 @@ public class BloodPressureHDPActivity extends AppCompatActivity implements View.
 
     private int[] specs = {0x1007};
     private Handler tm;
-    private HealthServiceAPI api;
+//    private HealthServiceAPI api;
 
     /**
      * We need this variable to lock and unlock loading more.
@@ -135,6 +137,9 @@ public class BloodPressureHDPActivity extends AppCompatActivity implements View.
     @BindView(R.id.chart_floating_button)
     FloatingActionButton mChartButton;
 
+    @BindView(R.id.add_floating_button)
+    FloatingActionButton mAddButton;
+
     /**
      * Called when the activity is first created.
      */
@@ -154,6 +159,7 @@ public class BloodPressureHDPActivity extends AppCompatActivity implements View.
 
         animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
         mChartButton.setOnClickListener(this);
+        mAddButton.setOnClickListener(this);
 
         tm = new Handler();
         Intent intent = new Intent("com.signove.health.service.HealthService");
@@ -237,6 +243,7 @@ public class BloodPressureHDPActivity extends AppCompatActivity implements View.
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 if (dy > 0) {
+                    mAddButton.hide();
                     // Recycle view scrolling downwards...
                     // this if statement detects when user reaches the end of recyclerView, this is only time we should load more
                     if (!recyclerView.canScrollVertically(RecyclerView.FOCUS_DOWN)) {
@@ -244,6 +251,8 @@ public class BloodPressureHDPActivity extends AppCompatActivity implements View.
                         // we must check if itShouldLoadMore variable is true [unlocked]
                         if (itShouldLoadMore) loadMoreData();
                     }
+                }else{
+                    mAddButton.show();
                 }
             }
         });
@@ -479,7 +488,7 @@ public class BloodPressureHDPActivity extends AppCompatActivity implements View.
 
         try {
             Log.w("HST", "Unconfiguring...");
-            api.Unconfigure(agent);
+//            api.Unconfigure(agent);
         } catch (Throwable t) {
             Log.w("HST", "Erro tentando desconectar");
         }
@@ -526,12 +535,12 @@ public class BloodPressureHDPActivity extends AppCompatActivity implements View.
             Log.w("HST", "Service connection established");
 
             // that's how we get the client side of the IPC connection
-            api = HealthServiceAPI.Stub.asInterface(service);
-            try {
-                api.ConfigurePassive(agent, specs);
-            } catch (RemoteException e) {
-                Log.e("HST", "Failed to add listener", e);
-            }
+//            api = HealthServiceAPI.Stub.asInterface(service);
+//            try {
+////                api.ConfigurePassive(agent, specs);
+//            } catch (RemoteException e) {
+//                Log.e("HST", "Failed to add listener", e);
+//            }
         }
 
         @Override
@@ -540,91 +549,91 @@ public class BloodPressureHDPActivity extends AppCompatActivity implements View.
         }
     };
 
-    private HealthAgentAPI.Stub agent = new HealthAgentAPI.Stub() {
-        @Override
-        public void Connected(String dev, String addr) {
-            updateConnectionState(true);
+//    private HealthAgentAPI.Stub agent = new HealthAgentAPI.Stub() {
+//        @Override
+//        public void Connected(String dev, String addr) {
+//            updateConnectionState(true);
+//
+//            // TODO REMOVER!!! Pois o cadastro do device deverá ser no processo de emparelhamento
+//            mDevice = deviceDAO.get(addr, session.getIdLogged());
+//
+//            if (mDevice == null) {
+//                mDevice = new Device(addr, "BLOOD PRESSURE MONITOR", "OMRON", "BP792IT", DeviceType.BLOOD_PRESSURE, session.getUserLogged());
+//                mDevice.set_id("5a62c42dd6f33400146c9b6a");
+//                if (!deviceDAO.save(mDevice)) finish();
+//                mDevice = deviceDAO.get(addr, session.getIdLogged());
+//            }
+//        }
+//
+//        @Override
+//        public void Associated(String dev, String xmldata) {
+//            Runnable req1 = new Runnable() {
+//                public void run() {
+//                    RequestConfig(dev);
+//                }
+//            };
+//            Runnable req2 = new Runnable() {
+//                public void run() {
+//                    RequestDeviceAttributes(dev);
+//                }
+//            };
+//            tm.postDelayed(req1, 1);
+//            tm.postDelayed(req2, 500);
+//        }
+//
+//        @Override
+//        public void MeasurementData(String dev, String xmldata) {
+//            br.edu.uepb.nutes.haniot.utils.Log.d(TAG, "MeasurementData: " + xmldata);
+//            runOnUiThread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    try {
+//                        JSONObject data = IEEE11073BPParser.parse(xmldata);
+//                        handleMeasurement(data.toString());
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    } catch (XmlPullParserException e) {
+//                        e.printStackTrace();
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            });
+//        }
+//
+//        @Override
+//        public void DeviceAttributes(String dev, String xmldata) {
+//            Log.w("HST", ".." + xmldata);
+//            br.edu.uepb.nutes.haniot.utils.Log.d(TAG, "DeviceAttributes: " + xmldata);
+//        }
+//
+//        @Override
+//        public void Disassociated(String dev) {
+//            Log.w("HST", "Disassociated " + dev);
+//        }
+//
+//        @Override
+//        public void Disconnected(String dev) {
+//            Log.w("HST", "Disconnected " + dev);
+//            updateConnectionState(false);
+//        }
+//    };
 
-            // TODO REMOVER!!! Pois o cadastro do device deverá ser no processo de emparelhamento
-            mDevice = deviceDAO.get(addr, session.getIdLogged());
-
-            if (mDevice == null) {
-                mDevice = new Device(addr, "BLOOD PRESSURE MONITOR", "OMRON", "BP792IT", DeviceType.BLOOD_PRESSURE, session.getUserLogged());
-                mDevice.set_id("5a62c42dd6f33400146c9b6a");
-                if (!deviceDAO.save(mDevice)) finish();
-                mDevice = deviceDAO.get(addr, session.getIdLogged());
-            }
-        }
-
-        @Override
-        public void Associated(String dev, String xmldata) {
-            Runnable req1 = new Runnable() {
-                public void run() {
-                    RequestConfig(dev);
-                }
-            };
-            Runnable req2 = new Runnable() {
-                public void run() {
-                    RequestDeviceAttributes(dev);
-                }
-            };
-            tm.postDelayed(req1, 1);
-            tm.postDelayed(req2, 500);
-        }
-
-        @Override
-        public void MeasurementData(String dev, String xmldata) {
-            br.edu.uepb.nutes.haniot.utils.Log.d(TAG, "MeasurementData: " + xmldata);
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        JSONObject data = IEEE11073BPParser.parse(xmldata);
-                        handleMeasurement(data.toString());
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    } catch (XmlPullParserException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-        }
-
-        @Override
-        public void DeviceAttributes(String dev, String xmldata) {
-            Log.w("HST", ".." + xmldata);
-            br.edu.uepb.nutes.haniot.utils.Log.d(TAG, "DeviceAttributes: " + xmldata);
-        }
-
-        @Override
-        public void Disassociated(String dev) {
-            Log.w("HST", "Disassociated " + dev);
-        }
-
-        @Override
-        public void Disconnected(String dev) {
-            Log.w("HST", "Disconnected " + dev);
-            updateConnectionState(false);
-        }
-    };
-
-    private void RequestConfig(String dev) {
-        try {
-            String xmldata = api.GetConfiguration(dev);
-        } catch (RemoteException e) {
-            Log.w("HST", "Exception (RequestConfig)");
-        }
-    }
-
-    private void RequestDeviceAttributes(String dev) {
-        try {
-            api.RequestDeviceAttributes(dev);
-        } catch (RemoteException e) {
-            Log.w("HST", "Exception (RequestDeviceAttributes)");
-        }
-    }
+//    private void RequestConfig(String dev) {
+//        try {
+//            String xmldata = api.GetConfiguration(dev);
+//        } catch (RemoteException e) {
+//            Log.w("HST", "Exception (RequestConfig)");
+//        }
+//    }
+//
+//    private void RequestDeviceAttributes(String dev) {
+//        try {
+//            api.RequestDeviceAttributes(dev);
+//        } catch (RemoteException e) {
+//            Log.w("HST", "Exception (RequestDeviceAttributes)");
+//        }
+//    }
 
     /**
      * Treats the measurement by breaking down types of measurements.
@@ -688,6 +697,12 @@ public class BloodPressureHDPActivity extends AppCompatActivity implements View.
         switch (v.getId()) {
             case R.id.chart_floating_button:
                 startActivity(new Intent(getApplicationContext(), BloodPresssureChartActivity.class));
+                break;
+            case R.id.add_floating_button:
+                Intent it = new Intent(getApplicationContext(), ManuallyAddMeasurement.class);
+                it.putExtra(getResources().getString(R.string.measurementType),
+                        ItemGridType.BLOOD_PRESSURE);
+                startActivity(it);
                 break;
 
             default:

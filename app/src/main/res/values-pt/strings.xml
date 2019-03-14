@@ -144,6 +144,9 @@
     <string name="error_internal_device">Não foi possível concluir o pedido! Por favor, tente novamente mais tarde&#8230;</string>
     <string name="error_connectivity">Aconteceu um erro na comunicação com nossos servidores. Por favor, verifique a conectividade do seu telefone e tente novamente mais tarde.</string>
     <string name="connect_network_try_again">Conecte-se a uma rede e tente novamente&#8230;</string>
+    <string name="error_403">A senha do usuário precisa ser alterada!</string>
+    <string name="error_incorret_password">Senha não pode ser atualizada. Certifique-se de que os dados estão corretos!</string>
+
     <!-- END ERROR MESSAGES -->
 
     <!-- SETTINGS -->
@@ -288,7 +291,7 @@
     <string name="dash_item_description">Botão de Medição</string>
     <string name="distance">Distancia</string>
     <string name="Calories">Calorias</string>
-    <string name="StepsNumber">Numero De Passos</string>
+    <string name="StepsNumber">Número de Passos</string>
     <string name="title_activity_manage_measurements">Gerenciar Medições</string>
     <string name="manage_measurement_title">Gerenciar Medições</string>
     <string name="ear_thermometer">Termometro para Orelha</string>
@@ -311,13 +314,13 @@
     <string name="body_composition_monitor_description">OMRON HBF-206ITH</string>
     <string name="body_composition2">Monitor de Composição Corporal</string>
     <string name="icon_manage_measurement">Icone de Gerenciar Medições</string>
-    <string name="manage_children">Gerenciar Crianças</string>
+    <string name="manage_patient">Gerenciar pacientes</string>
     <string name="add">Add</string>
     <string name="search">Pesquisar</string>
     <string name="id">id: </string>
     <string name="date">Data: </string>
-    <string name="id_last_child">id_last_child</string>
-    <string name="name_last_child">name_last_child</string>
+    <string name="id_last_patient">id_last_patient</string>
+    <string name="name_last_patient">name_last_patient</string>
     <string name="childId">childId</string>
     <string name="childName">childName</string>
     <string name="noPatientSelected">Nenhum paciente selecionado</string>
@@ -379,6 +382,30 @@
     <string name="choose_blood_pressure">Escolha o valor da pressão</string>
     <string name="choose_pulse">Escolha o pulso</string>
     <string name="unit_min">/min</string>
+    <string name="key_anthropometric">key_anthropometric</string>
+    <string name="anthropometric">Medidas antropométricas</string>
+    <string name="choose_height">Escolha a altura</string>
+    <string name="choose_circumference">Escolha a circunferência</string>
+    <string name="goals_steps">Escolha a meta de passos</string>
+    <string name="goals_calories">Escolha a meta de calorias</string>
+    <string name="goals_distance">Escolha a meta de distância</string>
+    <string name="send_measurements_to_server">Salvar medições</string>
+    <string name="last_patient_deleted">last_patient_deleted</string>
+    <string name="patient_removed">Paciente removido</string>
+    <string name="undo">Desfazer</string>
+    <string name="patient_profile">Perfil do paciente</string>
+    <string name="no_patient_registered">Nenhum paciente encontrado</string>
+    <string name="try_again_later">Tente novamente mais tarde</string>
+    <string name="color">Cor</string>
+    <string name="age">Idade</string>
+    <string name="idProfessional">Id profissional:</string>
+    <string name="dateMask">##/##/####</string>
+    <string name="survey">Questionário</string>
+    <string name="edit">Editar</string>
+    <string name="error_remove_patient">Erro ao remover o paciente, por favor,
+        tente novamente mais tarde</string>
+    <string name="save_measurements_of">Salvar medições de:</string>
+    <string name="circumference">Circunferencia</string>
 
     <!-- END OF STRINGS FOR TABLET -->
 
@@ -632,25 +659,30 @@
     <string name="title_devices_available">Disponíveis</string>
     <string name="thermometer">Termometro</string>
     <string name="find_device">Localizar Dispositivo</string>
-    <string name="remove_device">Deseja remover o %s da sua lista ?</string>
+    <string name="remove_device">Tem certeza que deseja remover %s?\nUma vez removido, não será possível recuperar os dados desse dispositivo.</string>
     <string name="remove">Remover</string>
     <string name="start_scanner">Iniciar scanner</string>
     <string name="stop_scanner">Parar scanner</string>
     <string name="details">Detalhes</string>
     <string name="remove_device_register">Remover Dispositivo</string>
     <string name="device_not_found_try_again">Dispositivo não encontrado tente novamente</string>
-    <string name="no_devices_registered">Não há didpositivos cadastrados&#8230;</string>
+    <string name="no_devices_registered">Não há dispositivos cadastrados&#8230;</string>
     <string name="no_devices_available">Nenhum dispositivo disponível. Em breve a lista será atualizada&#8230;</string>
     <string name="device_registered_success">Dispositivo %s cadastrado com sucesso!</string>
     <string name="connection">Conectando, segure o telefone perto do dispositivo</string>
     <string name="come_back">Voltar</string>
     <string name="attention">Atenção</string>
-    <string name="model">Modelo</string>
+    <string name="model">Modelo</string>s
     <string name="other">Outro</string>
     <string name="model_device">Modelo do dispositivo</string>
     <string name="name_device">Nome do dispositivo</string>
     <string name="settings_configure_device">Configurar Dispositivos</string>
     <string name="settings_summary_configure_device">Gerencie seus dispositivos registrados ou insira novos.</string>
+    <string name="failed_pairing_device">Falha ao parear dispositivo</string>
+    <string name="pairing_device">Pareando dispositivo&#8230;</string>
+    <string name="device_paired">O dispositivo já está pareado, remova-o da lista de dispositivos cadastrados e tente novamente&#8230;</string>
+
+
 
     <!--GLUCOSE STATUS ANNUNCIATION-->
     <string name="glucose_status_annunciation_battery_low">Device battery low at time of measurement</string>
@@ -700,10 +732,10 @@
 
     <!--LOGIN-->
     <string name="email">Email</string>
-    <string name="password">Password</string>
-    <string name="password_confirm">Confirm password</string>
-    <string name="login">Sign in</string>
-    <string name="no_account_yet">No account yet? Create one</string>
+    <string name="password">Senha</string>
+    <string name="password_confirm">Confirmar senha</string>
+    <string name="login">Entrar</string>
+    <string name="no_account_yet">Ainda não possui conta? Se cadastre!</string>
 
     <string name="temperatre_type_ear">Ear (usually ear lobe)</string>
     <string name="temperatre_type_finger">Finger</string>
@@ -757,4 +789,6 @@
 
     <string name="title_activity_manually_add_measurement">activity_manually_add_measurement
     </string>
+
+
 </resources>

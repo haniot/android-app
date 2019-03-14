@@ -1,8 +1,10 @@
 package br.edu.uepb.nutes.haniot.model;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
-import br.edu.uepb.nutes.haniot.model.elderly.Elderly;
 import io.objectbox.annotation.Backlink;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
@@ -19,21 +21,21 @@ import io.objectbox.relation.ToMany;
 @Entity
 public class User {
     @Id
-    private long id;
+    @Expose(serialize = false)
+    private long idDb;
 
     @Index
+    @SerializedName("id")
     private String _id; // _id in server remote (UUID)
 
+    @SerializedName("name")
     private String name;
 
     @Index
+    @SerializedName("email")
     private String email;
 
-    private String password;
-    private int gender;
-    private long dateOfBirth;
-    private int height; // in cm
-
+    @SerializedName("token")
     private String token; // provide by the server
 
     /**
@@ -46,8 +48,6 @@ public class User {
     @Backlink(to = "user")
     private ToMany<Measurement> measurements;
 
-    @Backlink(to = "user")
-    public ToMany<Elderly> elderlies;
 
     /**
      * {@link UserGroup()}
@@ -57,21 +57,18 @@ public class User {
     public User() {
     }
 
-    public User(String name, String email, int gender, long dateOfBirth, int height, int groupId) {
+    public User(String name, String email, int groupId) {
         this.name = name;
         this.email = email;
-        this.gender = gender;
-        this.dateOfBirth = dateOfBirth;
-        this.height = height;
         this.groupId = groupId;
     }
 
-    public long getId() {
-        return id;
+    public long getIdDb() {
+        return idDb;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setIdDb(long id) {
+        this.idDb = id;
     }
 
     public String get_id() {
@@ -98,38 +95,6 @@ public class User {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public int getGender() {
-        return gender;
-    }
-
-    public void setGender(int gender) {
-        this.gender = gender;
-    }
-
-    public long getDateOfBirth() {
-        return dateOfBirth;
-    }
-
-    public void setDateOfBirth(long dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public void setHeight(int height) {
-        this.height = height;
-    }
-
     public String getToken() {
         return token;
     }
@@ -150,17 +115,6 @@ public class User {
         return measurements;
     }
 
-    public ToMany<Elderly> getElderlies() {
-        return elderlies;
-    }
-
-    public boolean addElderlies(List<Elderly> elderlies) {
-        return getElderlies().addAll(elderlies);
-    }
-
-    public boolean addElderly(Elderly elderly) {
-        return getElderlies().add(elderly);
-    }
 
     public void setMeasurements(ToMany<Measurement> measurements) {
         this.measurements = measurements;
@@ -179,17 +133,12 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "id=" + id +
+                "id=" + idDb +
                 ", _id='" + _id + '\'' +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", gender=" + gender +
-                ", dateOfBirth=" + dateOfBirth +
-                ", height=" + height +
                 ", token='" + token + '\'' +
                 ", measurements=" + measurements +
-                ", elderlies=" + elderlies +
                 ", groupId=" + groupId +
                 '}';
     }

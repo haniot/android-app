@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -47,7 +48,8 @@ public class Server {
     /**
      * If you set a url it will be used as default and not entered by the user in the application settings
      */
-    /* HEROKU */ private final String URI_DEFAULT = "https://haniot-api.herokuapp.com/api/v1";
+    /* HEROKU */ private final String URI_DEFAULT = "https://haniot-frankenstein.herokuapp.com";
+//    /* HEROKU */ private final String URI_DEFAULT = "https://haniot-api.herokuapp.com";
 //    /* PC HOME */ private final String URI_DEFAULT = "https://192.168.31.113/api/v1";
 //      /* PC WIFI */ private final String URI_DEFAULT = "http://192.168.50.175:8000/api/v1";
 
@@ -162,6 +164,39 @@ public class Server {
     }
 
     /**
+     * Action PATCH.
+     *
+     * @param path           String
+     * @param json           String
+     * @param headers        Headers
+     * @param serverCallback Callback
+     */
+
+    public void patch(String path, String json, Headers headers, Callback serverCallback) {
+        RequestBody body = RequestBody.create(MediaType.parse(MEDIA_TYPE), json);
+
+        Request request = new Request.Builder()
+                .patch(body)
+                .url(urlParser(path))
+                .headers(headers)
+                .tag(mContext.getClass().getName())
+                .build();
+        sendRequest(request, serverCallback);
+    }
+
+    /**
+     * Action PATCH.
+     * The default header will be used {@link #getHeadersDefault()}.
+     *
+     * @param path
+     * @param json
+     * @param serverCallback
+     */
+    public void patch(String path, String json, Callback serverCallback) {
+        patch(path, json, getHeadersDefault(), serverCallback);
+    }
+
+    /**
      * Action DELETE.
      *
      * @param path           String
@@ -230,17 +265,17 @@ public class Server {
                 JSONObject result = new JSONObject();
                 try {
                     String jsonString = response.body().string();
-                    if (jsonString.equals("Unauthorized")) {
+                    if (response.code() == 401) {
                         result.put("unauthorized", mContext.getString(R.string.validate_unauthorized_access));
+                        EventBus.getDefault().post("unauthorized");
                     } else if (!jsonString.isEmpty()) {
                         Object json = new JSONTokener(jsonString).nextValue();
-                        if(json instanceof JSONObject)
+                        if (json instanceof JSONObject)
                             result = new JSONObject(jsonString);
                     }
 
                     // Adds the HTTP response code to the json object
                     result.put("code", response.code());
-
                     if (!response.isSuccessful()) serverCallback.onError(result);
                     else serverCallback.onSuccess(result);
 
@@ -381,7 +416,7 @@ public class Server {
             return new Headers.Builder().build();
 
         return new Headers.Builder()
-                .add("Authorization", "JWT ".concat(session.getTokenLogged()))
+                .add("Authorization", "Bearer ".concat(session.getTokenLogged()))
                 .build();
     }
 
