@@ -925,4 +925,80 @@
     <!-- TokenExpirationService -->
     <string name="token_expired" translatable="false">Token Expired</string>
     <string name="first_login" translatable="false">First login</string>
+
+    <!-- Patient Quiz -->
+    <string name="q1" translatable="false">Na semana passada você praticou:</string>
+    <string name="q2" translatable="false">Você faz educação física da escola?</string>
+    <string name="q3" translatable="false">Você toma café da manhã?</string>
+    <string name="q4" translatable="false">Quantos copos de água você bebe em um dia? </string>
+    <string name="q5" translatable="false">Nos últimos 7 dias (1 semana), quantos dias você comeu peixe, frango ou carne vermelha?</string>
+    <string name="q6" translatable="false">Nos últimos 7 dias (1 semana), quantos dias você tomou refrigerante?</string>
+    <string name="q7" translatable="false">Nos últimos 7 dias (1 semana), quantos dias você comeu salada crua, verduras ou legumes?</string>
+    <string name="q8" translatable="false">Nos últimos 7 dias (1 semana), quantos dias você comeu salgados fritos ou frituras no geral?</string>
+    <string name="q9" translatable="false">Nos últimos 7 dias (1 semana), quantos dias você tomou leite?</string>
+    <string name="q10" translatable="false">Nos últimos 7 dias (1 semana), quantos dias você comeu feijão?</string>
+    <string name="q11" translatable="false">Nos últimos 7 dias (1 semana), quantos dias você comeu frutas?</string>
+    <string name="q12" translatable="false">Nos últimos 7 dias (1 semana), quantos dias você comeu guloseima/doces/bombons ou biscoitos doces?</string>
+    <string name="q13" translatable="false">Nos últimos 7 dias (1 semana), quantos dias você comeu hamburgues, salsicha, entre outros embutidos?</string>
+    <string name="q14" translatable="false">Até os 6 meses vida, sua amamentação foi:</string>
+    <string name="q15" translatable="false">Possui alguma alergia ou intolerância alimentar?</string>
+    <string name="q16" translatable="false">Algum médico ja lhe disse que você tem ou teve pressão alta (hipertensão)?</string>
+    <string name="q17" translatable="false">Algum médico já disse que você tem açúcar alto no sangue (diabetes)?</string>
+    <string name="q18" translatable="false">Algum médico disse que você tem ou teve taxas elevadas de gordura no sangue (colesterol ou triglicerídeos)?</string>
+    <string name="q19" translatable="false">Em um dia de semana comum, a que horas você costuma dormir?</string>
+    <string name="q20" translatable="false"> Em um dia de semana comum, a que horas voce costuma acordar?</string>
+    <string name="male">Boy</string>
+    <string name="female">Girl</string>
+    <string name="age2"> Anos</string>
+    <string name="thank_you">Obrigado por responder!</string>
+
+    <string-array name="sports_answers">
+        <item>Futebol (campo, de rua,clube)</item>
+        <item>Futsal</item>
+        <item>Handebol</item>
+        <item>Basquete</item>
+        <item>Andar de patins, skate</item>
+        <item>Atletismo</item>
+        <item>Natação</item>
+        <item>Gisnática olímpica ou rítmica</item>
+        <item>Judô, Karatê, Capoeira, outras lutas</item>
+        <item>Ballet, outros tipos de danças</item>
+        <item>Correr</item>
+        <item>Andar de bicicleta</item>
+        <item>Caminhar como exercício físico</item>
+        <item>Caminhar como meio de transporte(ir a escola,casa de um amigo)</item>
+        <item>Vôlei de quadra</item>
+        <item>Musculação</item>
+        <item>Exercícios abdominais</item>
+        <item>Tênis de quadra, tênis de mesa</item>
+        <item>Passear com o cachorro</item>
+        <item>Ginástica de academia</item>
+        <item>Nenhuma atividade</item>
+    </string-array>
+
+    <string-array name="frequency_sports_answers">
+        <item>Uma vez por semana</item>
+        <item>Duas vezes por semana</item>
+        <item>Três vezes por semana</item>
+        <item>Não participo da educação física da escola</item>
+    </string-array>
+    <string-array name="frequency_lunch_answers">
+        <item>Não tomo café-da-manhã </item>
+        <item>Tomo café-da-manha às vezes </item>
+        <item>Tomo café-da-manha quase todos os dias </item>
+        <item>Tomo café-da-manha todos os dias </item>
+    </string-array>
+
+    <string-array name="frequency_water_answers">
+        <item>Não bebo água </item>
+        <item>1 a 2 copos por dia</item>
+        <item>3 a 4 copos por dia</item>
+        <item>Pelo menos 5 ou mais copos por dia </item>
+    </string-array>
+    <!--<string-array name="age_answers">-->
+    <!--<item>10 anos</item>-->
+    <!--<item>11 anos</item>-->
+    <!--<item>12 anos</item>-->
+    <!--<item>13 anos</item>-->
+    <!--</string-array>-->
 </resources>

@@ -1,5 +1,6 @@
 package br.edu.uepb.nutes.haniot.activity;
 
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -263,18 +264,22 @@ public class ManagePatientsActivity extends AppCompatActivity {
 
             case R.id.btnAddPatient:
 
-                for (Patient patient : patientList) {
-                    if (PatientDAO.getInstance(getApplicationContext()).save(patient)) {
+//                for (Patient patient : patientList) {
+//                    if (PatientDAO.getInstance(getApplicationContext()).save(patient)) {
+//
+//                    }
+//                }
 
-                    }
-                }
+                startActivity(new Intent(this, PatientQuiz.class));
                 break;
             case R.id.add_patient:
-                for (Patient patient : patientList) {
-                    if (PatientDAO.getInstance(getApplicationContext()).save(patient)) {
+//                for (Patient patient : patientList) {
+//                    if (PatientDAO.getInstance(getApplicationContext()).save(patient)) {
+//
+//                    }
+//                }
+                startActivity(new Intent(this, PatientQuiz.class));
 
-                    }
-                }
                 break;
         }
 
