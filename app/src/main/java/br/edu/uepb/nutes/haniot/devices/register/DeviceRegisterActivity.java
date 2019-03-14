@@ -56,7 +56,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     private final String NAME_DEVICE_GLUCOMETER_PERFORMA = "Accu-Chek Performa Connect";
     private final String NAME_DEVICE_SCALE_1501 = "Scale YUNMAI Mini 1501";
     private final String NAME_DEVICE_YUNMAI = "YUNMAI-SIGNAL-M1US";
-    private final String NAME_DEVICE_HEART_RATE = "Heart Rate Sensor H7, H10 ...";
+    private final String NAME_DEVICE_HEART_RATE = "Heart Rate Sensor";
     private final String NAME_DEVICE_SMARTBAND_MI2 = "Smartband MI Band 2";
     private final String SERVICE_SCALE_1501 = "00001310-0000-1000-8000-00805f9b34fb";
     private final String PIN_YUNMAI = "000000";
