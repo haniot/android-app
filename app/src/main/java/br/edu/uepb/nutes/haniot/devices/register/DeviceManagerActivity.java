@@ -53,8 +53,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
     public final String NUMBER_MODEL_THERM_DL8740 = "DL8740";
     public final String NUMBER_MODEL_GLUCOMETER_PERFORMA = "Performa Connect";
     public final String NUMBER_MODEL_SCALE_1501 = "1501";
-    public final String NUMBER_MODEL_HEART_RATE_H7 = "H7";
-    public final String NUMBER_MODEL_HEART_RATE_H10 = "H10";
+    public final String NUMBER_MODEL_HEART_RATE = "H7, H10 ...";
     public final String NUMBER_MODEL_SMARTBAND_MI2 = "MI Band 2";
 
     @BindView(R.id.toolbar)
@@ -198,11 +197,8 @@ public class DeviceManagerActivity extends AppCompatActivity {
             } else if (devices.getName().equalsIgnoreCase("Scale YUNMAI Mini ".concat(NUMBER_MODEL_SCALE_1501))) {
                 devices.setImg(R.drawable.device_scale_yunmai_mini_color);
                 listDevices.add(devices);
-            } else if (devices.getName().equalsIgnoreCase("Heart Rate Sensor ".concat(NUMBER_MODEL_HEART_RATE_H7))) {
+            } else if (devices.getName().equalsIgnoreCase("Heart Rate Sensor ".concat(NUMBER_MODEL_HEART_RATE))) {
                 devices.setImg(R.drawable.device_heart_rate_h7);
-                listDevices.add(devices);
-            } else if (devices.getName().equalsIgnoreCase("Heart Rate Sensor ".concat(NUMBER_MODEL_HEART_RATE_H10))) {
-                devices.setImg(R.drawable.device_heart_rate_h10);
                 listDevices.add(devices);
             } else if (devices.getName().equalsIgnoreCase("Smartband ".concat(NUMBER_MODEL_SMARTBAND_MI2))) {
                 devices.setImg(R.drawable.device_smartband_miband2);
@@ -355,13 +351,9 @@ public class DeviceManagerActivity extends AppCompatActivity {
                 "Yunmai", NUMBER_MODEL_SCALE_1501,
                 R.drawable.device_scale_yunmai_mini_color, DeviceType.BODY_COMPOSITION));
 
-        devicesAvailable.add(new Device("Heart Rate Sensor ".concat(NUMBER_MODEL_HEART_RATE_H7),
-                "Polar", NUMBER_MODEL_HEART_RATE_H7,
+        devicesAvailable.add(new Device("Heart Rate Sensor ".concat(NUMBER_MODEL_HEART_RATE),
+                "Polar", NUMBER_MODEL_HEART_RATE,
                 R.drawable.device_heart_rate_h7, DeviceType.HEART_RATE));
-
-        devicesAvailable.add(new Device("Heart Rate Sensor ".concat(NUMBER_MODEL_HEART_RATE_H10),
-                "Polar", NUMBER_MODEL_HEART_RATE_H10,
-                R.drawable.device_heart_rate_h10, DeviceType.HEART_RATE));
 
         devicesAvailable.add(new Device("Smartband ".concat(NUMBER_MODEL_SMARTBAND_MI2),
                 "Xiaomi", NUMBER_MODEL_SMARTBAND_MI2,

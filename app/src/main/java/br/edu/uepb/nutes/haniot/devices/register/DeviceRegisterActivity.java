@@ -56,8 +56,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     private final String NAME_DEVICE_GLUCOMETER_PERFORMA = "Accu-Chek Performa Connect";
     private final String NAME_DEVICE_SCALE_1501 = "Scale YUNMAI Mini 1501";
     private final String NAME_DEVICE_YUNMAI = "YUNMAI-SIGNAL-M1US";
-    private final String NAME_DEVICE_HEART_RATE_H7 = "Heart Rate Sensor H7";
-    private final String NAME_DEVICE_HEART_RATE_H10 = "Heart Rate Sensor H10";
+    private final String NAME_DEVICE_HEART_RATE = "Heart Rate Sensor H7, H10 ...";
     private final String NAME_DEVICE_SMARTBAND_MI2 = "Smartband MI Band 2";
     private final String SERVICE_SCALE_1501 = "00001310-0000-1000-8000-00805f9b34fb";
     private final String PIN_YUNMAI = "000000";
@@ -242,10 +241,20 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
             mScanner.stopScan();
 
             //removes a device from the local database and server
-            removeDeviceForType(mDevice);
-            btDevice.createBond();
-
-
+            mDevice.setAddress(btDevice.getAddress());
+            if (removeDeviceForType(mDevice)) {
+                if (unpairDevice(mDevice)) {
+                    btDevice.createBond();
+                }
+            } else {
+                if (btDevice.getBondState() == BluetoothDevice.BOND_BONDED) {
+                    if (unpairDevice(mDevice)) {
+                        btDevice.createBond();
+                    }
+                } else {
+                    btDevice.createBond();
+                }
+            }
         }
 
         @Override
@@ -369,9 +378,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
                 service = GattAttributes.SERVICE_GLUCOSE;
             } else if (nameDevice.equalsIgnoreCase(NAME_DEVICE_SCALE_1501)) {
                 service = SERVICE_SCALE_1501;
-            } else if (nameDevice.equalsIgnoreCase(NAME_DEVICE_HEART_RATE_H7)) {
-                service = GattAttributes.SERVICE_HEART_RATE;
-            } else if (nameDevice.equalsIgnoreCase(NAME_DEVICE_HEART_RATE_H10)) {
+            } else if (nameDevice.equalsIgnoreCase(NAME_DEVICE_HEART_RATE)) {
                 service = GattAttributes.SERVICE_HEART_RATE;
             } else if (nameDevice.equalsIgnoreCase(NAME_DEVICE_SMARTBAND_MI2)) {
                 service = GattAttributes.SERVICE_STEPS_DISTANCE_CALORIES;
@@ -487,9 +494,11 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
      *
      * @param device {@link Device}
      */
-    public void removeDeviceForType(Device device) {
+    public boolean removeDeviceForType(Device device) {
+        boolean confirmed = false;
         for (Device d : mDeviceDAO.list(session.getIdLogged())) {
             if (d.getTypeId() == device.getTypeId()) {
+                confirmed = true;
                 String path = "devices/"
                         .concat(d.get_id())
                         .concat("/users/")
@@ -498,15 +507,14 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
                 server.delete(path, new Server.Callback() {
                     @Override
                     public void onError(JSONObject result) {
+                        Log.d(TAG, "onError: ");
                     }
 
                     @Override
                     public void onSuccess(JSONObject result) {
                         try {
                             if (result.has("code") && result.getInt("code") == 204) {
-                                unpairDevice(d);
                                 mDeviceDAO.remove(d.getAddress());
-
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -515,18 +523,23 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
                 });
             }
         }
+        return confirmed;
     }
 
-    private void unpairDevice(Device device) {
-        if (device.getAddress().isEmpty()) return;
-        BluetoothDevice mBluetoothDevice = BluetoothAdapter.getDefaultAdapter().
-                getRemoteDevice(device.getAddress());
-        try {
-            Method m = mBluetoothDevice.getClass()
-                    .getMethod("removeBond", (Class[]) null);
-            m.invoke(mBluetoothDevice, (Object[]) null);
-        } catch (Exception e) {
-            Log.d(TAG, "error removing pairing " + e.getMessage());
+    private boolean unpairDevice(Device device) {
+        boolean confirmed = false;
+        if (!device.getAddress().isEmpty()) {
+            BluetoothDevice mBluetoothDevice = BluetoothAdapter.getDefaultAdapter().
+                    getRemoteDevice(device.getAddress());
+            try {
+                Method m = mBluetoothDevice.getClass()
+                        .getMethod("removeBond", (Class[]) null);
+                m.invoke(mBluetoothDevice, (Object[]) null);
+                confirmed = true;
+            } catch (Exception e) {
+                Log.d(TAG, "error removing pairing " + e.getMessage());
+            }
         }
+        return confirmed;
     }
 }
