@@ -8,9 +8,9 @@
         <attr name="colorBackgroundTint" format="reference" />
         <attr name="enabledAddNewItem" format="boolean" />
         <attr name="textAlign" format="enum">
-            <enum name="left" value="0"/>
-            <enum name="center" value="1"/>
-            <enum name="right" value="2"/>
+            <enum name="left" value="0" />
+            <enum name="center" value="1" />
+            <enum name="right" value="2" />
         </attr>
     </declare-styleable>
 
@@ -25,5 +25,11 @@
 
         <attr name="messageEmpty" format="string" />
         <attr name="titleDialogAddNewItem" format="string" />
+    </declare-styleable>
+
+    <!--Styleable attribute required for pass in text size and text color-->
+    <declare-styleable name="SeekBarWithHint">
+        <attr name="hint_text_size" format="dimension" />
+        <attr name="hint_text_color" format="color" />
     </declare-styleable>
 </resources>

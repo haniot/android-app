@@ -17,10 +17,10 @@ import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.auth0.android.jwt.JWT;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.auth0.android.jwt.JWT;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -160,6 +160,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         Intent intent = new Intent(LoginActivity.this, ChangePasswordActivity.class);
                         intent.putExtra("pathRedirectLink", result.get("redirect_link").toString());
                         startActivity(intent);
+                    } else {
+                        Log.i("CACA", "error 404");
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -242,9 +244,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 try {
                     if (response.has("code") && response.getInt("code") == 401) {
                         Toast.makeText(getApplicationContext(), R.string.validate_invalid_email_or_password, Toast.LENGTH_LONG).show();
-                    } else if (response.has("code") && response.getInt("code") == 403){
+                    } else if (response.has("code") && response.getInt("code") == 403) {
                         Toast.makeText(getApplicationContext(), R.string.error_403, Toast.LENGTH_LONG).show();
-                    }else{
+                    } else {
                         Toast.makeText(getApplicationContext(), R.string.error_500, Toast.LENGTH_LONG).show();
                     }
                 } catch (JSONException e) {
@@ -313,7 +315,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
+        Log.i("CACA", dataJson.toString());
         return dataJson.toString();
     }
 
@@ -366,6 +368,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             tokenExpirationService = null;
         }
     };
+
     /**
      * Deserialize json in a list of devices.
      * If any error occurs it will be returned List empty.

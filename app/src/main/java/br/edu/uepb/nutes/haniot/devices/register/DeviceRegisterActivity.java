@@ -543,5 +543,3 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         return confirmed;
     }
 }
-
-

@@ -1,31 +1,24 @@
 package br.edu.uepb.nutes.haniot.adapter;
 
 import android.content.Context;
-import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import br.edu.uepb.nutes.haniot.R;
-
-import java.util.Collections;
 import java.util.List;
 
-import com.mikhaellopez.circularprogressbar.CircularProgressBar;
-
-import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
-import br.edu.uepb.nutes.haniot.model.ItemGrid;
+import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.adapter.base.BaseAdapter;
+import br.edu.uepb.nutes.haniot.model.MeasurementMonitor;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import br.edu.uepb.nutes.haniot.adapter.base.BaseAdapter;
 
-public class GridDashAdapter extends BaseAdapter<ItemGrid>{
+public class GridDashAdapter extends BaseAdapter<MeasurementMonitor> {
     private Context context;
 
     public GridDashAdapter(Context context) {
@@ -48,18 +41,50 @@ public class GridDashAdapter extends BaseAdapter<ItemGrid>{
     }
 
     @Override
-    public void showData(RecyclerView.ViewHolder holder, int position, List<ItemGrid> itemsList) {
+    public void showData(RecyclerView.ViewHolder holder, int position, List<MeasurementMonitor> itemsList) {
         if (holder instanceof ViewHolder) {
-            final ItemGrid ig = itemsList.get(position);
+            final MeasurementMonitor ig = itemsList.get(position);
             ViewHolder h = (ViewHolder) holder;
 
-            h.imageIten.setImageResource(ig.getIcon());
+            h.imageItem.setImageResource(ig.getIcon());
             h.textDescription.setText(ig.getDescription());
-            h.textMeasurement.setText(ig.getMeasurementValue());
-            h.textMeasurementType.setText(ig.getMeasurementInitials());
+            if (ig.getMeasurementValue().isEmpty()) {
+                h.lastMeasurement.setText("Nenhuma medição");
+                h.textMeasurement.setVisibility(View.INVISIBLE);
+                h.textMeasurement.setVisibility(View.INVISIBLE);
+                h.textMeasurementType.setVisibility(View.INVISIBLE);
+                h.texTime.setVisibility(View.INVISIBLE);
+                h.timeIcon.setVisibility(View.INVISIBLE);
+            } else {
+                h.lastMeasurement.setText("Última medição:");
+                h.textMeasurement.setVisibility(View.VISIBLE);
+                h.textMeasurement.setVisibility(View.VISIBLE);
+                h.textMeasurementType.setVisibility(View.VISIBLE);
+                h.texTime.setVisibility(View.VISIBLE);
+                h.timeIcon.setVisibility(View.VISIBLE);
+                h.textMeasurement.setText(ig.getMeasurementValue());
+                h.textMeasurementType.setText(ig.getMeasurementInitials());
+                h.texTime.setText(ig.getTime());
+            }
 
+            if (ig.getStatus() == 0) {
+                h.status.setColorFilter(ContextCompat.getColor(context, R.color.connected), PorterDuff.Mode.SRC_IN);
+                h.status.setVisibility(View.VISIBLE);
+
+            } else if (ig.getStatus() == 1) {
+                h.status.setColorFilter(ContextCompat.getColor(context, R.color.disconnected), PorterDuff.Mode.SRC_IN);
+                h.status.setVisibility(View.VISIBLE);
+
+            } else if (ig.getStatus() == 2) {
+                h.status.setColorFilter(ContextCompat.getColor(context, R.color.noRegister), PorterDuff.Mode.SRC_IN);
+                h.status.setVisibility(View.VISIBLE);
+
+            } else if (ig.getStatus() == 3) {
+                h.status.setVisibility(View.INVISIBLE);
+                h.progressBar.setIndeterminate(true);
+            }
             h.botAddMeasurement.setOnClickListener(v -> {
-                if (GridDashAdapter.super.mListener != null){
+                if (GridDashAdapter.super.mListener != null) {
                     GridDashAdapter.super.mListener.onMenuContextClick(h.botAddMeasurement, ig);
                 }
             });
@@ -82,16 +107,26 @@ public class GridDashAdapter extends BaseAdapter<ItemGrid>{
     public class ViewHolder extends RecyclerView.ViewHolder {
         final View mView;
 
-        @BindView(R.id.imageIten)
-        ImageView imageIten;
+        @BindView(R.id.imageItem)
+        ImageView imageItem;
         @BindView(R.id.textDescription)
         TextView textDescription;
         @BindView(R.id.textMeasurement)
         TextView textMeasurement;
+        @BindView(R.id.text_last_measurement)
+        TextView lastMeasurement;
         @BindView(R.id.textMeasurementType)
         TextView textMeasurementType;
-        @BindView(R.id.botAddMeasurement)
-        Button botAddMeasurement;
+        @BindView(R.id.text_time_measurement)
+        TextView texTime;
+        @BindView(R.id.btn_add_measurement)
+        TextView botAddMeasurement;
+        @BindView(R.id.status)
+        ImageView status;
+        @BindView(R.id.time_measuerement)
+        ImageView timeIcon;
+        @BindView(R.id.receiving_data)
+        ProgressBar progressBar;
 
         public ViewHolder(View itemView) {
             super(itemView);

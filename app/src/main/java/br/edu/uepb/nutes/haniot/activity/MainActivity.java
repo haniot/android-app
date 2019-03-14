@@ -5,39 +5,29 @@ import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewPager;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.SpannableString;
-import android.text.style.StyleSpan;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.FrameLayout;
 import android.widget.Toast;
-
-import com.github.clans.fab.FloatingActionButton;
-import com.github.clans.fab.FloatingActionMenu;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.account.LoginActivity;
-import br.edu.uepb.nutes.haniot.activity.settings.SettingsActivity;
-import br.edu.uepb.nutes.haniot.adapter.FragmentPageAdapter;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
-import br.edu.uepb.nutes.haniot.model.DateChangedEvent;
-import br.edu.uepb.nutes.haniot.model.SendMeasurementsEvent;
+import br.edu.uepb.nutes.haniot.activity.settings.SettingsActivity;
+import br.edu.uepb.nutes.haniot.fragment.DashboardChartsFragment;
+import br.edu.uepb.nutes.haniot.fragment.MeasurementsGridFragment;
+import br.edu.uepb.nutes.haniot.model.Patient;
+import br.edu.uepb.nutes.haniot.model.dao.PatientDAO;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
-import br.edu.uepb.nutes.haniot.utils.Log;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -48,31 +38,30 @@ import butterknife.ButterKnife;
  * @version 1.0
  * @copyright Copyright (c) 2017, NUTES UEPB
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements DashboardChartsFragment.Communicator {
     private final String TAG = "MainActivity";
     private final int REQUEST_ENABLE_BLUETOOTH = 1;
     private final int REQUEST_ENABLE_LOCATION = 2;
 
-    private String tabTitle;
-    private String id = "";
-    private String lastNameSelected = "";
     private Session session;
-
-    private EventBus _eventBus;
+    private Patient patient;
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @BindView(R.id.tabLayout)
-    TabLayout tabLayout;
-    @BindView(R.id.viewpager)
-    ViewPager viewPager;
-    @BindView(R.id.newMeasureButton)
-    FloatingActionButton newMeasureButton;
-    @BindView(R.id.floating_menu_main)
-    FloatingActionMenu floatingMenu;
-    @BindView(R.id.sendToServerButton)
-    FloatingActionButton btnSendMeasurement;
 
+    @BindView(R.id.frameCharts)
+    FrameLayout frameChart;
+
+    @BindView(R.id.frameMeasurements)
+    FrameLayout frameMeasurements;
+
+    MeasurementsGridFragment measurementsGridFragment;
+    DashboardChartsFragment dashboardChartsFragment;
+
+    /**
+     * On create.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,43 +72,31 @@ public class MainActivity extends AppCompatActivity {
 
         toolbar.setTitle(getResources().getString(R.string.app_name));
         setSupportActionBar(toolbar);
+        hasPermissions();
 
-        new FragmentPageAdapter(getSupportFragmentManager()).saveState();
-
-        viewPager.setAdapter(new FragmentPageAdapter(getSupportFragmentManager()));
-        viewPager.setOffscreenPageLimit(2);
-        tabLayout.setupWithViewPager(viewPager);
-
-        checkLastPatientAndUpdateTabTitle();
-
-        this._eventBus = EventBus.getDefault();
-
-        newMeasureButton.setOnClickListener(v -> {
-            Intent it = new Intent(this, SettingsActivity.class);
-            it.putExtra("settingType", 2);
-            floatingMenu.close(false);
-            startActivity(it);
-        });
-
-
-        btnSendMeasurement.setOnClickListener(c -> {
-            postEvent();
-        });
-
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction chartTransition = fragmentManager.beginTransaction();
+        dashboardChartsFragment = new DashboardChartsFragment();
+        chartTransition.replace(R.id.frameCharts, dashboardChartsFragment);
+        chartTransition.commit();
+        FragmentTransaction measurementsTransition = fragmentManager.beginTransaction();
+        measurementsGridFragment = new MeasurementsGridFragment();
+        measurementsTransition.replace(R.id.frameMeasurements, measurementsGridFragment);
+        measurementsTransition.commit();
     }
 
+    /**
+     * On start.
+     */
     @Override
     protected void onStart() {
         super.onStart();
-        _eventBus.register(this);
+        checkPatient();
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        _eventBus.unregister(this);
-    }
-
+    /**
+     * On resume.
+     */
     @Override
     protected void onResume() {
         super.onResume();
@@ -131,60 +108,22 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(this, LoginActivity.class));
             finish();
         }
-        if (floatingMenu.isOpened()){
-            floatingMenu.close(true);
-        }
-        checkLastPatientAndUpdateTabTitle();
+        checkPatient();
     }
 
-    /* Test if there is some patient saved on bundle or on shared preferences
-        if some patient is finded, the title is updated.
-    */
-    public void checkLastPatientAndUpdateTabTitle() {
-        //caso a tela seja restaurada
-        Bundle params = getIntent().getExtras();
-        if (params != null) {
-            String idExtra = params.getString(getResources().getString(R.string.id_last_patient));
-            String nameExtra = params.getString(getResources().getString(R.string.name_last_patient));
-            if (idExtra != null && !idExtra.equals("")
-                    && nameExtra != null && !nameExtra.equals("")) {
-                this.id = idExtra;
-                this.lastNameSelected = nameExtra;
-            }
+    /**
+     * Set patient selected.
+     */
+    public void checkPatient() {
+        patient = PatientDAO.getInstance(this)
+                .getFromID(session.getString(getString(R.string.id_last_patient)));
 
+        if (patient != null) {
+            dashboardChartsFragment.updateNamePatient(patient);
         } else {
-            this.id = "";
-            this.lastNameSelected = "";
+            showToast("Nenhum paciente selecionado!");
+            startActivity(new Intent(this, ManagePatientsActivity.class));
         }
-        String id = getResources().getString(R.string.id_last_patient);
-        String name = getResources().getString(R.string.name_last_patient);
-        String lastIdSelected = session.getString(id);
-        String lastName = session.getString(name);
-        if (!lastIdSelected.equals("") && !lastName.equals("")) {
-            this.id = lastIdSelected;
-            this.lastNameSelected = lastName;
-        } else {
-            this.id = "";
-            this.lastNameSelected = "";
-        }
-        //caso nao tenha encontrado uma crianca selecionada no sharedpreferences
-        if (this.id.equals("")) {
-            this.id = getResources().getString(R.string.noPatientSelected);
-            this.lastNameSelected = getResources().getString(R.string.noPatientSelected);
-            tabLayout.setTabTextColors(ContextCompat
-                    .getColorStateList(this, R.color.colorRed));
-        }
-
-        tabTitle = getResources().getString(R.string.dashboard) + " - " + this.lastNameSelected;
-
-        //Coloca o texto na aba
-        if (tabLayout.getTabAt(0) != null) {
-
-            SpannableString dash = new SpannableString(tabTitle);
-            dash.setSpan(new StyleSpan(Typeface.BOLD), tabTitle.length(), dash.length(), 0);
-            tabLayout.getTabAt(0).setText(dash);
-        }
-
     }
 
     /**
@@ -275,13 +214,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showToast(final String menssage) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast toast = Toast.makeText(getApplicationContext(), menssage, Toast.LENGTH_LONG);
-                toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 150);
-                toast.show();
-            }
+        runOnUiThread(() -> {
+            Toast toast = Toast.makeText(getApplicationContext(), menssage, Toast.LENGTH_LONG);
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 150);
+            toast.show();
         });
     }
 
@@ -292,14 +228,13 @@ public class MainActivity extends AppCompatActivity {
         System.exit(0);
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onSendMeasurements(final SendMeasurementsEvent e){
-
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    private void postEvent(){
-        EventBus.getDefault().post(new SendMeasurementsEvent());
+    /**
+     * Notify new measurement received to dashboard.
+     * @param valueMeasurement
+     */
+    @Override
+    public void notifyNewMeasurement(String valueMeasurement) {
+        dashboardChartsFragment.updateValueMeasurement(valueMeasurement);
     }
 
 }

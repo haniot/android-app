@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:layout_editor_absoluteY="25dp">
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout5"
+        android:layout_width="0dp"
+        android:layout_height="160dp"
+        android:layout_margin="4dp"
+        android:layout_marginTop="9dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/text_title"
+            android:layout_width="108dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_centerHorizontal="false"
+            android:layout_marginStart="0dp"
+            android:layout_marginEnd="276dp"
+            android:layout_marginBottom="24dp"
+            android:text="Período"
+            android:textAlignment="center"
+            android:textColor="@color/colorSubmenu"
+            android:textSize="18sp" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="20dp"
+            android:gravity="center"
+            android:paddingTop="15dp">
+
+            <ImageView
+                android:id="@+id/fasting"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_alignTop="@+id/before_bedtime"
+                android:layout_marginEnd="0dp"
+                android:background="@mipmap/ic_circle"
+                android:cropToPadding="false"
+                android:padding="5dp"
+                android:src="@drawable/z_nofood" />
+
+
+            <ImageView
+                android:id="@+id/fast"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginStart="26dp"
+                android:layout_marginEnd="0dp"
+                android:layout_toEndOf="@+id/fasting"
+                android:background="@mipmap/ic_circle"
+                android:cropToPadding="false"
+                android:padding="5dp"
+                android:scaleX="0.8"
+                android:scaleY="0.8"
+                android:src="@drawable/z_casual" />
+
+            <ImageView
+                android:id="@+id/before_bedtime"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginStart="26dp"
+                android:layout_marginEnd="0dp"
+                android:layout_toEndOf="@+id/fast"
+                android:background="@mipmap/ic_circle"
+                android:cropToPadding="false"
+                android:padding="5dp"
+                android:scaleX="0.8"
+                android:scaleY="0.8"
+                android:src="@drawable/z_time_sleep" />
+
+            <ImageView
+                android:id="@+id/pre_meal"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginStart="26dp"
+                android:layout_marginBottom="0dp"
+                android:layout_toEndOf="@+id/before_bedtime"
+                android:background="@mipmap/ic_circle"
+                android:cropToPadding="false"
+                android:padding="5dp"
+                android:scaleX="0.8"
+                android:scaleY="0.8"
+                android:src="@drawable/z_breakfast" />
+
+            <ImageView
+                android:id="@+id/check_fasting"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignTop="@+id/fasting"
+                android:layout_marginStart="-23dp"
+                android:layout_marginTop="39dp"
+                android:layout_marginEnd="0dp"
+                android:layout_toEndOf="@+id/fasting"
+                android:background="@drawable/circle_white"
+                android:cropToPadding="false"
+                android:padding="5dp"
+                android:src="@drawable/z_check" />
+
+            <ImageView
+                android:id="@+id/check_fast"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignTop="@+id/fasting"
+                android:layout_marginStart="-12dp"
+                android:layout_marginTop="40dp"
+                android:layout_marginEnd="0dp"
+                android:layout_toEndOf="@+id/fast"
+                android:background="@drawable/circle_white"
+                android:cropToPadding="false"
+                android:padding="5dp"
+                android:src="@drawable/z_check"
+                android:visibility="invisible" />
+
+            <ImageView
+                android:id="@+id/check_before_bedtime"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignTop="@+id/fasting"
+                android:layout_marginStart="-16dp"
+                android:layout_marginTop="40dp"
+                android:layout_marginEnd="0dp"
+                android:layout_toEndOf="@+id/before_bedtime"
+                android:background="@drawable/circle_white"
+                android:cropToPadding="false"
+                android:padding="5dp"
+                android:src="@drawable/z_check"
+                android:visibility="invisible" />
+
+            <ImageView
+                android:id="@+id/check_pre_meal"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignTop="@+id/fasting"
+                android:layout_marginStart="-12dp"
+                android:layout_marginTop="39dp"
+                android:layout_marginEnd="0dp"
+                android:layout_toEndOf="@+id/pre_meal"
+                android:background="@drawable/circle_white"
+                android:cropToPadding="false"
+                android:padding="5dp"
+                android:src="@drawable/z_check"
+                android:visibility="invisible" />
+
+            <TextView
+                android:id="@+id/title_fasting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/fasting"
+                android:layout_alignStart="@+id/fasting"
+                android:layout_alignEnd="@+id/fasting"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="13dp"
+                android:text="Jejum"
+                android:textAlignment="center"
+                android:textColor="@color/colorPrimary"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/title_fast"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/fast"
+                android:layout_alignStart="@+id/fast"
+                android:layout_alignEnd="@+id/fast"
+                android:layout_marginTop="12dp"
+                android:text="Casual"
+                android:textAlignment="center"
+                android:textColor="@color/colorSubmenu"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/title_pre_meal"
+                android:layout_width="122dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/pre_meal"
+                android:layout_alignStart="@+id/pre_meal"
+                android:layout_alignEnd="@+id/pre_meal"
+                android:layout_marginTop="12dp"
+                android:text="Pré-refeição"
+                android:textAlignment="center"
+                android:textColor="@color/colorSubmenu"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/title_before_bedtime"
+                android:layout_width="98dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/before_bedtime"
+                android:layout_alignStart="@+id/before_bedtime"
+                android:layout_alignEnd="@+id/before_bedtime"
+                android:layout_marginTop="12dp"
+                android:text="Antes de Dormir"
+                android:textAlignment="center"
+                android:textColor="@color/colorSubmenu"
+                android:textSize="14sp" />
+
+        </RelativeLayout>
+    </RelativeLayout>
+
+</android.support.constraint.ConstraintLayout>

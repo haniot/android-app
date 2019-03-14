@@ -4,19 +4,35 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity_manually_add_measurement">
+    android:background="@color/cardview_light_background"
+    tools:context=".activity.ManuallyAddMeasurement">
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/floatingActionButton2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="28dp"
+        android:clickable="true"
+        android:src="@drawable/z_check"
+        android:tint="@color/cardview_light_background" />
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        android:background="@color/cardview_light_background"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:elevation="0dp">
         <!--Esses temas são importantes-->
+
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="wrap_content"
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
@@ -32,73 +48,136 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:paddingTop="10dp">
 
-            <TextView
-                android:id="@+id/textChooseDate"
+
+            <EditText
+                android:id="@+id/text_measurement"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
+                android:layout_below="@+id/box_time"
+                android:layout_alignParentStart="false"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp"
+                android:background="@android:color/transparent"
+                android:ellipsize="start"
+                android:gravity="center_horizontal"
+                android:inputType="number|numberDecimal"
+                android:text="0"
+                android:textColor="@color/colorPrimary"
+                android:textSize="80sp" />
+
+
+            <TextView
+                android:id="@+id/text_unit"
+                android:layout_width="56dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/text_measurement"
                 android:layout_alignParentStart="true"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:textSize="18dp"
-                android:text="Escolha a data"/>
-
-            <View
-                android:id="@+id/divDate"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_toEndOf="@id/textChooseDate"
-                android:layout_alignBaseline="@id/textChooseDate"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:background="?android:attr/listDivider" />
-
-            <android.support.v7.widget.AppCompatButton
-                android:id="@+id/btnCalendar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/ic_calendar_128"
-                android:padding="50dp"
-                android:layout_marginTop="16dp"
-                android:layout_below="@id/textChooseDate"
-                style="@style/Widget.AppCompat.Button.Borderless"/>
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="216dp"
+                android:layout_marginTop="-11dp"
+                android:layout_marginEnd="97dp"
+                android:text="mg/dl"
+                android:textColor="@color/colorSubmenu"
+                android:textSize="18sp" />
 
             <TextView
-                android:id="@+id/textChooseTime"
-                android:layout_width="wrap_content"
+                android:id="@+id/text_value"
+                android:layout_width="122dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_below="@id/btnCalendar"
-                android:textSize="18dp"
-                android:text="Escolha a hora"/>
+                android:layout_below="@+id/box_time"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="10dp"
+                android:text="Valor"
+                android:textAlignment="center"
+                android:textColor="@color/colorSubmenu"
+                android:textSize="18sp" />
 
-            <View
-                android:id="@+id/divGlucose"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_toEndOf="@id/textChooseTime"
-                android:layout_alignBaseline="@id/textChooseTime"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:background="?android:attr/listDivider" />
-
-            <android.support.v7.widget.AppCompatButton
-                android:id="@+id/btnClock"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/clock"
-                android:padding="50dp"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_below="@id/textChooseTime"/>
 
             <FrameLayout
                 android:id="@+id/frame_measurement"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_below="@id/btnClock"/>
+                android:layout_height="0dp"
+                android:layout_marginTop="0dp"
+                android:visibility="invisible">
+
+            </FrameLayout>
+
+            <RelativeLayout
+                android:id="@+id/box_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/icon_calendar"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginStart="100dp"
+                    android:layout_marginTop="35dp"
+                    android:src="@drawable/calen"
+                    android:tint="@color/colorSubmenu" />
+
+                <TextView
+                    android:id="@+id/text_date"
+                    android:layout_width="105dp"
+                    android:layout_height="45dp"
+                    android:layout_below="@+id/icon_calendar"
+                    android:layout_alignStart="@+id/icon_calendar"
+                    android:layout_alignEnd="@+id/icon_calendar"
+                    android:layout_marginStart="-43dp"
+                    android:layout_marginEnd="-42dp"
+                    android:gravity="center"
+                    android:text="Hoje"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="22sp" />
+
+                <ImageView
+                    android:id="@+id/icon_time"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="35dp"
+                    android:layout_marginEnd="100dp"
+                    android:src="@drawable/cclock"
+                    android:tint="@color/colorSubmenu" />
+
+                <TextView
+                    android:id="@+id/text_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="45dp"
+                    android:layout_below="@+id/icon_time"
+                    android:layout_alignStart="@+id/icon_time"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginStart="-27dp"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginEnd="75dp"
+                    android:gravity="center"
+                    android:text="18:40"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="22sp" />
+            </RelativeLayout>
+
+            <FrameLayout
+                android:id="@+id/extra"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/text_measurement"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="50dp"
+                android:layout_marginEnd="0dp"
+                android:foregroundGravity="center" />
 
         </RelativeLayout>
     </android.support.v4.widget.NestedScrollView>

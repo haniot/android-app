@@ -48,4 +48,11 @@
     <color name="colorBlueGrey">#607D8B</color>
     <color name="colorRed">#C62828</color>
     <color name="colorBlackGrey">#5e5c5c</color>
+    <color name="colorSubmenu">#a0a2a3</color>
+
+    <!-- Status connection devices -->
+
+    <color name="connected">#009b8a</color>
+    <color name="disconnected">#FF9B00</color>
+    <color name="noRegister">#FD2858</color>
 </resources>

@@ -36,13 +36,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 actionBar.setTitle(getResources().getString(R.string.action_settings));
                 getFragmentManager().beginTransaction()
                         .replace(android.R.id.content, new MyPreferenceFragment()).commit();
-            }else if(result == 2){
-                actionBar.setTitle(getResources().getString(R.string.manage_measurement_title));
-                getFragmentManager().beginTransaction()
-                        .replace(android.R.id.content, new ManageMeasurementsPreferenceFragment())
-                        .commit();
-            }else{
-                return;
             }
         }
     }

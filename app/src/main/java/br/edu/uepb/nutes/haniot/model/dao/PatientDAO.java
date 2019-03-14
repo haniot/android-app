@@ -40,6 +40,11 @@ public class PatientDAO {
         return patientBox.query().equal(Patient_.id,id).build().findFirst();
     }
 
+//    Search patient by id
+    public Patient getFromID(@NonNull String _id){
+        return patientBox.query().equal(Patient_._id,_id).build().findFirst();
+    }
+
 //    get all patient on database
     public List<Patient> get(){
         return patientBox.query().build().find();

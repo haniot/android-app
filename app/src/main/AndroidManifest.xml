@@ -44,9 +44,13 @@
         </activity>
         <activity
             android:name=".activity.MainActivity"
-            android:screenOrientation="sensor" />
+            />
         <activity
             android:name=".activity.DeviceInforActivity"
+            android:parentActivityName=".activity.MainActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.settings.ManagerMeasurementsActivity"
             android:parentActivityName=".activity.MainActivity"
             android:screenOrientation="portrait" />
         <activity
