@@ -834,6 +834,7 @@
     <string name="failed_pairing_device">Failed pairing device</string>
     <string name="pairing_device">Pairing device&#8230;</string>
     <string name="device_paired">The device is already paired, remove from the list of registered devices, and try again&#8230;</string>
+    <string name="try_again">Try again&#8230;</string>
 
     <string name="title_activity_manage_children">ManageChildrenActivity</string>
 

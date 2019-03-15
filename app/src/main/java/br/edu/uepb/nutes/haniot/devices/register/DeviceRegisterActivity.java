@@ -319,6 +319,8 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
                         unregisterReceiver(broadCastReceiver);
                     }
                     deviceConnectionStatus.setText(R.string.failed_pairing_device);
+                    btnDeviceRegisterScanner.setEnabled(true);
+                    btnDeviceRegisterScanner.setText(R.string.try_again);
                     progressBarPairing.setVisibility(View.INVISIBLE);
                 }
             }
