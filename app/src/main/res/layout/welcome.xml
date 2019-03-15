@@ -37,7 +37,7 @@
             android:gravity="center"
             android:text="Este questionário que você irá responder agora faz parte de uma pesquisa que tem como objetivo de conhecer alguns aspectos importantes da saúde dos(as) crianças e adolescentes que frequentam a clínica de odontologia da UEPB. Voce não será identificado(a)."
             android:textColor="@color/colorTextDark"
-            android:textSize="30sp" />
+            android:textSize="26sp" />
 
         <ImageView
             android:id="@+id/imageView2"

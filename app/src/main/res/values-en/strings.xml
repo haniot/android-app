@@ -1,0 +1,808 @@
+<resources>
+    <string name="app_name">HANIoT</string>
+    <string name="copyright">© 2017 NUTES</string>
+    <string name="app_version">1.0</string>
+    <string name="start_scan">Start scan</string>
+    <string name="start_synchronization">Start Synchronization</string>
+    <string name="stop_scan">Stop scan</string>
+    <string name="device_address">Address: %s</string>
+    <string name="device_connection_state">State: %s</string>
+    <string name="device_read_data">Data: %s</string>
+    <string name="device_read_rssi">RSSI: %d</string>
+    <string name="prefix_hex">0x</string>
+    <string name="disconnect">Disconnect</string>
+    <string name="connect">Connect</string>
+    <string name="connecting">Connecting</string>
+    <string name="connected">Connected</string>
+    <string name="disconnected">Disconnected</string>
+    <string name="measurement">Measurement</string>
+    <string name="read">Read</string>
+    <string name="write">Write</string>
+    <string name="devices">Devices</string>
+    <string name="device_bonded">Bonded</string>
+    <string name="device_bonding">Bonding</string>
+    <string name="device_not_bonded">Not bonded</string>
+    <string name="not_bluetooth">Your device does not support bluetooth!</string>
+    <string name="permission_location">The permission to get BLE location data is required</string>
+    <string name="not_bluetooth_le">Your device does not support Bluetooth Low Energy!</string>
+    <string name="bluetooth_classic">Bluetooth Classic</string>
+    <string name="bluetooth_le">Bluetooth LE</string>
+    <string name="welcome">Welcome</string>
+    <string name="no_more_data">No more data available&#8230;</string>
+    <string name="day_text">Day</string>
+    <string name="week_text">Week</string>
+    <string name="month_text">Month</string>
+    <string name="today_text">Today</string>
+    <string name="yes_text">Yes</string>
+    <string name="no_text">No</string>
+    <string name="cancel_text">Cancel</string>
+    <string name="black_space_4">\t\t\t\t\t\</string>
+    <string name="laoding_result">Loading result&#8230;</string>
+    <string name="number_emergency">911</string>
+    <string name="call_emergency_title">Call emergency</string>
+    <string name="fall_register_time_title">Fall was recorded at %s</string>
+    <string name="alert_register_time_title">Alert was triggered at %s</string>
+    <string name="image">Image</string>
+    <string name="warning_title">Warning!</string>
+    <string name="no_data">No data</string>
+
+    <!-- ACTIONS -->
+    <string name="action_settings">Settings</string>
+    <string name="action_bond">Bond</string>
+    <string name="action_connect_devices">Connect Devices</string>
+    <string name="action_scanner_devices">Scanner Devices</string>
+    <string name="action_save">Save</string>
+    <string name="action_sign_out">Sign out</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_list_falls">List Falls</string>
+    <string name="action_fall_risk_assessment">Fall Risk Assessment</string>
+    <string name="action_new_fall_risk_assessment">New Fall Risk Assessment</string>
+    <string name="action_characterize_fall">Characterize Fall</string>
+    <string name="action_remove_association">Remove Association</string>
+    <string name="action_view_information">View Informations</string>
+    <string name="action_update">Update</string>
+    <!-- END ACTIONS -->
+
+    <string name="unknown">Unknown</string>
+    <string name="unknown_device">Unknown device</string>
+    <string name="unknown_characteristic">Unknown characteristic</string>
+    <string name="unknown_service">Unknown service</string>
+
+    <string name="uepb">UEPB</string>
+    <string name="nutes">NUTES</string>
+    <string name="nutes_desc">Nucleus of Strategic Technologies in Health</string>
+    <string name="libe">LIBE</string>
+    <string name="libe_desc">Laboratory of Biomedical Instrumentation and Electronic Testing</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="temperature">Temperature</string>
+    <string name="weight">Weight</string>
+    <string name="body_mass">Body Mass</string>
+    <string name="temperature_measurement">Temperature Measurement</string>
+    <string name="body_weight_scale">Body Weight Scale</string>
+    <string name="heart_rate_measurement">Heart Rate Measurement</string>
+    <string name="heart_rate">Heart Rate</string>
+    <string name="glucose_measurement">Glucose Measurement</string>
+    <string name="glucose">Glucose</string>
+    <string name="blood_pressure_measurement">Blood Pressure Measurement</string>
+    <string name="blood_pressure">Blood Pressure</string>
+    <string name="body_composition">Body Composition</string>
+    <string name="body_composition_measurement">Body Composition Measurement</string>
+    <string name="smart_band">Smart Band</string>
+
+    <string name="all_records">All</string>
+    <string name="first_record">First</string>
+    <string name="last_record">Last</string>
+    <string name="most_recent_entries">Most recent entries</string>
+    <string name="body_fat_title">Body Fat</string>
+    <string name="body_bmi_title">BMI</string>
+    <string name="pulse_mark_title">Pulse:</string>
+    <string name="value_default">_ _</string>
+    <string name="get_monitor">Get Monitor</string>
+    <string name="get_monitor_dialog_tittle">Getting monitor data&#8230;</string>
+    <string name="get_monitor_desc">Make sure your monitor is nearby and in data transfer mode (Select My Data, Data Transfer, Wireless).</string>
+
+    <!-- INFO TITLE -->
+    <string name="info_max">Maximum</string>
+    <string name="info_min">Minimum</string>
+    <string name="info_avarage">Average</string>
+    <string name="info_period">Period</string>
+    <string name="more_information">More Information</string>
+    <string name="info_steps">Steps</string>
+    <string name="info_distance">Distance</string>
+    <string name="info_calories">Calories</string>
+
+    <!--UNITS-->
+    <string name="unit_kcal">cal</string>
+    <string name="unit_meters">m</string>
+
+    <!--Limit and Lines of Chart-->
+    <string name="diastolic">Diastolic</string>
+    <string name="systolic">Systolic</string>
+    <string name="limit_blood_pressure">High Pressure</string>
+    <string name="limit_heart_rate">Limit 1</string>
+    <string name="limit_glucose">Pre Diabetes</string>
+    <string name="limit_temperature">Fever</string>
+    <string name="limit_body_composition">Obesidade</string>
+
+    <!--FLOATING-->
+    <string name="day">Day</string>
+    <string name="week">Week</string>
+    <string name="month">Month</string>
+    <string name="year">Year</string>
+    <string name="period">Period</string>
+
+    <!-- FORMAT DATES -->
+    <string name="date_format">yyyy/MM/dd</string>
+    <string name="date_format2">MMMM dd\', \'yyyy</string>
+    <string name="date_format_server">yyyy-MM-dd</string>
+    <string name="date_format_year">yyyy</string>
+    <string name="date_format_month">MMMM</string>
+    <string name="date_format_week">w</string>
+    <string name="date_format_month_day">MM/dd</string>
+    <string name="date_format_week_day_year">EEEE, dd MMMM, yyyy</string>
+    <string name="datetime_format">yyyy/MM/dd HH:mm:ss</string>
+    <string name="datetime_format2">MMMM dd HH:mm:ss</string>
+    <string name="datetime_format_db">yyyy-MM-dd HH:mm:ss</string>
+    <string name="time_format">HH:mm:ss</string>
+    <string name="time_format_simple">HH:mm</string>
+    <string name="time_format_simple2">HH\'h\'mm\'m\'</string>
+    <string name="date_format_info">yyyy/MMM/dd</string>
+    <!-- END FORMAT DATES -->
+
+    <!--FORMATS-->
+    <string name="format_number1">#.0</string>
+    <string name="format_number_float">#.0</string>
+    <string name="format_number_integer">#</string>
+    <string name="format_number2">##.0</string>
+
+    <!--EXCEPTIONS LOGS-->
+    <string name="device_not_found">"Device: %1$s not found!"</string>
+    <string name="not_save_object_empty">"You cannot save an object as empty!"</string>
+    <string name="not_delete_object_empty">"You cannot delete an object as empty!"</string>
+    <string name="no_data_found">"No data found!"</string>
+
+    <!--TEMPERATURE TYPE-->
+    <string name="temperatre_type_armpit">Armpit</string>
+    <string name="temperatre_type_body">Body (general)</string>
+    <string name="temperatre_type_ear">Ear (usually ear lobe)</string>
+    <string name="temperatre_type_finger">Finger</string>
+    <string name="temperatre_type_gastro">Gastro-intestinal Tract</string>
+    <string name="temperatre_type_mouth">Mouth</string>
+    <string name="temperatre_type_rectum">Rectum</string>
+    <string name="temperatre_type_toe">Toe</string>
+    <string name="temperatre_type_typanum">Tympanum (ear drum)</string>
+
+    <!--GLUCOSE CARBOHYDRATE-->
+    <string name="glucose_carbohydrate_breakfast">Breakfast</string>
+    <string name="glucose_carbohydrate_lunch">Lunch</string>
+    <string name="glucose_carbohydrate_dinner">Dinner</string>
+    <string name="glucose_carbohydrate_snakck">Snack</string>
+    <string name="glucose_carbohydrate_drink">Drink</string>
+    <string name="glucose_carbohydrate_supper">Supper</string>
+    <string name="glucose_carbohydrate_brunch">Brunch</string>
+
+    <!--GLUCOSE MEAL-->
+    <string name="glucose_meal_preprandial">Preprandial (before meal)</string>
+    <string name="glucose_meal_postprandial">Postprandial (after meal)</string>
+    <string name="glucose_meal_fasting">Fasting</string>
+    <string name="glucose_meal_casual">Casual (snacks, drinks, etc.)"</string>
+    <string name="glucose_meal_bedtime">Bedtime</string>
+
+    <!--GLUCOSE STATUS ANNUNCIATION-->
+    <string name="glucose_status_annunciation_battery_low">Device battery low at time of measurement</string>
+    <string name="glucose_status_annunciation_sensor_malfunction">Sensor malfunction or faulting at time of measurement</string>
+    <string name="glucose_status_annunciation_sample_size_insufficient">Sample size for blood or control solution insufficient at time of measurement</string>
+    <string name="glucose_status_annunciation_strip_insertion_error">Strip insertion error</string>
+    <string name="glucose_status_annunciation_strip_incorrect">Strip typeId incorrect for device</string>
+    <string name="glucose_status_annunciation_result_high">Sensor result higher than the device can process</string>
+    <string name="glucose_status_annunciation_result_lower">Sensor result lower than the device can process</string>
+    <string name="glucose_status_annunciation_sensor_temperature_high">Sensor temperature too high for valid test/result at time of measurement</string>
+    <string name="glucose_status_annunciation_sensor_temperature_lower">Sensor temperature too low for valid test/result at time of measurement</string>
+    <string name="glucose_status_annunciation_sensor_read_interrupted">Sensor read interrupted because strip was pulled too soon at time of measurement</string>
+    <string name="glucose_status_annunciation_general_device_fault">General device fault has occurred in the sensor</string>
+    <string name="glucose_status_annunciation_sensor_time_fault">Time fault has occurred in the sensor and time may be inaccurate</string>
+
+    <!--GLUCOSE LOCATION-->
+    <string name="glucose_location_finger">Finger</string>
+    <string name="glucose_location_alternate">Alternate Site Test (AST)</string>
+    <string name="glucose_location_earlobe">Earlobe</string>
+    <string name="glucose_location_control_solution">Contril solution</string>
+    <string name="glucose_location_sample_not_available">Sample Location valueId not available</string>
+
+    <!--GLUCOSE TYPE-->
+    <string name="glucose_type_capillary_whole">Capillary Whole blood</string>
+    <string name="glucose_type_capillary_plasma">Capillary Plasma</string>
+    <string name="glucose_type_venous_whole">Venous Whole blood</string>
+    <string name="glucose_type_venous_plasma">Venous Plasma</string>
+    <string name="glucose_type_arterial_whole">Arterial Whole blood</string>
+    <string name="glucose_type_arterial_plama">Arterial Plasma</string>
+    <string name="glucose_type_undertermined_whole">Undetermined Whole blood</string>
+    <string name="glucose_type_undertermined_plasma">Undetermined Plasma</string>
+    <string name="glucose_type_interstitial">Interstitial Fluid (ISF)</string>
+    <string name="glucose_type_control_solution">Control Solution</string>
+
+    <!--LOGIN-->
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="password_confirm">Confirm password</string>
+    <string name="login">Sign in</string>
+    <string name="no_account_yet">No account yet? Create one</string>
+
+    <!-- SIGNUP -->
+    <string name="name">Name</string>
+    <string name="gender">Gender</string>
+    <string name="gender_male">Male</string>
+    <string name="gender_female">Female</string>
+    <string name="date_of_birth">Date of birth</string>
+    <string name="height">Height in cm</string>
+    <string name="cm">cm</string>
+    <string name="create_account">Create Account</string>
+    <string name="already_account">Already have an account? Login</string>
+    <string name="new_account">New Account</string>
+    <string name="update_account">Update Account</string>
+    <string name="update_data">Update data</string>
+    <string name="register_success">Data registered successfully!</string>
+    <string name="update_success">Data updated successfully!</string>
+    <string name="register_error">There was an error inserting user&#8230;</string>
+    <string name="update_error">There was an error updating the data&#8230;</string>
+    <string name="change_password">Change password</string>
+    <string name="current_password">Current password</string>
+    <string name="new_password">New password</string>
+    <string name="confirm_password">Confirm password</string>
+    <!-- END SIGNUP -->
+
+    <!-- VALIDATE MESSAGES -->
+    <string name="required_field">Required field!</string>
+    <string name="validate_name">At least 3 characters</string>
+    <string name="validate_not_null">Field can not be empty</string>
+    <string name="validate_email">Enter a valid email address</string>
+    <string name="validate_password">The password must contain at least 6 characters, with at least one number, one letter and one special character among the allowed characters: @ # $ % &amp; * ! ? . _ + - space.</string>
+    <string name="validate_height">Provide a valid height!</string>
+    <string name="validate_date_birth">Provide a valid date of birth!</string>
+    <string name="validate_phone">Provide a valid phone number!</string>
+    <string name="validate_invalid_email_or_password">Invalid email or password&#8230;</string>
+    <string name="validate_password_not_match_current">Current password does not match!</string>
+    <string name="validate_password_not_match_new">New password and confirmation do not match!</string>
+    <string name="validate_register_user_not_duplicate">Already registered user with email provided&#8230;</string>
+    <string name="validate_unauthorized_access">Unauthorized access! Please contact support&#8230;</string>
+    <string name="validate_weight">Provide a valid weight!</string>
+    <string name="validate_pin">The 4 digit PIN is required!</string>
+    <!-- END VALIDATE MESSAGES -->
+
+    <!-- ERROR MESSAGES -->
+    <string name="error_sign_out">There was an error while trying to quit&#8230;</string>
+    <string name="error_500">Could not complete request! Please try again later&#8230;</string>
+    <string name="error_403">User password must be changed!</string>
+    <string name="error_internal_device">Could not complete request! Please try again later&#8230;</string>
+    <string name="error_incorret_password">Password can not be updated password. Make sure the data is correct!</string>
+    <string name="error_connectivity">There was an error communicating with our servers.\nPlease, check your phone
+        connectivity and try again later.
+    </string>
+    <string name="connect_network_try_again">Connect to a network and try again&#8230;</string>
+    <!-- END ERROR MESSAGES -->
+
+    <!-- SETTINGS -->
+    <string name="settings_your_data">Your Data</string>
+    <string name="settings_server">Server</string>
+    <string name="settings_server_address">Server address</string>
+    <string name="settings_devices">Devices</string>
+    <string name="settings_signout">Sign Out</string>
+    <string name="settings_account">Account</string>
+    <string name="settings_about">About</string>
+    <string name="settings_send_feedback">Send Feedback</string>
+    <string name="settings_close_account">Close account</string>
+    <string name="settings_summary_your_data">View and edit your registered data</string>
+    <string name="settings_summary_server_address">Enter the server address for sending data.</string>
+    <string name="settings_summary_full_server_address">Enter the address.\nExample: http://192.168.31.113:8080/api/v1
+    </string>
+    <string name="settings_summary_signout">You will be logged out of the application and redirected to login screen.</string>
+    <string name="settings_summary_support">Got any queries? We are happy to help!</string>
+    <string name="settings_summary_close_account">Delete the registered account and application settings.</string>
+    <string name="settings_summary_about">NUTES is a reference center for the development of technologies to be applied
+        to the health domain, composed of professors, researchers and students of grad and post grad level from the
+        areas of Computer Science, Odontology and Phisioterapy.
+    </string>
+    <string name="settings_version">Version</string>
+    <string name="key_your_data">key_your_data</string>
+    <string name="key_send_feedback">key_send_feedback</string>
+    <string name="key_url_server">key_url_server</string>
+    <string name="key_signout">key_signout</string>
+    <string name="key_close_account">key_close_account</string>
+    <string name="key_about">key_about</string>
+    <string name="key_manager_device">key_manager_device</string>
+    <string name="url_about">http://en.nutes.uepb.edu.br/about-us/</string>
+    <string name="choose_email_client">Choose email client</string>
+    <string name="email_contact">contact@nutes.uepb.edu.br</string>
+    <string name="message_not_remove">Please don\'t remove this information</string>
+    <!-- END SETTINGS -->
+
+    <!-- BUTTONS -->
+    <string name="bt_ok">Ok</string>
+    <string name="bt_cancel">Cancel</string>
+    <string name="bt_stop">Stop</string>
+    <string name="bt_pause">Pause</string>
+    <string name="bt_discard">Discard</string>
+    <string name="bt_save">Save</string>
+    <string name="bt_next">Next</string>
+    <string name="bt_remind_me_later">Remind me later</string>
+    <!-- END BUTTONS -->
+
+    <!-- DIALOGS -->
+    <string name="confirm_sign_out">Do you really want to quit the application?\nYou will be redirected to login screen&#8230;</string>
+    <string name="title_save_captured_data">Save data&#8230;</string>
+    <string name="message_save_captured_data">Do you want to save the captured data?</string>
+    <string name="message_save_captured_heart_rate">Do you want to save the captured heart rate?</string>
+    <!-- END DIALOGS -->
+
+    <string name="no_data_available">No data to display&#8230;</string>
+    <string name="unit_kg">kg</string>
+    <string name="unit_percentage">%</string>
+    <string name="unit_celsius">°C</string>
+    <string name="unit_pressure">mmHg</string>
+    <string name="unit_pulse">bpm</string>
+    <string name="unit_glucose_mg_dL">mg/dL</string>
+    <string name="unit_glucose_kg_L">kg/L</string>
+
+    <!-- SYNCHRONIZATION -->
+    <string name="synchronization_failed">Data synchronization failed!</string>
+    <string name="synchronization_success">Successful data synchronization!</string>
+    <string name="synchronization_data">Synchronizing data&#8230;</string>
+    <string name="synchronization_no_data_to_send">There is no data to send&#8230;</string>
+
+    <!-- STRINGS FOR TABLET VERSION-->
+    <string name="dashboard">Dashboard</string>
+    <string name="profile">Profile</string>
+    <string name="connect_device">Connect Device</string>
+    <string name="rightbutton">Right Button</string>
+    <string name="LeftButton">Left Button</string>
+    <string name="new_measurement">New Measurement</string>
+    <string name="dash_item_description">Measurement Button</string>
+    <string name="distance">Distance</string>
+    <string name="Calories">Calories</string>
+    <string name="StepsNumber">Number of steps</string>
+    <string name="title_activity_manage_measurements">ManageMeasurements</string>
+    <string name="manage_measurement_title">Manage Measurements</string>
+    <string name="ear_thermometer">Ear Thermometer</string>
+    <string name="ear_thermometer_description">DL8740</string>
+    <string name="accu_check">Accu-Check</string>
+    <string name="accu_check_description">Performa Connect</string>
+    <string name="body_composition_yunmai">Body Composition Analysis Yunmai</string>
+    <string name="body_composition1">Body Composition Analyze</string>
+    <string name="body_composition_analyze_description">YUNMAI Mini 1501</string>
+    <string name="heart_rate_sensor_h10">Heart Rate Sensor Polar H10</string>
+    <string name="heart_rate_sensor_h7">Heart Rate Sensor Polar H7</string>
+    <string name="heart_rate_sensor">Heart Rate Sensor</string>
+    <string name="heart_rate_sensor_description_h7">Polar H7</string>
+    <string name="heart_rate_sensor_description_h10">Polar H10</string>
+    <string name="smartband">Smart Band</string>
+    <string name="smartband_description">MI BAND 2</string>
+    <string name="blood_pressure_monitor">Blood Pressure Monitor</string>
+    <string name="blood_pressure_monitor_description">OMRON BP792IT</string>
+    <string name="body_composition_monitor">Body Composition Monitor OMRON</string>
+    <string name="body_composition_monitor_description">OMRON HBF-206ITH</string>
+    <string name="body_composition2">Body Composition Monitor</string>
+    <string name="icon_manage_measurement">Manage measurement icon</string>
+    <string name="manage_patient">Manage children</string>
+    <string name="add">Add</string>
+    <string name="search">Search</string>
+    <string name="date">Date: </string>
+    <string name="id">id: </string>
+    <string name="id_last_patient">id_last_child</string>
+    <string name="name_last_patient">name_last_child</string>
+    <string name="childId">childId</string>
+    <string name="childName">childName</string>
+    <string name="noPatientSelected">No patient selected</string>
+    <string name="unit_kilometer">KM</string>
+    <string name="dashboard_charts">Dashboard Charts</string>
+    <string name="measurements">Measurements</string>
+    <string name="key_steps">key_steps</string>
+    <string name="key_activity">key_activity</string>
+    <string name="key_sleep">key_sleep</string>
+    <string name="key_weight">key_weight</string>
+    <string name="key_blood_glucose">key_blood_glucose</string>
+    <string name="key_blood_pressure">key_blood_pressure</string>
+    <string name="key_temperature">key_temperature</string>
+    <string name="key_heart_rate">key_heart_rate</string>
+    <string name="key_calories">key_calories</string>
+    <string name="key_distance">key_distance</string>
+    <string-array name="array_dashboard_charts_options">
+        <item>Steps, Calories, Kilometers</item>
+    </string-array>
+    <string-array name="array_dashboard_entries">
+        <item>1</item>
+    </string-array>
+    <string name="choose_dashboard_charts">Choose the dashboard charts</string>
+    <string name="activity">Activity</string>
+    <string name="blood_glucose">Blood glucose</string>
+    <string name="steps">Steps</string>
+    <string name="sleep">Sleep</string>
+    <string name="unit_temperature">ºF</string>
+    <string name="unit_weight">lb</string>
+    <string name="unit_hour">h</string>
+    <string name="unit_heart_rate">bpm</string>
+    <string name="manually_add_measurement">manually add measurement</string>
+    <string name="measurementType">measurementType</string>
+    <string name="choose_weight">Choose the weight</string>
+    <string name="kg">Pounds</string>
+    <string name="Gr">Grams</string>
+    <string name="choose_date">Choose date</string>
+    <string name="choose_hour">Choose hour</string>
+    <string name="error_insering_measurement">Error insering measurement</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
+    <string name="choose_glucose">Choose the glucose value</string>
+    <string name="choose_status">Choose the status</string>
+    <string name="choose_heart_rate">Choose the Heart Rate</string>
+    <string name="choose_temperature">Choose the temperature</string>
+    <string name="choose_blood_pressure">Choose the pressure</string>
+    <string name="choose_pulse">Chosse the pulse</string>
+    <string name="unit_min">/min</string>
+    <string name="key_anthropometric">key_anthropometric</string>
+    <string name="anthropometric">Anthropometric measurements</string>
+    <string name="choose_height">Choose the height</string>
+    <string name="choose_circumference">Choose the circumference</string>
+    <string name="goals_steps">Choose the steps goals</string>
+    <string name="goals_calories">Choose the calories goals</string>
+    <string name="goals_distance">Choose the distance goals</string>
+    <string name="send_measurements_to_server">Save measurements</string>
+    <string name="last_patient_deleted">last_patient_deleted</string>
+    <string name="patient_removed">Patient removed</string>
+    <string name="undo">Undo</string>
+    <string name="patient_profile">Patient profile</string>
+    <string name="no_patient_registered">No patient finded</string>
+    <string name="try_again_later">Try again later</string>
+    <string name="color">Color</string>
+    <string name="age">Age</string>
+    <string name="idProfessional">Id professional:</string>
+    <string name="dateMask">####/##/##</string>
+    <string name="survey">Survey</string>
+    <string name="edit">Edit</string>
+    <string name="error_remove_patient">Error to remove patient, please try again later</string>
+    <string name="save_measurements_of">Save measurements of:</string>
+    <string name="circumference">Circumference</string>
+
+    <!-- END OF STRINGS FOR TABLET -->
+
+    <!-- SURVEY -->
+    <string name="survey_select_an_answer">Select an answer&#8230;</string>
+    <string name="survey_select_the_answers">Select the answers&#8230;</string>
+    <string name="survey_enter_an_answer">Enter an answer&#8230;</string>
+    <string name="survey_add_new_answer">Add new answer</string>
+    <string name="survey_add_new_item">Add new item</string>
+    <string name="survey_please_add_new_item">Please add new items&#8230;</string>
+    <string name="survey_dialog_remove_add_new_item">Added items that are not used will be removed.\nAre you sure you do not want to select the item?</string>
+    <!-- END SURVEY -->
+
+    <!-- ARRAY ALTERNATIVES FALL CHARACTERIZATION SURVEY Q4 -->
+    <string-array name="answers_fall_characterization_q4_array">
+        <item>0&#8211;7 days</item>
+        <item>7&#8211;15 days</item>
+        <item>15&#8211;30 days</item>
+        <item>Over 30 days</item>
+    </string-array>
+    <!-- END ARRAY ALTERNATIVES FALL CHARACTERIZATION SURVEY Q4 -->
+
+    <!-- ARRAY ALTERNATIVES FALL CHARACTERIZATION QUESTION 6 -->
+    <string-array name="answers_fall_characterization_q6_array">
+        <item>1 - Skull/Face</item>
+        <item>2 - Ribs/Clavicle</item>
+        <item>3 - Humerus</item>
+        <item>4 - Ulna/Radio</item>
+        <item>5 - Hip</item>
+        <item>6 - Carpal/Metacarpal/Phalanges</item>
+        <item>7 - Femur</item>
+        <item>8 - knee</item>
+        <item>9 - Tibia/Fibula</item>
+        <item>10 - Tarsus/Metatarsal/Phalanges</item>
+        <item>11 - Cervical spine</item>
+        <item>12 - Thoracic spine</item>
+        <item>13 - Lumbar spine</item>
+        <item>14 - Sacrum</item>
+    </string-array>
+    <!-- END ARRAY ALTERNATIVES FALL CHARACTERIZATION QUESTION 6 -->
+
+    <!-- ARRAY ALTERNATIVES FALL CHARACTERIZATION QUESTION 7 -->
+    <string-array name="answers_fall_characterization_q7_array">
+        <item>Wet floor</item>
+        <item>Carpet or objects on the floor</item>
+        <item>Illumination inadequate</item>
+        <item>Use of stairs</item>
+        <item>Lack of railings in stairs or bathrooms</item>
+        <item>Inappropriate ladder step</item>
+        <item>Cabinets or high objects</item>
+        <item>Animal presence</item>
+        <item>High heels</item>
+        <item>Fainting</item>
+        <item>Dizziness</item>
+        <item>Convulsive crisis</item>
+        <item>Muscle weakness</item>
+        <item>Increased blood pressure</item>
+        <item>Low blood pressure</item>
+    </string-array>
+    <!-- END ARRAY ALTERNATIVES FALL CHARACTERIZATION QUESTION 7 -->
+
+    <!-- ARRAY ALTERNATIVES FALL CHARACTERIZATION QUESTION 8 -->
+    <string-array name="answers_fall_characterization_q8_array">
+        <item>Bathrooms</item>
+        <item>Bedroom</item>
+        <item>Kitchen</item>
+        <item>Living room</item>
+        <item>Garden</item>
+        <item>Backyard</item>
+        <item>Garage</item>
+    </string-array>
+    <!-- END ARRAY ALTERNATIVES FALL CHARACTERIZATION QUESTION 8 -->
+
+    <!-- ARRAY ALTERNATIVES FALL CHARACTERIZATION QUESTION 9 -->
+    <string-array name="answers_fall_characterization_q9_array">
+        <item>Early morning</item>
+        <item>End of the morning</item>
+        <item>Early afternoon</item>
+        <item>Late afternoon</item>
+        <item>Early evening</item>
+        <item>End of the night</item>
+        <item>Dawn</item>
+    </string-array>
+    <!-- END ARRAY ALTERNATIVES FALL CHARACTERIZATION QUESTION 9 -->
+
+    <!-- ARRAY QUESTIONS RISK FALL -->
+    <string-array name="fall_risk_questions_array">
+        <item>@string/fall_risk_description_q1</item>
+        <item>@string/fall_risk_description_q2</item>
+        <item>@string/fall_risk_description_q3</item>
+        <item>@string/fall_risk_description_q4</item>
+        <item>@string/fall_risk_description_q5</item>
+        <item>@string/fall_risk_description_q6</item>
+        <item>@string/fall_risk_description_q7</item>
+        <item>@string/fall_risk_description_q8</item>
+        <item>@string/fall_risk_description_q9</item>
+        <item>@string/fall_risk_description_q10</item>
+    </string-array>
+    <!-- END ARRAY QUESTIONS RISK FALL -->
+
+    <string name="other">Other</string>
+    <string name="name_device">Name Device</string>
+    <string name="model_device">Model device</string>
+
+    <!--TYPES AND GROUPS-->
+    <string-array name="device_types_array">
+        <item>Thermometer</item>
+        <item>Glucometer</item>
+        <item>Scale</item>
+        <item>Blood Pressure</item>
+        <item>Heart Rate</item>
+        <item>Smart Watch</item>
+        <item>Smart Band</item>
+    </string-array>
+
+    <string-array name="measurement_types_array">
+        <item>Temperature</item>
+        <item>Blood Glucose</item>
+        <item>Body Weight</item>
+        <item>Body Fat</item>
+        <item>Blood Pressure</item>
+        <item>Heart Rate</item>
+        <item>BMI - Body Mass Index</item>
+        <item>RMR - Resting Metabolic Rate</item>
+        <item>BMR - Basal Metabolic Rate</item>
+        <item>Muscle Mass</item>
+        <item>Visceral Fat</item>
+        <item>Body Age</item>
+        <item>Steps</item>
+        <item>Distance</item>
+        <item>Calories Burned</item>
+    </string-array>
+
+    <string-array name="measurement_context_types_array">
+        <item>Glucose Carbohydrate</item>
+        <item>Glucose Meal</item>
+        <item>Glucose Location</item>
+        <item>Glucose Type</item>
+        <item>Temperature Type</item>
+    </string-array>
+
+    <string-array name="measurement_values_context_types_array">
+        <item>@string/other</item>
+        <!--GLUCOSE CARBOHYDRATE (2-8)-->
+        <item>@string/glucose_carbohydrate_breakfast</item>
+        <item>@string/glucose_carbohydrate_lunch</item>
+        <item>@string/glucose_carbohydrate_dinner</item>
+        <item>@string/glucose_carbohydrate_snakck</item>
+        <item>@string/glucose_carbohydrate_drink</item>
+        <item>@string/glucose_carbohydrate_supper</item>
+        <item>@string/glucose_carbohydrate_brunch</item>
+        <!--GLUCOSE MEAL (9-13)-->
+        <item>@string/glucose_meal_preprandial</item>
+        <item>@string/glucose_meal_postprandial</item>
+        <item>@string/glucose_meal_fasting</item>
+        <item>@string/glucose_meal_casual</item>
+        <item>@string/glucose_meal_bedtime</item>
+        <!--GLUCOSE LOCATION (14-18)-->
+        <item>@string/glucose_location_finger</item>
+        <item>@string/glucose_location_alternate</item>
+        <item>@string/glucose_location_earlobe</item>
+        <item>@string/glucose_location_control_solution</item>
+        <item>@string/glucose_location_sample_not_available</item>
+        <!--GLUCOSE TYPE (19-28)-->
+        <item>@string/glucose_type_capillary_whole</item>
+        <item>@string/glucose_type_capillary_plasma</item>
+        <item>@string/glucose_type_venous_whole</item>
+        <item>@string/glucose_type_venous_plasma</item>
+        <item>@string/glucose_type_arterial_whole</item>
+        <item>@string/glucose_type_arterial_plama</item>
+        <item>@string/glucose_type_undertermined_whole</item>
+        <item>@string/glucose_type_undertermined_plasma</item>
+        <item>@string/glucose_type_interstitial</item>
+        <item>@string/glucose_type_control_solution</item>
+        <!--TEMPERATURE TYPE (29-37)-->
+        <item>@string/temperatre_type_armpit</item>
+        <item>@string/temperatre_type_body</item>
+        <item>@string/temperatre_type_ear</item>
+        <item>@string/temperatre_type_finger</item>
+        <item>@string/temperatre_type_gastro</item>
+        <item>@string/temperatre_type_mouth</item>
+        <item>@string/temperatre_type_rectum</item>
+        <item>@string/temperatre_type_toe</item>
+        <item>@string/temperatre_type_typanum</item>
+    </string-array>
+
+    <string-array name="training_types_array">
+        <item>Walking</item>
+        <item>Running</item>
+        <item>Cycling</item>
+    </string-array>
+
+    <string-array name="user_group_array">
+        <item>Super</item>
+        <item>Common</item>
+    </string-array>
+
+    <string-array name="months_array">
+        <item>Jan</item>
+        <item>Feb</item>
+        <item>Mar</item>
+        <item>Apr</item>
+        <item>May</item>
+        <item>Jun</item>
+        <item>Jul</item>
+        <item>Aug</item>
+        <item>Sep</item>
+        <item>Oct</item>
+        <item>Nov</item>
+        <item>Dec</item>
+    </string-array>
+
+    <!-- MARITAL STATUS TYPES -->
+    <string-array name="marital_status_types_array">
+        <item>Single</item>
+        <item>Married</item>
+        <item>Separated</item>
+        <item>Divorced</item>
+        <item>Widowed</item>
+    </string-array>
+
+    <!-- DEGREE EDUCATION TYPES -->
+    <string-array name="degree_education_types_array">
+        <item>Basic School</item>
+        <item>Elementary School</item>
+        <item>Middle School</item>
+        <item>High School</item>
+    </string-array>
+
+    <!-- REGISTERED DEVICES -->
+    <string name="title_devices_registered">Registered</string>
+    <string name="title_devices_available">Availables</string>
+    <string name="thermometer">Thermometer</string>
+    <string name="find_device">Find device</string>
+    <string name="remove_device">Are you sure you want to remove %s?\nOnce removed, it will not be possible to recover the data from this device.</string>
+    <string name="remove">Remove</string>
+    <string name="start_scanner">Start scanner</string>
+    <string name="stop_scanner">Stop scanner</string>
+    <string name="details">Details</string>
+    <string name="remove_device_register">Remove Device</string>
+    <string name="device_not_found_try_again">Device not found try again</string>
+    <string name="no_devices_registered">No registered devices&#8230;</string>
+    <string name="no_devices_available">No device available. Soon the list will be updated&#8230;</string>
+    <string name="device_registered_success">Device %s successfully registered!</string>
+    <string name="connection">By connecting, hold the phone near the</string>
+    <string name="come_back">Come back</string>
+    <string name="attention">Attention</string>
+    <string name="model">Model</string>
+    <string name="settings_configure_device">Configure Devices</string>
+    <string name="settings_summary_configure_device">Manage your registered devices or insert new ones.</string>
+    <string name="failed_pairing_device">Failed pairing device</string>
+    <string name="pairing_device">Pairing device&#8230;</string>
+    <string name="device_paired">The device is already paired, remove from the list of registered devices, and try again&#8230;</string>
+
+    <string name="title_activity_manage_children">ManageChildrenActivity</string>
+
+    <!-- Strings related to Settings -->
+
+    <!-- Example General settings -->
+    <string name="pref_header_general">General</string>
+
+    <string name="pref_title_social_recommendations">Enable social recommendations</string>
+    <string name="pref_description_social_recommendations">Recommendations for people to contact
+        based on your message history
+    </string>
+
+    <string name="pref_title_display_name">Display name</string>
+    <string name="pref_default_display_name">John Smith</string>
+
+    <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
+    <string-array name="pref_example_list_titles">
+        <item>Always</item>
+        <item>When possible</item>
+        <item>Never</item>
+    </string-array>
+    <string-array name="pref_example_list_values">
+        <item>1</item>
+        <item>0</item>
+        <item>-1</item>
+    </string-array>
+
+    <!-- Example settings for Data & Sync -->
+    <string name="pref_header_data_sync">Data &amp; sync</string>
+
+    <string name="pref_title_sync_frequency">Sync frequency</string>
+    <string-array name="pref_sync_frequency_titles">
+        <item>15 minutes</item>
+        <item>30 minutes</item>
+        <item>1 hour</item>
+        <item>3 hours</item>
+        <item>6 hours</item>
+        <item>Never</item>
+    </string-array>
+    <string-array name="pref_sync_frequency_values">
+        <item>15</item>
+        <item>30</item>
+        <item>60</item>
+        <item>180</item>
+        <item>360</item>
+        <item>-1</item>
+    </string-array>
+
+    <string-array name="list_preference_entries">
+        <item>Entry 1</item>
+        <item>Entry 2</item>
+        <item>Entry 3</item>
+    </string-array>
+
+    <string-array name="list_preference_entry_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
+    <string-array name="multi_select_list_preference_default_value" />
+
+    <string name="pref_title_system_sync_settings">System sync settings</string>
+
+    <!-- Example settings for Notifications -->
+    <string name="pref_header_notifications">Notifications</string>
+
+    <string name="pref_title_new_message_notifications">New message notifications</string>
+
+    <string name="pref_title_ringtone">Ringtone</string>
+    <string name="pref_ringtone_silent">Silent</string>
+
+    <string name="pref_title_vibrate">Vibrate</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="title_activity_manually_add_measurement">activity_manually_add_measurement
+    </string>
+
+    <string name="blood_pressure_monitor_pref">blood_pressure_monitor</string>
+    <string name="heart_rate_sensor_polar_h10_pref">heart_rate_sensor_polar_h10</string>
+    <string name="heart_rate_sensor_polar_h7_pref">heart_rate_sensor_polar_h7</string>
+    <string name="smart_band_pref">smart_band</string>
+    <string name="ear_thermometer_pref">ear_thermometer</string>
+    <string name="accu_check_pref">accu_check</string>
+    <string name="body_composition_yunmai_pref">body_composition_yunmai</string>
+    <string name="body_composition_omron_pref">body_composition_omron</string>
+
+
+</resources>
