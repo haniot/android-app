@@ -70,9 +70,9 @@ public class PatientRegisterActivity extends AppCompatActivity {
         patient.setAge(ageSeek.getProgress() + MINIMUM_AGE);
         //TODO Refatorar Patient
         if (genderGroup.getCheckedRadioButtonId() == R.id.male)
-            patient.setSex("Masculino");
+            patient.setGender("Masculino");
         else
-            patient.setSex("Feminino");
+            patient.setGender("Feminino");
         patient.set_id("1");
         PatientDAO.getInstance(this).save(patient);
     }

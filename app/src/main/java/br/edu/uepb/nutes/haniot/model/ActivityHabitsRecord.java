@@ -1,13 +1,29 @@
 package br.edu.uepb.nutes.haniot.model;
 
+import io.objectbox.annotation.Entity;
+import io.objectbox.annotation.Id;
+
+@Entity
 public abstract class ActivityHabitsRecord {
 
+    @Id
+    private long idBd;
+
     private String id;
+
     private String patientId;
-    private long createdAt;
+    private String createdAt;
 
     public ActivityHabitsRecord() {
 
+    }
+
+    public long getIdBd() {
+        return idBd;
+    }
+
+    public void setIdBd(long idBd) {
+        this.idBd = idBd;
     }
 
     public String getId() {
@@ -26,11 +42,11 @@ public abstract class ActivityHabitsRecord {
         this.patientId = patientId;
     }
 
-    public long getCreatedAt() {
+    public String getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(long createdAt) {
+    public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
     }
 }

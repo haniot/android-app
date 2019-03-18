@@ -4,12 +4,22 @@ import java.util.List;
 
 public class PhysicalActivityHabits extends ActivityHabitsRecord {
 
-    private int schoolActivityFreq;
+    private String schoolActivityFreq;
     private List<String> weeklyActivities;
 
-    final static int ONE_PER_WEEK = 0;
-    final static int TWO_PER_WEEK = 1;
-    final static int THREE_PER_WEEK = 2;
-    final static int FOUR_MORE_PER_WEEK = 3;
-    final static int NONE = 4;
+    public String getSchoolActivityFreq() {
+        return schoolActivityFreq;
+    }
+
+    public void setSchoolActivityFreq(String schoolActivityFreq) {
+        this.schoolActivityFreq = schoolActivityFreq;
+    }
+
+    public List<String> getWeeklyActivities() {
+        return weeklyActivities;
+    }
+
+    public void setWeeklyActivities(List<String> weeklyActivities) {
+        this.weeklyActivities = weeklyActivities;
+    }
 }

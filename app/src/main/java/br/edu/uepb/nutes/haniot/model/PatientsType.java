@@ -3,17 +3,18 @@ package br.edu.uepb.nutes.haniot.model;
 public class PatientsType {
 
     class GenderType {
-        public final static int MALE = 1;
-        public final static int FEMALE = 2;
-    }
+        public final static String MALE = "male";
+        public final static String FEMALE = "female";
 
-    class RaceType {
-        //TODO Onde está?
-        public final static int RACE_1 = 1;
-    }
-
-    class HomeDetail {
-        //TODO Onde está?
-        public final static int TYPE_1 = 1;
+        public String getString(int type) {
+            switch (type) {
+                case 0:
+                    return MALE;
+                case 1:
+                    return FEMALE;
+                default:
+                    return "";
+            }
+        }
     }
 }

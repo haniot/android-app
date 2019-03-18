@@ -1,10 +1,7 @@
 package br.edu.uepb.nutes.haniot.model;
 
-import android.content.Context;
+public class SleepHabitType extends ActivityHabitsRecord {
 
-import br.edu.uepb.nutes.haniot.R;
-
-public class SchoolActivityFrequencyType {
 
     public final static String ONE_PER_WEEK = "one_per_week";
     public final static String TWO_PER_WEEK = "two_per_week";

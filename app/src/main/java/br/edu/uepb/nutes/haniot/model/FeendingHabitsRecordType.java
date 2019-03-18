@@ -1,50 +1,146 @@
 package br.edu.uepb.nutes.haniot.model;
 
 public class FeendingHabitsRecordType {
-    class OneDayFeedingAmount {
-        public static final int NONE = 1;
-        public static final int ONE_TWO = 2;
-        public static final int THREE_FOUR = 3;
-        public static final int FIVE_MORE = 4;
-        public static final int UNDEFINED = 5;
+    public static class OneDayFeedingAmount {
+        public static final String NONE = "none";
+        public static final String ONE_TWO = "one_two";
+        public static final String THREE_FOUR = "three_four";
+        public static final String FIVE_MORE = "five_more";
+        public static final String UNDEFINED = "undefined";
+
+
+        public static String getString(int type) {
+            switch (type) {
+                case 0:
+                    return NONE;
+                case 1:
+                    return ONE_TWO;
+                case 2:
+                    return THREE_FOUR;
+                case 3:
+                    return FIVE_MORE;
+                case 4:
+                    return UNDEFINED;
+                default:
+                    return "";
+            }
+        }
     }
 
-    class DailyFeedingFrequency {
-        public static final int NEVER = 1;
-        public static final int SOMETIMES = 2;
-        public static final int ALMOST_EVERYDAY = 3;
-        public static final int EVERYDAY = 4;
-        public static final int UNDEFINED = 5;
+    public static class DailyFeedingFrequency {
+        public static final String NEVER = "never";
+        public static final String SOMETIMES = "sometimes";
+        public static final String ALMOST_EVERYDAY = "almost_everyday";
+        public static final String EVERYDAY = "everyday";
+        public static final String UNDEFINED = "undefined";
+
+
+        public static String getString(int type) {
+            switch (type) {
+                case 0:
+                    return NEVER;
+                case 1:
+                    return SOMETIMES;
+                case 2:
+                    return ALMOST_EVERYDAY;
+                case 3:
+                    return EVERYDAY;
+                case 4:
+                    return UNDEFINED;
+                default:
+                    return "";
+            }
+        }
     }
 
-    class SevenDaysFeedingFrequency {
-        public static final int NEVER = 1;
-        public static final int NO_DAY = 2;
-        public static final int ONE_TWO_DAYS = 3;
-        public static final int THREE_FOUR_DAYS = 4;
-        public static final int FIVE_SIX_DAYS = 5;
-        public static final int ALL_DAYS = 6;
-        public static final int UNDEFINED = 7;
+    public static class SevenDaysFeedingFrequency {
+        public static final String NEVER = "never";
+        public static final String NO_DAY = "no_day";
+        public static final String ONE_TWO_DAYS = "one_two_days";
+        public static final String THREE_FOUR_DAYS = "three_four_days";
+        public static final String FIVE_SIX_DAYS = "five_six_days";
+        public static final String ALL_DAYS = "all_days";
+        public static final String UNDEFINED = "undefined";
+
+        public static String getString(int type) {
+            switch (type) {
+                case 0:
+                    return NEVER;
+                case 1:
+                    return NO_DAY;
+                case 2:
+                    return ONE_TWO_DAYS;
+                case 3:
+                    return THREE_FOUR_DAYS;
+                case 4:
+                    return FIVE_SIX_DAYS;
+                case 5:
+                    return ALL_DAYS;
+                case 6:
+                    return UNDEFINED;
+                default:
+                    return "";
+            }
+        }
     }
 
-    class BreastFeeding {
-        public static final int EXCLUSIVE = 1;
-        public static final int COMPLEMENTARY = 2;
-        public static final int INFANT_FORMULAS = 3;
-        public static final int OTHER = 4;
-        public static final int UNDEFINED = 5;
+    public static class BreastFeeding {
+        public static final String EXCLUSIVE = "exclusive";
+        public static final String COMPLEMENTARY = "complementary";
+        public static final String INFANT_FORMULAS = "infant_formulas";
+        public static final String OTHER = "other";
+        public static final String UNDEFINED = "undefined";
+
+        public static String getString(int type) {
+            switch (type) {
+                case 0:
+                    return EXCLUSIVE;
+                case 1:
+                    return COMPLEMENTARY;
+                case 2:
+                    return INFANT_FORMULAS;
+                case 3:
+                    return OTHER;
+                case 4:
+                    return UNDEFINED;
+                default:
+                    return "";
+            }
+        }
     }
 
-    class FoodAllergyIntolerance {
-        public static final int GLUTEN = 1;
-        public static final int APLV = 2;
-        public static final int LACTOSE = 3;
-        public static final int DYE = 4;
-        public static final int EGG = 5;
-        public static final int PEANUT = 6;
-        public static final int OTHER = 7;
-        public static final int UNDEFINED = 8;
+    public static class FoodAllergyStringolerance {
+        public static final String GLUTEN = "gluten";
+        public static final String APLV = "aplv";
+        public static final String LACTOSE = "lactose";
+        public static final String DYE = "dye";
+        public static final String EGG = "egg";
+        public static final String PEANUT = "peanut";
+        public static final String OTHER = "other";
+        public static final String UNDEFINED = "undefined";
+
+
+        public static String getString(int type) {
+            switch (type) {
+                case 0:
+                    return GLUTEN;
+                case 1:
+                    return APLV;
+                case 2:
+                    return LACTOSE;
+                case 3:
+                    return DYE;
+                case 4:
+                    return EGG;
+                case 5:
+                    return PEANUT;
+                case 6:
+                    return OTHER;
+                case 7:
+                    return UNDEFINED;
+                default:
+                    return "";
+            }
+        }
     }
-
-
 }

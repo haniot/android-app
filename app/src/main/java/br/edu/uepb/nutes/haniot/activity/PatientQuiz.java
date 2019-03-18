@@ -3,6 +3,7 @@ package br.edu.uepb.nutes.haniot.activity;
 import android.app.AlertDialog;
 import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,10 +11,18 @@ import java.util.Collections;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.model.ChronicDisease;
+import br.edu.uepb.nutes.haniot.model.ChronicDiseaseType;
+import br.edu.uepb.nutes.haniot.model.FeedingHabitsRecord;
+import br.edu.uepb.nutes.haniot.model.FeendingHabitsRecordType;
+import br.edu.uepb.nutes.haniot.model.MedicalRecord;
 import br.edu.uepb.nutes.haniot.model.Patient;
+import br.edu.uepb.nutes.haniot.model.PhysicalActivityHabits;
+import br.edu.uepb.nutes.haniot.model.SchoolActivityFrequencyType;
+import br.edu.uepb.nutes.haniot.model.SleepHabit;
+import br.edu.uepb.nutes.haniot.model.WeeklyFoodRecord;
 import br.edu.uepb.nutes.haniot.model.dao.DeviceDAO;
 import br.edu.uepb.nutes.haniot.model.dao.PatientDAO;
-import br.edu.uepb.nutes.haniot.utils.Log;
 import br.edu.uepb.nutes.simplesurvey.base.SimpleSurvey;
 import br.edu.uepb.nutes.simplesurvey.question.DichotomicChoice;
 import br.edu.uepb.nutes.simplesurvey.question.Infor;
@@ -33,11 +42,45 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
     private final int CATEGORY_PAGE = -2;
     Patient patient;
 
+    private PhysicalActivityHabits physicalActivityHabits;
+    private FeedingHabitsRecord feedingHabitsRecord;
+    private MedicalRecord medicalRecord;
+    private List<ChronicDisease> chronicDiseases;
+    private SleepHabit sleepHabit;
+    private List<WeeklyFoodRecord> weeklyFoodRecords;
+    WeeklyFoodRecord weeklyFoodRecord;
+
+
     @Override
     protected void initView() {
         patient = PatientDAO.getInstance(this).get().get(0);
         if (patient == null) return;
+        initResources();
         addPages();
+    }
+
+    private void initResources() {
+        chronicDiseases = new ArrayList<>();
+        weeklyFoodRecords = new ArrayList<>();
+        feedingHabitsRecord = new FeedingHabitsRecord();
+        medicalRecord = new MedicalRecord();
+        sleepHabit = new SleepHabit();
+        physicalActivityHabits = new PhysicalActivityHabits();
+    }
+
+    private void validateAnswers() {
+        feedingHabitsRecord.setWeeklyFeedingHabits(weeklyFoodRecords);
+        patient.setFeedingHabitsRecord(feedingHabitsRecord);
+        medicalRecord.setChronicDisease(chronicDiseases);
+        patient.setMedicalRecord(medicalRecord);
+        patient.setPhysicalActivityHabits(physicalActivityHabits);
+        patient.setSleepHabit(sleepHabit);
+
+
+        Log.i("Respostas","FeendingHabits: " + feedingHabitsRecord.toString());
+        Log.i("Respostas","MedicalRecord: " + medicalRecord.toString());
+        Log.i("Respostas","Physical Activity: " + physicalActivityHabits.toString());
+        Log.i("Respostas","Sleep: " + sleepHabit.toString());
     }
 
     private void addPages() {
@@ -413,6 +456,7 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
         if (page == END_PAGE) { //
             //TODO salvar aqui
             //TODO temp
+            validateAnswers();
             finish();
         }
     }
@@ -430,61 +474,114 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
 
         switch (page) {
             case 5:
-
+                physicalActivityHabits.setSchoolActivityFreq(SchoolActivityFrequencyType
+                        .getString(indexValue));
                 break;
             case 6:
-
+                feedingHabitsRecord.setBreakfastDailyFrequency(FeendingHabitsRecordType
+                        .DailyFeedingFrequency.getString(indexValue));
                 break;
             case 7:
-
+                feedingHabitsRecord.setDailyWaterGlasses(FeendingHabitsRecordType
+                        .OneDayFeedingAmount.getString(indexValue));
                 break;
             case 8:
-
+                WeeklyFoodRecord weeklyFoodRecord = new WeeklyFoodRecord();
+                weeklyFoodRecord.setFood("");
+                weeklyFoodRecord.setSeveDaysFreq(FeendingHabitsRecordType
+                        .SevenDaysFeedingFrequency.getString(indexValue));
+                weeklyFoodRecords.add(weeklyFoodRecord);
                 break;
             case 9:
-
+                WeeklyFoodRecord weeklyFoodRecord1 = new WeeklyFoodRecord();
+                weeklyFoodRecord1.setFood("");
+                weeklyFoodRecord1.setSeveDaysFreq(FeendingHabitsRecordType
+                        .SevenDaysFeedingFrequency.getString(indexValue));
+                weeklyFoodRecords.add(weeklyFoodRecord1);
                 break;
             case 10:
-
+                WeeklyFoodRecord weeklyFoodRecord2 = new WeeklyFoodRecord();
+                weeklyFoodRecord2.setFood("");
+                weeklyFoodRecord2.setSeveDaysFreq(FeendingHabitsRecordType
+                        .SevenDaysFeedingFrequency.getString(indexValue));
+                weeklyFoodRecords.add(weeklyFoodRecord2);
                 break;
             case 11:
-
+                WeeklyFoodRecord weeklyFoodRecord3 = new WeeklyFoodRecord();
+                weeklyFoodRecord3.setFood("");
+                weeklyFoodRecord3.setSeveDaysFreq(FeendingHabitsRecordType
+                        .SevenDaysFeedingFrequency.getString(indexValue));
+                weeklyFoodRecords.add(weeklyFoodRecord3);
                 break;
             case 12:
-
+                WeeklyFoodRecord weeklyFoodRecord4 = new WeeklyFoodRecord();
+                weeklyFoodRecord4.setFood("");
+                weeklyFoodRecord4.setSeveDaysFreq(FeendingHabitsRecordType
+                        .SevenDaysFeedingFrequency.getString(indexValue));
+                weeklyFoodRecords.add(weeklyFoodRecord4);
                 break;
             case 13:
-
+                WeeklyFoodRecord weeklyFoodRecord5 = new WeeklyFoodRecord();
+                weeklyFoodRecord5.setFood("");
+                weeklyFoodRecord5.setSeveDaysFreq(FeendingHabitsRecordType
+                        .SevenDaysFeedingFrequency.getString(indexValue));
+                weeklyFoodRecords.add(weeklyFoodRecord5);
                 break;
             case 14:
-
+                WeeklyFoodRecord weeklyFoodRecord6 = new WeeklyFoodRecord();
+                weeklyFoodRecord6.setFood("");
+                weeklyFoodRecord6.setSeveDaysFreq(FeendingHabitsRecordType
+                        .SevenDaysFeedingFrequency.getString(indexValue));
+                weeklyFoodRecords.add(weeklyFoodRecord6);
                 break;
             case 15:
-
+                WeeklyFoodRecord weeklyFoodRecord7 = new WeeklyFoodRecord();
+                weeklyFoodRecord7.setFood("");
+                weeklyFoodRecord7.setSeveDaysFreq(FeendingHabitsRecordType
+                        .SevenDaysFeedingFrequency.getString(indexValue));
+                weeklyFoodRecords.add(weeklyFoodRecord7);
                 break;
             case 16:
-
+                WeeklyFoodRecord weeklyFoodRecord8 = new WeeklyFoodRecord();
+                weeklyFoodRecord8.setFood("");
+                weeklyFoodRecord8.setSeveDaysFreq(FeendingHabitsRecordType
+                        .SevenDaysFeedingFrequency.getString(indexValue));
+                weeklyFoodRecords.add(weeklyFoodRecord8);
                 break;
             case 17:
-
+                feedingHabitsRecord.setSixMonthBreastFeeding(FeendingHabitsRecordType
+                        .BreastFeeding.getString(indexValue));
                 break;
             case 18:
-
+                feedingHabitsRecord.setFoodAllergyintolerance(FeendingHabitsRecordType
+                        .FoodAllergyStringolerance.getString(indexValue));
                 break;
             case 19:
-
+                ChronicDisease chronicDisease = new ChronicDisease();
+                chronicDisease.setType(ChronicDiseaseType.ChronicDisease.HYPERTENSION);
+                chronicDisease.setDiseaseHistory(ChronicDiseaseType
+                        .DisieaseHistory.getString(indexValue));
+                chronicDiseases.add(chronicDisease);
                 break;
             case 20:
-
+                ChronicDisease chronicDisease2 = new ChronicDisease();
+                chronicDisease2.setType(ChronicDiseaseType.ChronicDisease.DIABETES);
+                chronicDisease2.setDiseaseHistory(ChronicDiseaseType
+                        .DisieaseHistory.getString(indexValue));
+                chronicDiseases.add(chronicDisease2);
                 break;
             case 21:
-
+                ChronicDisease chronicDisease3 = new ChronicDisease();
+                chronicDisease3.setType(ChronicDiseaseType.ChronicDisease.BLOOD_FAT);
+                chronicDisease3.setDiseaseHistory(ChronicDiseaseType
+                        .DisieaseHistory.getString(indexValue));
+                chronicDiseases.add(chronicDisease3);
                 break;
             case 22:
-
+                sleepHabit.setWeekDaySleep("");
                 break;
             case 23:
-
+                sleepHabit.setWeekDayWakeUp("");
                 break;
         }
     }
@@ -497,7 +594,7 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
 
         switch (page) {
             case 4:
-
+                physicalActivityHabits.setWeeklyActivities(values);
                 break;
         }
     }
