@@ -21,12 +21,17 @@ public class Patient implements Parcelable {
     @Index
     private String _id;
 
+//    private String pilotId;
     private String name;
+//    private int gender;
+//    private int colorRace;
+//    private String nationality;
+    private int age;
+//    private boolean isStudying;
+
+
     private String sex;
     private String color;
-    private int age;
-    private String registerDate;
-    private long idProfessionalResponsible;
 
     /**
      * RELATIONS
@@ -49,8 +54,6 @@ public class Patient implements Parcelable {
         sex = in.readString();
         color = in.readString();
         age = in.readInt();
-        registerDate = in.readString();
-        idProfessionalResponsible = in.readLong();
     }
 
     public static final Creator<Patient> CREATOR = new Creator<Patient>() {
@@ -121,22 +124,6 @@ public class Patient implements Parcelable {
         this.age = age;
     }
 
-    public String getRegisterDate() {
-        return registerDate;
-    }
-
-    public void setRegisterDate(String registerDate) {
-        this.registerDate = registerDate;
-    }
-
-    public long getIdProfessionalResponsible() {
-        return idProfessionalResponsible;
-    }
-
-    public void setIdProfessionalResponsible(long idProfessionalResponsible) {
-        this.idProfessionalResponsible = idProfessionalResponsible;
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -150,8 +137,6 @@ public class Patient implements Parcelable {
         parcel.writeString(sex);
         parcel.writeString(color);
         parcel.writeInt(age);
-        parcel.writeString(registerDate);
-        parcel.writeLong(idProfessionalResponsible);
     }
 
 }

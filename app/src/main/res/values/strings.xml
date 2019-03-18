@@ -314,7 +314,7 @@
     <string name="body_composition_monitor_description">OMRON HBF-206ITH</string>
     <string name="body_composition2">Monitor de Composição Corporal</string>
     <string name="icon_manage_measurement">Icone de Gerenciar Medições</string>
-    <string name="manage_patient">Gerenciar pacientes</string>
+    <string name="manage_patient">Gerenciar Pacientes</string>
     <string name="add">Add</string>
     <string name="search">Pesquisar</string>
     <string name="id">id: </string>

@@ -122,7 +122,7 @@
             android:theme="@style/AppTheme" />
         <activity android:name=".activity.ManuallyAddMeasurement" />
         <activity
-            android:name=".activity.PatientHistoricalActivity"
+            android:name=".activity.PatientRegisterActivity"
             android:theme="@style/AppTheme"></activity>
         <activity android:name=".activity.PatientQuiz" android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar"/>
     </application>

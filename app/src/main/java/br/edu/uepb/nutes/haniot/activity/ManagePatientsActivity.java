@@ -50,7 +50,6 @@ public class ManagePatientsActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         toolbar.setTitle(getResources().getString(R.string.manage_patient));
-        toolbar.setTitle("Gerenciar Pacientes");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -161,7 +160,7 @@ public class ManagePatientsActivity extends AppCompatActivity {
         patient.set_id("123");
         patient.setSex("Masculino");
         patient.setAge(12);
-        patient.setRegisterDate(spn.format(Calendar.getInstance().getTime()));
+        //patient.setRegisterDate(spn.format(Calendar.getInstance().getTime()));
         patientList.add(patient);
 
         patient = new Patient();
@@ -169,7 +168,7 @@ public class ManagePatientsActivity extends AppCompatActivity {
         patient.set_id("124");
         patient.setSex("Masculino");
         patient.setAge(13);
-        patient.setRegisterDate(spn.format(Calendar.getInstance().getTime()));
+        //patient.setRegisterDate(spn.format(Calendar.getInstance().getTime()));
         patientList.add(patient);
 
         patient = new Patient();
@@ -177,7 +176,7 @@ public class ManagePatientsActivity extends AppCompatActivity {
         patient.set_id("125");
         patient.setSex("Feminino");
         patient.setAge(12);
-        patient.setRegisterDate(spn.format(Calendar.getInstance().getTime()));
+        //patient.setRegisterDate(spn.format(Calendar.getInstance().getTime()));
         patientList.add(patient);
 
         patient = new Patient();
@@ -185,7 +184,7 @@ public class ManagePatientsActivity extends AppCompatActivity {
         patient.set_id("126");
         patient.setSex("Feminino");
         patient.setAge(13);
-        patient.setRegisterDate(spn.format(Calendar.getInstance().getTime()));
+        //patient.setRegisterDate(spn.format(Calendar.getInstance().getTime()));
         patientList.add(patient);
 
         patient = new Patient();
@@ -193,7 +192,7 @@ public class ManagePatientsActivity extends AppCompatActivity {
         patient.set_id("127");
         patient.setSex("Feminino");
         patient.setAge(11);
-        patient.setRegisterDate(spn.format(Calendar.getInstance().getTime()));
+        //patient.setRegisterDate(spn.format(Calendar.getInstance().getTime()));
         patientList.add(patient);
 
         patient = new Patient();
@@ -201,7 +200,7 @@ public class ManagePatientsActivity extends AppCompatActivity {
         patient.set_id("128");
         patient.setSex("Masculino");
         patient.setAge(13);
-        patient.setRegisterDate(spn.format(Calendar.getInstance().getTime()));
+        //patient.setRegisterDate(spn.format(Calendar.getInstance().getTime()));
         patientList.add(patient);
     }
 
@@ -270,7 +269,7 @@ public class ManagePatientsActivity extends AppCompatActivity {
 //                    }
 //                }
 
-                startActivity(new Intent(this, PatientQuiz.class));
+                startActivity(new Intent(this, PatientRegisterActivity.class));
                 break;
             case R.id.add_patient:
 //                for (Patient patient : patientList) {
@@ -278,7 +277,7 @@ public class ManagePatientsActivity extends AppCompatActivity {
 //
 //                    }
 //                }
-                startActivity(new Intent(this, PatientQuiz.class));
+                startActivity(new Intent(this, PatientRegisterActivity.class));
 
                 break;
         }

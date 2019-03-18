@@ -10,6 +10,9 @@ import java.util.Collections;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.model.Patient;
+import br.edu.uepb.nutes.haniot.model.dao.DeviceDAO;
+import br.edu.uepb.nutes.haniot.model.dao.PatientDAO;
 import br.edu.uepb.nutes.haniot.utils.Log;
 import br.edu.uepb.nutes.simplesurvey.base.SimpleSurvey;
 import br.edu.uepb.nutes.simplesurvey.question.DichotomicChoice;
@@ -28,9 +31,12 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
     private final int FIRST_PAGE = 0;
     private final int END_PAGE = -1;
     private final int CATEGORY_PAGE = -2;
+    Patient patient;
 
     @Override
     protected void initView() {
+        patient = PatientDAO.getInstance(this).get().get(0);
+        if (patient == null) return;
         addPages();
     }
 
@@ -405,6 +411,8 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
     public void onAnswerInfo(int page) {
         Log.d(LOG_TAG, "onAnswerInfo() | PAGE: " + page);
         if (page == END_PAGE) { //
+            //TODO salvar aqui
+            //TODO temp
             finish();
         }
     }

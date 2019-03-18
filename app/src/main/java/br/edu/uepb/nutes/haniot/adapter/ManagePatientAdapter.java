@@ -19,7 +19,7 @@ import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.MainActivity;
-import br.edu.uepb.nutes.haniot.activity.PatientHistoricalActivity;
+import br.edu.uepb.nutes.haniot.activity.PatientRegisterActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.model.Patient;
 import br.edu.uepb.nutes.haniot.model.dao.PatientDAO;
@@ -87,7 +87,7 @@ public class ManagePatientAdapter extends RecyclerView.Adapter<ManagePatientAdap
             holder.textAge.setText(patient.getAge()+ " anos");
             holder.btnSelect.setOnClickListener(c -> {
 
-                final Intent intent = new Intent(context, PatientHistoricalActivity.class);
+                final Intent intent = new Intent(context, PatientRegisterActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 Bundle bundle = ActivityOptionsCompat.makeScaleUpAnimation(holder.itemView,
                         0,
@@ -274,7 +274,7 @@ public class ManagePatientAdapter extends RecyclerView.Adapter<ManagePatientAdap
             ArrayList<Patient> result = new ArrayList<>();
             for (Patient patient : itemListCopy) {
                 if (patient.get_id().toLowerCase().contains(text.toLowerCase())
-                        || patient.getRegisterDate().toLowerCase().equalsIgnoreCase(text.toLowerCase())
+                        //|| patient.getRegisterDate().toLowerCase().equalsIgnoreCase(text.toLowerCase())
                         || patient.getName().toLowerCase().contains(text.toLowerCase())) {
 
                     result.add(patient);

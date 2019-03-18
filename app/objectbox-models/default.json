@@ -133,7 +133,7 @@
     },
     {
       "id": "4:6339985025602966991",
-      "lastPropertyId": "8:1248663143925215666",
+      "lastPropertyId": "13:4843874941947813384",
       "name": "Patient",
       "properties": [
         {
@@ -160,14 +160,6 @@
         {
           "id": "6:4980035969476965426",
           "name": "age"
-        },
-        {
-          "id": "7:7767621721815858719",
-          "name": "registerDate"
-        },
-        {
-          "id": "8:1248663143925215666",
-          "name": "idProfessionalResponsible"
         }
       ],
       "relations": []
@@ -358,7 +350,15 @@
   "modelVersionParserMinimum": 4,
   "retiredEntityUids": [],
   "retiredIndexUids": [],
-  "retiredPropertyUids": [],
+  "retiredPropertyUids": [
+    7767621721815858719,
+    1248663143925215666,
+    5014427936235454629,
+    4575093179786451666,
+    2555464347885615221,
+    5694713066127971766,
+    4843874941947813384
+  ],
   "retiredRelationUids": [],
   "version": 1
 }

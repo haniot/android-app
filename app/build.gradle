@@ -76,6 +76,5 @@ dependencies {
 
     // Simple Survey
     implementation 'com.github.nutes-uepb:simple-survey:v1.1.0'
-
 }
 apply plugin: 'com.google.gms.google-services'
