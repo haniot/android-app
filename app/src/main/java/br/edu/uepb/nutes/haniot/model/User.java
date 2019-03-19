@@ -38,6 +38,9 @@ public class User {
     @SerializedName("token")
     private String token; // provide by the server
 
+    @Expose(serialize = false)
+    private String password;
+
     /**
      * RELATIONS
      */
@@ -55,6 +58,11 @@ public class User {
     private int groupId; // 1 super, 2 comum
 
     public User() {
+    }
+
+    public User(String email, String password) {
+        this.email = email;
+        this.password = password;
     }
 
     public User(String name, String email, int groupId) {
@@ -115,6 +123,13 @@ public class User {
         return measurements;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     public void setMeasurements(ToMany<Measurement> measurements) {
         this.measurements = measurements;
