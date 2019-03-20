@@ -67,7 +67,8 @@ public class PatientRegisterActivity extends AppCompatActivity {
     private void savePatient() {
         Patient patient = new Patient();
         patient.setName(nameEditTExt.getText().toString());
-        patient.setAge(ageSeek.getProgress() + MINIMUM_AGE);
+        //TODO mudar layout
+        patient.setBirthDate("");
         //TODO Refatorar Patient
         if (genderGroup.getCheckedRadioButtonId() == R.id.male)
             patient.setGender("Masculino");

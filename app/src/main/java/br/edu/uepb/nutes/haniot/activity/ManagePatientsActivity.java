@@ -28,6 +28,7 @@ import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.adapter.ManagePatientAdapter;
 import br.edu.uepb.nutes.haniot.model.Patient;
 import br.edu.uepb.nutes.haniot.model.dao.PatientDAO;
+import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import br.edu.uepb.nutes.haniot.utils.Log;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -158,48 +159,48 @@ public class ManagePatientsActivity extends AppCompatActivity {
         patient = new Patient();
         patient.setName("Fábio Júnior");
         patient.set_id("123");
-        patient.setSex("Masculino");
-        patient.setAge(12);
+        patient.setGender("Masculino");
+        patient.setBirthDate(DateUtils.formatDate(38323223, DateUtils.DATE_FORMAT_ISO_8601));
         //patient.setRegisterDate(spn.format(Calendar.getInstance().getTime()));
         patientList.add(patient);
 
         patient = new Patient();
         patient.setName("Paulo Barbosa");
         patient.set_id("124");
-        patient.setSex("Masculino");
-        patient.setAge(13);
+        patient.setGender("Masculino");
+        patient.setBirthDate(DateUtils.formatDate(38323223, DateUtils.DATE_FORMAT_ISO_8601));
         //patient.setRegisterDate(spn.format(Calendar.getInstance().getTime()));
         patientList.add(patient);
 
         patient = new Patient();
         patient.setName("Ana Beatriz");
         patient.set_id("125");
-        patient.setSex("Feminino");
-        patient.setAge(12);
+        patient.setGender("Feminino");
+        patient.setBirthDate(DateUtils.formatDate(38323223, DateUtils.DATE_FORMAT_ISO_8601));
         //patient.setRegisterDate(spn.format(Calendar.getInstance().getTime()));
         patientList.add(patient);
 
         patient = new Patient();
         patient.setName("Isabele");
         patient.set_id("126");
-        patient.setSex("Feminino");
-        patient.setAge(13);
+        patient.setGender("Feminino");
+        patient.setBirthDate(DateUtils.formatDate(38323223, DateUtils.DATE_FORMAT_ISO_8601));
         //patient.setRegisterDate(spn.format(Calendar.getInstance().getTime()));
         patientList.add(patient);
 
         patient = new Patient();
         patient.setName("Paulina Leal");
         patient.set_id("127");
-        patient.setSex("Feminino");
-        patient.setAge(11);
+        patient.setGender("Feminino");
+        patient.setBirthDate(DateUtils.formatDate(38323223, DateUtils.DATE_FORMAT_ISO_8601));
         //patient.setRegisterDate(spn.format(Calendar.getInstance().getTime()));
         patientList.add(patient);
 
         patient = new Patient();
         patient.setName("Douglas Rafael");
         patient.set_id("128");
-        patient.setSex("Masculino");
-        patient.setAge(13);
+        patient.setGender("Masculino");
+        patient.setBirthDate(DateUtils.formatDate(38323223, DateUtils.DATE_FORMAT_ISO_8601));
         //patient.setRegisterDate(spn.format(Calendar.getInstance().getTime()));
         patientList.add(patient);
     }

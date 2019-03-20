@@ -78,13 +78,13 @@ public class ManagePatientAdapter extends RecyclerView.Adapter<ManagePatientAdap
 
 
 //            holder.textLetter.setText(nameText);
-            if (patient.getSex().equals("Masculino"))
+            if (patient.getGender().equals("Masculino"))
                 holder.profile.setImageResource(R.drawable.x_boy);
             else
                 holder.profile.setImageResource(R.drawable.x_girl);
           //  holder.textId.setText(patient.get_id());
             holder.textName.setText(patient.getName());
-            holder.textAge.setText(patient.getAge()+ " anos");
+            holder.textAge.setText(patient.getBirthDate()+ " anos");
             holder.btnSelect.setOnClickListener(c -> {
 
                 final Intent intent = new Intent(context, PatientRegisterActivity.class);
@@ -94,7 +94,7 @@ public class ManagePatientAdapter extends RecyclerView.Adapter<ManagePatientAdap
                         0,
                         holder.itemView.getWidth(),
                         holder.itemView.getHeight()).toBundle();
-                intent.putExtra("Patient", patient);
+                intent.putExtra("Patient", patient.getId());
 
                 context.startActivity(intent, bundle);
             });

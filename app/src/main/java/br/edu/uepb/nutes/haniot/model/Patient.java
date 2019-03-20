@@ -3,6 +3,9 @@ package br.edu.uepb.nutes.haniot.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -15,27 +18,30 @@ import io.objectbox.relation.ToMany;
 import io.objectbox.relation.ToOne;
 
 @Entity
-public class Patient implements Parcelable {
+public class Patient {
 
     @Id
+    @Expose(serialize = false)
     private long id;
 
     @Index
+    @SerializedName("id")
     private String _id;
+    @Index
+    @SerializedName("pilotId")
     private String pilotId;
+    @SerializedName("name")
     private String name;
+    @SerializedName("gender")
     private String gender;
-    private int age;
+    @SerializedName("birthDate")
+    private String birthDate;
 
 
-    @Transient
-    private SleepHabit sleepHabit;
-    @Transient
-    private PhysicalActivityHabits physicalActivityHabits;
-    @Transient
-    private FeedingHabitsRecord feedingHabitsRecord;
-    @Transient
-    private MedicalRecord medicalRecord;
+    private ToOne<SleepHabit> sleepHabit;
+    private ToOne<PhysicalActivityHabits> physicalActivityHabits;
+    private ToOne<FeedingHabitsRecord> feedingHabitsRecord;
+    private ToOne<MedicalRecord> medicalRecord;
 
     /**
      * RELATIONS
@@ -50,27 +56,6 @@ public class Patient implements Parcelable {
     public Patient() {
 
     }
-
-    protected Patient(Parcel in) {
-        id = in.readLong();
-        _id = in.readString();
-        pilotId = in.readString();
-        name = in.readString();
-        gender = in.readString();
-        age = in.readInt();
-    }
-
-    public static final Creator<Patient> CREATOR = new Creator<Patient>() {
-        @Override
-        public Patient createFromParcel(Parcel in) {
-            return new Patient(in);
-        }
-
-        @Override
-        public Patient[] newArray(int size) {
-            return new Patient[size];
-        }
-    };
 
     public ToMany<Measurement> getMeasurements() {
         return measurements;
@@ -120,58 +105,60 @@ public class Patient implements Parcelable {
         this.gender = gender;
     }
 
-    public int getAge() {
-        return age;
+
+    public String getBirthDate() {
+        return birthDate;
     }
 
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    public SleepHabit getSleepHabit() {
-        return sleepHabit;
+    public void setBirthDate(String birthDate) {
+        this.birthDate = birthDate;
     }
 
     public void setSleepHabit(SleepHabit sleepHabit) {
-        this.sleepHabit = sleepHabit;
+        this.sleepHabit.setTarget(sleepHabit);
     }
 
-    public PhysicalActivityHabits getPhysicalActivityHabits() {
-        return physicalActivityHabits;
-    }
+//    public PhysicalActivityHabits getPhysicalActivityHabits() {
+//        return physicalActivityHabits.getTarget();
+//    }
 
-    public void setPhysicalActivityHabits(PhysicalActivityHabits physicalActivityHabits) {
-        this.physicalActivityHabits = physicalActivityHabits;
-    }
+//    public void setPhysicalActivityHabits(PhysicalActivityHabits physicalActivityHabits) {
+//        this.physicalActivityHabits.setTarget(physicalActivityHabits);
+//    }
 
-    public FeedingHabitsRecord getFeedingHabitsRecord() {
+    public ToOne<FeedingHabitsRecord> getFeedingHabitsRecord() {
         return feedingHabitsRecord;
     }
 
     public void setFeedingHabitsRecord(FeedingHabitsRecord feedingHabitsRecord) {
-        this.feedingHabitsRecord = feedingHabitsRecord;
-    }
-
-    public MedicalRecord getMedicalRecord() {
-        return medicalRecord;
+        this.feedingHabitsRecord.setTarget(feedingHabitsRecord);
     }
 
     public void setMedicalRecord(MedicalRecord medicalRecord) {
+        this.medicalRecord.setTarget(medicalRecord);
+    }
+
+    public void setSleepHabit(ToOne<SleepHabit> sleepHabit) {
+        this.sleepHabit = sleepHabit;
+    }
+
+    public ToOne<SleepHabit> getSleepHabit() {
+        return sleepHabit;
+    }
+
+    public ToOne<MedicalRecord> getMedicalRecord() {
+        return medicalRecord;
+    }
+
+    //    public void setPhysicalActivityHabits(ToOne<PhysicalActivityHabits> physicalActivityHabits) {
+//        this.physicalActivityHabits = physicalActivityHabits;
+//    }
+
+    public void setFeedingHabitsRecord(ToOne<FeedingHabitsRecord> feedingHabitsRecord) {
+        this.feedingHabitsRecord = feedingHabitsRecord;
+    }
+
+    public void setMedicalRecord(ToOne<MedicalRecord> medicalRecord) {
         this.medicalRecord = medicalRecord;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeLong(id);
-        parcel.writeString(_id);
-        parcel.writeString(name);
-        parcel.writeString(pilotId);
-        parcel.writeInt(gender);
-        parcel.writeInt(age);
     }
 }

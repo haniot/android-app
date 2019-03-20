@@ -98,7 +98,7 @@ public class DashboardChartsFragment extends Fragment {
      */
     public void updateNamePatient(Patient patient) {
         patientName.setText(patient.getName());
-        if (patient.getSex().equals("Masculino"))
+        if (patient.getGender().equals("Masculino"))
             patientSex.setImageResource(R.drawable.x_boy);
         else
             patientSex.setImageResource(R.drawable.x_girl);

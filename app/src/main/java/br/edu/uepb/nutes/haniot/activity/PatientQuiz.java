@@ -73,7 +73,7 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
         patient.setFeedingHabitsRecord(feedingHabitsRecord);
         medicalRecord.setChronicDisease(chronicDiseases);
         patient.setMedicalRecord(medicalRecord);
-        patient.setPhysicalActivityHabits(physicalActivityHabits);
+        //patient.setPhysicalActivityHabits(physicalActivityHabits);
         patient.setSleepHabit(sleepHabit);
 
 
