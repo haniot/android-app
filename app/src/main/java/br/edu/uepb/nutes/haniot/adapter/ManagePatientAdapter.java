@@ -83,7 +83,7 @@ public class ManagePatientAdapter extends RecyclerView.Adapter<ManagePatientAdap
             else
                 holder.profile.setImageResource(R.drawable.x_girl);
           //  holder.textId.setText(patient.get_id());
-            holder.textName.setText(patient.getName());
+            holder.textName.setText(patient.getFirstName());
             holder.textAge.setText(patient.getBirthDate()+ " anos");
             holder.btnSelect.setOnClickListener(c -> {
 
@@ -132,14 +132,14 @@ public class ManagePatientAdapter extends RecyclerView.Adapter<ManagePatientAdap
                 Intent it = new Intent(context, MainActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putString(context.getResources().getString(R.string.id_last_patient), patient.get_id());
-                bundle.putString(context.getResources().getString(R.string.name_last_patient), patient.getName());
+                bundle.putString(context.getResources().getString(R.string.name_last_patient), patient.getFirstName());
                 it.putExtras(bundle);
                 it.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
                 String id = context.getResources().getString(R.string.id_last_patient);
                 String name = context.getResources().getString(R.string.name_last_patient);
                 session.putString(id, patient.get_id());
-                session.putString(name, patient.getName());
+                session.putString(name, patient.getFirstName());
 
                 context.startActivity(it);
             });
@@ -195,7 +195,7 @@ public class ManagePatientAdapter extends RecyclerView.Adapter<ManagePatientAdap
                 String name = context.getResources().getString(R.string.name_last_patient);
 
                 session.putString(id, patient.get_id());
-                session.putString(name, patient.getName());
+                session.putString(name, patient.getFirstName());
             }
             Log.d(t, "2");
             notifyItemInserted(index);
@@ -275,10 +275,10 @@ public class ManagePatientAdapter extends RecyclerView.Adapter<ManagePatientAdap
             for (Patient patient : itemListCopy) {
                 if (patient.get_id().toLowerCase().contains(text.toLowerCase())
                         //|| patient.getRegisterDate().toLowerCase().equalsIgnoreCase(text.toLowerCase())
-                        || patient.getName().toLowerCase().contains(text.toLowerCase())) {
+                        || patient.getFirstName().toLowerCase().contains(text.toLowerCase())) {
 
                     result.add(patient);
-                    Log.d("TESTE", patient.getName());
+                    Log.d("TESTE", patient.getFirstName());
                 }
             }
             itemList.clear();

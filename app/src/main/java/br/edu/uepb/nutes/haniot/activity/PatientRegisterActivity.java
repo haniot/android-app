@@ -66,7 +66,7 @@ public class PatientRegisterActivity extends AppCompatActivity {
 
     private void savePatient() {
         Patient patient = new Patient();
-        patient.setName(nameEditTExt.getText().toString());
+        patient.setFirstName(nameEditTExt.getText().toString());
         //TODO mudar layout
         patient.setBirthDate("");
         //TODO Refatorar Patient

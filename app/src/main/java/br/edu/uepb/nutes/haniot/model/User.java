@@ -3,13 +3,12 @@ package br.edu.uepb.nutes.haniot.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-
 import io.objectbox.annotation.Backlink;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.annotation.Index;
 import io.objectbox.relation.ToMany;
+import io.objectbox.relation.ToOne;
 
 /**
  * Represents User object.
@@ -41,6 +40,10 @@ public class User {
     @Expose(serialize = false)
     private String password;
 
+    @SerializedName("healthArea")
+    private String healthArea; // provide by the server
+
+    private ToOne<PilotStudy> pilotStudy;
     /**
      * RELATIONS
      */
@@ -53,9 +56,9 @@ public class User {
 
 
     /**
-     * {@link UserGroup()}
+     * {@link UserType ()}
      */
-    private int groupId; // 1 super, 2 comum
+    private int userType; // 1 admin, 2 health_profissional
 
     public User() {
     }
@@ -65,10 +68,10 @@ public class User {
         this.password = password;
     }
 
-    public User(String name, String email, int groupId) {
+    public User(String name, String email, int userType) {
         this.name = name;
         this.email = email;
-        this.groupId = groupId;
+        this.userType = userType;
     }
 
     public long getIdDb() {
@@ -111,12 +114,12 @@ public class User {
         this.token = token;
     }
 
-    public int getGroupId() {
-        return groupId;
+    public int getUserType() {
+        return userType;
     }
 
-    public void setGroupId(int groupId) {
-        this.groupId = groupId;
+    public void setUserType(int userType) {
+        this.userType = userType;
     }
 
     public ToMany<Measurement> getMeasurements() {
@@ -135,6 +138,14 @@ public class User {
         this.measurements = measurements;
     }
 
+    public String getHealthArea() {
+        return healthArea;
+    }
+
+    public void setHealthArea(String healthArea) {
+        this.healthArea = healthArea;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof User))
@@ -143,6 +154,18 @@ public class User {
         User other = (User) o;
 
         return other.get_id().equals(this.get_id()) && other.getEmail().equals(this.getEmail());
+    }
+
+    public ToOne<PilotStudy> getPilotStudy() {
+        return pilotStudy;
+    }
+
+    public void setPilotStudy(ToOne<PilotStudy> pilotStudy) {
+        this.pilotStudy = pilotStudy;
+    }
+
+    public void setPilotStudy(PilotStudy pilotStudy) {
+        this.pilotStudy.setTarget(pilotStudy);
     }
 
     @Override
@@ -154,7 +177,7 @@ public class User {
                 ", email='" + email + '\'' +
                 ", token='" + token + '\'' +
                 ", measurements=" + measurements +
-                ", groupId=" + groupId +
+                ", userType=" + userType +
                 '}';
     }
 }

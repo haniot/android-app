@@ -30,8 +30,10 @@ public class Patient {
     @Index
     @SerializedName("pilotId")
     private String pilotId;
-    @SerializedName("name")
-    private String name;
+    @SerializedName("firstName")
+    private String firstName;
+    @SerializedName("lastName")
+    private String lastName;
     @SerializedName("gender")
     private String gender;
     @SerializedName("birthDate")
@@ -89,12 +91,20 @@ public class Patient {
         this.pilotId = pilotId;
     }
 
-    public String getName() {
-        return name;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getGender() {
@@ -117,14 +127,6 @@ public class Patient {
     public void setSleepHabit(SleepHabit sleepHabit) {
         this.sleepHabit.setTarget(sleepHabit);
     }
-
-//    public PhysicalActivityHabits getPhysicalActivityHabits() {
-//        return physicalActivityHabits.getTarget();
-//    }
-
-//    public void setPhysicalActivityHabits(PhysicalActivityHabits physicalActivityHabits) {
-//        this.physicalActivityHabits.setTarget(physicalActivityHabits);
-//    }
 
     public ToOne<FeedingHabitsRecord> getFeedingHabitsRecord() {
         return feedingHabitsRecord;
@@ -150,15 +152,19 @@ public class Patient {
         return medicalRecord;
     }
 
-    //    public void setPhysicalActivityHabits(ToOne<PhysicalActivityHabits> physicalActivityHabits) {
-//        this.physicalActivityHabits = physicalActivityHabits;
-//    }
-
     public void setFeedingHabitsRecord(ToOne<FeedingHabitsRecord> feedingHabitsRecord) {
         this.feedingHabitsRecord = feedingHabitsRecord;
     }
 
     public void setMedicalRecord(ToOne<MedicalRecord> medicalRecord) {
         this.medicalRecord = medicalRecord;
+    }
+
+    public ToOne<PhysicalActivityHabits> getPhysicalActivityHabits() {
+        return physicalActivityHabits;
+    }
+
+    public void setPhysicalActivityHabits(PhysicalActivityHabits physicalActivityHabits) {
+        this.physicalActivityHabits.setTarget(physicalActivityHabits);
     }
 }

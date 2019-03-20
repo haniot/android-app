@@ -5,6 +5,8 @@ import java.util.List;
 
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
+import io.objectbox.relation.ToMany;
+import io.objectbox.relation.ToOne;
 
 @Entity
 public class MedicalRecord {
@@ -14,7 +16,7 @@ public class MedicalRecord {
     private int id;
     private String patientId;
     private String createdAt;
-    private List<ChronicDisease> chronicDisease;
+    private ToMany<ChronicDisease> chronicDisease;
 
     public long getIdBd() {
         return idBd;
@@ -48,11 +50,11 @@ public class MedicalRecord {
         this.createdAt = createdAt;
     }
 
-    public List getChronicDisease() {
+    public ToMany<ChronicDisease> getChronicDisease() {
         return chronicDisease;
     }
 
-    public void setChronicDisease(List chronicDisease) {
-        this.chronicDisease = chronicDisease;
+    public void setChronicDisease(List<ChronicDisease> chronicDisease) {
+        this.chronicDisease.addAll(chronicDisease);
     }
 }

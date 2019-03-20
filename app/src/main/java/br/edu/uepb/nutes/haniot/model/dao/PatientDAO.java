@@ -32,7 +32,7 @@ public class PatientDAO {
 
 //    Search patient by name
     public Patient get(@NonNull String name){
-        return patientBox.query().equal(Patient_.name,name).build().findFirst();
+        return patientBox.query().equal(Patient_.firstName,name).build().findFirst();
     }
 
 //    Search patient by id
@@ -58,7 +58,7 @@ public class PatientDAO {
 //    update patient
     public boolean update(@NonNull Patient patient){
         if (patient.getId() == 0){
-            Patient patientUp = get(patient.getName());
+            Patient patientUp = get(patient.getFirstName());
 
             if (patientUp == null) return false;
 

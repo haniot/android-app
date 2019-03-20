@@ -11,9 +11,9 @@ import br.edu.uepb.nutes.haniot.R;
  * @version 1.0
  * @copyright Copyright (c) 2017, NUTES UEPB
  */
-public class UserGroup {
-    public static final int SUPER = 1;
-    public static final int COMMON = 2;
+public class UserType {
+    public static final int ADMIN = 1;
+    public static final int HEALTH_PROFISSIONAL = 2;
 
     /**
      * Retrieve the mapped group name in resources.

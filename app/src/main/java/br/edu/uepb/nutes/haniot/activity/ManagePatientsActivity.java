@@ -87,7 +87,7 @@ public class ManagePatientsActivity extends AppCompatActivity {
 
                 Snackbar snackbar = null;
                 if (patient != null) {
-                    Log.d("TESTE", "Removendo o paciente " + patient.getName());
+                    Log.d("TESTE", "Removendo o paciente " + patient.getFirstName());
                     if (adapter.getSearchQuerry().isEmpty()) {
                         int newPosition = adapter.searchOldPatientPosition(patient);
 
@@ -157,7 +157,7 @@ public class ManagePatientsActivity extends AppCompatActivity {
         SimpleDateFormat spn = new SimpleDateFormat("dd/MM/yyyy");
 
         patient = new Patient();
-        patient.setName("Fábio Júnior");
+        patient.setFirstName("Fábio Júnior");
         patient.set_id("123");
         patient.setGender("Masculino");
         patient.setBirthDate(DateUtils.formatDate(38323223, DateUtils.DATE_FORMAT_ISO_8601));
@@ -165,7 +165,7 @@ public class ManagePatientsActivity extends AppCompatActivity {
         patientList.add(patient);
 
         patient = new Patient();
-        patient.setName("Paulo Barbosa");
+        patient.setFirstName("Paulo Barbosa");
         patient.set_id("124");
         patient.setGender("Masculino");
         patient.setBirthDate(DateUtils.formatDate(38323223, DateUtils.DATE_FORMAT_ISO_8601));
@@ -173,7 +173,7 @@ public class ManagePatientsActivity extends AppCompatActivity {
         patientList.add(patient);
 
         patient = new Patient();
-        patient.setName("Ana Beatriz");
+        patient.setFirstName("Ana Beatriz");
         patient.set_id("125");
         patient.setGender("Feminino");
         patient.setBirthDate(DateUtils.formatDate(38323223, DateUtils.DATE_FORMAT_ISO_8601));
@@ -181,7 +181,7 @@ public class ManagePatientsActivity extends AppCompatActivity {
         patientList.add(patient);
 
         patient = new Patient();
-        patient.setName("Isabele");
+        patient.setFirstName("Isabele");
         patient.set_id("126");
         patient.setGender("Feminino");
         patient.setBirthDate(DateUtils.formatDate(38323223, DateUtils.DATE_FORMAT_ISO_8601));
@@ -189,7 +189,7 @@ public class ManagePatientsActivity extends AppCompatActivity {
         patientList.add(patient);
 
         patient = new Patient();
-        patient.setName("Paulina Leal");
+        patient.setFirstName("Paulina Leal");
         patient.set_id("127");
         patient.setGender("Feminino");
         patient.setBirthDate(DateUtils.formatDate(38323223, DateUtils.DATE_FORMAT_ISO_8601));
@@ -197,7 +197,7 @@ public class ManagePatientsActivity extends AppCompatActivity {
         patientList.add(patient);
 
         patient = new Patient();
-        patient.setName("Douglas Rafael");
+        patient.setFirstName("Douglas Rafael");
         patient.set_id("128");
         patient.setGender("Masculino");
         patient.setBirthDate(DateUtils.formatDate(38323223, DateUtils.DATE_FORMAT_ISO_8601));

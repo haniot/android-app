@@ -4,6 +4,8 @@ import java.util.List;
 
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
+import io.objectbox.relation.ToMany;
+import io.objectbox.relation.ToOne;
 
 @Entity
 public class FeedingHabitsRecord {
@@ -14,7 +16,7 @@ public class FeedingHabitsRecord {
     private String id;
     private String patient_id;
     private String createdAt;
-    private List<WeeklyFoodRecord> weeklyFeedingHabits;
+    private ToMany<WeeklyFoodRecord> weeklyFeedingHabits;
     private String dailyWaterGlasses;
     private String sixMonthBreastFeeding;
     private String foodAllergyintolerance;
@@ -56,12 +58,12 @@ public class FeedingHabitsRecord {
         this.createdAt = createdAt;
     }
 
-    public List<WeeklyFoodRecord> getWeeklyFeedingHabits() {
+    public ToMany<WeeklyFoodRecord> getWeeklyFeedingHabits() {
         return weeklyFeedingHabits;
     }
 
     public void setWeeklyFeedingHabits(List<WeeklyFoodRecord> weeklyFeedingHabits) {
-        this.weeklyFeedingHabits = weeklyFeedingHabits;
+        this.weeklyFeedingHabits.addAll(weeklyFeedingHabits);
     }
 
     public String getDailyWaterGlasses() {

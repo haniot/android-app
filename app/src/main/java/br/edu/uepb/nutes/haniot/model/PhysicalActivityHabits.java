@@ -2,9 +2,16 @@ package br.edu.uepb.nutes.haniot.model;
 
 import java.util.List;
 
+import br.edu.uepb.nutes.haniot.utils.ConverterStringToDatabase;
+import io.objectbox.annotation.Convert;
+import io.objectbox.annotation.Entity;
+
+@Entity
 public class PhysicalActivityHabits extends ActivityHabitsRecord {
 
     private String schoolActivityFreq;
+
+    @Convert(converter = ConverterStringToDatabase.class, dbType = String.class)
     private List<String> weeklyActivities;
 
     public String getSchoolActivityFreq() {
