@@ -414,7 +414,7 @@ public class ManuallyAddMeasurement extends AppCompatActivity
         SynchronizationServer.getInstance(this).run();
     }
 
-//    private void saveMeasurement(Measurement measurement) {
+//    private void addMeasurement(Measurement measurement) {
 //
 //        Long dateServer = null;
 //        String dateTimeSelected = "";
@@ -479,7 +479,7 @@ public class ManuallyAddMeasurement extends AppCompatActivity
 //            weightMeasurement.setTypeId(MeasurementType.BODY_MASS);
 //            weightMeasurement.setUnit(getResources().getString(R.string.unit_weight));
 //
-//            saveMeasurement(weightMeasurement);
+//            addMeasurement(weightMeasurement);
 //            finish();
 //        } else {
 //            showToast(getResources().getString(R.string.error_insering_measurement));
@@ -502,7 +502,7 @@ public class ManuallyAddMeasurement extends AppCompatActivity
 //            glucose.addContext(new ContextMeasurement(type, ContextMeasurementType.GLUCOSE_MEAL));
 //
 //            Log.d("TESTE",glucose.toString());
-//            saveMeasurement(glucose);
+//            addMeasurement(glucose);
 //            finish();
 //        } else {
 //            showToast(getResources().getString(R.string.error_insering_measurement));
@@ -521,7 +521,7 @@ public class ManuallyAddMeasurement extends AppCompatActivity
 //            heartMeasurement.setTypeId(MeasurementType.HEART_RATE);
 //            heartMeasurement.setUnit(getResources().getString(R.string.unit_heart_rate));
 //
-//            saveMeasurement(heartMeasurement);
+//            addMeasurement(heartMeasurement);
 //            finish();
 //        } else {
 //            showToast(getResources().getString(R.string.error_insering_measurement));
@@ -540,7 +540,7 @@ public class ManuallyAddMeasurement extends AppCompatActivity
 //            temp.setValue(temperature);
 //            temp.setUnit(getResources().getString(R.string.unit_temperature));
 //
-//            saveMeasurement(temp);
+//            addMeasurement(temp);
 //            finish();
 //        } else {
 //            showToast(getResources().getString(R.string.error_insering_measurement));
@@ -570,7 +570,7 @@ public class ManuallyAddMeasurement extends AppCompatActivity
 //            heartRate.setTypeId(MeasurementType.HEART_RATE);
 //
 //            systolic.addMeasurement(diastolic, heartRate);
-//            saveMeasurement(systolic);
+//            addMeasurement(systolic);
 //            finish();
 //            return;
 //        }
@@ -588,7 +588,7 @@ public class ManuallyAddMeasurement extends AppCompatActivity
 //                measurementHeight.setTypeId(MeasurementType.HEIGHT);
 //                measurementHeight.setUnit(getResources().getString(R.string.unit_meters));
 //
-//                saveMeasurement(measurementHeight);
+//                addMeasurement(measurementHeight);
 //            }
 //            if (circumference != -1) {
 //                Measurement measurementCircumference = new Measurement();
@@ -597,7 +597,7 @@ public class ManuallyAddMeasurement extends AppCompatActivity
 //                measurementCircumference.setTypeId(MeasurementType.CIRCUMFERENCE);
 //                measurementCircumference.setUnit(getResources().getString(R.string.unit_meters));
 //
-//                saveMeasurement(measurementCircumference);
+//                addMeasurement(measurementCircumference);
 //            }
 //            finish();
 //            return;

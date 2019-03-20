@@ -11,8 +11,12 @@ import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.BaseNetRepository;
 import br.edu.uepb.nutes.haniot.model.Device;
 import br.edu.uepb.nutes.haniot.model.Measurement;
+import br.edu.uepb.nutes.haniot.model.Patient;
+import br.edu.uepb.nutes.haniot.model.PhysicalActivityHabits;
+import br.edu.uepb.nutes.haniot.model.PilotStudy;
 import br.edu.uepb.nutes.haniot.model.User;
 import br.edu.uepb.nutes.haniot.model.UserAccess;
+import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -89,21 +93,41 @@ public class HaniotNetRepository extends BaseNetRepository {
     }
 
     // user
-    public Observable<Void> deleteUserById(String userId) {
+    public Completable deleteUserById(String userId) {
         return haniotService.deleteUser(userId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Observable<Void> changePassword(String userId) {
+    public Completable changePassword(String userId) {
         return haniotService.changePassword(userId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
+    // pilotstudies
+    public Observable<PilotStudy> getPilotStudy(String pilotId) {
+        return haniotService.getPilotStudy(pilotId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    // users.healthprofessionals
+    public Observable<User> getHealthProfissional(String healthProfessionalId) {
+        return haniotService.getHealthProfissional(healthProfessionalId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Observable<User> updateHealthProfissional(User healthProfissional) {
+        return haniotService.updateHealthProfissional(healthProfissional.get_id(), healthProfissional)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
     // users.measurements
-    public Observable<Measurement> saveMeasurement(String userId, Measurement measurement) {
-        return haniotService.saveMeasurement(userId, measurement)
+    public Observable<Measurement> saveMeasurement(Measurement measurement) {
+        return haniotService.addMeasurement(measurement.getUser().get_id(), measurement)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -114,27 +138,28 @@ public class HaniotNetRepository extends BaseNetRepository {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-
-    public Observable<Measurement> getMeasurement(String userId, Measurement measurement) {
-        return haniotService.getMeasurement(userId, measurement)
+    public Observable<Measurement> getMeasurement(String userId, String measurementId) {
+        return haniotService.getMeasurement(userId, measurementId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Observable<Measurement> updateMeasurement(String userId, String measurementId, Measurement measurement) {
-        return haniotService.updateMeasurement(userId, measurementId, measurement)
+    public Observable<Measurement> updateMeasurement(Measurement measurement) {
+        return haniotService.updateMeasurement(measurement.getUser().get_id(),
+                measurement.get_id(), measurement)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Observable<Void> deleteMeasurement(String userId, String measurementId) {
+    public Completable deleteMeasurement(String userId, String measurementId) {
         return haniotService.deleteMeasurement(userId, measurementId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Observable<Device> saveDevice(String userId, Device device) {
-        return haniotService.saveDevice(userId, device)
+    // users.devices
+    public Observable<Device> saveDevice(Device device) {
+        return haniotService.addDevice(device.getUser().get_id(), device)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -151,17 +176,71 @@ public class HaniotNetRepository extends BaseNetRepository {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Observable<Device> updateDevice(String userId, String deviceId, Device device) {
-        return haniotService.updateDevice(userId, deviceId, device)
+    public Observable<Device> updateDevice(Device device) {
+        return haniotService.updateDevice(device.getUser().get_id(), device.get_id(), device)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Observable<Void> deleteDevice(String userId, String deviceId) {
+    public Completable deleteDevice(String userId, String deviceId) {
         return haniotService.deleteDevice(userId, deviceId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
-    //pilotstudies.patients
 
+    // pilotstudies.patients
+    public Observable<Patient> savePatient(Patient patient) {
+        return haniotService.addPatient(patient.getPilotId(), patient)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Observable<List<Patient>> getAllPatients(String pilotId, String sort, int page, int limit) {
+        return haniotService.getAllPatients(pilotId, sort, page, limit)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Observable<Patient> getPatient(String pilotId, String patientId) {
+        return haniotService.getPatient(pilotId, patientId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Observable<Patient> updatePatient(Patient patient) {
+        return haniotService.updatePatient(patient.getPilotId(), patient.get_id(), patient)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Completable deletePatient(String pilotId, String patientId) {
+        return haniotService.deletePatient(pilotId, patientId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    // pilotstudies.patients.sleephabits
+    public Observable<PhysicalActivityHabits> savePhysicalActivityHabit(
+            String pilotId, PhysicalActivityHabits physicalActivityHabits) {
+        return haniotService.addPhysicalActivityHabit(pilotId,
+                physicalActivityHabits.getPatientId(),
+                physicalActivityHabits)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Observable<List<PhysicalActivityHabits>> getAllPhysicalActivityHabits(
+            String pilotId, String patientId, String sort, int page, int limit) {
+        return haniotService.getAllPhysicalActivityHabits(pilotId, patientId, sort, page, limit)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Completable deleteSleepHabit(String pilotId, String patientId, String sleepHabitId) {
+        return haniotService.deleteSleepHabit(pilotId, patientId, sleepHabitId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    // pilotstudies.patients.physicalactivityhabits
 }

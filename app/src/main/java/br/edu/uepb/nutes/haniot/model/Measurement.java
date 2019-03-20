@@ -5,6 +5,7 @@ import java.util.List;
 import io.objectbox.annotation.Backlink;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
+import io.objectbox.annotation.Index;
 import io.objectbox.relation.ToMany;
 import io.objectbox.relation.ToOne;
 
@@ -19,6 +20,9 @@ import io.objectbox.relation.ToOne;
 public class Measurement {
     @Id
     private long id;
+
+    @Index
+    private String _id; // _id in server remote (UUID)
 
     private double value;
     private String unit;
@@ -70,6 +74,14 @@ public class Measurement {
         this.id = id;
     }
 
+    public String get_id() {
+        return _id;
+    }
+
+    public void set_id(String _id) {
+        this._id = _id;
+    }
+
     public double getValue() {
         return value;
     }
@@ -102,8 +114,8 @@ public class Measurement {
         this.children = children;
     }
 
-    public ToOne<User> getUser() {
-        return user;
+    public User getUser() {
+        return user.getTarget();
     }
 
     public ToOne<Device> getDevice() {

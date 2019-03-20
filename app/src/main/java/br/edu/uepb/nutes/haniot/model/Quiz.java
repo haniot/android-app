@@ -28,12 +28,12 @@ public class Quiz {
     @Backlink(to = "quiz")
     ToMany<Question> questions;
 
-    public Quiz(String title, String path){
+    public Quiz(String title, String path) {
 
         //Testa se o titulo não é vazio
-        if (!title.isEmpty() && !title.equals("")){
+        if (!title.isEmpty() && !title.equals("")) {
             this.title = title;
-        }else{
+        } else {
             return;
         }
 
@@ -45,9 +45,9 @@ public class Quiz {
 //        }
 
         //Testa se o path não é vazio
-        if (!path.isEmpty() && !path.equals("")){
+        if (!path.isEmpty() && !path.equals("")) {
             this.path = path;
-        }else{
+        } else {
             return;
         }
 
