@@ -18,7 +18,6 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.auth0.android.jwt.JWT;
-import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -33,10 +32,10 @@ import java.util.List;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.MainActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
-import br.edu.uepb.nutes.haniot.model.Device;
-import br.edu.uepb.nutes.haniot.model.User;
-import br.edu.uepb.nutes.haniot.model.dao.DeviceDAO;
-import br.edu.uepb.nutes.haniot.model.dao.UserDAO;
+import br.edu.uepb.nutes.haniot.data.model.Device;
+import br.edu.uepb.nutes.haniot.data.model.User;
+import br.edu.uepb.nutes.haniot.data.model.dao.DeviceDAO;
+import br.edu.uepb.nutes.haniot.data.model.dao.UserDAO;
 import br.edu.uepb.nutes.haniot.server.Server;
 import br.edu.uepb.nutes.haniot.service.TokenExpirationService;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
@@ -189,12 +188,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         }
                         session.setLogged(user.getIdDb(), token);
 
-                        // FCM TOKEN
-                        String fcmToken = FirebaseInstanceId.getInstance().getToken();
-                        if (fcmToken != null) {
-                            user.setToken(fcmToken);
-                            sendFcmToken(fcmToken);
-                        }
                         tokenExpirationService.initTokenMonitor();
                         syncDevices();
                         startActivity(new Intent(getApplicationContext(), MainActivity.class));
@@ -206,28 +199,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 } finally {
                     loadingSend(false);
                 }
-            }
-        });
-    }
-
-    /**
-     * Send token in FCM.
-     *
-     * @param fcmToken
-     */
-    private void sendFcmToken(String fcmToken) {
-        String path = "users/".concat(session.get_idLogged()).concat("/fcm");
-        String jsonToken = "{\"fcmToken\":\"".concat(fcmToken).concat("\"}");
-
-        Server.getInstance(this).post(path, jsonToken, new Server.Callback() {
-            @Override
-            public void onError(JSONObject result) {
-                Log.d(TAG, result.toString());
-            }
-
-            @Override
-            public void onSuccess(JSONObject result) {
-                Log.d(TAG, result.toString());
             }
         });
     }

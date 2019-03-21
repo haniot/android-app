@@ -15,10 +15,10 @@ import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
-import br.edu.uepb.nutes.haniot.model.ContextMeasurement;
-import br.edu.uepb.nutes.haniot.model.Measurement;
-import br.edu.uepb.nutes.haniot.model.dao.ContextMeasurementDAO;
-import br.edu.uepb.nutes.haniot.model.dao.MeasurementDAO;
+import br.edu.uepb.nutes.haniot.data.model.ContextMeasurement;
+import br.edu.uepb.nutes.haniot.data.model.Measurement;
+import br.edu.uepb.nutes.haniot.data.model.dao.ContextMeasurementDAO;
+import br.edu.uepb.nutes.haniot.data.model.dao.MeasurementDAO;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 
 /**

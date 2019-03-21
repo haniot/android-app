@@ -30,7 +30,6 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 
-import org.greenrobot.essentials.DateUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -39,8 +38,8 @@ import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
-import br.edu.uepb.nutes.haniot.model.Device;
-import br.edu.uepb.nutes.haniot.model.dao.DeviceDAO;
+import br.edu.uepb.nutes.haniot.data.model.Device;
+import br.edu.uepb.nutes.haniot.data.model.dao.DeviceDAO;
 import br.edu.uepb.nutes.haniot.server.Server;
 import br.edu.uepb.nutes.haniot.utils.GattAttributes;
 import br.edu.uepb.nutes.simpleblescanner.SimpleBleScanner;

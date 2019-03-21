@@ -1,6 +1,6 @@
 package br.edu.uepb.nutes.haniot.service.ManagerDevices.callback;
 
-import br.edu.uepb.nutes.haniot.model.Measurement;
+import br.edu.uepb.nutes.haniot.data.model.Measurement;
 
 public interface GlucoseDataCallback {
 

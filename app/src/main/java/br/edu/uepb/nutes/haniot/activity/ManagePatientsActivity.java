@@ -21,13 +21,12 @@ import android.widget.EditText;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.adapter.ManagePatientAdapter;
-import br.edu.uepb.nutes.haniot.model.Patient;
-import br.edu.uepb.nutes.haniot.model.dao.PatientDAO;
+import br.edu.uepb.nutes.haniot.data.model.Patient;
+import br.edu.uepb.nutes.haniot.data.model.dao.PatientDAO;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import br.edu.uepb.nutes.haniot.utils.Log;
 import butterknife.BindView;

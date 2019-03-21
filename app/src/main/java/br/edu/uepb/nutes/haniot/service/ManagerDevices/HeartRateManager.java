@@ -14,8 +14,8 @@ import org.json.JSONObject;
 
 import java.util.UUID;
 
-import br.edu.uepb.nutes.haniot.model.Measurement;
-import br.edu.uepb.nutes.haniot.model.MeasurementType;
+import br.edu.uepb.nutes.haniot.data.model.Measurement;
+import br.edu.uepb.nutes.haniot.data.model.MeasurementType;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.HeartRateDataCallback;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import br.edu.uepb.nutes.haniot.utils.GattAttributes;

@@ -6,11 +6,9 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.edu.uepb.nutes.haniot.model.ContextMeasurement;
-import br.edu.uepb.nutes.haniot.model.ContextMeasurementType;
-import br.edu.uepb.nutes.haniot.model.ContextMeasurementValueType;
-import br.edu.uepb.nutes.haniot.model.Measurement;
-import br.edu.uepb.nutes.haniot.model.MeasurementType;
+import br.edu.uepb.nutes.haniot.data.model.ContextMeasurement;
+import br.edu.uepb.nutes.haniot.data.model.ContextMeasurementType;
+import br.edu.uepb.nutes.haniot.data.model.ContextMeasurementValueType;
 
 /**
  * Parse JSON to ContextMeasurement Object.

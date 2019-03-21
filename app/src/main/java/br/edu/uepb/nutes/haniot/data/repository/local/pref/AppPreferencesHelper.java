@@ -6,8 +6,8 @@ import android.content.SharedPreferences;
 import com.securepreferences.SecurePreferences;
 
 import br.edu.uepb.nutes.haniot.exception.LocalPreferenceException;
-import br.edu.uepb.nutes.haniot.model.User;
-import br.edu.uepb.nutes.haniot.model.UserAccess;
+import br.edu.uepb.nutes.haniot.data.model.User;
+import br.edu.uepb.nutes.haniot.data.model.UserAccess;
 
 /**
  * Class to perform operations on the device's shared preference.

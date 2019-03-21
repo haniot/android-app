@@ -9,7 +9,7 @@ import android.widget.TextView;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.model.Patient;
+import br.edu.uepb.nutes.haniot.data.model.Patient;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import pl.bclogic.pulsator4droid.library.PulsatorLayout;

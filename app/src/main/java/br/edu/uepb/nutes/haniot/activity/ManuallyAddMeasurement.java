@@ -23,7 +23,7 @@ import java.util.Locale;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.fragment.AddAnthropometricsFragment;
 import br.edu.uepb.nutes.haniot.fragment.AddHeartRateManuallyFragment;
-import br.edu.uepb.nutes.haniot.model.ItemGridType;
+import br.edu.uepb.nutes.haniot.data.model.ItemGridType;
 import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
 import butterknife.BindView;
 import butterknife.ButterKnife;

@@ -1,7 +1,7 @@
 package br.edu.uepb.nutes.haniot.data.repository.local.pref;
 
-import br.edu.uepb.nutes.haniot.model.User;
-import br.edu.uepb.nutes.haniot.model.UserAccess;
+import br.edu.uepb.nutes.haniot.data.model.User;
+import br.edu.uepb.nutes.haniot.data.model.UserAccess;
 
 /**
  * Interface for Preferences Helper.

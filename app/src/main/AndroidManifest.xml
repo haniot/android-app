@@ -42,9 +42,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".activity.MainActivity"
-            />
+        <activity android:name=".activity.MainActivity" />
         <activity
             android:name=".activity.DeviceInforActivity"
             android:parentActivityName=".activity.MainActivity"
@@ -99,21 +97,16 @@
 
 
         <!-- ACTIVITIES REGISTER DEVICES -->
-        <activity android:name=".devices.register.DeviceRegisterActivity"/>
+        <activity android:name=".devices.register.DeviceRegisterActivity" />
         <activity android:name=".devices.register.DeviceManagerActivity" />
         <!-- END ACTIVITIES REGISTER DEVICES -->
 
 
         <!-- SERVICES -->
-        <service android:name=".service.TokenExpirationService"/>
         <service
             android:name=".service.BluetoothLeService"
             android:enabled="true" />
-        <service android:name=".service.FCMService">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </intent-filter>
-        </service>
+        <service android:name=".service.TokenExpirationService" />
         <!-- END SERVICES -->
 
         <activity
@@ -124,7 +117,9 @@
         <activity
             android:name=".activity.PatientRegisterActivity"
             android:theme="@style/AppTheme"></activity>
-        <activity android:name=".activity.PatientQuiz" android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar"/>
+        <activity
+            android:name=".activity.PatientQuiz"
+            android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar" />
     </application>
 
 </manifest>

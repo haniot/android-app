@@ -12,8 +12,8 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.model.Patient;
-import br.edu.uepb.nutes.haniot.model.dao.PatientDAO;
+import br.edu.uepb.nutes.haniot.data.model.Patient;
+import br.edu.uepb.nutes.haniot.data.model.dao.PatientDAO;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
