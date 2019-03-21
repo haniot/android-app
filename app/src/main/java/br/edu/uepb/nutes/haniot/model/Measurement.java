@@ -1,6 +1,7 @@
 package br.edu.uepb.nutes.haniot.model;
 
 import java.util.List;
+import java.util.Objects;
 
 import io.objectbox.annotation.Backlink;
 import io.objectbox.annotation.Entity;
@@ -34,7 +35,6 @@ public class Measurement {
     private ToOne<User> user;
     private ToOne<Patient> children;
     private ToOne<Device> device;
-    private ToOne<Training> training;
     @Backlink(to = "measurement")
     private ToMany<ContextMeasurement> contextMeasurements;
     private ToMany<Measurement> measurements;
@@ -114,16 +114,16 @@ public class Measurement {
         this.children = children;
     }
 
-    public User getUser() {
+    public User getUserObj() {
         return user.getTarget();
+    }
+
+    public ToOne<User> getUser() {
+        return user;
     }
 
     public ToOne<Device> getDevice() {
         return device;
-    }
-
-    public ToOne<Training> getTraining() {
-        return training;
     }
 
     public void setUser(User user) {
@@ -132,10 +132,6 @@ public class Measurement {
 
     public void setDevice(Device device) {
         this.device.setTarget(device);
-    }
-
-    public void setTraining(Training training) {
-        this.training.setTarget(training);
     }
 
     public boolean addContext(ContextMeasurement contextMeasurement) {
@@ -190,18 +186,7 @@ public class Measurement {
 
     @Override
     public int hashCode() {
-        int result;
-        long temp;
-        result = (int) (id ^ (id >>> 32));
-        temp = Double.doubleToLongBits(value);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        result = 31 * result + (unit != null ? unit.hashCode() : 0);
-        result = 31 * result + (int) (registrationDate ^ (registrationDate >>> 32));
-        result = 31 * result + (user != null ? user.hashCode() : 0);
-        result = 31 * result + (device != null ? device.hashCode() : 0);
-        result = 31 * result + typeId;
-        result = 31 * result + hasSent;
-        return result;
+        return Objects.hash(value, unit, registrationDate);
     }
 
     @Override
@@ -226,7 +211,6 @@ public class Measurement {
                 ", registrationDate=" + registrationDate +
                 ", user=" + user +
                 ", device=" + device +
-                ", training=" + training +
                 ", contextMeasurements=" + contextMeasurements +
                 ", typeId=" + typeId +
                 ", hasSent=" + hasSent +

@@ -1,7 +1,11 @@
 package br.edu.uepb.nutes.haniot.model;
 
+import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
 
 import io.objectbox.annotation.Backlink;
 import io.objectbox.annotation.Entity;
@@ -144,6 +148,27 @@ public class User {
 
     public void setHealthArea(String healthArea) {
         this.healthArea = healthArea;
+    }
+
+    /**
+     * Convert object to json format.
+     *
+     * @return String
+     */
+    public String toJson() {
+        return new Gson().toJson(this);
+    }
+
+    /**
+     * Convert json to Object.
+     *
+     * @param json String
+     * @return User
+     */
+    public static User jsonDeserialize(String json) {
+        Type typeUser = new TypeToken<User>() {
+        }.getType();
+        return new Gson().fromJson(json, typeUser);
     }
 
     @Override

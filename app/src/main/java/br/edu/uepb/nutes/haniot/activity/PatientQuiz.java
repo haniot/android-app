@@ -17,11 +17,10 @@ import br.edu.uepb.nutes.haniot.model.FeedingHabitsRecord;
 import br.edu.uepb.nutes.haniot.model.FeendingHabitsRecordType;
 import br.edu.uepb.nutes.haniot.model.MedicalRecord;
 import br.edu.uepb.nutes.haniot.model.Patient;
-import br.edu.uepb.nutes.haniot.model.PhysicalActivityHabits;
+import br.edu.uepb.nutes.haniot.model.PhysicalActivityHabit;
 import br.edu.uepb.nutes.haniot.model.SchoolActivityFrequencyType;
 import br.edu.uepb.nutes.haniot.model.SleepHabit;
 import br.edu.uepb.nutes.haniot.model.WeeklyFoodRecord;
-import br.edu.uepb.nutes.haniot.model.dao.DeviceDAO;
 import br.edu.uepb.nutes.haniot.model.dao.PatientDAO;
 import br.edu.uepb.nutes.simplesurvey.base.SimpleSurvey;
 import br.edu.uepb.nutes.simplesurvey.question.DichotomicChoice;
@@ -42,7 +41,7 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
     private final int CATEGORY_PAGE = -2;
     Patient patient;
 
-    private PhysicalActivityHabits physicalActivityHabits;
+    private PhysicalActivityHabit physicalActivityHabits;
     private FeedingHabitsRecord feedingHabitsRecord;
     private MedicalRecord medicalRecord;
     private List<ChronicDisease> chronicDiseases;
@@ -65,7 +64,7 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
         feedingHabitsRecord = new FeedingHabitsRecord();
         medicalRecord = new MedicalRecord();
         sleepHabit = new SleepHabit();
-        physicalActivityHabits = new PhysicalActivityHabits();
+        physicalActivityHabits = new PhysicalActivityHabit();
     }
 
     private void validateAnswers() {

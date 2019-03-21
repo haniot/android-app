@@ -155,7 +155,7 @@ public class SynchronizationServer {
         result.addProperty("unit", m.getUnit());
         result.addProperty("registrationDate", m.getRegistrationDate());
         result.addProperty("typeId", m.getTypeId());
-        result.addProperty("userId", m.getUser().getTarget().get_id());
+        result.addProperty("userId", m.getUserObj().get_id());
         if (m.getDevice().getTarget() != null) {
             result.addProperty("deviceId", m.getDevice().getTarget().get_id());
         }

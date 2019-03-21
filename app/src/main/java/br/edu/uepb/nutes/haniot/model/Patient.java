@@ -1,19 +1,12 @@
 package br.edu.uepb.nutes.haniot.model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-
-import java.io.Serializable;
-import java.util.List;
 
 import io.objectbox.annotation.Backlink;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.annotation.Index;
-import io.objectbox.annotation.Transient;
 import io.objectbox.relation.ToMany;
 import io.objectbox.relation.ToOne;
 
@@ -41,7 +34,7 @@ public class Patient {
 
 
     private ToOne<SleepHabit> sleepHabit;
-    private ToOne<PhysicalActivityHabits> physicalActivityHabits;
+    private ToOne<PhysicalActivityHabit> physicalActivityHabits;
     private ToOne<FeedingHabitsRecord> feedingHabitsRecord;
     private ToOne<MedicalRecord> medicalRecord;
 
@@ -160,11 +153,11 @@ public class Patient {
         this.medicalRecord = medicalRecord;
     }
 
-    public ToOne<PhysicalActivityHabits> getPhysicalActivityHabits() {
+    public ToOne<PhysicalActivityHabit> getPhysicalActivityHabits() {
         return physicalActivityHabits;
     }
 
-    public void setPhysicalActivityHabits(PhysicalActivityHabits physicalActivityHabits) {
+    public void setPhysicalActivityHabits(PhysicalActivityHabit physicalActivityHabits) {
         this.physicalActivityHabits.setTarget(physicalActivityHabits);
     }
 }

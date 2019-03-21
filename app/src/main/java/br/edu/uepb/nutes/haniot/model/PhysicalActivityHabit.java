@@ -7,7 +7,7 @@ import io.objectbox.annotation.Convert;
 import io.objectbox.annotation.Entity;
 
 @Entity
-public class PhysicalActivityHabits extends ActivityHabitsRecord {
+public class PhysicalActivityHabit extends ActivityHabitsRecord {
 
     private String schoolActivityFreq;
 

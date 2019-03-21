@@ -156,8 +156,12 @@ public class Device implements Parcelable {
         this.typeId = typeId;
     }
 
-    public User getUser() {
+    public User getUserObj() {
         return user.getTarget();
+    }
+
+    public ToOne<User> getUser() {
+        return user;
     }
 
     public void setUser(User user) {

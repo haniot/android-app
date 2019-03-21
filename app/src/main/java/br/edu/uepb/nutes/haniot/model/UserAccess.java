@@ -132,15 +132,6 @@ public class UserAccess implements Parcelable {
     }
 
     /**
-     * Convert object to string in json format.
-     *
-     * @return String
-     */
-    public String toJsonString() {
-        return String.valueOf(this.toJson());
-    }
-
-    /**
      * Convert object to json format.
      *
      * @return String

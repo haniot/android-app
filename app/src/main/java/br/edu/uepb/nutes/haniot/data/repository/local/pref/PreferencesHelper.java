@@ -1,5 +1,6 @@
 package br.edu.uepb.nutes.haniot.data.repository.local.pref;
 
+import br.edu.uepb.nutes.haniot.model.User;
 import br.edu.uepb.nutes.haniot.model.UserAccess;
 
 /**
@@ -8,23 +9,37 @@ import br.edu.uepb.nutes.haniot.model.UserAccess;
  * @author Copyright (c) 2018, NUTES/UEPB
  */
 public interface PreferencesHelper {
-    boolean addUserAccessHaniot(final UserAccess userAccess);
+    boolean saveUserAccessHaniot(final UserAccess userAccess);
 
-    boolean addString(String key, String value);
+    boolean saveUserLogged(final User user);
 
-    boolean addBoolean(String key, boolean value);
+    boolean saveString(String key, String value);
 
-    boolean addInt(String key, int value);
+    boolean saveBoolean(String key, boolean value);
 
-    boolean addLong(String key, long value);
+    boolean saveInt(String key, int value);
+
+    boolean saveLong(String key, long value);
+
+    boolean saveFloat(String key, float value);
 
     UserAccess getUserAccessHaniot();
 
-    boolean removeUserAccessHaniot();
-
-    boolean removeItem(String key);
+    User getUserLogged();
 
     String getString(String key);
 
     boolean getBoolean(String key);
+
+    int getInt(String key);
+
+    long getLong(String key);
+
+    float getFloat(String key);
+
+    boolean removeUserAccessHaniot();
+
+    boolean removeUserLogged();
+
+    boolean removeItem(String key);
 }
