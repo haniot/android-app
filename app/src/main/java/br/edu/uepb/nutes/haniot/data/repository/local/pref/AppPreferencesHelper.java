@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 
 import com.securepreferences.SecurePreferences;
 
+import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.exception.LocalPreferenceException;
 import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.model.UserAccess;
@@ -18,6 +19,7 @@ import br.edu.uepb.nutes.haniot.data.model.UserAccess;
 public class AppPreferencesHelper implements PreferencesHelper {
     private final String PREF_KEY_AUTH_STATE_HANIOT = "pref_key_user_access_haniot";
     private final String PREF_KEY_USER_PROFILE = "pref_key_user_profile";
+    private final String PREF_KEY_PATIENT = "pref_key_patient";
 
     private static AppPreferencesHelper instance;
     private SharedPreferences mPrefs;
@@ -49,6 +51,17 @@ public class AppPreferencesHelper implements PreferencesHelper {
 
         return mPrefs.edit()
                 .putString(PREF_KEY_USER_PROFILE, String.valueOf(user.toJson()))
+                .commit();
+    }
+
+    @Override
+    public boolean saveLastPatient(Patient patient) {
+        if (patient == null) {
+            throw new LocalPreferenceException("attribute patient can not be null or empty!");
+        }
+
+        return mPrefs.edit()
+                .putString(PREF_KEY_PATIENT, String.valueOf(patient.toJson()))
                 .commit();
     }
 
@@ -92,6 +105,12 @@ public class AppPreferencesHelper implements PreferencesHelper {
     public User getUserLogged() {
         String user = mPrefs.getString(PREF_KEY_USER_PROFILE, null);
         return User.jsonDeserialize(user);
+    }
+
+    @Override
+    public Patient getlastPatient() {
+        String patient = mPrefs.getString(PREF_KEY_PATIENT, null);
+        return Patient.jsonDeserialize(patient);
     }
 
     @Override

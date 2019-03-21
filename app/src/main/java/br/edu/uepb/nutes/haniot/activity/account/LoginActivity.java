@@ -189,7 +189,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         session.setLogged(user.getIdDb(), token);
 
                         tokenExpirationService.initTokenMonitor();
-                        syncDevices();
+                        //syncDevices();
                         startActivity(new Intent(getApplicationContext(), MainActivity.class));
                     } else {
                         printMessage(result);

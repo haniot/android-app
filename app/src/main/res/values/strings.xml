@@ -697,6 +697,7 @@
     <string name="first_login" translatable="false">First login</string>
 
     <!-- Patient Quiz -->
+    <string name="message_info_patient">Informe os dados básicos do paciente:</string>
     <string name="q1" translatable="false">Na semana passada você praticou:</string>
     <string name="q2" translatable="false">Você faz educação física da escola?</string>
     <string name="q3" translatable="false">Você toma café da manhã?</string>

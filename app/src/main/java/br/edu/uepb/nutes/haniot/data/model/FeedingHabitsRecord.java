@@ -96,4 +96,19 @@ public class FeedingHabitsRecord {
     public void setBreakfastDailyFrequency(String breakfastDailyFrequency) {
         this.breakfastDailyFrequency = breakfastDailyFrequency;
     }
+
+    @Override
+    public String toString() {
+        return "FeedingHabitsRecord{" +
+                "idBd=" + idBd +
+                ", id='" + id + '\'' +
+                ", patientId='" + patientId + '\'' +
+                ", createdAt='" + createdAt + '\'' +
+                ", weeklyFeedingHabits=" + weeklyFeedingHabits +
+                ", dailyWaterGlasses='" + dailyWaterGlasses + '\'' +
+                ", sixMonthBreastFeeding='" + sixMonthBreastFeeding + '\'' +
+                ", foodAllergyintolerance='" + foodAllergyintolerance + '\'' +
+                ", breakfastDailyFrequency='" + breakfastDailyFrequency + '\'' +
+                '}';
+    }
 }

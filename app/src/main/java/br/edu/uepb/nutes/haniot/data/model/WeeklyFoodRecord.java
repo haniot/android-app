@@ -34,4 +34,13 @@ public class WeeklyFoodRecord {
     public void setSeveDaysFreq(String seveDaysFreq) {
         this.seveDaysFreq = seveDaysFreq;
     }
+
+    @Override
+    public String toString() {
+        return "WeeklyFoodRecord{" +
+                "idBd=" + idBd +
+                ", food='" + food + '\'' +
+                ", seveDaysFreq='" + seveDaysFreq + '\'' +
+                '}';
+    }
 }

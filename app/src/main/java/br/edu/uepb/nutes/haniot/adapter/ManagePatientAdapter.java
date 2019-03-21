@@ -21,8 +21,10 @@ import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.MainActivity;
 import br.edu.uepb.nutes.haniot.activity.PatientRegisterActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
+import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.dao.PatientDAO;
+import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.utils.Log;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,12 +40,14 @@ public class ManagePatientAdapter extends RecyclerView.Adapter<ManagePatientAdap
     public final int REMOVE_TYPE_NOT_FILTERED = 1;
     public final int REMOVE_TYPE_FILTERED = 2;
     private final int EMPTY_VIEW = 77777;
+    private OnRecyclerViewListener onRecyclerViewListener;
 
-    public ManagePatientAdapter(List<Patient> patientList, Context context) {
+    public ManagePatientAdapter(List<Patient> patientList, Context context, OnRecyclerViewListener onRecyclerViewListener) {
 
         this.itemList = patientList;
         this.itemListCopy.addAll(patientList);
         this.context = context;
+        this.onRecyclerViewListener = onRecyclerViewListener;
         session = new Session(context);
     }
 
@@ -86,6 +90,7 @@ public class ManagePatientAdapter extends RecyclerView.Adapter<ManagePatientAdap
             holder.textName.setText(patient.getFirstName());
             holder.textAge.setText(patient.getBirthDate()+ " anos");
             holder.btnSelect.setOnClickListener(c -> {
+                //TODO Usar interface na activity
 
                 final Intent intent = new Intent(context, PatientRegisterActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -94,11 +99,13 @@ public class ManagePatientAdapter extends RecyclerView.Adapter<ManagePatientAdap
                         0,
                         holder.itemView.getWidth(),
                         holder.itemView.getHeight()).toBundle();
-                intent.putExtra("Patient", patient.getId());
+                intent.putExtra("Patient", patient.getIdDb());
 
                 context.startActivity(intent, bundle);
             });
             holder.btnDelete.setOnClickListener(d -> {
+                //TODO Usar interface na activity
+
 
                 int oldId = searchPositionByChildrenId(patient.get_id());
                 if (oldId != -1) {
@@ -128,20 +135,21 @@ public class ManagePatientAdapter extends RecyclerView.Adapter<ManagePatientAdap
                 }
             });
             holder.itemView.setOnClickListener(c -> {
+                //TODO Usar interface na activity
+                onRecyclerViewListener.onItemClick(patient);
                 //Código abaixo funcional!
-                Intent it = new Intent(context, MainActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putString(context.getResources().getString(R.string.id_last_patient), patient.get_id());
-                bundle.putString(context.getResources().getString(R.string.name_last_patient), patient.getFirstName());
-                it.putExtras(bundle);
-                it.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+               // Intent it = new Intent(context, MainActivity.class);
+//                Bundle bundle = new Bundle();
+//                bundle.putString(context.getResources().getString(R.string.id_last_patient), patient.get_id());
+//                bundle.putString(context.getResources().getString(R.string.name_last_patient), patient.getFirstName());
+//                it.putExtras(bundle);
+//                it.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//
+//                String id = context.getResources().getString(R.string.id_last_patient);
+//                String name = context.getResources().getString(R.string.name_last_patient);
+//                session.putString(id, patient.get_id());
+//                session.putString(name, patient.getFirstName());
 
-                String id = context.getResources().getString(R.string.id_last_patient);
-                String name = context.getResources().getString(R.string.name_last_patient);
-                session.putString(id, patient.get_id());
-                session.putString(name, patient.getFirstName());
-
-                context.startActivity(it);
             });
 
         }

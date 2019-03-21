@@ -35,4 +35,13 @@ public class ChronicDisease {
     public void setDiseaseHistory(String diseaseHistory) {
         this.diseaseHistory = diseaseHistory;
     }
+
+    @Override
+    public String toString() {
+        return "ChronicDisease{" +
+                "idBd=" + idBd +
+                ", type='" + type + '\'' +
+                ", diseaseHistory='" + diseaseHistory + '\'' +
+                '}';
+    }
 }

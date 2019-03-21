@@ -39,12 +39,27 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/textView8"
         android:layout_centerHorizontal="true"
-        android:layout_marginLeft="16dp"
+        android:layout_marginLeft="20dp"
         android:layout_marginTop="44dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginRight="20dp"
         android:ems="10"
-        android:hint="Nome"
+        android:hint="@string/name"
         android:inputType="textPersonName"
+        android:textColor="@color/colorAccent"
+        android:textColorHint="@android:color/tertiary_text_light" />
+
+    <EditText
+        android:id="@+id/birth_edittext"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/name_edittext"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="44dp"
+        android:layout_marginRight="20dp"
+        android:editable="false"
+        android:ems="10"
+        android:hint="@string/date_of_birth"
         android:textColor="@color/colorAccent"
         android:textColorHint="@android:color/tertiary_text_light" />
 
@@ -52,11 +67,11 @@
         android:id="@+id/radio_group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/name_edittext"
+        android:layout_below="@+id/birth_edittext"
         android:layout_centerHorizontal="true"
-        android:layout_marginLeft="22dp"
+        android:layout_marginLeft="26dp"
         android:layout_marginTop="44dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginRight="20dp"
         android:orientation="horizontal">
 
         <TextView
@@ -65,7 +80,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:layout_weight="1"
-            android:text="Gênero"
+            android:text="@string/gender"
             android:textColor="@android:color/tertiary_text_light"
             android:textSize="17sp" />
 
@@ -75,7 +90,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:checked="true"
-            android:text="Masculino"
+            android:text="@string/gender_male"
             android:textColor="@android:color/tertiary_text_light" />
 
         <RadioButton
@@ -83,33 +98,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Feminino"
+            android:text="@string/gender_female"
             android:textColor="@android:color/tertiary_text_light" />
     </RadioGroup>
-
-    <SeekBar
-        android:id="@+id/age_seek"
-        style="@android:style/Widget.Material.Light.SeekBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/textView9"
-        android:layout_centerHorizontal="true"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginRight="16dp"
-        android:max="5"
-        android:progress="0" />
-
-    <TextView
-        android:id="@+id/age_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/age_seek"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
-        android:text="8 anos"
-        android:textColor="@color/colorAccent"
-        android:textSize="30sp" />
 
     <TextView
         android:id="@+id/textView8"
@@ -118,7 +109,7 @@
         android:layout_below="@+id/gender_icon"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:text="Informe os dados básicos do paciente:"
+        android:text="@string/message_info_patient"
         android:textSize="17sp" />
 
     <android.support.design.widget.FloatingActionButton
@@ -133,17 +124,6 @@
         android:layout_marginBottom="@dimen/fab_margin"
         android:clickable="true"
         app:srcCompat="@drawable/ic_next" />
-
-    <TextView
-        android:id="@+id/textView9"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/radio_group"
-        android:layout_marginStart="22dp"
-        android:layout_marginTop="44dp"
-        android:text="Idade"
-        android:textColor="@android:color/tertiary_text_light"
-        android:textSize="17sp" />
 
 
 </RelativeLayout>

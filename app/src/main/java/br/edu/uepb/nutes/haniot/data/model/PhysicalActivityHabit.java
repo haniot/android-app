@@ -29,4 +29,12 @@ public class PhysicalActivityHabit extends ActivityHabitsRecord {
     public void setWeeklyActivities(List<String> weeklyActivities) {
         this.weeklyActivities = weeklyActivities;
     }
+
+    @Override
+    public String toString() {
+        return "PhysicalActivityHabit{" +
+                "schoolActivityFreq='" + schoolActivityFreq + '\'' +
+                ", weeklyActivities=" + weeklyActivities +
+                '}';
+    }
 }

@@ -49,4 +49,14 @@ public abstract class ActivityHabitsRecord {
     public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
     }
+
+    @Override
+    public String toString() {
+        return "ActivityHabitsRecord{" +
+                "idBd=" + idBd +
+                ", id='" + id + '\'' +
+                ", patientId='" + patientId + '\'' +
+                ", createdAt='" + createdAt + '\'' +
+                '}';
+    }
 }

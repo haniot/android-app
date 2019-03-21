@@ -1,5 +1,6 @@
 package br.edu.uepb.nutes.haniot.data.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -11,6 +12,7 @@ import io.objectbox.annotation.Backlink;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.annotation.Index;
+import io.objectbox.annotation.Transient;
 import io.objectbox.relation.ToMany;
 import io.objectbox.relation.ToOne;
 
@@ -29,13 +31,16 @@ public class User {
 
     @Index
     @SerializedName("id")
+    @Expose()
     private String _id; // _id in server remote (UUID)
 
     @SerializedName("name")
+    @Expose()
     private String name;
 
     @Index
     @SerializedName("email")
+    @Expose()
     private String email;
 
     @SerializedName("token")
@@ -47,17 +52,9 @@ public class User {
     @SerializedName("healthArea")
     private String healthArea; // provide by the server
 
-    private ToOne<PilotStudy> pilotStudy;
     /**
      * RELATIONS
      */
-
-    /**
-     * {@link Measurement}
-     */
-    @Backlink(to = "user")
-    private ToMany<Measurement> measurements;
-
 
     /**
      * {@link UserType ()}
@@ -126,20 +123,12 @@ public class User {
         this.userType = userType;
     }
 
-    public ToMany<Measurement> getMeasurements() {
-        return measurements;
-    }
-
     public String getPassword() {
         return password;
     }
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public void setMeasurements(ToMany<Measurement> measurements) {
-        this.measurements = measurements;
     }
 
     public String getHealthArea() {
@@ -181,18 +170,6 @@ public class User {
         return other.get_id().equals(this.get_id()) && other.getEmail().equals(this.getEmail());
     }
 
-    public ToOne<PilotStudy> getPilotStudy() {
-        return pilotStudy;
-    }
-
-    public void setPilotStudy(ToOne<PilotStudy> pilotStudy) {
-        this.pilotStudy = pilotStudy;
-    }
-
-    public void setPilotStudy(PilotStudy pilotStudy) {
-        this.pilotStudy.setTarget(pilotStudy);
-    }
-
     @Override
     public String toString() {
         return "User{" +
@@ -201,7 +178,6 @@ public class User {
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", token='" + token + '\'' +
-                ", measurements=" + measurements +
                 ", userType=" + userType +
                 '}';
     }

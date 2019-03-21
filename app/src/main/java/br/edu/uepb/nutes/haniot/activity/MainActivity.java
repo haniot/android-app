@@ -23,6 +23,7 @@ import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.account.LoginActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.activity.settings.SettingsActivity;
+import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.fragment.DashboardChartsFragment;
 import br.edu.uepb.nutes.haniot.fragment.MeasurementsGridFragment;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
@@ -43,23 +44,21 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
     private final int REQUEST_ENABLE_BLUETOOTH = 1;
     private final int REQUEST_ENABLE_LOCATION = 2;
 
-    private Session session;
-    private Patient patient;
-
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-
     @BindView(R.id.frameCharts)
     FrameLayout frameChart;
-
     @BindView(R.id.frameMeasurements)
     FrameLayout frameMeasurements;
 
-    MeasurementsGridFragment measurementsGridFragment;
-    DashboardChartsFragment dashboardChartsFragment;
+    private MeasurementsGridFragment measurementsGridFragment;
+    private DashboardChartsFragment dashboardChartsFragment;
+    private AppPreferencesHelper appPreferencesHelper;
+    private Patient patient;
 
     /**
      * On create.
+     *
      * @param savedInstanceState
      */
     @Override
@@ -68,17 +67,21 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        this.session = new Session(getApplicationContext());
-
         toolbar.setTitle(getResources().getString(R.string.app_name));
         setSupportActionBar(toolbar);
+        appPreferencesHelper = AppPreferencesHelper.getInstance(this);
         hasPermissions();
+        checkPatient();
+        initResources();
+    }
 
+    private void initResources() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction chartTransition = fragmentManager.beginTransaction();
         dashboardChartsFragment = new DashboardChartsFragment();
         chartTransition.replace(R.id.frameCharts, dashboardChartsFragment);
         chartTransition.commit();
+
         FragmentTransaction measurementsTransition = fragmentManager.beginTransaction();
         measurementsGridFragment = new MeasurementsGridFragment();
         measurementsTransition.replace(R.id.frameMeasurements, measurementsGridFragment);
@@ -115,13 +118,9 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
      * Set patient selected.
      */
     public void checkPatient() {
-        patient = PatientDAO.getInstance(this)
-                .getFromID(session.getString(getString(R.string.id_last_patient)));
-
-        if (patient != null) {
-            dashboardChartsFragment.updateNamePatient(patient);
-        } else {
-            showToast("Nenhum paciente selecionado!");
+        patient = appPreferencesHelper.getlastPatient();
+        if (patient == null) {
+            showToast(getResources().getString(R.string.noPatientSelected));
             startActivity(new Intent(this, ManagePatientsActivity.class));
         }
     }
@@ -208,9 +207,7 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
             default:
                 break;
         }
-
         return super.onOptionsItemSelected(item);
-
     }
 
     private void showToast(final String menssage) {
@@ -230,6 +227,7 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
 
     /**
      * Notify new measurement received to dashboard.
+     *
      * @param valueMeasurement
      */
     @Override
@@ -237,4 +235,7 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
         dashboardChartsFragment.updateValueMeasurement(valueMeasurement);
     }
 
+    public Patient getPatientSelected() {
+        return patient;
+    }
 }

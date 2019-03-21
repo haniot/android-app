@@ -1,7 +1,13 @@
 package br.edu.uepb.nutes.haniot.data.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.google.gson.reflect.TypeToken;
+
+import java.io.Serializable;
+import java.lang.reflect.Type;
 
 import io.objectbox.annotation.Backlink;
 import io.objectbox.annotation.Entity;
@@ -11,32 +17,32 @@ import io.objectbox.relation.ToMany;
 import io.objectbox.relation.ToOne;
 
 @Entity
-public class Patient {
+public class Patient{
 
     @Id
     @Expose(serialize = false)
-    private long id;
+    private long idDb;
 
     @Index
     @SerializedName("id")
     private String _id;
+
     @Index
-    @SerializedName("pilotId")
+    @SerializedName("pilotstudy_id")
     private String pilotId;
-    @SerializedName("firstName")
+
+    @SerializedName("first_name")
     private String firstName;
-    @SerializedName("lastName")
+
+    @SerializedName("last_name")
     private String lastName;
+
     @SerializedName("gender")
     private String gender;
-    @SerializedName("birthDate")
+
+    @SerializedName("birth_date")
     private String birthDate;
 
-
-    private ToOne<SleepHabit> sleepHabit;
-    private ToOne<PhysicalActivityHabit> physicalActivityHabits;
-    private ToOne<FeedingHabitsRecord> feedingHabitsRecord;
-    private ToOne<MedicalRecord> medicalRecord;
 
     /**
      * RELATIONS
@@ -46,6 +52,8 @@ public class Patient {
      * {@link Measurement}
      */
     @Backlink(to = "children")
+    @Expose(serialize = false)
+    @JsonIgnore
     ToMany<Measurement> measurements;
 
     public Patient() {
@@ -60,12 +68,12 @@ public class Patient {
         this.measurements = measurements;
     }
 
-    public long getId() {
-        return id;
+    public long getIdDb() {
+        return idDb;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setIdDb(long idDb) {
+        this.idDb = idDb;
     }
 
     public String get_id() {
@@ -117,47 +125,39 @@ public class Patient {
         this.birthDate = birthDate;
     }
 
-    public void setSleepHabit(SleepHabit sleepHabit) {
-        this.sleepHabit.setTarget(sleepHabit);
+
+    /**
+     * Convert object to json format.
+     *
+     * @return String
+     */
+    public String toJson() {
+        return new Gson().toJson(this);
     }
 
-    public ToOne<FeedingHabitsRecord> getFeedingHabitsRecord() {
-        return feedingHabitsRecord;
+    /**
+     * Convert json to Object.
+     *
+     * @param json String
+     * @return User
+     */
+    public static Patient jsonDeserialize(String json) {
+        Type typePatient = new TypeToken<Patient>() {
+        }.getType();
+        return new Gson().fromJson(json, typePatient);
     }
 
-    public void setFeedingHabitsRecord(FeedingHabitsRecord feedingHabitsRecord) {
-        this.feedingHabitsRecord.setTarget(feedingHabitsRecord);
-    }
-
-    public void setMedicalRecord(MedicalRecord medicalRecord) {
-        this.medicalRecord.setTarget(medicalRecord);
-    }
-
-    public void setSleepHabit(ToOne<SleepHabit> sleepHabit) {
-        this.sleepHabit = sleepHabit;
-    }
-
-    public ToOne<SleepHabit> getSleepHabit() {
-        return sleepHabit;
-    }
-
-    public ToOne<MedicalRecord> getMedicalRecord() {
-        return medicalRecord;
-    }
-
-    public void setFeedingHabitsRecord(ToOne<FeedingHabitsRecord> feedingHabitsRecord) {
-        this.feedingHabitsRecord = feedingHabitsRecord;
-    }
-
-    public void setMedicalRecord(ToOne<MedicalRecord> medicalRecord) {
-        this.medicalRecord = medicalRecord;
-    }
-
-    public ToOne<PhysicalActivityHabit> getPhysicalActivityHabits() {
-        return physicalActivityHabits;
-    }
-
-    public void setPhysicalActivityHabits(PhysicalActivityHabit physicalActivityHabits) {
-        this.physicalActivityHabits.setTarget(physicalActivityHabits);
+    @Override
+    public String toString() {
+        return "Patient{" +
+                "idDb=" + idDb +
+                ", _id='" + _id + '\'' +
+                ", pilotId='" + pilotId + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", gender='" + gender + '\'' +
+                ", birthDate='" + birthDate + '\'' +
+                ", measurements=" + measurements +
+                '}';
     }
 }

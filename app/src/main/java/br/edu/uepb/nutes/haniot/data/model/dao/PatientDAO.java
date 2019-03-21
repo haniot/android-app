@@ -37,7 +37,7 @@ public class PatientDAO {
 
 //    Search patient by id
     public Patient get(@NonNull long id){
-        return patientBox.query().equal(Patient_.id,id).build().findFirst();
+        return patientBox.query().equal(Patient_.idDb,id).build().findFirst();
     }
 
 //    Search patient by id
@@ -57,12 +57,12 @@ public class PatientDAO {
 
 //    update patient
     public boolean update(@NonNull Patient patient){
-        if (patient.getId() == 0){
+        if (patient.getIdDb() == 0){
             Patient patientUp = get(patient.getFirstName());
 
             if (patientUp == null) return false;
 
-            patient.setId(patientUp.getId());
+            patient.setIdDb(patientUp.getIdDb());
             if (patient.get_id() == null) patient.set_id(patientUp.get_id());
         }
         return save(patient);
@@ -70,7 +70,7 @@ public class PatientDAO {
 
 //    remove patient
     public boolean remove (@NonNull Patient patient){
-        return patientBox.query().equal(Patient_.id,patient.getId()).build().remove() > 0;
+        return patientBox.query().equal(Patient_.idDb,patient.getIdDb()).build().remove() > 0;
     }
 
 }

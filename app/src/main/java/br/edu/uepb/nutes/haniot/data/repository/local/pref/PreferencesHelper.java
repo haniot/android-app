@@ -1,5 +1,6 @@
 package br.edu.uepb.nutes.haniot.data.repository.local.pref;
 
+import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.model.UserAccess;
 
@@ -12,6 +13,8 @@ public interface PreferencesHelper {
     boolean saveUserAccessHaniot(final UserAccess userAccess);
 
     boolean saveUserLogged(final User user);
+
+     boolean saveLastPatient(Patient patient);
 
     boolean saveString(String key, String value);
 
@@ -26,6 +29,8 @@ public interface PreferencesHelper {
     UserAccess getUserAccessHaniot();
 
     User getUserLogged();
+
+    Patient getlastPatient();
 
     String getString(String key);
 

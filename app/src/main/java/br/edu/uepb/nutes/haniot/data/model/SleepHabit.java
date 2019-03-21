@@ -23,4 +23,12 @@ public class SleepHabit extends ActivityHabitsRecord {
     public void setWeekDayWakeUp(String weekDayWakeUp) {
         this.weekDayWakeUp = weekDayWakeUp;
     }
+
+    @Override
+    public String toString() {
+        return "SleepHabit{" +
+                "weekDaySleep='" + weekDaySleep + '\'' +
+                ", weekDayWakeUp='" + weekDayWakeUp + '\'' +
+                '}';
+    }
 }
