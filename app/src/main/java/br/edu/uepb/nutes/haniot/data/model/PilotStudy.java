@@ -27,6 +27,7 @@ public class PilotStudy {
     private boolean isActive;
     private String start;
     private String end;
+    private boolean isSelected;
 
     @Convert(converter = ConverterStringToDatabase.class, dbType = String.class)
     private List<String> healthProfessionalsId;
@@ -85,6 +86,14 @@ public class PilotStudy {
 
     public void setIdDb(long idDb) {
         this.idDb = idDb;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
     }
 
     /**

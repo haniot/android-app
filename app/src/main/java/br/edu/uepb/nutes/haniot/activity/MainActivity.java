@@ -118,7 +118,8 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
      * Required bluetooth ble and location.
      */
     private void checkPermissions() {
-        if (!BluetoothAdapter.getDefaultAdapter().isEnabled()) {
+        if (BluetoothAdapter.getDefaultAdapter() != null &&
+                !BluetoothAdapter.getDefaultAdapter().isEnabled()) {
             requestBluetoothEnable();
         }
 
@@ -218,7 +219,7 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
     /**
      * Notify new measurement received to dashboard.
      *
-     * @param valueMeasurement
+     * @param valueMeasurement {@link String}
      */
     @Override
     public void notifyNewMeasurement(String valueMeasurement) {

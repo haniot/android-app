@@ -88,10 +88,13 @@
     <string name="welcome_hp">Seja bem-vindo(a), %s</string>
     <string name="welcome_hp_desc">Aqui você poderá:\n• Cadastrar/gerenciar seus pacientes;\n• Submeter questionários para seus pacientes responderem;\n• Realizar medições;\n• Consultar históricos e muito mais.</string>
     <string name="welcome_hp_instructions">Para continuarmos você precisa selecionar o piloto que deseja relizar o estudo.</string>
-    <string name="piloty_study">Estudo Piloto</string>
-    <string name="piloty_study_desc">Selecione o piloto que deseja realizar o estudo.\nSe você não estiver alocado em nenhum, entre em contato com o administrador.</string>
+    <string name="piloty_study_title">Estudo Piloto</string>
+    <string name="piloty_study_desc">Selecione o piloto que deseja realizar o estudo. Você poderá a qualquer momento voltar aqui e mudar sua escolha.</string>
+    <string name="piloty_study_no_allocated">Você não estar alocado em nenhum piloto de estudo. Por favor, entre em contato com o administrador.</string>
     <string name="piloty_study_inactive_alert">Para os pilotos inativos, apenas o modo de consulta estará disponível.</string>
-    <string name="proceed">Prosseguir</string>
+    <string name="proceed_title">Prosseguir</string>
+    <string name="active_title">Ativo</string>
+    <string name="inactive_title">Inativo</string>
 
     <!--FORMATS-->
     <string name="format_number1">#.0</string>

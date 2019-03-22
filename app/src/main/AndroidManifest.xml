@@ -21,7 +21,8 @@
         <!-- RECEIVER ACCOUNT SERVICE -->
         <receiver android:name=".service.TokenExpirationService$TokenAlarmReceiver" />
         <!-- ACTIVITIES -->
-        <activity android:name=".activity.WelcomeActivity"></activity>
+        <activity android:name=".activity.WelcomeActivity" />
+        <activity android:name=".activity.PilotStudyActivity" />
         <activity android:name=".activity.SplashScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -98,16 +99,14 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name=".activity.PatientQuiz"
-            android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar" />
-        <!-- ACTIVITIES REGISTER DEVICES -->
+            android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar" /> <!-- ACTIVITIES REGISTER DEVICES -->
         <activity android:name=".devices.register.DeviceRegisterActivity" />
-        <activity android:name=".devices.register.DeviceManagerActivity" />
-        <!-- END ACTIVITIES REGISTER DEVICES -->
+        <activity android:name=".devices.register.DeviceManagerActivity" /> <!-- END ACTIVITIES REGISTER DEVICES -->
         <!-- SERVICES -->
         <service
             android:name=".service.BluetoothLeService"
             android:enabled="true" />
-        <service android:name=".service.TokenExpirationService" /> <!-- END SERVICES -->
+        <service android:name=".service.TokenExpirationService" />
     </application>
 
 </manifest>
