@@ -1,5 +1,6 @@
 package br.edu.uepb.nutes.haniot.activity;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
@@ -23,8 +25,6 @@ import butterknife.ButterKnife;
 
 public class PatientRegisterActivity extends AppCompatActivity {
 
-    public final int MINIMUM_AGE = 8;
-
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
@@ -33,6 +33,9 @@ public class PatientRegisterActivity extends AppCompatActivity {
 
     @BindView(R.id.name_edittext)
     EditText nameEditTExt;
+
+    @BindView(R.id.last_name_edittext)
+    EditText lastNameEditTExt;
 
     @BindView(R.id.gender_icon)
     ImageView genderIcon;
@@ -66,7 +69,10 @@ public class PatientRegisterActivity extends AppCompatActivity {
             nameEditTExt.setError(getResources().getString(R.string.required_field));
             validated = false;
         }
-
+        if (lastNameEditTExt.getText().toString().isEmpty()) {
+            lastNameEditTExt.setError(getResources().getString(R.string.required_field));
+            validated = false;
+        }
         if (birthEdittext.getText().toString().isEmpty()) {
             birthEdittext.setError(getResources().getString(R.string.required_field));
             validated = false;
@@ -77,14 +83,13 @@ public class PatientRegisterActivity extends AppCompatActivity {
     private void createPatient() {
         patient = new Patient();
         patient.setFirstName(nameEditTExt.getText().toString());
-        patient.setBirthDate(birthEdittext.getText().toString());
-        Log.i("Patient birthdate", birthEdittext.getText().toString());
+        patient.setLastName(lastNameEditTExt.getText().toString());
+        patient.setBirthDate(DateUtils.formatDate(myCalendar.getTimeInMillis(), DateUtils.DATE_FORMAT_ISO_8601));
         if (genderGroup.getCheckedRadioButtonId() == R.id.male)
-            patient.setGender("Male");
+            patient.setGender("male");
         else
-            patient.setGender("Female");
+            patient.setGender("female");
     }
-
 
     private void initComponents() {
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
@@ -92,10 +97,7 @@ public class PatientRegisterActivity extends AppCompatActivity {
         fab.setOnClickListener(v -> {
             if (validate()) {
                 createPatient();
-                Session session =  new Session(this);
-                appPreferencesHelper.saveUserLogged(session.getUserLogged());
-                //Intent intent = new Intent();
-                //intent.putExtra("patient", patient);
+                appPreferencesHelper.saveLastPatient(patient);
                 startActivity(new Intent(PatientRegisterActivity.this, PatientQuiz.class));
                 finish();
             }
@@ -110,13 +112,14 @@ public class PatientRegisterActivity extends AppCompatActivity {
         });
 
         birthEdittext.setOnClickListener(v -> {
+            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+            inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
             DatePickerDialog dialog = new DatePickerDialog(PatientRegisterActivity.this,
                     (view, year, month, dayOfMonth) -> {
                 myCalendar.set(Calendar.YEAR, year);
                 myCalendar.set(Calendar.MONTH, month);
                 myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                birthEdittext.setText(DateUtils.formatDate(myCalendar.getTime().getTime(),
-                       "yyyy-MM-dd"));
+                birthEdittext.setText(DateUtils.formatDate(myCalendar.getTimeInMillis(), getResources().getString(R.string.date_format)));
             }, 2010, 1, 1);
             dialog.show();
         });

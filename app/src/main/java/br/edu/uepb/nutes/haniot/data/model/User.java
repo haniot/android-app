@@ -46,8 +46,16 @@ public class User {
     @SerializedName("token")
     private String token; // provide by the server
 
-    @Expose(serialize = false)
+    @Expose(deserialize = false)
     private String password;
+
+    @SerializedName("old_password")
+    @Expose(serialize = false)
+    private String oldPassword;
+
+    @SerializedName("new_password")
+    @Expose(serialize = false)
+    private String newPassword;
 
     @SerializedName("healthArea")
     private String healthArea; // provide by the server
@@ -73,6 +81,12 @@ public class User {
         this.name = name;
         this.email = email;
         this.userType = userType;
+    }
+
+    public User(String _id, String oldPassword, String newPassword) {
+        this._id = _id;
+        this.oldPassword = oldPassword;
+        this.newPassword = newPassword;
     }
 
     public long getIdDb() {
@@ -129,6 +143,22 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getOldPassword() {
+        return oldPassword;
+    }
+
+    public void setOldPassword(String oldPassword) {
+        this.oldPassword = oldPassword;
+    }
+
+    public String getNewPassword() {
+        return newPassword;
+    }
+
+    public void setNewPassword(String newPassword) {
+        this.newPassword = newPassword;
     }
 
     public String getHealthArea() {

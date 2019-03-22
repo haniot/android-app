@@ -36,9 +36,9 @@
 
     </PreferenceCategory>
 
-    <!-- Used to set the grid measurements -->
+    <!-- Used to set the grid measurementsDB -->
     <PreferenceCategory
-        android:title="@string/measurements"
+        android:title="@string/measurementsDB"
         android:singleLineTitle="true"
         >
         <SwitchPreference

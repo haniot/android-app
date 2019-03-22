@@ -102,8 +102,8 @@ public class HaniotNetRepository extends BaseNetRepository {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Completable changePassword(String userId) {
-        return haniotService.changePassword(userId)
+    public Completable changePassword(User user) {
+        return haniotService.changePassword(user.get_id(), user)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

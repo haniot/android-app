@@ -1,12 +1,12 @@
 package br.edu.uepb.nutes.haniot.data.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.util.List;
 
 import io.objectbox.annotation.Backlink;
 import io.objectbox.annotation.Entity;
@@ -46,24 +46,9 @@ public class Patient{
      * RELATIONS
      */
 
-    /**
-     * {@link Measurement}
-     */
-    @Backlink(to = "children")
-    @Expose(serialize = false)
-    @JsonIgnore
-    ToMany<Measurement> measurements;
 
     public Patient() {
 
-    }
-
-    public ToMany<Measurement> getMeasurements() {
-        return measurements;
-    }
-
-    public void setMeasurements(ToMany<Measurement> measurements) {
-        this.measurements = measurements;
     }
 
     public long getIdDb() {
@@ -154,7 +139,6 @@ public class Patient{
                 ", lastName='" + lastName + '\'' +
                 ", gender='" + gender + '\'' +
                 ", birthDate='" + birthDate + '\'' +
-                ", measurements=" + measurements +
                 '}';
     }
 }

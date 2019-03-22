@@ -67,8 +67,8 @@ public class MedicalRecord {
         return chronicDiseaseDB;
     }
 
-    public void setChronicDiseaseDB(ToMany<ChronicDisease> chronicDiseaseDB) {
-        this.chronicDiseaseDB = chronicDiseaseDB;
+    public void setChronicDiseaseDB(List<ChronicDisease> chronicDiseaseDB) {
+        this.chronicDiseaseDB.addAll(chronicDiseaseDB);
     }
 
     public List<ChronicDisease> getChronicDiseases() {

@@ -29,7 +29,7 @@ import retrofit2.http.Query;
  * @author Copyright (c) 2018, NUTES/UEPB
  */
 public interface HaniotService {
-    String BASE_URL_HANIOT = "https://192.168.0.120/"; // API GATEWAY LOCAL
+    String BASE_URL_HANIOT = "http://192.168.0.102/"; // API GATEWAY LOCAL
 
     // auth
     @POST("auth")
@@ -49,7 +49,7 @@ public interface HaniotService {
     Completable deleteUser(@Path("user_id") String userId);
 
     @PATCH("users/{user_id}/password")
-    Completable changePassword(@Path("user_id") String userId);
+    Completable changePassword(@Path("user_id") String userId, @Body User user);
 
     // users.healthprofessionals
     @GET("users/healthprofessionals/{healthprofessional_id}")

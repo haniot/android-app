@@ -46,6 +46,7 @@ public class ManagePatientsActivity extends AppCompatActivity implements OnRecyc
     private List<Patient> patientList = new ArrayList<>();
     private ManagePatientAdapter adapter;
     private SearchView searchView;
+    private AppPreferencesHelper appPreferencesHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,10 +58,9 @@ public class ManagePatientsActivity extends AppCompatActivity implements OnRecyc
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        loadData();
         initComponents();
 
-        Session session =  new Session(this);
+        Session session = new Session(this);
         Log.i("AAAA", session.getUserLogged().toJson());
         AppPreferencesHelper.getInstance(this).saveUserLogged(session.getUserLogged());
         Log.i("AAA", AppPreferencesHelper.getInstance(this).getUserLogged().toString());
@@ -69,9 +69,11 @@ public class ManagePatientsActivity extends AppCompatActivity implements OnRecyc
 
     private void initComponents() {
 
+        appPreferencesHelper = AppPreferencesHelper.getInstance(this);
         List<Patient> patients;
 
-        patients = PatientDAO.getInstance(getApplicationContext()).get();
+        //TODO temp 
+        patients = testPatients();
 
         adapter = new ManagePatientAdapter(patients, getApplicationContext(), this);
 
@@ -95,7 +97,6 @@ public class ManagePatientsActivity extends AppCompatActivity implements OnRecyc
 
                 Snackbar snackbar = null;
                 if (patient != null) {
-                    Log.d("TESTE", "Removendo o paciente " + patient.getFirstName());
                     if (adapter.getSearchQuerry().isEmpty()) {
                         int newPosition = adapter.searchOldPatientPosition(patient);
 
@@ -117,10 +118,7 @@ public class ManagePatientsActivity extends AppCompatActivity implements OnRecyc
                                     adapter.restoreItem(patient, position, viewHolder.itemView);
                                 });
                     }
-                } else {
-                    Log.d("TESTE", "Não encontrei o paciente");
                 }
-
                 if (snackbar != null) snackbar.show();
             }
 
@@ -159,58 +157,59 @@ public class ManagePatientsActivity extends AppCompatActivity implements OnRecyc
 
     }
 
-    private void loadData() {
+    private List<Patient> testPatients() {
+        patientList.clear();
+        Patient patient;
 
-//        Patient patient;
-//        SimpleDateFormat spn = new SimpleDateFormat("dd/MM/yyyy");
-//
-//        patient = new Patient();
-//        patient.setFirstName("Fábio Júnior");
-//        patient.set_id("123");
-//        patient.setGender("Masculino");
-//        patient.setBirthDate(DateUtils.formatDate(38323223, DateUtils.DATE_FORMAT_ISO_8601));
-//        //patient.setRegisterDate(spn.format(Calendar.getInstance().getTime()));
-//        patientList.add(patient);
-//
-//        patient = new Patient();
-//        patient.setFirstName("Paulo Barbosa");
-//        patient.set_id("124");
-//        patient.setGender("Masculino");
-//        patient.setBirthDate(DateUtils.formatDate(38323223, DateUtils.DATE_FORMAT_ISO_8601));
-//        //patient.setRegisterDate(spn.format(Calendar.getInstance().getTime()));
-//        patientList.add(patient);
-//
-//        patient = new Patient();
-//        patient.setFirstName("Ana Beatriz");
-//        patient.set_id("125");
-//        patient.setGender("Feminino");
-//        patient.setBirthDate(DateUtils.formatDate(38323223, DateUtils.DATE_FORMAT_ISO_8601));
-//        //patient.setRegisterDate(spn.format(Calendar.getInstance().getTime()));
-//        patientList.add(patient);
-//
-//        patient = new Patient();
-//        patient.setFirstName("Isabele");
-//        patient.set_id("126");
-//        patient.setGender("Feminino");
-//        patient.setBirthDate(DateUtils.formatDate(38323223, DateUtils.DATE_FORMAT_ISO_8601));
-//        //patient.setRegisterDate(spn.format(Calendar.getInstance().getTime()));
-//        patientList.add(patient);
-//
-//        patient = new Patient();
-//        patient.setFirstName("Paulina Leal");
-//        patient.set_id("127");
-//        patient.setGender("Feminino");
-//        patient.setBirthDate(DateUtils.formatDate(38323223, DateUtils.DATE_FORMAT_ISO_8601));
-//        //patient.setRegisterDate(spn.format(Calendar.getInstance().getTime()));
-//        patientList.add(patient);
-//
-//        patient = new Patient();
-//        patient.setFirstName("Douglas Rafael");
-//        patient.set_id("128");
-//        patient.setGender("Masculino");
-//        patient.setBirthDate(DateUtils.formatDate(38323223, DateUtils.DATE_FORMAT_ISO_8601));
-//        //patient.setRegisterDate(spn.format(Calendar.getInstance().getTime()));
-//        patientList.add(patient);
+        patient = appPreferencesHelper.getLastPatient();
+        if (patient != null)
+            patientList.add(patient);
+
+        patient = new Patient();
+        patient.setFirstName("Fábio Júnior");
+        patient.set_id("123");
+        patient.setGender("Male");
+        patient.setBirthDate(DateUtils.formatDate(878180400000L, DateUtils.DATE_FORMAT_ISO_8601));
+        patientList.add(patient);
+
+        patient = new Patient();
+        patient.setFirstName("Paulo Barbosa");
+        patient.set_id("124");
+        patient.setGender("male");
+        patient.setBirthDate(DateUtils.formatDate(878180400000L, DateUtils.DATE_FORMAT_ISO_8601));
+        
+        patientList.add(patient);
+
+        patient = new Patient();
+        patient.setFirstName("Ana Beatriz");
+        patient.set_id("125");
+        patient.setGender("female");
+        patient.setBirthDate(DateUtils.formatDate(878180400000L, DateUtils.DATE_FORMAT_ISO_8601));
+        patientList.add(patient);
+
+        patient = new Patient();
+        patient.setFirstName("Isabele");
+        patient.set_id("126");
+        patient.setGender("female");
+        patient.setBirthDate(DateUtils.formatDate(878180400000L, DateUtils.DATE_FORMAT_ISO_8601));
+        patientList.add(patient);
+
+        patient = new Patient();
+        patient.setFirstName("Paulina Leal");
+        patient.set_id("127");
+        patient.setGender("female");
+        patient.setBirthDate(DateUtils.formatDate(878180400000L, DateUtils.DATE_FORMAT_ISO_8601));
+        patientList.add(patient);
+
+        patient = new Patient();
+        patient.setFirstName("Douglas Rafael");
+        patient.set_id("128");
+        patient.setGender("male");
+        patient.setBirthDate(DateUtils.formatDate(878180400000L, DateUtils.DATE_FORMAT_ISO_8601));
+        
+        patientList.add(patient);
+
+        return patientList;
     }
 
     @Override
@@ -269,25 +268,8 @@ public class ManagePatientsActivity extends AppCompatActivity implements OnRecyc
             case android.R.id.home:
                 finish();
                 break;
-
             case R.id.btnAddPatient:
-
-//                for (Patient patient : patientList) {
-//                    if (PatientDAO.getInstance(getApplicationContext()).save(patient)) {
-//
-//                    }
-//                }
-
                 startActivity(new Intent(this, PatientRegisterActivity.class));
-                break;
-            case R.id.add_patient:
-//                for (Patient patient : patientList) {
-//                    if (PatientDAO.getInstance(getApplicationContext()).save(patient)) {
-//
-//                    }
-//                }
-                startActivity(new Intent(this, PatientRegisterActivity.class));
-
                 break;
         }
 

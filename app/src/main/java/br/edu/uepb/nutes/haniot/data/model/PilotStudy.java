@@ -7,6 +7,7 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.List;
+import java.util.Objects;
 
 import br.edu.uepb.nutes.haniot.utils.ConverterStringToDatabase;
 import io.objectbox.annotation.Convert;
@@ -18,26 +19,34 @@ import io.objectbox.annotation.Index;
 public class PilotStudy {
 
     @Id
-    @Expose(serialize = false)
     private long idDb;
-    @Index
+
     @SerializedName("id")
-    private String id;
+    private String _id;
+
+    @SerializedName("name")
     private String name;
+
+    @SerializedName("is_active")
     private boolean isActive;
+
+    @SerializedName("start")
     private String start;
+
+    @SerializedName("end")
     private String end;
     private boolean isSelected;
 
+    @SerializedName("health_professionals_id")
     @Convert(converter = ConverterStringToDatabase.class, dbType = String.class)
     private List<String> healthProfessionalsId;
 
-    public String getId() {
-        return id;
+    public String get_id() {
+        return _id;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void set_id(String _id) {
+        this._id = _id;
     }
 
     public String getName() {
@@ -115,5 +124,19 @@ public class PilotStudy {
         Type typePilot = new TypeToken<PilotStudy>() {
         }.getType();
         return new Gson().fromJson(json, typePilot);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PilotStudy that = (PilotStudy) o;
+        return Objects.equals(_id, that._id) &&
+                Objects.equals(name, that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(_id, name);
     }
 }

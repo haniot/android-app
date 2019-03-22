@@ -1,5 +1,7 @@
 package br.edu.uepb.nutes.haniot.data.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 
@@ -8,7 +10,10 @@ public class WeeklyFoodRecord {
     @Id
     private long idBd;
 
+    @SerializedName("food")
     private String food;
+
+    @SerializedName("seven_days_freq")
     private String seveDaysFreq;
 
     public long getIdBd() {
