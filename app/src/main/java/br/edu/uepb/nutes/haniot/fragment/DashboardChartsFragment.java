@@ -34,24 +34,19 @@ public class DashboardChartsFragment extends Fragment {
     PulsatorLayout pulsatorLayout;
     Communicator communicator;
 
-    /**
-     * On create.
-     *
-     * @param savedInstanceState
-     */
+    public DashboardChartsFragment() {
+        // Required empty public constructor
+    }
+
+    public static DashboardChartsFragment newInstance() {
+        return new DashboardChartsFragment();
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
-    /**
-     * On create view.
-     *
-     * @param inflater
-     * @param container
-     * @param savedInstanceState
-     * @return
-     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

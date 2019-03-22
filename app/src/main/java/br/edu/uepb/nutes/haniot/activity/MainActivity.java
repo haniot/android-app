@@ -9,8 +9,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
@@ -23,21 +21,17 @@ import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.account.LoginActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.activity.settings.SettingsActivity;
+import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.fragment.DashboardChartsFragment;
 import br.edu.uepb.nutes.haniot.fragment.MeasurementsGridFragment;
-import br.edu.uepb.nutes.haniot.data.model.Patient;
-import br.edu.uepb.nutes.haniot.data.model.dao.PatientDAO;
-import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
  * Main activity, application start.
  *
- * @author Douglas Rafael <douglas.rafael@nutes.uepb.edu.br>
- * @version 1.0
- * @copyright Copyright (c) 2017, NUTES UEPB
+ * @author Copyright (c) 2018, NUTES/UEPB
  */
 public class MainActivity extends AppCompatActivity implements DashboardChartsFragment.Communicator {
     private final String TAG = "MainActivity";
@@ -53,13 +47,13 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
 
     private MeasurementsGridFragment measurementsGridFragment;
     private DashboardChartsFragment dashboardChartsFragment;
-    private AppPreferencesHelper appPreferencesHelper;
+    private AppPreferencesHelper appPreferences;
     private Patient patient;
 
     /**
      * On create.
      *
-     * @param savedInstanceState
+     * @param savedInstanceState {@link Bundle}
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,23 +63,22 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
 
         toolbar.setTitle(getResources().getString(R.string.app_name));
         setSupportActionBar(toolbar);
-        appPreferencesHelper = AppPreferencesHelper.getInstance(this);
-        hasPermissions();
-        checkPatient();
-        initResources();
+        appPreferences = AppPreferencesHelper.getInstance(this);
+
+        dashboardChartsFragment = DashboardChartsFragment.newInstance();
+        measurementsGridFragment = MeasurementsGridFragment.newInstance();
     }
 
-    private void initResources() {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction chartTransition = fragmentManager.beginTransaction();
-        dashboardChartsFragment = new DashboardChartsFragment();
-        chartTransition.replace(R.id.frameCharts, dashboardChartsFragment);
-        chartTransition.commit();
+    private void loadDashboard() {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.frameCharts, dashboardChartsFragment)
+                .commit();
 
-        FragmentTransaction measurementsTransition = fragmentManager.beginTransaction();
-        measurementsGridFragment = new MeasurementsGridFragment();
-        measurementsTransition.replace(R.id.frameMeasurements, measurementsGridFragment);
-        measurementsTransition.commit();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.frameMeasurements, measurementsGridFragment)
+                .commit();
     }
 
     /**
@@ -94,60 +87,52 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
     @Override
     protected void onStart() {
         super.onStart();
-        checkPatient();
     }
 
-    /**
-     * On resume.
-     */
     @Override
     protected void onResume() {
         super.onResume();
 
-        /**
-         * User not logged
-         */
+        // User not logged
         if (!(new Session(this).isLogged())) {
             startActivity(new Intent(this, LoginActivity.class));
             finish();
-        }
-        checkPatient();
-    }
 
-    /**
-     * Set patient selected.
-     */
-    public void checkPatient() {
-        patient = appPreferencesHelper.getlastPatient();
-        if (patient == null) {
-            showToast(getResources().getString(R.string.noPatientSelected));
-            startActivity(new Intent(this, ManagePatientsActivity.class));
+            return;
+        }
+
+        checkPermissions();
+
+        // Verify the pilot is selected
+        if (appPreferences.getLastPilotStudy() == null) {
+            startActivity(new Intent(this, WelcomeActivity.class));
+        } else {
+            // Verify the patient is selected
+
+            loadDashboard();
         }
     }
 
     /**
      * Checks if you have permission to use.
      * Required bluetooth ble and location.
-     *
-     * @return boolean
      */
-    private boolean hasPermissions() {
-        if (!ConnectionUtils.bluetoothIsEnabled()) {
+    private void checkPermissions() {
+        if (!BluetoothAdapter.getDefaultAdapter().isEnabled()) {
             requestBluetoothEnable();
-            return false;
-        } else if (!hasLocationPermissions()) {
-            requestLocationPermission();
-            return false;
         }
-        return true;
+
+        if (!hasLocationPermissions()) {
+            requestLocationPermission();
+        }
     }
 
     /**
      * Request Bluetooth permission
      */
     private void requestBluetoothEnable() {
-        if (!ConnectionUtils.bluetoothIsEnabled())
-            startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE), REQUEST_ENABLE_BLUETOOTH);
+        startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE),
+                REQUEST_ENABLE_BLUETOOTH);
     }
 
     /**
@@ -156,9 +141,10 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
      * @return boolean
      */
     private boolean hasLocationPermissions() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-            return checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) ==
+                    PackageManager.PERMISSION_GRANTED;
+        }
         return true;
     }
 
@@ -166,25 +152,29 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
      * Request Location permission.
      */
     private void requestLocationPermission() {
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_ENABLE_LOCATION);
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_ENABLE_LOCATION);
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         // If request is cancelled, the result arrays are empty.
-        if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(this, R.string.permission_location, Toast.LENGTH_LONG).show();
-            finish();
+        if ((requestCode == REQUEST_ENABLE_LOCATION) &&
+                (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED)) {
+            showToast(getString(R.string.permission_location));
+            requestLocationPermission();
         }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_ENABLE_BLUETOOTH && resultCode != Activity.RESULT_OK)
-            finish();
+        if (requestCode == REQUEST_ENABLE_BLUETOOTH && resultCode != Activity.RESULT_OK) {
+            requestBluetoothEnable();
+        }
     }
 
     @Override

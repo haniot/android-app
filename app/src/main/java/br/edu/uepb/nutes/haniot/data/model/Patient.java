@@ -6,7 +6,6 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 
-import java.io.Serializable;
 import java.lang.reflect.Type;
 
 import io.objectbox.annotation.Backlink;
@@ -14,7 +13,6 @@ import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.annotation.Index;
 import io.objectbox.relation.ToMany;
-import io.objectbox.relation.ToOne;
 
 @Entity
 public class Patient{
@@ -125,7 +123,6 @@ public class Patient{
         this.birthDate = birthDate;
     }
 
-
     /**
      * Convert object to json format.
      *
@@ -139,7 +136,7 @@ public class Patient{
      * Convert json to Object.
      *
      * @param json String
-     * @return User
+     * @return Patient
      */
     public static Patient jsonDeserialize(String json) {
         Type typePatient = new TypeToken<Patient>() {

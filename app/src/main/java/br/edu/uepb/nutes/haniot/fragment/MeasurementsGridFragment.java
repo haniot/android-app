@@ -32,16 +32,16 @@ import br.edu.uepb.nutes.haniot.activity.settings.ManagerMeasurementsActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.GridDashAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
-import br.edu.uepb.nutes.haniot.devices.GlucoseActivity;
-import br.edu.uepb.nutes.haniot.devices.HeartRateActivity;
-import br.edu.uepb.nutes.haniot.devices.ScaleActivity;
-import br.edu.uepb.nutes.haniot.devices.hdp.BloodPressureHDPActivity;
 import br.edu.uepb.nutes.haniot.data.model.Device;
 import br.edu.uepb.nutes.haniot.data.model.DeviceType;
 import br.edu.uepb.nutes.haniot.data.model.ItemGridType;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.MeasurementMonitor;
 import br.edu.uepb.nutes.haniot.data.model.dao.DeviceDAO;
+import br.edu.uepb.nutes.haniot.devices.GlucoseActivity;
+import br.edu.uepb.nutes.haniot.devices.HeartRateActivity;
+import br.edu.uepb.nutes.haniot.devices.ScaleActivity;
+import br.edu.uepb.nutes.haniot.devices.hdp.BloodPressureHDPActivity;
 import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.BloodPressureManager;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.GlucoseManager;
@@ -80,6 +80,14 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
     RecyclerView gridMeasurement;
     @BindView(R.id.edit_monitor)
     TextView editMonitor;
+
+    public MeasurementsGridFragment() {
+        // Required empty public constructor
+    }
+
+    public static MeasurementsGridFragment newInstance() {
+        return new MeasurementsGridFragment();
+    }
 
     /**
      * On create.

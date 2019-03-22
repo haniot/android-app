@@ -1,8 +1,11 @@
 package br.edu.uepb.nutes.haniot.data.model;
 
+import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.utils.ConverterStringToDatabase;
@@ -82,5 +85,26 @@ public class PilotStudy {
 
     public void setIdDb(long idDb) {
         this.idDb = idDb;
+    }
+
+    /**
+     * Convert object to json format.
+     *
+     * @return String
+     */
+    public String toJson() {
+        return new Gson().toJson(this);
+    }
+
+    /**
+     * Convert json to Object.
+     *
+     * @param json String
+     * @return PilotStudy
+     */
+    public static PilotStudy jsonDeserialize(String json) {
+        Type typePilot = new TypeToken<PilotStudy>() {
+        }.getType();
+        return new Gson().fromJson(json, typePilot);
     }
 }

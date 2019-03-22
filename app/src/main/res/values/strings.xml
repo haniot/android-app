@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation" tools:locale="pt">
     <string name="app_name">HANIoT</string>
+    <string name="app_name_desc">Health ANalytics Internet of Things</string>
     <string name="app_version">1.0</string>
-    <string name="copyright">© 2017 NUTES</string>
+    <string name="copyright">© 2017 NUTES/UEPB</string>
     <string name="start_scan">Iniciar Escaneamento</string>
     <string name="start_synchronization">Iniciar Sincronização</string>
     <string name="stop_scan">Parar Escaneamento</string>
@@ -84,6 +85,13 @@
     <string name="alert_register_time_title">Alerta disparada às %s</string>
     <string name="image">Imagem</string>
     <string name="warning_title">Atenção!</string>
+    <string name="welcome_hp">Seja bem-vindo(a), %s</string>
+    <string name="welcome_hp_desc">Aqui você poderá:\n• Cadastrar/gerenciar seus pacientes;\n• Submeter questionários para seus pacientes responderem;\n• Realizar medições;\n• Consultar históricos e muito mais.</string>
+    <string name="welcome_hp_instructions">Para continuarmos você precisa selecionar o piloto que deseja relizar o estudo.</string>
+    <string name="piloty_study">Estudo Piloto</string>
+    <string name="piloty_study_desc">Selecione o piloto que deseja realizar o estudo.\nSe você não estiver alocado em nenhum, entre em contato com o administrador.</string>
+    <string name="piloty_study_inactive_alert">Para os pilotos inativos, apenas o modo de consulta estará disponível.</string>
+    <string name="proceed">Prosseguir</string>
 
     <!--FORMATS-->
     <string name="format_number1">#.0</string>
@@ -354,7 +362,7 @@
     <string name="blood_glucose">Glicose no sangue</string>
     <string name="steps">Passos</string>
     <string name="sleep">Sono</string>
-    <string name="unit_temperature">ºC</string>
+    <string name="unit_temperature">°C</string>
     <string name="unit_weight">kg</string>
     <string name="unit_hour">h</string>
     <string name="manually_add_measurement">Adicionar Medições Manualmente</string>
@@ -917,6 +925,9 @@
         <item>11:00 da noite</item>
         <item>Meia noite</item>
     </string-array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
     <!--<string-array name="age_answers">-->
     <!--<item>10 anos</item>-->
     <!--<item>11 anos</item>-->

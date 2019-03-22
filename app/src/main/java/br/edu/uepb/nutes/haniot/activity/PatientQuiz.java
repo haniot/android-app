@@ -24,7 +24,6 @@ import br.edu.uepb.nutes.haniot.data.model.SchoolActivityFrequencyType;
 import br.edu.uepb.nutes.haniot.data.model.SleepHabit;
 import br.edu.uepb.nutes.haniot.data.model.SleepHabitType;
 import br.edu.uepb.nutes.haniot.data.model.WeeklyFoodRecord;
-import br.edu.uepb.nutes.haniot.data.model.dao.PatientDAO;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.simplesurvey.base.SimpleSurvey;
 import br.edu.uepb.nutes.simplesurvey.question.Dichotomic;
@@ -32,9 +31,6 @@ import br.edu.uepb.nutes.simplesurvey.question.Infor;
 import br.edu.uepb.nutes.simplesurvey.question.Multiple;
 import br.edu.uepb.nutes.simplesurvey.question.Open;
 import br.edu.uepb.nutes.simplesurvey.question.Single;
-
-import static br.edu.uepb.nutes.haniot.data.model.FoodType.GOONIES;
-import static br.edu.uepb.nutes.haniot.data.model.FoodType.HAMBURGUER_SAUSAGE_OTHERS;
 
 public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
         Dichotomic.OnDichotomicListener, Single.OnSingleListener,
@@ -65,7 +61,7 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
 
     private void initResources() {
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
-        patient = appPreferencesHelper.getlastPatient();
+        patient = appPreferencesHelper.getLastPatient();
         //patient = (Patient) getIntent().getSerializableExtra("patient");
         chronicDiseases = new ArrayList<>();
         weeklyFoodRecords = new ArrayList<>();

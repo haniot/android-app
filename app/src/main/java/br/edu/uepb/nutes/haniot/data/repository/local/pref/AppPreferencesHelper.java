@@ -6,9 +6,10 @@ import android.content.SharedPreferences;
 import com.securepreferences.SecurePreferences;
 
 import br.edu.uepb.nutes.haniot.data.model.Patient;
-import br.edu.uepb.nutes.haniot.exception.LocalPreferenceException;
+import br.edu.uepb.nutes.haniot.data.model.PilotStudy;
 import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.model.UserAccess;
+import br.edu.uepb.nutes.haniot.exception.LocalPreferenceException;
 
 /**
  * Class to perform operations on the device's shared preference.
@@ -20,6 +21,7 @@ public class AppPreferencesHelper implements PreferencesHelper {
     private final String PREF_KEY_AUTH_STATE_HANIOT = "pref_key_user_access_haniot";
     private final String PREF_KEY_USER_PROFILE = "pref_key_user_profile";
     private final String PREF_KEY_PATIENT = "pref_key_patient";
+    private final String PREF_KEY_PILOT_STUDY = "pref_key_pilot_study";
 
     private static AppPreferencesHelper instance;
     private SharedPreferences mPrefs;
@@ -66,6 +68,17 @@ public class AppPreferencesHelper implements PreferencesHelper {
     }
 
     @Override
+    public boolean saveLastPilotStudy(PilotStudy pilot) {
+        if (pilot == null) {
+            throw new LocalPreferenceException("attribute pilot can not be null or empty!");
+        }
+
+        return mPrefs.edit()
+                .putString(PREF_KEY_PILOT_STUDY, String.valueOf(pilot.toJson()))
+                .commit();
+    }
+
+    @Override
     public boolean saveString(String key, String value) {
         checkKey(key);
         return mPrefs.edit().putString(key, value).commit();
@@ -108,9 +121,15 @@ public class AppPreferencesHelper implements PreferencesHelper {
     }
 
     @Override
-    public Patient getlastPatient() {
+    public Patient getLastPatient() {
         String patient = mPrefs.getString(PREF_KEY_PATIENT, null);
         return Patient.jsonDeserialize(patient);
+    }
+
+    @Override
+    public PilotStudy getLastPilotStudy() {
+        String pilot = mPrefs.getString(PREF_KEY_PILOT_STUDY, null);
+        return PilotStudy.jsonDeserialize(pilot);
     }
 
     @Override
