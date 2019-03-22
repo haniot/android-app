@@ -1,5 +1,8 @@
 package br.edu.uepb.nutes.haniot.data.model;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 import io.objectbox.annotation.Entity;
@@ -12,13 +15,31 @@ public class FeedingHabitsRecord {
     @Id
     private long idBd;
 
-    private String id;
+    @SerializedName("id")
+    private String _id;
+
+    @SerializedName("patient_id")
     private String patientId;
+
+    @SerializedName("created_at")
     private String createdAt;
-    private ToMany<WeeklyFoodRecord> weeklyFeedingHabits;
+
+    @SerializedName("weekly_feeding_habits")
+    private List<WeeklyFoodRecord> weeklyFoodRecords;
+
+    @Expose(serialize = false, deserialize = false)
+    private ToMany<WeeklyFoodRecord> weeklyFoodRecordsDB;
+
+    @SerializedName("daily_water_glasses")
     private String dailyWaterGlasses;
+
+    @SerializedName("six_month_breast_feeding")
     private String sixMonthBreastFeeding;
+
+    @SerializedName("food_allergy_intolerance")
     private String foodAllergyintolerance;
+
+    @SerializedName("breakfast_daily_frequency")
     private String breakfastDailyFrequency;
 
     public long getIdBd() {
@@ -33,12 +54,12 @@ public class FeedingHabitsRecord {
         return foodAllergyintolerance;
     }
 
-    public String getId() {
-        return id;
+    public String get_id() {
+        return _id;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void set_id(String id) {
+        this._id = id;
     }
 
     public String getPatientId() {
@@ -57,13 +78,6 @@ public class FeedingHabitsRecord {
         this.createdAt = createdAt;
     }
 
-    public ToMany<WeeklyFoodRecord> getWeeklyFeedingHabits() {
-        return weeklyFeedingHabits;
-    }
-
-    public void setWeeklyFeedingHabits(List<WeeklyFoodRecord> weeklyFeedingHabits) {
-        this.weeklyFeedingHabits.addAll(weeklyFeedingHabits);
-    }
 
     public String getDailyWaterGlasses() {
         return dailyWaterGlasses;
@@ -71,6 +85,22 @@ public class FeedingHabitsRecord {
 
     public void setDailyWaterGlasses(String dailyWaterGlasses) {
         this.dailyWaterGlasses = dailyWaterGlasses;
+    }
+
+    public List<WeeklyFoodRecord> getWeeklyFoodRecords() {
+        return weeklyFoodRecords;
+    }
+
+    public void setWeeklyFoodRecords(List<WeeklyFoodRecord> weeklyFoodRecords) {
+        this.weeklyFoodRecords = weeklyFoodRecords;
+    }
+
+    public ToMany<WeeklyFoodRecord> getWeeklyFoodRecordsDB() {
+        return weeklyFoodRecordsDB;
+    }
+
+    public void setWeeklyFoodRecordsDB(List<WeeklyFoodRecord> weeklyFoodRecordsDB) {
+        this.weeklyFoodRecordsDB.addAll(weeklyFoodRecordsDB);
     }
 
     public String getSixMonthBreastFeeding() {
@@ -101,10 +131,9 @@ public class FeedingHabitsRecord {
     public String toString() {
         return "FeedingHabitsRecord{" +
                 "idBd=" + idBd +
-                ", id='" + id + '\'' +
+                ", id='" + _id + '\'' +
                 ", patientId='" + patientId + '\'' +
                 ", createdAt='" + createdAt + '\'' +
-                ", weeklyFeedingHabits=" + weeklyFeedingHabits +
                 ", dailyWaterGlasses='" + dailyWaterGlasses + '\'' +
                 ", sixMonthBreastFeeding='" + sixMonthBreastFeeding + '\'' +
                 ", foodAllergyintolerance='" + foodAllergyintolerance + '\'' +

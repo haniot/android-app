@@ -17,30 +17,36 @@ import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.auth0.android.jwt.JWT;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.activity.MainActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.data.model.Device;
-import br.edu.uepb.nutes.haniot.data.model.User;
+import br.edu.uepb.nutes.haniot.data.model.UserAccess;
 import br.edu.uepb.nutes.haniot.data.model.dao.DeviceDAO;
 import br.edu.uepb.nutes.haniot.data.model.dao.UserDAO;
+import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
+import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.haniot.server.Server;
 import br.edu.uepb.nutes.haniot.service.TokenExpirationService;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.SingleObserver;
+import io.reactivex.disposables.Disposable;
+import retrofit2.HttpException;
 
 /**
  * LoginActivity implementation.
@@ -73,6 +79,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private boolean mIsBound;
     private Server server;
     private DeviceDAO mDeviceDAO;
+    private HaniotNetRepository haniotNetRepository;
+    private AppPreferencesHelper appPreferencesHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +93,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         userDAO = UserDAO.getInstance(this);
         mDeviceDAO = DeviceDAO.getInstance(this);
         server = Server.getInstance(this);
-
+        haniotNetRepository = HaniotNetRepository.getInstance(this);
+        appPreferencesHelper = AppPreferencesHelper.getInstance(this);
         buttonLogin.setOnClickListener(this);
 
         passwordEditText.setOnEditorActionListener((textView, actionId, keyEvent) -> {
@@ -148,80 +157,130 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         Log.i(TAG, "authenticationInServer()");
         loadingSend(true);
 
-        // Send for remote server /users/authenticate
-        Server.getInstance(this).post("users/auth", getJsonData(), new Server.Callback() {
-            @Override
-            public void onError(JSONObject result) {
-                printMessage(result);
-                loadingSend(false);
-                try {
-                    if (result.getString("code").equals("403")) {
-                        Intent intent = new Intent(LoginActivity.this, ChangePasswordActivity.class);
-                        intent.putExtra("pathRedirectLink", result.get("redirect_link").toString());
-                        startActivity(intent);
-                    } else {
-                        Log.i("CACA", "error 404");
+
+        haniotNetRepository.auth(emailEditText.getText().toString(), passwordEditText.getText().toString())
+                .doOnSubscribe(disposable -> loadingSend(true))
+                .subscribe(new SingleObserver<UserAccess>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
 
-            @Override
-            public void onSuccess(JSONObject result) {
-                try {
-                    User user = new User();
-                    final String token = result.has("token") ? new Gson().fromJson(result.getString("token"), String.class) : null;
-                    if (token != null) {
-                        JWT jwt = new JWT(token);
-                        String _id = jwt.getSubject();
-                        user.set_id(_id);
-                        user.setToken(token);
-
-                        User u = userDAO.get(user.get_id());
-                        if (u != null) {
-                            user.setIdDb(u.getIdDb());
-                            userDAO.update(user);
-                        } else {
-                            userDAO.save(user);
-                            user = userDAO.get(user.get_id());
+                    @Override
+                    public void onSuccess(UserAccess userAccess) {
+                        if (appPreferencesHelper.saveUserAccessHaniot(userAccess)) {
+                            getUserProfile(userAccess.getSubject());
                         }
-                        session.setLogged(user.getIdDb(), token);
-
-                        tokenExpirationService.initTokenMonitor();
-                        //syncDevices();
-                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                    } else {
-                        printMessage(result);
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                } finally {
-                    loadingSend(false);
-                }
-            }
-        });
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.w("ERROR-LOG", e.getMessage());
+                        if (e instanceof HttpException) {
+                            HttpException httpEx = ((HttpException) e);
+                            if (httpEx.code() == 401) {
+                                printMessage(401);
+                                loadingSend(false);
+                                return;
+                            } else if (httpEx.code() == 403) {
+                                try {
+                                    JsonObject json = new JsonParser()
+                                            .parse(httpEx.response().errorBody().string())
+                                            .getAsJsonObject();
+                                    String redirectLink = json.get("redirect_link").getAsString();
+                                    Intent intent = new Intent(LoginActivity.this, ChangePasswordActivity.class);
+                                    intent.putExtra("user_id", redirectLink.split("/")[2]);
+                                    startActivity(intent);
+                                } catch (IOException e1) {
+                                    e1.printStackTrace();
+                                }
+                            }
+                        }
+                        printMessage(500);
+                        loadingSend(false);
+                    }
+                });
+//        // Send for remote server /users/authenticate
+//        Server.getInstance(this).post("users/auth", getJsonData(), new Server.Callback() {
+//            @Override
+//            public void onError(JSONObject result) {
+//                printMessage(result);
+//                loadingSend(false);
+//                try {
+//                    if (result.getString("code").equals("403")) {
+//                        Intent intent = new Intent(LoginActivity.this, ChangePasswordActivity.class);
+//                        intent.putExtra("pathRedirectLink", result.get("redirect_link").toString());
+//                        startActivity(intent);
+//                    } else {
+//                        Log.i("CACA", "error 404");
+//                    }
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//
+//            @Override
+//            public void onSuccess(JSONObject result) {
+//                try {
+//                    User user = new User();
+//                    final String token = result.has("token") ? new Gson().fromJson(result.getString("token"), String.class) : null;
+//                    if (token != null) {
+//                        JWT jwt = new JWT(token);
+//                        String _id = jwt.getSubject();
+//                        user.set_id(_id);
+//                        user.setToken(token);
+//
+//                        User u = userDAO.get(user.get_id());
+//                        if (u != null) {
+//                            user.setIdDb(u.getIdDb());
+//                            userDAO.update(user);
+//                        } else {
+//                            userDAO.save(user);
+//                            user = userDAO.get(user.get_id());
+//                        }
+//                        session.setLogged(user.getIdDb(), token);
+//
+//                        tokenExpirationService.initTokenMonitor();
+//                        //syncDevices();
+//                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+//                    } else {
+//                        printMessage(result);
+//                    }
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                } finally {
+//                    loadingSend(false);
+//                }
+//            }
+//        });
+    }
+
+    /**
+     * Get data user from server.
+     *
+     * @param _id
+     */
+    private void getUserProfile(String _id) {
+        haniotNetRepository.getHealthProfissional(_id)
+                .doOnSubscribe(disposable -> loadingSend(true))
+                .subscribe(user -> appPreferencesHelper.saveUserLogged(user));
     }
 
     /**
      * Displays return message to user
      *
-     * @param response
+     * @param
      */
-    private void printMessage(final JSONObject response) {
+    private void printMessage(final int code) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                try {
-                    if (response.has("code") && response.getInt("code") == 401) {
-                        Toast.makeText(getApplicationContext(), R.string.validate_invalid_email_or_password, Toast.LENGTH_LONG).show();
-                    } else if (response.has("code") && response.getInt("code") == 403) {
-                        Toast.makeText(getApplicationContext(), R.string.error_403, Toast.LENGTH_LONG).show();
-                    } else {
-                        Toast.makeText(getApplicationContext(), R.string.error_500, Toast.LENGTH_LONG).show();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                if (code == 401) {
+                    Toast.makeText(getApplicationContext(), R.string.validate_invalid_email_or_password, Toast.LENGTH_LONG).show();
+                } else if (code == 403) {
+                    Toast.makeText(getApplicationContext(), R.string.error_403, Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), R.string.error_500, Toast.LENGTH_LONG).show();
                 }
             }
         });

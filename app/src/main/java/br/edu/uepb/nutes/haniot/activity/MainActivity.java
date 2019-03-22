@@ -105,7 +105,9 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
 
         // Verify the pilot is selected
         if (appPreferences.getLastPilotStudy() == null) {
-            startActivity(new Intent(this, WelcomeActivity.class));
+            //TODO mudar antes do push
+            startActivity(new Intent(this, ManagePatientsActivity.class));
+            //startActivity(new Intent(this, WelcomeActivity.class));
         } else {
             // Verify the patient is selected
 

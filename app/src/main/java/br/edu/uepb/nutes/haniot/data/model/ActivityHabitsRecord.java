@@ -1,5 +1,7 @@
 package br.edu.uepb.nutes.haniot.data.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 
@@ -9,9 +11,13 @@ public abstract class ActivityHabitsRecord {
     @Id
     private long idBd;
 
-    private String id;
+    @SerializedName("id")
+    private String _id;
 
+    @SerializedName("patient_id")
     private String patientId;
+
+    @SerializedName("created_at")
     private String createdAt;
 
     public ActivityHabitsRecord() {
@@ -26,12 +32,12 @@ public abstract class ActivityHabitsRecord {
         this.idBd = idBd;
     }
 
-    public String getId() {
-        return id;
+    public String get_id() {
+        return _id;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void set_id(String _id) {
+        this._id = _id;
     }
 
     public String getPatientId() {
@@ -54,7 +60,7 @@ public abstract class ActivityHabitsRecord {
     public String toString() {
         return "ActivityHabitsRecord{" +
                 "idBd=" + idBd +
-                ", id='" + id + '\'' +
+                ", id='" + _id + '\'' +
                 ", patientId='" + patientId + '\'' +
                 ", createdAt='" + createdAt + '\'' +
                 '}';

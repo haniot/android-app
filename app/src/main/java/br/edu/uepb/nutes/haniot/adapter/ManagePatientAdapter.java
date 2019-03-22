@@ -14,7 +14,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
@@ -25,6 +29,7 @@ import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.dao.PatientDAO;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
+import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import br.edu.uepb.nutes.haniot.utils.Log;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,7 +40,6 @@ public class ManagePatientAdapter extends RecyclerView.Adapter<ManagePatientAdap
     private List<Patient> itemListCopy = new ArrayList<>();
     private Context context;
     private String searchQuerry = "";
-    private Session session;
     private String t = "TESTE";
     public final int REMOVE_TYPE_NOT_FILTERED = 1;
     public final int REMOVE_TYPE_FILTERED = 2;
@@ -48,7 +52,6 @@ public class ManagePatientAdapter extends RecyclerView.Adapter<ManagePatientAdap
         this.itemListCopy.addAll(patientList);
         this.context = context;
         this.onRecyclerViewListener = onRecyclerViewListener;
-        session = new Session(context);
     }
 
     @NonNull
@@ -77,21 +80,16 @@ public class ManagePatientAdapter extends RecyclerView.Adapter<ManagePatientAdap
     public void onBindViewHolder(@NonNull ManagePatientViewHolder holder, int position) {
 
         if (!(getItemViewType(position) == EMPTY_VIEW)) {
-
             Patient patient = itemList.get(position);
-
-
-//            holder.textLetter.setText(nameText);
-            if (patient.getGender().equals("Masculino"))
+            if (patient.getGender().equals("male"))
                 holder.profile.setImageResource(R.drawable.x_boy);
             else
                 holder.profile.setImageResource(R.drawable.x_girl);
-          //  holder.textId.setText(patient.get_id());
-            holder.textName.setText(patient.getFirstName());
-            holder.textAge.setText(patient.getBirthDate()+ " anos");
+            holder.textName.setText(String.format("%s %s", patient.getFirstName(), patient.getLastName()));
+
+            holder.textAge.setText(getAge(patient.getBirthDate()));
             holder.btnSelect.setOnClickListener(c -> {
                 //TODO Usar interface na activity
-
                 final Intent intent = new Intent(context, PatientRegisterActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 Bundle bundle = ActivityOptionsCompat.makeScaleUpAnimation(holder.itemView,
@@ -100,27 +98,16 @@ public class ManagePatientAdapter extends RecyclerView.Adapter<ManagePatientAdap
                         holder.itemView.getWidth(),
                         holder.itemView.getHeight()).toBundle();
                 intent.putExtra("Patient", patient.getIdDb());
-
                 context.startActivity(intent, bundle);
             });
             holder.btnDelete.setOnClickListener(d -> {
                 //TODO Usar interface na activity
-
-
                 int oldId = searchPositionByChildrenId(patient.get_id());
                 if (oldId != -1) {
                     if (this.searchQuerry.isEmpty()) {
                         removeItem(patient, oldId, REMOVE_TYPE_NOT_FILTERED);
                     } else {
                         removeItem(patient, oldId, REMOVE_TYPE_FILTERED);
-                    }
-                    String idLastChild = context.getResources().getString(R.string.id_last_patient);
-                    String lastId = session.getString(idLastChild);
-                    if (patient.get_id().equals(lastId)) {
-                        String id = context.getResources().getString(R.string.id_last_patient);
-                        String name = context.getResources().getString(R.string.name_last_patient);
-                        session.putString(id, "");
-                        session.putString(name, "");
                     }
                     Snackbar snackbar = Snackbar
                             .make(holder.itemView, context.getResources().getString(R.string.patient_removed)
@@ -137,22 +124,28 @@ public class ManagePatientAdapter extends RecyclerView.Adapter<ManagePatientAdap
             holder.itemView.setOnClickListener(c -> {
                 //TODO Usar interface na activity
                 onRecyclerViewListener.onItemClick(patient);
-                //Código abaixo funcional!
-               // Intent it = new Intent(context, MainActivity.class);
-//                Bundle bundle = new Bundle();
-//                bundle.putString(context.getResources().getString(R.string.id_last_patient), patient.get_id());
-//                bundle.putString(context.getResources().getString(R.string.name_last_patient), patient.getFirstName());
-//                it.putExtras(bundle);
-//                it.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//
-//                String id = context.getResources().getString(R.string.id_last_patient);
-//                String name = context.getResources().getString(R.string.name_last_patient);
-//                session.putString(id, patient.get_id());
-//                session.putString(name, patient.getFirstName());
-
             });
 
         }
+    }
+
+    private String getAge(String birthday) {
+        Date date = null;
+        date = DateUtils.fromISO8601(birthday);
+        if (date == null) return "";
+        Calendar dob = Calendar.getInstance();
+        Calendar today = Calendar.getInstance();
+
+        dob.setTime(date);
+        int year = dob.get(Calendar.YEAR);
+        int month = dob.get(Calendar.MONTH);
+        int day = dob.get(Calendar.DAY_OF_MONTH);
+        dob.set(year, month + 1, day);
+        int age = today.get(Calendar.YEAR) - dob.get(Calendar.YEAR);
+        if (today.get(Calendar.DAY_OF_YEAR) < dob.get(Calendar.DAY_OF_YEAR)) {
+            age--;
+        }
+        return age + " anos";
     }
 
     public int searchPositionByChildrenId(String _id) {
@@ -182,70 +175,30 @@ public class ManagePatientAdapter extends RecyclerView.Adapter<ManagePatientAdap
     }
 
     public void restoreItem(Patient patient, int index, View view) {
-
         if (itemList.isEmpty()) {
             notifyDataSetChanged();
         }
-        Log.d(t, "1");
-        if (PatientDAO.getInstance(context).save(patient)) {
-            itemListCopy.add(index, patient);
-            itemList.add(index, patient);
-
-            String idLastPatient = context.getResources().getString(R.string.id_last_patient);
-            String lastId = session.getString(idLastPatient);
-
-            String idPatient = itemList.get(index).get_id();
-            String idLastPatientDeleted = context.getResources().getString(R.string.last_patient_deleted);
-            String lastPatient = session.getString(idLastPatientDeleted);
-
-            if (idPatient.equals(lastPatient)) {
-                String id = context.getResources().getString(R.string.id_last_patient);
-                String name = context.getResources().getString(R.string.name_last_patient);
-
-                session.putString(id, patient.get_id());
-                session.putString(name, patient.getFirstName());
-            }
-            Log.d(t, "2");
-            notifyItemInserted(index);
-            Log.d(t, "iniciando anim");
-            Log.d(t, "3");
-        }
+        itemListCopy.add(index, patient);
+        itemList.add(index, patient);
+        notifyItemInserted(index);
     }
 
     public void removeItem(Patient patient, int oldPosition, final int updateType) {
 
         if (this.itemListCopy.size() > 0) {
-            String idPatient = patient.get_id();
-            String idLastPatient = context.getResources().getString(R.string.id_last_patient);
-            String lastId = session.getString(idLastPatient);
-
-            if (PatientDAO.getInstance(context).remove(patient)) {
-                String idLastPatientDeleted = context.getResources().getString(R.string.last_patient_deleted);
-
-                if (idPatient.equals(lastId)) {
-                    String id = context.getResources().getString(R.string.id_last_patient);
-                    String name = context.getResources().getString(R.string.name_last_patient);
-                    session.putString(id, "");
-                    session.putString(name, "");
-                    session.putString(idLastPatientDeleted, idPatient);
-                } else {
-                    session.putString(idLastPatientDeleted, "");
-                }
-
-                this.itemListCopy.remove(patient);
-                this.itemList.remove(patient);
-                if (updateType == REMOVE_TYPE_FILTERED) {
+            this.itemListCopy.remove(patient);
+            this.itemList.remove(patient);
+            if (updateType == REMOVE_TYPE_FILTERED) {
 //                    notifyDataSetChanged();
-                    notifyItemRemoved(oldPosition);
-                    notifyItemRangeChanged(oldPosition, itemList.size());
-                    Log.d(t, "tipo filtrado \n ");
-                } else {
-                    Log.d(t, "Posição: " + oldPosition);
-                    notifyItemRemoved(oldPosition);
-                    notifyItemRangeChanged(oldPosition, itemListCopy.size());
-                }
-
+                notifyItemRemoved(oldPosition);
+                notifyItemRangeChanged(oldPosition, itemList.size());
+                Log.d(t, "tipo filtrado \n ");
+            } else {
+                Log.d(t, "Posição: " + oldPosition);
+                notifyItemRemoved(oldPosition);
+                notifyItemRangeChanged(oldPosition, itemListCopy.size());
             }
+
         }
     }
 
@@ -297,7 +250,7 @@ public class ManagePatientAdapter extends RecyclerView.Adapter<ManagePatientAdap
 
     public static class ManagePatientViewHolder extends RecyclerView.ViewHolder {
 
-//        @BindView(R.id.textIdNumberChildren)
+        //        @BindView(R.id.textIdNumberChildren)
 //        TextView textId;
         @BindView(R.id.btnSelectChildren)
         ImageView btnSelect;

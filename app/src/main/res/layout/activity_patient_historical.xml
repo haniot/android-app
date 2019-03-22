@@ -44,12 +44,12 @@
         android:layout_marginRight="20dp"
         android:ems="10"
         android:hint="@string/name"
-        android:inputType="textPersonName"
+        android:inputType="textCapSentences"
         android:textColor="@color/colorAccent"
         android:textColorHint="@android:color/tertiary_text_light" />
 
     <EditText
-        android:id="@+id/birth_edittext"
+        android:id="@+id/last_name_edittext"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/name_edittext"
@@ -57,7 +57,22 @@
         android:layout_marginLeft="20dp"
         android:layout_marginTop="44dp"
         android:layout_marginRight="20dp"
-        android:editable="false"
+        android:ems="10"
+        android:hint="@string/last_name"
+        android:inputType="textCapSentences"        android:textColor="@color/colorAccent"
+        android:textColorHint="@android:color/tertiary_text_light" />
+
+    <EditText
+        android:id="@+id/birth_edittext"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/last_name_edittext"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="44dp"
+        android:layout_marginRight="20dp"
+        android:inputType="none"
+        android:focusable="false"
         android:ems="10"
         android:hint="@string/date_of_birth"
         android:textColor="@color/colorAccent"

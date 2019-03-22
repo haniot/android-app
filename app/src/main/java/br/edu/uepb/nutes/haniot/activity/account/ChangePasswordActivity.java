@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,20 +11,21 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.regex.Pattern;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
-import br.edu.uepb.nutes.haniot.server.Server;
+import br.edu.uepb.nutes.haniot.data.model.User;
+import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
+import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.CompletableObserver;
+import io.reactivex.disposables.Disposable;
+import retrofit2.HttpException;
 
 /**
  * ChangePasswordActivity implementation.
@@ -59,8 +58,9 @@ public class ChangePasswordActivity extends AppCompatActivity {
     private Menu menu;
     private Session session;
     private boolean isRedirect = false;
-    private String pathRedirectLink;
-
+    private String userId;
+    private HaniotNetRepository haniotNetRepository;
+    private AppPreferencesHelper appPreferencesHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,20 +72,18 @@ public class ChangePasswordActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(R.string.change_password);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Intent intent = getIntent();
+        haniotNetRepository = HaniotNetRepository.getInstance(this);
+        appPreferencesHelper = AppPreferencesHelper.getInstance(this);
 
-        if (intent.hasExtra("pathRedirectLink")) {
-            pathRedirectLink = intent.getStringExtra("pathRedirectLink");
-            pathRedirectLink = pathRedirectLink.replace("/api/v1", "");
+        if (intent.hasExtra("user_id")) {
+            userId = intent.getStringExtra("user_id");
             isRedirect = true;
         }
-        confirmPasswordEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-                if (actionId == EditorInfo.IME_ACTION_SEND)
-                    changePassword();
+        confirmPasswordEditText.setOnEditorActionListener((textView, actionId, keyEvent) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEND)
+                changePassword();
 
-                return false;
-            }
+            return false;
         });
 
         session = new Session(this);
@@ -194,56 +192,57 @@ public class ChangePasswordActivity extends AppCompatActivity {
         if (!checkConnectivity() || !validate())
             return;
 
-        loadingSend(true);
-
-        /**
-         * Mount the object json
-         */
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("old_password", String.valueOf(currentPasswordEditText.getText()));
-            jsonObject.put("new_password", String.valueOf(newPasswordEditText.getText()));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
         // Send for remote server /users/:userId/password
-        if (!isRedirect) {
-            Server.getInstance(this).patch("users/".concat(session.get_idLogged()) + "/password",
-                    jsonObject.toString(), new Server.Callback() {
+        if (isRedirect) {
+            haniotNetRepository.changePassword(new User(userId,
+                    currentPasswordEditText.getText().toString(),
+                    newPasswordEditText.getText().toString()))
+                    .doOnSubscribe(disposable -> loadingSend(true))
+                    .subscribe(new CompletableObserver() {
                         @Override
-                        public void onError(JSONObject result) {
-                            printMessage(result);
-                            loadingSend(false);
+                        public void onSubscribe(Disposable d) {
+
                         }
 
                         @Override
-                        public void onSuccess(JSONObject result) {
-                            printMessage(result);
-                            signOut(result);
+                        public void onComplete() {
+                            signOut();
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            printMessage(500);
+                            loadingSend(false);
                         }
                     });
+
         } else {
-            Server.getInstance(this).patch(pathRedirectLink,
-                    jsonObject.toString(), new Server.Callback() {
+            haniotNetRepository.changePassword(appPreferencesHelper.getUserLogged())
+                    .doOnSubscribe(disposable -> loadingSend(true))
+                    .subscribe(new CompletableObserver() {
                         @Override
-                        public void onError(JSONObject result) {
-                            printMessage(result);
-                            loadingSend(false);
+                        public void onSubscribe(Disposable d) {
+
                         }
 
                         @Override
-                        public void onSuccess(JSONObject result) {
-                            Log.i("Account", "Password changed for redirect");
-                            printMessage(result);
-                            signOut(result);
+                        public void onComplete() {
+                            printMessage(204);
+                            signOut();
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            if (e instanceof HttpException) {
+                                HttpException httpEx = ((HttpException) e);
+                                printMessage(httpEx.code());
+                            }
                         }
                     });
         }
-
     }
 
-    private void signOut(JSONObject result) {
+    private void signOut() {
         /**
          * Remove user from session and redirect to login screen.
          */
@@ -260,32 +259,15 @@ public class ChangePasswordActivity extends AppCompatActivity {
 
     /**
      * Displays return message to user
-     *
-     * @param response
      */
-    private void printMessage(final JSONObject response) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    if (response.has("code") && !response.has("unauthorized")) {
-                        if (response.getInt("code") == 204) {
-                            Toast.makeText(getApplicationContext(), R.string.update_success, Toast.LENGTH_SHORT).show();
-                        } else if (response.getInt("code") == 401) {
-                            Toast.makeText(getApplicationContext(), R.string.validate_password_not_match_current, Toast.LENGTH_LONG).show();
-                        } else if (response.getInt("code") == 400) {
-                            Toast.makeText(getApplicationContext(), R.string.error_incorret_password, Toast.LENGTH_LONG).show();
-                        } else { // error 500
-                            Toast.makeText(getApplicationContext(), R.string.error_500, Toast.LENGTH_LONG).show();
-                        }
-                    } else if (response.has("unauthorized")) {
-                        Toast.makeText(getApplicationContext(), response.getString("unauthorized"), Toast.LENGTH_LONG).show();
-                    } else {
-                        Toast.makeText(getApplicationContext(), R.string.error_500, Toast.LENGTH_LONG).show();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+    private void printMessage(final int code) {
+        runOnUiThread(() -> {
+            if (code == 204) {
+                Toast.makeText(getApplicationContext(), R.string.update_success, Toast.LENGTH_SHORT).show();
+            } else if (code == 401) {
+                Toast.makeText(getApplicationContext(), R.string.validate_password_not_match_current, Toast.LENGTH_LONG).show();
+            } else { // error 500
+                Toast.makeText(getApplicationContext(), R.string.error_500, Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -298,14 +280,11 @@ public class ChangePasswordActivity extends AppCompatActivity {
     private void loadingSend(final boolean enabled) {
         final MenuItem menuItem = menu.findItem(R.id.action_save);
 
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                menuItem.setEnabled(!enabled);
+        runOnUiThread(() -> {
+            menuItem.setEnabled(!enabled);
 
-                if (enabled) mProgressBar.setVisibility(View.VISIBLE);
-                else mProgressBar.setVisibility(View.GONE);
-            }
+            if (enabled) mProgressBar.setVisibility(View.VISIBLE);
+            else mProgressBar.setVisibility(View.GONE);
         });
     }
 

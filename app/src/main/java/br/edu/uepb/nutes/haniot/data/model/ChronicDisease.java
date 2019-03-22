@@ -1,5 +1,7 @@
 package br.edu.uepb.nutes.haniot.data.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 
@@ -9,7 +11,10 @@ public class ChronicDisease {
     @Id
     private long idBd;
 
+    @SerializedName("type")
     private String type;
+
+    @SerializedName("disease_history")
     private String diseaseHistory;
 
     public long getIdBd() {

@@ -22,15 +22,18 @@ import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.PhysicalActivityHabit;
 import br.edu.uepb.nutes.haniot.data.model.SchoolActivityFrequencyType;
 import br.edu.uepb.nutes.haniot.data.model.SleepHabit;
-import br.edu.uepb.nutes.haniot.data.model.SleepHabitType;
 import br.edu.uepb.nutes.haniot.data.model.WeeklyFoodRecord;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
+import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
+import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import br.edu.uepb.nutes.simplesurvey.base.SimpleSurvey;
 import br.edu.uepb.nutes.simplesurvey.question.Dichotomic;
 import br.edu.uepb.nutes.simplesurvey.question.Infor;
 import br.edu.uepb.nutes.simplesurvey.question.Multiple;
 import br.edu.uepb.nutes.simplesurvey.question.Open;
 import br.edu.uepb.nutes.simplesurvey.question.Single;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 
 public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
         Dichotomic.OnDichotomicListener, Single.OnSingleListener,
@@ -51,7 +54,7 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
     private List<WeeklyFoodRecord> weeklyFoodRecords;
 
     private AppPreferencesHelper appPreferencesHelper;
-
+    private HaniotNetRepository haniotNetRepository;
 
     @Override
     protected void initView() {
@@ -59,10 +62,13 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
         addPages();
     }
 
+    /**
+     * Init resources.
+     */
     private void initResources() {
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
+        haniotNetRepository = HaniotNetRepository.getInstance(this);
         patient = appPreferencesHelper.getLastPatient();
-        //patient = (Patient) getIntent().getSerializableExtra("patient");
         chronicDiseases = new ArrayList<>();
         weeklyFoodRecords = new ArrayList<>();
         feedingHabitsRecord = new FeedingHabitsRecord();
@@ -71,15 +77,21 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
         physicalActivityHabits = new PhysicalActivityHabit();
     }
 
+    /**
+     * Validate and set data on objects.
+     */
     private void validateAnswers() {
-//        feedingHabitsRecord.setWeeklyFeedingHabits(weeklyFoodRecords);
-//        patient.setFeedingHabitsRecord(feedingHabitsRecord);
-//        medicalRecord.setChronicDisease(chronicDiseases);
-//        patient.setMedicalRecord(medicalRecord);
-//        patient.setPhysicalActivityHabits(physicalActivityHabits);
-//        patient.setSleepHabit(sleepHabit);
+        sleepHabit.setCreatedAt(DateUtils.getCurrentDateISO8601());
+        medicalRecord.setCreatedAt(DateUtils.getCurrentDateISO8601());
+        feedingHabitsRecord.setCreatedAt(DateUtils.getCurrentDateISO8601());
+        physicalActivityHabits.setCreatedAt(DateUtils.getCurrentDateISO8601());
+        feedingHabitsRecord.setWeeklyFoodRecordsDB(weeklyFoodRecords);
+        feedingHabitsRecord.setWeeklyFoodRecords(weeklyFoodRecords);
+        medicalRecord.setChronicDiseases(chronicDiseases);
+        medicalRecord.setChronicDiseaseDB(chronicDiseases);
 
-
+        syncServer();
+        
         Log.i("Respostas", patient.toString());
         Log.i("Respostas", "Feending Habits: " + feedingHabitsRecord.toString());
         Log.i("Respostas", "Weekly Food Records: " + weeklyFoodRecords.toString());
@@ -88,7 +100,22 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
         Log.i("Respostas", "Physical Activity: " + physicalActivityHabits.toString());
         Log.i("Respostas", "Sleep: " + sleepHabit.toString());
     }
+    
+    private void syncServer(){
+        haniotNetRepository.savePatient(patient)
+                .doOnSubscribe(disposable -> showProgress(true));
+        haniotNetRepository.saveFeedingHabitsRecord("PilotIdAqui",feedingHabitsRecord);
+        haniotNetRepository.saveMedicalRecord("PilotIdAqui", medicalRecord);
+        haniotNetRepository.savePhysicalActivityHabit("PilotIdAqui", physicalActivityHabits);
+        haniotNetRepository.saveSleepHabit("PilotIdAqui", sleepHabit);
+    }
 
+    private void showProgress(boolean enabled){
+        //TODO fazer um loading
+    }
+    /**
+     * Construct quiz.
+     */
     private void addPages() {
         setMessageBlocked(getResources().getString(R.string.not_answered));
 
@@ -106,6 +133,7 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
         //CATEGORY 2
         addQuestion(new Infor.Config()
                 .title(R.string.category_2, Color.WHITE)
+                .titleTextSize(28)
                 .description(R.string.category_2_desc, Color.WHITE)
                 .image(R.drawable.x_sneaker)
                 .colorBackground(getResources().getColor(R.color.colorAccent))
@@ -118,6 +146,7 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
 
         addQuestion(new Multiple.Config()
                 .title(getString(R.string.q1), Color.WHITE)
+                .titleTextSize(28)
                 .colorBackground(ContextCompat.getColor(this, R.color.colorCyan))
                 .description("")
                 .image(R.drawable.x_trophy)
@@ -132,7 +161,9 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
 
         addQuestion(new Single.Config()
                 .title(getString(R.string.q2), Color.WHITE)
+                .titleTextSize(28)
                 .colorBackground(ContextCompat.getColor(this, R.color.colorRed))
+                .description("")
                 .image(R.drawable.x_gymnastics)
                 .buttonClose(R.drawable.ic_action_close_dark)
                 .inputColorBackgroundTint(Color.WHITE)
@@ -146,8 +177,10 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
         //CATEGORY 3
         addQuestion(new Infor.Config()
                 .title(R.string.category_3, Color.WHITE)
+                .titleTextSize(28)
                 .description(R.string.category_3_desc,
                         Color.WHITE)
+                .description("")
                 .image(R.drawable.x_diet)
                 .colorBackground(getResources().getColor(R.color.colorAccent))
                 .inputText(R.string.bt_next)
@@ -159,7 +192,9 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
 
         addQuestion(new Single.Config()
                 .title(getString(R.string.q3), Color.WHITE)
+                .titleTextSize(28)
                 .colorBackground(ContextCompat.getColor(this, R.color.colorOrange))
+                .description("")
                 .image(R.drawable.x_breakfast)
                 .buttonClose(R.drawable.ic_action_close_dark)
                 .inputColorBackgroundTint(Color.WHITE)
@@ -172,7 +207,9 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
 
         addQuestion(new Single.Config()
                 .title(getString(R.string.q4), Color.WHITE)
+                .titleTextSize(28)
                 .colorBackground(ContextCompat.getColor(this, R.color.colorCyan))
+                .description("")
                 .image(R.drawable.x_water)
                 .buttonClose(R.drawable.ic_action_close_dark)
                 .inputColorBackgroundTint(Color.WHITE)
@@ -185,7 +222,9 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
 
         addQuestion(new Single.Config()
                 .title(getString(R.string.q5), Color.WHITE)
-                .colorBackground(ContextCompat.getColor(this, R.color.colorYellow))
+                .titleTextSize(28)
+                .colorBackground(ContextCompat.getColor(this, R.color.colorBlueGrey))
+                .description("")
                 .image(R.drawable.x_beef)
                 .buttonClose(R.drawable.ic_action_close_dark)
                 .inputColorBackgroundTint(Color.WHITE)
@@ -198,7 +237,9 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
 
         addQuestion(new Single.Config()
                 .title(getString(R.string.q6), Color.WHITE)
+                .titleTextSize(28)
                 .colorBackground(ContextCompat.getColor(this, R.color.colorRed))
+                .description("")
                 .image(R.drawable.x_cola)
                 .buttonClose(R.drawable.ic_action_close_dark)
                 .inputColorBackgroundTint(Color.WHITE)
@@ -211,7 +252,9 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
 
         addQuestion(new Single.Config()
                 .title(getString(R.string.q7), Color.WHITE)
+                .titleTextSize(28)
                 .colorBackground(ContextCompat.getColor(this, R.color.colorOrange))
+                .description("")
                 .image(R.drawable.x_salad)
                 .buttonClose(R.drawable.ic_action_close_dark)
                 .inputColorBackgroundTint(Color.WHITE)
@@ -224,7 +267,9 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
 
         addQuestion(new Single.Config()
                 .title(getString(R.string.q8), Color.WHITE)
+                .titleTextSize(28)
                 .colorBackground(ContextCompat.getColor(this, R.color.colorTeal))
+                .description("")
                 .image(R.drawable.x_fries)
                 .buttonClose(R.drawable.ic_action_close_dark)
                 .inputColorBackgroundTint(Color.WHITE)
@@ -237,7 +282,9 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
 
         addQuestion(new Single.Config()
                 .title(getString(R.string.q9), Color.WHITE)
+                .titleTextSize(28)
                 .colorBackground(ContextCompat.getColor(this, R.color.colorRed))
+                .description("")
                 .image(R.drawable.x_milk)
                 .buttonClose(R.drawable.ic_action_close_dark)
                 .inputColorBackgroundTint(Color.WHITE)
@@ -250,7 +297,9 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
 
         addQuestion(new Single.Config()
                 .title(getString(R.string.q10), Color.WHITE)
+                .titleTextSize(28)
                 .colorBackground(ContextCompat.getColor(this, R.color.colorAmber))
+                .description("")
                 .image(R.drawable.x_beans)
                 .buttonClose(R.drawable.ic_action_close_dark)
                 .inputColorBackgroundTint(Color.WHITE)
@@ -263,7 +312,9 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
 
         addQuestion(new Single.Config()
                 .title(getString(R.string.q11), Color.WHITE)
+                .titleTextSize(28)
                 .colorBackground(ContextCompat.getColor(this, R.color.colorCyan))
+                .description("")
                 .image(R.drawable.x_apple)
                 .buttonClose(R.drawable.ic_action_close_dark)
                 .inputColorBackgroundTint(Color.WHITE)
@@ -276,7 +327,9 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
 
         addQuestion(new Single.Config()
                 .title(getString(R.string.q12), Color.WHITE)
+                .titleTextSize(28)
                 .colorBackground(ContextCompat.getColor(this, R.color.colorDeepPurple))
+                .description("")
                 .image(R.drawable.x_lollipop)
                 .buttonClose(R.drawable.ic_action_close_dark)
                 .inputColorBackgroundTint(Color.WHITE)
@@ -289,7 +342,9 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
 
         addQuestion(new Single.Config()
                 .title(getString(R.string.q13), Color.WHITE)
+                .titleTextSize(28)
                 .colorBackground(ContextCompat.getColor(this, R.color.colorBlue))
+                .description("")
                 .image(R.drawable.x_sausages)
                 .buttonClose(R.drawable.ic_action_close_dark)
                 .inputColorBackgroundTint(Color.WHITE)
@@ -302,7 +357,9 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
 
         addQuestion(new Single.Config()
                 .title(getString(R.string.q14), Color.WHITE)
+                .titleTextSize(28)
                 .colorBackground(ContextCompat.getColor(this, R.color.colorPink))
+                .description("")
                 .image(R.drawable.x_breastfeeding)
                 .buttonClose(R.drawable.ic_action_close_dark)
                 .inputColorBackgroundTint(Color.WHITE)
@@ -315,7 +372,9 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
 
         addQuestion(new Single.Config()
                 .title(getString(R.string.q15), Color.WHITE)
+                .titleTextSize(28)
                 .colorBackground(ContextCompat.getColor(this, R.color.colorTeal))
+                .description("")
                 .image(R.drawable.x_allergy)
                 .buttonClose(R.drawable.ic_action_close_dark)
                 .inputColorBackgroundTint(Color.WHITE)
@@ -329,6 +388,7 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
         //CATEGORY 4
         addQuestion(new Infor.Config()
                 .title(R.string.category_4, Color.WHITE)
+                .titleTextSize(28)
                 .description(R.string.category_4_desc,
                         Color.WHITE)
                 .image(R.drawable.x_drug)
@@ -342,7 +402,9 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
 
         addQuestion(new Single.Config()
                 .title(getString(R.string.q16), Color.WHITE)
+                .titleTextSize(28)
                 .colorBackground(ContextCompat.getColor(this, R.color.colorRed))
+                .description("")
                 .image(R.drawable.x_blood_pressure)
                 .buttonClose(R.drawable.ic_action_close_dark)
                 .inputColorBackgroundTint(Color.WHITE)
@@ -355,7 +417,9 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
 
         addQuestion(new Single.Config()
                 .title(getString(R.string.q17), Color.WHITE)
+                .titleTextSize(28)
                 .colorBackground(ContextCompat.getColor(this, R.color.colorOrange))
+                .description("")
                 .image(R.drawable.x_glucosemeter)
                 .buttonClose(R.drawable.ic_action_close_dark)
                 .inputColorBackgroundTint(Color.WHITE)
@@ -368,7 +432,9 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
 
         addQuestion(new Single.Config()
                 .title(getString(R.string.q18), Color.WHITE)
+                .titleTextSize(28)
                 .colorBackground(ContextCompat.getColor(this, R.color.colorDeepPurple))
+                .description("")
                 .image(R.drawable.x_blood)
                 .buttonClose(R.drawable.ic_action_close_dark)
                 .inputColorBackgroundTint(Color.WHITE)
@@ -382,6 +448,7 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
         //CATEGORY 5
         addQuestion(new Infor.Config()
                 .title(R.string.category_5, Color.WHITE)
+                .titleTextSize(28)
                 .description(R.string.category_5_desc,
                         Color.WHITE)
                 .image(R.drawable.x_bed)
@@ -394,7 +461,9 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
 
         addQuestion(new Single.Config()
                 .title(getString(R.string.q19), Color.WHITE)
+                .titleTextSize(28)
                 .colorBackground(ContextCompat.getColor(this, R.color.colorBlueGrey))
+                .description("")
                 .image(R.drawable.x_sleep)
                 .buttonClose(R.drawable.ic_action_close_dark)
                 .inputColorBackgroundTint(Color.WHITE)
@@ -407,7 +476,9 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
 
         addQuestion(new Single.Config()
                 .title(getString(R.string.q20), Color.WHITE)
+                .titleTextSize(28)
                 .colorBackground(ContextCompat.getColor(this, R.color.colorBlue))
+                .description("")
                 .image(R.drawable.x_wakeup)
                 .buttonClose(R.drawable.ic_action_close_dark)
                 .inputColorBackgroundTint(Color.WHITE)
@@ -421,7 +492,9 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
         //END PAGE
         addQuestion(new Infor.Config()
                 .title(R.string.thank_you, Color.WHITE)
+                .titleTextSize(28)
                 .description(R.string.final_instructions)
+                .descriptionColor(Color.WHITE)
                 .colorBackground(getResources().getColor(R.color.colorPrimaryDark))
                 .image(R.drawable.x_like)
                 .buttonClose(R.drawable.ic_action_close_dark)
@@ -431,6 +504,11 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
                 .build());
     }
 
+    /**
+     * Parse answers to constants.
+     * @param id
+     * @return
+     */
     public List<String> parseAnswers(int id) {
         ArrayList<String> answers = new ArrayList<>();
         String[] parseAnswers = getResources().getStringArray(id);
@@ -438,6 +516,9 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
         return answers;
     }
 
+    /**
+     * Cancel quiz.
+     */
     @Override
     public void onClosePage() {
         new AlertDialog
@@ -448,6 +529,10 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
                 .show();
     }
 
+    /**
+     * Get answer of info page.
+     * @param page
+     */
     @Override
     public void onAnswerInfo(int page) {
         Log.d(LOG_TAG, "onAnswerInfo() | PAGE: " + page);
@@ -459,11 +544,22 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
         }
     }
 
+    /**
+     * Get answers of dichotomic.
+     * @param page
+     * @param value
+     */
     @Override
     public void onAnswerDichotomic(int page, boolean value) {
         Log.d(LOG_TAG, "onAnswerDichotomic() | PAGE:  " + page + " | ANSWER: " + value);
     }
 
+    /**
+     * Get answers of single.
+     * @param page
+     * @param value
+     * @param indexValue
+     */
     @Override
     public void onAnswerSingle(int page, String value, int indexValue) {
         Log.d(LOG_TAG, "onAnswerMultiple() | PAGE:  " + page
@@ -576,14 +672,20 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
                 chronicDiseases.add(chronicDisease3);
                 break;
             case 22:
-                sleepHabit.setWeekDaySleep(SleepHabitType.getString(indexValue));
+                sleepHabit.setWeekDaySleep(indexValue);
                 break;
             case 23:
-                sleepHabit.setWeekDayWakeUp(SleepHabitType.getString(indexValue));
+                sleepHabit.setWeekDayWakeUp(indexValue);
                 break;
         }
     }
 
+    /**
+     * Get answers of multiple.
+     * @param page
+     * @param values
+     * @param indexValues
+     */
     @Override
     public void onAnswerMultiple(int page, List<String> values, List<Integer> indexValues) {
         Log.d(LOG_TAG, "onAnswerMultiple() | PAGE:  " + page
@@ -597,6 +699,11 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
         }
     }
 
+    /**
+     * Get answers of text box.
+     * @param page
+     * @param value
+     */
     @Override
     public void onAnswerTextBox(int page, String value) {
         Log.d(LOG_TAG, "onAnswerTextBox() | PAGE:  " + page

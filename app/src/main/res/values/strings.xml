@@ -105,6 +105,7 @@
 
     <!-- SIGNUP -->
     <string name="name">Nome</string>
+    <string name="last_name">Sobrenome</string>
     <string name="gender">Gênero</string>
     <string name="gender_male">Masculino</string>
     <string name="gender_female">Feminino</string>
@@ -340,7 +341,7 @@
     <string name="body_composition_yunmai_pref">body_composition_yunmai</string>
     <string name="body_composition_omron_pref">body_composition_omron</string>
     <string name="dashboard_charts">Gráficos do dashboard</string>
-    <string name="measurements">Medições</string>
+    <string name="measurementsDB">Medições</string>
     <string name="key_steps">key_steps</string>
     <string name="key_activity">key_activity</string>
     <string name="key_sleep">key_sleep</string>
