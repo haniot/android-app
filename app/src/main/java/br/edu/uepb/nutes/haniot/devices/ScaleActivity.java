@@ -161,14 +161,8 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
         mChartButton.setOnClickListener(this);
         mAddButton.setOnClickListener(this);
 
-        Log.i(TAG, "tamanho: "+deviceDAO.list(session.getIdLogged()).size());
-        Log.i(TAG, "type: "+deviceDAO.list(session.getIdLogged()).get(0).getTypeId());
-        for (Device device : deviceDAO.list(session.getIdLogged())) {
-            if (device.getTypeId() == DeviceType.BODY_COMPOSITION) {
-                mDevice = device;
-                Log.i(TAG, mDevice.getAddress());
-            }
-        }
+        mDevice = deviceDAO.getByType(session.getUserLogged().get_id(), DeviceType.BODY_COMPOSITION);
+
         scaleManager.setSimpleCallback(scaleDataCallback);
         initComponents();
     }

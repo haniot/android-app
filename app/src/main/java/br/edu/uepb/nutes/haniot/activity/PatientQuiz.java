@@ -32,8 +32,6 @@ import br.edu.uepb.nutes.simplesurvey.question.Infor;
 import br.edu.uepb.nutes.simplesurvey.question.Multiple;
 import br.edu.uepb.nutes.simplesurvey.question.Open;
 import br.edu.uepb.nutes.simplesurvey.question.Single;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 
 public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
         Dichotomic.OnDichotomicListener, Single.OnSingleListener,
@@ -85,13 +83,13 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
         medicalRecord.setCreatedAt(DateUtils.getCurrentDateISO8601());
         feedingHabitsRecord.setCreatedAt(DateUtils.getCurrentDateISO8601());
         physicalActivityHabits.setCreatedAt(DateUtils.getCurrentDateISO8601());
-        feedingHabitsRecord.setWeeklyFoodRecordsDB(weeklyFoodRecords);
-        feedingHabitsRecord.setWeeklyFoodRecords(weeklyFoodRecords);
+        feedingHabitsRecord.setWeeklyFeedingHabitsDB(weeklyFoodRecords);
+        feedingHabitsRecord.setWeeklyFeedingHabits(weeklyFoodRecords);
         medicalRecord.setChronicDiseases(chronicDiseases);
-        medicalRecord.setChronicDiseaseDB(chronicDiseases);
+        medicalRecord.setChronicDiseasesDB(chronicDiseases);
 
         syncServer();
-        
+
         Log.i("Respostas", patient.toString());
         Log.i("Respostas", "Feending Habits: " + feedingHabitsRecord.toString());
         Log.i("Respostas", "Weekly Food Records: " + weeklyFoodRecords.toString());
@@ -100,19 +98,20 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
         Log.i("Respostas", "Physical Activity: " + physicalActivityHabits.toString());
         Log.i("Respostas", "Sleep: " + sleepHabit.toString());
     }
-    
-    private void syncServer(){
+
+    private void syncServer() {
         haniotNetRepository.savePatient(patient)
                 .doOnSubscribe(disposable -> showProgress(true));
-        haniotNetRepository.saveFeedingHabitsRecord("PilotIdAqui",feedingHabitsRecord);
-        haniotNetRepository.saveMedicalRecord("PilotIdAqui", medicalRecord);
-        haniotNetRepository.savePhysicalActivityHabit("PilotIdAqui", physicalActivityHabits);
-        haniotNetRepository.saveSleepHabit("PilotIdAqui", sleepHabit);
+        haniotNetRepository.saveFeedingHabitsRecord(feedingHabitsRecord);
+        haniotNetRepository.saveMedicalRecord(medicalRecord);
+        haniotNetRepository.savePhysicalActivityHabit(physicalActivityHabits);
+        haniotNetRepository.saveSleepHabit(sleepHabit);
     }
 
-    private void showProgress(boolean enabled){
+    private void showProgress(boolean enabled) {
         //TODO fazer um loading
     }
+
     /**
      * Construct quiz.
      */
@@ -506,6 +505,7 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
 
     /**
      * Parse answers to constants.
+     *
      * @param id
      * @return
      */
@@ -531,6 +531,7 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
 
     /**
      * Get answer of info page.
+     *
      * @param page
      */
     @Override
@@ -546,6 +547,7 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
 
     /**
      * Get answers of dichotomic.
+     *
      * @param page
      * @param value
      */
@@ -556,6 +558,7 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
 
     /**
      * Get answers of single.
+     *
      * @param page
      * @param value
      * @param indexValue
@@ -647,8 +650,10 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
                         .BreastFeeding.getString(indexValue));
                 break;
             case 18:
-                feedingHabitsRecord.setFoodAllergyintolerance(FeendingHabitsRecordType
-                        .FoodAllergyStringolerance.getString(indexValue));
+                // TODO food_allergy_intolerance pode ter mais de uma resposta. Entao, o componente deve ser o Multiple
+//                feedingHabitsRecord.setFoodAllergyIntolerance(
+//                        FeendingHabitsRecordType.FoodAllergyStringolerance.getString(indexValue)
+//                );
                 break;
             case 19:
                 ChronicDisease chronicDisease = new ChronicDisease();
@@ -682,6 +687,7 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
 
     /**
      * Get answers of multiple.
+     *
      * @param page
      * @param values
      * @param indexValues
@@ -701,6 +707,7 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
 
     /**
      * Get answers of text box.
+     *
      * @param page
      * @param value
      */

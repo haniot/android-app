@@ -1,28 +1,43 @@
 package br.edu.uepb.nutes.haniot.data.model;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
+import io.objectbox.relation.ToOne;
 
 @Entity
 public class ChronicDisease {
-
     @Id
-    private long idBd;
+    @Expose(serialize = false, deserialize = false)
+    private long id;
 
     @SerializedName("type")
+    @Expose()
     private String type;
 
     @SerializedName("disease_history")
+    @Expose()
     private String diseaseHistory;
 
-    public long getIdBd() {
-        return idBd;
+    @Expose(serialize = false, deserialize = false)
+    private ToOne<MedicalRecord> medicalRecord;
+
+    public ChronicDisease() {
     }
 
-    public void setIdBd(long idBd) {
-        this.idBd = idBd;
+    public ChronicDisease(String type, String diseaseHistory) {
+        this.type = type;
+        this.diseaseHistory = diseaseHistory;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getType() {
@@ -41,12 +56,21 @@ public class ChronicDisease {
         this.diseaseHistory = diseaseHistory;
     }
 
+    public ToOne<MedicalRecord> getMedicalRecord() {
+        return medicalRecord;
+    }
+
+    public void setMedicalRecord(ToOne<MedicalRecord> medicalRecord) {
+        this.medicalRecord = medicalRecord;
+    }
+
     @Override
     public String toString() {
         return "ChronicDisease{" +
-                "idBd=" + idBd +
+                "id=" + id +
                 ", type='" + type + '\'' +
                 ", diseaseHistory='" + diseaseHistory + '\'' +
+                ", medicalRecord=" + medicalRecord +
                 '}';
     }
 }

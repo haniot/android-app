@@ -13,6 +13,7 @@ import android.widget.*;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
+import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.fragment.GenericDialogFragment;
 import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.model.dao.UserDAO;
@@ -59,7 +60,7 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
     Button buttonChangePassword;
 
     private User user;
-    private Session session;
+    private AppPreferencesHelper appPreferences;
     private UserDAO userDAO;
     private Menu menu;
 
@@ -75,12 +76,11 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
 
         buttonChangePassword.setOnClickListener(this);
 
-        user = new User();
-        session = new Session(this);
+        appPreferences = AppPreferencesHelper.getInstance(this);
         userDAO = UserDAO.getInstance(this);
 
+        user = appPreferences.getUserLogged();
         prepareEditing();
-
     }
 
     @Override
@@ -144,9 +144,6 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
     private void prepareEditing() {
         enabledView(false);
 
-        // get user local
-        user = userDAO.get(session.getIdLogged());
-
         if (!ConnectionUtils.internetIsEnabled(this)) return;
 
         loading(true);
@@ -155,7 +152,7 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
         /**
          * Get user in server
          */
-        Server.getInstance(this).get("users/".concat(session.get_idLogged()), new Server.Callback() {
+        Server.getInstance(this).get("users/".concat(user.get_id()), new Server.Callback() {
             @Override
             public void onError(JSONObject result) {
                 enabledView(true);
@@ -210,7 +207,7 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
         loading(true);
 
         // Send for remote server /users/:userId
-        Server.getInstance(this).patch("users/".concat(session.get_idLogged()),
+        Server.getInstance(this).patch("users/".concat(user.get_id()),
                 new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create().toJson(getUserView()), new Server.Callback() {
                     @Override
                     public void onError(JSONObject result) {
@@ -270,10 +267,12 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
      * Populate elements of the view
      */
     private void populateView() {
-        if (user.getName() != null)
-        nameEditText.setText(user.getName());
-        if (user.getEmail() != null)
-        emailEditText.setText(user.getEmail());
+        if (user == null) {
+            finish();
+            return;
+        }
+        if (user.getName() != null) nameEditText.setText(user.getName());
+        if (user.getEmail() != null) emailEditText.setText(user.getEmail());
     }
 
     /**

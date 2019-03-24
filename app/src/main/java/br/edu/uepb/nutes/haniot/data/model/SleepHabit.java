@@ -1,17 +1,22 @@
 package br.edu.uepb.nutes.haniot.data.model;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import io.objectbox.annotation.Entity;
 
 @Entity
 public class SleepHabit extends ActivityHabitsRecord {
-
     @SerializedName("week_day_sleep")
+    @Expose()
     private int weekDaySleep;
 
     @SerializedName("week_day_wake_up")
+    @Expose()
     private int weekDayWakeUp;
+
+    public SleepHabit() {
+    }
 
     public int getWeekDaySleep() {
         return weekDaySleep;
@@ -31,9 +36,10 @@ public class SleepHabit extends ActivityHabitsRecord {
 
     @Override
     public String toString() {
-        return "SleepHabit{" +
-                "weekDaySleep='" + weekDaySleep + '\'' +
-                ", weekDayWakeUp='" + weekDayWakeUp + '\'' +
+        return super.toString() +
+                " SleepHabit{" +
+                "weekDaySleep=" + weekDaySleep +
+                ", weekDayWakeUp=" + weekDayWakeUp +
                 '}';
     }
 }

@@ -48,6 +48,58 @@ public class DeviceDAO {
         return deviceBox.put(device) > 0;
     }
 
+
+    /**
+     * Select a Device according to id.
+     *
+     * @param id long
+     * @return Object
+     */
+    public Device get(long id) {
+        return deviceBox.query()
+                .equal(Device_.id, id)
+                .build().findFirst();
+    }
+
+    /**
+     * Select a Device according to address and userId.
+     *
+     * @param address String
+     * @param userId  long
+     * @return Object
+     */
+    public Device get(@NonNull String address, long userId) {
+        return deviceBox.query()
+                .equal(Device_.address, address)
+                .equal(Device_.userId, userId)
+                .build().findFirst();
+    }
+
+    /**
+     * Retrieves all device according to userId and type.
+     *
+     * @param userId long
+     * @return List<T>
+     */
+    public Device getByType(@NonNull String userId, int type) {
+        return deviceBox.query()
+                .equal(Device_.userId, userId)
+                .equal(Device_.typeId, type)
+                .build().findFirst();
+    }
+
+    /**
+     * Retrieves all device according to userId.
+     *
+     * @param userId long
+     * @return List<T>
+     */
+    public List<Device> list(@NonNull String userId) {
+        return deviceBox.query()
+                .equal(Device_.userId, userId)
+                .build().find();
+    }
+
     /**
      * Update device.
      * According to your _id and _id user provided by the remote server.
@@ -111,40 +163,15 @@ public class DeviceDAO {
     }
 
     /**
-     * Select a Device according to id.
+     * Removes all devices.
+     * According to userId user.
      *
-     * @param id long
-     * @return Object
+     * @param userId {@link String}
+     * @return long - Total number of itemsList removed
      */
-    public Device get(@NonNull long id) {
+    public boolean removeAll(@NonNull String userId) {
         return deviceBox.query()
-                .equal(Device_.id, id)
-                .build().findFirst();
-    }
-
-    /**
-     * Select a Device according to address and userId.
-     *
-     * @param address String
-     * @param userId long
-     * @return Object
-     */
-    public Device get(@NonNull String address, long userId) {
-        return deviceBox.query()
-                .equal(Device_.address, address)
-                .equal(Device_.userId, userId)
-                .build().findFirst();
-    }
-
-    /**
-     * Retrieves all device according to userId.
-     *
-     * @param userId long
-     * @return List<T>
-     */
-    public List<Device> list(@NonNull long userId) {
-        return deviceBox.query()
-                .equal(Device_.userId, userId)
-                .build().find();
+                .equal(Device_._id, userId)
+                .build().remove() > 0;
     }
 }

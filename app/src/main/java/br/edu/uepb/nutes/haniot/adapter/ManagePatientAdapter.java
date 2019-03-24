@@ -97,7 +97,7 @@ public class ManagePatientAdapter extends RecyclerView.Adapter<ManagePatientAdap
                         0,
                         holder.itemView.getWidth(),
                         holder.itemView.getHeight()).toBundle();
-                intent.putExtra("Patient", patient.getIdDb());
+                intent.putExtra("Patient", patient.getId());
                 context.startActivity(intent, bundle);
             });
             holder.btnDelete.setOnClickListener(d -> {

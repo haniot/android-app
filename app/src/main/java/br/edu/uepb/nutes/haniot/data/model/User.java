@@ -1,20 +1,16 @@
 package br.edu.uepb.nutes.haniot.data.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 
-import io.objectbox.annotation.Backlink;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.annotation.Index;
-import io.objectbox.annotation.Transient;
-import io.objectbox.relation.ToMany;
-import io.objectbox.relation.ToOne;
 
 /**
  * Represents User object.
@@ -26,43 +22,41 @@ import io.objectbox.relation.ToOne;
 @Entity
 public class User {
     @Id
-    @Expose(serialize = false)
-    private long idDb;
+    @Expose(serialize = false, deserialize = false)
+    private long id;
 
     @Index
     @SerializedName("id")
     @Expose()
     private String _id; // _id in server remote (UUID)
 
-    @SerializedName("name")
-    @Expose()
-    private String name;
-
     @Index
     @SerializedName("email")
     @Expose()
     private String email;
 
+    @SerializedName("name")
+    @Expose()
+    private String name;
+
     @SerializedName("token")
+    @Expose()
     private String token; // provide by the server
 
     @Expose(deserialize = false)
     private String password;
 
     @SerializedName("old_password")
-    @Expose(serialize = false)
+    @Expose(deserialize = false)
     private String oldPassword;
 
     @SerializedName("new_password")
-    @Expose(serialize = false)
+    @Expose(deserialize = false)
     private String newPassword;
 
-    @SerializedName("healthArea")
+    @SerializedName("health_area")
+    @Expose()
     private String healthArea; // provide by the server
-
-    /**
-     * RELATIONS
-     */
 
     /**
      * {@link UserType ()}
@@ -89,12 +83,12 @@ public class User {
         this.newPassword = newPassword;
     }
 
-    public long getIdDb() {
-        return idDb;
+    public long getId() {
+        return id;
     }
 
-    public void setIdDb(long id) {
-        this.idDb = id;
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String get_id() {
@@ -175,7 +169,8 @@ public class User {
      * @return String
      */
     public String toJson() {
-        return new Gson().toJson(this);
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        return gson.toJson(this);
     }
 
     /**
@@ -185,9 +180,10 @@ public class User {
      * @return User
      */
     public static User jsonDeserialize(String json) {
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         Type typeUser = new TypeToken<User>() {
         }.getType();
-        return new Gson().fromJson(json, typeUser);
+        return gson.fromJson(json, typeUser);
     }
 
     @Override
@@ -203,11 +199,15 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "id=" + idDb +
+                "id=" + id +
                 ", _id='" + _id + '\'' +
-                ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
+                ", name='" + name + '\'' +
                 ", token='" + token + '\'' +
+                ", password='" + password + '\'' +
+                ", oldPassword='" + oldPassword + '\'' +
+                ", newPassword='" + newPassword + '\'' +
+                ", healthArea='" + healthArea + '\'' +
                 ", userType=" + userType +
                 '}';
     }

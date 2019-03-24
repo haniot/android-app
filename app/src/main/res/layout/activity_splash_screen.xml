@@ -28,6 +28,7 @@
 
         <TextView
             android:layout_width="match_parent"
+            android:id="@+id/title_desc_textview"
             android:layout_height="wrap_content"
             android:text="@string/app_name_desc"
             android:gravity="center_horizontal"

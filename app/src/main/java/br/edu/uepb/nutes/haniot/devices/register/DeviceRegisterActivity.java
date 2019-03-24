@@ -39,7 +39,9 @@ import java.util.List;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.data.model.Device;
+import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.model.dao.DeviceDAO;
+import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.server.Server;
 import br.edu.uepb.nutes.haniot.utils.GattAttributes;
 import br.edu.uepb.nutes.simpleblescanner.SimpleBleScanner;
@@ -67,8 +69,9 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     private Device mDevice;
     private DeviceDAO mDeviceDAO;
     private Server server;
-    private Session session;
+    private AppPreferencesHelper appPreferences;
     private BluetoothDevice btDevice;
+    private User user;
 
     @BindView(R.id.box_scanner)
     FrameLayout boxScanner;
@@ -112,7 +115,6 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     @BindView(R.id.progressBar_pairing)
     ProgressBar progressBarPairing;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -125,7 +127,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         ButterKnife.bind(this);
 
         server = Server.getInstance(this);
-        session = new Session(this);
+        appPreferences = AppPreferencesHelper.getInstance(this);
         mDeviceDAO = DeviceDAO.getInstance(this);
 
 
@@ -146,13 +148,17 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
         registerReceiver(mBroadcastReceiver, filter);
 
+        user = appPreferences.getUserLogged();
+        if (user == null) {
+            finish();
+            return;
+        }
+
         initComponents();
     }
 
-    //start scanner library ble
     @Override
     protected void onResume() {
-        Log.d(TAG, "onResume: ");
         super.onResume();
         checkPermissions();
     }
@@ -471,7 +477,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
      * @param device {@link Device}
      */
     public void saveDeviceRegister(final Device device) {
-        String path = "devices/".concat("/users/").concat(session.get_idLogged());
+        String path = "devices/".concat("/users/").concat(user.get_id());
         server.post(path, this.deviceToJson(device), new Server.Callback() {
             @Override
             public void onError(JSONObject result) {
@@ -481,7 +487,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
             public void onSuccess(JSONObject result) {
                 Device mDevice = new Gson().fromJson(String.valueOf(result), Device.class);
                 mDevice.setImg(device.getImg());
-                mDevice.setUser(session.getUserLogged());
+                mDevice.setUserId(user.get_id());
                 mDeviceDAO.save(mDevice);
             }
         });
@@ -495,13 +501,13 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
      */
     public boolean removeDeviceForType(Device device) {
         boolean confirmed = false;
-        for (Device d : mDeviceDAO.list(session.getIdLogged())) {
+        for (Device d : mDeviceDAO.list(user.get_id())) {
             if (d.getTypeId() == device.getTypeId()) {
                 confirmed = true;
                 String path = "devices/"
                         .concat(d.get_id())
                         .concat("/users/")
-                        .concat(session.get_idLogged());
+                        .concat(user.get_id());
 
                 server.delete(path, new Server.Callback() {
                     @Override

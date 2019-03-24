@@ -164,12 +164,14 @@ public class AppPreferencesHelper implements PreferencesHelper {
 
     @Override
     public boolean removeUserAccessHaniot() {
-        return mPrefs.edit().remove(PREF_KEY_AUTH_STATE_HANIOT).commit() && removeUserLogged();
+        return mPrefs.edit().remove(PREF_KEY_AUTH_STATE_HANIOT).commit() &&
+                mPrefs.edit().remove(PREF_KEY_USER_PROFILE).commit();
     }
 
     @Override
     public boolean removeUserLogged() {
-        return mPrefs.edit().remove(PREF_KEY_USER_PROFILE).commit() && removeUserAccessHaniot();
+        return mPrefs.edit().remove(PREF_KEY_USER_PROFILE).commit() &&
+                mPrefs.edit().remove(PREF_KEY_AUTH_STATE_HANIOT).commit();
     }
 
     @Override

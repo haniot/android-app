@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.auth0.android.jwt.JWT;
 import com.google.gson.Gson;
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 
@@ -18,13 +19,23 @@ import java.lang.reflect.Type;
 public class UserAccess implements Parcelable {
     public static final String KEY_SCOPES = "scope";
 
+    @Expose()
     private String subject;
 
     @SerializedName(value = "access_token", alternate = {"token"})
+    @Expose()
     private String accessToken;
+
+    @Expose(serialize = false, deserialize = false)
     private String refreshToken;
+
+    @Expose(serialize = false, deserialize = false)
     private String tokenType;
+
+    @Expose(serialize = false, deserialize = false)
     private long expirationDate; // in milliseconds
+
+    @Expose(serialize = false, deserialize = false)
     private String scopes;
 
     public UserAccess() {

@@ -23,7 +23,6 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -156,10 +155,7 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
         synchronizeWithServer();
 
         session = new Session(this);
-        for (Device device : DeviceDAO.getInstance(this).list(session.getIdLogged()))
-            if (device.getTypeId() == DeviceType.GLUCOMETER) mDevice = device;
 
-        if (mDevice == null) Log.i(TAG, "No device registered");
         measurementDAO = MeasurementDAO.getInstance(this);
         deviceDAO = DeviceDAO.getInstance(this);
         params = new Params(session.get_idLogged(), MeasurementType.BLOOD_GLUCOSE);
@@ -171,6 +167,7 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
         Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
 
+        mDevice = deviceDAO.getByType(session.getUserLogged().get_id(), DeviceType.GLUCOMETER);
         isGetAllMonitor = false;
         initComponents();
     }
@@ -470,7 +467,8 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
         super.onResume();
         registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
 
-        if (mBluetoothLeService != null && mDevice != null) mBluetoothLeService.connect(mDevice.getAddress());
+        if (mBluetoothLeService != null && mDevice != null)
+            mBluetoothLeService.connect(mDevice.getAddress());
     }
 
     @Override
@@ -579,7 +577,7 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
             }
             // Conecta-se automaticamente ao dispositivo após a inicialização bem-sucedida.
             if (mDevice != null)
-            mBluetoothLeService.connect(mDevice.getAddress());
+                mBluetoothLeService.connect(mDevice.getAddress());
         }
 
         @Override

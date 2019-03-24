@@ -15,6 +15,7 @@
     <color name="colorAlertDanger">#a94442</color>
     <color name="colorItemSeparator">#E0E0E0</color>
     <color name="colorBackRadiogroup">#f0f0f0</color>
+    <color name="colorWarningLight">#fcf8e3</color>
 
     <!--COLORS BUTTONS-->
     <color name="colorButtonPrimary">@color/colorAccent</color>

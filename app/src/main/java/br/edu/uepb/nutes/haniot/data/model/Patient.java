@@ -1,62 +1,62 @@
 package br.edu.uepb.nutes.haniot.data.model;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
-import java.util.List;
 
-import io.objectbox.annotation.Backlink;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.annotation.Index;
-import io.objectbox.relation.ToMany;
 
 @Entity
-public class Patient{
-
+public class Patient {
     @Id
-    @Expose(serialize = false)
-    private long idDb;
+    @Expose(serialize = false, deserialize = false)
+    private long id;
 
     @Index
     @SerializedName("id")
-    private String _id;
+    @Expose()
+    private String _id; // _id in server remote (UUID)
 
     @Index
     @SerializedName("pilotstudy_id")
+    @Expose()
     private String pilotId;
 
     @SerializedName("first_name")
+    @Expose()
     private String firstName;
 
     @SerializedName("last_name")
+    @Expose()
     private String lastName;
 
     @SerializedName("gender")
+    @Expose()
     private String gender;
 
     @SerializedName("birth_date")
+    @Expose()
     private String birthDate;
 
-
-    /**
-     * RELATIONS
-     */
-
+    @Expose(serialize = false, deserialize = false)
+    private String userId;
 
     public Patient() {
 
     }
 
-    public long getIdDb() {
-        return idDb;
+    public long getId() {
+        return id;
     }
 
-    public void setIdDb(long idDb) {
-        this.idDb = idDb;
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String get_id() {
@@ -99,7 +99,6 @@ public class Patient{
         this.gender = gender;
     }
 
-
     public String getBirthDate() {
         return birthDate;
     }
@@ -108,13 +107,22 @@ public class Patient{
         this.birthDate = birthDate;
     }
 
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
     /**
      * Convert object to json format.
      *
      * @return String
      */
     public String toJson() {
-        return new Gson().toJson(this);
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        return gson.toJson(this);
     }
 
     /**
@@ -124,15 +132,16 @@ public class Patient{
      * @return Patient
      */
     public static Patient jsonDeserialize(String json) {
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         Type typePatient = new TypeToken<Patient>() {
         }.getType();
-        return new Gson().fromJson(json, typePatient);
+        return gson.fromJson(json, typePatient);
     }
 
     @Override
     public String toString() {
         return "Patient{" +
-                "idDb=" + idDb +
+                "id=" + id +
                 ", _id='" + _id + '\'' +
                 ", pilotId='" + pilotId + '\'' +
                 ", firstName='" + firstName + '\'' +

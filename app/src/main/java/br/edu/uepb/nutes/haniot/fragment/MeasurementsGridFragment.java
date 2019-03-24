@@ -7,6 +7,7 @@ import android.bluetooth.le.ScanResult;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -26,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import androidx.annotation.RequiresApi;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.ManuallyAddMeasurement;
 import br.edu.uepb.nutes.haniot.activity.settings.ManagerMeasurementsActivity;
@@ -186,10 +188,10 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
      * Callback of scan result of bluetooth devices.
      */
     SimpleScannerCallback simpleScannerCallback = new SimpleScannerCallback() {
+        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         @Override
         public void onScanResult(int i, ScanResult scanResult) {
             String address = scanResult.getDevice().getAddress();
-            if (scanResult == null) Log.i(TAG, "ScanResult null");
             if (scanResult.getDevice() == null) Log.i(TAG, "getDevice null");
             if (scanResult.getDevice().getAddress() == null) Log.i(TAG, "getAddress null");
             Device device = deviceDAO.get(scanResult.getDevice().getAddress(),
@@ -251,7 +253,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
      */
     public void initManagerBLE() {
         measurementMonitors.clear();
-        devices = DeviceDAO.getInstance(getContext()).list(session.getIdLogged());
+        devices = DeviceDAO.getInstance(getContext()).list(session.getUserLogged().get_id());
         builder = new SimpleBleScanner.Builder();
         builder.addScanPeriod(999999999);
 

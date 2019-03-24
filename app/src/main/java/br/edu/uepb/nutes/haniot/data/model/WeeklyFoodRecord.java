@@ -1,14 +1,17 @@
 package br.edu.uepb.nutes.haniot.data.model;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
+import io.objectbox.relation.ToOne;
 
 @Entity
 public class WeeklyFoodRecord {
     @Id
-    private long idBd;
+    @Expose(serialize = false, deserialize = false)
+    private long id;
 
     @SerializedName("food")
     private String food;
@@ -16,12 +19,18 @@ public class WeeklyFoodRecord {
     @SerializedName("seven_days_freq")
     private String seveDaysFreq;
 
-    public long getIdBd() {
-        return idBd;
+    @Expose(serialize = false, deserialize = false)
+    private ToOne<FeedingHabitsRecord> feedingHabitsRecord;
+
+    public WeeklyFoodRecord() {
     }
 
-    public void setIdBd(long idBd) {
-        this.idBd = idBd;
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getFood() {
@@ -40,10 +49,18 @@ public class WeeklyFoodRecord {
         this.seveDaysFreq = seveDaysFreq;
     }
 
+    public ToOne<FeedingHabitsRecord> getFeedingHabitsRecord() {
+        return feedingHabitsRecord;
+    }
+
+    public void setFeedingHabitsRecord(ToOne<FeedingHabitsRecord> feedingHabitsRecord) {
+        this.feedingHabitsRecord = feedingHabitsRecord;
+    }
+
     @Override
     public String toString() {
         return "WeeklyFoodRecord{" +
-                "idBd=" + idBd +
+                "id=" + id +
                 ", food='" + food + '\'' +
                 ", seveDaysFreq='" + seveDaysFreq + '\'' +
                 '}';

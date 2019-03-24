@@ -14,9 +14,7 @@ import io.objectbox.BoxStore;
 /**
  * Represents UserDAO.
  *
- * @author Douglas Rafael <douglas.rafael@nutes.uepb.edu.br>
- * @version 1.6
- * @copyright Copyright (c) 2017, NUTES UEPB
+ * @author Copyright (c) 2019, NUTES/UEPB
  */
 public class UserDAO {
 
@@ -52,7 +50,7 @@ public class UserDAO {
      * @return User
      */
     public User get(@NonNull long id) {
-        return userBox.query().equal(User_.idDb, id).build().findFirst();
+        return userBox.query().equal(User_.id, id).build().findFirst();
     }
 
     public List<User> listAll() {
@@ -83,7 +81,7 @@ public class UserDAO {
          */
         if (userUp == null) return false;
 
-        user.setIdDb(userUp.getIdDb());
+        user.setId(userUp.getId());
         if (user.get_id() == null) user.set_id(userUp.get_id());
 
         return save(user); // update
@@ -96,6 +94,17 @@ public class UserDAO {
      * @return boolean
      */
     public boolean remove(@NonNull long id) {
-        return userBox.query().equal(User_.idDb, id).build().remove() > 0;
+        return userBox.query().equal(User_.id, id).build().remove() > 0;
+    }
+
+
+    /**
+     * Remove user.
+     *
+     * @param id
+     * @return boolean
+     */
+    public boolean remove(@NonNull String id) {
+        return userBox.query().equal(User_._id, id).build().remove() > 0;
     }
 }

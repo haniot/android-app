@@ -3,7 +3,7 @@
     <string name="app_name">HANIoT</string>
     <string name="app_name_desc">Health ANalytics Internet of Things</string>
     <string name="app_version">1.0</string>
-    <string name="copyright">© 2017 NUTES/UEPB</string>
+    <string name="copyright">© 2019 NUTES/UEPB</string>
     <string name="start_scan">Iniciar Escaneamento</string>
     <string name="start_synchronization">Iniciar Sincronização</string>
     <string name="stop_scan">Parar Escaneamento</string>
@@ -85,8 +85,9 @@
     <string name="alert_register_time_title">Alerta disparada às %s</string>
     <string name="image">Imagem</string>
     <string name="warning_title">Atenção!</string>
+    <string name="welcome_app_functionalities_title">Aqui você pode:</string>
+    <string name="welcome_app_functionalities">• Cadastrar/gerenciar seus pacientes;\n• Submeter questionários para seus pacientes responderem;\n• Realizar medições;\n• Consultar históricos e muito mais.</string>
     <string name="welcome_hp">Seja bem-vindo(a), %s</string>
-    <string name="welcome_hp_desc">Aqui você poderá:\n• Cadastrar/gerenciar seus pacientes;\n• Submeter questionários para seus pacientes responderem;\n• Realizar medições;\n• Consultar históricos e muito mais.</string>
     <string name="welcome_hp_instructions">Para continuarmos você precisa selecionar o piloto que deseja relizar o estudo.</string>
     <string name="piloty_study_title">Estudo Piloto</string>
     <string name="piloty_study_desc">Selecione o piloto que deseja realizar o estudo. Você poderá a qualquer momento voltar aqui e mudar sua escolha.</string>
@@ -151,12 +152,13 @@
 
     <!-- ERROR MESSAGES -->
     <string name="error_sign_out">Aconteceu um erro ao tentar sair&#8230;</string>
-    <string name="error_500">Não foi possível concluir o pedido! Por favor, tente novamente mais tarde&#8230;</string>
+    <string name="error_500">Não foi possível concluir a operação! Por favor, tente novamente mais tarde&#8230;</string>
     <string name="error_internal_device">Não foi possível concluir o pedido! Por favor, tente novamente mais tarde&#8230;</string>
     <string name="error_connectivity">Aconteceu um erro na comunicação com nossos servidores. Por favor, verifique a conectividade do seu telefone e tente novamente mais tarde.</string>
     <string name="connect_network_try_again">Conecte-se a uma rede e tente novamente&#8230;</string>
     <string name="error_403">A senha do usuário precisa ser alterada!</string>
     <string name="error_incorret_password">Senha não pode ser atualizada. Certifique-se de que os dados estão corretos!</string>
+    <string name="error_recover_data">Encontramos um problema ao tentar recuperar os seus dados. Por favor, tente novamente mais tarde ou entre em contato com o administardor&#8230;</string>
 
     <!-- END ERROR MESSAGES -->
 

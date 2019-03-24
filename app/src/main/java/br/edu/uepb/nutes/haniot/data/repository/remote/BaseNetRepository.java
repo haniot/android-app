@@ -1,6 +1,7 @@
 package br.edu.uepb.nutes.haniot.data.repository.remote;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -13,7 +14,6 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
-import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotService;
 import okhttp3.Cache;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -41,7 +41,9 @@ public abstract class BaseNetRepository {
 
     private Gson provideGson() {
         GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES);
+        gsonBuilder.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+                .excludeFieldsWithoutExposeAnnotation();
+
         return gsonBuilder.create();
     }
 
@@ -53,14 +55,21 @@ public abstract class BaseNetRepository {
         return mClient.build();
     }
 
-    protected void addInterceptor(Interceptor interceptor) {
+    protected void addRequestInterceptor(Interceptor interceptor) {
         if (interceptor == null) return;
         if (mClient == null) mClient = this.getUnsafeOkHttpClient();
 
         mClient.addInterceptor(interceptor);
     }
 
-    protected Retrofit provideRetrofit(String baseUrl) {
+    protected void addResponseInterceptor(Interceptor interceptor) {
+        if (interceptor == null) return;
+        if (mClient == null) mClient = this.getUnsafeOkHttpClient();
+
+        mClient.addNetworkInterceptor(interceptor);
+    }
+
+    protected Retrofit provideRetrofit(@NonNull String baseUrl) {
         return new Retrofit.Builder()
                 .baseUrl(baseUrl)
                 .addConverterFactory(GsonConverterFactory.create(provideGson()))
@@ -69,7 +78,7 @@ public abstract class BaseNetRepository {
                 .build();
     }
 
-    public OkHttpClient.Builder getUnsafeOkHttpClient() {
+    private OkHttpClient.Builder getUnsafeOkHttpClient() {
         try {
             // Create a trust manager that does not validate certificate chains
             final TrustManager[] trustAllCerts = new TrustManager[]{

@@ -150,10 +150,8 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
         params = new Params(session.get_idLogged(), MeasurementType.HEART_RATE);
         heartRateManager = new HeartRateManager(this);
         heartRateManager.setSimpleCallback(heartRateDataCallback);
-        for (Device device : deviceDAO.list(session.getIdLogged())) {
-            if (device.getTypeId() == DeviceType.HEART_RATE)
-                mDevice = device;
-        }
+
+        mDevice = deviceDAO.getByType(session.getUserLogged().get_id(), DeviceType.HEART_RATE);
         mChartButton.setOnClickListener(this);
         mRecordHeartRateButton.setOnClickListener(this);
         mAddMeasurementButton.setOnClickListener(this);

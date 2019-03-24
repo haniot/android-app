@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import java.util.List;
 
 import javax.annotation.Nullable;
+import javax.sql.StatementEvent;
 
 import br.edu.uepb.nutes.haniot.App;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
@@ -13,15 +14,20 @@ import br.edu.uepb.nutes.haniot.data.model.Patient_;
 import io.objectbox.Box;
 import io.objectbox.BoxStore;
 
+/**
+ * Represents PatientDAO.
+ *
+ * @author Copyright (c) 2019, NUTES/UEPB
+ */
 public class PatientDAO {
 
     public static PatientDAO instance;
     private static Box<Patient> patientBox;
 
-    private PatientDAO (){}
+    private PatientDAO() {
+    }
 
-//    Singleton
-    public static synchronized PatientDAO getInstance(@Nullable Context context){
+    public static synchronized PatientDAO getInstance(@Nullable Context context) {
         if (instance == null) instance = new PatientDAO();
 
         BoxStore boxStore = ((App) context.getApplicationContext()).getBoxStore();
@@ -30,47 +36,39 @@ public class PatientDAO {
         return instance;
     }
 
-//    Search patient by name
-    public Patient get(@NonNull String name){
-        return patientBox.query().equal(Patient_.firstName,name).build().findFirst();
+    public Patient get(long id) {
+        return patientBox.query().equal(Patient_.id, id).build().findFirst();
     }
 
-//    Search patient by id
-    public Patient get(@NonNull long id){
-        return patientBox.query().equal(Patient_.idDb,id).build().findFirst();
+    public Patient get(@NonNull String _id) {
+        return patientBox.query().equal(Patient_._id, _id).build().findFirst();
     }
 
-//    Search patient by id
-    public Patient getFromID(@NonNull String _id){
-        return patientBox.query().equal(Patient_._id,_id).build().findFirst();
+    public List<Patient> list(@NonNull String userId) {
+        return patientBox.query().equal(Patient_.userId, userId).build().find();
     }
 
-//    get all patient on database
-    public List<Patient> get(){
-        return patientBox.query().build().find();
-    }
-
-//    save patient
-    public boolean save(@NonNull Patient patient){
+    public boolean save(@NonNull Patient patient) {
         return patientBox.put(patient) > 0;
     }
 
-//    update patient
-    public boolean update(@NonNull Patient patient){
-        if (patient.getIdDb() == 0){
+    public boolean update(@NonNull Patient patient) {
+        if (patient.getId() == 0) {
             Patient patientUp = get(patient.getFirstName());
 
             if (patientUp == null) return false;
 
-            patient.setIdDb(patientUp.getIdDb());
+            patient.setId(patientUp.getId());
             if (patient.get_id() == null) patient.set_id(patientUp.get_id());
         }
         return save(patient);
     }
 
-//    remove patient
-    public boolean remove (@NonNull Patient patient){
-        return patientBox.query().equal(Patient_.idDb,patient.getIdDb()).build().remove() > 0;
+    public boolean remove(@NonNull Patient patient) {
+        return patientBox.query().equal(Patient_.id, patient.getId()).build().remove() > 0;
     }
 
+    public boolean remove(@NonNull String _id) {
+        return patientBox.query().equal(Patient_._id, _id).build().remove() > 0;
+    }
 }

@@ -12,27 +12,30 @@ import android.support.v7.app.AlertDialog;
 import android.widget.Toast;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.activity.account.UpdateDataActivity;
 import br.edu.uepb.nutes.haniot.activity.account.LoginActivity;
+import br.edu.uepb.nutes.haniot.activity.account.UpdateDataActivity;
+import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.devices.register.DeviceManagerActivity;
 
 /**
  * MyPreferenceFragment implementation.
  *
- * @author Douglas Rafael <douglas.rafael@nutes.uepb.edu.br>
- * @version 1.0
- * @copyright Copyright (c) 2018, NUTES UEPB
+ * @author Copyright (c) 2018, NUTES/UEPB
  */
 public class MyPreferenceFragment extends PreferenceFragment {
     public static final String FORM_UPDATE = "form_update";
 
     AlertDialog.Builder alertDialogBuilder;
 
+    private AppPreferencesHelper appPreferences;
+
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         addPreferencesFromResource(R.xml.preferences);
+
+        appPreferences = AppPreferencesHelper.getInstance(getActivity().getApplicationContext());
 
         // Send feedback
         Preference prefSendFeedback = findPreference(getString(R.string.key_send_feedback));
@@ -48,20 +51,15 @@ public class MyPreferenceFragment extends PreferenceFragment {
         prefSignout.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
 
-                /**
-                 * Dialog - confirm sign out.
-                 */
+                // Dialog - confirm sign out.
                 alertDialogBuilder = new AlertDialog.Builder(getActivity());
                 alertDialogBuilder.setMessage(getActivity().getString(R.string.confirm_sign_out));
 
                 alertDialogBuilder.setPositiveButton(R.string.bt_ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
-                        /**
-                         * Disconnect user from application and redirect to login screen
-                         */
-                        Session session = new Session(getActivity());
-                        if (session.removeLogged()) {
+                        // Disconnect user from application and redirect to login screen
+                        if (appPreferences.removeUserLogged()) {
                             Intent intent = new Intent(getActivity(), LoginActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             getActivity().startActivity(intent);

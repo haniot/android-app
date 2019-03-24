@@ -3,41 +3,58 @@ package br.edu.uepb.nutes.haniot.data.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
+import java.util.Objects;
+
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.annotation.Index;
-import io.objectbox.relation.ToOne;
+import io.objectbox.annotation.Transient;
 
 /**
  * Represents Device object.
  *
- * @author Douglas Rafael <douglas.rafael@nutes.uepb.edu.br>
- * @version 2.0
- * @copyright Copyright (c) 2017, NUTES UEPB
+ * @author Copyright (c) 2019, NUTES/UEPB
  */
 @Entity
 public class Device implements Parcelable {
     @Id
+    @Expose(serialize = false, deserialize = false)
     private long id;
 
     @Index
+    @SerializedName("id")
+    @Expose()
     private String _id; // _id in server remote (UUID)
 
+    @SerializedName("address")
+    @Expose()
     private String address; // MAC address
+
+    @SerializedName("name")
+    @Expose()
     private String name;
+
+    @SerializedName("manufacturer")
+    @Expose()
     private String manufacturer;
+
+    @SerializedName("modelNumber")
+    @Expose()
     private String modelNumber;
-    private int img;
 
-    /**
-     * RELATIONS
-     */
-    private ToOne<User> user;
-
-    /**
-     * {@link DeviceType()}
-     */
+    @SerializedName("type")
+    @Expose()
     private int typeId;
+
+    @SerializedName("user_id")
+    @Expose()
+    private String userId;
+
+    @Expose(serialize = false, deserialize = false)
+    private int img;
 
     public Device() {
     }
@@ -49,7 +66,6 @@ public class Device implements Parcelable {
         this.manufacturer = manufacturer;
         this.modelNumber = modelNumber;
         this.typeId = typeId;
-        this.user.setTarget(user);
     }
 
     public Device(String name, String manufacturer, String modelNumber, int img, int typeId) {
@@ -67,8 +83,27 @@ public class Device implements Parcelable {
         name = in.readString();
         manufacturer = in.readString();
         modelNumber = in.readString();
-        img = in.readInt();
         typeId = in.readInt();
+        userId = in.readString();
+        img = in.readInt();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(id);
+        dest.writeString(_id);
+        dest.writeString(address);
+        dest.writeString(name);
+        dest.writeString(manufacturer);
+        dest.writeString(modelNumber);
+        dest.writeInt(typeId);
+        dest.writeString(userId);
+        dest.writeInt(img);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<Device> CREATOR = new Creator<Device>() {
@@ -82,23 +117,6 @@ public class Device implements Parcelable {
             return new Device[size];
         }
     };
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(id);
-        dest.writeString(_id);
-        dest.writeString(address);
-        dest.writeString(name);
-        dest.writeString(manufacturer);
-        dest.writeString(modelNumber);
-        dest.writeInt(img);
-        dest.writeInt(typeId);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
 
     public long getId() {
         return id;
@@ -156,16 +174,12 @@ public class Device implements Parcelable {
         this.typeId = typeId;
     }
 
-    public User getUserObj() {
-        return user.getTarget();
+    public String getUserId() {
+        return userId;
     }
 
-    public ToOne<User> getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user.setTarget(user);
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public int getImg() {
@@ -178,14 +192,7 @@ public class Device implements Parcelable {
 
     @Override
     public int hashCode() {
-        int result = (int) (id ^ (id >>> 32));
-        result = 31 * result + address.hashCode();
-        result = 31 * result + name.hashCode();
-        result = 31 * result + (manufacturer != null ? manufacturer.hashCode() : 0);
-        result = 31 * result + (modelNumber != null ? modelNumber.hashCode() : 0);
-        result = 31 * result + typeId;
-        result = 31 * result + user.hashCode();
-        return result;
+        return Objects.hash(address);
     }
 
     @Override
@@ -195,7 +202,7 @@ public class Device implements Parcelable {
 
         Device other = (Device) o;
 
-        return this.modelNumber.equals(other.modelNumber);
+        return this.address.equals(other.address);
     }
 
     @Override
@@ -208,7 +215,8 @@ public class Device implements Parcelable {
                 ", manufacturer='" + manufacturer + '\'' +
                 ", modelNumber='" + modelNumber + '\'' +
                 ", typeId=" + typeId +
-                ", user=" + user +
+                ", userId='" + userId + '\'' +
+                ", img=" + img +
                 '}';
     }
 }

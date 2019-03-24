@@ -1,6 +1,7 @@
 package br.edu.uepb.nutes.haniot.data.model;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
@@ -17,29 +18,52 @@ import io.objectbox.annotation.Index;
 
 @Entity
 public class PilotStudy {
-
     @Id
-    private long idDb;
+    @Expose(serialize = false, deserialize = false)
+    private long id;
 
+    @Index
     @SerializedName("id")
-    private String _id;
+    @Expose()
+    private String _id; // _id in server remote (UUID)
 
     @SerializedName("name")
+    @Expose()
     private String name;
 
     @SerializedName("is_active")
+    @Expose()
     private boolean isActive;
 
     @SerializedName("start")
+    @Expose()
     private String start;
 
     @SerializedName("end")
+    @Expose()
     private String end;
+
+    @Expose(serialize = false, deserialize = false)
     private boolean isSelected;
 
     @SerializedName("health_professionals_id")
     @Convert(converter = ConverterStringToDatabase.class, dbType = String.class)
+    @Expose()
     private List<String> healthProfessionalsId;
+
+    @Expose(serialize = false, deserialize = false)
+    private String userId;
+
+    public PilotStudy() {
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public String get_id() {
         return _id;
@@ -89,14 +113,6 @@ public class PilotStudy {
         this.healthProfessionalsId = healthProfessionalsId;
     }
 
-    public long getIdDb() {
-        return idDb;
-    }
-
-    public void setIdDb(long idDb) {
-        this.idDb = idDb;
-    }
-
     public boolean isSelected() {
         return isSelected;
     }
@@ -105,13 +121,22 @@ public class PilotStudy {
         isSelected = selected;
     }
 
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
     /**
      * Convert object to json format.
      *
      * @return String
      */
     public String toJson() {
-        return new Gson().toJson(this);
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        return gson.toJson(this);
     }
 
     /**
@@ -121,22 +146,36 @@ public class PilotStudy {
      * @return PilotStudy
      */
     public static PilotStudy jsonDeserialize(String json) {
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         Type typePilot = new TypeToken<PilotStudy>() {
         }.getType();
-        return new Gson().fromJson(json, typePilot);
+        return gson.fromJson(json, typePilot);
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof PilotStudy)) return false;
+
         PilotStudy that = (PilotStudy) o;
-        return Objects.equals(_id, that._id) &&
-                Objects.equals(name, that.name);
+        return Objects.equals(_id, that._id);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(_id, name);
+    }
+
+    @Override
+    public String toString() {
+        return "PilotStudy{" +
+                "id=" + id +
+                ", _id='" + _id + '\'' +
+                ", name='" + name + '\'' +
+                ", isActive=" + isActive +
+                ", start='" + start + '\'' +
+                ", end='" + end + '\'' +
+                ", isSelected=" + isSelected +
+                ", healthProfessionalsId=" + healthProfessionalsId +
+                '}';
     }
 }

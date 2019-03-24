@@ -1,35 +1,40 @@
 package br.edu.uepb.nutes.haniot.data.model;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import io.objectbox.annotation.BaseEntity;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
+import io.objectbox.annotation.Index;
 
-@Entity
+@BaseEntity
 public abstract class ActivityHabitsRecord {
-
     @Id
-    private long idBd;
+    @Expose(serialize = false, deserialize = false)
+    private long id;
 
+    @Index
     @SerializedName("id")
-    private String _id;
-
-    @SerializedName("patient_id")
-    private String patientId;
+    @Expose()
+    private String _id; // _id in server remote (UUID)
 
     @SerializedName("created_at")
     private String createdAt;
+
+    @Expose(serialize = false, deserialize = false)
+    private String patientId;
 
     public ActivityHabitsRecord() {
 
     }
 
-    public long getIdBd() {
-        return idBd;
+    public long getId() {
+        return id;
     }
 
-    public void setIdBd(long idBd) {
-        this.idBd = idBd;
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String get_id() {
@@ -59,10 +64,10 @@ public abstract class ActivityHabitsRecord {
     @Override
     public String toString() {
         return "ActivityHabitsRecord{" +
-                "idBd=" + idBd +
-                ", id='" + _id + '\'' +
-                ", patientId='" + patientId + '\'' +
+                "id=" + id +
+                ", _id='" + _id + '\'' +
                 ", createdAt='" + createdAt + '\'' +
+                ", patientId='" + patientId + '\'' +
                 '}';
     }
 }

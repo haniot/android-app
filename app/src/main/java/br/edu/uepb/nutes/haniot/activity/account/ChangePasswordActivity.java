@@ -60,7 +60,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
     private boolean isRedirect = false;
     private String userId;
     private HaniotNetRepository haniotNetRepository;
-    private AppPreferencesHelper appPreferencesHelper;
+    private AppPreferencesHelper appPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +73,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Intent intent = getIntent();
         haniotNetRepository = HaniotNetRepository.getInstance(this);
-        appPreferencesHelper = AppPreferencesHelper.getInstance(this);
+        appPreferences = AppPreferencesHelper.getInstance(this);
 
         if (intent.hasExtra("user_id")) {
             userId = intent.getStringExtra("user_id");
@@ -198,6 +198,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
                     currentPasswordEditText.getText().toString(),
                     newPasswordEditText.getText().toString()))
                     .doOnSubscribe(disposable -> loadingSend(true))
+                    .doAfterTerminate(() -> loadingSend(false))
                     .subscribe(new CompletableObserver() {
                         @Override
                         public void onSubscribe(Disposable d) {
@@ -212,13 +213,13 @@ public class ChangePasswordActivity extends AppCompatActivity {
                         @Override
                         public void onError(Throwable e) {
                             printMessage(500);
-                            loadingSend(false);
                         }
                     });
 
         } else {
-            haniotNetRepository.changePassword(appPreferencesHelper.getUserLogged())
+            haniotNetRepository.changePassword(appPreferences.getUserLogged())
                     .doOnSubscribe(disposable -> loadingSend(true))
+                    .doAfterTerminate(() -> loadingSend(false))
                     .subscribe(new CompletableObserver() {
                         @Override
                         public void onSubscribe(Disposable d) {

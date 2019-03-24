@@ -19,14 +19,16 @@ import android.widget.Toast;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.account.LoginActivity;
-import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.activity.settings.SettingsActivity;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
+import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
+import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.haniot.fragment.DashboardChartsFragment;
 import br.edu.uepb.nutes.haniot.fragment.MeasurementsGridFragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.HttpException;
 
 /**
  * Main activity, application start.
@@ -93,25 +95,27 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
     protected void onResume() {
         super.onResume();
 
-        // User not logged
-        if (!(new Session(this).isLogged())) {
-            startActivity(new Intent(this, LoginActivity.class));
-            finish();
-
-            return;
+        // Verify the pilot is selected
+        if (appPreferences.getLastPilotStudy() == null) {
+            startActivity(new Intent(this, WelcomeActivity.class));
+        } else {
+            loadDashboard();
+            checkPatient();
         }
 
         checkPermissions();
+    }
 
-        // Verify the pilot is selected
-        if (appPreferences.getLastPilotStudy() == null) {
-            //TODO mudar antes do push
-            startActivity(new Intent(this, ManagePatientsActivity.class));
-            //startActivity(new Intent(this, WelcomeActivity.class));
+    /**
+     * Set patient selected.
+     */
+    public void checkPatient() {
+        patient = appPreferences.getLastPatient();
+
+        if (patient != null) {
+            dashboardChartsFragment.updateNamePatient(patient);
         } else {
-            // Verify the patient is selected
-
-            loadDashboard();
+            startActivity(new Intent(this, ManagePatientsActivity.class));
         }
     }
 
@@ -123,9 +127,7 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
         if (BluetoothAdapter.getDefaultAdapter() != null &&
                 !BluetoothAdapter.getDefaultAdapter().isEnabled()) {
             requestBluetoothEnable();
-        }
-
-        if (!hasLocationPermissions()) {
+        } else if (!hasLocationPermissions()) {
             requestLocationPermission();
         }
     }
@@ -174,10 +176,14 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_ENABLE_BLUETOOTH && resultCode != Activity.RESULT_OK) {
-            requestBluetoothEnable();
+        if (requestCode == REQUEST_ENABLE_BLUETOOTH) {
+            if (resultCode != Activity.RESULT_OK) {
+                requestBluetoothEnable();
+            } else {
+                requestLocationPermission();
+            }
         }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override

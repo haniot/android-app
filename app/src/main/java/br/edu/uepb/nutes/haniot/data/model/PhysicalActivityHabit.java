@@ -1,5 +1,6 @@
 package br.edu.uepb.nutes.haniot.data.model;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -10,13 +11,17 @@ import io.objectbox.annotation.Entity;
 
 @Entity
 public class PhysicalActivityHabit extends ActivityHabitsRecord {
-
     @SerializedName("school_activity_freq")
+    @Expose()
     private String schoolActivityFreq;
 
     @SerializedName("weekly_activities")
+    @Expose()
     @Convert(converter = ConverterStringToDatabase.class, dbType = String.class)
     private List<String> weeklyActivities;
+
+    public PhysicalActivityHabit() {
+    }
 
     public String getSchoolActivityFreq() {
         return schoolActivityFreq;
@@ -36,7 +41,9 @@ public class PhysicalActivityHabit extends ActivityHabitsRecord {
 
     @Override
     public String toString() {
-        return "PhysicalActivityHabit{" +
+        return super.toString() +
+                " PhysicalActivityHabit{" +
+                super.toString() +
                 "schoolActivityFreq='" + schoolActivityFreq + '\'' +
                 ", weeklyActivities=" + weeklyActivities +
                 '}';

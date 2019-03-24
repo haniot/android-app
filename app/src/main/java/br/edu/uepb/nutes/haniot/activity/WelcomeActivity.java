@@ -8,9 +8,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.SettingsActivity;
+import br.edu.uepb.nutes.haniot.data.model.User;
+import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -21,6 +24,11 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
     @BindView(R.id.proceed_button)
     AppCompatButton proceedButton;
 
+    @BindView(R.id.welcome_health_professional_textview)
+    TextView welcomeMessage;
+
+    private AppPreferencesHelper appPreferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,6 +37,12 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
 
         toolbar.setTitle(getResources().getString(R.string.app_name));
         setSupportActionBar(toolbar);
+
+        appPreferences = AppPreferencesHelper.getInstance(this);
+        User user = appPreferences.getUserLogged();
+        if (user != null) {
+            welcomeMessage.setText(getString(R.string.welcome_hp, user.getName()));
+        }
 
         proceedButton.setOnClickListener(this);
     }

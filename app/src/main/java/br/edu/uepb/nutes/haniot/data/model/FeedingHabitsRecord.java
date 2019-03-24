@@ -3,81 +3,46 @@ package br.edu.uepb.nutes.haniot.data.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import br.edu.uepb.nutes.haniot.utils.ConverterStringToDatabase;
+import io.objectbox.annotation.Backlink;
+import io.objectbox.annotation.Convert;
 import io.objectbox.annotation.Entity;
-import io.objectbox.annotation.Id;
+import io.objectbox.annotation.Transient;
 import io.objectbox.relation.ToMany;
 
 @Entity
-public class FeedingHabitsRecord {
-
-    @Id
-    private long idBd;
-
-    @SerializedName("id")
-    private String _id;
-
-    @SerializedName("patient_id")
-    private String patientId;
-
-    @SerializedName("created_at")
-    private String createdAt;
-
+public class FeedingHabitsRecord extends ActivityHabitsRecord {
     @SerializedName("weekly_feeding_habits")
-    private List<WeeklyFoodRecord> weeklyFoodRecords;
+    @Expose()
+    @Transient // not persisted
+    private List<WeeklyFoodRecord> weeklyFeedingHabits;
 
     @Expose(serialize = false, deserialize = false)
-    private ToMany<WeeklyFoodRecord> weeklyFoodRecordsDB;
+    @Backlink(to = "feedingHabitsRecord")
+    private ToMany<WeeklyFoodRecord> weeklyFeedingHabitsDB;
 
     @SerializedName("daily_water_glasses")
+    @Expose()
     private String dailyWaterGlasses;
 
     @SerializedName("six_month_breast_feeding")
+    @Expose()
     private String sixMonthBreastFeeding;
 
     @SerializedName("food_allergy_intolerance")
-    private String foodAllergyintolerance;
+    @Expose()
+    @Convert(converter = ConverterStringToDatabase.class, dbType = String.class)
+    private List<String> foodAllergyIntolerance;
 
     @SerializedName("breakfast_daily_frequency")
+    @Expose()
     private String breakfastDailyFrequency;
 
-    public long getIdBd() {
-        return idBd;
+    public FeedingHabitsRecord() {
     }
-
-    public void setIdBd(long idBd) {
-        this.idBd = idBd;
-    }
-
-    public String getFoodAllergyintolerance() {
-        return foodAllergyintolerance;
-    }
-
-    public String get_id() {
-        return _id;
-    }
-
-    public void set_id(String id) {
-        this._id = id;
-    }
-
-    public String getPatientId() {
-        return patientId;
-    }
-
-    public void setPatientId(String patientId) {
-        this.patientId = patientId;
-    }
-
-    public String getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
-    }
-
 
     public String getDailyWaterGlasses() {
         return dailyWaterGlasses;
@@ -85,22 +50,6 @@ public class FeedingHabitsRecord {
 
     public void setDailyWaterGlasses(String dailyWaterGlasses) {
         this.dailyWaterGlasses = dailyWaterGlasses;
-    }
-
-    public List<WeeklyFoodRecord> getWeeklyFoodRecords() {
-        return weeklyFoodRecords;
-    }
-
-    public void setWeeklyFoodRecords(List<WeeklyFoodRecord> weeklyFoodRecords) {
-        this.weeklyFoodRecords = weeklyFoodRecords;
-    }
-
-    public ToMany<WeeklyFoodRecord> getWeeklyFoodRecordsDB() {
-        return weeklyFoodRecordsDB;
-    }
-
-    public void setWeeklyFoodRecordsDB(List<WeeklyFoodRecord> weeklyFoodRecordsDB) {
-        this.weeklyFoodRecordsDB.addAll(weeklyFoodRecordsDB);
     }
 
     public String getSixMonthBreastFeeding() {
@@ -111,12 +60,42 @@ public class FeedingHabitsRecord {
         this.sixMonthBreastFeeding = sixMonthBreastFeeding;
     }
 
-    public String getFoodAllergyStringolerance() {
-        return foodAllergyintolerance;
+    public List<WeeklyFoodRecord> getWeeklyFeedingHabits() {
+        return weeklyFeedingHabits;
     }
 
-    public void setFoodAllergyintolerance(String foodAllergyStringolerance) {
-        this.foodAllergyintolerance = foodAllergyStringolerance;
+    public void setWeeklyFeedingHabits(List<WeeklyFoodRecord> weeklyFeedingHabits) {
+        this.weeklyFeedingHabits = weeklyFeedingHabits;
+    }
+
+    public void addWeeklyFeedingHabits(WeeklyFoodRecord... weeklyFeedingHabits) {
+        if (this.weeklyFeedingHabits == null) this.weeklyFeedingHabits = new ArrayList<>();
+        for (WeeklyFoodRecord weeklyFoodRecord : weeklyFeedingHabits) {
+            this.weeklyFeedingHabits.add(weeklyFoodRecord);
+        }
+    }
+
+    public ToMany<WeeklyFoodRecord> getWeeklyFeedingHabitsDB() {
+        return weeklyFeedingHabitsDB;
+    }
+
+    public void setWeeklyFeedingHabitsDB(List<WeeklyFoodRecord> weeklyFeedingHabits) {
+        this.getWeeklyFeedingHabitsDB().clear();
+        this.getWeeklyFeedingHabitsDB().addAll(weeklyFeedingHabits);
+    }
+
+    public void addWeeklyFeedingHabitsDB(WeeklyFoodRecord... weeklyFoodRecord) {
+        for (WeeklyFoodRecord weeklyFo : weeklyFoodRecord) {
+            this.getWeeklyFeedingHabitsDB().add(weeklyFo);
+        }
+    }
+
+    public List<String> getFoodAllergyIntolerance() {
+        return foodAllergyIntolerance;
+    }
+
+    public void setFoodAllergyIntolerance(List<String> foodAllergyIntolerance) {
+        this.foodAllergyIntolerance = foodAllergyIntolerance;
     }
 
     public String getBreakfastDailyFrequency() {
@@ -129,14 +108,13 @@ public class FeedingHabitsRecord {
 
     @Override
     public String toString() {
-        return "FeedingHabitsRecord{" +
-                "idBd=" + idBd +
-                ", id='" + _id + '\'' +
-                ", patientId='" + patientId + '\'' +
-                ", createdAt='" + createdAt + '\'' +
+        return super.toString() +
+                " FeedingHabitsRecord{" +
+                "weeklyFeedingHabits=" + weeklyFeedingHabits +
+                ", weeklyFeedingHabitsDB=" + weeklyFeedingHabitsDB +
                 ", dailyWaterGlasses='" + dailyWaterGlasses + '\'' +
                 ", sixMonthBreastFeeding='" + sixMonthBreastFeeding + '\'' +
-                ", foodAllergyintolerance='" + foodAllergyintolerance + '\'' +
+                ", foodAllergyIntolerance=" + foodAllergyIntolerance +
                 ", breakfastDailyFrequency='" + breakfastDailyFrequency + '\'' +
                 '}';
     }

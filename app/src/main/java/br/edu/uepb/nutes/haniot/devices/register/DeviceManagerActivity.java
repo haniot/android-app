@@ -39,7 +39,9 @@ import br.edu.uepb.nutes.haniot.adapter.DeviceAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
 import br.edu.uepb.nutes.haniot.data.model.Device;
 import br.edu.uepb.nutes.haniot.data.model.DeviceType;
+import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.model.dao.DeviceDAO;
+import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.server.Server;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
@@ -89,12 +91,11 @@ public class DeviceManagerActivity extends AppCompatActivity {
     @BindView(R.id.devices_registered_available)
     LinearLayout boxRegisteredAvailable;
 
-
     private Server server;
-    private Session session;
-
+    private AppPreferencesHelper appPreferences;
     private DeviceAdapter mAdapterDeviceAvailable;
     private DeviceAdapter mAdapterDeviceRegistered;
+    private User user;
 
     private DeviceDAO mDeviceDAO;
 
@@ -104,10 +105,16 @@ public class DeviceManagerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_manager_devices);
         ButterKnife.bind(this);
         server = Server.getInstance(this);
-        session = new Session(this);
+        appPreferences = AppPreferencesHelper.getInstance(this);
         mDeviceDAO = DeviceDAO.getInstance(this);
 
+        user = appPreferences.getUserLogged();
+        if (user == null) {
+            finish();
+        }
+
         initComponents();
+        populateView();
     }
 
     @Override
@@ -122,9 +129,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        populateView();
     }
-
 
     /**
      * Initialize the components.
@@ -155,7 +160,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
         }
 
         displayLoading(true);
-        String path = "devices/users/".concat(session.get_idLogged());
+        String path = "devices/users/".concat(user.get_id());
         server.get(path, new Server.Callback() {
             @Override
             public void onError(JSONObject result) {
@@ -172,7 +177,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
             public void onSuccess(JSONObject result) {
                 List<Device> devicesRegistered = jsonToListDevice(result);
                 populateDevicesRegistered(newList(devicesRegistered));
-                populateDevicesAvailable(mDeviceDAO.list(session.getUserLogged().getIdDb()));
+                populateDevicesAvailable(mDeviceDAO.list(user.get_id()));
                 displayLoading(false);
             }
         });
@@ -420,7 +425,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
 
     private void removeDeviceRegister(Device device) {
         displayLoading(true);
-        String path = "devices/".concat(device.get_id()).concat("/users/").concat(session.get_idLogged());
+        String path = "devices/".concat(device.get_id()).concat("/users/").concat(user.get_id());
         server.delete(path, new Server.Callback() {
             @Override
             public void onError(JSONObject result) {

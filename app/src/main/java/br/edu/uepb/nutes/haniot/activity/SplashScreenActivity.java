@@ -11,7 +11,7 @@ import org.json.JSONObject;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.account.LoginActivity;
-import br.edu.uepb.nutes.haniot.activity.settings.Session;
+import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
 import br.edu.uepb.nutes.haniot.service.TokenExpirationService;
 import butterknife.BindView;
@@ -20,27 +20,30 @@ import butterknife.ButterKnife;
 /**
  * Activity SplashScreenActivity.
  *
- * @author Douglas Rafael <douglas.rafael@nutes.uepb.edu.br>
- * @version 1.0
- * @copyright Copyright (c) 2017, NUTES UEPB
+ * @author Copyright (c) 2018, NUTES/UEPB
  */
 public class SplashScreenActivity extends AppCompatActivity {
-    private final String TAG = "SplashScreenActivity";
-
     @BindView(R.id.text_view_app_name)
     TextView appNameTextView;
 
-    private Session session;
+    @BindView(R.id.title_desc_textview)
+    TextView appNameDescTextView;
+
+    private AppPreferencesHelper appPreference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
         ButterKnife.bind(this);
-        session = new Session(this);
+
+        appPreference = AppPreferencesHelper.getInstance(this);
+
         startService(new Intent(this, TokenExpirationService.class));
-        Animation animationStart = AnimationUtils.loadAnimation(this, R.anim.slide_up);
-        appNameTextView.startAnimation(animationStart);
+
+        Animation animation = AnimationUtils.loadAnimation(this, R.anim.slide_up);
+        appNameTextView.startAnimation(animation);
+        appNameDescTextView.startAnimation(animation);
     }
 
     @Override
@@ -61,8 +64,11 @@ public class SplashScreenActivity extends AppCompatActivity {
     }
 
     private void openActivity() {
-        if (session.isLogged()) startActivity(new Intent(getApplicationContext(), MainActivity.class));
-        else startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-        finish();
+        if (appPreference.getUserLogged() == null) {
+            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+            finish();
+        } else {
+            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+        }
     }
 }
