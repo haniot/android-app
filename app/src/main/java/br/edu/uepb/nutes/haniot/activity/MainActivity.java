@@ -32,7 +32,7 @@ import butterknife.ButterKnife;
  * @author Copyright (c) 2018, NUTES/UEPB
  */
 public class MainActivity extends AppCompatActivity implements DashboardChartsFragment.Communicator {
-    private final String TAG = "MainActivity";
+    private final String LOG_TAG = "MainActivity";
     private final int REQUEST_ENABLE_BLUETOOTH = 1;
     private final int REQUEST_ENABLE_LOCATION = 2;
 
@@ -95,11 +95,8 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
         if (appPreferences.getLastPilotStudy() == null) {
             startActivity(new Intent(this, WelcomeActivity.class));
         } else {
-            loadDashboard();
             checkPatient();
         }
-
-        checkPermissions();
     }
 
     /**
@@ -109,6 +106,8 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
         patient = appPreferences.getLastPatient();
 
         if (patient != null) {
+            loadDashboard();
+            checkPermissions();
             dashboardChartsFragment.updateNamePatient(patient);
         } else {
             startActivity(new Intent(this, ManagePatientsActivity.class));

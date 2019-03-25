@@ -68,7 +68,7 @@ public class DeviceDAO {
      * @param userId  long
      * @return Object
      */
-    public Device get(@NonNull String address, long userId) {
+    public Device get(@NonNull String address, String userId) {
         return deviceBox.query()
                 .equal(Device_.address, address)
                 .equal(Device_.userId, userId)

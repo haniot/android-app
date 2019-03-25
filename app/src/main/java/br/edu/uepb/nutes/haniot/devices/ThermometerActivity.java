@@ -432,14 +432,14 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
         super.onStart();
 
         // TODO REMOVER!!! Pois o cadastro do device deverá ser no processo de emparelhamento
-        mDevice = deviceDAO.get(mDeviceAddress, session.getIdLogged());
-
-        if (mDevice == null) {
-            mDevice = new Device(mDeviceAddress, "EAR THERMOMETER", "PHILIPS", "DL8740", DeviceType.THERMOMETER, session.getUserLogged());
-            mDevice.set_id("5a62c0d6d6f33400146c9b65");
-            if (!deviceDAO.save(mDevice)) finish();
-            mDevice = deviceDAO.get(mDeviceAddress, session.getIdLogged());
-        }
+//        mDevice = deviceDAO.get(mDeviceAddress, session.getIdLogged());
+//
+//        if (mDevice == null) {
+//            mDevice = new Device(mDeviceAddress, "EAR THERMOMETER", "PHILIPS", "DL8740", DeviceType.THERMOMETER, session.getUserLogged());
+//            mDevice.set_id("5a62c0d6d6f33400146c9b65");
+//            if (!deviceDAO.save(mDevice)) finish();
+//            mDevice = deviceDAO.get(mDeviceAddress, session.getIdLogged());
+//        }
     }
 
     @Override

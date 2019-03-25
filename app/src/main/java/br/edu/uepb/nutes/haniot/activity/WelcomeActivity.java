@@ -2,9 +2,11 @@ package br.edu.uepb.nutes.haniot.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -63,7 +65,8 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.proceed_button:
-                startActivity(new Intent(this, PilotStudyActivity.class));
+                startActivityForResult(new Intent(this, PilotStudyActivity.class),
+                        PilotStudyActivity.REQUEST_PILOT_STUDY_SELECTED);
                 break;
             default:
                 break;
@@ -82,5 +85,13 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+            super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PilotStudyActivity.REQUEST_PILOT_STUDY_SELECTED) {
+            finish();
+        }
     }
 }

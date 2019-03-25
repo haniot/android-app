@@ -199,8 +199,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
             String address = scanResult.getDevice().getAddress();
             if (scanResult.getDevice() == null) Log.i(TAG, "getDevice null");
             if (scanResult.getDevice().getAddress() == null) Log.i(TAG, "getAddress null");
-            Device device = deviceDAO.get(scanResult.getDevice().getAddress(),
-                    user.getId());
+            Device device = deviceDAO.get(scanResult.getDevice().getAddress(), user.get_id());
 
             if (device != null) {
                 switch (device.getTypeId()) {

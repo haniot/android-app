@@ -1,5 +1,7 @@
 package br.edu.uepb.nutes.haniot.activity;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
@@ -37,6 +39,7 @@ import butterknife.ButterKnife;
  */
 public class PilotStudyActivity extends AppCompatActivity {
     private final String LOG_TAG = "PilotStudyActivity";
+    public static final int REQUEST_PILOT_STUDY_SELECTED = 1;
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -194,6 +197,9 @@ public class PilotStudyActivity extends AppCompatActivity {
         pilot.setSelected(true);
         pilotStudyDAO.update(pilot);
         appPreferences.saveLastPilotStudy(pilot);
+
+        // Back activity
+        setResult(Activity.RESULT_OK);
         finish();
     }
 
@@ -300,7 +306,6 @@ public class PilotStudyActivity extends AppCompatActivity {
             infoInactiveSelectedMessage.setVisibility(View.GONE);
         });
     }
-
 
     /**
      * Enable/Disable display instructions message.
