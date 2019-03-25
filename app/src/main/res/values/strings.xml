@@ -169,6 +169,7 @@
     <string name="settings_devices">Dispositivos</string>
     <string name="settings_signout">Sair</string>
     <string name="settings_account">Conta</string>
+    <string name="monitor_measurements">Monitorar Medições</string>
     <string name="settings_about">Sobre</string>
     <string name="settings_send_feedback">Enviar comentários</string>
     <string name="settings_close_account">Fechar conta</string>

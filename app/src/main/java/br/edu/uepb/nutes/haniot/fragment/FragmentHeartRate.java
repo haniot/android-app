@@ -13,14 +13,20 @@ import br.edu.uepb.nutes.haniot.R;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class AddHeartRateManuallyFragment extends Fragment {
+/**
+ * FragmentHeartRate implementation.
+ *
+ * @author Fábio Júnior <fabio.pequeno@nutes.uepb.edu.br>
+ * @version 1.0
+ * @copyright Copyright (c) 2019, NUTES UEPB
+ */
+public class FragmentHeartRate extends Fragment {
 
     @BindView(R.id.seekBar)
     SeekBar seekBar;
 
     EditText value;
-
-    public AddHeartRateManuallyFragment() {
+    public FragmentHeartRate() {
     }
 
 
@@ -28,7 +34,7 @@ public class AddHeartRateManuallyFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_add_heart_rate_manually,
+        View view = inflater.inflate(R.layout.fragment_heart_rate_measurement,
                 container, false);
         ButterKnife.bind(this, view);
 
@@ -36,6 +42,13 @@ public class AddHeartRateManuallyFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        value = getActivity().findViewById(R.id.text_measurement);
+        init();
+    }
 
     public void init() {
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -58,13 +71,5 @@ public class AddHeartRateManuallyFragment extends Fragment {
                 value.setText(String.valueOf(progress));
             }
         });
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-        value = getActivity().findViewById(R.id.text_measurement);
-        init();
     }
 }

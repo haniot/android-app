@@ -14,6 +14,7 @@ import android.widget.*;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
+import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.haniot.fragment.GenericDialogFragment;
 import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.model.dao.UserDAO;
@@ -21,6 +22,10 @@ import br.edu.uepb.nutes.haniot.server.Server;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.SingleObserver;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import retrofit2.HttpException;
 
 import com.google.gson.GsonBuilder;
 
@@ -61,6 +66,7 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
 
     private User user;
     private AppPreferencesHelper appPreferences;
+    private HaniotNetRepository haniotNetRepository;
     private UserDAO userDAO;
     private Menu menu;
 
@@ -77,9 +83,10 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
         buttonChangePassword.setOnClickListener(this);
 
         appPreferences = AppPreferencesHelper.getInstance(this);
+        haniotNetRepository = HaniotNetRepository.getInstance(this);
         userDAO = UserDAO.getInstance(this);
-
         user = appPreferences.getUserLogged();
+
         prepareEditing();
     }
 
@@ -149,38 +156,39 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
         loading(true);
         populateView(); // Populate view with local data
 
-        /**
-         * Get user in server
-         */
-        Server.getInstance(this).get("users/".concat(user.get_id()), new Server.Callback() {
-            @Override
-            public void onError(JSONObject result) {
-                enabledView(true);
-                loading(false);
-                printMessage(result);
-            }
+        haniotNetRepository.getHealthProfissional(user.get_id())
+                .doOnSubscribe(disposable -> {
+                    loading(true);
+                    populateView();
+                })
+                .subscribe(new SingleObserver<User>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
 
-            @Override
-            public void onSuccess(JSONObject result) {
-                try {
-                    user = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create().fromJson(result.toString(), User.class);
-
-                    if (user.getEmail() != null) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                populateView(); // Populate view with data from server
-                            }
-                        });
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    enabledView(true);
-                    loading(false);
-                }
-            }
-        });
+
+                    @Override
+                    public void onSuccess(User user) {
+                        if (user.getEmail() != null) {
+                            runOnUiThread(() -> {
+                                populateView(); // Populate view with data from server
+                                enabledView(true);
+                                loading(false);
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        enabledView(true);
+                        loading(false);
+                        if (e instanceof HttpException) {
+                            HttpException httpEx = ((HttpException) e);
+                            printMessage(httpEx);
+                        }
+                        //printMessage(result);
+                    }
+                });
     }
 
     /**
@@ -204,31 +212,29 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
         if (user == null)
             return;
 
-        loading(true);
-
-        // Send for remote server /users/:userId
-        Server.getInstance(this).patch("users/".concat(user.get_id()),
-                new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create().toJson(getUserView()), new Server.Callback() {
+        haniotNetRepository.updateHealthProfissional(getUserView())
+                .doOnSubscribe(disposable -> loading(true))
+                .subscribe(new SingleObserver<User>() {
                     @Override
-                    public void onError(JSONObject result) {
-                        printMessage(result);
-                        loading(false);
+                    public void onSubscribe(Disposable d) {
+
                     }
 
                     @Override
-                    public void onSuccess(JSONObject result) {
-                        try {
-                            final User userUpdate = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create().fromJson(result.toString(), User.class);
-                            if (userUpdate.getEmail() != null)
-                                userDAO.update(user); // save in local
-                            Log.i("Account", "Updated: " + userDAO.get(userUpdate.get_id()).toString());
-                            finish();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        } finally {
-                            loading(false);
-                            printMessage(result);
+                    public void onSuccess(User userUpdate) {
+                        if (userUpdate.getEmail() != null)
+                            userDAO.update(user); // save in local
+                        Log.i("Account", "Updated: " + userDAO.get(userUpdate.get_id()).toString());
+                        finish();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (e instanceof HttpException) {
+                            HttpException httpEx = ((HttpException) e);
+                            printMessage(httpEx);
                         }
+                        loading(false);
                     }
                 });
     }
@@ -236,29 +242,21 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
     /**
      * Displays return message to user
      *
-     * @param response
+     * @param
      */
-    private void printMessage(final JSONObject response) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    if (response.has("code") && !response.has("unauthorized")) {
-                        if (response.getInt("code") == 409) { // duplicate
-                            Toast.makeText(getApplicationContext(), R.string.validate_register_user_not_duplicate, Toast.LENGTH_LONG).show();
-                        } else if (response.getInt("code") == 200) {
-                            Toast.makeText(getApplicationContext(), R.string.update_success, Toast.LENGTH_SHORT).show();
-                        } else { // error 500
-                            Toast.makeText(getApplicationContext(), R.string.error_500, Toast.LENGTH_LONG).show();
-                        }
-                    } else if (response.has("unauthorized")) {
-                        Toast.makeText(getApplicationContext(), response.getString("unauthorized"), Toast.LENGTH_LONG).show();
-                    } else {
-                        Toast.makeText(getApplicationContext(), R.string.error_500, Toast.LENGTH_LONG).show();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+    private void printMessage(final HttpException httpEx) {
+        runOnUiThread(() -> {
+            if (httpEx.code() == 409) { // duplicate
+                Toast.makeText(getApplicationContext(), R.string.validate_register_user_not_duplicate, Toast.LENGTH_LONG).show();
+            } else if (httpEx.code() == 200) {
+                Toast.makeText(getApplicationContext(), R.string.update_success, Toast.LENGTH_SHORT).show();
+            } else { // error 500
+                Toast.makeText(getApplicationContext(), R.string.error_500, Toast.LENGTH_LONG).show();
+            }
+            if (httpEx.message().contains("unauthorized")) {
+                Toast.makeText(getApplicationContext(), httpEx.message(), Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(getApplicationContext(), R.string.error_500, Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -327,17 +325,14 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
      * @param enabled
      */
     private void loading(final boolean enabled) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (menu != null) {
-                    final MenuItem menuItem = menu.findItem(R.id.action_save);
-                    menuItem.setEnabled(!enabled);
-                }
-                buttonChangePassword.setEnabled(!enabled);
-                if (enabled) mProgressBar.setVisibility(View.VISIBLE);
-                else mProgressBar.setVisibility(View.GONE);
+        runOnUiThread(() -> {
+            if (menu != null) {
+                final MenuItem menuItem = menu.findItem(R.id.action_save);
+                menuItem.setEnabled(!enabled);
             }
+            buttonChangePassword.setEnabled(!enabled);
+            if (enabled) mProgressBar.setVisibility(View.VISIBLE);
+            else mProgressBar.setVisibility(View.GONE);
         });
     }
 
@@ -347,13 +342,10 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
      * @param enabled
      */
     private void enabledView(final boolean enabled) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                nameEditText.setEnabled(enabled);
-                emailEditText.setEnabled(enabled);
-                buttonChangePassword.setEnabled(enabled);
-            }
+        runOnUiThread(() -> {
+            nameEditText.setEnabled(enabled);
+            emailEditText.setEnabled(enabled);
+            buttonChangePassword.setEnabled(enabled);
         });
     }
 

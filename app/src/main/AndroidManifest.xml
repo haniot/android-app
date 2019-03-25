@@ -94,7 +94,7 @@
             android:name=".activity.ManagePatientsActivity"
             android:label="@string/title_activity_manage_children"
             android:theme="@style/AppTheme" />
-        <activity android:name=".activity.ManuallyAddMeasurement" />
+        <activity android:name=".activity.AddMeasurement" />
         <activity
             android:name=".activity.PatientRegisterActivity"
             android:theme="@style/AppTheme" />

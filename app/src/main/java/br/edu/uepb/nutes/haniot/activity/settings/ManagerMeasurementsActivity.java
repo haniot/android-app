@@ -30,23 +30,16 @@ public class ManagerMeasurementsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_manager_measurement);
         ButterKnife.bind(this);
 
-        toolbar.setTitle("Monitorar Medições");
+        toolbar.setTitle(getResources().getString(R.string.monitor_measurements));
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         initResources();
-
-//        addPreferencesFromResource(R.xml.pref_manage_measurements);
-
     }
 
-
-
     public void initResources() {
-
         GridItemDeviceAdapter mAdapter = new GridItemDeviceAdapter(this);
         mAdapter.setHasStableIds(true);
 
-        // This method set the same size to all items of grid
         recyclerView.setAdapter(mAdapter);
         List<ItemDevice> itemDevices = new ArrayList<>();
         itemDevices.add(new ItemDevice(getString(R.string.key_blood_glucose),
@@ -88,12 +81,10 @@ public class ManagerMeasurementsActivity extends AppCompatActivity {
     }
 
     public class ItemDevice {
-
         private int image;
         private String title;
         private String device;
         private String key;
-
 
         public ItemDevice(String key, int image, String title) {
             this.key = key;
@@ -140,5 +131,4 @@ public class ManagerMeasurementsActivity extends AppCompatActivity {
             this.device = device;
         }
     }
-
 }

@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -16,13 +15,19 @@ import android.widget.RadioGroup;
 import java.util.Calendar;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * PatientRegisterActivity implementation.
+ *
+ * @author Fábio Júnior <fabio.pequeno@nutes.uepb.edu.br>
+ * @version 1.0
+ * @copyright Copyright (c) 2019, NUTES UEPB
+ */
 public class PatientRegisterActivity extends AppCompatActivity {
 
     @BindView(R.id.toolbar)
@@ -63,6 +68,10 @@ public class PatientRegisterActivity extends AppCompatActivity {
         initComponents();
     }
 
+    /**
+     * Validate fields.
+     * @return
+     */
     private boolean validate() {
         boolean validated = true;
         if (nameEditTExt.getText().toString().isEmpty()) {
@@ -80,7 +89,10 @@ public class PatientRegisterActivity extends AppCompatActivity {
         return validated;
     }
 
-    private void createPatient() {
+    /**
+     * Save patient in App Preferences.
+     */
+    private void savePatient() {
         patient = new Patient();
         patient.setFirstName(nameEditTExt.getText().toString());
         patient.setLastName(lastNameEditTExt.getText().toString());
@@ -89,20 +101,22 @@ public class PatientRegisterActivity extends AppCompatActivity {
             patient.setGender("male");
         else
             patient.setGender("female");
+        appPreferencesHelper.saveLastPatient(patient);
     }
 
+    /**
+     * Init components.
+     */
     private void initComponents() {
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
         myCalendar = Calendar.getInstance();
         fab.setOnClickListener(v -> {
             if (validate()) {
-                createPatient();
-                appPreferencesHelper.saveLastPatient(patient);
+                savePatient();
                 startActivity(new Intent(PatientRegisterActivity.this, PatientQuiz.class));
                 finish();
             }
         });
-
 
         genderGroup.setOnCheckedChangeListener((group, checkedId) -> {
             if (checkedId == R.id.male)
@@ -116,11 +130,11 @@ public class PatientRegisterActivity extends AppCompatActivity {
             inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
             DatePickerDialog dialog = new DatePickerDialog(PatientRegisterActivity.this,
                     (view, year, month, dayOfMonth) -> {
-                myCalendar.set(Calendar.YEAR, year);
-                myCalendar.set(Calendar.MONTH, month);
-                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                birthEdittext.setText(DateUtils.formatDate(myCalendar.getTimeInMillis(), getResources().getString(R.string.date_format)));
-            }, 2010, 1, 1);
+                        myCalendar.set(Calendar.YEAR, year);
+                        myCalendar.set(Calendar.MONTH, month);
+                        myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                        birthEdittext.setText(DateUtils.formatDate(myCalendar.getTimeInMillis(), getResources().getString(R.string.date_format)));
+                    }, 2010, 1, 1);
             dialog.show();
         });
     }
