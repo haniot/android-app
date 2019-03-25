@@ -90,9 +90,12 @@
     <string name="welcome_hp">Seja bem-vindo(a), %s</string>
     <string name="welcome_hp_instructions">Para continuarmos você precisa selecionar o piloto que deseja relizar o estudo.</string>
     <string name="piloty_study_title">Estudo Piloto</string>
+    <string name="piloty_study_sumary">Selecione o estudo piloto que você estar alocado.</string>
     <string name="piloty_study_desc">Selecione o piloto que deseja realizar o estudo. Você poderá a qualquer momento voltar aqui e mudar sua escolha.</string>
-    <string name="piloty_study_no_allocated">Você não estar alocado em nenhum piloto de estudo. Por favor, entre em contato com o administrador.</string>
+    <string name="piloty_study_no_allocated">Você não estar alocado em nenhum estudo piloto. Por favor, entre em contato com o administrador.</string>
     <string name="piloty_study_inactive_alert">Para os pilotos inativos, apenas o modo de consulta estará disponível.</string>
+    <string name="piloty_study_confirm_selected">O estudo piloto de nome \"%s\" será configurado. Deseja continuar?</string>
+    <string name="piloty_study_is_selected">O estudo piloto de nome \"%s\" já estar configurado&#8230;</string>
     <string name="proceed_title">Prosseguir</string>
     <string name="active_title">Ativo</string>
     <string name="inactive_title">Inativo</string>
@@ -163,30 +166,35 @@
     <!-- END ERROR MESSAGES -->
 
     <!-- SETTINGS -->
-    <string name="settings_your_data">Seus dados</string>
+    <string name="settings_your_data">Informações Pessoais</string>
     <string name="settings_server">Servidor</string>
     <string name="settings_server_address">Endereço do servidor</string>
     <string name="settings_devices">Dispositivos</string>
     <string name="settings_signout">Sair</string>
     <string name="settings_account">Conta</string>
     <string name="settings_about">Sobre</string>
+    <string name="settings_general">Geral</string>
     <string name="settings_send_feedback">Enviar comentários</string>
+    <string name="settings_send_bug">Reportar um problema</string>
     <string name="settings_close_account">Fechar conta</string>
-    <string name="settings_summary_your_data">Visualize e edite seus dados registrados.</string>
+    <string name="settings_summary_your_data">Atualize seu nome, endereço de email e password.</string>
     <string name="settings_summary_server_address">Digite o endereço do servidor para enviar dados.</string>
     <string name="settings_summary_full_server_address">Digite o endereço.\nExemplo: http://192.168.31.113:8080/api/v1</string>
     <string name="settings_summary_signout">Você será desconectado do aplicativo e redirecionado para a tela de login.</string>
     <string name="settings_summary_support">Tem alguma dúvida? Ficaremos felizes em ajudar!</string>
+    <string name="settings_summary_bug">Encontrou um problema? Conte-nos e vamos nos esforçar para concertar :)</string>
     <string name="settings_summary_close_account">Exclua a conta registrada e as configurações do aplicativo.</string>
     <string name="settings_summary_about">O NUTES é um centro de referência para o desenvolvimento de tecnologias a serem aplicadas no domínio da saúde, composto por professores, pesquisadores e estudantes de nível de graduação e pós-graduação das áreas de Ciência da Computação, Odontologia e Fisioterapia.</string>
     <string name="settings_version">Versão</string>
     <string name="key_your_data">key_your_data</string>
     <string name="key_send_feedback">key_send_feedback</string>
+    <string name="key_send_bug">key_send_bug</string>
     <string name="key_url_server">key_url_server</string>
     <string name="key_signout">key_signout</string>
     <string name="key_manager_device">key_manager_device</string>
     <string name="key_close_account">key_close_account</string>
     <string name="key_about">key_about</string>
+    <string name="key_pilot_study">key_about</string>
     <string name="url_about">http://nutes.uepb.edu.br/quem-somos/</string>
     <string name="choose_email_client">Escolha o cliente de email</string>
     <string name="email_contact">contact@nutes.uepb.edu.br</string>

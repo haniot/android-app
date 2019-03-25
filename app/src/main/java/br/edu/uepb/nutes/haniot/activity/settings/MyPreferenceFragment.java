@@ -1,7 +1,6 @@
 package br.edu.uepb.nutes.haniot.activity.settings;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -12,6 +11,7 @@ import android.support.v7.app.AlertDialog;
 import android.widget.Toast;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.activity.PilotStudyActivity;
 import br.edu.uepb.nutes.haniot.activity.account.LoginActivity;
 import br.edu.uepb.nutes.haniot.activity.account.UpdateDataActivity;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
@@ -38,26 +38,21 @@ public class MyPreferenceFragment extends PreferenceFragment {
         appPreferences = AppPreferencesHelper.getInstance(getActivity().getApplicationContext());
 
         // Send feedback
-        Preference prefSendFeedback = findPreference(getString(R.string.key_send_feedback));
-        prefSendFeedback.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            public boolean onPreferenceClick(Preference preference) {
-                sendFeedback(getActivity());
-                return true;
-            }
+        Preference prefSendFeedback = findPreference(getString(R.string.key_send_bug));
+        prefSendFeedback.setOnPreferenceClickListener(preference -> {
+            sendContact(getActivity());
+            return true;
         });
 
         // Sign Out
         Preference prefSignout = findPreference(getString(R.string.key_signout));
-        prefSignout.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            public boolean onPreferenceClick(Preference preference) {
+        prefSignout.setOnPreferenceClickListener(preference -> {
 
-                // Dialog - confirm sign out.
-                alertDialogBuilder = new AlertDialog.Builder(getActivity());
-                alertDialogBuilder.setMessage(getActivity().getString(R.string.confirm_sign_out));
-
-                alertDialogBuilder.setPositiveButton(R.string.bt_ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface arg0, int arg1) {
+            // Dialog - confirm sign out.
+            new AlertDialog
+                    .Builder(getActivity())
+                    .setMessage(R.string.confirm_sign_out)
+                    .setPositiveButton(R.string.bt_ok, (dialog, which) -> {
                         // Disconnect user from application and redirect to login screen
                         if (appPreferences.removeUserLogged()) {
                             Intent intent = new Intent(getActivity(), LoginActivity.class);
@@ -67,43 +62,34 @@ public class MyPreferenceFragment extends PreferenceFragment {
                         } else {
                             Toast.makeText(getActivity(), R.string.error_sign_out, Toast.LENGTH_SHORT).show();
                         }
-                    }
-                });
-
-                alertDialogBuilder.setNegativeButton(R.string.bt_cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                });
-
-                alertDialogBuilder.create().show();
-
-                return true;
-            }
+                    })
+                    .setNegativeButton(R.string.bt_cancel, null)
+                    .show();
+            return true;
         });
 
         // Your data
-        Preference prefYourdata = findPreference(getString(R.string.key_your_data));
-        prefYourdata.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            public boolean onPreferenceClick(Preference preference) {
-                Intent intent = new Intent(getActivity(), UpdateDataActivity.class);
-                intent.putExtra(FORM_UPDATE, true);
+        Preference prefYourData = findPreference(getString(R.string.key_your_data));
+        prefYourData.setOnPreferenceClickListener(preference -> {
+            Intent intent = new Intent(getActivity(), UpdateDataActivity.class);
+            intent.putExtra(FORM_UPDATE, true);
 
-                getActivity().startActivity(intent);
-                getActivity().finish();
-
-                return true;
-            }
+            getActivity().startActivity(intent);
+            return true;
         });
 
-        // Manager devices data
+        // Manager devices
         Preference prefDeviceManager = findPreference(getString(R.string.key_manager_device));
-        prefDeviceManager.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            public boolean onPreferenceClick(Preference preference) {
-                getActivity().startActivity(new Intent(getActivity(), DeviceManagerActivity.class));
-                return true;
-            }
+        prefDeviceManager.setOnPreferenceClickListener(preference -> {
+            getActivity().startActivity(new Intent(getActivity(), DeviceManagerActivity.class));
+            return true;
+        });
+
+        // Manager Pilot Study
+        Preference prefPilotStudy = findPreference(getString(R.string.key_pilot_study));
+        prefPilotStudy.setOnPreferenceClickListener(preference -> {
+            getActivity().startActivity(new Intent(getActivity(), PilotStudyActivity.class));
+            return true;
         });
     }
 
@@ -111,9 +97,9 @@ public class MyPreferenceFragment extends PreferenceFragment {
      * Email client intent to send support email.
      * Appends the necessary device information to email body useful when providing support
      *
-     * @param context
+     * @param context {@link Context}
      */
-    public void sendFeedback(Context context) {
+    public void sendContact(Context context) {
         String body = null;
         try {
             body = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
@@ -126,7 +112,7 @@ public class MyPreferenceFragment extends PreferenceFragment {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("message/rfc822");
         intent.putExtra(Intent.EXTRA_EMAIL, new String[]{context.getString(R.string.email_contact)});
-        intent.putExtra(Intent.EXTRA_SUBJECT, "From android app");
+        intent.putExtra(Intent.EXTRA_SUBJECT, "HANIoT - Android App [BUG]");
         intent.putExtra(Intent.EXTRA_TEXT, body);
         context.startActivity(Intent.createChooser(intent, context.getString(R.string.choose_email_client)));
     }

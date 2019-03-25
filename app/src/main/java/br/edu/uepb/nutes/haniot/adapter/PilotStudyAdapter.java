@@ -2,8 +2,10 @@ package br.edu.uepb.nutes.haniot.adapter;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.AppCompatCheckBox;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,7 +40,7 @@ public class PilotStudyAdapter extends BaseAdapter<PilotStudy> {
 
     @Override
     public View createView(ViewGroup viewGroup, int viewType) {
-        return View.inflate(context, R.layout.item_temperature, null);
+        return View.inflate(context, R.layout.item_pilot_study, null);
     }
 
     @Override
@@ -72,7 +74,11 @@ public class PilotStudyAdapter extends BaseAdapter<PilotStudy> {
             }
 
             h.selected.setChecked(pilot.isSelected());
-            if (!pilot.isActive()) h.selected.setEnabled(false);
+            if (pilot.isSelected()) {
+                h.cardView.setCardBackgroundColor(
+                        ContextCompat.getColor(context, R.color.colorCardActive)
+                );
+            }
 
             // Click events
             h.mView.setOnClickListener(v -> {
@@ -96,6 +102,9 @@ public class PilotStudyAdapter extends BaseAdapter<PilotStudy> {
      */
     public class ViewHolder extends RecyclerView.ViewHolder {
         final View mView;
+
+        @BindView(R.id.card_view)
+        CardView cardView;
 
         @BindView(R.id.pilot_name_textview)
         TextView name;

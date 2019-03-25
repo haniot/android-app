@@ -37,7 +37,8 @@
                     android:layout_alignParentTop="true"
                     android:text="Piloto Odonto"
                     android:textAppearance="?android:attr/textAppearanceListItem"
-                    android:textColor="@color/colorBlackGrey" />
+                    android:textColor="@color/colorBlackGrey"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/pilot_date_start_title_textView"
@@ -75,17 +76,18 @@
 
                 <TextView
                     android:id="@+id/pilot_status_textView"
-                    android:layout_width="wrap_content"
+                    android:layout_width="70dp"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/pilot_date_end_title_textView"
                     android:layout_marginTop="5dp"
                     android:background="@drawable/rounded_corner"
                     android:backgroundTint="@color/colorGreen"
+                    android:gravity="center"
                     android:paddingLeft="10dp"
                     android:paddingTop="2dp"
                     android:paddingRight="10dp"
                     android:paddingBottom="2dp"
-                    android:text="Ativo"
+                    android:text="@string/active_title"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textColor="@color/colorTextDark" />
 
@@ -96,7 +98,8 @@
                     android:layout_alignParentTop="true"
                     android:layout_alignParentEnd="true"
                     android:background="@android:color/transparent"
-                    android:checked="true"
+                    android:clickable="false"
+                    android:focusable="false"
                     app:srcCompat="@drawable/ic_action_more_vert_light" />
             </RelativeLayout>
 

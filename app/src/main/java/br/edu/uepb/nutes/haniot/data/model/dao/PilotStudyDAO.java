@@ -52,7 +52,7 @@ public class PilotStudyDAO {
 
     public boolean update(@NonNull PilotStudy PilotStudy) {
         if (PilotStudy.getId() == 0) {
-            PilotStudy PilotStudyUp = get(PilotStudy.getName());
+            PilotStudy PilotStudyUp = get(PilotStudy.get_id());
 
             if (PilotStudyUp == null) return false;
 
@@ -62,11 +62,22 @@ public class PilotStudyDAO {
         return save(PilotStudy);
     }
 
+    public void clearSelected(@NonNull String userId) {
+        for (PilotStudy pilot : list(userId)) {
+            pilot.setSelected(false);
+            update(pilot);
+        }
+    }
+
     public boolean remove(@NonNull PilotStudy PilotStudy) {
         return pilotBox.query().equal(PilotStudy_.id, PilotStudy.getId()).build().remove() > 0;
     }
 
     public boolean remove(@NonNull String _id) {
         return pilotBox.query().equal(PilotStudy_._id, _id).build().remove() > 0;
+    }
+
+    public boolean removeAll(@NonNull String userId) {
+        return pilotBox.query().equal(PilotStudy_.userId, userId).build().remove() > 0;
     }
 }

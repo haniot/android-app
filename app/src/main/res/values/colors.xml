@@ -2,8 +2,7 @@
 <resources>
     <color name="colorPrimary">#009b8a</color>
     <color name="colorPrimaryDark">#17806E</color>
-        <color name="colorAccent">#53cdba</color>
-
+    <color name="colorAccent">#53cdba</color>
     <color name="colorSecondary">#03A9F4</color>
     <color name="colorSecondaryDark">#0288d1</color>
     <color name="colorAccentSecondary">#4fc3f7</color>
@@ -11,8 +10,9 @@
     <color name="colorCard">#EBF6F4</color>
     <color name="colorCardSection">#aedbd3</color>
     <color name="colorCardSecondary">#E3F2FD</color>
+    <color name="colorCardActive">#d3f1ed</color>
     <color name="colorTextDark">#FFFFFF</color>
-    <color name="colorAlertDanger">#a94442</color>
+    <color name="colorAlertDanger">#f2dede</color>
     <color name="colorItemSeparator">#E0E0E0</color>
     <color name="colorBackRadiogroup">#f0f0f0</color>
     <color name="colorWarningLight">#fcf8e3</color>

@@ -73,7 +73,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private DeviceDAO mDeviceDAO;
     private HaniotNetRepository haniotNetRepository;
     private AppPreferencesHelper appPreferencesHelper;
-    private DisposableManager disposableManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -263,8 +262,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         if (message.isEmpty()) message = getString(R.string.error_500);
 
         messageError.setText(message);
-        boxMessage.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_in));
-        boxMessage.setVisibility(View.VISIBLE);
+        runOnUiThread(() -> {
+            boxMessage.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_in));
+            boxMessage.setVisibility(View.VISIBLE);
+        });
     }
 
     /**
@@ -301,14 +302,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
      * @param enabled
      */
     private void showLoading(final boolean enabled) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                buttonLogin.setEnabled(!enabled);
+        runOnUiThread(() -> {
+            buttonLogin.setEnabled(!enabled);
 
-                if (enabled) mProgressBar.setVisibility(View.VISIBLE);
-                else mProgressBar.setVisibility(View.GONE);
-            }
+            if (enabled) mProgressBar.setVisibility(View.VISIBLE);
+            else mProgressBar.setVisibility(View.GONE);
         });
     }
 

@@ -25,42 +25,63 @@
                 android:orientation="vertical"
                 android:paddingBottom="@dimen/activity_horizontal_margin">
 
-                <TextView
+                <LinearLayout
+                    android:id="@+id/box_instruction_message"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@color/colorWarningLight"
                     android:gravity="center"
-                    android:text="@string/piloty_study_desc" />
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:padding="16sp"
+                        android:text="@string/piloty_study_desc" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/box_no_data_message"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorAlertDanger"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:padding="16sp"
+                        android:text="@string/piloty_study_no_allocated" />
+                </LinearLayout>
 
                 <TextView
+                    android:id="@+id/info_inactive_selected"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="10dp"
                     android:gravity="center"
                     android:text="@string/piloty_study_inactive_alert" />
 
-                <TextView
-                    android:id="@+id/no_data_textView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:gravity="center"
-                    android:text="@string/no_data_available"
-                    android:visibility="gone" />
-            </LinearLayout>
-
-            <android.support.v4.widget.SwipeRefreshLayout
-                android:id="@+id/data_swiperefresh"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/pilots_studies_recyclerview"
+                <android.support.v4.widget.SwipeRefreshLayout
+                    android:id="@+id/pilots_studies_swiperefresh"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:scrollbarSize="3sp"
-                    android:scrollbarThumbVertical="@color/colorAccent"
-                    android:scrollbars="vertical" />
-            </android.support.v4.widget.SwipeRefreshLayout>
+                    android:layout_marginTop="20dp">
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/pilots_studies_recyclerview"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scrollbarSize="3sp"
+                        android:scrollbarThumbVertical="@color/colorAccent"
+                        android:scrollbars="vertical" />
+                </android.support.v4.widget.SwipeRefreshLayout>
+            </LinearLayout>
         </FrameLayout>
 
     </LinearLayout>

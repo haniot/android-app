@@ -157,12 +157,12 @@ public class PilotStudy {
         if (!(o instanceof PilotStudy)) return false;
 
         PilotStudy that = (PilotStudy) o;
-        return Objects.equals(_id, that._id);
+        return Objects.equals(name, that.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(_id, name);
+        return Objects.hash(name);
     }
 
     @Override
@@ -176,6 +176,7 @@ public class PilotStudy {
                 ", end='" + end + '\'' +
                 ", isSelected=" + isSelected +
                 ", healthProfessionalsId=" + healthProfessionalsId +
+                ", userId='" + userId + '\'' +
                 '}';
     }
 }
