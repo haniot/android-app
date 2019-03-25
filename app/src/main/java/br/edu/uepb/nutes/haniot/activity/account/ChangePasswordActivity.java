@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,26 +17,22 @@ import android.widget.Toast;
 import java.util.regex.Pattern;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
+import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.CompletableObserver;
-import io.reactivex.disposables.Disposable;
 import retrofit2.HttpException;
 
 /**
  * ChangePasswordActivity implementation.
  *
- * @author Douglas Rafael <douglas.rafael@nutes.uepb.edu.br>
- * @version 1.0
- * @copyright Copyright (c) 2017, NUTES UEPB
+ * @author Copyright (c) 2018, NUTES/UEPB
  */
 public class ChangePasswordActivity extends AppCompatActivity {
-    private final String TAG = "ChangePasswordActivity";
+    private final String LOG_TAG = "ChangePasswordActivity";
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -56,11 +53,9 @@ public class ChangePasswordActivity extends AppCompatActivity {
     EditText confirmPasswordEditText;
 
     private Menu menu;
-    private Session session;
-    private boolean isRedirect = false;
-    private String userId;
     private HaniotNetRepository haniotNetRepository;
     private AppPreferencesHelper appPreferences;
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,28 +66,21 @@ public class ChangePasswordActivity extends AppCompatActivity {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle(R.string.change_password);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        Intent intent = getIntent();
         haniotNetRepository = HaniotNetRepository.getInstance(this);
         appPreferences = AppPreferencesHelper.getInstance(this);
 
-        if (intent.hasExtra("user_id")) {
-            userId = intent.getStringExtra("user_id");
-            isRedirect = true;
+        Intent intent = getIntent();
+        if (intent.hasExtra("user_id")) { // From redirect link
+            user = new User();
+            user.set_id(intent.getStringExtra("user_id"));
+        } else {
+            user = appPreferences.getUserLogged();
         }
-        confirmPasswordEditText.setOnEditorActionListener((textView, actionId, keyEvent) -> {
-            if (actionId == EditorInfo.IME_ACTION_SEND)
-                changePassword();
 
+        confirmPasswordEditText.setOnEditorActionListener((textView, actionId, keyEvent) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEND) changePassword();
             return false;
         });
-
-        session = new Session(this);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
     }
 
     @Override
@@ -125,7 +113,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
     }
 
     /**
-     * Validade form
+     * Validate form
      *
      * @return boolean
      */
@@ -134,18 +122,14 @@ public class ChangePasswordActivity extends AppCompatActivity {
         String newPassword = newPasswordEditText.getText().toString();
         String confirmPassword = confirmPasswordEditText.getText().toString();
 
-        /**
-         * Regular expression to check if the password contains the default:
-         *   - at least 1 number
-         *   - At least 1 letter
-         *   - At least 1 special character among the allowed: @#$%*<space>!?._+-
-         *   - At least 6 characters
-         */
+        // Regular expression to check if the password contains the default:
+        //   - at least 1 number
+        //   - At least 1 letter
+        //   - At least 1 special character among the allowed: @#$%*<space>!?._+-
+        //   - At least 6 characters
         Pattern check1 = Pattern.compile("((?=.*[a-zA-Z0-9])(?=.*[@#$%* !?._+-]).{6,})");
 
-        /**
-         * Regular expression to check
-         */
+        // Regular expression to check
         Pattern check2 = Pattern.compile("([^a-zA-Z0-9@#$%&* !?._+-])");
 
         if (!check1.matcher(currentPassword).matches() || check2.matcher(currentPassword).find()) {
@@ -178,7 +162,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
     /**
      * Request focus in input
      *
-     * @param editText
+     * @param editText {@link EditText}
      */
     private void requestFocus(EditText editText) {
         editText.setFocusableInTouchMode(true);
@@ -192,70 +176,36 @@ public class ChangePasswordActivity extends AppCompatActivity {
         if (!checkConnectivity() || !validate())
             return;
 
-        // Send for remote server /users/:userId/password
-        if (isRedirect) {
-            haniotNetRepository.changePassword(new User(userId,
-                    currentPasswordEditText.getText().toString(),
-                    newPasswordEditText.getText().toString()))
-                    .doOnSubscribe(disposable -> loadingSend(true))
-                    .doAfterTerminate(() -> loadingSend(false))
-                    .subscribe(new CompletableObserver() {
-                        @Override
-                        public void onSubscribe(Disposable d) {
+        user.setOldPassword(String.valueOf(currentPasswordEditText.getText()));
+        user.setNewPassword(String.valueOf(newPasswordEditText.getText()));
 
-                        }
-
-                        @Override
-                        public void onComplete() {
-                            signOut();
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            printMessage(500);
-                        }
-                    });
-
-        } else {
-            haniotNetRepository.changePassword(appPreferences.getUserLogged())
-                    .doOnSubscribe(disposable -> loadingSend(true))
-                    .doAfterTerminate(() -> loadingSend(false))
-                    .subscribe(new CompletableObserver() {
-                        @Override
-                        public void onSubscribe(Disposable d) {
-
-                        }
-
-                        @Override
-                        public void onComplete() {
-                            printMessage(204);
-                            signOut();
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            if (e instanceof HttpException) {
-                                HttpException httpEx = ((HttpException) e);
-                                printMessage(httpEx.code());
-                            }
-                        }
-                    });
-        }
+        Log.w(LOG_TAG, user.toString());
+        DisposableManager.add(haniotNetRepository
+                .changePassword(user)
+                .doOnSubscribe(disposable -> loadingSend(true))
+                .doAfterTerminate(() -> loadingSend(false))
+                .subscribe(() -> {
+                    printMessage(204);
+                    signOut();
+                }, e -> {
+                    if (e instanceof HttpException) {
+                        HttpException httpEx = ((HttpException) e);
+                        printMessage(httpEx.code());
+                    }
+                })
+        );
     }
 
+    /**
+     * Remove user from session and redirect to login screen.
+     */
     private void signOut() {
-        /**
-         * Remove user from session and redirect to login screen.
-         */
-        if (session.isLogged()) {
-            session.removeLogged();
-        }
+        appPreferences.removeUserLogged();
         Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
         startActivity(intent);
         finish();
-
     }
 
     /**
@@ -263,12 +213,16 @@ public class ChangePasswordActivity extends AppCompatActivity {
      */
     private void printMessage(final int code) {
         runOnUiThread(() -> {
-            if (code == 204) {
-                Toast.makeText(getApplicationContext(), R.string.update_success, Toast.LENGTH_SHORT).show();
-            } else if (code == 401) {
-                Toast.makeText(getApplicationContext(), R.string.validate_password_not_match_current, Toast.LENGTH_LONG).show();
-            } else { // error 500
-                Toast.makeText(getApplicationContext(), R.string.error_500, Toast.LENGTH_LONG).show();
+            switch (code) {
+                case 204:
+                    Toast.makeText(this, R.string.update_success, Toast.LENGTH_LONG).show();
+                    break;
+                case 400:
+                    Toast.makeText(this, R.string.validate_password_not_match_current,
+                            Toast.LENGTH_LONG).show();
+                    break;
+                default:
+                    Toast.makeText(getApplicationContext(), R.string.error_500, Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -276,7 +230,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
     /**
      * loading message
      *
-     * @param enabled
+     * @param enabled boolean
      */
     private void loadingSend(final boolean enabled) {
         final MenuItem menuItem = menu.findItem(R.id.action_save);
@@ -302,10 +256,5 @@ public class ChangePasswordActivity extends AppCompatActivity {
         mAlertConnectivity.setVisibility(View.GONE);
 
         return true;
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
     }
 }

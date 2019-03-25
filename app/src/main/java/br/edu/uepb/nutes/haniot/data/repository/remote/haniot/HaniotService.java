@@ -28,7 +28,7 @@ import retrofit2.http.Query;
  * @author Copyright (c) 2018, NUTES/UEPB
  */
 public interface HaniotService {
-    String BASE_URL_HANIOT = "http://192.168.1.2/"; // API GATEWAY LOCAL
+    String BASE_URL_HANIOT = "http://HOST_IP/"; // API GATEWAY LOCAL
 
     // auth
     @POST("auth")
