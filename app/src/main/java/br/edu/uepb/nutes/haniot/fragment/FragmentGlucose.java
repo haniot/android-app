@@ -1,21 +1,26 @@
-package br.edu.uepb.nutes.haniot.activity;
+package br.edu.uepb.nutes.haniot.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.Objects;
-
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.data.model.ContextMeasurementValueType;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * FragmentBloodPressure implementation.
+ *
+ * @author Fábio Júnior <fabio.pequeno@nutes.uepb.edu.br>
+ * @version 1.0
+ * @copyright Copyright (c) 2019, NUTES UEPB
+ */
 public class FragmentGlucose extends Fragment {
 
     @BindView(R.id.check_before_bedtime)
@@ -54,37 +59,71 @@ public class FragmentGlucose extends Fragment {
     @BindView(R.id.title_pre_meal)
     TextView titlePreMeal;
 
+    private int period;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_glucose_measurement, container, false);
         ButterKnife.bind(this, view);
+        period = ContextMeasurementValueType.GLUCOSE_MEAL_FASTING;
+
         return view;
     }
 
-
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        //ButterKnife.bind(Objects.requireNonNull(getActivity()));
         super.onActivityCreated(savedInstanceState);
-        initChoose();
-       // initView();
-        //resetPick();
+        initViews();
+    }
+
+    /**
+     * Get period selected.
+     * @return
+     */
+    public int getPeriod() {
+        return period;
+    }
+
+    /**
+     * Update view on choose option.
+     * @param choose
+     * @param chooseText
+     * @param check
+     */
+    public void choose(ImageView choose, TextView chooseText, ImageView check) {
+        resetPick();
+        choose.setScaleX(1);
+        choose.setScaleY(1);
+        chooseText.setTextColor(getContext().getResources().getColor(R.color.colorPrimary));
+        check.setVisibility(View.VISIBLE);
 
     }
 
-//    public void initView() {
-//
-//        checkBeforeBedtime = getActivity().findViewById(R.id.check_before_bedtime);
-//
-//        checkFast = getActivity().findViewById(R.id.check_fast);
-//
-//        checkFasting = getActivity().findViewById(R.id.check_fasting);
-//
-//        checkPreMeal = getActivity().findViewById(R.id.check_pre_meal);
-//        initChoose();
-//    }
+    /**
+     * Init views.
+     */
+    public void initViews() {
+        preMeal.setOnClickListener(v -> {
+            choose(preMeal, titlePreMeal, checkPreMeal);
+            period = ContextMeasurementValueType.GLUCOSE_MEAL_FASTING;
+        });
+        beforeBedtime.setOnClickListener(v -> {
+            choose(beforeBedtime, titleBeforeBedtime, checkBeforeBedtime);
+            period = ContextMeasurementValueType.GLUCOSE_MEAL_BEDTIME;
+        });
+        fast.setOnClickListener(v -> {
+            choose(fast, titleFast, checkFast);
+            period = ContextMeasurementValueType.GLUCOSE_CARBOHYDRATE_BREAKFAST;
+        });
+        fasting.setOnClickListener(v -> {
+            choose(fasting, titleFasting, checkFasting);
+            period = ContextMeasurementValueType.GLUCOSE_MEAL_FASTING;
+        });
+    }
 
+    /**
+     * Reset view of options.
+     */
     public void resetPick() {
         fasting.setScaleX(0.9f);
         fasting.setScaleY(0.9f);
@@ -105,42 +144,5 @@ public class FragmentGlucose extends Fragment {
         preMeal.setScaleY(0.9f);
         titlePreMeal.setTextColor(getContext().getResources().getColor(R.color.colorSubmenu));
         checkPreMeal.setVisibility(View.INVISIBLE);
-    }
-
-    public void choose(ImageView choose) {
-        resetPick();
-        choose.setVisibility(View.VISIBLE);
-    }
-
-    public void initChoose() {
-        preMeal.setOnClickListener(v -> {
-            Log.i("Glucose", "cliquei");
-            resetPick();
-            preMeal.setScaleX(1);
-            preMeal.setScaleY(1);
-            titlePreMeal.setTextColor(getContext().getResources().getColor(R.color.colorPrimary));
-            checkPreMeal.setVisibility(View.VISIBLE);
-        });
-        beforeBedtime.setOnClickListener(v -> {
-            resetPick();
-            beforeBedtime.setScaleX(1);
-            beforeBedtime.setScaleY(1);
-            titleBeforeBedtime.setTextColor(getContext().getResources().getColor(R.color.colorPrimary));
-            checkBeforeBedtime.setVisibility(View.VISIBLE);
-        });
-        fast.setOnClickListener(v -> {
-            resetPick();
-            fast.setScaleX(1);
-            fast.setScaleY(1);
-            titleFast.setTextColor(getContext().getResources().getColor(R.color.colorPrimary));
-            checkFast.setVisibility(View.VISIBLE);
-        });
-        fasting.setOnClickListener(v -> {
-            resetPick();
-            fasting.setScaleX(1);
-            fasting.setScaleY(1);
-            titleFasting.setTextColor(getContext().getResources().getColor(R.color.colorPrimary));
-            checkFasting.setVisibility(View.VISIBLE);
-        });
     }
 }

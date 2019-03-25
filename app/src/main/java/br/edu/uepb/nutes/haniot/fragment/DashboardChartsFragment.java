@@ -19,6 +19,13 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import pl.bclogic.pulsator4droid.library.PulsatorLayout;
 
+/**
+ * DashboardChartsFragment implementation.
+ *
+ * @author Fábio Júnior <fabio.pequeno@nutes.uepb.edu.br>
+ * @version 1.0
+ * @copyright Copyright (c) 2019, NUTES UEPB
+ */
 public class DashboardChartsFragment extends Fragment {
     @BindView(R.id.patientName)
     TextView patientName;

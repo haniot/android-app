@@ -12,7 +12,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -21,21 +20,29 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.widget.EditText;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.ManagePatientAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
-import br.edu.uepb.nutes.haniot.data.model.dao.PatientDAO;
+import br.edu.uepb.nutes.haniot.data.model.PilotStudy;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
+import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.SingleObserver;
+import io.reactivex.disposables.Disposable;
 
+/**
+ * ManagePatientsActivity implementation.
+ *
+ * @author Fábio Júnior <fabio.pequeno@nutes.uepb.edu.br>
+ * @version 1.0
+ * @copyright Copyright (c) 2019, NUTES UEPB
+ */
 public class ManagePatientsActivity extends AppCompatActivity implements OnRecyclerViewListener<Patient> {
 
     @BindView(R.id.toolbar)
@@ -43,39 +50,84 @@ public class ManagePatientsActivity extends AppCompatActivity implements OnRecyc
     @BindView(R.id.recyclerViewPatient)
     RecyclerView recyclerViewPatient;
 
-    private List<Patient> patientList = new ArrayList<>();
+    private List<Patient> patientList;
     private ManagePatientAdapter adapter;
     private SearchView searchView;
     private AppPreferencesHelper appPreferencesHelper;
+    private HaniotNetRepository haniotNetRepository;
+    private PilotStudy pilotStudy;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_patient);
         ButterKnife.bind(this);
-
         toolbar.setTitle(getResources().getString(R.string.manage_patient));
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        initComponents();
+        initResources();
+        loadData();
+    }
 
-        Session session = new Session(this);
-        Log.i("AAAA", session.getUserLogged().toJson());
-        AppPreferencesHelper.getInstance(this).saveUserLogged(session.getUserLogged());
-        Log.i("AAA", AppPreferencesHelper.getInstance(this).getUserLogged().toString());
+    /**
+     * Init resources.
+     */
+    private void initResources() {
+        appPreferencesHelper = AppPreferencesHelper.getInstance(this);
+        haniotNetRepository = HaniotNetRepository.getInstance(this);
+        pilotStudy = appPreferencesHelper.getLastPilotStudy();
+        patientList = new ArrayList<>();
+    }
+
+    /**
+     * On click item of list patients.
+     *
+     * @param item
+     */
+    @Override
+    public void onItemClick(Patient item) {
+        AppPreferencesHelper.getInstance(this).saveLastPatient(item);
+        startActivity(new Intent(this, MainActivity.class));
+    }
+
+    @Override
+    public void onLongItemClick(View v, Patient item) {
 
     }
 
-    private void initComponents() {
+    @Override
+    public void onMenuContextClick(View v, Patient item) {
 
-        appPreferencesHelper = AppPreferencesHelper.getInstance(this);
-        List<Patient> patients;
+    }
 
-        //TODO temp 
-        patients = testPatients();
+    private void loadData() {
+        haniotNetRepository
+                .getAllPatients(pilotStudy.get_id(), "created_at", 1, 100)
+                .doOnSubscribe(disposable -> {
+                    //Loading
+                })
+                .subscribe(new SingleObserver<List<Patient>>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
 
-        adapter = new ManagePatientAdapter(patients, getApplicationContext(), this);
+                    }
+
+                    @Override
+                    public void onSuccess(List<Patient> patients) {
+                        patientList = patients;
+                        initRecyclerView();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        //Mostrar erro
+                    }
+                });
+    }
+
+    private void initRecyclerView() {
+        adapter = new ManagePatientAdapter(patientList, getApplicationContext(), this);
 
         recyclerViewPatient.setHasFixedSize(true);
         recyclerViewPatient.setLayoutManager(new LinearLayoutManager(this));
@@ -177,7 +229,7 @@ public class ManagePatientsActivity extends AppCompatActivity implements OnRecyc
         patient.set_id("124");
         patient.setGender("male");
         patient.setBirthDate(DateUtils.formatDate(878180400000L, DateUtils.DATE_FORMAT_ISO_8601));
-        
+
         patientList.add(patient);
 
         patient = new Patient();
@@ -206,7 +258,7 @@ public class ManagePatientsActivity extends AppCompatActivity implements OnRecyc
         patient.set_id("128");
         patient.setGender("male");
         patient.setBirthDate(DateUtils.formatDate(878180400000L, DateUtils.DATE_FORMAT_ISO_8601));
-        
+
         patientList.add(patient);
 
         return patientList;
@@ -215,7 +267,7 @@ public class ManagePatientsActivity extends AppCompatActivity implements OnRecyc
     @Override
     protected void onResume() {
         super.onResume();
-        initComponents();
+        initRecyclerView();
     }
 
     @Override
@@ -261,7 +313,6 @@ public class ManagePatientsActivity extends AppCompatActivity implements OnRecyc
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         int id = item.getItemId();
 
         switch (id) {
@@ -270,25 +321,9 @@ public class ManagePatientsActivity extends AppCompatActivity implements OnRecyc
                 break;
             case R.id.btnAddPatient:
                 startActivity(new Intent(this, PatientRegisterActivity.class));
+                finish();
                 break;
         }
-
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onItemClick(Patient item) {
-        AppPreferencesHelper.getInstance(this).saveLastPatient(item);
-        startActivity(new Intent(this, MainActivity.class));
-    }
-
-    @Override
-    public void onLongItemClick(View v, Patient item) {
-
-    }
-
-    @Override
-    public void onMenuContextClick(View v, Patient item) {
-
     }
 }

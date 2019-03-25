@@ -32,7 +32,16 @@ import br.edu.uepb.nutes.simplesurvey.question.Infor;
 import br.edu.uepb.nutes.simplesurvey.question.Multiple;
 import br.edu.uepb.nutes.simplesurvey.question.Open;
 import br.edu.uepb.nutes.simplesurvey.question.Single;
+import io.reactivex.SingleObserver;
+import io.reactivex.disposables.Disposable;
 
+/**
+ * PatientQuiz implementation.
+ *
+ * @author Fábio Júnior <fabio.pequeno@nutes.uepb.edu.br>
+ * @version 1.0
+ * @copyright Copyright (c) 2019, NUTES UEPB
+ */
 public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
         Dichotomic.OnDichotomicListener, Single.OnSingleListener,
         Multiple.OnMultipleListener,
@@ -42,7 +51,7 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
     private final int FIRST_PAGE = 0;
     private final int END_PAGE = -1;
     private final int CATEGORY_PAGE = -2;
-    Patient patient;
+    private Patient patient;
 
     private PhysicalActivityHabit physicalActivityHabits;
     private FeedingHabitsRecord feedingHabitsRecord;
@@ -88,7 +97,7 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
         medicalRecord.setChronicDiseases(chronicDiseases);
         medicalRecord.setChronicDiseasesDB(chronicDiseases);
 
-        syncServer();
+        sendToServer();
 
         Log.i("Respostas", patient.toString());
         Log.i("Respostas", "Feending Habits: " + feedingHabitsRecord.toString());
@@ -99,13 +108,97 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
         Log.i("Respostas", "Sleep: " + sleepHabit.toString());
     }
 
-    private void syncServer() {
+    private void sendToServer() {
         haniotNetRepository.savePatient(patient)
-                .doOnSubscribe(disposable -> showProgress(true));
-        haniotNetRepository.saveFeedingHabitsRecord(feedingHabitsRecord);
-        haniotNetRepository.saveMedicalRecord(medicalRecord);
-        haniotNetRepository.savePhysicalActivityHabit(physicalActivityHabits);
-        haniotNetRepository.saveSleepHabit(sleepHabit);
+                .doOnSubscribe(disposable -> showProgress(true))
+                .subscribe(new SingleObserver<Patient>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onSuccess(Patient patient) {
+                        Log.i(LOG_TAG, "Patient saved!");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+                });
+
+        haniotNetRepository.saveFeedingHabitsRecord(feedingHabitsRecord)
+                .subscribe(new SingleObserver<FeedingHabitsRecord>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onSuccess(FeedingHabitsRecord feedingHabitsRecord) {
+                        Log.i(LOG_TAG, "Feeding Habits Record saved!");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+                });
+
+        haniotNetRepository.saveMedicalRecord(medicalRecord)
+                .subscribe(new SingleObserver<MedicalRecord>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onSuccess(MedicalRecord medicalRecord) {
+                        Log.i(LOG_TAG, "Medical Record saved!");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+                });
+
+        haniotNetRepository.savePhysicalActivityHabit(physicalActivityHabits)
+                .subscribe(new SingleObserver<PhysicalActivityHabit>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onSuccess(PhysicalActivityHabit physicalActivityHabit) {
+                        Log.i(LOG_TAG, "Physical Activity Habit saved!");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+                });
+
+        haniotNetRepository.saveSleepHabit(sleepHabit)
+                .subscribe(new SingleObserver<SleepHabit>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onSuccess(SleepHabit sleepHabit) {
+                        Log.i(LOG_TAG, "Sleep Habit saved!");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+                });
     }
 
     private void showProgress(boolean enabled) {
