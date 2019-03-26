@@ -99,7 +99,6 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
 
         if (patient != null) {
             loadDashboard();
-            dashboardChartsFragment.updateNamePatient(patient);
 
             checkPermissions();
         } else {

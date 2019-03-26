@@ -236,7 +236,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private void errorHandler(Throwable e) {
         if (e instanceof HttpException) {
             HttpException httpEx = ((HttpException) e);
-
+            Log.i(LOG_TAG, httpEx.message());
             switch (httpEx.code()) {
                 case 401:
                     showMessage(R.string.validate_invalid_email_or_password);

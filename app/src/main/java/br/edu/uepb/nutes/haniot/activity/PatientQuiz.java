@@ -1,7 +1,6 @@
 package br.edu.uepb.nutes.haniot.activity;
 
 import android.app.AlertDialog;
-import android.content.Intent;
 import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -24,6 +23,7 @@ import br.edu.uepb.nutes.haniot.data.model.SchoolActivityFrequencyType;
 import br.edu.uepb.nutes.haniot.data.model.SleepHabit;
 import br.edu.uepb.nutes.haniot.data.model.WeeklyFoodRecord;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
+import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import br.edu.uepb.nutes.simplesurvey.base.SimpleSurvey;
@@ -32,8 +32,6 @@ import br.edu.uepb.nutes.simplesurvey.question.Infor;
 import br.edu.uepb.nutes.simplesurvey.question.Multiple;
 import br.edu.uepb.nutes.simplesurvey.question.Open;
 import br.edu.uepb.nutes.simplesurvey.question.Single;
-import io.reactivex.SingleObserver;
-import io.reactivex.disposables.Disposable;
 import retrofit2.HttpException;
 
 /**
@@ -51,7 +49,10 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
     private final String LOG_TAG = PatientQuiz.class.getSimpleName();
     private final int FIRST_PAGE = 0;
     private final int END_PAGE = -1;
-    private final int CATEGORY_PAGE = -2;
+    private final int CATEGORY_PHYSICAL_ACTIVITIES = 1;
+    private final int CATEGORY_FEENDING_HABITS = 2;
+    private final int CATEGORY_MEDICAL_RECORDS = 3;
+    private final int CATEGORY_SLEEP_HABITS = 4;
     private Patient patient;
 
     private PhysicalActivityHabit physicalActivityHabits;
@@ -86,20 +87,10 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
     }
 
     /**
-     * Validate and set data on objects.
+     * //TODO temp
+     * Log answers.
      */
-    private void validateAnswers() {
-        sleepHabit.setCreatedAt(DateUtils.getCurrentDateISO8601());
-        medicalRecord.setCreatedAt(DateUtils.getCurrentDateISO8601());
-        feedingHabitsRecord.setCreatedAt(DateUtils.getCurrentDateISO8601());
-        physicalActivityHabits.setCreatedAt(DateUtils.getCurrentDateISO8601());
-        feedingHabitsRecord.setWeeklyFeedingHabitsDB(weeklyFoodRecords);
-        feedingHabitsRecord.setWeeklyFeedingHabits(weeklyFoodRecords);
-        medicalRecord.setChronicDiseases(chronicDiseases);
-        medicalRecord.setChronicDiseasesDB(chronicDiseases);
-
-        savePatient();
-
+    private void logAnswers() {
         Log.i("Respostas", patient.toString());
         Log.i("Respostas", "Feending Habits: " + feedingHabitsRecord.toString());
         Log.i("Respostas", "Weekly Food Records: " + weeklyFoodRecords.toString());
@@ -109,114 +100,66 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
         Log.i("Respostas", "Sleep: " + sleepHabit.toString());
     }
 
-    private void savePatient() {
-        haniotNetRepository.savePatient(patient)
-                .doOnSubscribe(disposable -> Log.i(LOG_TAG, "Salvando paciente no servidor!"))
-                .subscribe(new SingleObserver<Patient>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onSuccess(Patient patientSaved) {
-                        Log.i(LOG_TAG, "Patient saved!");
-                        patient = patientSaved;
-                        appPreferencesHelper.saveLastPatient(patient);
-                        sendQuizToServer();
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        if (e instanceof HttpException) {
-                            HttpException httpEx = ((HttpException) e);
-                            Log.i(LOG_TAG, httpEx.message());
-                        }
-                    }
-                });
-    }
-
-    private void sendQuizToServer() {
-
-        feedingHabitsRecord.setPatientId(patient.get_id());
-        haniotNetRepository.saveFeedingHabitsRecord(feedingHabitsRecord)
-                .subscribe(new SingleObserver<FeedingHabitsRecord>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onSuccess(FeedingHabitsRecord feedingHabitsRecord) {
-                        Log.i(LOG_TAG, "Feeding Habits Record saved!");
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-                });
-
+    private void saveMedicalRecords() {
         medicalRecord.setPatientId(patient.get_id());
-        haniotNetRepository.saveMedicalRecord(medicalRecord)
-                .subscribe(new SingleObserver<MedicalRecord>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onSuccess(MedicalRecord medicalRecord) {
-                        Log.i(LOG_TAG, "Medical Record saved!");
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-                });
-
-        physicalActivityHabits.setPatientId(patient.get_id());
-        haniotNetRepository.savePhysicalActivityHabit(physicalActivityHabits)
-                .subscribe(new SingleObserver<PhysicalActivityHabit>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onSuccess(PhysicalActivityHabit physicalActivityHabit) {
-                        Log.i(LOG_TAG, "Physical Activity Habit saved!");
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-                });
-
-        sleepHabit.setPatientId(patient.get_id());
-        haniotNetRepository.saveSleepHabit(sleepHabit)
-                .subscribe(new SingleObserver<SleepHabit>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onSuccess(SleepHabit sleepHabit) {
-                        Log.i(LOG_TAG, "Sleep Habit saved!");
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-                });
+        medicalRecord.setCreatedAt(DateUtils.getCurrentDateISO8601());
+        DisposableManager.add(haniotNetRepository
+                .saveMedicalRecord(medicalRecord)
+                .doOnSubscribe(disposable -> Log.i(LOG_TAG, "Salvando Feending Habits no servidor!"))
+                .doAfterTerminate(() -> Log.i(LOG_TAG, "Salvo Feending Habits no servidor!"))
+                .subscribe(medicalRecord -> {
+                }, this::errorHandler));
     }
 
-    private void showProgress(boolean enabled) {
-        //TODO fazer um loading
+    private void saveFeendingHabits() {
+        feedingHabitsRecord.setPatientId(patient.get_id());
+        feedingHabitsRecord.setCreatedAt(DateUtils.getCurrentDateISO8601());
+        feedingHabitsRecord.setWeeklyFeedingHabitsDB(weeklyFoodRecords);
+        feedingHabitsRecord.setWeeklyFeedingHabits(weeklyFoodRecords);
+        DisposableManager.add(haniotNetRepository
+                .saveFeedingHabitsRecord(feedingHabitsRecord)
+                .doOnSubscribe(disposable -> Log.i(LOG_TAG, "Salvando Feending Habits no servidor!"))
+                .doAfterTerminate(() -> Log.i(LOG_TAG, "Salvo Feending Habits no servidor!"))
+                .subscribe(feedingHabitsRecord -> {
+                }, this::errorHandler));
+    }
+
+    private void saveSleepHabits() {
+        sleepHabit.setPatientId(patient.get_id());
+        sleepHabit.setCreatedAt(DateUtils.getCurrentDateISO8601());
+        medicalRecord.setChronicDiseases(chronicDiseases);
+        medicalRecord.setChronicDiseasesDB(chronicDiseases);
+        DisposableManager.add(haniotNetRepository
+                .saveSleepHabit(sleepHabit)
+                .doOnSubscribe(disposable -> Log.i(LOG_TAG, "Salvando Sleep Habits no servidor!"))
+                .doAfterTerminate(() -> Log.i(LOG_TAG, "Sleep Habits"))
+                .subscribe(sleepHabit -> {
+                    Log.i(LOG_TAG, "Salvo Sleep Habits no servidor!");
+                }, this::errorHandler));
+    }
+
+    private void saveActivityHabits() {
+        physicalActivityHabits.setPatientId(patient.get_id());
+        physicalActivityHabits.setCreatedAt(DateUtils.getCurrentDateISO8601());
+        DisposableManager.add(haniotNetRepository
+                .savePhysicalActivityHabit(physicalActivityHabits)
+                .doOnSubscribe(disposable -> Log.i(LOG_TAG, "Salvando Activity Habits no servidor!"))
+                .doAfterTerminate(() -> Log.i(LOG_TAG, "Salvo Activity Habits no servidor!"))
+                .subscribe(physicalActivityHabits -> {
+                }, this::errorHandler));
+    }
+
+    /**
+     * Manipulates the error and displays message
+     * according to the type of error.
+     *
+     * @param e {@link Throwable}
+     */
+    private void errorHandler(Throwable e) {
+        if (e instanceof HttpException) {
+            HttpException httpEx = ((HttpException) e);
+        }
+        // message 500
     }
 
     /**
@@ -246,7 +189,7 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
                 .inputText(R.string.bt_next)
                 .buttonBackground(R.drawable.button_stylezed)
                 .nextQuestionAuto()
-                .pageNumber(CATEGORY_PAGE)
+                .pageNumber(CATEGORY_PHYSICAL_ACTIVITIES)
                 .build());
 
 
@@ -292,7 +235,7 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
                 .inputText(R.string.bt_next)
                 .buttonBackground(R.drawable.button_stylezed)
                 .nextQuestionAuto()
-                .pageNumber(CATEGORY_PAGE)
+                .pageNumber(CATEGORY_FEENDING_HABITS)
                 .build());
 
 
@@ -502,7 +445,7 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
                 .inputText(R.string.bt_next)
                 .buttonBackground(R.drawable.button_stylezed)
                 .nextQuestionAuto()
-                .pageNumber(CATEGORY_PAGE)
+                .pageNumber(CATEGORY_MEDICAL_RECORDS)
                 .build());
 
 
@@ -562,7 +505,7 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
                 .inputText(R.string.bt_next)
                 .buttonBackground(R.drawable.button_stylezed)
                 .nextQuestionAuto()
-                .pageNumber(CATEGORY_PAGE)
+                .pageNumber(CATEGORY_SLEEP_HABITS)
                 .build());
 
         addQuestion(new Single.Config()
@@ -644,11 +587,24 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
     @Override
     public void onAnswerInfo(int page) {
         Log.d(LOG_TAG, "onAnswerInfo() | PAGE: " + page);
-        if (page == END_PAGE) { //
-            validateAnswers();
-            //appPreferencesHelper.saveLastPatient(patient);
-            //TODO enviar para o servidor
-            //startActivity(new Intent(this, MainActivity.class));
+        switch (page) {
+            case CATEGORY_PHYSICAL_ACTIVITIES:
+
+                break;
+            case CATEGORY_FEENDING_HABITS:
+                saveActivityHabits();
+                break;
+            case CATEGORY_MEDICAL_RECORDS:
+                saveFeendingHabits();
+                break;
+            case CATEGORY_SLEEP_HABITS:
+                saveMedicalRecords();
+                break;
+            case END_PAGE:
+                saveSleepHabits();
+                //TODO TEMP
+                logAnswers();
+                break;
         }
     }
 
@@ -823,4 +779,12 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
         Log.d(LOG_TAG, "onAnswerTextBox() | PAGE:  " + page
                 + " | ANSWER: " + value);
     }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        DisposableManager.dispose();
+    }
+
 }

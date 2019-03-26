@@ -1,8 +1,14 @@
 package br.edu.uepb.nutes.haniot.data.model;
 
+import android.util.Log;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -104,6 +110,31 @@ public class FeedingHabitsRecord extends ActivityHabitsRecord {
 
     public void setBreakfastDailyFrequency(String breakfastDailyFrequency) {
         this.breakfastDailyFrequency = breakfastDailyFrequency;
+    }
+
+    /**
+     * Convert object to json format.
+     *
+     * @return String
+     */
+    public String toJson() {
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        String a = gson.toJson(this);
+        Log.i("AAAAAAAAAA", a);
+        return a;
+    }
+
+    /**
+     * Convert json to Object.
+     *
+     * @param json String
+     * @return Patient
+     */
+    public static FeedingHabitsRecord jsonDeserialize(String json) {
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        Type typeFeedingHabits = new TypeToken<FeedingHabitsRecord>() {
+        }.getType();
+        return gson.fromJson(json, typeFeedingHabits);
     }
 
     @Override
