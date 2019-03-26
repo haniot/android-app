@@ -173,7 +173,7 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
 
                     appPreferences.saveUserLogged(user);
                     enabledView(true);
-                    printMessage(200);
+                    showMessage(200);
                 }, this::errorHandler)
         );
     }
@@ -187,10 +187,10 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
     private void errorHandler(Throwable e) {
         if (e instanceof HttpException) {
             HttpException httpEx = ((HttpException) e);
-            printMessage(httpEx.code());
+            showMessage(httpEx.code());
             return;
         }
-        printMessage(500);
+        showMessage(500);
     }
 
     /**
@@ -198,7 +198,7 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
      *
      * @param code int
      */
-    private void printMessage(final int code) {
+    private void showMessage(final int code) {
         runOnUiThread(() -> {
             switch (code) {
                 case 200:

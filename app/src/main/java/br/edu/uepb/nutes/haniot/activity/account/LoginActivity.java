@@ -1,6 +1,5 @@
 package br.edu.uepb.nutes.haniot.activity.account;
 
-import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -24,6 +23,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.MainActivity;
@@ -38,6 +38,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import okhttp3.ResponseBody;
 import retrofit2.HttpException;
+
+import static android.view.inputmethod.InputMethodManager.HIDE_NOT_ALWAYS;
 
 /**
  * LoginActivity implementation.
@@ -132,13 +134,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         boxMessage.setVisibility(View.GONE);
 
         // close keyboard
-        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
-        inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0); // hide
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(Objects.requireNonNull(
+                getCurrentFocus()).getWindowToken(), HIDE_NOT_ALWAYS);
 
         // Check if you have an internet connection.
         // If yes, it does authentication with the remote server
-        if (!checkConnectivity() || !validate())
-            return;
+        if (!checkConnectivity() || !validate()) return;
 
         authenticationInServer();
     }
@@ -155,22 +157,51 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     if (appPreferencesHelper.saveUserAccessHaniot(userAccess)) {
                         getUserProfile(userAccess.getSubject());
                     }
-                }, error -> {
-                    if (error instanceof HttpException) {
-                        HttpException httpEx = ((HttpException) error);
-                        if (httpEx.code() == 401) {
-                            showMessage(R.string.validate_invalid_email_or_password);
-                        } else if (httpEx.code() == 403) {
-                            if (httpEx.response().errorBody() == null) {
-                                showMessage(R.string.error_500);
-                                return;
-                            }
-                            openScreenChangePassword(httpEx.response().errorBody());
-                        }
+                }, this::errorHandler)
+        );
+    }
+
+    /**
+     * Get data user from server.
+     *
+     * @param userId {@link String}
+     */
+    private void getUserProfile(String userId) {
+        DisposableManager.add(haniotNetRepository
+                .getHealthProfissional(userId)
+                .doOnSubscribe(disposable -> showLoading(true))
+                .doAfterTerminate(() -> showLoading(false))
+                .subscribe(user -> {
+                    if (user.get_id() == null) {
+                        showMessage(R.string.error_recover_data);
+                        showLoading(false);
                         return;
                     }
-                    showMessage(R.string.error_500);
-                })
+
+                    appPreferencesHelper.saveUserLogged(user);
+                    tokenExpirationService.initTokenMonitor();
+                    syncDevices(userId);
+                }, this::errorHandler)
+        );
+    }
+
+    /**
+     * Get devices saved on the server and sync local.
+     */
+    public void syncDevices(String userId) {
+        if (userId == null) return;
+
+        DisposableManager.add(haniotNetRepository
+                .getAllDevices(userId)
+                .doOnSubscribe(disposable -> showLoading(true))
+                .doAfterTerminate(() -> startActivity(new Intent(this, MainActivity.class)))
+                .subscribe(devices -> {
+                    mDeviceDAO.removeAll(userId);
+                    for (Device d : devices) {
+                        d.setUserId(userId);
+                        mDeviceDAO.save(d);
+                    }
+                }, error -> Log.w(LOG_TAG, "syncDevices() error: " + error.getMessage()))
         );
     }
 
@@ -197,58 +228,37 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     /**
-     * Get data user from server.
+     * Manipulates the error and displays message
+     * according to the type of error.
      *
-     * @param userId {@link String}
+     * @param e {@link Throwable}
      */
-    private void getUserProfile(String userId) {
-        DisposableManager.add(haniotNetRepository
-                .getHealthProfissional(userId)
-                .doOnSubscribe(disposable -> showLoading(true))
-                .doAfterTerminate(() -> showLoading(false))
-                .subscribe(user -> {
-                    if (user.get_id() == null) {
-                        showMessage(R.string.error_recover_data);
-                        showLoading(false);
+    private void errorHandler(Throwable e) {
+        if (e instanceof HttpException) {
+            HttpException httpEx = ((HttpException) e);
+
+            switch (httpEx.code()) {
+                case 401:
+                    showMessage(R.string.validate_invalid_email_or_password);
+                    break;
+                case 403: {
+                    if (httpEx.response().errorBody() == null) {
+                        showMessage(R.string.error_500);
                         return;
                     }
-
-                    appPreferencesHelper.saveUserLogged(user);
-                    tokenExpirationService.initTokenMonitor();
-                    syncDevices(userId);
-                }, error -> {
-                    if (error instanceof HttpException) {
-                        HttpException httpEx = ((HttpException) error);
-                        if (httpEx.code() == 404) {
-                            showMessage(R.string.error_recover_data);
-                            return;
-                        }
-                    }
+                    openScreenChangePassword(Objects.requireNonNull(httpEx.response().errorBody()));
+                    break;
+                }
+                case 404:
+                    showMessage(R.string.error_recover_data);
+                    break;
+                default:
                     showMessage(R.string.error_500);
-                })
-        );
-    }
-
-    /**
-     * Get devices saved on the server and sync local.
-     */
-    public void syncDevices(String userId) {
-        if (userId == null) return;
-
-        DisposableManager.add(haniotNetRepository
-                .getAllDevices(userId)
-                .doOnSubscribe(disposable -> showLoading(true))
-                .doAfterTerminate(() -> {
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                })
-                .subscribe(devices -> {
-                    mDeviceDAO.removeAll(userId);
-                    for (Device d : devices) {
-                        d.setUserId(userId);
-                        mDeviceDAO.save(d);
-                    }
-                }, error -> Log.w(LOG_TAG, "syncDevices() error: " + error.getMessage()))
-        );
+                    break;
+            }
+            return;
+        }
+        showMessage(R.string.error_500);
     }
 
     /**
@@ -268,7 +278,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     /**
-     * Validade form
+     * Validate form.
      *
      * @return boolean
      */
@@ -296,7 +306,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     /**
-     * Loading message
+     * Loading message,
      *
      * @param enabled boolean
      */
@@ -310,7 +320,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     /**
-     * Check if you have connectivity. If it does not, the elements in the view mounted to notify the user
+     * Check if you have connectivity.
+     * If it does not, the elements in the view mounted to notify the user.
      *
      * @return boolean
      */
