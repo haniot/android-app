@@ -14,21 +14,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.activity.MainActivity;
 import br.edu.uepb.nutes.haniot.activity.PatientRegisterActivity;
-import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
-import br.edu.uepb.nutes.haniot.data.model.dao.PatientDAO;
-import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import br.edu.uepb.nutes.haniot.utils.Log;
 import butterknife.BindView;
@@ -88,38 +82,40 @@ public class ManagePatientAdapter extends RecyclerView.Adapter<ManagePatientAdap
             holder.textName.setText(String.format("%s %s", patient.getFirstName(), patient.getLastName()));
 
             holder.textAge.setText(getAge(patient.getBirthDate()));
-            holder.btnSelect.setOnClickListener(c -> {
-                //TODO Usar interface na activity
-                final Intent intent = new Intent(context, PatientRegisterActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                Bundle bundle = ActivityOptionsCompat.makeScaleUpAnimation(holder.itemView,
-                        0,
-                        0,
-                        holder.itemView.getWidth(),
-                        holder.itemView.getHeight()).toBundle();
-                intent.putExtra("Patient", patient.getId());
-                context.startActivity(intent, bundle);
+            holder.btnEdit.setOnClickListener(c -> {
+//                //TODO Usar interface na activity
+//                final Intent intent = new Intent(context, PatientRegisterActivity.class);
+//                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                Bundle bundle = ActivityOptionsCompat.makeScaleUpAnimation(holder.itemView,
+//                        0,
+//                        0,
+//                        holder.itemView.getWidth(),
+//                        holder.itemView.getHeight()).toBundle();
+//                intent.putExtra("Patient", patient.getId());
+//                context.startActivity(intent, bundle);
+                onRecyclerViewListener.onMenuContextClick(holder.btnEdit, patient);
             });
             holder.btnDelete.setOnClickListener(d -> {
-                //TODO Usar interface na activity
-                int oldId = searchPositionByChildrenId(patient.get_id());
-                if (oldId != -1) {
-                    if (this.searchQuerry.isEmpty()) {
-                        removeItem(patient, oldId, REMOVE_TYPE_NOT_FILTERED);
-                    } else {
-                        removeItem(patient, oldId, REMOVE_TYPE_FILTERED);
-                    }
-                    Snackbar snackbar = Snackbar
-                            .make(holder.itemView, context.getResources().getString(R.string.patient_removed)
-                                    , Snackbar.LENGTH_LONG).setAction(context.getResources()
-                                    .getString(R.string.undo), view -> {
-                                restoreItem(patient, position, holder.itemView);
-                            });
-                    snackbar.show();
-                    if (itemListCopy.size() == 0) {
-                        Toast.makeText(context, context.getResources().getString(R.string.no_data_available), Toast.LENGTH_SHORT).show();
-                    }
-                }
+                onRecyclerViewListener.onMenuContextClick(holder.btnDelete, patient);
+//                //TODO Usar interface na activity
+//                int oldId = searchPositionByChildrenId(patient.get_id());
+//                if (oldId != -1) {
+//                    if (this.searchQuerry.isEmpty()) {
+//                        removeItem(patient, oldId, REMOVE_TYPE_NOT_FILTERED);
+//                    } else {
+//                        removeItem(patient, oldId, REMOVE_TYPE_FILTERED);
+//                    }
+//                    Snackbar snackbar = Snackbar
+//                            .make(holder.itemView, context.getResources().getString(R.string.patient_removed)
+//                                    , Snackbar.LENGTH_LONG).setAction(context.getResources()
+//                                    .getString(R.string.undo), view -> {
+//                                restoreItem(patient, position, holder.itemView);
+//                            });
+//                    snackbar.show();
+//                    if (itemListCopy.size() == 0) {
+//                        Toast.makeText(context, context.getResources().getString(R.string.no_data_available), Toast.LENGTH_SHORT).show();
+//                    }
+//                }
             });
             holder.itemView.setOnClickListener(c -> {
                 //TODO Usar interface na activity
@@ -252,8 +248,8 @@ public class ManagePatientAdapter extends RecyclerView.Adapter<ManagePatientAdap
 
         //        @BindView(R.id.textIdNumberChildren)
 //        TextView textId;
-        @BindView(R.id.btnSelectChildren)
-        ImageView btnSelect;
+        @BindView(R.id.btnEditChildren)
+        ImageView btnEdit;
         @BindView(R.id.btnDeleteChild)
         ImageView btnDelete;
         @BindView(R.id.textNameChildValue)

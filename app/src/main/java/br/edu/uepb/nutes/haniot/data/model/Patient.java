@@ -1,5 +1,7 @@
 package br.edu.uepb.nutes.haniot.data.model;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
@@ -23,7 +25,6 @@ public class Patient {
     @Expose()
     private String _id; // _id in server remote (UUID)
 
-    @Index
     @SerializedName("pilotstudy_id")
     @Expose()
     private String pilotId;
@@ -122,7 +123,9 @@ public class Patient {
      */
     public String toJson() {
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-        return gson.toJson(this);
+        String a = gson.toJson(this);
+        Log.i("AAAAAAAAAA", a);
+        return a;
     }
 
     /**

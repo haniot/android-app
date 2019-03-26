@@ -46,7 +46,7 @@
         android:textColor="@color/colorSubmenu" />
 
     <ImageView
-        android:id="@+id/btnSelectChildren"
+        android:id="@+id/btnEditChildren"
         android:layout_width="30dp"
         android:layout_height="72dp"
         android:layout_centerVertical="true"

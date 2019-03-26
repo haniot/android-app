@@ -34,6 +34,7 @@ import br.edu.uepb.nutes.simplesurvey.question.Open;
 import br.edu.uepb.nutes.simplesurvey.question.Single;
 import io.reactivex.SingleObserver;
 import io.reactivex.disposables.Disposable;
+import retrofit2.HttpException;
 
 /**
  * PatientQuiz implementation.
@@ -97,7 +98,7 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
         medicalRecord.setChronicDiseases(chronicDiseases);
         medicalRecord.setChronicDiseasesDB(chronicDiseases);
 
-        sendToServer();
+        savePatient();
 
         Log.i("Respostas", patient.toString());
         Log.i("Respostas", "Feending Habits: " + feedingHabitsRecord.toString());
@@ -108,9 +109,9 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
         Log.i("Respostas", "Sleep: " + sleepHabit.toString());
     }
 
-    private void sendToServer() {
+    private void savePatient() {
         haniotNetRepository.savePatient(patient)
-                .doOnSubscribe(disposable -> showProgress(true))
+                .doOnSubscribe(disposable -> Log.i(LOG_TAG, "Salvando paciente no servidor!"))
                 .subscribe(new SingleObserver<Patient>() {
                     @Override
                     public void onSubscribe(Disposable d) {
@@ -118,16 +119,26 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
                     }
 
                     @Override
-                    public void onSuccess(Patient patient) {
+                    public void onSuccess(Patient patientSaved) {
                         Log.i(LOG_TAG, "Patient saved!");
+                        patient = patientSaved;
+                        appPreferencesHelper.saveLastPatient(patient);
+                        sendQuizToServer();
                     }
 
                     @Override
                     public void onError(Throwable e) {
-
+                        if (e instanceof HttpException) {
+                            HttpException httpEx = ((HttpException) e);
+                            Log.i(LOG_TAG, httpEx.message());
+                        }
                     }
                 });
+    }
 
+    private void sendQuizToServer() {
+
+        feedingHabitsRecord.setPatientId(patient.get_id());
         haniotNetRepository.saveFeedingHabitsRecord(feedingHabitsRecord)
                 .subscribe(new SingleObserver<FeedingHabitsRecord>() {
                     @Override
@@ -146,6 +157,7 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
                     }
                 });
 
+        medicalRecord.setPatientId(patient.get_id());
         haniotNetRepository.saveMedicalRecord(medicalRecord)
                 .subscribe(new SingleObserver<MedicalRecord>() {
                     @Override
@@ -164,6 +176,7 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
                     }
                 });
 
+        physicalActivityHabits.setPatientId(patient.get_id());
         haniotNetRepository.savePhysicalActivityHabit(physicalActivityHabits)
                 .subscribe(new SingleObserver<PhysicalActivityHabit>() {
                     @Override
@@ -182,6 +195,7 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
                     }
                 });
 
+        sleepHabit.setPatientId(patient.get_id());
         haniotNetRepository.saveSleepHabit(sleepHabit)
                 .subscribe(new SingleObserver<SleepHabit>() {
                     @Override
@@ -632,9 +646,9 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
         Log.d(LOG_TAG, "onAnswerInfo() | PAGE: " + page);
         if (page == END_PAGE) { //
             validateAnswers();
-            appPreferencesHelper.saveLastPatient(patient);
+            //appPreferencesHelper.saveLastPatient(patient);
             //TODO enviar para o servidor
-            startActivity(new Intent(this, MainActivity.class));
+            //startActivity(new Intent(this, MainActivity.class));
         }
     }
 

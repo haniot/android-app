@@ -29,7 +29,7 @@ import butterknife.ButterKnife;
  * @copyright Copyright (c) 2019, NUTES UEPB
  */
 public class PatientRegisterActivity extends AppCompatActivity {
-
+    //TODO implementar edição de paciente
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
@@ -70,6 +70,7 @@ public class PatientRegisterActivity extends AppCompatActivity {
 
     /**
      * Validate fields.
+     *
      * @return
      */
     private boolean validate() {
@@ -96,11 +97,13 @@ public class PatientRegisterActivity extends AppCompatActivity {
         patient = new Patient();
         patient.setFirstName(nameEditTExt.getText().toString());
         patient.setLastName(lastNameEditTExt.getText().toString());
-        patient.setBirthDate(DateUtils.formatDate(myCalendar.getTimeInMillis(), DateUtils.DATE_FORMAT_ISO_8601));
+        patient.setBirthDate(DateUtils.formatDate(myCalendar.getTimeInMillis(), "yyyy-MM-dd"));
         if (genderGroup.getCheckedRadioButtonId() == R.id.male)
             patient.setGender("male");
         else
             patient.setGender("female");
+        //TODO REMOVER
+        patient.setPilotId("5c86d00c2239a48ea20a0134");
         appPreferencesHelper.saveLastPatient(patient);
     }
 
