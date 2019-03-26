@@ -1,50 +1,35 @@
 package br.edu.uepb.nutes.haniot.activity.account;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.activity.settings.Session;
-import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
-import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
-import br.edu.uepb.nutes.haniot.fragment.GenericDialogFragment;
 import br.edu.uepb.nutes.haniot.data.model.User;
-import br.edu.uepb.nutes.haniot.data.model.dao.UserDAO;
-import br.edu.uepb.nutes.haniot.server.Server;
+import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
+import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
+import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.SingleObserver;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 import retrofit2.HttpException;
-
-import com.google.gson.GsonBuilder;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * UpdateDataActivity implementation.
  *
- * @author Douglas Rafael <douglas.rafael@nutes.uepb.edu.br>,
- * Fábio Júnior <fabio.pequeno@nutes.uepb.edu.br>,
- * Arthur Stevam <arthurstevam.ac@gmail.com>
- * @version 1.0
- * @copyright Copyright (c) 2017, NUTES UEPB
+ * @author Copyright (c) 2018, NUTES/UEPB
  */
-public class UpdateDataActivity extends AppCompatActivity implements View.OnClickListener, GenericDialogFragment.OnClickDialogListener {
-    public final int DIALOG_HAS_CHANGE = 1;
-
-    private final String TAG = "UpdateDataActivity";
+public class UpdateDataActivity extends AppCompatActivity implements View.OnClickListener {
+    private final String LOG_TAG = "UpdateDataActivity";
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -67,7 +52,6 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
     private User user;
     private AppPreferencesHelper appPreferences;
     private HaniotNetRepository haniotNetRepository;
-    private UserDAO userDAO;
     private Menu menu;
 
     @Override
@@ -84,16 +68,24 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
 
         appPreferences = AppPreferencesHelper.getInstance(this);
         haniotNetRepository = HaniotNetRepository.getInstance(this);
-        userDAO = UserDAO.getInstance(this);
-        user = appPreferences.getUserLogged();
 
-        prepareEditing();
+        user = appPreferences.getUserLogged();
+        if (user == null) {
+            finish();
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         checkConnectivity();
+        prepareEditing();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        DisposableManager.dispose();
     }
 
     @Override
@@ -105,15 +97,10 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
     }
 
     @Override
-    public void onBackPressed() {
-        closeActivity();
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                closeActivity();
+                super.onBackPressed();
                 break;
             case R.id.action_save:
                 update();
@@ -137,71 +124,36 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
-    @Override
-    public void onClickDialog(int id, int button) {
-        if (id == DIALOG_HAS_CHANGE) {
-            if (button == DialogInterface.BUTTON_POSITIVE)
-                super.onBackPressed();
-        }
-    }
-
     /**
      * Prepare the view for editing the data
      */
     private void prepareEditing() {
-        enabledView(false);
-
-        if (!ConnectionUtils.internetIsEnabled(this)) return;
-
-        loading(true);
-        populateView(); // Populate view with local data
-
-        haniotNetRepository.getHealthProfissional(user.get_id())
+        DisposableManager.add(haniotNetRepository
+                .getHealthProfissional(user.get_id())
                 .doOnSubscribe(disposable -> {
+                    populateView(); // Populate view with local data
+                    enabledView(false);
                     loading(true);
-                    populateView();
                 })
-                .subscribe(new SingleObserver<User>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
+                .doAfterTerminate(() -> loading(false))
+                .subscribe(healthP -> {
+                    if (healthP.getEmail() != null) user.setEmail(healthP.getEmail());
+                    if (healthP.getName() != null) user.setName(healthP.getName());
 
-                    }
+                    populateView();
+                    enabledView(true);
+                }, this::errorHandler)
 
-                    @Override
-                    public void onSuccess(User user) {
-                        if (user.getEmail() != null) {
-                            runOnUiThread(() -> {
-                                populateView(); // Populate view with data from server
-                                enabledView(true);
-                                loading(false);
-                            });
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        enabledView(true);
-                        loading(false);
-                        if (e instanceof HttpException) {
-                            HttpException httpEx = ((HttpException) e);
-                            printMessage(httpEx);
-                        }
-                        //printMessage(result);
-                    }
-                });
+        );
     }
 
     /**
      * Add user or updateInServer
      */
     private void update() {
-        /**
-         * Check if you have an internet connection.
-         * If yes, it sends the data to the remote server.
-         */
-        if (!checkConnectivity() || !validate())
-            return;
-
+        // Check if you have an internet connection.
+        // If yes, it sends the data to the remote server.
+        if (!checkConnectivity() || !validate()) return;
         updateInServer();
     }
 
@@ -209,54 +161,58 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
      * Update user in server
      */
     private void updateInServer() {
-        if (user == null)
-            return;
+        if (user == null) return;
 
-        haniotNetRepository.updateHealthProfissional(getUserView())
+        DisposableManager.add(haniotNetRepository
+                .updateHealthProfissional(getUserView())
                 .doOnSubscribe(disposable -> loading(true))
-                .subscribe(new SingleObserver<User>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
+                .doAfterTerminate(() -> loading(false))
+                .subscribe(healthP -> {
+                    if (healthP.getEmail() != null) user.setEmail(healthP.getEmail());
+                    if (healthP.getName() != null) user.setName(healthP.getName());
 
-                    }
-
-                    @Override
-                    public void onSuccess(User userUpdate) {
-                        if (userUpdate.getEmail() != null)
-                            userDAO.update(user); // save in local
-                        Log.i("Account", "Updated: " + userDAO.get(userUpdate.get_id()).toString());
-                        finish();
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        if (e instanceof HttpException) {
-                            HttpException httpEx = ((HttpException) e);
-                            printMessage(httpEx);
-                        }
-                        loading(false);
-                    }
-                });
+                    appPreferences.saveUserLogged(user);
+                    enabledView(true);
+                    printMessage(200);
+                }, this::errorHandler)
+        );
     }
 
     /**
-     * Displays return message to user
+     * Manipulates the error and displays message
+     * according to the type of error.
      *
-     * @param
+     * @param e {@link Throwable}
      */
-    private void printMessage(final HttpException httpEx) {
+    private void errorHandler(Throwable e) {
+        if (e instanceof HttpException) {
+            HttpException httpEx = ((HttpException) e);
+            printMessage(httpEx.code());
+            return;
+        }
+        printMessage(500);
+    }
+
+    /**
+     * Displays return message.
+     *
+     * @param code int
+     */
+    private void printMessage(final int code) {
         runOnUiThread(() -> {
-            if (httpEx.code() == 409) { // duplicate
-                Toast.makeText(getApplicationContext(), R.string.validate_register_user_not_duplicate, Toast.LENGTH_LONG).show();
-            } else if (httpEx.code() == 200) {
-                Toast.makeText(getApplicationContext(), R.string.update_success, Toast.LENGTH_SHORT).show();
-            } else { // error 500
-                Toast.makeText(getApplicationContext(), R.string.error_500, Toast.LENGTH_LONG).show();
-            }
-            if (httpEx.message().contains("unauthorized")) {
-                Toast.makeText(getApplicationContext(), httpEx.message(), Toast.LENGTH_LONG).show();
-            } else {
-                Toast.makeText(getApplicationContext(), R.string.error_500, Toast.LENGTH_LONG).show();
+            switch (code) {
+                case 200:
+                    Toast.makeText(this, R.string.update_success, Toast.LENGTH_LONG).show();
+                    break;
+                case 404:
+                    Toast.makeText(this, R.string.error_recover_data, Toast.LENGTH_LONG).show();
+                    break;
+                case 409:
+                    Toast.makeText(this, R.string.validate_register_user_not_duplicate,
+                            Toast.LENGTH_LONG).show();
+                    break;
+                default:
+                    Toast.makeText(this, R.string.error_500, Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -274,8 +230,7 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
     }
 
     /**
-     * Validade form.
-     * Note: "email" is not validated in the updateInServer. Because it should not be updated.
+     * Validate form.
      *
      * @return boolean
      */
@@ -303,16 +258,9 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
     }
 
     /**
-     * Opens the dialog to confirm that you really want to come back and rule changes.
-     */
-    private void closeActivity() {
-        super.onBackPressed();
-    }
-
-    /**
      * Request focus in input
      *
-     * @param editText
+     * @param editText {@link EditText}
      */
     private void requestFocus(EditText editText) {
         editText.setFocusableInTouchMode(true);
@@ -322,7 +270,7 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
     /**
      * loading message
      *
-     * @param enabled
+     * @param enabled boolean
      */
     private void loading(final boolean enabled) {
         runOnUiThread(() -> {
@@ -339,7 +287,7 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
     /**
      * Enable or disable view
      *
-     * @param enabled
+     * @param enabled boolean
      */
     private void enabledView(final boolean enabled) {
         runOnUiThread(() -> {
@@ -350,7 +298,8 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
     }
 
     /**
-     * Check if you have connectivity. If it does not, the elements in the view mounted to notify the user
+     * Check if you have connectivity.
+     * If it does not, the elements in the view mounted to notify the user
      *
      * @return boolean
      */
@@ -366,7 +315,6 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
 
     /**
      * Retrieve the user data contained in the view.
-     * <p>
      *
      * @return User
      */

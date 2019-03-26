@@ -39,10 +39,6 @@ public class User {
     @Expose()
     private String name;
 
-    @SerializedName("token")
-    @Expose()
-    private String token; // provide by the server
-
     @Expose(deserialize = false)
     private String password;
 
@@ -113,14 +109,6 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
     }
 
     public int getUserType() {
@@ -203,7 +191,6 @@ public class User {
                 ", _id='" + _id + '\'' +
                 ", email='" + email + '\'' +
                 ", name='" + name + '\'' +
-                ", token='" + token + '\'' +
                 ", password='" + password + '\'' +
                 ", oldPassword='" + oldPassword + '\'' +
                 ", newPassword='" + newPassword + '\'' +

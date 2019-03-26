@@ -90,6 +90,12 @@ public class ChangePasswordActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        DisposableManager.dispose();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
@@ -173,13 +179,11 @@ public class ChangePasswordActivity extends AppCompatActivity {
      * Change password
      */
     private void changePassword() {
-        if (!checkConnectivity() || !validate())
-            return;
+        if (!checkConnectivity() || !validate()) return;
 
         user.setOldPassword(String.valueOf(currentPasswordEditText.getText()));
         user.setNewPassword(String.valueOf(newPasswordEditText.getText()));
 
-        Log.w(LOG_TAG, user.toString());
         DisposableManager.add(haniotNetRepository
                 .changePassword(user)
                 .doOnSubscribe(disposable -> loadingSend(true))
@@ -187,13 +191,23 @@ public class ChangePasswordActivity extends AppCompatActivity {
                 .subscribe(() -> {
                     printMessage(204);
                     signOut();
-                }, e -> {
-                    if (e instanceof HttpException) {
-                        HttpException httpEx = ((HttpException) e);
-                        printMessage(httpEx.code());
-                    }
-                })
+                }, this::errorHandler)
         );
+    }
+
+    /**
+     * Manipulates the error and displays message
+     * according to the type of error.
+     *
+     * @param e {@link Throwable}
+     */
+    private void errorHandler(Throwable e) {
+        if (e instanceof HttpException) {
+            HttpException httpEx = ((HttpException) e);
+            printMessage(httpEx.code());
+            return;
+        }
+        printMessage(500);
     }
 
     /**
@@ -222,7 +236,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
                             Toast.LENGTH_LONG).show();
                     break;
                 default:
-                    Toast.makeText(getApplicationContext(), R.string.error_500, Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, R.string.error_500, Toast.LENGTH_LONG).show();
             }
         });
     }

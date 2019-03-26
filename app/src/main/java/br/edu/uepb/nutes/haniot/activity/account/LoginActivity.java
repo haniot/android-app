@@ -170,7 +170,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         return;
                     }
                     showMessage(R.string.error_500);
-                }));
+                })
+        );
     }
 
     /**
@@ -246,9 +247,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         d.setUserId(userId);
                         mDeviceDAO.save(d);
                     }
-                }, error -> {
-                    Log.w(LOG_TAG, "syncDevices error: " + error.getMessage());
-                })
+                }, error -> Log.w(LOG_TAG, "syncDevices() error: " + error.getMessage()))
         );
     }
 
@@ -299,7 +298,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     /**
      * Loading message
      *
-     * @param enabled
+     * @param enabled boolean
      */
     private void showLoading(final boolean enabled) {
         runOnUiThread(() -> {
