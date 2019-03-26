@@ -122,7 +122,7 @@
     <string name="create_account">Criar Conta</string>
     <string name="already_account">Já possui uma conta? Entrar</string>
     <string name="new_account">Nova Conta</string>
-    <string name="update_account">Ataulizar Conta</string>
+    <string name="update_account">Atualizar Informações</string>
     <string name="update_data">Atualizar dados</string>
     <string name="register_success">Dados inseridos com sucesso!</string>
     <string name="update_success">Dados atualizados com sucesso!</string>

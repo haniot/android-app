@@ -48,11 +48,6 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
     private AppPreferencesHelper appPreferences;
     private Patient patient;
 
-    /**
-     * On create.
-     *
-     * @param savedInstanceState {@link Bundle}
-     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,9 +74,6 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
                 .commit();
     }
 
-    /**
-     * On start.
-     */
     @Override
     protected void onStart() {
         super.onStart();
@@ -107,8 +99,9 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
 
         if (patient != null) {
             loadDashboard();
-            checkPermissions();
             dashboardChartsFragment.updateNamePatient(patient);
+
+            checkPermissions();
         } else {
             startActivity(new Intent(this, ManagePatientsActivity.class));
         }
