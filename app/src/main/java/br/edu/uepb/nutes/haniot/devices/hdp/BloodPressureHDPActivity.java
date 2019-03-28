@@ -34,7 +34,7 @@ import org.json.JSONObject;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.activity.AddMeasurement;
+import br.edu.uepb.nutes.haniot.activity.AddMeasurementActivity;
 import br.edu.uepb.nutes.haniot.activity.charts.BloodPresssureChartActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.BloodPressureAdapter;
@@ -694,7 +694,7 @@ public class BloodPressureHDPActivity extends AppCompatActivity implements View.
                 startActivity(new Intent(getApplicationContext(), BloodPresssureChartActivity.class));
                 break;
             case R.id.add_floating_button:
-                Intent it = new Intent(getApplicationContext(), AddMeasurement.class);
+                Intent it = new Intent(getApplicationContext(), AddMeasurementActivity.class);
                 it.putExtra(getResources().getString(R.string.measurementType),
                         ItemGridType.BLOOD_PRESSURE);
                 startActivity(it);

@@ -205,7 +205,7 @@ public class PatientRegisterActivity extends AppCompatActivity {
                     }
                     patientDAO.save(patient);
                     appPreferencesHelper.saveLastPatient(patient);
-                    startActivity(new Intent(PatientRegisterActivity.this, PatientQuiz.class));
+                    startActivity(new Intent(PatientRegisterActivity.this, PatientQuizActivity.class));
                 }, this::errorHandler));
     }
 

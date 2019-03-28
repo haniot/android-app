@@ -41,13 +41,12 @@ import java.util.Locale;
 import java.util.UUID;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.activity.AddMeasurement;
+import br.edu.uepb.nutes.haniot.activity.AddMeasurementActivity;
 import br.edu.uepb.nutes.haniot.activity.charts.TemperatureChartActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.TemperatureAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
 import br.edu.uepb.nutes.haniot.data.model.Device;
-import br.edu.uepb.nutes.haniot.data.model.DeviceType;
 import br.edu.uepb.nutes.haniot.data.model.ItemGridType;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.MeasurementType;
@@ -642,7 +641,7 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
                 startActivity(new Intent(getApplicationContext(), TemperatureChartActivity.class));
                 break;
             case R.id.add_floating_button:
-                Intent it = new Intent(getApplicationContext(), AddMeasurement.class);
+                Intent it = new Intent(getApplicationContext(), AddMeasurementActivity.class);
                 it.putExtra(getResources().getString(R.string.measurementType),
                         ItemGridType.TEMPERATURE);
                 startActivity(it);

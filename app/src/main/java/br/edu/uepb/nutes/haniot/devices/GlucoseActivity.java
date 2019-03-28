@@ -40,7 +40,7 @@ import java.util.List;
 import java.util.UUID;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.activity.AddMeasurement;
+import br.edu.uepb.nutes.haniot.activity.AddMeasurementActivity;
 import br.edu.uepb.nutes.haniot.activity.charts.GlucoseChartActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.GlucoseAdapter;
@@ -760,7 +760,7 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
                 startActivity(new Intent(getApplicationContext(), GlucoseChartActivity.class));
                 break;
             case R.id.add_floating_button:
-                Intent it = new Intent(getApplicationContext(), AddMeasurement.class);
+                Intent it = new Intent(getApplicationContext(), AddMeasurementActivity.class);
                 it.putExtra(getResources().getString(R.string.measurementType),
                         ItemGridType.BLOOD_GLUCOSE);
                 startActivity(it);

@@ -391,4 +391,11 @@ public class ManagePatientsActivity extends AppCompatActivity implements OnRecyc
         }
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        DisposableManager.dispose();
+    }
+
 }

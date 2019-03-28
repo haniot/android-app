@@ -6,7 +6,6 @@ import android.bluetooth.BluetoothGatt;
 import android.bluetooth.le.ScanResult;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -29,9 +28,8 @@ import java.util.List;
 
 import androidx.annotation.RequiresApi;
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.activity.AddMeasurement;
+import br.edu.uepb.nutes.haniot.activity.AddMeasurementActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.ManagerMeasurementsActivity;
-import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.GridDashAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
 import br.edu.uepb.nutes.haniot.data.model.Device;
@@ -178,7 +176,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
     }
 
     /**
-     * Get device registeres from type.
+     * Get device registered from type.
      *
      * @param deviceType
      * @return
@@ -675,7 +673,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
     @Override
     public void onMenuContextClick(View v, MeasurementMonitor item) {
         int type = item.getType();
-        Intent it = new Intent(getContext(), AddMeasurement.class);
+        Intent it = new Intent(getContext(), AddMeasurementActivity.class);
         switch (type) {
 
             case ItemGridType.ACTIVITY:

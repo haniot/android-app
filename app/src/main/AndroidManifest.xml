@@ -94,12 +94,12 @@
             android:name=".activity.ManagePatientsActivity"
             android:label="@string/title_activity_manage_children"
             android:theme="@style/AppTheme" />
-        <activity android:name=".activity.AddMeasurement" />
+        <activity android:name=".activity.AddMeasurementActivity" />
         <activity
             android:name=".activity.PatientRegisterActivity"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".activity.PatientQuiz"
+            android:name=".activity.PatientQuizActivity"
             android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar" /> <!-- ACTIVITIES REGISTER DEVICES -->
         <activity android:name=".devices.register.DeviceRegisterActivity" />
         <activity android:name=".devices.register.DeviceManagerActivity" /> <!-- END ACTIVITIES REGISTER DEVICES -->

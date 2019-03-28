@@ -17,7 +17,6 @@ import br.edu.uepb.nutes.haniot.data.model.ChronicDiseaseType;
 import br.edu.uepb.nutes.haniot.data.model.FeedingHabitsRecord;
 import br.edu.uepb.nutes.haniot.data.model.FeendingHabitsRecordType;
 import br.edu.uepb.nutes.haniot.data.model.FoodType;
-import br.edu.uepb.nutes.haniot.data.model.MeasurementType;
 import br.edu.uepb.nutes.haniot.data.model.MedicalRecord;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.PhysicalActivityHabit;
@@ -27,7 +26,6 @@ import br.edu.uepb.nutes.haniot.data.model.WeeklyFoodRecord;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
-import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import br.edu.uepb.nutes.simplesurvey.base.SimpleSurvey;
 import br.edu.uepb.nutes.simplesurvey.question.Dichotomic;
 import br.edu.uepb.nutes.simplesurvey.question.Infor;
@@ -37,18 +35,18 @@ import br.edu.uepb.nutes.simplesurvey.question.Single;
 import retrofit2.HttpException;
 
 /**
- * PatientQuiz implementation.
+ * PatientQuizActivity implementation.
  *
  * @author Fábio Júnior <fabio.pequeno@nutes.uepb.edu.br>
  * @version 1.0
  * @copyright Copyright (c) 2019, NUTES UEPB
  */
-public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
+public class PatientQuizActivity extends SimpleSurvey implements Infor.OnInfoListener,
         Dichotomic.OnDichotomicListener, Single.OnSingleListener,
         Multiple.OnMultipleListener,
         Open.OnTextBoxListener {
 
-    private final String LOG_TAG = PatientQuiz.class.getSimpleName();
+    private final String LOG_TAG = PatientQuizActivity.class.getSimpleName();
     private final int FIRST_PAGE = 0;
     private final int END_PAGE = -1;
     private final int CATEGORY_PHYSICAL_ACTIVITIES = 1;
@@ -675,7 +673,7 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
                 break;
             case 11:
                 WeeklyFoodRecord weeklyFoodRecord3 = new WeeklyFoodRecord();
-                weeklyFoodRecord3.setFood(FoodType.FREATS);
+                weeklyFoodRecord3.setFood(FoodType.FRIED);
                 weeklyFoodRecord3.setSevenDaysFreq(FeendingHabitsRecordType
                         .SevenDaysFeedingFrequency.getString(indexValue));
                 weeklyFoodRecords.add(weeklyFoodRecord3);
@@ -703,14 +701,14 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
                 break;
             case 15:
                 WeeklyFoodRecord weeklyFoodRecord7 = new WeeklyFoodRecord();
-                weeklyFoodRecord7.setFood(FoodType.GOONIES);
+                weeklyFoodRecord7.setFood(FoodType.GOODIES);
                 weeklyFoodRecord7.setSevenDaysFreq(FeendingHabitsRecordType
                         .SevenDaysFeedingFrequency.getString(indexValue));
                 weeklyFoodRecords.add(weeklyFoodRecord7);
                 break;
             case 16:
                 WeeklyFoodRecord weeklyFoodRecord8 = new WeeklyFoodRecord();
-                weeklyFoodRecord8.setFood(FoodType.HAMBURGUER_SAUSAGE_OTHERS);
+                weeklyFoodRecord8.setFood(FoodType.HAMBURGER_SAUSAGE_OTHERS);
                 weeklyFoodRecord8.setSevenDaysFreq(FeendingHabitsRecordType
                         .SevenDaysFeedingFrequency.getString(indexValue));
                 weeklyFoodRecords.add(weeklyFoodRecord8);

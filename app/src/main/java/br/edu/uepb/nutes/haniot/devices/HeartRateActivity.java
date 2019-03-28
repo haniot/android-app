@@ -32,7 +32,7 @@ import org.json.JSONObject;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.activity.AddMeasurement;
+import br.edu.uepb.nutes.haniot.activity.AddMeasurementActivity;
 import br.edu.uepb.nutes.haniot.activity.charts.HeartRateChartActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.HeartRateAdapter;
@@ -543,7 +543,7 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
                 startActivity(new Intent(getApplicationContext(), HeartRateChartActivity.class));
                 break;
             case R.id.add_floating_button:
-                Intent it = new Intent(getApplicationContext(), AddMeasurement.class);
+                Intent it = new Intent(getApplicationContext(), AddMeasurementActivity.class);
                 it.putExtra(getResources().getString(R.string.measurementType),
                         ItemGridType.HEART_RATE);
                 startActivity(it);

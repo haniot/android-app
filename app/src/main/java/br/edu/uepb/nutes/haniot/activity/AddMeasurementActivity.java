@@ -36,7 +36,7 @@ import butterknife.ButterKnife;
 import io.reactivex.SingleObserver;
 import io.reactivex.disposables.Disposable;
 
-public class AddMeasurement extends AppCompatActivity {
+public class AddMeasurementActivity extends AppCompatActivity {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -204,14 +204,14 @@ public class AddMeasurement extends AppCompatActivity {
         // Launch Time Picker Dialog
         iconTime.setOnClickListener(v -> {
 
-            TimePickerDialog timePickerDialog = new TimePickerDialog(AddMeasurement.this,
+            TimePickerDialog timePickerDialog = new TimePickerDialog(AddMeasurementActivity.this,
                     (view, hourOfDay, minute) ->
                             textTime.setText(hourOfDay + ":" + minute), mHour, mMinute, false);
             timePickerDialog.show();
         });
         icon_calendar.setOnClickListener(v -> {
             // TODO Auto-generated method stub
-            new DatePickerDialog(AddMeasurement.this, date, myCalendar
+            new DatePickerDialog(AddMeasurementActivity.this, date, myCalendar
                     .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                     myCalendar.get(Calendar.DAY_OF_MONTH)).show();
         });
