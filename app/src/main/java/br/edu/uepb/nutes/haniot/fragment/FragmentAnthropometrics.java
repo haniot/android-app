@@ -6,9 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -27,7 +29,12 @@ public class FragmentAnthropometrics extends Fragment {
     @BindView(R.id.meters)
     EditText meters;
 
+    @BindView(R.id.patient_icon)
+    ImageView patientIcon;
+
     private double heightValue;
+
+    private AppPreferencesHelper appPreferencesHelper;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -41,6 +48,7 @@ public class FragmentAnthropometrics extends Fragment {
 
     /**
      * Get height value.
+     *
      * @return
      */
     public double getHeightValue() {
@@ -51,6 +59,11 @@ public class FragmentAnthropometrics extends Fragment {
      * Init view.
      */
     private void initView() {
+        appPreferencesHelper = AppPreferencesHelper.getInstance(getContext());
+        if (appPreferencesHelper.getLastPatient().getGender().equals("male"))
+            patientIcon.setImageResource(R.drawable.boy);
+        else patientIcon.setImageResource(R.drawable.girl);
+
         height.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {

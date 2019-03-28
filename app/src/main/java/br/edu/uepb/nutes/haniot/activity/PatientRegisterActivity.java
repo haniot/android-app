@@ -9,6 +9,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
@@ -19,11 +20,8 @@ import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.data.model.ChronicDisease;
@@ -40,8 +38,6 @@ import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepositor
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.SingleObserver;
-import io.reactivex.disposables.Disposable;
 import retrofit2.HttpException;
 
 /**
@@ -102,7 +98,7 @@ public class PatientRegisterActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_patient_historical);
+        setContentView(R.layout.activity_patient_info);
         ButterKnife.bind(this);
 
         toolbar.setTitle(getResources().getString(R.string.patient_profile));
@@ -134,11 +130,11 @@ public class PatientRegisterActivity extends AppCompatActivity {
 //        WeeklyFoodRecord weeklyFoodRecord = new WeeklyFoodRecord();
 //        weeklyFoodRecord.setId(32323);
 //        weeklyFoodRecord.setFood("Arroz");
-//        weeklyFoodRecord.setSeveDaysFreq("asa");
+//        weeklyFoodRecord.setSevenDaysFreq("asa");
 //        feedingHabitsRecord.setWeeklyFeedingHabits(weeklyFoodRecords);
 //        weeklyFoodRecord.setId(32323);
 //        weeklyFoodRecord.setFood("Feijão");
-//        weeklyFoodRecord.setSeveDaysFreq("asa");
+//        weeklyFoodRecord.setSevenDaysFreq("asa");
 //        feedingHabitsRecord.setWeeklyFeedingHabits(weeklyFoodRecords);
 //        Log.i(TAG, feedingHabitsRecord.toJson());
 
@@ -190,8 +186,7 @@ public class PatientRegisterActivity extends AppCompatActivity {
         patient.setBirthDate(DateUtils.formatDate(myCalendar.getTimeInMillis(), "yyyy-MM-dd"));
         if (genderGroup.getCheckedRadioButtonId() == R.id.male) patient.setGender("male");
         else patient.setGender("female");
-        //TODO temp         patient.setPilotId(appPreferencesHelper.getLastPilotStudy().get_id());
-        patient.setPilotId("5c86d00c2239a48ea20a0134");
+        patient.setPilotId(appPreferencesHelper.getLastPilotStudy().get_id());
 
         DisposableManager.add(haniotNetRepository
                 .savePatient(patient)
@@ -221,11 +216,23 @@ public class PatientRegisterActivity extends AppCompatActivity {
      * @param e {@link Throwable}
      */
     private void errorHandler(Throwable e) {
-        showMessage(R.string.error_500);
         if (e instanceof HttpException) {
             HttpException httpEx = ((HttpException) e);
-        }
-        // message 500
+            switch (httpEx.code()) {
+                case 409:
+                    showMessage(R.string.error_409_patient);
+                    break;
+                default:
+                    showMessage(R.string.error_500);
+                    break;
+            }
+        } else showMessage(R.string.error_500);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
     }
 
     /**
@@ -296,5 +303,15 @@ public class PatientRegisterActivity extends AppCompatActivity {
                     }, 2010, 1, 1);
             dialog.show();
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

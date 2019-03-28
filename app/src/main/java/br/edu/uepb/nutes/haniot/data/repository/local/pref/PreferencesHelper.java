@@ -51,5 +51,9 @@ public interface PreferencesHelper {
 
     boolean removeUserLogged();
 
+    boolean removeLastPilotStudy();
+
+    boolean removeLastPatient();
+
     boolean removeItem(String key);
 }

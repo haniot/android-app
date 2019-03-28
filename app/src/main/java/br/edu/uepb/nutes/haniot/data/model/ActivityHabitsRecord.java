@@ -1,7 +1,14 @@
 package br.edu.uepb.nutes.haniot.data.model;
 
+import android.util.Log;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
 
 import io.objectbox.annotation.BaseEntity;
 import io.objectbox.annotation.Entity;
@@ -20,6 +27,7 @@ public abstract class ActivityHabitsRecord {
     private String _id; // _id in server remote (UUID)
 
     @SerializedName("created_at")
+    @Expose
     private String createdAt;
 
     @Expose(serialize = false, deserialize = false)
@@ -59,6 +67,31 @@ public abstract class ActivityHabitsRecord {
 
     public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
+    }
+
+    /**
+     * Convert object to json format.
+     *
+     * @return String
+     */
+    public String toJson() {
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        String a = gson.toJson(this);
+        Log.i("AAAAAAAAAA", a);
+        return a;
+    }
+
+    /**
+     * Convert json to Object.
+     *
+     * @param json String
+     * @return Patient
+     */
+    public static ActivityHabitsRecord jsonDeserialize(String json) {
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        Type typeActivityHabitsRecord = new TypeToken<ActivityHabitsRecord>() {
+        }.getType();
+        return gson.fromJson(json, typeActivityHabitsRecord);
     }
 
     @Override

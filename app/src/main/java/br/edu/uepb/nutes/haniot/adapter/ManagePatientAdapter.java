@@ -20,6 +20,8 @@ import java.util.Date;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.activity.MainActivity;
+import br.edu.uepb.nutes.haniot.activity.ManagePatientsActivity;
 import br.edu.uepb.nutes.haniot.activity.PatientRegisterActivity;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
@@ -61,13 +63,16 @@ public class ManagePatientAdapter extends RecyclerView.Adapter<ManagePatientAdap
         if (viewType == EMPTY_VIEW) {
             view = inflater.from(parent.getContext()).inflate(R.layout.patient_empty_view, parent, false);
             ManagePatientViewHolder holder = new ManagePatientViewHolder(view, "");
+            TextView textView = view.findViewById(R.id.add_patient);
+            Intent myIntent = new Intent(context, PatientRegisterActivity.class);
+            myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            textView.setOnClickListener(v -> context.startActivity(myIntent));
             return holder;
         } else {
             view = inflater.from(parent.getContext()).inflate(R.layout.item_children, null, false);
             ManagePatientViewHolder holder = new ManagePatientViewHolder(view, "notEmpty");
             return holder;
         }
-
     }
 
     @Override

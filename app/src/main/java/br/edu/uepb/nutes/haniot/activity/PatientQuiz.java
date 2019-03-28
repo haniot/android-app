@@ -1,6 +1,7 @@
 package br.edu.uepb.nutes.haniot.activity;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -101,13 +102,17 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
     }
 
     private void saveMedicalRecords() {
+        medicalRecord.setChronicDiseases(chronicDiseases);
+        medicalRecord.setChronicDiseasesDB(chronicDiseases);
         medicalRecord.setPatientId(patient.get_id());
         medicalRecord.setCreatedAt(DateUtils.getCurrentDateISO8601());
+        Log.i(LOG_TAG, medicalRecord.toJson());
         DisposableManager.add(haniotNetRepository
                 .saveMedicalRecord(medicalRecord)
                 .doOnSubscribe(disposable -> Log.i(LOG_TAG, "Salvando Feending Habits no servidor!"))
-                .doAfterTerminate(() -> Log.i(LOG_TAG, "Salvo Feending Habits no servidor!"))
+                .doAfterTerminate(() -> Log.i(LOG_TAG, "Feending Habits"))
                 .subscribe(medicalRecord -> {
+                    Log.i(LOG_TAG, "Salvo Feending Habits no servidor!");
                 }, this::errorHandler));
     }
 
@@ -116,19 +121,20 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
         feedingHabitsRecord.setCreatedAt(DateUtils.getCurrentDateISO8601());
         feedingHabitsRecord.setWeeklyFeedingHabitsDB(weeklyFoodRecords);
         feedingHabitsRecord.setWeeklyFeedingHabits(weeklyFoodRecords);
+        Log.i(LOG_TAG, feedingHabitsRecord.toJson());
         DisposableManager.add(haniotNetRepository
                 .saveFeedingHabitsRecord(feedingHabitsRecord)
                 .doOnSubscribe(disposable -> Log.i(LOG_TAG, "Salvando Feending Habits no servidor!"))
-                .doAfterTerminate(() -> Log.i(LOG_TAG, "Salvo Feending Habits no servidor!"))
+                .doAfterTerminate(() -> Log.i(LOG_TAG, "Feending Habits"))
                 .subscribe(feedingHabitsRecord -> {
+                    Log.i(LOG_TAG, "Salvo Feending Habits no servidor!");
                 }, this::errorHandler));
     }
 
     private void saveSleepHabits() {
         sleepHabit.setPatientId(patient.get_id());
         sleepHabit.setCreatedAt(DateUtils.getCurrentDateISO8601());
-        medicalRecord.setChronicDiseases(chronicDiseases);
-        medicalRecord.setChronicDiseasesDB(chronicDiseases);
+        Log.i(LOG_TAG, sleepHabit.toJson());
         DisposableManager.add(haniotNetRepository
                 .saveSleepHabit(sleepHabit)
                 .doOnSubscribe(disposable -> Log.i(LOG_TAG, "Salvando Sleep Habits no servidor!"))
@@ -141,11 +147,13 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
     private void saveActivityHabits() {
         physicalActivityHabits.setPatientId(patient.get_id());
         physicalActivityHabits.setCreatedAt(DateUtils.getCurrentDateISO8601());
+        Log.i(LOG_TAG, physicalActivityHabits.toJson());
         DisposableManager.add(haniotNetRepository
                 .savePhysicalActivityHabit(physicalActivityHabits)
                 .doOnSubscribe(disposable -> Log.i(LOG_TAG, "Salvando Activity Habits no servidor!"))
-                .doAfterTerminate(() -> Log.i(LOG_TAG, "Salvo Activity Habits no servidor!"))
+                .doAfterTerminate(() -> Log.i(LOG_TAG, "Activity Habits"))
                 .subscribe(physicalActivityHabits -> {
+                    Log.i(LOG_TAG, "Salvo Activity Habits no servidor!");
                 }, this::errorHandler));
     }
 
@@ -158,6 +166,7 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
     private void errorHandler(Throwable e) {
         if (e instanceof HttpException) {
             HttpException httpEx = ((HttpException) e);
+            Log.i(LOG_TAG, httpEx.getMessage());
         }
         // message 500
     }
@@ -419,18 +428,18 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
                 .pageNumber(17)
                 .build());
 
-        addQuestion(new Single.Config()
+        addQuestion(new Multiple.Config()
                 .title(getString(R.string.q15), Color.WHITE)
                 .titleTextSize(28)
                 .colorBackground(ContextCompat.getColor(this, R.color.colorTeal))
                 .description("")
                 .image(R.drawable.x_allergy)
                 .buttonClose(R.drawable.ic_action_close_dark)
+                .inputItems(parseAnswers(R.array.allergy_answers))
                 .inputColorBackgroundTint(Color.WHITE)
                 .inputColorSelectedText(Color.WHITE)
-                .inputItems(parseAnswers(R.array.allergy_answers))
-                .inputDisableAddNewItem()
                 .nextQuestionAuto()
+                .inputDisableAddNewItem()
                 .pageNumber(18)
                 .build());
 
@@ -602,8 +611,9 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
                 break;
             case END_PAGE:
                 saveSleepHabits();
-                //TODO TEMP
                 logAnswers();
+                startActivity(new Intent(this, MainActivity.class));
+                finish();
                 break;
         }
     }
@@ -648,75 +658,69 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
             case 8:
                 WeeklyFoodRecord weeklyFoodRecord = new WeeklyFoodRecord();
                 weeklyFoodRecord.setFood(FoodType.FISH_CHICKEN_BEEF);
-                weeklyFoodRecord.setSeveDaysFreq(FeendingHabitsRecordType
+                weeklyFoodRecord.setSevenDaysFreq(FeendingHabitsRecordType
                         .SevenDaysFeedingFrequency.getString(indexValue));
                 weeklyFoodRecords.add(weeklyFoodRecord);
                 break;
             case 9:
                 WeeklyFoodRecord weeklyFoodRecord1 = new WeeklyFoodRecord();
                 weeklyFoodRecord1.setFood(FoodType.SODA);
-                weeklyFoodRecord1.setSeveDaysFreq(FeendingHabitsRecordType
+                weeklyFoodRecord1.setSevenDaysFreq(FeendingHabitsRecordType
                         .SevenDaysFeedingFrequency.getString(indexValue));
                 weeklyFoodRecords.add(weeklyFoodRecord1);
                 break;
             case 10:
                 WeeklyFoodRecord weeklyFoodRecord2 = new WeeklyFoodRecord();
                 weeklyFoodRecord2.setFood(FoodType.SALAD);
-                weeklyFoodRecord2.setSeveDaysFreq(FeendingHabitsRecordType
+                weeklyFoodRecord2.setSevenDaysFreq(FeendingHabitsRecordType
                         .SevenDaysFeedingFrequency.getString(indexValue));
                 weeklyFoodRecords.add(weeklyFoodRecord2);
                 break;
             case 11:
                 WeeklyFoodRecord weeklyFoodRecord3 = new WeeklyFoodRecord();
                 weeklyFoodRecord3.setFood(FoodType.FREATS);
-                weeklyFoodRecord3.setSeveDaysFreq(FeendingHabitsRecordType
+                weeklyFoodRecord3.setSevenDaysFreq(FeendingHabitsRecordType
                         .SevenDaysFeedingFrequency.getString(indexValue));
                 weeklyFoodRecords.add(weeklyFoodRecord3);
                 break;
             case 12:
                 WeeklyFoodRecord weeklyFoodRecord4 = new WeeklyFoodRecord();
                 weeklyFoodRecord4.setFood(FoodType.MILK);
-                weeklyFoodRecord4.setSeveDaysFreq(FeendingHabitsRecordType
+                weeklyFoodRecord4.setSevenDaysFreq(FeendingHabitsRecordType
                         .SevenDaysFeedingFrequency.getString(indexValue));
                 weeklyFoodRecords.add(weeklyFoodRecord4);
                 break;
             case 13:
                 WeeklyFoodRecord weeklyFoodRecord5 = new WeeklyFoodRecord();
                 weeklyFoodRecord5.setFood(FoodType.BEAN);
-                weeklyFoodRecord5.setSeveDaysFreq(FeendingHabitsRecordType
+                weeklyFoodRecord5.setSevenDaysFreq(FeendingHabitsRecordType
                         .SevenDaysFeedingFrequency.getString(indexValue));
                 weeklyFoodRecords.add(weeklyFoodRecord5);
                 break;
             case 14:
                 WeeklyFoodRecord weeklyFoodRecord6 = new WeeklyFoodRecord();
                 weeklyFoodRecord6.setFood(FoodType.FRUITS);
-                weeklyFoodRecord6.setSeveDaysFreq(FeendingHabitsRecordType
+                weeklyFoodRecord6.setSevenDaysFreq(FeendingHabitsRecordType
                         .SevenDaysFeedingFrequency.getString(indexValue));
                 weeklyFoodRecords.add(weeklyFoodRecord6);
                 break;
             case 15:
                 WeeklyFoodRecord weeklyFoodRecord7 = new WeeklyFoodRecord();
                 weeklyFoodRecord7.setFood(FoodType.GOONIES);
-                weeklyFoodRecord7.setSeveDaysFreq(FeendingHabitsRecordType
+                weeklyFoodRecord7.setSevenDaysFreq(FeendingHabitsRecordType
                         .SevenDaysFeedingFrequency.getString(indexValue));
                 weeklyFoodRecords.add(weeklyFoodRecord7);
                 break;
             case 16:
                 WeeklyFoodRecord weeklyFoodRecord8 = new WeeklyFoodRecord();
                 weeklyFoodRecord8.setFood(FoodType.HAMBURGUER_SAUSAGE_OTHERS);
-                weeklyFoodRecord8.setSeveDaysFreq(FeendingHabitsRecordType
+                weeklyFoodRecord8.setSevenDaysFreq(FeendingHabitsRecordType
                         .SevenDaysFeedingFrequency.getString(indexValue));
                 weeklyFoodRecords.add(weeklyFoodRecord8);
                 break;
             case 17:
                 feedingHabitsRecord.setSixMonthBreastFeeding(FeendingHabitsRecordType
                         .BreastFeeding.getString(indexValue));
-                break;
-            case 18:
-                // TODO food_allergy_intolerance pode ter mais de uma resposta. Entao, o componente deve ser o Multiple
-//                feedingHabitsRecord.setFoodAllergyIntolerance(
-//                        FeendingHabitsRecordType.FoodAllergyStringolerance.getString(indexValue)
-//                );
                 break;
             case 19:
                 ChronicDisease chronicDisease = new ChronicDisease();
@@ -765,6 +769,9 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
             case 4:
                 physicalActivityHabits.setWeeklyActivities(values);
                 break;
+            case 18:
+                feedingHabitsRecord.setFoodAllergyIntolerance(values);
+                break;
         }
     }
 
@@ -780,11 +787,9 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
                 + " | ANSWER: " + value);
     }
 
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
         DisposableManager.dispose();
     }
-
 }

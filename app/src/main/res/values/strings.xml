@@ -415,7 +415,7 @@
     <string name="patient_removed">Paciente removido</string>
     <string name="undo">Desfazer</string>
     <string name="patient_profile">Perfil do paciente</string>
-    <string name="no_patient_registered">Nenhum paciente encontrado</string>
+    <string name="no_patient_registered">Nenhum paciente cadastrado!\nPara continuar, cadastre um novo paciente a seguir.</string>
     <string name="try_again_later">Tente novamente mais tarde</string>
     <string name="color">Cor</string>
     <string name="age">Idade</string>
@@ -755,6 +755,7 @@
     <string name="category_5_desc">Agora você responderá a perguntas sobre sono.</string>
     <string name="final_instructions">Você deve permanecer no seu lugar e informar o pesquisador que terminou de responder o questionario no tablet e ele o encaminhará para fazer as medições de peso, estatura, perimetro da cintura e pressão arterial.</string>
     <string name="cancel_message">Tem certeza que deseja cancelar?</string>
+    <string name="error_409_patient">Já possui um paciente cadastrado com esses dados!</string>
     <string-array name="sports_answers">
         <item>Futebol (campo, de rua,clube)</item>
         <item>Futsal</item>

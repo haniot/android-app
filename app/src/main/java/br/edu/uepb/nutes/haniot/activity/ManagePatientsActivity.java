@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,6 +14,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -31,6 +33,7 @@ import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.PilotStudy;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
+import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
@@ -38,6 +41,11 @@ import butterknife.ButterKnife;
 import io.reactivex.CompletableObserver;
 import io.reactivex.SingleObserver;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
+import retrofit2.HttpException;
+
+import static com.github.mikephil.charting.charts.Chart.LOG_TAG;
 
 /**
  * ManagePatientsActivity implementation.
@@ -54,6 +62,8 @@ public class ManagePatientsActivity extends AppCompatActivity implements OnRecyc
     RecyclerView recyclerViewPatient;
     @BindView(R.id.btnAddPatient)
     FloatingActionButton addPatient;
+    @BindView(R.id.manager_patients_swiperefresh)
+    SwipeRefreshLayout mDataSwipeRefresh;
     private List<Patient> patientList;
     private ManagePatientAdapter adapter;
     private SearchView searchView;
@@ -74,6 +84,13 @@ public class ManagePatientsActivity extends AppCompatActivity implements OnRecyc
     }
 
     /**
+     * Initialize SwipeRefresh
+     */
+    private void initDataSwipeRefresh() {
+        mDataSwipeRefresh.setOnRefreshListener(this::loadData);
+    }
+
+    /**
      * Init resources.
      */
     private void initResources() {
@@ -81,10 +98,14 @@ public class ManagePatientsActivity extends AppCompatActivity implements OnRecyc
         haniotNetRepository = HaniotNetRepository.getInstance(this);
         pilotStudy = appPreferencesHelper.getLastPilotStudy();
         patientList = new ArrayList<>();
+        if (appPreferencesHelper.getLastPatient() == null)
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
         addPatient.setOnClickListener(v -> {
             startActivity(new Intent(getApplicationContext(), PatientRegisterActivity.class));
             finish();
         });
+        initDataSwipeRefresh();
     }
 
     /**
@@ -136,29 +157,29 @@ public class ManagePatientsActivity extends AppCompatActivity implements OnRecyc
     }
 
     private void loadData() {
-        haniotNetRepository
-                //TODO pegar id do pilot
-                .getAllPatients("5c86d00c2239a48ea20a0134", "created_at", 1, 100)
-                .doOnSubscribe(disposable -> {
-                    //Loading
-                })
-                .subscribe(new SingleObserver<List<Patient>>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
+        DisposableManager.add(haniotNetRepository
+                .getAllPatients(pilotStudy.get_id(), "created_at", 1, 100)
+                .doOnSubscribe(disposable -> mDataSwipeRefresh.setRefreshing(true))
+                .doAfterTerminate(() -> mDataSwipeRefresh.setRefreshing(false))
+                .subscribe(patients -> {
+                    patientList = patients;
+                    initRecyclerView();
+                }, this::errorHandler));
+    }
 
-                    }
-
-                    @Override
-                    public void onSuccess(List<Patient> patients) {
-                        patientList = patients;
-                        initRecyclerView();
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        //Mostrar erro
-                    }
-                });
+    /**
+     * Manipulates the error and displays message
+     * according to the type of error.
+     *
+     * @param e {@link Throwable}
+     */
+    private void errorHandler(Throwable e) {
+        if (e instanceof HttpException) {
+            HttpException httpEx = ((HttpException) e);
+            Log.i(LOG_TAG, httpEx.getMessage());
+            Toast.makeText(this, getResources().getString(R.string.error_500), Toast.LENGTH_LONG).show();
+        }
+        // message 500
     }
 
     private void initRecyclerView() {

@@ -168,6 +168,7 @@ public class PilotStudyActivity extends AppCompatActivity {
                 .setPositiveButton(R.string.yes_text, (dialog, which) -> savePilotSelected(pilot))
                 .setNegativeButton(R.string.no_text, null)
                 .show();
+
     }
 
     /**
@@ -197,7 +198,7 @@ public class PilotStudyActivity extends AppCompatActivity {
         pilot.setSelected(true);
         pilotStudyDAO.update(pilot);
         appPreferences.saveLastPilotStudy(pilot);
-
+        appPreferences.removeLastPatient();
         // Back activity
         setResult(Activity.RESULT_OK);
         finish();
