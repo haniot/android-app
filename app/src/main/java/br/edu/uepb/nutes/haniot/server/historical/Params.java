@@ -1,6 +1,6 @@
 package br.edu.uepb.nutes.haniot.server.historical;
 
-import br.edu.uepb.nutes.haniot.model.MeasurementType;
+import br.edu.uepb.nutes.haniot.data.model.MeasurementType;
 
 /**
  * Params used in historical query.
@@ -22,7 +22,7 @@ public final class Params {
 
     /**
      * Type of measurement.
-     * {@link br.edu.uepb.nutes.haniot.model.MeasurementType}
+     * {@link br.edu.uepb.nutes.haniot.data.model.MeasurementType}
      */
     private int typeId;
 

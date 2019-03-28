@@ -32,19 +32,19 @@ import org.json.JSONObject;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.activity.ManuallyAddMeasurement;
+import br.edu.uepb.nutes.haniot.activity.AddMeasurement;
 import br.edu.uepb.nutes.haniot.activity.charts.HeartRateChartActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.HeartRateAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
 import br.edu.uepb.nutes.haniot.fragment.GenericDialogFragment;
-import br.edu.uepb.nutes.haniot.model.Device;
-import br.edu.uepb.nutes.haniot.model.DeviceType;
-import br.edu.uepb.nutes.haniot.model.ItemGridType;
-import br.edu.uepb.nutes.haniot.model.Measurement;
-import br.edu.uepb.nutes.haniot.model.MeasurementType;
-import br.edu.uepb.nutes.haniot.model.dao.DeviceDAO;
-import br.edu.uepb.nutes.haniot.model.dao.MeasurementDAO;
+import br.edu.uepb.nutes.haniot.data.model.Device;
+import br.edu.uepb.nutes.haniot.data.model.DeviceType;
+import br.edu.uepb.nutes.haniot.data.model.ItemGridType;
+import br.edu.uepb.nutes.haniot.data.model.Measurement;
+import br.edu.uepb.nutes.haniot.data.model.MeasurementType;
+import br.edu.uepb.nutes.haniot.data.model.dao.DeviceDAO;
+import br.edu.uepb.nutes.haniot.data.model.dao.MeasurementDAO;
 import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
 import br.edu.uepb.nutes.haniot.server.historical.CallbackHistorical;
 import br.edu.uepb.nutes.haniot.server.historical.Historical;
@@ -150,10 +150,8 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
         params = new Params(session.get_idLogged(), MeasurementType.HEART_RATE);
         heartRateManager = new HeartRateManager(this);
         heartRateManager.setSimpleCallback(heartRateDataCallback);
-        for (Device device : deviceDAO.list(session.getIdLogged())) {
-            if (device.getTypeId() == DeviceType.HEART_RATE)
-                mDevice = device;
-        }
+
+        mDevice = deviceDAO.getByType(session.getUserLogged().get_id(), DeviceType.HEART_RATE);
         mChartButton.setOnClickListener(this);
         mRecordHeartRateButton.setOnClickListener(this);
         mAddMeasurementButton.setOnClickListener(this);
@@ -545,7 +543,7 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
                 startActivity(new Intent(getApplicationContext(), HeartRateChartActivity.class));
                 break;
             case R.id.add_floating_button:
-                Intent it = new Intent(getApplicationContext(), ManuallyAddMeasurement.class);
+                Intent it = new Intent(getApplicationContext(), AddMeasurement.class);
                 it.putExtra(getResources().getString(R.string.measurementType),
                         ItemGridType.HEART_RATE);
                 startActivity(it);

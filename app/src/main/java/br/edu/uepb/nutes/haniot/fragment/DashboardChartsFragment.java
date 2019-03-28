@@ -1,4 +1,6 @@
 package br.edu.uepb.nutes.haniot.fragment;
+
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -6,14 +8,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.model.Patient;
+import br.edu.uepb.nutes.haniot.activity.MainActivity;
+import br.edu.uepb.nutes.haniot.data.model.Patient;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import pl.bclogic.pulsator4droid.library.PulsatorLayout;
 
+/**
+ * DashboardChartsFragment implementation.
+ *
+ * @author Fábio Júnior <fabio.pequeno@nutes.uepb.edu.br>
+ * @version 1.0
+ * @copyright Copyright (c) 2019, NUTES UEPB
+ */
 public class DashboardChartsFragment extends Fragment {
     @BindView(R.id.patientName)
     TextView patientName;
@@ -27,35 +39,48 @@ public class DashboardChartsFragment extends Fragment {
     TextView textIMC;
     @BindView(R.id.pulsator)
     PulsatorLayout pulsatorLayout;
+    Communicator communicator;
 
-    /**
-     * On create.
-     * @param savedInstanceState
-     */
+    public DashboardChartsFragment() {
+        // Required empty public constructor
+    }
+
+    public static DashboardChartsFragment newInstance() {
+        return new DashboardChartsFragment();
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
-    /**
-     * On create view.
-     * @param inflater
-     * @param container
-     * @param savedInstanceState
-     * @return
-     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_charts_dashboard, container, false);
         ButterKnife.bind(this, view);
 
+
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(getResources().getString(R.string.date_format2));
         textDate.setText(simpleDateFormat.format(calendar.getTime()));
         pulsatorLayout.start();
-
+        updateNamePatient(((MainActivity) getActivity()).getPatientSelected());
         return view;
+    }
+
+    /**
+     * On attach.
+     *
+     * @param context
+     */
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try {
+            communicator = (DashboardChartsFragment.Communicator) context;
+        } catch (ClassCastException castException) {
+        }
     }
 
     /**
@@ -84,6 +109,7 @@ public class DashboardChartsFragment extends Fragment {
 
     /**
      * Update value of measurement in screen.
+     *
      * @param valueMeasurement
      */
     public void updateValueMeasurement(String valueMeasurement) {
@@ -94,18 +120,22 @@ public class DashboardChartsFragment extends Fragment {
 
     /**
      * Update name patient selected.
+     *
      * @param patient
      */
     public void updateNamePatient(Patient patient) {
-        patientName.setText(patient.getName());
-        if (patient.getSex().equals("Masculino"))
-            patientSex.setImageResource(R.drawable.x_boy);
-        else
-            patientSex.setImageResource(R.drawable.x_girl);
+        if (patient != null) {
+            patientName.setText(patient.getFirstName());
+            if (patient.getGender().equals("male"))
+                patientSex.setImageResource(R.drawable.x_boy);
+            else
+                patientSex.setImageResource(R.drawable.x_girl);
+        }
     }
 
     /**
      * Calculate patient IMC.
+     *
      * @param weight
      * @return
      */

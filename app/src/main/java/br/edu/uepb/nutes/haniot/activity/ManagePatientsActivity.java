@@ -1,9 +1,12 @@
 package br.edu.uepb.nutes.haniot.activity;
 
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,60 +14,176 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.widget.EditText;
+import android.widget.Toast;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.adapter.ManagePatientAdapter;
-import br.edu.uepb.nutes.haniot.model.Patient;
-import br.edu.uepb.nutes.haniot.model.dao.PatientDAO;
-import br.edu.uepb.nutes.haniot.utils.Log;
+import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
+import br.edu.uepb.nutes.haniot.data.model.Patient;
+import br.edu.uepb.nutes.haniot.data.model.PilotStudy;
+import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
+import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
+import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
+import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.CompletableObserver;
+import io.reactivex.SingleObserver;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
+import retrofit2.HttpException;
 
-public class ManagePatientsActivity extends AppCompatActivity {
+import static com.github.mikephil.charting.charts.Chart.LOG_TAG;
+
+/**
+ * ManagePatientsActivity implementation.
+ *
+ * @author Fábio Júnior <fabio.pequeno@nutes.uepb.edu.br>
+ * @version 1.0
+ * @copyright Copyright (c) 2019, NUTES UEPB
+ */
+public class ManagePatientsActivity extends AppCompatActivity implements OnRecyclerViewListener<Patient> {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.recyclerViewPatient)
     RecyclerView recyclerViewPatient;
-
-    private List<Patient> patientList = new ArrayList<>();
+    @BindView(R.id.btnAddPatient)
+    FloatingActionButton addPatient;
+    @BindView(R.id.manager_patients_swiperefresh)
+    SwipeRefreshLayout mDataSwipeRefresh;
+    private List<Patient> patientList;
     private ManagePatientAdapter adapter;
     private SearchView searchView;
+    private AppPreferencesHelper appPreferencesHelper;
+    private HaniotNetRepository haniotNetRepository;
+    private PilotStudy pilotStudy;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_patient);
         ButterKnife.bind(this);
-
         toolbar.setTitle(getResources().getString(R.string.manage_patient));
-        toolbar.setTitle("Gerenciar Pacientes");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        initResources();
         loadData();
-        initComponents();
+    }
+
+    /**
+     * Initialize SwipeRefresh
+     */
+    private void initDataSwipeRefresh() {
+        mDataSwipeRefresh.setOnRefreshListener(this::loadData);
+    }
+
+    /**
+     * Init resources.
+     */
+    private void initResources() {
+        appPreferencesHelper = AppPreferencesHelper.getInstance(this);
+        haniotNetRepository = HaniotNetRepository.getInstance(this);
+        pilotStudy = appPreferencesHelper.getLastPilotStudy();
+        patientList = new ArrayList<>();
+        if (appPreferencesHelper.getLastPatient() == null)
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
+        addPatient.setOnClickListener(v -> {
+            startActivity(new Intent(getApplicationContext(), PatientRegisterActivity.class));
+            finish();
+        });
+        initDataSwipeRefresh();
+    }
+
+    /**
+     * On click item of list patients.
+     *
+     * @param item
+     */
+    @Override
+    public void onItemClick(Patient item) {
+        AppPreferencesHelper.getInstance(this).saveLastPatient(item);
+        startActivity(new Intent(this, MainActivity.class));
+    }
+
+    @Override
+    public void onLongItemClick(View v, Patient patient) {
 
     }
 
-    private void initComponents() {
+    @Override
+    public void onMenuContextClick(View v, Patient patient) {
+        switch (v.getId()) {
+            case R.id.btnDeleteChild:
+                //TODO Refatorar Colocar dialog de confirmação, dar update no listview
+                haniotNetRepository.deletePatient("5c86d00c2239a48ea20a0134", patient.get_id())
+                        .subscribe(new CompletableObserver() {
+                            @Override
+                            public void onSubscribe(Disposable d) {
 
-        List<Patient> patients;
+                            }
 
-        patients = PatientDAO.getInstance(getApplicationContext()).get();
+                            @Override
+                            public void onComplete() {
+                                Toast.makeText(ManagePatientsActivity.this,
+                                        "Paciente removido!", Toast.LENGTH_SHORT);
+                            }
 
-        adapter = new ManagePatientAdapter(patients, getApplicationContext());
+                            @Override
+                            public void onError(Throwable e) {
+
+                            }
+                        });
+                break;
+            case R.id.btnEditChildren:
+                appPreferencesHelper.saveLastPatient(patient);
+                //TODO Passar flag para editar
+                startActivity(new Intent(this, PatientRegisterActivity.class));
+                break;
+        }
+    }
+
+    private void loadData() {
+        DisposableManager.add(haniotNetRepository
+                .getAllPatients(pilotStudy.get_id(), "created_at", 1, 100)
+                .doOnSubscribe(disposable -> mDataSwipeRefresh.setRefreshing(true))
+                .doAfterTerminate(() -> mDataSwipeRefresh.setRefreshing(false))
+                .subscribe(patients -> {
+                    patientList = patients;
+                    initRecyclerView();
+                }, this::errorHandler));
+    }
+
+    /**
+     * Manipulates the error and displays message
+     * according to the type of error.
+     *
+     * @param e {@link Throwable}
+     */
+    private void errorHandler(Throwable e) {
+        if (e instanceof HttpException) {
+            HttpException httpEx = ((HttpException) e);
+            Log.i(LOG_TAG, httpEx.getMessage());
+            Toast.makeText(this, getResources().getString(R.string.error_500), Toast.LENGTH_LONG).show();
+        }
+        // message 500
+    }
+
+    private void initRecyclerView() {
+        adapter = new ManagePatientAdapter(patientList, getApplicationContext(), this);
 
         recyclerViewPatient.setHasFixedSize(true);
         recyclerViewPatient.setLayoutManager(new LinearLayoutManager(this));
@@ -86,7 +205,6 @@ public class ManagePatientsActivity extends AppCompatActivity {
 
                 Snackbar snackbar = null;
                 if (patient != null) {
-                    Log.d("TESTE", "Removendo o paciente " + patient.getName());
                     if (adapter.getSearchQuerry().isEmpty()) {
                         int newPosition = adapter.searchOldPatientPosition(patient);
 
@@ -108,10 +226,7 @@ public class ManagePatientsActivity extends AppCompatActivity {
                                     adapter.restoreItem(patient, position, viewHolder.itemView);
                                 });
                     }
-                } else {
-                    Log.d("TESTE", "Não encontrei o paciente");
                 }
-
                 if (snackbar != null) snackbar.show();
             }
 
@@ -150,64 +265,70 @@ public class ManagePatientsActivity extends AppCompatActivity {
 
     }
 
-    private void loadData() {
-
+    /**
+     * For tests.
+     *
+     * @return
+     */
+    private List<Patient> testPatients() {
+        patientList.clear();
         Patient patient;
-        SimpleDateFormat spn = new SimpleDateFormat("dd/MM/yyyy");
+
+        patient = appPreferencesHelper.getLastPatient();
+        if (patient != null)
+            patientList.add(patient);
 
         patient = new Patient();
-        patient.setName("Fábio Júnior");
+        patient.setFirstName("Fábio Júnior");
         patient.set_id("123");
-        patient.setSex("Masculino");
-        patient.setAge(12);
-        patient.setRegisterDate(spn.format(Calendar.getInstance().getTime()));
+        patient.setGender("Male");
+        patient.setBirthDate(DateUtils.formatDate(878180400000L, DateUtils.DATE_FORMAT_ISO_8601));
         patientList.add(patient);
 
         patient = new Patient();
-        patient.setName("Paulo Barbosa");
+        patient.setFirstName("Paulo Barbosa");
         patient.set_id("124");
-        patient.setSex("Masculino");
-        patient.setAge(13);
-        patient.setRegisterDate(spn.format(Calendar.getInstance().getTime()));
+        patient.setGender("male");
+        patient.setBirthDate(DateUtils.formatDate(878180400000L, DateUtils.DATE_FORMAT_ISO_8601));
+
         patientList.add(patient);
 
         patient = new Patient();
-        patient.setName("Ana Beatriz");
+        patient.setFirstName("Ana Beatriz");
         patient.set_id("125");
-        patient.setSex("Feminino");
-        patient.setAge(12);
-        patient.setRegisterDate(spn.format(Calendar.getInstance().getTime()));
+        patient.setGender("female");
+        patient.setBirthDate(DateUtils.formatDate(878180400000L, DateUtils.DATE_FORMAT_ISO_8601));
         patientList.add(patient);
 
         patient = new Patient();
-        patient.setName("Isabele");
+        patient.setFirstName("Isabele");
         patient.set_id("126");
-        patient.setSex("Feminino");
-        patient.setAge(13);
-        patient.setRegisterDate(spn.format(Calendar.getInstance().getTime()));
+        patient.setGender("female");
+        patient.setBirthDate(DateUtils.formatDate(878180400000L, DateUtils.DATE_FORMAT_ISO_8601));
         patientList.add(patient);
 
         patient = new Patient();
-        patient.setName("Paulina Leal");
+        patient.setFirstName("Paulina Leal");
         patient.set_id("127");
-        patient.setSex("Feminino");
-        patient.setAge(11);
-        patient.setRegisterDate(spn.format(Calendar.getInstance().getTime()));
+        patient.setGender("female");
+        patient.setBirthDate(DateUtils.formatDate(878180400000L, DateUtils.DATE_FORMAT_ISO_8601));
         patientList.add(patient);
 
         patient = new Patient();
-        patient.setName("Douglas Rafael");
+        patient.setFirstName("Douglas Rafael");
         patient.set_id("128");
-        patient.setSex("Masculino");
-        patient.setAge(13);
-        patient.setRegisterDate(spn.format(Calendar.getInstance().getTime()));
+        patient.setGender("male");
+        patient.setBirthDate(DateUtils.formatDate(878180400000L, DateUtils.DATE_FORMAT_ISO_8601));
+
         patientList.add(patient);
+
+        return patientList;
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        initComponents();
+        initRecyclerView();
     }
 
     @Override
@@ -253,32 +374,13 @@ public class ManagePatientsActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         int id = item.getItemId();
 
         switch (id) {
             case android.R.id.home:
                 finish();
                 break;
-
-            case R.id.btnAddPatient:
-
-                for (Patient patient : patientList) {
-                    if (PatientDAO.getInstance(getApplicationContext()).save(patient)) {
-
-                    }
-                }
-                break;
-            case R.id.add_patient:
-                for (Patient patient : patientList) {
-                    if (PatientDAO.getInstance(getApplicationContext()).save(patient)) {
-
-                    }
-                }
-                break;
         }
-
         return super.onOptionsItemSelected(item);
     }
-
 }

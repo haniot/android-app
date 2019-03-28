@@ -14,7 +14,7 @@ import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.adapter.base.BaseAdapter;
-import br.edu.uepb.nutes.haniot.model.MeasurementMonitor;
+import br.edu.uepb.nutes.haniot.data.model.MeasurementMonitor;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 

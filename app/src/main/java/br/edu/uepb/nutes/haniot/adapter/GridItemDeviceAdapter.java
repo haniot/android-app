@@ -15,12 +15,13 @@ import java.util.List;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.ManagerMeasurementsActivity;
 import br.edu.uepb.nutes.haniot.adapter.base.BaseAdapter;
+import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class GridItemDeviceAdapter extends BaseAdapter<ManagerMeasurementsActivity.ItemDevice> {
     private Context context;
-    private SharedPreferences preferences;
+    private AppPreferencesHelper appPreferencesHelper;
 
     public GridItemDeviceAdapter(Context context) {
         this.context = context;
@@ -28,7 +29,7 @@ public class GridItemDeviceAdapter extends BaseAdapter<ManagerMeasurementsActivi
 
     @Override
     public View createView(ViewGroup viewGroup, int viewType) {
-        this.preferences = context.getSharedPreferences("device_enabled", Context.MODE_PRIVATE);
+        this.appPreferencesHelper = AppPreferencesHelper.getInstance(context);
         return View.inflate(context, R.layout.item_manager_measurement, null);
     }
 
@@ -51,17 +52,12 @@ public class GridItemDeviceAdapter extends BaseAdapter<ManagerMeasurementsActivi
             h.imageItem.setImageResource(ig.getImage());
             h.title.setText(ig.getTitle());
             h.device_name.setText(ig.getDevice());
-            h.enabled.setChecked(preferences.getBoolean(ig.getKey(), false));
-            h.enabled.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    SharedPreferences.Editor editor = preferences.edit();
-                    if (isChecked) {
-                        editor.putBoolean(ig.getKey(), true);
-                        editor.apply();
-                    } else {
-                        editor.putBoolean(ig.getKey(), false);
-                        editor.apply();
-                    }
+            h.enabled.setChecked(appPreferencesHelper.getBoolean(ig.getKey()));
+            h.enabled.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                if (isChecked) {
+                    appPreferencesHelper.saveBoolean(ig.getKey(), true);
+                } else {
+                    appPreferencesHelper.saveBoolean(ig.getKey(), false);
                 }
             });
             setAnimation(h.mView, position);

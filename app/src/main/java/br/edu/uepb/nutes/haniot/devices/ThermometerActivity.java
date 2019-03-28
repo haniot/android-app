@@ -41,18 +41,18 @@ import java.util.Locale;
 import java.util.UUID;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.activity.ManuallyAddMeasurement;
+import br.edu.uepb.nutes.haniot.activity.AddMeasurement;
 import br.edu.uepb.nutes.haniot.activity.charts.TemperatureChartActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.TemperatureAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
-import br.edu.uepb.nutes.haniot.model.Device;
-import br.edu.uepb.nutes.haniot.model.DeviceType;
-import br.edu.uepb.nutes.haniot.model.ItemGridType;
-import br.edu.uepb.nutes.haniot.model.Measurement;
-import br.edu.uepb.nutes.haniot.model.MeasurementType;
-import br.edu.uepb.nutes.haniot.model.dao.DeviceDAO;
-import br.edu.uepb.nutes.haniot.model.dao.MeasurementDAO;
+import br.edu.uepb.nutes.haniot.data.model.Device;
+import br.edu.uepb.nutes.haniot.data.model.DeviceType;
+import br.edu.uepb.nutes.haniot.data.model.ItemGridType;
+import br.edu.uepb.nutes.haniot.data.model.Measurement;
+import br.edu.uepb.nutes.haniot.data.model.MeasurementType;
+import br.edu.uepb.nutes.haniot.data.model.dao.DeviceDAO;
+import br.edu.uepb.nutes.haniot.data.model.dao.MeasurementDAO;
 import br.edu.uepb.nutes.haniot.parse.JsonToMeasurementParser;
 import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
 import br.edu.uepb.nutes.haniot.server.historical.CallbackHistorical;
@@ -432,14 +432,14 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
         super.onStart();
 
         // TODO REMOVER!!! Pois o cadastro do device deverá ser no processo de emparelhamento
-        mDevice = deviceDAO.get(mDeviceAddress, session.getIdLogged());
-
-        if (mDevice == null) {
-            mDevice = new Device(mDeviceAddress, "EAR THERMOMETER", "PHILIPS", "DL8740", DeviceType.THERMOMETER, session.getUserLogged());
-            mDevice.set_id("5a62c0d6d6f33400146c9b65");
-            if (!deviceDAO.save(mDevice)) finish();
-            mDevice = deviceDAO.get(mDeviceAddress, session.getIdLogged());
-        }
+//        mDevice = deviceDAO.get(mDeviceAddress, session.getIdLogged());
+//
+//        if (mDevice == null) {
+//            mDevice = new Device(mDeviceAddress, "EAR THERMOMETER", "PHILIPS", "DL8740", DeviceType.THERMOMETER, session.getUserLogged());
+//            mDevice.set_id("5a62c0d6d6f33400146c9b65");
+//            if (!deviceDAO.save(mDevice)) finish();
+//            mDevice = deviceDAO.get(mDeviceAddress, session.getIdLogged());
+//        }
     }
 
     @Override
@@ -642,7 +642,7 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
                 startActivity(new Intent(getApplicationContext(), TemperatureChartActivity.class));
                 break;
             case R.id.add_floating_button:
-                Intent it = new Intent(getApplicationContext(), ManuallyAddMeasurement.class);
+                Intent it = new Intent(getApplicationContext(), AddMeasurement.class);
                 it.putExtra(getResources().getString(R.string.measurementType),
                         ItemGridType.TEMPERATURE);
                 startActivity(it);

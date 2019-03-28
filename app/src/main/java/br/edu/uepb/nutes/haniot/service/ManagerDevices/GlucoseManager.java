@@ -19,11 +19,11 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 
-import br.edu.uepb.nutes.haniot.model.ContextMeasurement;
-import br.edu.uepb.nutes.haniot.model.ContextMeasurementType;
-import br.edu.uepb.nutes.haniot.model.ContextMeasurementValueType;
-import br.edu.uepb.nutes.haniot.model.Measurement;
-import br.edu.uepb.nutes.haniot.model.MeasurementType;
+import br.edu.uepb.nutes.haniot.data.model.ContextMeasurement;
+import br.edu.uepb.nutes.haniot.data.model.ContextMeasurementType;
+import br.edu.uepb.nutes.haniot.data.model.ContextMeasurementValueType;
+import br.edu.uepb.nutes.haniot.data.model.Measurement;
+import br.edu.uepb.nutes.haniot.data.model.MeasurementType;
 import br.edu.uepb.nutes.haniot.parse.JsonToContextParser;
 import br.edu.uepb.nutes.haniot.parse.JsonToMeasurementParser;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.GlucoseDataCallback;

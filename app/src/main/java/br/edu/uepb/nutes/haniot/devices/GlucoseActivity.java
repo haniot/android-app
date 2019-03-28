@@ -23,7 +23,6 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -41,21 +40,21 @@ import java.util.List;
 import java.util.UUID;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.activity.ManuallyAddMeasurement;
+import br.edu.uepb.nutes.haniot.activity.AddMeasurement;
 import br.edu.uepb.nutes.haniot.activity.charts.GlucoseChartActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.GlucoseAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
-import br.edu.uepb.nutes.haniot.model.ContextMeasurement;
-import br.edu.uepb.nutes.haniot.model.ContextMeasurementType;
-import br.edu.uepb.nutes.haniot.model.ContextMeasurementValueType;
-import br.edu.uepb.nutes.haniot.model.Device;
-import br.edu.uepb.nutes.haniot.model.DeviceType;
-import br.edu.uepb.nutes.haniot.model.ItemGridType;
-import br.edu.uepb.nutes.haniot.model.Measurement;
-import br.edu.uepb.nutes.haniot.model.MeasurementType;
-import br.edu.uepb.nutes.haniot.model.dao.DeviceDAO;
-import br.edu.uepb.nutes.haniot.model.dao.MeasurementDAO;
+import br.edu.uepb.nutes.haniot.data.model.ContextMeasurement;
+import br.edu.uepb.nutes.haniot.data.model.ContextMeasurementType;
+import br.edu.uepb.nutes.haniot.data.model.ContextMeasurementValueType;
+import br.edu.uepb.nutes.haniot.data.model.Device;
+import br.edu.uepb.nutes.haniot.data.model.DeviceType;
+import br.edu.uepb.nutes.haniot.data.model.ItemGridType;
+import br.edu.uepb.nutes.haniot.data.model.Measurement;
+import br.edu.uepb.nutes.haniot.data.model.MeasurementType;
+import br.edu.uepb.nutes.haniot.data.model.dao.DeviceDAO;
+import br.edu.uepb.nutes.haniot.data.model.dao.MeasurementDAO;
 import br.edu.uepb.nutes.haniot.parse.JsonToContextParser;
 import br.edu.uepb.nutes.haniot.parse.JsonToMeasurementParser;
 import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
@@ -156,10 +155,7 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
         synchronizeWithServer();
 
         session = new Session(this);
-        for (Device device : DeviceDAO.getInstance(this).list(session.getIdLogged()))
-            if (device.getTypeId() == DeviceType.GLUCOMETER) mDevice = device;
 
-        if (mDevice == null) Log.i(TAG, "No device registered");
         measurementDAO = MeasurementDAO.getInstance(this);
         deviceDAO = DeviceDAO.getInstance(this);
         params = new Params(session.get_idLogged(), MeasurementType.BLOOD_GLUCOSE);
@@ -171,6 +167,7 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
         Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
 
+        mDevice = deviceDAO.getByType(session.getUserLogged().get_id(), DeviceType.GLUCOMETER);
         isGetAllMonitor = false;
         initComponents();
     }
@@ -470,7 +467,8 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
         super.onResume();
         registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
 
-        if (mBluetoothLeService != null && mDevice != null) mBluetoothLeService.connect(mDevice.getAddress());
+        if (mBluetoothLeService != null && mDevice != null)
+            mBluetoothLeService.connect(mDevice.getAddress());
     }
 
     @Override
@@ -579,7 +577,7 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
             }
             // Conecta-se automaticamente ao dispositivo após a inicialização bem-sucedida.
             if (mDevice != null)
-            mBluetoothLeService.connect(mDevice.getAddress());
+                mBluetoothLeService.connect(mDevice.getAddress());
         }
 
         @Override
@@ -762,7 +760,7 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
                 startActivity(new Intent(getApplicationContext(), GlucoseChartActivity.class));
                 break;
             case R.id.add_floating_button:
-                Intent it = new Intent(getApplicationContext(), ManuallyAddMeasurement.class);
+                Intent it = new Intent(getApplicationContext(), AddMeasurement.class);
                 it.putExtra(getResources().getString(R.string.measurementType),
                         ItemGridType.BLOOD_GLUCOSE);
                 startActivity(it);

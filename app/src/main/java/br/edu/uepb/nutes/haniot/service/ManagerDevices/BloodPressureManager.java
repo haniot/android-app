@@ -13,7 +13,7 @@ import org.greenrobot.eventbus.EventBus;
 import java.util.Calendar;
 import java.util.UUID;
 
-import br.edu.uepb.nutes.haniot.model.MeasurementType;
+import br.edu.uepb.nutes.haniot.data.model.MeasurementType;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.BloodPressureDataCallback;
 import br.edu.uepb.nutes.haniot.utils.GattAttributes;
 import no.nordicsemi.android.ble.data.Data;

@@ -45,13 +45,13 @@ import br.edu.uepb.nutes.haniot.activity.charts.SmartBandChartActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.SmartBandAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
-import br.edu.uepb.nutes.haniot.model.Device;
-import br.edu.uepb.nutes.haniot.model.DeviceType;
-import br.edu.uepb.nutes.haniot.model.Measurement;
-import br.edu.uepb.nutes.haniot.model.MeasurementType;
-import br.edu.uepb.nutes.haniot.model.User;
-import br.edu.uepb.nutes.haniot.model.dao.DeviceDAO;
-import br.edu.uepb.nutes.haniot.model.dao.MeasurementDAO;
+import br.edu.uepb.nutes.haniot.data.model.Device;
+import br.edu.uepb.nutes.haniot.data.model.DeviceType;
+import br.edu.uepb.nutes.haniot.data.model.Measurement;
+import br.edu.uepb.nutes.haniot.data.model.MeasurementType;
+import br.edu.uepb.nutes.haniot.data.model.User;
+import br.edu.uepb.nutes.haniot.data.model.dao.DeviceDAO;
+import br.edu.uepb.nutes.haniot.data.model.dao.MeasurementDAO;
 import br.edu.uepb.nutes.haniot.parse.JsonToMeasurementParser;
 import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
 import br.edu.uepb.nutes.haniot.server.historical.CallbackHistorical;
@@ -455,14 +455,14 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
         super.onStart();
 
         // TODO REMOVER!!! Pois o cadastro do device deverá ser no processo de emparelhamento
-        mDevice = deviceDAO.get(mDeviceAddress, session.getIdLogged());
-
-        if (mDevice == null) {
-            mDevice = new Device(mDeviceAddress, "MI BAND 2", "XIAOMI", "", DeviceType.SMARTBAND, session.getUserLogged());
-            mDevice.set_id("5a713bce7c210900147a4eda");
-            if (!deviceDAO.save(mDevice)) finish();
-            mDevice = deviceDAO.get(mDeviceAddress, session.getIdLogged());
-        }
+//        mDevice = deviceDAO.get(mDeviceAddress, session.getUserLogged().get_id());
+//
+//        if (mDevice == null) {
+//            mDevice = new Device(mDeviceAddress, "MI BAND 2", "XIAOMI", "", DeviceType.SMARTBAND, session.getUserLogged());
+//            mDevice.set_id("5a713bce7c210900147a4eda");
+//            if (!deviceDAO.save(mDevice)) finish();
+//            mDevice = deviceDAO.get(mDeviceAddress, session.getIdLogged());
+//        }
     }
 
     @Override

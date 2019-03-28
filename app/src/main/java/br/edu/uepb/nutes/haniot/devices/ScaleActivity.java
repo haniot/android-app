@@ -33,18 +33,18 @@ import java.util.List;
 import java.util.Locale;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.activity.ManuallyAddMeasurement;
+import br.edu.uepb.nutes.haniot.activity.AddMeasurement;
 import br.edu.uepb.nutes.haniot.activity.charts.BodyCompositionChartActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.BodyCompositionAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
-import br.edu.uepb.nutes.haniot.model.Device;
-import br.edu.uepb.nutes.haniot.model.DeviceType;
-import br.edu.uepb.nutes.haniot.model.ItemGridType;
-import br.edu.uepb.nutes.haniot.model.Measurement;
-import br.edu.uepb.nutes.haniot.model.MeasurementType;
-import br.edu.uepb.nutes.haniot.model.dao.DeviceDAO;
-import br.edu.uepb.nutes.haniot.model.dao.MeasurementDAO;
+import br.edu.uepb.nutes.haniot.data.model.Device;
+import br.edu.uepb.nutes.haniot.data.model.DeviceType;
+import br.edu.uepb.nutes.haniot.data.model.ItemGridType;
+import br.edu.uepb.nutes.haniot.data.model.Measurement;
+import br.edu.uepb.nutes.haniot.data.model.MeasurementType;
+import br.edu.uepb.nutes.haniot.data.model.dao.DeviceDAO;
+import br.edu.uepb.nutes.haniot.data.model.dao.MeasurementDAO;
 import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
 import br.edu.uepb.nutes.haniot.server.historical.CallbackHistorical;
 import br.edu.uepb.nutes.haniot.server.historical.Historical;
@@ -161,14 +161,8 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
         mChartButton.setOnClickListener(this);
         mAddButton.setOnClickListener(this);
 
-        Log.i(TAG, "tamanho: "+deviceDAO.list(session.getIdLogged()).size());
-        Log.i(TAG, "type: "+deviceDAO.list(session.getIdLogged()).get(0).getTypeId());
-        for (Device device : deviceDAO.list(session.getIdLogged())) {
-            if (device.getTypeId() == DeviceType.BODY_COMPOSITION) {
-                mDevice = device;
-                Log.i(TAG, mDevice.getAddress());
-            }
-        }
+        mDevice = deviceDAO.getByType(session.getUserLogged().get_id(), DeviceType.BODY_COMPOSITION);
+
         scaleManager.setSimpleCallback(scaleDataCallback);
         initComponents();
     }
@@ -600,7 +594,7 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
                 startActivity(new Intent(getApplicationContext(), BodyCompositionChartActivity.class));
                 break;
             case R.id.add_floating_button:
-                Intent it = new Intent(getApplicationContext(), ManuallyAddMeasurement.class);
+                Intent it = new Intent(getApplicationContext(), AddMeasurement.class);
                 it.putExtra(getResources().getString(R.string.measurementType),
                         ItemGridType.WEIGHT);
                 startActivity(it);
