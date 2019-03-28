@@ -325,7 +325,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
                     }
                     deviceConnectionStatus.setText(R.string.failed_pairing_device);
                     btnDeviceRegisterScanner.setEnabled(true);
-                    btnDeviceRegisterScanner.setText(R.string.try_again);
+                    btnDeviceRegisterScanner.setText(R.string.device_not_found_try_again);
                     progressBarPairing.setVisibility(View.INVISIBLE);
                 }
             }
