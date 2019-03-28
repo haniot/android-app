@@ -11,7 +11,11 @@
         android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fillViewport="true">
+        android:fillViewport="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -54,8 +58,8 @@
                 android:layout_marginStart="0dp"
                 android:layout_marginTop="45dp"
                 android:layout_marginEnd="0dp"
-                app:srcCompat="@drawable/no_devices"
-                android:visibility="invisible" />
+                android:visibility="invisible"
+                app:srcCompat="@drawable/no_devices" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/gridMeasurement"
@@ -68,19 +72,19 @@
                 android:scrollbars="vertical"
                 android:tag="tablet"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+            <TextView
+                android:id="@+id/edit_monitor"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_below="@+id/gridMeasurement"
+                android:layout_alignParentEnd="true"
+                android:layout_gravity="bottom|end"
+                android:layout_marginTop="2dp"
+                android:layout_marginEnd="16dp"
+                android:padding="5dp"
+                android:text="Gerenciar medições" />
         </RelativeLayout>
     </android.support.v4.widget.NestedScrollView>
-
-    <TextView
-        android:id="@+id/edit_monitor"
-        android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:layout_gravity="bottom|end"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="16dp"
-        android:padding="5dp"
-        android:text="Gerenciar medições"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nestedScrollView" />
 
 </android.support.constraint.ConstraintLayout>

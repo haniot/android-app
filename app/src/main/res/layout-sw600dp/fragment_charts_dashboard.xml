@@ -187,11 +187,13 @@
 
             <ImageView
                 android:id="@+id/patientSex"
-                android:layout_width="54dp"
-                android:layout_height="52dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_alignTop="@+id/patientName"
-                android:layout_marginTop="3dp"
+                android:layout_alignBottom="@+id/patientName"
+                android:layout_marginTop="6dp"
                 android:layout_marginEnd="15dp"
+                android:layout_marginBottom="6dp"
                 android:layout_toStartOf="@+id/patientName"
                 android:background="@drawable/x_bg"
                 android:padding="2dp"

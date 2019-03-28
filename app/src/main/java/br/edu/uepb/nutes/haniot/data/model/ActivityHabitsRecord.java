@@ -27,7 +27,7 @@ public abstract class ActivityHabitsRecord {
     private String _id; // _id in server remote (UUID)
 
     @SerializedName("created_at")
-    @Expose
+    @Expose(serialize = false)
     private String createdAt;
 
     @Expose(serialize = false, deserialize = false)

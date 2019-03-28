@@ -77,6 +77,7 @@ public class HaniotNetRepository extends BaseNetRepository {
             }
             Log.w("InterceptorHANIOT", "| REQUEST: " + requestBuilder.build().method() + " "
                     + requestBuilder.build().url().toString());
+            Log.w("InterceptorHANIOT", userAccess.getAccessToken());
             return chain.proceed(requestBuilder.build());
         };
     }

@@ -17,6 +17,7 @@ import br.edu.uepb.nutes.haniot.data.model.ChronicDiseaseType;
 import br.edu.uepb.nutes.haniot.data.model.FeedingHabitsRecord;
 import br.edu.uepb.nutes.haniot.data.model.FeendingHabitsRecordType;
 import br.edu.uepb.nutes.haniot.data.model.FoodType;
+import br.edu.uepb.nutes.haniot.data.model.MeasurementType;
 import br.edu.uepb.nutes.haniot.data.model.MedicalRecord;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.PhysicalActivityHabit;
@@ -92,20 +93,19 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
      * Log answers.
      */
     private void logAnswers() {
-        Log.i("Respostas", patient.toString());
-        Log.i("Respostas", "Feending Habits: " + feedingHabitsRecord.toString());
-        Log.i("Respostas", "Weekly Food Records: " + weeklyFoodRecords.toString());
-        Log.i("Respostas", "Chronic Diseases: " + chronicDiseases.toString());
-        Log.i("Respostas", "Medical Record: " + medicalRecord.toString());
-        Log.i("Respostas", "Physical Activity: " + physicalActivityHabits.toString());
-        Log.i("Respostas", "Sleep: " + sleepHabit.toString());
+        Log.i("Respostas", patient.toJson());
+        Log.i("Respostas", "Feending Habits: " + feedingHabitsRecord.toJson());
+        //  Log.i("Respostas", "Weekly Food Records: " + weeklyFoodRecords.to());
+        // Log.i("Respostas", "Chronic Diseases: " + chronicDiseases.to());
+        Log.i("Respostas", "Medical Record: " + medicalRecord.toJson());
+        Log.i("Respostas", "Physical Activity: " + physicalActivityHabits.toJson());
+        Log.i("Respostas", "Sleep: " + sleepHabit.toJson());
     }
 
     private void saveMedicalRecords() {
         medicalRecord.setChronicDiseases(chronicDiseases);
         medicalRecord.setChronicDiseasesDB(chronicDiseases);
         medicalRecord.setPatientId(patient.get_id());
-        medicalRecord.setCreatedAt(DateUtils.getCurrentDateISO8601());
         Log.i(LOG_TAG, medicalRecord.toJson());
         DisposableManager.add(haniotNetRepository
                 .saveMedicalRecord(medicalRecord)
@@ -118,7 +118,6 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
 
     private void saveFeendingHabits() {
         feedingHabitsRecord.setPatientId(patient.get_id());
-        feedingHabitsRecord.setCreatedAt(DateUtils.getCurrentDateISO8601());
         feedingHabitsRecord.setWeeklyFeedingHabitsDB(weeklyFoodRecords);
         feedingHabitsRecord.setWeeklyFeedingHabits(weeklyFoodRecords);
         Log.i(LOG_TAG, feedingHabitsRecord.toJson());
@@ -133,7 +132,6 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
 
     private void saveSleepHabits() {
         sleepHabit.setPatientId(patient.get_id());
-        sleepHabit.setCreatedAt(DateUtils.getCurrentDateISO8601());
         Log.i(LOG_TAG, sleepHabit.toJson());
         DisposableManager.add(haniotNetRepository
                 .saveSleepHabit(sleepHabit)
@@ -146,7 +144,6 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
 
     private void saveActivityHabits() {
         physicalActivityHabits.setPatientId(patient.get_id());
-        physicalActivityHabits.setCreatedAt(DateUtils.getCurrentDateISO8601());
         Log.i(LOG_TAG, physicalActivityHabits.toJson());
         DisposableManager.add(haniotNetRepository
                 .savePhysicalActivityHabit(physicalActivityHabits)
@@ -770,7 +767,12 @@ public class PatientQuiz extends SimpleSurvey implements Infor.OnInfoListener,
                 physicalActivityHabits.setWeeklyActivities(values);
                 break;
             case 18:
-                feedingHabitsRecord.setFoodAllergyIntolerance(values);
+                List<String> strings = new ArrayList<>();
+
+                for (Integer integer : indexValues) {
+                    strings.add(FeendingHabitsRecordType.FoodAllergyStringolerance.getString(integer));
+                }
+                feedingHabitsRecord.setFoodAllergyIntolerance(strings);
                 break;
         }
     }

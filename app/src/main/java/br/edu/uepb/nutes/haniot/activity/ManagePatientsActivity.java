@@ -167,6 +167,14 @@ public class ManagePatientsActivity extends AppCompatActivity implements OnRecyc
                 }, this::errorHandler));
     }
 
+    @Override
+    public void onBackPressed() {
+        if (appPreferencesHelper.getLastPatient() != null) super.onBackPressed();
+        else Toast.makeText(this,
+                getResources().getString(R.string.no_patient_registered),
+                Toast.LENGTH_LONG).show();
+    }
+
     /**
      * Manipulates the error and displays message
      * according to the type of error.

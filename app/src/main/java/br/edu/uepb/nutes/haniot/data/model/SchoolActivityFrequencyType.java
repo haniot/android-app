@@ -4,7 +4,7 @@ public class SchoolActivityFrequencyType {
 
     public final static String ONE_PER_WEEK = "one_per_week";
     public final static String TWO_PER_WEEK = "two_per_week";
-    public final static String THREE_PER_WEEK = "trhee_per_week";
+    public final static String THREE_PER_WEEK = "three_per_week";
     public final static String FOUR_MORE_PER_WEEK = "four_more_per_week";
     public final static String NONE = "none";
 
