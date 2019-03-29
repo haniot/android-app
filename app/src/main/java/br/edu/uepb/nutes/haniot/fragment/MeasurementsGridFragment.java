@@ -684,7 +684,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
 
             case ItemGridType.BLOOD_GLUCOSE:
                 appPreferencesHelper
-                        .saveInt(getResources().getString(R.string.measurementType), ItemGridType.ACTIVITY);
+                        .saveInt(getResources().getString(R.string.measurementType), ItemGridType.BLOOD_GLUCOSE);
                 startActivity(it);
                 break;
 

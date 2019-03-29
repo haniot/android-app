@@ -22,7 +22,7 @@ import butterknife.ButterKnife;
  */
 public class FragmentBloodPressure extends Fragment {
 
-    @BindView(R.id.seekBar)
+    @BindView(R.id.heart_rate_control)
     SeekBar seekBar;
 
     @BindView(R.id.value)
