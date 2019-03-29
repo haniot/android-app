@@ -45,6 +45,7 @@ import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.MeasurementType;
 import br.edu.uepb.nutes.haniot.data.model.dao.DeviceDAO;
 import br.edu.uepb.nutes.haniot.data.model.dao.MeasurementDAO;
+import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
 import br.edu.uepb.nutes.haniot.server.historical.CallbackHistorical;
 import br.edu.uepb.nutes.haniot.server.historical.Historical;
@@ -77,7 +78,7 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
     private String mDeviceAddress;
     private Animation animation;
     private Device mDevice;
-    private Session session;
+    private AppPreferencesHelper appPreferencesHelper;
     private MeasurementDAO measurementDAO;
     private DeviceDAO deviceDAO;
     private DecimalFormat decimalFormat;
@@ -151,17 +152,17 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
         // synchronization with server
         synchronizeWithServer();
 
-        session = new Session(this);
+        appPreferencesHelper = AppPreferencesHelper.getInstance(this);
         measurementDAO = MeasurementDAO.getInstance(this);
         deviceDAO = DeviceDAO.getInstance(this);
         decimalFormat = new DecimalFormat(getString(R.string.format_number2), new DecimalFormatSymbols(Locale.US));
-        params = new Params(session.get_idLogged(), MeasurementType.BODY_MASS);
+        params = new Params(appPreferencesHelper.getUserLogged().get_id(), MeasurementType.BODY_MASS);
         scaleManager = new ScaleManager(this);
         animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
         mChartButton.setOnClickListener(this);
         mAddButton.setOnClickListener(this);
 
-        mDevice = deviceDAO.getByType(session.getUserLogged().get_id(), DeviceType.BODY_COMPOSITION);
+        mDevice = deviceDAO.getByType(appPreferencesHelper.getUserLogged().get_id(), DeviceType.BODY_COMPOSITION);
 
         scaleManager.setSimpleCallback(scaleDataCallback);
         initComponents();
@@ -319,7 +320,7 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
      * when an error occurs on the first request with the server.
      */
     private void loadDataLocal() {
-        mAdapter.addItems(measurementDAO.list(MeasurementType.BODY_MASS, session.getIdLogged(), 0, 100));
+        mAdapter.addItems(measurementDAO.list(MeasurementType.BODY_MASS, appPreferencesHelper.getUserLogged().getId(), 0, 100));
 
         if (!mAdapter.itemsIsEmpty()) {
             updateUILastMeasurement(mAdapter.getFirstItem(), false);

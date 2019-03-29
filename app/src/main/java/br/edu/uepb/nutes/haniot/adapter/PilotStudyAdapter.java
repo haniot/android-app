@@ -26,7 +26,7 @@ import butterknife.ButterKnife;
  * @author Copyright (c) 2018, NUTES/UEPB
  */
 public class PilotStudyAdapter extends BaseAdapter<PilotStudy> {
-    private final String LOG = "TemperatureAdapter";
+    private final String LOG = "PilotStudyAdapter";
     private final Context context;
 
     /**

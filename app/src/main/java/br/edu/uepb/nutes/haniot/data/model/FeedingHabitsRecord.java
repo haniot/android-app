@@ -119,9 +119,7 @@ public class FeedingHabitsRecord extends ActivityHabitsRecord {
      */
     public String toJson() {
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-        String a = gson.toJson(this);
-        Log.i("AAAAAAAAAA", a);
-        return a;
+        return gson.toJson(this);
     }
 
     /**

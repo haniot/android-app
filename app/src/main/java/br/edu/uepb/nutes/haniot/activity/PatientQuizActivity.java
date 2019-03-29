@@ -22,7 +22,12 @@ import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.PhysicalActivityHabit;
 import br.edu.uepb.nutes.haniot.data.model.SchoolActivityFrequencyType;
 import br.edu.uepb.nutes.haniot.data.model.SleepHabit;
+import br.edu.uepb.nutes.haniot.data.model.SportsType;
 import br.edu.uepb.nutes.haniot.data.model.WeeklyFoodRecord;
+import br.edu.uepb.nutes.haniot.data.model.dao.FeedingHabitsDAO;
+import br.edu.uepb.nutes.haniot.data.model.dao.MedicalRecordDAO;
+import br.edu.uepb.nutes.haniot.data.model.dao.PhysicalActivityHabitsDAO;
+import br.edu.uepb.nutes.haniot.data.model.dao.SleepHabitsDAO;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
@@ -62,9 +67,17 @@ public class PatientQuizActivity extends SimpleSurvey implements Infor.OnInfoLis
     private SleepHabit sleepHabit;
     private List<WeeklyFoodRecord> weeklyFoodRecords;
 
+    private FeedingHabitsDAO feedingHabitsDAO;
+    private MedicalRecordDAO medicalRecordDAO;
+    private SleepHabitsDAO sleepHabitsDAO;
+    private PhysicalActivityHabitsDAO physicalActivityHabitsDAO;
+
     private AppPreferencesHelper appPreferencesHelper;
     private HaniotNetRepository haniotNetRepository;
 
+    /**
+     * Init view.
+     */
     @Override
     protected void initView() {
         initResources();
@@ -84,27 +97,21 @@ public class PatientQuizActivity extends SimpleSurvey implements Infor.OnInfoLis
         medicalRecord = new MedicalRecord();
         sleepHabit = new SleepHabit();
         physicalActivityHabits = new PhysicalActivityHabit();
+        feedingHabitsDAO = FeedingHabitsDAO.getInstance(this);
+        physicalActivityHabitsDAO = PhysicalActivityHabitsDAO.getInstance(this);
+        sleepHabitsDAO = SleepHabitsDAO.getInstance(this);
+        medicalRecordDAO = MedicalRecordDAO.getInstance(this);
     }
 
     /**
-     * //TODO temp
-     * Log answers.
+     * Save medical records in server.
      */
-    private void logAnswers() {
-        Log.i("Respostas", patient.toJson());
-        Log.i("Respostas", "Feending Habits: " + feedingHabitsRecord.toJson());
-        //  Log.i("Respostas", "Weekly Food Records: " + weeklyFoodRecords.to());
-        // Log.i("Respostas", "Chronic Diseases: " + chronicDiseases.to());
-        Log.i("Respostas", "Medical Record: " + medicalRecord.toJson());
-        Log.i("Respostas", "Physical Activity: " + physicalActivityHabits.toJson());
-        Log.i("Respostas", "Sleep: " + sleepHabit.toJson());
-    }
-
     private void saveMedicalRecords() {
         medicalRecord.setChronicDiseases(chronicDiseases);
         medicalRecord.setChronicDiseasesDB(chronicDiseases);
         medicalRecord.setPatientId(patient.get_id());
         Log.i(LOG_TAG, medicalRecord.toJson());
+        medicalRecordDAO.save(medicalRecord);
         DisposableManager.add(haniotNetRepository
                 .saveMedicalRecord(medicalRecord)
                 .doOnSubscribe(disposable -> Log.i(LOG_TAG, "Salvando Feending Habits no servidor!"))
@@ -114,11 +121,15 @@ public class PatientQuizActivity extends SimpleSurvey implements Infor.OnInfoLis
                 }, this::errorHandler));
     }
 
-    private void saveFeendingHabits() {
+    /**
+     * Save feeding habits in server.
+     */
+    private void saveFeedingHabits() {
         feedingHabitsRecord.setPatientId(patient.get_id());
         feedingHabitsRecord.setWeeklyFeedingHabitsDB(weeklyFoodRecords);
         feedingHabitsRecord.setWeeklyFeedingHabits(weeklyFoodRecords);
         Log.i(LOG_TAG, feedingHabitsRecord.toJson());
+        feedingHabitsDAO.save(feedingHabitsRecord);
         DisposableManager.add(haniotNetRepository
                 .saveFeedingHabitsRecord(feedingHabitsRecord)
                 .doOnSubscribe(disposable -> Log.i(LOG_TAG, "Salvando Feending Habits no servidor!"))
@@ -128,9 +139,13 @@ public class PatientQuizActivity extends SimpleSurvey implements Infor.OnInfoLis
                 }, this::errorHandler));
     }
 
+    /**
+     * Save sleep habits in server.
+     */
     private void saveSleepHabits() {
         sleepHabit.setPatientId(patient.get_id());
         Log.i(LOG_TAG, sleepHabit.toJson());
+        sleepHabitsDAO.save(sleepHabit);
         DisposableManager.add(haniotNetRepository
                 .saveSleepHabit(sleepHabit)
                 .doOnSubscribe(disposable -> Log.i(LOG_TAG, "Salvando Sleep Habits no servidor!"))
@@ -140,9 +155,13 @@ public class PatientQuizActivity extends SimpleSurvey implements Infor.OnInfoLis
                 }, this::errorHandler));
     }
 
+    /**
+     * Save activity habits in server.
+     */
     private void saveActivityHabits() {
         physicalActivityHabits.setPatientId(patient.get_id());
         Log.i(LOG_TAG, physicalActivityHabits.toJson());
+        physicalActivityHabitsDAO.save(physicalActivityHabits);
         DisposableManager.add(haniotNetRepository
                 .savePhysicalActivityHabit(physicalActivityHabits)
                 .doOnSubscribe(disposable -> Log.i(LOG_TAG, "Salvando Activity Habits no servidor!"))
@@ -599,14 +618,13 @@ public class PatientQuizActivity extends SimpleSurvey implements Infor.OnInfoLis
                 saveActivityHabits();
                 break;
             case CATEGORY_MEDICAL_RECORDS:
-                saveFeendingHabits();
+                saveFeedingHabits();
                 break;
             case CATEGORY_SLEEP_HABITS:
                 saveMedicalRecords();
                 break;
             case END_PAGE:
                 saveSleepHabits();
-                logAnswers();
                 startActivity(new Intent(this, MainActivity.class));
                 finish();
                 break;
@@ -762,15 +780,20 @@ public class PatientQuizActivity extends SimpleSurvey implements Infor.OnInfoLis
 
         switch (page) {
             case 4:
-                physicalActivityHabits.setWeeklyActivities(values);
-                break;
-            case 18:
                 List<String> strings = new ArrayList<>();
 
                 for (Integer integer : indexValues) {
-                    strings.add(FeendingHabitsRecordType.FoodAllergyStringolerance.getString(integer));
+                    strings.add(SportsType.getString(integer));
                 }
-                feedingHabitsRecord.setFoodAllergyIntolerance(strings);
+                physicalActivityHabits.setWeeklyActivities(strings);
+                break;
+            case 18:
+                List<String> strings2 = new ArrayList<>();
+
+                for (Integer integer : indexValues) {
+                    strings2.add(FeendingHabitsRecordType.FoodAllergyStringolerance.getString(integer));
+                }
+                feedingHabitsRecord.setFoodAllergyIntolerance(strings2);
                 break;
         }
     }
@@ -787,6 +810,9 @@ public class PatientQuizActivity extends SimpleSurvey implements Infor.OnInfoLis
                 + " | ANSWER: " + value);
     }
 
+    /**
+     * On destroy.
+     */
     @Override
     protected void onDestroy() {
         super.onDestroy();

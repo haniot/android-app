@@ -38,6 +38,7 @@ import java.util.UUID;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
+import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.fragment.GenericDialogFragment;
 import br.edu.uepb.nutes.haniot.fragment.RealTimeFragment;
 import br.edu.uepb.nutes.haniot.data.model.Device;
@@ -74,7 +75,7 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
     private String[] deviceInformations;
     private ObjectAnimator heartAnimation;
     private boolean isChronometerRunnig;
-    private Session session;
+    private AppPreferencesHelper appPreferencesHelper;
     private MeasurementDAO MeasurementDAO;
     private DeviceDAO deviceDAO;
     private int fcMinimum, fcMaximum, fcAccumulate, fcTotal;
@@ -116,7 +117,7 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
 
         Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
-        session = new Session(this);
+        appPreferencesHelper = AppPreferencesHelper.getInstance(this);
         deviceDAO = DeviceDAO.getInstance(this);
         MeasurementDAO = MeasurementDAO.getInstance(this);
         registrationTimeStart = DateUtils.getCurrentDatetime();
@@ -340,7 +341,7 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
                     updateConnectionState(mConnected);
                 }
 
-                new Handler().postDelayed(()->{
+                new Handler().postDelayed(() -> {
                     try {
                         Measurement measurement = JsonToMeasurementParser.heartRate(intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
                         Log.i("MeasurementTO", measurement.toString());
@@ -379,6 +380,7 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
 
     /**
      * Send Measurements for chart.
+     *
      * @param measurement
      */
     public void sendMeasurements(Measurement measurement) {
@@ -394,12 +396,13 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
         initFragments();
     }
 
-    private void initFragments(){
+    private void initFragments() {
         realTimeFragment = RealTimeFragment.newInstance(this);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_realtime, realTimeFragment);
         transaction.commit();
     }
+
     /**
      * Initialize ToolBar
      */

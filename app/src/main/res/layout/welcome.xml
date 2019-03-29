@@ -37,12 +37,12 @@
             android:gravity="center"
             android:text="Este questionário que você irá responder agora faz parte de uma pesquisa que tem como objetivo de conhecer alguns aspectos importantes da saúde dos(as) crianças e adolescentes que frequentam a clínica de odontologia da UEPB. Voce não será identificado(a)."
             android:textColor="@color/colorTextDark"
-            android:textSize="26sp" />
+            android:textSize="20sp" />
 
         <ImageView
             android:id="@+id/imageView2"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:layout_gravity="center"
             android:layout_margin="15dp"
             android:paddingTop="20dp"
@@ -54,7 +54,7 @@
             android:layout_width="250dp"
             android:layout_height="50dp"
             android:layout_gravity="center"
-            android:layout_marginTop="100dp"
+            android:layout_marginTop="50dp"
             android:background="@drawable/button_stylezed"
             android:text="Começar"
             android:textColor="@color/colorAccent"

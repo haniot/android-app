@@ -52,6 +52,7 @@ import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.MeasurementType;
 import br.edu.uepb.nutes.haniot.data.model.dao.DeviceDAO;
 import br.edu.uepb.nutes.haniot.data.model.dao.MeasurementDAO;
+import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.parse.JsonToMeasurementParser;
 import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
 import br.edu.uepb.nutes.haniot.server.historical.CallbackHistorical;
@@ -83,7 +84,7 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
     private String mDeviceAddress;
     private Animation animation;
     private Device mDevice;
-    private Session session;
+    private AppPreferencesHelper appPreferencesHelper;
     private MeasurementDAO measurementDAO;
     private DeviceDAO deviceDAO;
     private DecimalFormat decimalFormat;
@@ -143,11 +144,11 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
         synchronizeWithServer();
 
         mDeviceAddress = "1C:87:74:01:73:10";
-        session = new Session(this);
+        appPreferencesHelper = AppPreferencesHelper.getInstance(this);
         measurementDAO = MeasurementDAO.getInstance(this);
         deviceDAO = DeviceDAO.getInstance(this);
         decimalFormat = new DecimalFormat(getString(R.string.format_number1), new DecimalFormatSymbols(Locale.US));
-        params = new Params(session.get_idLogged(), MeasurementType.TEMPERATURE);
+        params = new Params(appPreferencesHelper.getUserLogged().get_id(), MeasurementType.TEMPERATURE);
 
         animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
         mChartButton.setOnClickListener(this);
@@ -239,7 +240,7 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
                         // we must check if itShouldLoadMore variable is true [unlocked]
                         if (itShouldLoadMore) loadMoreData();
                     }
-                }else{
+                } else {
                     mAddButton.show();
                 }
             }
@@ -266,7 +267,7 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
      * when an error occurs on the first request with the server.
      */
     private void loadDataLocal() {
-        mAdapter.addItems(measurementDAO.list(MeasurementType.TEMPERATURE, session.getIdLogged(), 0, 100));
+        mAdapter.addItems(measurementDAO.list(MeasurementType.TEMPERATURE, appPreferencesHelper.getUserLogged().getId(), 0, 100));
 
         if (!mAdapter.itemsIsEmpty()) {
             updateUILastMeasurement(mAdapter.getFirstItem(), false);
@@ -546,6 +547,7 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
     public String getAction() {
         return action;
     }
+
     /**
      * Manipula vários eventos desencadeados pelo Serviço.
      * <p>
@@ -569,13 +571,11 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
                 BluetoothGattService gattService = mBluetoothLeService.getGattService(UUID.fromString(GattAttributes.SERVICE_HEALTH_THERMOMETER));
 
 
-
                 if (gattService != null) {
                     BluetoothGattCharacteristic characteristic = gattService.getCharacteristic(UUID.fromString(GattAttributes.CHARACTERISTIC_TEMPERATURE_MEASUREMENT));
                     if (characteristic != null)
                         setCharacteristicNotification(characteristic);
                 }
-
 
 
             } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
@@ -584,7 +584,7 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
                 try {
                     Measurement measurement = JsonToMeasurementParser.temperature(jsonData);
                     measurement.setDevice(mDevice);
-                    measurement.setUser(session.getUserLogged());
+                    measurement.setUser(appPreferencesHelper.getUserLogged());
 
                     /**
                      * Update UI

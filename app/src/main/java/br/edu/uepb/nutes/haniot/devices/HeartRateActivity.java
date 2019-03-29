@@ -37,6 +37,7 @@ import br.edu.uepb.nutes.haniot.activity.charts.HeartRateChartActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.HeartRateAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
+import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.fragment.GenericDialogFragment;
 import br.edu.uepb.nutes.haniot.data.model.Device;
 import br.edu.uepb.nutes.haniot.data.model.DeviceType;
@@ -79,7 +80,7 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
     private String[] deviceInformations;
     private ObjectAnimator heartAnimation;
     private Device mDevice;
-    private Session session;
+    private AppPreferencesHelper appPreferencesHelper;
     private MeasurementDAO measurementDAO;
     private DeviceDAO deviceDAO;
     private HeartRateAdapter mAdapter;
@@ -144,14 +145,14 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
         // synchronization with server
         synchronizeWithServer();
 
-        session = new Session(this);
+        appPreferencesHelper = AppPreferencesHelper.getInstance(this);
         measurementDAO = MeasurementDAO.getInstance(this);
         deviceDAO = DeviceDAO.getInstance(this);
-        params = new Params(session.get_idLogged(), MeasurementType.HEART_RATE);
+        params = new Params(appPreferencesHelper.getUserLogged().get_id(), MeasurementType.HEART_RATE);
         heartRateManager = new HeartRateManager(this);
         heartRateManager.setSimpleCallback(heartRateDataCallback);
 
-        mDevice = deviceDAO.getByType(session.getUserLogged().get_id(), DeviceType.HEART_RATE);
+        mDevice = deviceDAO.getByType(appPreferencesHelper.getUserLogged().get_id(), DeviceType.HEART_RATE);
         mChartButton.setOnClickListener(this);
         mRecordHeartRateButton.setOnClickListener(this);
         mAddMeasurementButton.setOnClickListener(this);
@@ -303,7 +304,7 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
      * when an error occurs on the first request with the server.
      */
     private void loadDataLocal() {
-        mAdapter.addItems(measurementDAO.list(MeasurementType.HEART_RATE, session.getIdLogged(), 0, 100));
+        mAdapter.addItems(measurementDAO.list(MeasurementType.HEART_RATE, appPreferencesHelper.getUserLogged().getId(), 0, 100));
 
         if (!mAdapter.itemsIsEmpty()) {
             updateUILastMeasurement(mAdapter.getFirstItem(), false);
@@ -559,7 +560,7 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
             /**
              * Add relations
              */
-            measurementSave.setUser(session.getUserLogged());
+            measurementSave.setUser(appPreferencesHelper.getUserLogged());
             if (mDevice != null)
                 measurementSave.setDevice(mDevice);
 

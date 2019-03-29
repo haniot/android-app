@@ -23,7 +23,7 @@ import br.edu.uepb.nutes.haniot.utils.NumberPickerDialog;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class AddTemperatureManuallyFragment extends Fragment implements View.OnClickListener,
+public class FragmentTemperature extends Fragment implements View.OnClickListener,
         DialogInterface.OnClickListener{
 
     @BindView(R.id.botTemperature)
@@ -40,7 +40,7 @@ public class AddTemperatureManuallyFragment extends Fragment implements View.OnC
     private Session session;
     private int data = -1;
 
-    public AddTemperatureManuallyFragment() {}
+    public FragmentTemperature() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

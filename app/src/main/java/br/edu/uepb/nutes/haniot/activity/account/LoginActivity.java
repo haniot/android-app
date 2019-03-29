@@ -258,6 +258,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
             return;
         }
+        Log.i(LOG_TAG, e.getMessage());
         showMessage(R.string.error_500);
     }
 

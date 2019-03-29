@@ -47,6 +47,7 @@ import br.edu.uepb.nutes.haniot.data.model.MeasurementType;
 import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.model.dao.DeviceDAO;
 import br.edu.uepb.nutes.haniot.data.model.dao.MeasurementDAO;
+import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.parse.JsonToMeasurementParser;
 import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
 import br.edu.uepb.nutes.haniot.server.historical.CallbackHistorical;
@@ -64,14 +65,14 @@ public class BodyCompositionHDPActivity extends AppCompatActivity implements Vie
 
     private Animation animation;
     private Device mDevice;
-    private Session session;
     private DeviceDAO deviceDAO;
+    private AppPreferencesHelper appPreferencesHelper;
     private MeasurementDAO measurementDAO;
     private DecimalFormat formatNumber;
     private BodyCompositionAdapter mAdapter;
     private Params params;
     private Handler tm;
-//    private HealthServiceAPI api;
+    //    private HealthServiceAPI api;
     private int[] specs = {0x100F}; // 0x100F - Body Weight Scale
 
     /**
@@ -138,11 +139,11 @@ public class BodyCompositionHDPActivity extends AppCompatActivity implements Vie
         // synchronization with server
         synchronizeWithServer();
 
-        session = new Session(this);
+        appPreferencesHelper = AppPreferencesHelper.getInstance(this);
         deviceDAO = DeviceDAO.getInstance(this);
         measurementDAO = MeasurementDAO.getInstance(this);
         formatNumber = new DecimalFormat(getString(R.string.format_number2), new DecimalFormatSymbols(Locale.US));
-        params = new Params(session.get_idLogged(), MeasurementType.BODY_MASS);
+        params = new Params(appPreferencesHelper.getUserLogged().get_id(), MeasurementType.BODY_MASS);
 
         animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
         mChartButton.setOnClickListener(this);
@@ -262,7 +263,7 @@ public class BodyCompositionHDPActivity extends AppCompatActivity implements Vie
      * when an error occurs on the first request with the server.
      */
     private void loadDataLocal() {
-        mAdapter.addItems(measurementDAO.list(MeasurementType.BODY_MASS, session.getIdLogged(), 0, 100));
+        mAdapter.addItems(measurementDAO.list(MeasurementType.BODY_MASS, appPreferencesHelper.getUserLogged().getId(), 0, 100));
 
         if (!mAdapter.itemsIsEmpty()) {
             updateUILastMeasurement(mAdapter.getFirstItem(), false);
@@ -614,7 +615,7 @@ public class BodyCompositionHDPActivity extends AppCompatActivity implements Vie
             @Override
             public void run() {
                 try {
-                    User user = session.getUserLogged();
+                    User user = appPreferencesHelper.getUserLogged();
 
                     Measurement bodyMass = JsonToMeasurementParser.bodyMass(xmldata);
                     bodyMass.setUser(user);

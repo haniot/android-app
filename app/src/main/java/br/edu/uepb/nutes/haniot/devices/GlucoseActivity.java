@@ -55,6 +55,7 @@ import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.MeasurementType;
 import br.edu.uepb.nutes.haniot.data.model.dao.DeviceDAO;
 import br.edu.uepb.nutes.haniot.data.model.dao.MeasurementDAO;
+import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.parse.JsonToContextParser;
 import br.edu.uepb.nutes.haniot.parse.JsonToMeasurementParser;
 import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
@@ -88,7 +89,7 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
     private BluetoothGattService mGattService;
     private Animation animation;
     private Device mDevice;
-    private Session session;
+    private AppPreferencesHelper appPreferencesHelper;
     private Measurement glucose;
     private List<ContextMeasurement> contextMeasurements;
     private MeasurementDAO measurementDAO;
@@ -154,11 +155,11 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
         // synchronization with server
         synchronizeWithServer();
 
-        session = new Session(this);
+        appPreferencesHelper = AppPreferencesHelper.getInstance(this);
 
         measurementDAO = MeasurementDAO.getInstance(this);
         deviceDAO = DeviceDAO.getInstance(this);
-        params = new Params(session.get_idLogged(), MeasurementType.BLOOD_GLUCOSE);
+        params = new Params(appPreferencesHelper.getUserLogged().get_id(), MeasurementType.BLOOD_GLUCOSE);
 
         animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
         mChartButton.setOnClickListener(this);
@@ -167,7 +168,7 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
         Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
 
-        mDevice = deviceDAO.getByType(session.getUserLogged().get_id(), DeviceType.GLUCOMETER);
+        mDevice = deviceDAO.getByType(appPreferencesHelper.getUserLogged().get_id(), DeviceType.GLUCOMETER);
         isGetAllMonitor = false;
         initComponents();
     }
@@ -278,7 +279,7 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
      * when an error occurs on the first request with the server.
      */
     private void loadDataLocal() {
-        mAdapter.addItems(measurementDAO.list(MeasurementType.BLOOD_GLUCOSE, session.getIdLogged(), 0, 100));
+        mAdapter.addItems(measurementDAO.list(MeasurementType.BLOOD_GLUCOSE, appPreferencesHelper.getUserLogged().getId(), 0, 100));
 
         if (!mAdapter.itemsIsEmpty()) {
             updateUILastMeasurement(mAdapter.getFirstItem(), false);
@@ -629,34 +630,31 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
                     if (jsonGlucoseContextData != null && jsonGlucoseData != null)
                         contextMeasurements = JsonToContextParser.parse(jsonGlucoseData, jsonGlucoseContextData);
 
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (glucose != null) {
+                    new Handler().postDelayed(() -> {
+                        if (glucose != null) {
 
-                                glucose.setDevice(mDevice);
-                                glucose.setUser(session.getUserLogged());
+                            glucose.setDevice(mDevice);
+                            glucose.setUser(appPreferencesHelper.getUserLogged());
 
-                                /**
-                                 * Add relationships
-                                 */
-                                if (contextMeasurements != null)
-                                    glucose.addContext(contextMeasurements);
+                            /**
+                             * Add relationships
+                             */
+                            if (contextMeasurements != null)
+                                glucose.addContext(contextMeasurements);
 
-                                /**
-                                 * Update UI
-                                 */
-                                updateUILastMeasurement(glucose, true);
+                            /**
+                             * Update UI
+                             */
+                            updateUILastMeasurement(glucose, true);
 
-                                /**
-                                 * Save in local
-                                 * Send to server saved successfully
-                                 */
-                                if (measurementDAO.save(glucose)) {
-                                    if (!isGetAllMonitor) {
-                                        synchronizeWithServer();
-                                        loadData();
-                                    }
+                            /**
+                             * Save in local
+                             * Send to server saved successfully
+                             */
+                            if (measurementDAO.save(glucose)) {
+                                if (!isGetAllMonitor) {
+                                    synchronizeWithServer();
+                                    loadData();
                                 }
                             }
                         }

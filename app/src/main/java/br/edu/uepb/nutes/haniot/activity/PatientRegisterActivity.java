@@ -21,16 +21,10 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import java.util.Calendar;
-import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.data.model.ChronicDisease;
-import br.edu.uepb.nutes.haniot.data.model.FeedingHabitsRecord;
-import br.edu.uepb.nutes.haniot.data.model.MedicalRecord;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
-import br.edu.uepb.nutes.haniot.data.model.PhysicalActivityHabit;
-import br.edu.uepb.nutes.haniot.data.model.SleepHabit;
-import br.edu.uepb.nutes.haniot.data.model.WeeklyFoodRecord;
+import br.edu.uepb.nutes.haniot.data.model.PatientsType;
 import br.edu.uepb.nutes.haniot.data.model.dao.PatientDAO;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
@@ -87,14 +81,6 @@ public class PatientRegisterActivity extends AppCompatActivity {
     private HaniotNetRepository haniotNetRepository;
     private PatientDAO patientDAO;
 
-
-    private PhysicalActivityHabit physicalActivityHabits;
-    private FeedingHabitsRecord feedingHabitsRecord;
-    private MedicalRecord medicalRecord;
-    private List<ChronicDisease> chronicDiseases;
-    private SleepHabit sleepHabit;
-    private List<WeeklyFoodRecord> weeklyFoodRecords;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,40 +90,6 @@ public class PatientRegisterActivity extends AppCompatActivity {
         toolbar.setTitle(getResources().getString(R.string.patient_profile));
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//
-//        physicalActivityHabits.setCreatedAt(DateUtils.getCurrentDateISO8601());
-//        physicalActivityHabits.set_id("ID");
-//        physicalActivityHabits.setId(34234234);
-//        physicalActivityHabits.setPatientId("patientID");
-//        physicalActivityHabits.setSchoolActivityFreq("Não sei");
-//        List<String> strings = new ArrayList<>();
-//        strings.add("Futebol");
-//        strings.add("Futsal");
-//        physicalActivityHabits.setWeeklyActivities(strings);
-//        Log.i(TAG, physicalActivityHabits.toJson());
-//
-//        feedingHabitsRecord.setCreatedAt(DateUtils.getCurrentDateISO8601());
-//        feedingHabitsRecord.setBreakfastDailyFrequency("breakfastFrequency");
-//        feedingHabitsRecord.setDailyWaterGlasses("AAA");
-//        strings.clear();
-//        strings.add("AVL");
-//        strings.add("Ovo");
-//        feedingHabitsRecord.setFoodAllergyIntolerance(strings);
-//        feedingHabitsRecord.setSixMonthBreastFeeding("AA");
-//        feedingHabitsRecord.set_id("ID");
-//        feedingHabitsRecord.setId(231321);
-//        feedingHabitsRecord.setPatientId("patientID");
-//        WeeklyFoodRecord weeklyFoodRecord = new WeeklyFoodRecord();
-//        weeklyFoodRecord.setId(32323);
-//        weeklyFoodRecord.setFood("Arroz");
-//        weeklyFoodRecord.setSevenDaysFreq("asa");
-//        feedingHabitsRecord.setWeeklyFeedingHabits(weeklyFoodRecords);
-//        weeklyFoodRecord.setId(32323);
-//        weeklyFoodRecord.setFood("Feijão");
-//        weeklyFoodRecord.setSevenDaysFreq("asa");
-//        feedingHabitsRecord.setWeeklyFeedingHabits(weeklyFoodRecords);
-//        Log.i(TAG, feedingHabitsRecord.toJson());
-
 
         initComponents();
     }
@@ -184,8 +136,8 @@ public class PatientRegisterActivity extends AppCompatActivity {
         patient.setFirstName(nameEditTExt.getText().toString());
         patient.setLastName(lastNameEditTExt.getText().toString());
         patient.setBirthDate(DateUtils.formatDate(myCalendar.getTimeInMillis(), "yyyy-MM-dd"));
-        if (genderGroup.getCheckedRadioButtonId() == R.id.male) patient.setGender("male");
-        else patient.setGender("female");
+        if (genderGroup.getCheckedRadioButtonId() == R.id.male) patient.setGender(PatientsType.GenderType.MALE);
+        else patient.setGender(PatientsType.GenderType.FEMALE);
         patient.setPilotId(appPreferencesHelper.getLastPilotStudy().get_id());
 
         DisposableManager.add(haniotNetRepository
@@ -229,6 +181,9 @@ public class PatientRegisterActivity extends AppCompatActivity {
         } else showMessage(R.string.error_500);
     }
 
+    /**
+     * On back pressed.
+     */
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -254,7 +209,6 @@ public class PatientRegisterActivity extends AppCompatActivity {
     View.OnClickListener fabClick = v -> {
         if (validate()) {
             savePatient();
-            //finish();
         }
     };
 
@@ -305,6 +259,11 @@ public class PatientRegisterActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * On options item selected.
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {

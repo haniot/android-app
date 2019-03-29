@@ -46,6 +46,7 @@ import br.edu.uepb.nutes.haniot.data.model.MeasurementType;
 import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.model.dao.DeviceDAO;
 import br.edu.uepb.nutes.haniot.data.model.dao.MeasurementDAO;
+import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.parse.JsonToMeasurementParser;
 import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
 import br.edu.uepb.nutes.haniot.server.historical.CallbackHistorical;
@@ -70,7 +71,7 @@ public class BloodPressureHDPActivity extends AppCompatActivity implements View.
 
     private Animation animation;
     private Device mDevice;
-    private Session session;
+    private AppPreferencesHelper appPreferencesHelper;
     private MeasurementDAO measurementDAO;
     private DeviceDAO deviceDAO;
     private BloodPressureAdapter mAdapter;
@@ -147,10 +148,10 @@ public class BloodPressureHDPActivity extends AppCompatActivity implements View.
         // synchronization with server
         synchronizeWithServer();
 
-        session = new Session(this);
+        appPreferencesHelper = AppPreferencesHelper.getInstance(this);
         deviceDAO = DeviceDAO.getInstance(this);
         measurementDAO = MeasurementDAO.getInstance(this);
-        params = new Params(session.get_idLogged(), MeasurementType.BLOOD_PRESSURE_SYSTOLIC);
+        params = new Params(appPreferencesHelper.getUserLogged().get_id(), MeasurementType.BLOOD_PRESSURE_SYSTOLIC);
 
         animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
         mChartButton.setOnClickListener(this);
@@ -246,7 +247,7 @@ public class BloodPressureHDPActivity extends AppCompatActivity implements View.
                         // we must check if itShouldLoadMore variable is true [unlocked]
                         if (itShouldLoadMore) loadMoreData();
                     }
-                }else{
+                } else {
                     mAddButton.show();
                 }
             }
@@ -274,7 +275,7 @@ public class BloodPressureHDPActivity extends AppCompatActivity implements View.
      * when an error occurs on the first request with the server.
      */
     private void loadDataLocal() {
-        mAdapter.addItems(measurementDAO.list(MeasurementType.BLOOD_PRESSURE_SYSTOLIC, session.getIdLogged(), 0, 100));
+        mAdapter.addItems(measurementDAO.list(MeasurementType.BLOOD_PRESSURE_SYSTOLIC, appPreferencesHelper.getUserLogged().getId(), 0, 100));
 
         if (!mAdapter.itemsIsEmpty()) {
             updateUILastMeasurement(mAdapter.getFirstItem(), false);
@@ -637,45 +638,42 @@ public class BloodPressureHDPActivity extends AppCompatActivity implements View.
      * @param xmldata String
      */
     private void handleMeasurement(String xmldata) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    User user = session.getUserLogged();
+        runOnUiThread(() -> {
+            try {
+                User user = appPreferencesHelper.getUserLogged();
 
-                    Measurement systolic = JsonToMeasurementParser.systolic(xmldata);
-                    systolic.setUser(user);
-                    systolic.setDevice(mDevice);
+                Measurement systolic = JsonToMeasurementParser.systolic(xmldata);
+                systolic.setUser(user);
+                systolic.setDevice(mDevice);
 
-                    Measurement diastolic = JsonToMeasurementParser.diastolic(xmldata);
-                    diastolic.setUser(user);
-                    diastolic.setDevice(mDevice);
+                Measurement diastolic = JsonToMeasurementParser.diastolic(xmldata);
+                diastolic.setUser(user);
+                diastolic.setDevice(mDevice);
 
-                    Measurement heartRate = JsonToMeasurementParser.heartRate(xmldata);
-                    heartRate.setUser(user);
-                    heartRate.setDevice(mDevice);
+                Measurement heartRate = JsonToMeasurementParser.heartRate(xmldata);
+                heartRate.setUser(user);
+                heartRate.setDevice(mDevice);
 
-                    /**
-                     * Add relationships
-                     */
-                    systolic.addMeasurement(diastolic, heartRate);
+                /**
+                 * Add relationships
+                 */
+                systolic.addMeasurement(diastolic, heartRate);
 
-                    /**
-                     * Update UI
-                     */
-                    updateUILastMeasurement(systolic, true);
+                /**
+                 * Update UI
+                 */
+                updateUILastMeasurement(systolic, true);
 
-                    /**
-                     * Save in local
-                     * Send to server saved successfully
-                     */
-                    if (measurementDAO.save(systolic)) {
-                        synchronizeWithServer();
-                        loadData();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                /**
+                 * Save in local
+                 * Send to server saved successfully
+                 */
+                if (measurementDAO.save(systolic)) {
+                    synchronizeWithServer();
+                    loadData();
                 }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
         });
     }

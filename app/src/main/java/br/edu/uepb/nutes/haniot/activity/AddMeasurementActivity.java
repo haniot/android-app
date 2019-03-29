@@ -245,12 +245,9 @@ public class AddMeasurementActivity extends AppCompatActivity {
     }
 
     private void showToast(final String menssage) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast toast = Toast.makeText(getApplicationContext(), menssage, Toast.LENGTH_LONG);
-                toast.show();
-            }
+        runOnUiThread(() -> {
+            Toast toast = Toast.makeText(getApplicationContext(), menssage, Toast.LENGTH_LONG);
+            toast.show();
         });
     }
 
