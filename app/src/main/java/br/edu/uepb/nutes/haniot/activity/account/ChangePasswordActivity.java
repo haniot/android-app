@@ -138,8 +138,8 @@ public class ChangePasswordActivity extends AppCompatActivity {
         // Regular expression to check
         Pattern check2 = Pattern.compile("([^a-zA-Z0-9@#$%&* !?._+-])");
 
-        if (!check1.matcher(currentPassword).matches() || check2.matcher(currentPassword).find()) {
-            currentPasswordEditText.setError(getString(R.string.validate_password));
+        if (currentPassword.isEmpty()) {
+            currentPasswordEditText.setError(getString(R.string.validate_not_null));
             requestFocus(currentPasswordEditText);
             return false;
         } else {
