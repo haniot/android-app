@@ -20,6 +20,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ import java.util.List;
 import androidx.annotation.RequiresApi;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.AddMeasurementActivity;
+import br.edu.uepb.nutes.haniot.activity.MainActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.ManagerMeasurementsActivity;
 import br.edu.uepb.nutes.haniot.adapter.GridDashAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
@@ -88,6 +90,10 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
     RecyclerView gridMeasurement;
     @BindView(R.id.edit_monitor)
     TextView editMonitor;
+    @BindView(R.id.add_monitor)
+    TextView addMonitor;
+    @BindView(R.id.root)
+    RelativeLayout message;
 
     public MeasurementsGridFragment() {
         // Required empty public constructor
@@ -260,7 +266,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
         builder.addScanPeriod(999999999);
 
         MeasurementMonitor measurementMonitor;
-        
+
         if (appPreferencesHelper.getBoolean(getResources()
                 .getString(R.string.key_weight))) {
             if (scaleManager == null) {
@@ -344,8 +350,22 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
 
         mAdapter.clearItems();
         mAdapter.addItems(measurementMonitors);
+        if (measurementMonitors.isEmpty()) {
+            message.setVisibility(View.VISIBLE);
+            editMonitor.setVisibility(View.INVISIBLE);
+        } else {
+            message.setVisibility(View.INVISIBLE);
+            editMonitor.setVisibility(View.VISIBLE);
+        }
         simpleBleScanner = builder.build();
-        simpleBleScanner.startScan(simpleScannerCallback);
+        if (BluetoothAdapter.getDefaultAdapter() != null
+                && BluetoothAdapter.getDefaultAdapter().isEnabled()
+                && ((MainActivity) getActivity()).hasLocationPermissions()) {
+            simpleBleScanner.startScan(simpleScannerCallback);
+        } else {
+            if (isAdded() && getActivity() != null)
+                communicator.showMessage(R.string.bluetooth_disabled);
+        }
     }
 
     /**
@@ -360,6 +380,11 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
             Intent it = new Intent(getContext(), ManagerMeasurementsActivity.class);
             startActivity(it);
         });
+        addMonitor.setOnClickListener(v -> {
+            Intent it = new Intent(getContext(), ManagerMeasurementsActivity.class);
+            startActivity(it);
+        });
+
     }
 
     /**

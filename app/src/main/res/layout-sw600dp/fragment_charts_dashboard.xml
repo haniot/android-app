@@ -1,26 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/colorPrimary">
 
-    <!-- TODO: Update blank fragment layout -->
+    <LinearLayout
+        android:id="@+id/box_message_error"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimaryDark"
+        android:gravity="center"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/message_error"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="16sp"
+            android:text="@null"
+            android:textColor="@color/colorTextDark" />
+    </LinearLayout>
+
     <android.support.v7.widget.CardView
         android:id="@+id/card_view"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:layout_gravity="top|center_vertical|center"
-        android:layout_marginBottom="40dp"
+        android:layout_marginTop="8dp"
         android:textAlignment="center"
         app:cardBackgroundColor="@color/colorPrimary"
         app:cardCornerRadius="6dp"
         app:cardElevation="0dp"
         app:cardPreventCornerOverlap="false"
-        app:cardUseCompatPadding="true">
+        app:cardUseCompatPadding="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/box_message_error">
+
 
         <RelativeLayout
             android:id="@+id/relativeLayout"
@@ -31,7 +54,7 @@
                 android:id="@+id/patientName"
                 android:layout_width="wrap_content"
                 android:layout_height="62dp"
-                android:layout_alignTop="@+id/progressBar2"
+                android:layout_alignTop="@+id/receiving"
                 android:layout_centerHorizontal="true"
                 android:layout_toEndOf="@+id/patient"
                 android:gravity="center"
@@ -88,14 +111,14 @@
                 android:id="@+id/textValueMeasurement"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_above="@+id/lightProgress2"
                 android:layout_below="@+id/pulsator"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="18dp"
                 android:text="-"
+                android:layout_marginBottom="40dp"
                 android:textAlignment="center"
                 android:textColor="@color/cardview_light_background"
-                android:textSize="40sp" />
+                android:textSize="50sp" />
 
             <TextView
                 android:id="@+id/textUnit"
@@ -173,7 +196,7 @@
                 android:visibility="invisible" />
 
             <ProgressBar
-                android:id="@+id/progressBar2"
+                android:id="@+id/receiving"
                 style="?android:attr/progressBarStyle"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
@@ -214,7 +237,5 @@
                 app:srcCompat="@drawable/x_bg" />
 
         </RelativeLayout>
-
     </android.support.v7.widget.CardView>
-
-</android.support.design.widget.CoordinatorLayout>
+</android.support.constraint.ConstraintLayout>

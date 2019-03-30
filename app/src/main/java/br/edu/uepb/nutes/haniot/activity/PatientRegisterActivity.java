@@ -25,6 +25,7 @@ import java.util.Calendar;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.PatientsType;
+import br.edu.uepb.nutes.haniot.data.model.UserAccess;
 import br.edu.uepb.nutes.haniot.data.model.dao.PatientDAO;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
@@ -80,6 +81,7 @@ public class PatientRegisterActivity extends AppCompatActivity {
     private AppPreferencesHelper appPreferencesHelper;
     private HaniotNetRepository haniotNetRepository;
     private PatientDAO patientDAO;
+    private boolean isEdit = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +93,7 @@ public class PatientRegisterActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        if (getIntent().hasExtra("action")) isEdit = true;
         initComponents();
     }
 
@@ -132,33 +135,42 @@ public class PatientRegisterActivity extends AppCompatActivity {
      * Save patient in App Preferences.
      */
     private void savePatient() {
-        patient = new Patient();
+        if (!isEdit) patient = new Patient();
         patient.setFirstName(nameEditTExt.getText().toString());
         patient.setLastName(lastNameEditTExt.getText().toString());
         patient.setBirthDate(DateUtils.formatDate(myCalendar.getTimeInMillis(), "yyyy-MM-dd"));
-        if (genderGroup.getCheckedRadioButtonId() == R.id.male) patient.setGender(PatientsType.GenderType.MALE);
+        if (genderGroup.getCheckedRadioButtonId() == R.id.male)
+            patient.setGender(PatientsType.GenderType.MALE);
         else patient.setGender(PatientsType.GenderType.FEMALE);
         patient.setPilotId(appPreferencesHelper.getLastPilotStudy().get_id());
-
-        DisposableManager.add(haniotNetRepository
-                .savePatient(patient)
-                .doOnSubscribe(disposable -> {
-                    Log.i(TAG, "Salvando paciente no servidor!");
-                    showLoading(true);
-                })
-                .doAfterTerminate(() -> {
-                    showLoading(false);
-                    Log.i(TAG, "Salvando paciente no servidor!");
-                })
-                .subscribe(patient -> {
-                    if (patient.get_id() == null) {
-                        showMessage(R.string.error_recover_data);
-                        return;
-                    }
-                    patientDAO.save(patient);
-                    appPreferencesHelper.saveLastPatient(patient);
-                    startActivity(new Intent(PatientRegisterActivity.this, PatientQuizActivity.class));
-                }, this::errorHandler));
+        Log.i(TAG, patient.toJson());
+        if (isEdit)
+            DisposableManager.add(haniotNetRepository
+                    .updatePatient(patient)
+                    .doOnSubscribe(disposable -> showLoading(true))
+                    .doAfterTerminate(() -> showLoading(false))
+                    .subscribe(patient1 -> showMessage(R.string.update_success),
+                            this::errorHandler));
+        else
+            DisposableManager.add(haniotNetRepository
+                    .savePatient(patient)
+                    .doOnSubscribe(disposable -> {
+                        Log.i(TAG, "Salvando paciente no servidor!");
+                        showLoading(true);
+                    })
+                    .doAfterTerminate(() -> {
+                        showLoading(false);
+                        Log.i(TAG, "Salvando paciente no servidor!");
+                    })
+                    .subscribe(patient -> {
+                        if (patient.get_id() == null) {
+                            showMessage(R.string.error_recover_data);
+                            return;
+                        }
+                        patientDAO.save(patient);
+                        appPreferencesHelper.saveLastPatient(patient);
+                        startActivity(new Intent(PatientRegisterActivity.this, PatientQuizActivity.class));
+                    }, this::errorHandler));
     }
 
     /**
@@ -168,6 +180,7 @@ public class PatientRegisterActivity extends AppCompatActivity {
      * @param e {@link Throwable}
      */
     private void errorHandler(Throwable e) {
+        Log.i(TAG, e.getMessage());
         if (e instanceof HttpException) {
             HttpException httpEx = ((HttpException) e);
             switch (httpEx.code()) {
@@ -212,6 +225,16 @@ public class PatientRegisterActivity extends AppCompatActivity {
         }
     };
 
+    private void prepareView() {
+        patient = appPreferencesHelper.getLastPatient();
+        nameEditTExt.setText(patient.getFirstName());
+        lastNameEditTExt.setText(patient.getLastName());
+        birthEdittext.setText(patient.getBirthDate());
+        if (patient.getGender().equals(PatientsType.GenderType.MALE))
+            genderGroup.check(R.id.male);
+        else genderGroup.check(R.id.female);
+    }
+
     /**
      * Displays message.
      *
@@ -233,11 +256,15 @@ public class PatientRegisterActivity extends AppCompatActivity {
      */
     private void initComponents() {
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
+        Log.i(TAG,appPreferencesHelper.getUserAccessHaniot().getAccessToken());
         haniotNetRepository = HaniotNetRepository.getInstance(this);
         patientDAO = PatientDAO.getInstance(this);
         myCalendar = Calendar.getInstance();
         fab.setOnClickListener(fabClick);
 
+        if (isEdit) {
+            prepareView();
+        }
         genderGroup.setOnCheckedChangeListener((group, checkedId) -> {
             if (checkedId == R.id.male)
                 genderIcon.setImageResource(R.drawable.x_boy);
@@ -261,6 +288,7 @@ public class PatientRegisterActivity extends AppCompatActivity {
 
     /**
      * On options item selected.
+     *
      * @param item
      * @return
      */

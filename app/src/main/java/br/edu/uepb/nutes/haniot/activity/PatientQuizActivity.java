@@ -207,6 +207,7 @@ public class PatientQuizActivity extends SimpleSurvey implements Infor.OnInfoLis
                 .title(R.string.category_2, Color.WHITE)
                 .titleTextSize(28)
                 .description(R.string.category_2_desc, Color.WHITE)
+                .descriptionTextSize(14)
                 .image(R.drawable.x_sneaker)
                 .colorBackground(getResources().getColor(R.color.colorAccent))
                 .inputText(R.string.bt_next)
@@ -566,6 +567,7 @@ public class PatientQuizActivity extends SimpleSurvey implements Infor.OnInfoLis
                 .title(R.string.thank_you, Color.WHITE)
                 .titleTextSize(28)
                 .description(R.string.final_instructions)
+                .descriptionTextSize(14)
                 .descriptionColor(Color.WHITE)
                 .colorBackground(getResources().getColor(R.color.colorPrimaryDark))
                 .image(R.drawable.x_like)
@@ -597,7 +599,8 @@ public class PatientQuizActivity extends SimpleSurvey implements Infor.OnInfoLis
         new AlertDialog
                 .Builder(this)
                 .setMessage(getResources().getString(R.string.cancel))
-                .setPositiveButton(getResources().getText(R.string.yes_text), (dialog, which) -> finish())
+                .setPositiveButton(getResources().getText(R.string.yes_text), (dialog, which) ->
+                        startActivity(new Intent(this, ManagePatientsActivity.class)))
                 .setNegativeButton(getResources().getText(R.string.no_text), null)
                 .show();
     }

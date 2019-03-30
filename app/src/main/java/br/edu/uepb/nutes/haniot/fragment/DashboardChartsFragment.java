@@ -2,11 +2,15 @@ package br.edu.uepb.nutes.haniot.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
@@ -40,6 +44,10 @@ public class DashboardChartsFragment extends Fragment {
     @BindView(R.id.pulsator)
     PulsatorLayout pulsatorLayout;
     Communicator communicator;
+    @BindView(R.id.box_message_error)
+    LinearLayout boxMessage;
+    @BindView(R.id.message_error)
+    TextView messageError;
 
     public DashboardChartsFragment() {
         // Required empty public constructor
@@ -60,12 +68,12 @@ public class DashboardChartsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_charts_dashboard, container, false);
         ButterKnife.bind(this, view);
 
-
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(getResources().getString(R.string.date_format2));
         textDate.setText(simpleDateFormat.format(calendar.getTime()));
         pulsatorLayout.start();
         updateNamePatient(((MainActivity) getActivity()).getPatientSelected());
+        messageError.setOnClickListener(v -> ((MainActivity) getActivity()).checkPermissions());
         return view;
     }
 
@@ -105,6 +113,7 @@ public class DashboardChartsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        boxMessage.setVisibility(View.GONE);
     }
 
     /**
@@ -113,9 +122,26 @@ public class DashboardChartsFragment extends Fragment {
      * @param valueMeasurement
      */
     public void updateValueMeasurement(String valueMeasurement) {
-
         textValueMeasurement.setText(valueMeasurement);
-        //textIMC.setText(String.format("%.2f", calcIMC(Double.parseDouble(valueMeasurement))));
+    }
+
+    /**
+     * Displays message.
+     *
+     * @param str @StringRes message.
+     */
+    public void showMessage(@StringRes int str) {
+        if (str == -1) {
+            boxMessage.setVisibility(View.GONE);
+            return;
+        }
+
+        String message = getString(str);
+        messageError.setText(message);
+        getActivity().runOnUiThread(() -> {
+            boxMessage.startAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_in));
+            boxMessage.setVisibility(View.VISIBLE);
+        });
     }
 
     /**
@@ -150,5 +176,7 @@ public class DashboardChartsFragment extends Fragment {
      */
     public interface Communicator {
         void notifyNewMeasurement(String data);
+
+        void showMessage(int message);
     }
 }

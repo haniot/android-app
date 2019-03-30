@@ -1,5 +1,6 @@
 package br.edu.uepb.nutes.haniot.activity;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -23,6 +24,7 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -54,7 +56,7 @@ import static com.github.mikephil.charting.charts.Chart.LOG_TAG;
  * @version 1.0
  * @copyright Copyright (c) 2019, NUTES UEPB
  */
-public class ManagePatientsActivity extends AppCompatActivity implements OnRecyclerViewListener<Patient> {
+public class ManagePatientsActivity extends AppCompatActivity {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -64,18 +66,17 @@ public class ManagePatientsActivity extends AppCompatActivity implements OnRecyc
     FloatingActionButton addPatient;
     @BindView(R.id.manager_patients_swiperefresh)
     SwipeRefreshLayout mDataSwipeRefresh;
+    @BindView(R.id.root)
+    RelativeLayout message;
+    @BindView(R.id.add_patient)
+    TextView addPatientShortCut;
+
     private List<Patient> patientList;
     private ManagerPatientAdapter adapter;
     private SearchView searchView;
     private AppPreferencesHelper appPreferencesHelper;
     private HaniotNetRepository haniotNetRepository;
     private PilotStudy pilotStudy;
-
-    private ImageView iconEmpty;
-    private TextView textEmpty1;
-    private TextView textEmpty2;
-    private TextView textButton;
-    private RelativeLayout root;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,62 +105,18 @@ public class ManagePatientsActivity extends AppCompatActivity implements OnRecyc
         haniotNetRepository = HaniotNetRepository.getInstance(this);
         pilotStudy = appPreferencesHelper.getLastPilotStudy();
         patientList = new ArrayList<>();
-        if (appPreferencesHelper.getLastPatient() == null)
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
+        disableBack();
 
         addPatient.setOnClickListener(v -> {
             startActivity(new Intent(getApplicationContext(), PatientRegisterActivity.class));
             finish();
         });
+        addPatientShortCut.setOnClickListener(v -> {
+            startActivity(new Intent(getApplicationContext(), PatientRegisterActivity.class));
+            finish();
+        });
         initDataSwipeRefresh();
-    }
-
-    /**
-     * On click item of list patients.
-     *
-     * @param item
-     */
-    @Override
-    public void onItemClick(Patient item) {
-        AppPreferencesHelper.getInstance(this).saveLastPatient(item);
-        startActivity(new Intent(this, MainActivity.class));
-    }
-
-    @Override
-    public void onLongItemClick(View v, Patient patient) {
-
-    }
-
-    @Override
-    public void onMenuContextClick(View v, Patient patient) {
-        switch (v.getId()) {
-            case R.id.btnDeleteChild:
-                //TODO Refatorar Colocar dialog de confirmação, dar update no listview
-                haniotNetRepository.deletePatient(pilotStudy.get_id(), patient.get_id())
-                        .subscribe(new CompletableObserver() {
-                            @Override
-                            public void onSubscribe(Disposable d) {
-
-                            }
-
-                            @Override
-                            public void onComplete() {
-                                Toast.makeText(ManagePatientsActivity.this,
-                                        "Paciente removido!", Toast.LENGTH_SHORT).show();
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-
-                            }
-                        });
-                break;
-            case R.id.btnEditChildren:
-                appPreferencesHelper.saveLastPatient(patient);
-                //TODO Passar flag para editar
-                startActivity(new Intent(this, PatientRegisterActivity.class));
-                break;
-        }
     }
 
     private void loadData() {
@@ -171,6 +128,7 @@ public class ManagePatientsActivity extends AppCompatActivity implements OnRecyc
                     patientList = patients;
                     initRecyclerView();
                 }, this::errorHandler));
+        disableBack();
     }
 
     @Override
@@ -191,14 +149,12 @@ public class ManagePatientsActivity extends AppCompatActivity implements OnRecyc
         if (e instanceof HttpException) {
             HttpException httpEx = ((HttpException) e);
             Log.i(LOG_TAG, httpEx.getMessage());
-            Toast.makeText(this, getResources().getString(R.string.error_500), Toast.LENGTH_LONG).show();
+            showMessage(getResources().getString(R.string.error_500));
         }
         // message 500
     }
 
     private void initRecyclerView() {
-        //  empty(true);
-        // empty(false);
         adapter = new ManagerPatientAdapter(this);
         adapter.setListener(new OnRecyclerViewListener<Patient>() {
             @Override
@@ -214,7 +170,20 @@ public class ManagePatientsActivity extends AppCompatActivity implements OnRecyc
 
             @Override
             public void onMenuContextClick(View v, Patient item) {
+                if (v.getId() == R.id.btnDeleteChild) {
+                    new AlertDialog
+                            .Builder(ManagePatientsActivity.this)
+                            .setMessage(getResources().getString(R.string.remove_patient))
+                            .setPositiveButton(getResources().getText(R.string.yes_text), (dialog, which) -> removePatient(item))
+                            .setNegativeButton(getResources().getText(R.string.no_text), null)
+                            .show();
 
+                } else if (v.getId() == R.id.btnEditChildren) {
+                    Intent intent = new Intent(ManagePatientsActivity.this, PatientRegisterActivity.class);
+                    intent.putExtra("action", "edit");
+                    appPreferencesHelper.saveLastPatient(item);
+                    startActivity(intent);
+                }
             }
         });
 
@@ -224,6 +193,33 @@ public class ManagePatientsActivity extends AppCompatActivity implements OnRecyc
         recyclerViewPatient.setAdapter(adapter);
 
         adapter.addItems(patientList);
+        if (patientList.isEmpty()) message.setVisibility(View.VISIBLE);
+        else message.setVisibility(View.INVISIBLE);
+    }
+
+    private void removePatient(Patient patient) {
+        DisposableManager.add(haniotNetRepository
+                .deletePatient(pilotStudy.get_id(), patient.get_id())
+                .doAfterTerminate(this::loadData)
+                .subscribe(() -> {
+                            adapter.removeItem(patient);
+                            adapter.notifyDataSetChanged();
+                            showMessage(getResources().getString(R.string.patient_removed));
+                            if (patient.equals(appPreferencesHelper.getLastPatient()))
+                                appPreferencesHelper.removeLastPatient();
+                        },
+                        error -> showMessage(getResources().getString(R.string.error_500))));
+    }
+
+    private void disableBack() {
+        if (appPreferencesHelper.getLastPatient() == null)
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+    }
+
+    private void showMessage(String message) {
+        Toast.makeText(ManagePatientsActivity.this,
+                message,
+                Toast.LENGTH_SHORT).show();
     }
 
     /**

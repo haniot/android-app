@@ -304,6 +304,7 @@
 
     <!-- STRINGS FOR TABLET VERSION-->
     <string name="dashboard">Dashboard</string>
+    <string name="bluetooth_disabled">Nós precisamos do bluetooth para funcionar.\nClique aqui para iniciar</string>
     <string name="profile">Perfil</string>
     <string name="connect_device">Connectar Dispositivo</string>
     <string name="rightbutton">Botão Direito</string>
@@ -756,6 +757,7 @@
     <string name="final_instructions">Você deve permanecer no seu lugar e informar o pesquisador que terminou de responder o questionario no tablet e ele o encaminhará para fazer as medições de peso, estatura, perimetro da cintura e pressão arterial.</string>
     <string name="cancel_message">Tem certeza que deseja cancelar?</string>
     <string name="error_409_patient">Já possui um paciente cadastrado com esses dados!</string>
+    <string name="remove_patient">Tem certeza que deseja remover o paciente?</string>
     <string-array name="sports_answers">
         <item>Futebol (campo, de rua,clube)</item>
         <item>Futsal</item>

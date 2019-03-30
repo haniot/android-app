@@ -3,7 +3,10 @@ package br.edu.uepb.nutes.haniot.activity;
 import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -60,6 +63,9 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
 
         dashboardChartsFragment = DashboardChartsFragment.newInstance();
         measurementsGridFragment = MeasurementsGridFragment.newInstance();
+
+        IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
+        registerReceiver(mReceiver, filter);
     }
 
     private void loadDashboard() {
@@ -91,6 +97,12 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mReceiver);
+    }
+
     /**
      * Set patient selected.
      */
@@ -110,7 +122,7 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
      * Checks if you have permission to use.
      * Required bluetooth ble and location.
      */
-    private void checkPermissions() {
+    public void checkPermissions() {
         if (BluetoothAdapter.getDefaultAdapter() != null &&
                 !BluetoothAdapter.getDefaultAdapter().isEnabled()) {
             requestBluetoothEnable();
@@ -132,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
      *
      * @return boolean
      */
-    private boolean hasLocationPermissions() {
+    public boolean hasLocationPermissions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             return checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) ==
                     PackageManager.PERMISSION_GRANTED;
@@ -143,7 +155,7 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
     /**
      * Request Location permission.
      */
-    private void requestLocationPermission() {
+    protected void requestLocationPermission() {
         ActivityCompat.requestPermissions(this,
                 new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_ENABLE_LOCATION);
     }
@@ -220,6 +232,31 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
     public void notifyNewMeasurement(String valueMeasurement) {
         dashboardChartsFragment.updateValueMeasurement(valueMeasurement);
     }
+
+    @Override
+    public void showMessage(int message) {
+        dashboardChartsFragment.showMessage(message);
+    }
+
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
+
+            if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
+                final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE,
+                        BluetoothAdapter.ERROR);
+                switch (state) {
+                    case BluetoothAdapter.STATE_OFF:
+                        dashboardChartsFragment.showMessage(R.string.bluetooth_disabled);
+                        break;
+                    case BluetoothAdapter.STATE_ON:
+                        dashboardChartsFragment.showMessage(-1);
+                        break;
+                }
+            }
+        }
+    };
 
     public Patient getPatientSelected() {
         return patient;
