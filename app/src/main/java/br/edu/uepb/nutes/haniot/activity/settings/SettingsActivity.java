@@ -1,21 +1,22 @@
 package br.edu.uepb.nutes.haniot.activity.settings;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 
+import java.util.Objects;
+
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.utils.Log;
 
 /**
  * SettingsActivity implementation.
  *
- * @author Douglas Rafael <douglas.rafael@nutes.uepb.edu.br>
- * @version 1.0
- * @copyright Copyright (c) 2017, NUTES UEPB
+ * @author Copyright (c) 2018, NUTES/UEPB
  */
 public class SettingsActivity extends AppCompatPreferenceActivity {
+    public static final String SETTINGS_TYPE = "settings_type";
+    public static final int SETTINGS_MAIN = 1;
+    public static final int SETTINGS_MEASUREMENTS = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,25 +28,27 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-//        Get tne type of settings, 1 is to app configurations and 2 is to measurement
-//        configurations
-        final Intent intent = getIntent();
-        if (intent != null){
-            int result = intent.getIntExtra("settingType",0);
-            if (result == 1){
-                actionBar.setTitle(getResources().getString(R.string.action_settings));
-                getFragmentManager().beginTransaction()
-                        .replace(android.R.id.content, new MyPreferenceFragment()).commit();
-            }
+        // Get tne type of settings, 1 is to app configurations and 2 is to measurement configurations
+        final int settingsType = getIntent().getIntExtra(SettingsActivity.SETTINGS_TYPE, 1);
+        if (settingsType == SettingsActivity.SETTINGS_MAIN) {
+            Objects.requireNonNull(actionBar)
+                    .setTitle(getResources().getString(R.string.action_settings));
+            getFragmentManager().beginTransaction()
+                    .replace(android.R.id.content, new MainPreferenceFragment())
+                    .commit();
+        } else if (settingsType == SettingsActivity.SETTINGS_MEASUREMENTS) {
+            Objects.requireNonNull(actionBar)
+                    .setTitle(getResources().getString(R.string.settings_monitor_measurements));
+            getFragmentManager().beginTransaction()
+                    .replace(android.R.id.content, new MeasurementsPreferenceFragment())
+                    .commit();
         }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                super.onBackPressed();
-                break;
+        if (item.getItemId() == android.R.id.home) {
+            super.onBackPressed();
         }
         return super.onOptionsItemSelected(item);
     }

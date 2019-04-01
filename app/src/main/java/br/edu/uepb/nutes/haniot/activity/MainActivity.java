@@ -199,7 +199,7 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
                 break;
             case R.id.btnMenuMainSettings:
                 Intent it = new Intent(this, SettingsActivity.class);
-                it.putExtra("settingType", 1);
+                it.putExtra(SettingsActivity.SETTINGS_TYPE, SettingsActivity.SETTINGS_MAIN);
                 startActivity(it);
                 break;
             default:

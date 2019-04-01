@@ -4,87 +4,42 @@
     <string name="app_name_desc">Health ANalytics Internet of Things</string>
     <string name="app_version">1.5.0</string>
     <string name="copyright">© 2019 NUTES/UEPB</string>
-    <string name="start_scan">Iniciar Escaneamento</string>
-    <string name="start_synchronization">Iniciar Sincronização</string>
     <string name="stop_scan">Parar Escaneamento</string>
     <string name="device_address">Endereço: %s</string>
     <string name="device_connection_state">Estado: %s</string>
     <string name="device_read_data">Data: %s</string>
-    <string name="device_read_rssi">RSSI: %d</string>
-    <string name="prefix_hex">0x</string>
     <string name="disconnect">Desconectado</string>
     <string name="connect">Conectar</string>
-    <string name="connecting">Conectando</string>
     <string name="connected">Conectado</string>
     <string name="disconnected">Desconectado</string>
-    <string name="measurement">Medição</string>
-    <string name="read">Ler</string>
-    <string name="write">Escrever</string>
     <string name="devices">Dispositivos</string>
     <string name="device_bonded">Paraado</string>
     <string name="device_bonding">Pareando</string>
     <string name="device_not_bonded">Não pareado</string>
-    <string name="not_bluetooth">Seu dispositivo não suporta bluetooth!</string>
     <string name="permission_location">A permissão de localização é obrigatória no utilizar Bluetooth Low Energy!</string>
     <string name="not_bluetooth_le">Seu dispositivo não suporta Bluetooth Low Energy!</string>
-    <string name="bluetooth_classic">Bluetooth Clássico</string>
-    <string name="bluetooth_le">Bluetooth LE</string>
     <string name="welcome">Bem-vindo</string>
     <string name="no_more_data">Não há mais dados disponíveis&#8230;</string>
-    <string name="day_text">Dia</string>
-    <string name="week_text">Semana</string>
-    <string name="month_text">Mês</string>
     <string name="today_text">Hoje</string>
     <string name="yes_text">Sim</string>
     <string name="no_text">Não</string>
-    <string name="unknown">Desconhecido</string>
-    <string name="unknown_device">Dispositivo desconhecido</string>
     <string name="unknown_characteristic">Caracteríticas desconhecida</string>
     <string name="unknown_service">Serviço desconhecido</string>
-    <string name="uepb">UEPB</string>
-    <string name="nutes">NUTES</string>
-    <string name="nutes_desc">"Núcleo de Tecnologias Estratégicas em Saúde "</string>
-    <string name="libe">LIBE</string>
-    <string name="libe_desc">"Laboratório de Instrumentação Biomédica e Ensaios Eletrônicos "</string>
-    <string name="navigation_drawer_open">Abrir menu de navegação</string>
-    <string name="navigation_drawer_close">Fechar menu de navegação</string>
     <string name="temperature">Temperatura</string>
     <string name="weight">Peso</string>
-    <string name="body_mass">Massa Corporal</string>
-    <string name="temperature_measurement">Medição de Temperatura</string>
     <string name="body_weight_scale">Escala de peso corporal</string>
-    <string name="heart_rate_measurement">Medição da Frequência Cardíaca</string>
     <string name="heart_rate">Frequência Cardíaca</string>
-    <string name="glucose_measurement">Medição de Glicose</string>
     <string name="glucose">Glicose</string>
-    <string name="blood_pressure_measurement">Medição da Pressão Arterial</string>
     <string name="blood_pressure">Pressão Arterial</string>
     <string name="body_composition">Composição Corporal</string>
-    <string name="body_composition_measurement">Medição da Composição Corporal</string>
     <string name="smart_band">Pulseira Inteligente</string>
-    <string name="all_records">Todos</string>
-    <string name="first_record">Primeiro</string>
-    <string name="last_record">Último</string>
     <string name="most_recent_entries">Entradas mais recentes</string>
     <string name="body_fat_title">Gordura Corporal</string>
     <string name="body_bmi_title">BMI</string>
     <string name="pulse_mark_title">Pulso:</string>
-    <string name="value_default">_ _</string>
-    <string name="date_format_week_day_year">EEEE, dd MMMM, yyyy</string>
-    <string name="date_format_server">yyyy-MM-dd</string>
-    <string name="device_not_found">Dispositivo: %1$s não encontrado!</string>
-    <string name="not_save_object_empty">Você não pode salvar um objeto vazio!</string>
-    <string name="not_delete_object_empty">Você não pode excluir um objeto vazio!</string>
-    <string name="no_data_found">"Nenhum dado encontrado! "</string>
     <string name="temperatre_type_armpit">Axila</string>
     <string name="temperatre_type_body">Corpo (geral)</string>
-    <string name="laoding_result">Carregando resultado&#8230;</string>
-    <string name="number_emergency">192</string>
-    <string name="call_emergency_title">Ligar para emergência</string>
-    <string name="fall_register_time_title">Queda registrada às %s</string>
-    <string name="alert_register_time_title">Alerta disparada às %s</string>
     <string name="image">Imagem</string>
-    <string name="warning_title">Atenção!</string>
     <string name="welcome_app_functionalities_title">Aqui você pode:</string>
     <string name="welcome_app_functionalities">• Cadastrar/gerenciar seus pacientes;\n• Submeter questionários para seus pacientes responderem;\n• Realizar medições;\n• Consultar históricos e muito mais.</string>
     <string name="welcome_hp">Seja bem-vindo(a), %s</string>
@@ -108,7 +63,6 @@
     <string name="date_format_year">yyyy</string>
     <string name="date_format_month">MMMM</string>
     <string name="date_format_week">w</string>
-    <string name="date_format_info">yyyy/MMM/dd</string>
 
     <!-- SIGNUP -->
     <string name="name">Nome</string>
@@ -117,17 +71,8 @@
     <string name="gender_male">Masculino</string>
     <string name="gender_female">Feminino</string>
     <string name="date_of_birth">Data de Nascimento</string>
-    <string name="height">Altura em cm</string>
-    <string name="cm">cm</string>
-    <string name="create_account">Criar Conta</string>
-    <string name="already_account">Já possui uma conta? Entrar</string>
-    <string name="new_account">Nova Conta</string>
     <string name="update_account">Atualizar Informações</string>
-    <string name="update_data">Atualizar dados</string>
-    <string name="register_success">Dados inseridos com sucesso!</string>
     <string name="update_success">Dados atualizados com sucesso!</string>
-    <string name="register_error">Ocorreu um erro ao inserir o usuário&#8230;</string>
-    <string name="update_error">Ocorreu um erro ao atualizar os dados&#8230;</string>
     <string name="change_password">Mudar senha</string>
     <string name="current_password">Senha atual</string>
     <string name="new_password">Nova senha</string>
@@ -141,60 +86,44 @@
     <string name="validate_email">Digite um endereço de e-mail válido</string>
     <string name="validate_password">A senha deve conter pelo menos 6 caracteres com pelo menos um número, uma letra e um caractere especial, entre os caracteres permitidos: @ # $ % &amp; * ! ? . _ + - espaço
     </string>
-    <string name="validate_height">Forneça uma altura válida!</string>
-    <string name="validate_date_birth">Forneça uma data de nascimento válida!</string>
-    <string name="validate_phone">Forneça um número de telefone válido!</string>
     <string name="validate_invalid_email_or_password">E-mail ou senha inválidos&#8230;</string>
     <string name="validate_password_not_match_current">A senha atual não corresponde!</string>
     <string name="validate_password_not_match_new">Nova senha e confirmação não correspondem!</string>
     <string name="validate_register_user_not_duplicate">Já existe um usuário cadastrado com email fornecido&#8230;</string>
     <string name="validate_unauthorized_access">Acesso não autorizado! Por favor entre em contato com o suporte&#8230;</string>
-    <string name="validate_weight">Forneça um peso válido!</string>
-    <string name="validate_pin">O PIN de 4 digitos é necessário!</string>
     <!-- END VALIDATE MESSAGES -->
 
     <!-- ERROR MESSAGES -->
     <string name="error_sign_out">Aconteceu um erro ao tentar sair&#8230;</string>
     <string name="error_500">Não foi possível concluir a operação! Por favor, tente novamente mais tarde&#8230;</string>
-    <string name="error_internal_device">Não foi possível concluir o pedido! Por favor, tente novamente mais tarde&#8230;</string>
     <string name="error_connectivity">Aconteceu um erro na comunicação com nossos servidores. Por favor, verifique a conectividade do seu telefone e tente novamente mais tarde.</string>
     <string name="connect_network_try_again">Conecte-se a uma rede e tente novamente&#8230;</string>
-    <string name="error_403">A senha do usuário precisa ser alterada!</string>
-    <string name="error_incorret_password">Senha não pode ser atualizada. Certifique-se de que os dados estão corretos!</string>
     <string name="error_recover_data">Encontramos um problema ao tentar recuperar os seus dados. Por favor, tente novamente mais tarde ou entre em contato com o administardor&#8230;</string>
 
     <!-- END ERROR MESSAGES -->
 
     <!-- SETTINGS -->
     <string name="settings_your_data">Informações Pessoais</string>
-    <string name="settings_server">Servidor</string>
-    <string name="settings_server_address">Endereço do servidor</string>
-    <string name="settings_devices">Dispositivos</string>
+    <string name="settings_measurements_supported">Tipos de medições suportadas</string>
+    <string name="settings_measurements">Medições</string>
     <string name="settings_signout">Sair</string>
     <string name="settings_account">Conta</string>
-    <string name="monitor_measurements">Monitorar Medições</string>
+    <string name="settings_monitor_measurements">Monitorar Medições</string>
+    <string name="settings_summary_monitor_measurements">Selecione os tipos de mediçeõs que deseja monitorar.</string>
     <string name="settings_about">Sobre</string>
     <string name="settings_general">Geral</string>
-    <string name="settings_send_feedback">Enviar comentários</string>
     <string name="settings_send_bug">Reportar um problema</string>
-    <string name="settings_close_account">Fechar conta</string>
     <string name="settings_summary_your_data">Atualize seu nome, endereço de email e password.</string>
-    <string name="settings_summary_server_address">Digite o endereço do servidor para enviar dados.</string>
-    <string name="settings_summary_full_server_address">Digite o endereço.\nExemplo: http://192.168.31.113:8080/api/v1</string>
     <string name="settings_summary_signout">Você será desconectado do aplicativo e redirecionado para a tela de login.</string>
-    <string name="settings_summary_support">Tem alguma dúvida? Ficaremos felizes em ajudar!</string>
     <string name="settings_summary_bug">Encontrou um problema? Conte-nos e vamos nos esforçar para concertar :)</string>
-    <string name="settings_summary_close_account">Exclua a conta registrada e as configurações do aplicativo.</string>
     <string name="settings_summary_about">O NUTES é um centro de referência para o desenvolvimento de tecnologias a serem aplicadas no domínio da saúde, composto por professores, pesquisadores e estudantes de nível de graduação e pós-graduação das áreas de Ciência da Computação, Odontologia e Fisioterapia.</string>
     <string name="settings_version">Versão</string>
     <string name="key_your_data">key_your_data</string>
-    <string name="key_send_feedback">key_send_feedback</string>
+    <string name="key_monitor_measurements">key_monitor_measurements</string>
     <string name="key_send_bug">key_send_bug</string>
     <string name="key_url_server">key_url_server</string>
     <string name="key_signout">key_signout</string>
     <string name="key_manager_device">key_manager_device</string>
-    <string name="key_close_account">key_close_account</string>
-    <string name="key_about">key_about</string>
     <string name="key_pilot_study">key_about</string>
     <string name="url_about">http://nutes.uepb.edu.br/quem-somos/</string>
     <string name="choose_email_client">Escolha o cliente de email</string>
@@ -208,46 +137,28 @@
     <string name="date_format2">dd\' de \'MMMM\', \'yyyy</string>
     <string name="date_format_month_day">dd/MM</string>
     <string name="datetime_format">dd/MM/yyyy HH:mm:ss</string>
-    <string name="datetime_format2">dd\' de \'MMMM\' às \'HH:mm:ss</string>
-    <string name="datetime_format_db">yyyy-MM-dd HH:mm:ss</string>
-    <string name="time_format">HH:mm:ss</string>
     <string name="time_format_simple">HH:mm</string>
-    <string name="time_format_simple2">HH\'h\'mm\'m\'</string>
     <!-- END FORMAT DATES -->
 
     <!-- ACTIONS -->
     <string name="action_settings">Configurações</string>
     <string name="action_bond">Parear</string>
-    <string name="action_connect_devices">Conectar Dispositivos</string>
     <string name="action_scanner_devices">Escanear Dispositivos</string>
     <string name="action_save">Salvar</string>
-    <string name="action_sign_out">Sair</string>
-    <string name="action_delete">Excluir</string>
-    <string name="action_list_falls">Listar Quedas</string>
-    <string name="action_fall_risk_assessment">Avaliação do Risco de Queda</string>
-    <string name="action_new_fall_risk_assessment">Nova Avaliação do Risco de Queda</string>
-    <string name="action_characterize_fall">Caracterizar Queda</string>
-    <string name="action_remove_association">Remover Associação</string>
-    <string name="action_update">Atualizar</string>
-    <string name="action_view_information">Visualizar Informações</string>
     <!-- END ACTIONS -->
 
     <!-- BUTTONS -->
     <string name="bt_ok">Ok</string>
     <string name="bt_cancel">Cancelar</string>
-    <string name="bt_stop">Parar</string>
-    <string name="bt_pause">Pausa</string>
     <string name="bt_discard">Discartar</string>
     <string name="bt_save">Salvar</string>
     <string name="bt_next">Próximo</string>
-    <string name="bt_remind_me_later">Lembre-me depois</string>
     <!-- END BUTTONS -->
 
     <!-- DIALOGS -->
     <string name="confirm_sign_out">Você realmente deseja sair do aplicativo?\nVocê será redirecionado para a tela de login&#8230;</string>
     <string name="title_save_captured_data">Salvar dados&#8230;</string>
     <string name="message_save_captured_data">Você deseja salvar os dados capturados?</string>
-    <string name="message_save_captured_heart_rate">Você deseja salvar a frequência cardíaca capturada?</string>
     <!-- END DIALOGS -->
 
     <string name="unit_kg">kg</string>
@@ -256,7 +167,6 @@
     <string name="unit_pressure">mmHg</string>
     <string name="unit_pulse">bpm</string>
     <string name="unit_glucose_mg_dL">mg/dL</string>
-    <string name="unit_glucose_kg_L">kg/L</string>
 
     <!-- SURVEY -->
     <string name="survey_select_an_answer">Selcione uma resposta&#8230;</string>
@@ -279,11 +189,9 @@
     <!--Limit and Lines of Chart-->
     <string name="diastolic">Diastólica</string>
     <string name="systolic">Sistólica</string>
-    <string name="limit_blood_pressure">Pressão Alta</string>
     <string name="limit_heart_rate">Limit 1</string>
     <string name="limit_glucose">Pre Diabetes</string>
     <string name="limit_temperature">Febre</string>
-    <string name="limit_body_composition">Overweight</string>
 
     <!--FLOATING-->
     <string name="day">Dia</string>
@@ -303,93 +211,22 @@
     <string name="info_calories">Calorias</string>
 
     <!-- STRINGS FOR TABLET VERSION-->
-    <string name="dashboard">Dashboard</string>
     <string name="bluetooth_disabled">Nós precisamos do bluetooth para funcionar.\nClique aqui para iniciar</string>
-    <string name="profile">Perfil</string>
-    <string name="connect_device">Connectar Dispositivo</string>
-    <string name="rightbutton">Botão Direito</string>
-    <string name="LeftButton">Botão Esquerdo</string>
-    <string name="new_measurement">Nova Medição</string>
     <string name="dash_item_description">Botão de Medição</string>
-    <string name="distance">Distancia</string>
-    <string name="Calories">Calorias</string>
-    <string name="StepsNumber">Número de Passos</string>
-    <string name="title_activity_manage_measurements">Gerenciar Medições</string>
-    <string name="manage_measurement_title">Gerenciar Medições</string>
-    <string name="ear_thermometer">Termometro para Orelha</string>
-    <string name="ear_thermometer_description">DL8740</string>
-    <string name="accu_check">Accu-Check</string>
-    <string name="accu_check_description">Performa Connect</string>
-    <string name="body_composition_yunmai">Análise da Composição Corporal Yunmai</string>
-    <string name="body_composition1">Análise da Composição Corporal</string>
-    <string name="body_composition_analyze_description">YUNMAI Mini 1501</string>
-    <string name="heart_rate_sensor_h10">Sensor Batimentos Cardiacos H10</string>
-    <string name="heart_rate_sensor_h7">Sensor Batimentos Cardiacos H7</string>
-    <string name="heart_rate_sensor">Sensor Batimentos Cardiacos</string>
-    <string name="heart_rate_sensor_description_h7">Polar H7</string>
-    <string name="heart_rate_sensor_description_h10">Polar H10</string>
-    <string name="smartband">Relógio Inteligente</string>
-    <string name="smartband_description">MI BAND 2</string>
-    <string name="blood_pressure_monitor">Monitor de Pressão Sanguinea</string>
-    <string name="blood_pressure_monitor_description">OMRON BP792IT</string>
-    <string name="body_composition_monitor">Monitor de Composição Corporal OMRON</string>
-    <string name="body_composition_monitor_description">OMRON HBF-206ITH</string>
-    <string name="body_composition2">Monitor de Composição Corporal</string>
-    <string name="icon_manage_measurement">Icone de Gerenciar Medições</string>
     <string name="manage_patient">Gerenciar Pacientes</string>
-    <string name="add">Add</string>
     <string name="search">Pesquisar</string>
-    <string name="id">id: </string>
-    <string name="date">Data: </string>
-    <string name="id_last_patient">id_last_patient</string>
-    <string name="name_last_patient">name_last_patient</string>
-    <string name="childId">childId</string>
-    <string name="childName">childName</string>
-    <string name="noPatientSelected">Nenhum paciente selecionado</string>
     <string name="unit_kilometer">KM</string>
-    <string name="blood_pressure_monitor_pref">blood_pressure_monitor</string>
-    <string name="heart_rate_sensor_polar_h10_pref">heart_rate_sensor_polar_h10</string>
-    <string name="heart_rate_sensor_polar_h7_pref">heart_rate_sensor_polar_h7</string>
-    <string name="smart_band_pref">smart_band</string>
-    <string name="ear_thermometer_pref">ear_thermometer</string>
-    <string name="accu_check_pref">accu_check</string>
-    <string name="body_composition_yunmai_pref">body_composition_yunmai</string>
-    <string name="body_composition_omron_pref">body_composition_omron</string>
-    <string name="dashboard_charts">Gráficos do dashboard</string>
-    <string name="measurementsDB">Medições</string>
-    <string name="key_steps">key_steps</string>
-    <string name="key_activity">key_activity</string>
-    <string name="key_sleep">key_sleep</string>
     <string name="key_weight">key_weight</string>
     <string name="key_blood_glucose">key_blood_glucose</string>
     <string name="key_blood_pressure">key_blood_pressure</string>
-    <string name="key_temperature">key_temperature</string>
     <string name="key_heart_rate">key_heart_rate</string>
-    <string name="key_calories">key_calories</string>
-    <string name="key_distance">key_distance</string>
-    <string-array name="array_dashboard_charts_options">
-        <item>Passos, Calorias, Quilômetros</item>
-    </string-array>
-    <string-array name="array_dashboard_entries">
-        <item>1</item>
-    </string-array>
-    <string name="choose_dashboard_charts">Escolha os gráficos do dashboard</string>
-    <string name="activity">Atividade</string>
     <string name="blood_glucose">Glicose no sangue</string>
     <string name="steps">Passos</string>
-    <string name="sleep">Sono</string>
     <string name="unit_temperature">°C</string>
     <string name="unit_weight">kg</string>
     <string name="unit_hour">h</string>
-    <string name="manually_add_measurement">Adicionar Medições Manualmente</string>
     <string name="measurementType">measurementType</string>
-    <string name="choose_weight">Escolha o peso</string>
-    <string name="kg">Quilos</string>
-    <string name="Gr">Gramas</string>
-    <string name="choose_date">Escolha a data</string>
-    <string name="choose_hour">Escolha a hora</string>
     <string name="unit_heart_rate">bpm</string>
-    <string name="error_insering_measurement">Erro ao inserir medição</string>
     <string name="confirm">Confirmar</string>
     <string name="cancel">Cancelar</string>
     <string name="glucose_meal_preprandial">Pré-refeição</string>
@@ -397,40 +234,13 @@
     <string name="glucose_meal_fasting">Jejum</string>
     <string name="glucose_meal_casual">Casual</string>
     <string name="glucose_meal_bedtime">Antes de dormir</string>
-    <string name="choose_glucose">Escolha o valor da glicose</string>
-    <string name="choose_status">Escolha o status</string>
-    <string name="choose_heart_rate">Escolha os batimentos cardiacos</string>
     <string name="choose_temperature">Escolha a temperatura</string>
-    <string name="choose_blood_pressure">Escolha o valor da pressão</string>
-    <string name="choose_pulse">Escolha o pulso</string>
-    <string name="unit_min">/min</string>
     <string name="key_anthropometric">key_anthropometric</string>
     <string name="anthropometric">Medidas antropométricas</string>
-    <string name="choose_height">Escolha a altura</string>
-    <string name="choose_circumference">Escolha a circunferência</string>
-    <string name="goals_steps">Escolha a meta de passos</string>
-    <string name="goals_calories">Escolha a meta de calorias</string>
-    <string name="goals_distance">Escolha a meta de distância</string>
-    <string name="send_measurements_to_server">Salvar medições</string>
-    <string name="last_patient_deleted">last_patient_deleted</string>
     <string name="patient_removed">Paciente removido</string>
-    <string name="undo">Desfazer</string>
     <string name="patient_profile">Perfil do paciente</string>
     <string name="no_patient_registered">Nenhum paciente cadastrado!\nPara continuar, cadastre um novo paciente a seguir.</string>
-    <string name="try_again_later">Tente novamente mais tarde</string>
-    <string name="color">Cor</string>
-    <string name="age">Idade</string>
-    <string name="idProfessional">Id profissional:</string>
-    <string name="dateMask">##/##/####</string>
-    <string name="survey">Questionário</string>
-    <string name="edit">Editar</string>
-    <string name="error_remove_patient">Erro ao remover o paciente, por favor,
-        tente novamente mais tarde</string>
-    <string name="save_measurements_of">Salvar medições de:</string>
-    <string name="circumference">Circunferencia</string>
     <!-- END OF STRINGS FOR TABLET -->
-
-    <string name="cancel_text">Cancelar</string>
 
     <string-array name="measurement_types_array">
         <item>Temperatura</item>
@@ -453,14 +263,10 @@
     <!-- REGISTERED DEVICES -->
     <string name="title_devices_registered">Cadastrados</string>
     <string name="title_devices_available">Disponíveis</string>
-    <string name="thermometer">Termometro</string>
-    <string name="find_device">Localizar Dispositivo</string>
     <string name="remove_device">Tem certeza que deseja remover %s?\nUma vez removido, não será possível recuperar os dados desse dispositivo.</string>
     <string name="remove">Remover</string>
     <string name="start_scanner">Iniciar scanner</string>
     <string name="stop_scanner">Parar scanner</string>
-    <string name="details">Detalhes</string>
-    <string name="remove_device_register">Remover Dispositivo</string>
     <string name="device_not_found_try_again">Dispositivo não encontrado tente novamente</string>
     <string name="no_devices_registered">Não há dispositivos cadastrados&#8230;</string>
     <string name="no_devices_available">Nenhum dispositivo disponível. Em breve a lista será atualizada&#8230;</string>
@@ -468,7 +274,7 @@
     <string name="connection">Conectando, segure o telefone perto do dispositivo</string>
     <string name="come_back">Voltar</string>
     <string name="attention">Atenção</string>
-    <string name="model">Modelo</string>s
+    s
     <string name="other">Outro</string>
     <string name="model_device">Modelo do dispositivo</string>
     <string name="name_device">Nome do dispositivo</string>
@@ -476,22 +282,9 @@
     <string name="settings_summary_configure_device">Gerencie seus dispositivos registrados ou insira novos.</string>
     <string name="failed_pairing_device">Falha ao parear dispositivo</string>
     <string name="pairing_device">Pareando dispositivo&#8230;</string>
-    <string name="device_paired">O dispositivo já está pareado, remova-o da lista de dispositivos cadastrados e tente novamente&#8230;</string>
 
 
     <!--GLUCOSE STATUS ANNUNCIATION-->
-    <string name="glucose_status_annunciation_battery_low">Device battery low at time of measurement</string>
-    <string name="glucose_status_annunciation_sensor_malfunction">Sensor malfunction or faulting at time of measurement</string>
-    <string name="glucose_status_annunciation_sample_size_insufficient">Sample size for blood or control solution insufficient at time of measurement</string>
-    <string name="glucose_status_annunciation_strip_insertion_error">Strip insertion error</string>
-    <string name="glucose_status_annunciation_strip_incorrect">Strip typeId incorrect for device</string>
-    <string name="glucose_status_annunciation_result_high">Sensor result higher than the device can process</string>
-    <string name="glucose_status_annunciation_result_lower">Sensor result lower than the device can process</string>
-    <string name="glucose_status_annunciation_sensor_temperature_high">Sensor temperature too high for valid test/result at time of measurement</string>
-    <string name="glucose_status_annunciation_sensor_temperature_lower">Sensor temperature too low for valid test/result at time of measurement</string>
-    <string name="glucose_status_annunciation_sensor_read_interrupted">Sensor read interrupted because strip was pulled too soon at time of measurement</string>
-    <string name="glucose_status_annunciation_general_device_fault">General device fault has occurred in the sensor</string>
-    <string name="glucose_status_annunciation_sensor_time_fault">Time fault has occurred in the sensor and time may be inaccurate</string>
 
     <!--GLUCOSE LOCATION-->
     <string name="glucose_location_finger">Finger</string>
@@ -512,13 +305,9 @@
     <string name="glucose_type_interstitial">Interstitial Fluid (ISF)</string>
     <string name="glucose_type_control_solution">Control Solution</string>
 
-    <string name="black_space_4">\t\t\t\t\t\</string>
     <string name="no_data_available">No data to display&#8230;</string>
 
     <!-- SYNCHRONIZATION -->
-    <string name="synchronization_failed">Data synchronization failed!</string>
-    <string name="synchronization_success">Successful data synchronization!</string>
-    <string name="synchronization_data">Synchronizing data&#8230;</string>
     <string name="synchronization_no_data_to_send">There is no data to send&#8230;</string>
 
     <!--UNITS-->
@@ -528,9 +317,7 @@
     <!--LOGIN-->
     <string name="email">Email</string>
     <string name="password">Senha</string>
-    <string name="password_confirm">Confirmar senha</string>
     <string name="login">Entrar</string>
-    <string name="no_account_yet">Ainda não possui conta? Se cadastre!</string>
 
     <string name="temperatre_type_ear">Ear (usually ear lobe)</string>
     <string name="temperatre_type_finger">Finger</string>
@@ -554,36 +341,10 @@
     <!-- Strings related to Settings -->
 
     <!-- Example General settings -->
-    <string name="pref_header_general">General</string>
 
-    <string name="pref_title_social_recommendations">Enable social recommendations</string>
-    <string name="pref_description_social_recommendations">Recommendations for people to contact
-        based on your message history
-    </string>
-
-    <string name="pref_title_display_name">Display name</string>
-    <string name="pref_default_display_name">John Smith</string>
-
-    <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
     <!-- Example settings for Data & Sync -->
-    <string name="pref_header_data_sync">Data &amp; sync</string>
-
-    <string name="pref_title_sync_frequency">Sync frequency</string>
-
-    <string name="pref_title_system_sync_settings">System sync settings</string>
 
     <!-- Example settings for Notifications -->
-    <string name="pref_header_notifications">Notifications</string>
-
-    <string name="pref_title_new_message_notifications">New message notifications</string>
-
-    <string name="pref_title_ringtone">Ringtone</string>
-    <string name="pref_ringtone_silent">Silent</string>
-
-    <string name="pref_title_vibrate">Vibrate</string>
-
-    <string name="title_activity_manually_add_measurement">activity_manually_add_measurement
-    </string>
 
     <string-array name="measurement_context_types_array">
         <item>Glucose Carbohydrate</item>
@@ -638,30 +399,9 @@
         <item>@string/temperatre_type_typanum</item>
     </string-array>
 
-    <string-array name="training_types_array">
-        <item>Walking</item>
-        <item>Running</item>
-        <item>Cycling</item>
-    </string-array>
-
     <string-array name="user_group_array">
         <item>Super</item>
         <item>Common</item>
-    </string-array>
-
-    <string-array name="months_array">
-        <item>Jan</item>
-        <item>Feb</item>
-        <item>Mar</item>
-        <item>Apr</item>
-        <item>May</item>
-        <item>Jun</item>
-        <item>Jul</item>
-        <item>Aug</item>
-        <item>Sep</item>
-        <item>Oct</item>
-        <item>Nov</item>
-        <item>Dec</item>
     </string-array>
 
     <!--TYPES AND GROUPS-->
@@ -675,50 +415,7 @@
         <item>Smart Band</item>
     </string-array>
 
-    <string-array name="pref_sync_frequency_titles">
-        <item>15 minutes</item>
-        <item>30 minutes</item>
-        <item>1 hour</item>
-        <item>3 hours</item>
-        <item>6 hours</item>
-        <item>Never</item>
-    </string-array>
-    <string-array name="pref_sync_frequency_values">
-        <item>15</item>
-        <item>30</item>
-        <item>60</item>
-        <item>180</item>
-        <item>360</item>
-        <item>-1</item>
-    </string-array>
-
-    <string-array name="list_preference_entries">
-        <item>Entry 1</item>
-        <item>Entry 2</item>
-        <item>Entry 3</item>
-    </string-array>
-
-    <string-array name="list_preference_entry_values">
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-    </string-array>
-
-    <string-array name="multi_select_list_preference_default_value" />
-
-    <string-array name="pref_example_list_titles">
-        <item>Always</item>
-        <item>When possible</item>
-        <item>Never</item>
-    </string-array>
-    <string-array name="pref_example_list_values">
-        <item>1</item>
-        <item>0</item>
-        <item>-1</item>
-    </string-array>
     <!-- TokenExpirationService -->
-    <string name="token_expired" translatable="false">Token Expired</string>
-    <string name="first_login" translatable="false">First login</string>
 
     <!-- Patient Quiz -->
     <string name="message_info_patient">Informe os dados básicos do paciente:</string>
@@ -744,8 +441,6 @@
     <string name="q20" translatable="false"> Em um dia de semana comum, a que horas voce costuma acordar?</string>
     <string name="thank_you">Obrigado por responder!</string>
     <string name="not_answered">Opsss! Você precisa respondar essa questão para avançar...</string>
-    <string name="category_1">Sociodemográfico</string>
-    <string name="category_1_desc">As próximas perguntas referem-se a você e à sua casa.</string>
     <string name="category_2">Hábitos de Atividade Física</string>
     <string name="category_2_desc">As próximas perguntas referem-se a prática de atividade física. Leia com atenção a lista de atividades físicas que se encontra abaixo e assinale aquelas que você praticou na semana passada. Considere apenas atividades realizadas fora da educação física da escola. Você pode marcar mais de uma alternativa.</string>
     <string name="category_3">Hábitos Alimentares</string>
@@ -755,7 +450,6 @@
     <string name="category_5">Hábitos de Sono</string>
     <string name="category_5_desc">Agora você responderá a perguntas sobre sono.</string>
     <string name="final_instructions">Você deve permanecer no seu lugar e informar o pesquisador que terminou de responder o questionario no tablet e ele o encaminhará para fazer as medições de peso, estatura, perimetro da cintura e pressão arterial.</string>
-    <string name="cancel_message">Tem certeza que deseja cancelar?</string>
     <string name="error_409_patient">Já possui um paciente cadastrado com esses dados!</string>
     <string name="remove_patient">Tem certeza que deseja remover o paciente?</string>
     <string-array name="sports_answers">
@@ -945,7 +639,6 @@
     </string-array>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <!--<string-array name="age_answers">-->
     <!--<item>10 anos</item>-->
     <!--<item>11 anos</item>-->

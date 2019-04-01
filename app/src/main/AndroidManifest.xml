@@ -49,10 +49,6 @@
             android:parentActivityName=".activity.MainActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.settings.ManagerMeasurementsActivity"
-            android:parentActivityName=".activity.MainActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".devices.ThermometerActivity"
             android:screenOrientation="portrait" />
         <activity

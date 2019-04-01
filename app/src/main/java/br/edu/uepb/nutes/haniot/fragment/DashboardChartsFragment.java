@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Objects;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.MainActivity;
@@ -26,9 +27,7 @@ import pl.bclogic.pulsator4droid.library.PulsatorLayout;
 /**
  * DashboardChartsFragment implementation.
  *
- * @author Fábio Júnior <fabio.pequeno@nutes.uepb.edu.br>
- * @version 1.0
- * @copyright Copyright (c) 2019, NUTES UEPB
+ * @author Copyright (c) 2018, NUTES/UEPB
  */
 public class DashboardChartsFragment extends Fragment {
     @BindView(R.id.patientName)
@@ -138,7 +137,7 @@ public class DashboardChartsFragment extends Fragment {
 
         String message = getString(str);
         messageError.setText(message);
-        getActivity().runOnUiThread(() -> {
+        Objects.requireNonNull(getActivity()).runOnUiThread(() -> {
             boxMessage.startAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_in));
             boxMessage.setVisibility(View.VISIBLE);
         });
