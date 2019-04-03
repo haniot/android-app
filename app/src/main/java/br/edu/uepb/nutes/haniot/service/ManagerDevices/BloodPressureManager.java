@@ -18,7 +18,7 @@ import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.BloodPressureDat
 import br.edu.uepb.nutes.haniot.utils.GattAttributes;
 import no.nordicsemi.android.ble.data.Data;
 
-public class BloodPressureManager extends BluetoohManager {
+public class BloodPressureManager extends BluetoothManager {
 
     BloodPressureDataCallback bloodPressureDataCallback;
 

@@ -32,7 +32,7 @@ import br.edu.uepb.nutes.haniot.utils.GattAttributes;
 import no.nordicsemi.android.ble.callback.DataReceivedCallback;
 import no.nordicsemi.android.ble.data.Data;
 
-public class GlucoseManager extends BluetoohManager {
+public class GlucoseManager extends BluetoothManager {
 
     private static final int UNIT_kgpl = 0;
     private static final byte TIMESTAMP_FLAG = 0x01; // 1 bit
@@ -58,40 +58,42 @@ public class GlucoseManager extends BluetoohManager {
 
     @Override
     protected void setCharacteristicWrite(BluetoothGatt gatt) {
-        final BluetoothGattService service = gatt.getService(UUID.fromString(GattAttributes.SERVICE_GLUCOSE));
+        final BluetoothGattService service = gatt
+                .getService(UUID.fromString(GattAttributes.SERVICE_GLUCOSE));
         if (service != null) {
 
-            characteristicWrite = service.getCharacteristic(UUID.fromString(GattAttributes.CHARACTERISTIC_GLUSOSE_RECORD_ACCESS_CONTROL));
+            characteristicWrite = service
+                    .getCharacteristic(UUID.fromString(GattAttributes
+                            .CHARACTERISTIC_GLUSOSE_RECORD_ACCESS_CONTROL));
             byte[] data = new byte[2];
             data[0] = 0x01; // Report Stored records
             data[1] = 0x06; // last record
 
 
             if (characteristicRecordAccess == null) {
-                characteristicRecordAccess = service.getCharacteristic(UUID.fromString(GattAttributes.CHARACTERISTIC_GLUSOSE_RECORD_ACCESS_CONTROL)); // read
+                characteristicRecordAccess = service
+                        .getCharacteristic(UUID.fromString(GattAttributes
+                                        .CHARACTERISTIC_GLUSOSE_RECORD_ACCESS_CONTROL)); // read
             }
-
-            Log.i(TAG, "Não nulo");
-            mCharacteristic = service.getCharacteristic(UUID.fromString(GattAttributes.CHARACTERISTIC_GLUSOSE_MEASUREMENT));
-            characteristicContext = service.getCharacteristic(UUID.fromString(GattAttributes.CHARACTERISTIC_GLUSOSE_MEASUREMENT_CONTEXT));
+            mCharacteristic = service.getCharacteristic(UUID.fromString(GattAttributes
+                    .CHARACTERISTIC_GLUSOSE_MEASUREMENT));
+            characteristicContext = service.getCharacteristic(UUID.fromString(GattAttributes
+                    .CHARACTERISTIC_GLUSOSE_MEASUREMENT_CONTEXT));
         }
     }
 
     @Override
     protected void initializeCharacteristic() {
         Log.i(TAG, "iniatialize()");
-        //setNotificationCallback(characteristicRecordAccess).with(dataReceivedCallback);
         writeCharacteristic(characteristicWrite, data);
         readCharacteristic(characteristicRecordAccess).with(dataReceivedCallback);
         setNotificationCallback(mCharacteristic).with(dataReceivedCallback);
         setNotificationCallback(characteristicContext).with(contextDataReceivedCallback);
         enableNotifications(mCharacteristic).enqueue();
         enableNotifications(characteristicContext).enqueue();
-        //setIndicationCallback(mCharacteristic).with(dataReceivedCallback);
     }
 
     DataReceivedCallback contextDataReceivedCallback = new DataReceivedCallback() {
-
         @Override
         public void onDataReceived(@NonNull BluetoothDevice device, @NonNull Data data) {
             Log.i(TAG, "onDataReceived()");
@@ -105,12 +107,8 @@ public class GlucoseManager extends BluetoohManager {
         public void measurementReceiver(@NonNull BluetoothDevice device, @NonNull Data data) {
             //Parse
             new Handler().postDelayed(() -> {
-
-
-                Log.i("MEDI", "Gluc yes");
                 JSONObject result = new JSONObject();
                 try {
-
                     float glucoseConcentration = 0;
                     Calendar calendar = null;
                     String unit = "";
@@ -188,7 +186,8 @@ public class GlucoseManager extends BluetoohManager {
                     if (dataContext != null) {
 
                         Log.i(TAG, "Received context " + contextMeasurement.toString());
-                        contextMeasurement = JsonToContextParser.parse(result.toString(), contextParse(dataContext).toString());
+                        contextMeasurement = JsonToContextParser.parse(result.toString(),
+                                contextParse(dataContext).toString());
                         if (contextMeasurement != null) {
                             glucose.addContext(contextMeasurement);
                             Log.i(TAG, "Received context " + contextMeasurement.toString());
@@ -209,12 +208,18 @@ public class GlucoseManager extends BluetoohManager {
                          */
                         for (ContextMeasurement c : glucose.getContextMeasurements()) {
                             if (c.getTypeId() == ContextMeasurementType.GLUCOSE_MEAL)
-                                contextString.append(" - ").append(ContextMeasurementValueType.getString(getContext(), c.getValueId()));
+                                contextString.append(" - ").append(ContextMeasurementValueType
+                                        .getString(getContext(), c.getValueId()));
                         }
-                        Log.i(TAG, "Received measurent from " + device.getName() + ": " + glucose.getValue() + " - " + contextString);
+                        Log.i(TAG, new StringBuilder().append("Received measurent from ")
+                                .append(device.getName()).append(": ")
+                                .append(glucose.getValue()).append(" - ")
+                                .append(contextString).toString());
 
                     } else
-                        Log.i(TAG, "Received measurent from " + device.getName() + ": " + glucose.getValue());
+                        Log.i(TAG, new StringBuilder().append("Received measurent from ")
+                                .append(device.getName()).append(": ")
+                                .append(glucose.getValue()).toString());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -225,7 +230,6 @@ public class GlucoseManager extends BluetoohManager {
         @Override
         public void onDeviceConnecting(@NonNull BluetoothDevice device) {
             Log.i(TAG, "Connecting to " + device.getName());
-            //showToast("Connecting to " + device.getName());
             Intent intent = new Intent("Connecting");
             intent.putExtra("device", MeasurementType.BLOOD_GLUCOSE);
             EventBus.getDefault().post(intent);
@@ -234,7 +238,6 @@ public class GlucoseManager extends BluetoohManager {
         @Override
         public void onDeviceConnected(@NonNull BluetoothDevice device) {
             Log.i(TAG, "Connected to " + device.getName());
-            //showToast("Connected to " + device.getName());
             Intent intent = new Intent("Connected");
             intent.putExtra("device", MeasurementType.BLOOD_GLUCOSE);
             EventBus.getDefault().post(intent);
@@ -243,14 +246,11 @@ public class GlucoseManager extends BluetoohManager {
         @Override
         public void onDeviceDisconnecting(@NonNull BluetoothDevice device) {
             Log.i(TAG, "Disconnecting from " + device.getName());
-            //showToast("Disconnecting from " + device.getName());
-
         }
 
         @Override
         public void onDeviceDisconnected(@NonNull BluetoothDevice device) {
             Log.i(TAG, "Disconnected from " + device.getName());
-            //showToast("Disconnected to " + device.getName());
             Intent intent = new Intent("Disconnected");
             intent.putExtra("device", MeasurementType.BLOOD_GLUCOSE);
             EventBus.getDefault().post(intent);
@@ -258,14 +258,11 @@ public class GlucoseManager extends BluetoohManager {
 
         @Override
         public void onLinkLossOccurred(@NonNull BluetoothDevice device) {
-
         }
 
         @Override
         public void onServicesDiscovered(@NonNull BluetoothDevice device, boolean optionalServicesFound) {
             Log.i(TAG, "Services Discovered from " + device.getName());
-            //showToast("Services Discovered from " + device.getName());
-
         }
 
         @Override
@@ -291,8 +288,6 @@ public class GlucoseManager extends BluetoohManager {
         @Override
         public void onError(@NonNull BluetoothDevice device, @NonNull String message, int errorCode) {
             Log.i(TAG, "Error from " + device.getName() + " - " + message);
-            //showToast("Error from " + device.getName() + " - " + message);
-
         }
 
         @Override

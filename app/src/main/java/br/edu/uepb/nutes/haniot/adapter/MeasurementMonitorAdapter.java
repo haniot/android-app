@@ -18,21 +18,16 @@ import br.edu.uepb.nutes.haniot.data.model.MeasurementMonitor;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class GridDashAdapter extends BaseAdapter<MeasurementMonitor> {
+public class MeasurementMonitorAdapter extends BaseAdapter<MeasurementMonitor> {
     private Context context;
 
-    public GridDashAdapter(Context context) {
+    public MeasurementMonitorAdapter(Context context) {
         this.context = context;
     }
 
     @Override
     public View createView(ViewGroup viewGroup, int viewType) {
-        return View.inflate(context, R.layout.item_grid_dash, null);
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        return super.getItemViewType(position);
+        return View.inflate(context, R.layout.item_measurement_monitor, null);
     }
 
     @Override
@@ -49,14 +44,14 @@ public class GridDashAdapter extends BaseAdapter<MeasurementMonitor> {
             h.imageItem.setImageResource(ig.getIcon());
             h.textDescription.setText(ig.getDescription());
             if (ig.getMeasurementValue().isEmpty()) {
-                h.lastMeasurement.setText("Nenhuma medição");
+                h.lastMeasurement.setText(context.getResources().getString(R.string.empty_measurement));
                 h.textMeasurement.setVisibility(View.INVISIBLE);
                 h.textMeasurement.setVisibility(View.INVISIBLE);
                 h.textMeasurementType.setVisibility(View.INVISIBLE);
                 h.texTime.setVisibility(View.INVISIBLE);
                 h.timeIcon.setVisibility(View.INVISIBLE);
             } else {
-                h.lastMeasurement.setText("Última medição:");
+                h.lastMeasurement.setText(context.getResources().getString(R.string.last_measurement));
                 h.textMeasurement.setVisibility(View.VISIBLE);
                 h.textMeasurement.setVisibility(View.VISIBLE);
                 h.textMeasurementType.setVisibility(View.VISIBLE);
@@ -84,14 +79,14 @@ public class GridDashAdapter extends BaseAdapter<MeasurementMonitor> {
                 h.progressBar.setIndeterminate(true);
             }
             h.botAddMeasurement.setOnClickListener(v -> {
-                if (GridDashAdapter.super.mListener != null) {
-                    GridDashAdapter.super.mListener.onMenuContextClick(h.botAddMeasurement, ig);
+                if (MeasurementMonitorAdapter.super.mListener != null) {
+                    MeasurementMonitorAdapter.super.mListener.onMenuContextClick(h.botAddMeasurement, ig);
                 }
             });
 
             h.mView.setOnClickListener(v -> {
-                if (GridDashAdapter.super.mListener != null) {
-                    GridDashAdapter.super.mListener.onItemClick(ig);
+                if (MeasurementMonitorAdapter.super.mListener != null) {
+                    MeasurementMonitorAdapter.super.mListener.onItemClick(ig);
                 }
             });
 
@@ -139,5 +134,4 @@ public class GridDashAdapter extends BaseAdapter<MeasurementMonitor> {
             mView.clearAnimation();
         }
     }
-
 }

@@ -1,7 +1,6 @@
 package br.edu.uepb.nutes.haniot.fragment;
 
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.le.ScanResult;
 import android.content.Context;
@@ -25,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,7 +36,7 @@ import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.AddMeasurementActivity;
 import br.edu.uepb.nutes.haniot.activity.MainActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.SettingsActivity;
-import br.edu.uepb.nutes.haniot.adapter.GridDashAdapter;
+import br.edu.uepb.nutes.haniot.adapter.MeasurementMonitorAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
 import br.edu.uepb.nutes.haniot.data.model.Device;
 import br.edu.uepb.nutes.haniot.data.model.DeviceType;
@@ -58,7 +58,6 @@ import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.BloodPressureDat
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.GlucoseDataCallback;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.HeartRateDataCallback;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.ScaleDataCallback;
-import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.TemperatureDataCallback;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import br.edu.uepb.nutes.simpleblescanner.SimpleBleScanner;
 import br.edu.uepb.nutes.simpleblescanner.SimpleScannerCallback;
@@ -77,7 +76,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
     private HeartRateManager heartRateManager;
     private GlucoseManager glucoseManager;
     private BloodPressureManager bloodPressureManager;
-    private GridDashAdapter mAdapter;
+    private MeasurementMonitorAdapter mAdapter;
     private AppPreferencesHelper appPreferencesHelper;
     private DeviceDAO deviceDAO;
     private User user;
@@ -87,6 +86,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
     private SimpleBleScanner simpleBleScanner;
     private DashboardChartsFragment.Communicator communicator;
     private List<Device> devices;
+    SimpleBleScanner.Builder builder;
 
     @BindView(R.id.gridMeasurement)
     RecyclerView gridMeasurement;
@@ -106,26 +106,20 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_measurements_dashboard, container, false);
         ButterKnife.bind(this, view);
-        initRecyclerView();
         initComponents();
-        initManagerBLE();
-
+        initRecyclerView();
+        updateManagerBLE();
         return view;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        initManagerBLE();
+        updateManagerBLE();
     }
 
     @Override
@@ -136,13 +130,14 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
         try {
             communicator = (DashboardChartsFragment.Communicator) context;
         } catch (ClassCastException ignored) {
+
         }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        initManagerBLE();
+        updateManagerBLE();
     }
 
     @Override
@@ -156,56 +151,57 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
     }
 
     /**
-     * Get device registered from type.
-     *
-     * @param deviceType int
-     * @return Device
+     * Start scan device registered.
      */
-    private Device getDeviceRegistered(int deviceType) {
-        for (Device device : devices) if (device.getTypeId() == deviceType) return device;
-        return null;
+    private void startScan() {
+        if (BluetoothAdapter.getDefaultAdapter() != null
+                && BluetoothAdapter.getDefaultAdapter().isEnabled()
+                && ((MainActivity) getActivity()).hasLocationPermissions()) {
+            simpleBleScanner.startScan(simpleScannerCallback);
+        } else {
+            if (isAdded() && getActivity() != null)
+                communicator.showMessage(R.string.bluetooth_disabled);
+        }
     }
 
-    // Callback of scan result of bluetooth devices.
+    /**
+     * Callback of scan result of bluetooth devices.
+     */
     SimpleScannerCallback simpleScannerCallback = new SimpleScannerCallback() {
         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         @Override
         public void onScanResult(int i, ScanResult scanResult) {
             String address = scanResult.getDevice().getAddress();
-            if (scanResult.getDevice() == null) Log.i(TAG, "getDevice null");
-            if (scanResult.getDevice().getAddress() == null) Log.i(TAG, "getAddress null");
             Device device = deviceDAO.get(scanResult.getDevice().getAddress(), user.get_id());
-
+            BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
             if (device != null) {
                 switch (device.getTypeId()) {
                     case DeviceType.BLOOD_PRESSURE:
-                        if (bloodPressureManager != null)
-                            if (bloodPressureManager.getConnectionState() != BluetoothGatt.STATE_CONNECTED)
-                                bloodPressureManager.connectDevice(BluetoothAdapter.getDefaultAdapter()
-                                        .getRemoteDevice(address));
+                        if (bloodPressureManager != null &&
+                                bloodPressureManager.getConnectionState() != BluetoothGatt.STATE_CONNECTED)
+                            bloodPressureManager.connectDevice(bluetoothAdapter.getRemoteDevice(address));
                         Log.i(TAG, "Connecting Blood Pressure...");
                         break;
                     case DeviceType.GLUCOMETER:
-                        if (glucoseManager != null)
-                            if (glucoseManager.getConnectionState() != BluetoothGatt.STATE_CONNECTED)
-                                glucoseManager.connectDevice(BluetoothAdapter.getDefaultAdapter()
-                                        .getRemoteDevice(address));
+                        if (glucoseManager != null &&
+                                glucoseManager.getConnectionState() != BluetoothGatt.STATE_CONNECTED)
+                            glucoseManager.connectDevice(bluetoothAdapter.getRemoteDevice(address));
                         Log.i(TAG, "Connecting Glucometer...");
                         break;
                     case DeviceType.BODY_COMPOSITION:
-                        if (scaleManager != null)
-                            if (scaleManager.getConnectionState() != BluetoothGatt.STATE_CONNECTED) {
-                                scaleManager.connectDevice(BluetoothAdapter.getDefaultAdapter()
-                                        .getRemoteDevice(address));
-                                Log.i(TAG, "Connecting Scale...");
-                            }
+                        if (scaleManager != null &&
+                                scaleManager.getConnectionState() != BluetoothGatt.STATE_CONNECTED) {
+                            scaleManager.connectDevice(bluetoothAdapter.getRemoteDevice(address));
+                            Log.i(TAG, "Connecting Scale...");
+                        }
                         break;
                     case DeviceType.HEART_RATE:
-                        if (heartRateManager != null)
-                            if (heartRateManager.getConnectionState() != BluetoothGatt.STATE_CONNECTED)
-                                heartRateManager.connectDevice(BluetoothAdapter.getDefaultAdapter()
-                                        .getRemoteDevice(address));
+                        if (heartRateManager != null &&
+                                heartRateManager.getConnectionState() != BluetoothGatt.STATE_CONNECTED)
+                            heartRateManager.connectDevice(bluetoothAdapter.getRemoteDevice(address));
                         Log.i(TAG, "Connecting Heart Rate...");
+                        break;
+                    default:
                         break;
                 }
             }
@@ -218,260 +214,16 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
 
         @Override
         public void onScanFailed(int i) {
-
+            Toast.makeText(getContext(),
+                    getResources().getString(R.string.error_500),
+                    Toast.LENGTH_SHORT).show();
         }
 
         @Override
         public void onFinish() {
-
+           startScan();
         }
     };
-
-    /**
-     * Init BLE Manager of devices for monitoring.
-     */
-    public void initManagerBLE() {
-        measurementMonitors.clear();
-        devices = DeviceDAO.getInstance(mContext).list(user.get_id());
-        SimpleBleScanner.Builder builder = new SimpleBleScanner.Builder();
-        builder.addScanPeriod(Integer.MAX_VALUE);
-
-        SharedPreferences prefSettings = PreferenceManager.getDefaultSharedPreferences(mContext);
-        MeasurementMonitor measurementMonitor;
-
-        // Weight
-        if (prefSettings.getBoolean(getResources().getString(R.string.key_weight), false)) {
-            if (scaleManager == null) {
-                scaleManager = new ScaleManager(mContext);
-                scaleManager.setSimpleCallback(scaleDataCallback);
-            }
-            measurementMonitor = new MeasurementMonitor(mContext,
-                    R.drawable.xweight, getResources().getString(R.string.weight),
-                    "", ItemGridType.WEIGHT, getString(R.string.unit_kg)
-            );
-
-            if (getDeviceRegistered(DeviceType.BODY_COMPOSITION) != null) {
-                measurementMonitor.setStatus(MeasurementMonitor.DISCONNECTED);
-                Log.i(TAG, getDeviceRegistered(DeviceType.BODY_COMPOSITION).getTypeId() + "");
-                builder.addFilterAddress(Objects.requireNonNull(
-                        getDeviceRegistered(DeviceType.BODY_COMPOSITION)).getAddress()
-                );
-            } else {
-                measurementMonitor.setStatus(MeasurementMonitor.NO_REGISTERED);
-            }
-            measurementMonitors.add(measurementMonitor);
-        }
-
-        // Heart Rate
-        if (prefSettings.getBoolean(getResources().getString(R.string.key_heart_rate), false)) {
-            if (heartRateManager == null) {
-                heartRateManager = new HeartRateManager(mContext);
-                heartRateManager.setSimpleCallback(heartRateDataCallback);
-            }
-            measurementMonitor = new MeasurementMonitor(mContext,
-                    R.drawable.xcardiogram, getResources().getString(R.string.heart_rate),
-                    "", ItemGridType.HEART_RATE, getString(R.string.unit_pulse)
-            );
-            if (getDeviceRegistered(DeviceType.HEART_RATE) != null) {
-                measurementMonitor.setStatus(MeasurementMonitor.DISCONNECTED);
-                builder.addFilterAddress(Objects.requireNonNull(
-                        getDeviceRegistered(DeviceType.HEART_RATE)).getAddress()
-                );
-            } else {
-                measurementMonitor.setStatus(MeasurementMonitor.NO_REGISTERED);
-            }
-            measurementMonitors.add(measurementMonitor);
-        }
-
-        // Glucose
-        if (prefSettings.getBoolean(getResources().getString(R.string.key_blood_glucose), false)) {
-            if (glucoseManager == null) {
-                glucoseManager = new GlucoseManager(mContext);
-                glucoseManager.setSimpleCallback(glucoseDataCallback);
-            }
-            measurementMonitor = new MeasurementMonitor(mContext,
-                    R.drawable.xglucosemeter, getResources().getString(R.string.blood_glucose),
-                    "", ItemGridType.BLOOD_GLUCOSE, getString(R.string.unit_glucose_mg_dL));
-            if (getDeviceRegistered(DeviceType.GLUCOMETER) != null) {
-                measurementMonitor.setStatus(MeasurementMonitor.DISCONNECTED);
-                builder.addFilterAddress(Objects.requireNonNull(
-                        getDeviceRegistered(DeviceType.GLUCOMETER)).getAddress()
-                );
-            } else {
-                measurementMonitor.setStatus(MeasurementMonitor.NO_REGISTERED);
-            }
-            measurementMonitors.add(measurementMonitor);
-        }
-
-        // Blood Pressure
-        if (prefSettings.getBoolean(getResources().getString(R.string.key_blood_pressure), false)) {
-            if (bloodPressureManager == null) {
-                bloodPressureManager = new BloodPressureManager(mContext);
-                bloodPressureManager.setSimpleCallback(bloodPressureDataCallback);
-            }
-            measurementMonitor = new MeasurementMonitor(mContext,
-                    R.drawable.xblood_pressure, getResources().getString(R.string.blood_pressure),
-                    "", ItemGridType.BLOOD_PRESSURE, getString(R.string.unit_pressure));
-            if (getDeviceRegistered(DeviceType.BLOOD_PRESSURE) != null) {
-                measurementMonitor.setStatus(MeasurementMonitor.DISCONNECTED);
-                builder.addFilterAddress(Objects.requireNonNull(
-                        getDeviceRegistered(DeviceType.BLOOD_PRESSURE)).getAddress()
-                );
-            } else {
-                measurementMonitor.setStatus(MeasurementMonitor.NO_REGISTERED);
-            }
-            measurementMonitors.add(measurementMonitor);
-        }
-
-        // Anthropometric
-        if (prefSettings.getBoolean(getResources().getString(R.string.key_anthropometric), false)) {
-            measurementMonitor = new MeasurementMonitor(mContext,
-                    R.drawable.xshape, getResources().getString(R.string.anthropometric),
-                    "", ItemGridType.ANTHROPOMETRIC, "");
-            measurementMonitors.add(measurementMonitor);
-        }
-
-        mAdapter.clearItems();
-        mAdapter.addItems(measurementMonitors);
-
-        if (measurementMonitors.isEmpty()) {
-            message.setVisibility(View.VISIBLE);
-            editMonitor.setVisibility(View.INVISIBLE);
-        } else {
-            message.setVisibility(View.INVISIBLE);
-            editMonitor.setVisibility(View.VISIBLE);
-        }
-
-        simpleBleScanner = builder.build();
-        if (BluetoothAdapter.getDefaultAdapter() != null
-                && BluetoothAdapter.getDefaultAdapter().isEnabled()
-                && ((MainActivity) getActivity()).hasLocationPermissions()) {
-            simpleBleScanner.startScan(simpleScannerCallback);
-        } else {
-            if (isAdded() && getActivity() != null)
-                communicator.showMessage(R.string.bluetooth_disabled);
-        }
-    }
-
-    /**
-     * Init basics components.
-     */
-    private void initComponents() {
-        measurementMonitors = new ArrayList<>();
-        appPreferencesHelper = AppPreferencesHelper.getInstance(mContext);
-        user = appPreferencesHelper.getUserLogged();
-        deviceDAO = DeviceDAO.getInstance(mContext);
-        editMonitor.setOnClickListener(v -> {
-            Intent it = new Intent(mContext, SettingsActivity.class);
-            it.putExtra(SettingsActivity.SETTINGS_TYPE, SettingsActivity.SETTINGS_MEASUREMENTS);
-
-            startActivity(it);
-        });
-        addMonitor.setOnClickListener(v -> {
-            Intent it = new Intent(mContext, SettingsActivity.class);
-            it.putExtra(SettingsActivity.SETTINGS_TYPE, SettingsActivity.SETTINGS_MEASUREMENTS);
-
-            startActivity(it);
-        });
-    }
-
-    /**
-     * Init recycler view of list devices.
-     */
-    private void initRecyclerView() {
-        mAdapter = new GridDashAdapter(mContext);
-        mAdapter.setHasStableIds(true);
-        gridMeasurement.setHasFixedSize(true);
-
-        gridMeasurement.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            }
-
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
-        });
-        deviceTypeTag = gridMeasurement.getTag().toString();
-        /**
-         * Set a grid layout to recyclerview,
-         * the calculateNoOfColumns was used to set the grid autospacing
-         */
-        if (deviceTypeTag.equals("tablet")) {
-            gridMeasurement.setLayoutManager(new GridLayoutManager(mContext,
-                    calculateNoOfColumns(mContext)));
-        } else {
-            gridMeasurement.setLayoutManager(new LinearLayoutManager(mContext));
-        }
-        gridMeasurement.setItemAnimator(new DefaultItemAnimator());
-        gridMeasurement.setNestedScrollingEnabled(false);
-
-        mAdapter.setListener(this);
-        gridMeasurement.setAdapter(mAdapter);
-
-        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0,
-                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-
-            @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
-            }
-
-            @Override
-            public boolean onMove(@NonNull RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder,
-                                  RecyclerView.ViewHolder target) {
-
-                Collections.swap(measurementMonitors, viewHolder.getAdapterPosition(), target.getAdapterPosition());
-                // and notify the adapter that its dataset has changed
-                mAdapter.notifyItemMoved(viewHolder.getAdapterPosition(), target.getAdapterPosition());
-                return true;
-            }
-
-            @Override
-            public int getMovementFlags(@NonNull RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-                if (deviceTypeTag.equals("tablet")) {
-                    return makeFlag(ItemTouchHelper.ACTION_STATE_DRAG,
-                            ItemTouchHelper.DOWN | ItemTouchHelper.UP | ItemTouchHelper.START | ItemTouchHelper.END);
-                } else {
-                    return makeFlag(ItemTouchHelper.ACTION_STATE_DRAG,
-                            ItemTouchHelper.UP | ItemTouchHelper.DOWN);
-                }
-            }
-        };
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
-        itemTouchHelper.attachToRecyclerView(gridMeasurement);
-    }
-
-    /**
-     * calculate number of columns of list measurement.
-     *
-     * @param context {@link Context}
-     * @return int
-     */
-    public int calculateNoOfColumns(Context context) {
-
-        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
-        int noOfColumns = 1;
-
-        if (this.deviceTypeTag.equals("tablet")) {
-            // 260 is the size for tablets
-            noOfColumns = (int) (dpWidth / 260);
-        } else {
-            // 160 is the size for smart phones
-            noOfColumns = (int) (dpWidth / 160);
-        }
-        return noOfColumns;
-    }
-
-    private MeasurementMonitor getMeasurementMonitor(int type) {
-        for (MeasurementMonitor measurementMonitor : measurementMonitors) {
-            if (measurementMonitor.getType() == type) {
-                return measurementMonitor;
-            }
-        }
-        return null;
-    }
 
     /**
      * Data callback of Blood Pressure.
@@ -588,32 +340,6 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
     };
 
     /**
-     * Data callback of Temperature.
-     */
-    TemperatureDataCallback temperatureDataCallback = new TemperatureDataCallback() {
-        @Override
-        public void onConnected(BluetoothDevice device) {
-            Log.i(TAG, "Connected on Thermometer");
-            getMeasurementMonitor(ItemGridType.TEMPERATURE).setStatus(MeasurementMonitor.CONNECTED);
-            mAdapter.notifyDataSetChanged();
-        }
-
-        @Override
-        public void onDisconnected(BluetoothDevice device) {
-            Log.i(TAG, "Connected on Thermometer");
-            getMeasurementMonitor(ItemGridType.TEMPERATURE).setStatus(MeasurementMonitor.DISCONNECTED);
-            mAdapter.notifyDataSetChanged();
-        }
-
-        @Override
-        public void onMeasurementReceived(Measurement measurementTemperature) {
-            Log.i(TAG, "Received measurement of Temperature");
-            updateMeasurement(measurementTemperature, ItemGridType.TEMPERATURE);
-            mAdapter.notifyDataSetChanged();
-        }
-    };
-
-    /**
      * Update measurement not finalized.
      *
      * @param value     {@link String}
@@ -649,16 +375,276 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
         }
     }
 
+    /**
+     * Get device registered from type.
+     *
+     * @param deviceType int
+     * @return Device
+     */
+    private Device getDeviceRegistered(int deviceType) {
+        for (Device device : devices) if (device.getTypeId() == deviceType) return device;
+        return null;
+    }
+
+    /**
+     * Setup monitor item.
+     *
+     * @param type
+     */
+    private void setupMonitorItem(int type) {
+        int icon;
+        int itemType;
+        int deviceType;
+        String name;
+        String unit;
+
+        switch (type) {
+            case R.string.key_weight:
+                icon = R.drawable.xweight;
+                name = getResources().getString(R.string.weight);
+                itemType = ItemGridType.WEIGHT;
+                unit = getString(R.string.unit_kg);
+                deviceType = DeviceType.BODY_COMPOSITION;
+                break;
+            case R.string.key_heart_rate:
+                icon = R.drawable.xcardiogram;
+                name = getResources().getString(R.string.heart_rate);
+                itemType = ItemGridType.HEART_RATE;
+                unit = getString(R.string.unit_heart_rate);
+                deviceType = DeviceType.HEART_RATE;
+                break;
+            case R.string.key_blood_glucose:
+                icon = R.drawable.xglucosemeter;
+                name = getResources().getString(R.string.blood_glucose);
+                itemType = ItemGridType.BLOOD_GLUCOSE;
+                unit = getString(R.string.unit_glucose_mg_dL);
+                deviceType = DeviceType.GLUCOMETER;
+                break;
+            case R.string.key_blood_pressure:
+                icon = R.drawable.xblood_pressure;
+                name = getResources().getString(R.string.blood_pressure);
+                itemType = ItemGridType.BLOOD_PRESSURE;
+                unit = getString(R.string.unit_pressure);
+                deviceType = DeviceType.BLOOD_PRESSURE;
+                break;
+            default:
+                return;
+        }
+        MeasurementMonitor measurementMonitor = new MeasurementMonitor(
+                mContext, icon, name,
+                "", itemType, unit);
+
+        if (getDeviceRegistered(deviceType) != null)
+            measurementMonitor.setStatus(MeasurementMonitor.DISCONNECTED);
+        else measurementMonitor.setStatus(MeasurementMonitor.NO_REGISTERED);
+        measurementMonitors.add(measurementMonitor);
+    }
+
+    /**
+     * Update BLE Manager of devices for monitoring.
+     */
+    public void updateManagerBLE() {
+        measurementMonitors.clear();
+        SharedPreferences prefSettings = PreferenceManager.getDefaultSharedPreferences(mContext);
+        // Weight
+        if (prefSettings.getBoolean(getResources().getString(R.string.key_weight), false)) {
+            if (scaleManager == null) {
+                scaleManager = new ScaleManager(mContext);
+                scaleManager.setSimpleCallback(scaleDataCallback);
+                builder.addFilterAddress(Objects.requireNonNull(
+                        getDeviceRegistered(DeviceType.BODY_COMPOSITION)).getAddress());
+            }
+            setupMonitorItem(R.string.key_weight);
+        }
+        // Heart Rate
+        if (prefSettings.getBoolean(getResources().getString(R.string.key_heart_rate), false)) {
+            if (heartRateManager == null) {
+                heartRateManager = new HeartRateManager(mContext);
+                heartRateManager.setSimpleCallback(heartRateDataCallback);
+                builder.addFilterAddress(Objects.requireNonNull(
+                        getDeviceRegistered(DeviceType.HEART_RATE)).getAddress());
+            }
+            setupMonitorItem(R.string.key_heart_rate);
+        }
+        // Glucose
+        if (prefSettings.getBoolean(getResources().getString(R.string.key_blood_glucose), false)) {
+            if (glucoseManager == null) {
+                glucoseManager = new GlucoseManager(mContext);
+                glucoseManager.setSimpleCallback(glucoseDataCallback);
+                builder.addFilterAddress(Objects.requireNonNull(
+                        getDeviceRegistered(DeviceType.GLUCOMETER)).getAddress());
+            }
+            setupMonitorItem(R.string.key_heart_rate);
+        }
+        // Blood Pressure
+        if (prefSettings.getBoolean(getResources().getString(R.string.key_blood_pressure), false)) {
+            if (bloodPressureManager == null) {
+                bloodPressureManager = new BloodPressureManager(mContext);
+                bloodPressureManager.setSimpleCallback(bloodPressureDataCallback);
+                builder.addFilterAddress(Objects.requireNonNull(
+                        getDeviceRegistered(DeviceType.BLOOD_PRESSURE)).getAddress());
+            }
+            setupMonitorItem(R.string.blood_pressure);
+        }
+
+        // Anthropometric
+        if (prefSettings.getBoolean(getResources().getString(R.string.key_anthropometric), false)) {
+            setupMonitorItem(R.string.key_anthropometric);
+        }
+
+        builder.addScanPeriod(Integer.MAX_VALUE);
+        updateListMonitor();
+        simpleBleScanner = builder.build();
+        startScan();
+    }
+
+    /**
+     * Update monitor list.
+     */
+    private void updateListMonitor() {
+        mAdapter.clearItems();
+        mAdapter.addItems(measurementMonitors);
+
+        if (measurementMonitors.isEmpty()) {
+            message.setVisibility(View.VISIBLE);
+            editMonitor.setVisibility(View.INVISIBLE);
+        } else {
+            message.setVisibility(View.INVISIBLE);
+            editMonitor.setVisibility(View.VISIBLE);
+        }
+    }
+
+    /**
+     * On click of Monitor Edit.
+     */
+    private View.OnClickListener editMonitorClick = v -> {
+        Intent it = new Intent(mContext, SettingsActivity.class);
+        it.putExtra(SettingsActivity.SETTINGS_TYPE, SettingsActivity.SETTINGS_MEASUREMENTS);
+        startActivity(it);
+    };
+
+    /**
+     * Init basics components.
+     */
+    private void initComponents() {
+        mAdapter = new MeasurementMonitorAdapter(mContext);
+        measurementMonitors = new ArrayList<>();
+        appPreferencesHelper = AppPreferencesHelper.getInstance(mContext);
+        user = appPreferencesHelper.getUserLogged();
+        deviceDAO = DeviceDAO.getInstance(mContext);
+        devices = deviceDAO.list(user.get_id());
+        builder = new SimpleBleScanner.Builder();
+        editMonitor.setOnClickListener(editMonitorClick);
+        addMonitor.setOnClickListener(editMonitorClick);
+    }
+
+    /**
+     * Init recycler view of list devices.
+     */
+    private void initRecyclerView() {
+        mAdapter.setHasStableIds(true);
+        gridMeasurement.setHasFixedSize(true);
+
+        deviceTypeTag = gridMeasurement.getTag().toString();
+        if (deviceTypeTag.equals("tablet")) {
+            gridMeasurement.setLayoutManager(new GridLayoutManager(mContext,
+                    calculateNoOfColumns(mContext)));
+        } else {
+            gridMeasurement.setLayoutManager(new LinearLayoutManager(mContext));
+        }
+        gridMeasurement.setItemAnimator(new DefaultItemAnimator());
+        gridMeasurement.setNestedScrollingEnabled(false);
+        mAdapter.setListener(this);
+        gridMeasurement.setAdapter(mAdapter);
+
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0,
+                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+            }
+
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder,
+                                  RecyclerView.ViewHolder target) {
+                Collections.swap(measurementMonitors, viewHolder.getAdapterPosition(), target.getAdapterPosition());
+                mAdapter.notifyItemMoved(viewHolder.getAdapterPosition(), target.getAdapterPosition());
+                return true;
+            }
+
+            @Override
+            public int getMovementFlags(@NonNull RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+                if (deviceTypeTag.equals("tablet")) {
+                    return makeFlag(ItemTouchHelper.ACTION_STATE_DRAG,
+                            ItemTouchHelper.DOWN | ItemTouchHelper.UP | ItemTouchHelper.START | ItemTouchHelper.END);
+                } else {
+                    return makeFlag(ItemTouchHelper.ACTION_STATE_DRAG,
+                            ItemTouchHelper.UP | ItemTouchHelper.DOWN);
+                }
+            }
+        };
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+        itemTouchHelper.attachToRecyclerView(gridMeasurement);
+    }
+
+    /**
+     * calculate number of columns of list measurement.
+     *
+     * @param context {@link Context}
+     * @return int
+     */
+    public int calculateNoOfColumns(Context context) {
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
+        int noOfColumns = 1;
+
+        if (this.deviceTypeTag.equals("tablet")) {
+            // 260 is the size for tablets
+            noOfColumns = (int) (dpWidth / 260);
+        } else {
+            // 160 is the size for smart phones
+            noOfColumns = (int) (dpWidth / 160);
+        }
+        return noOfColumns;
+    }
+
+    /**
+     * Get Measurement Monitor item.
+     *
+     * @param type
+     * @return
+     */
+    private MeasurementMonitor getMeasurementMonitor(int type) {
+        for (MeasurementMonitor measurementMonitor : measurementMonitors) {
+            if (measurementMonitor.getType() == type) {
+                return measurementMonitor;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * On click item of measurement monitor list.
+     * @param item
+     */
     @Override
     public void onItemClick(MeasurementMonitor item) {
-        if (item.getType() == ItemGridType.BLOOD_GLUCOSE)
-            startActivity(new Intent(mContext, GlucoseActivity.class));
-        else if (item.getType() == ItemGridType.HEART_RATE)
-            startActivity(new Intent(mContext, HeartRateActivity.class));
-        else if (item.getType() == ItemGridType.WEIGHT)
-            startActivity(new Intent(mContext, ScaleActivity.class));
-        else if (item.getType() == ItemGridType.BLOOD_PRESSURE)
-            startActivity(new Intent(mContext, BloodPressureHDPActivity.class));
+        switch (item.getType()) {
+            case ItemGridType.BLOOD_GLUCOSE:
+                startActivity(new Intent(mContext, GlucoseActivity.class));
+                break;
+            case ItemGridType.HEART_RATE:
+                startActivity(new Intent(mContext, HeartRateActivity.class));
+                break;
+            case ItemGridType.WEIGHT:
+                startActivity(new Intent(mContext, ScaleActivity.class));
+                break;
+            case ItemGridType.BLOOD_PRESSURE:
+                startActivity(new Intent(mContext, BloodPressureHDPActivity.class));
+                break;
+            default:
+                break;
+        }
     }
 
     @Override
@@ -672,11 +658,11 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
         Intent it = new Intent(mContext, AddMeasurementActivity.class);
 
         switch (type) {
-            case ItemGridType.ACTIVITY:
-                appPreferencesHelper
-                        .saveInt(getResources().getString(R.string.measurementType), ItemGridType.ACTIVITY);
-                startActivity(it);
-                break;
+//            case ItemGridType.ACTIVITY:
+//                appPreferencesHelper
+//                        .saveInt(getResources().getString(R.string.measurementType), ItemGridType.ACTIVITY);
+//                startActivity(it);
+//                break;
             case ItemGridType.BLOOD_GLUCOSE:
                 appPreferencesHelper
                         .saveInt(getResources().getString(R.string.measurementType), ItemGridType.BLOOD_GLUCOSE);
@@ -687,21 +673,21 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
                         .saveInt(getResources().getString(R.string.measurementType), ItemGridType.BLOOD_PRESSURE);
                 startActivity(it);
                 break;
-            case ItemGridType.TEMPERATURE:
-                appPreferencesHelper
-                        .saveInt(getResources().getString(R.string.measurementType), ItemGridType.TEMPERATURE);
-                startActivity(it);
-                break;
+//            case ItemGridType.TEMPERATURE:
+//                appPreferencesHelper
+//                        .saveInt(getResources().getString(R.string.measurementType), ItemGridType.TEMPERATURE);
+//                startActivity(it);
+//                break;
             case ItemGridType.WEIGHT:
                 appPreferencesHelper
                         .saveInt(getResources().getString(R.string.measurementType), ItemGridType.WEIGHT);
                 startActivity(it);
                 break;
-            case ItemGridType.SLEEP:
-                appPreferencesHelper
-                        .saveInt(getResources().getString(R.string.measurementType), ItemGridType.SLEEP);
-                startActivity(it);
-                break;
+//            case ItemGridType.SLEEP:
+//                appPreferencesHelper
+//                        .saveInt(getResources().getString(R.string.measurementType), ItemGridType.SLEEP);
+//                startActivity(it);
+//                break;
             case ItemGridType.HEART_RATE:
                 appPreferencesHelper
                         .saveInt(getResources().getString(R.string.measurementType), ItemGridType.HEART_RATE);

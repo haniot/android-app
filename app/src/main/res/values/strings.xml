@@ -54,6 +54,8 @@
     <string name="proceed_title">Prosseguir</string>
     <string name="active_title">Ativo</string>
     <string name="inactive_title">Inativo</string>
+    <string name="empty_measurement">Nenhuma medição</string>
+    <string name="last_measurement">Última medição:</string>
 
     <!--FORMATS-->
     <string name="format_number1">#.0</string>
@@ -637,12 +639,4 @@
         <item>11:00 da noite</item>
         <item>Meia noite</item>
     </string-array>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <!--<string-array name="age_answers">-->
-    <!--<item>10 anos</item>-->
-    <!--<item>11 anos</item>-->
-    <!--<item>12 anos</item>-->
-    <!--<item>13 anos</item>-->
-    <!--</string-array>-->
 </resources>

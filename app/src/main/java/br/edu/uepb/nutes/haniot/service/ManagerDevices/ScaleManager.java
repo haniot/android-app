@@ -26,7 +26,7 @@ import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import br.edu.uepb.nutes.haniot.utils.GattAttributes;
 import no.nordicsemi.android.ble.data.Data;
 
-public class ScaleManager extends BluetoohManager {
+public class ScaleManager extends BluetoothManager {
 
     private ScaleDataCallback scaleDataCallback;
     private DecimalFormat decimalFormat;

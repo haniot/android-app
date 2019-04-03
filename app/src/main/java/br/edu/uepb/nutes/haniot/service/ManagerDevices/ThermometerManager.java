@@ -18,7 +18,7 @@ import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.TemperatureDataC
 import br.edu.uepb.nutes.haniot.utils.GattAttributes;
 import no.nordicsemi.android.ble.data.Data;
 
-public class ThermometerManager extends BluetoohManager {
+public class ThermometerManager extends BluetoothManager {
 
     TemperatureDataCallback temperatureDataCallback;
 

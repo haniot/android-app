@@ -21,7 +21,7 @@ import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import br.edu.uepb.nutes.haniot.utils.GattAttributes;
 import no.nordicsemi.android.ble.data.Data;
 
-public class HeartRateManager extends BluetoohManager {
+public class HeartRateManager extends BluetoothManager {
     private static final byte HEART_RATE_VALUE_FORMAT = 0x01; // 1 bit
 
     HeartRateDataCallback heartRateDataCallback;

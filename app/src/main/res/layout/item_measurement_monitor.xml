@@ -53,7 +53,7 @@
                 android:layout_marginTop="-22dp"
                 android:layout_marginEnd="1dp"
                 android:layout_toEndOf="@id/imageItem"
-                android:text="Batimento Cardiaco"
+                android:text="@string/heart_rate"
                 android:textAlignment="textStart"
                 android:textSize="16sp" />
 
@@ -116,7 +116,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_marginStart="41dp"
                 android:layout_marginTop="35dp"
-                android:text="Última medição:"
+                android:text="@string/last_measurement"
                 android:textSize="12sp"
                 android:visibility="visible" />
 
