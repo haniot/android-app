@@ -253,11 +253,8 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
      * Initialize SwipeRefresh
      */
     private void initDataSwipeRefresh() {
-        mDataSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                if (itShouldLoadMore) loadData();
-            }
+        mDataSwipeRefresh.setOnRefreshListener(() -> {
+            if (itShouldLoadMore) loadData();
         });
     }
 
@@ -376,16 +373,13 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
      * @param enabled boolean
      */
     private void toggleLoading(boolean enabled) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (!enabled) {
-                    mDataSwipeRefresh.setRefreshing(false);
-                    itShouldLoadMore = true;
-                } else {
-                    mDataSwipeRefresh.setRefreshing(true);
-                    itShouldLoadMore = false;
-                }
+        runOnUiThread(() -> {
+            if (!enabled) {
+                mDataSwipeRefresh.setRefreshing(false);
+                itShouldLoadMore = true;
+            } else {
+                mDataSwipeRefresh.setRefreshing(true);
+                itShouldLoadMore = false;
             }
         });
     }
@@ -396,19 +390,16 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
      * @param visible boolean
      */
     private void toggleNoDataMessage(boolean visible) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (visible) {
-                    if (!ConnectionUtils.internetIsEnabled(getApplicationContext())) {
-                        noDataMessage.setText(getString(R.string.connect_network_try_again));
-                    } else {
-                        noDataMessage.setText(getString(R.string.no_data_available));
-                    }
-                    noDataMessage.setVisibility(View.VISIBLE);
+        runOnUiThread(() -> {
+            if (visible) {
+                if (!ConnectionUtils.internetIsEnabled(getApplicationContext())) {
+                    noDataMessage.setText(getString(R.string.connect_network_try_again));
                 } else {
-                    noDataMessage.setVisibility(View.GONE);
+                    noDataMessage.setText(getString(R.string.no_data_available));
                 }
+                noDataMessage.setVisibility(View.VISIBLE);
+            } else {
+                noDataMessage.setVisibility(View.GONE);
             }
         });
     }
@@ -419,27 +410,12 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
      * @param message
      */
     private void printMessage(String message) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
-            }
-        });
+        runOnUiThread(() -> Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show());
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-
-        // TODO REMOVER!!! Pois o cadastro do device deverá ser no processo de emparelhamento
-//        mDevice = deviceDAO.get(mDeviceAddress, session.getIdLogged());
-//
-//        if (mDevice == null) {
-//            mDevice = new Device(mDeviceAddress, "EAR THERMOMETER", "PHILIPS", "DL8740", DeviceType.THERMOMETER, session.getUserLogged());
-//            mDevice.set_id("5a62c0d6d6f33400146c9b65");
-//            if (!deviceDAO.save(mDevice)) finish();
-//            mDevice = deviceDAO.get(mDeviceAddress, session.getIdLogged());
-//        }
     }
 
     @Override
@@ -477,19 +453,16 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void updateConnectionState(final boolean isConnected) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mCircularProgressBar.setProgress(0);
-                mCircularProgressBar.setProgressWithAnimation(100); // Default animate duration = 1500ms
+        runOnUiThread(() -> {
+            mCircularProgressBar.setProgress(0);
+            mCircularProgressBar.setProgressWithAnimation(100); // Default animate duration = 1500ms
 
-                if (isConnected) {
-                    mCircularProgressBar.setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
-                    mCircularProgressBar.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAlertDanger));
-                } else {
-                    mCircularProgressBar.setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAlertDanger));
-                    mCircularProgressBar.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
-                }
+            if (isConnected) {
+                mCircularProgressBar.setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
+                mCircularProgressBar.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAlertDanger));
+            } else {
+                mCircularProgressBar.setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAlertDanger));
+                mCircularProgressBar.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
             }
         });
     }
@@ -614,16 +587,13 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
     private void updateUILastMeasurement(Measurement m, boolean applyAnimation) {
         if (m == null) return;
 
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mTemperatureTextView.setText(decimalFormat.format(m.getValue()));
-                mUnitTemperatureTextView.setText(m.getUnit());
-                mDateLastMeasurement.setText(DateUtils.abbreviatedDate(
-                        getApplicationContext(), m.getRegistrationDate()));
+        runOnUiThread(() -> {
+            mTemperatureTextView.setText(decimalFormat.format(m.getValue()));
+            mUnitTemperatureTextView.setText(m.getUnit());
+            mDateLastMeasurement.setText(DateUtils.abbreviatedDate(
+                    getApplicationContext(), m.getRegistrationDate()));
 
-                if (applyAnimation) mTemperatureTextView.startAnimation(animation);
-            }
+            if (applyAnimation) mTemperatureTextView.startAnimation(animation);
         });
     }
 

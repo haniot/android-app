@@ -265,11 +265,8 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
      * Initialize SwipeRefresh
      */
     private void initDataSwipeRefresh() {
-        mDataSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                if (itShouldLoadMore) loadData();
-            }
+        mDataSwipeRefresh.setOnRefreshListener(() -> {
+            if (itShouldLoadMore) loadData();
         });
     }
 
@@ -279,7 +276,8 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
      * when an error occurs on the first request with the server.
      */
     private void loadDataLocal() {
-        mAdapter.addItems(measurementDAO.list(MeasurementType.BLOOD_GLUCOSE, appPreferencesHelper.getUserLogged().getId(), 0, 100));
+        mAdapter.addItems(measurementDAO.list(MeasurementType.BLOOD_GLUCOSE,
+                appPreferencesHelper.getUserLogged().getId(), 0, 100));
 
         if (!mAdapter.itemsIsEmpty()) {
             updateUILastMeasurement(mAdapter.getFirstItem(), false);
@@ -380,16 +378,13 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
      * @param enabled boolean
      */
     private void toggleLoading(boolean enabled) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (!enabled) {
-                    mDataSwipeRefresh.setRefreshing(false);
-                    itShouldLoadMore = true;
-                } else {
-                    mDataSwipeRefresh.setRefreshing(true);
-                    itShouldLoadMore = false;
-                }
+        runOnUiThread(() -> {
+            if (!enabled) {
+                mDataSwipeRefresh.setRefreshing(false);
+                itShouldLoadMore = true;
+            } else {
+                mDataSwipeRefresh.setRefreshing(true);
+                itShouldLoadMore = false;
             }
         });
     }
@@ -400,19 +395,16 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
      * @param visible boolean
      */
     private void toggleNoDataMessage(boolean visible) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (visible) {
-                    if (!ConnectionUtils.internetIsEnabled(getApplicationContext())) {
-                        noDataMessage.setText(getString(R.string.connect_network_try_again));
-                    } else {
-                        noDataMessage.setText(getString(R.string.no_data_available));
-                    }
-                    noDataMessage.setVisibility(View.VISIBLE);
+        runOnUiThread(() -> {
+            if (visible) {
+                if (!ConnectionUtils.internetIsEnabled(getApplicationContext())) {
+                    noDataMessage.setText(getString(R.string.connect_network_try_again));
                 } else {
-                    noDataMessage.setVisibility(View.GONE);
+                    noDataMessage.setText(getString(R.string.no_data_available));
                 }
+                noDataMessage.setVisibility(View.VISIBLE);
+            } else {
+                noDataMessage.setVisibility(View.GONE);
             }
         });
     }
@@ -423,37 +415,29 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
      * @param message
      */
     private void printMessage(String message) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
-            }
-        });
+        runOnUiThread(() -> Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show());
     }
 
     /**
      * @param isConnected
      */
     private void updateConnectionState(final boolean isConnected) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (progressDialog != null && !isConnected && isGetAllMonitor) {
-                    isGetAllMonitor = false;
-                    progressDialog.dismiss();
-                    synchronizeWithServer();
-                    loadData();
-                }
-                mCircularProgressBar.setProgress(0);
-                mCircularProgressBar.setProgressWithAnimation(100); // Default animate duration = 1500ms
+        runOnUiThread(() -> {
+            if (progressDialog != null && !isConnected && isGetAllMonitor) {
+                isGetAllMonitor = false;
+                progressDialog.dismiss();
+                synchronizeWithServer();
+                loadData();
+            }
+            mCircularProgressBar.setProgress(0);
+            mCircularProgressBar.setProgressWithAnimation(100); // Default animate duration = 1500ms
 
-                if (isConnected) {
-                    mCircularProgressBar.setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
-                    mCircularProgressBar.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAlertDanger));
-                } else {
-                    mCircularProgressBar.setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAlertDanger));
-                    mCircularProgressBar.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
-                }
+            if (isConnected) {
+                mCircularProgressBar.setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
+                mCircularProgressBar.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAlertDanger));
+            } else {
+                mCircularProgressBar.setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAlertDanger));
+                mCircularProgressBar.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
             }
         });
     }

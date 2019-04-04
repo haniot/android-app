@@ -1,4 +1,4 @@
-package br.edu.uepb.nutes.haniot.service.ManagerDevices;
+package br.edu.uepb.nutes.haniot.service.ManagerDevices.callback;
 
 import android.bluetooth.BluetoothDevice;
 import android.support.annotation.NonNull;

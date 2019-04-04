@@ -142,7 +142,6 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
     @Override
     protected void onStart() {
         super.onStart();
-
     }
 
     @Override
@@ -232,23 +231,20 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
     }
 
     private void updateConnectionState(final boolean isConnected) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mCircularProgressBar.setProgress(0);
-                mCircularProgressBar.setProgressWithAnimation(100); // Default animate duration = 1500ms
+        runOnUiThread(() -> {
+            mCircularProgressBar.setProgress(0);
+            mCircularProgressBar.setProgressWithAnimation(100); // Default animate duration = 1500ms
 
-                if (isConnected) {
-                    heartAnimation.start();
-                    mCircularProgressBar.setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
-                    mCircularProgressBar.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAlertDanger));
+            if (isConnected) {
+                heartAnimation.start();
+                mCircularProgressBar.setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
+                mCircularProgressBar.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAlertDanger));
 
-                    startChronometer();
-                } else {
-                    heartAnimation.pause();
-                    mCircularProgressBar.setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAlertDanger));
-                    mCircularProgressBar.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
-                }
+                startChronometer();
+            } else {
+                heartAnimation.pause();
+                mCircularProgressBar.setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAlertDanger));
+                mCircularProgressBar.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
             }
         });
     }
@@ -407,12 +403,9 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
      * Initialize ToolBar
      */
     private void initToolBar() {
-
         mToolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-
-
     }
 }

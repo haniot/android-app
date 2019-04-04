@@ -7,9 +7,9 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.ManagerCallback;
 import no.nordicsemi.android.ble.BleManager;
 import no.nordicsemi.android.ble.callback.DataReceivedCallback;
-import no.nordicsemi.android.ble.data.Data;
 
 public abstract class BluetoothManager extends BleManager<ManagerCallback> {
     protected final String TAG = "ManagerDevices";

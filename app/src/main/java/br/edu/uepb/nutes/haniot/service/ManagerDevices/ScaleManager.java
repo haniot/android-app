@@ -21,6 +21,7 @@ import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.MeasurementType;
 import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.parse.JsonToMeasurementParser;
+import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.ManagerCallback;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.ScaleDataCallback;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import br.edu.uepb.nutes.haniot.utils.GattAttributes;
@@ -35,7 +36,6 @@ public class ScaleManager extends BluetoothManager {
         super(context);
         setGattCallbacks(bleManagerCallbacks);
         decimalFormat = new DecimalFormat(context.getString(R.string.format_number2), new DecimalFormatSymbols(Locale.US));
-
     }
 
     public void setSimpleCallback(ScaleDataCallback simpleCallback) {
@@ -58,7 +58,7 @@ public class ScaleManager extends BluetoothManager {
         enableNotifications(mCharacteristic).enqueue();
     }
 
-    ManagerCallback bleManagerCallbacks = new ManagerCallback() {
+    private ManagerCallback bleManagerCallbacks = new ManagerCallback() {
         @Override
         public void measurementReceiver(@NonNull BluetoothDevice device, @NonNull Data dataa) {
             try {
@@ -123,8 +123,6 @@ public class ScaleManager extends BluetoothManager {
                     final String bodyMassUnit = jsonData.getString("bodyMassUnit");
                     final long timeStamp = jsonData.getLong("timestamp");
 
-//                    bodyMassTextView.setText(bodyMassMeasurement);
-//                    bodyMassUnitTextView.setText(bodyMassUnit);
                     scaleDataCallback.onMeasurementReceiving(bodyMassMeasurement, timeStamp, bodyMassUnit);
 
                     if (isFinalized) {
@@ -134,16 +132,13 @@ public class ScaleManager extends BluetoothManager {
 
                         Measurement MeasurementBodyMass = JsonToMeasurementParser.bodyMass(jsonData.toString());
                         MeasurementBodyMass.setUser(user);
-//                        MeasurementBodyMass.setDevice(mDevice);
 
                         Measurement bmi = new Measurement(calcBMI(MeasurementBodyMass.getValue()),
                                 "kg/m2", MeasurementBodyMass.getRegistrationDate(), MeasurementType.BMI);
                         bmi.setUser(user);
-//                        bmi.setDevice(mDevice);
 
                         Measurement bodyFat = JsonToMeasurementParser.bodyFat(jsonData.toString());
                         bodyFat.setUser(user);
-//                        bodyFat.setDevice(mDevice);
 
                         /**
                          * Add relationships
@@ -151,114 +146,6 @@ public class ScaleManager extends BluetoothManager {
                         MeasurementBodyMass.addMeasurement(bmi, bodyFat);
                         Log.i(TAG, "Received measurent from Scale" + device.getName() + ": " + result.get("bodyMass"));
                         scaleDataCallback.onMeasurementReceived(MeasurementBodyMass);
-                        /**
-                         * Update UI
-                         */
-//                        updateUILastMeasurement(MeasurementBodyMass, true);
-
-//                final byte[] data = dataa.getValue();
-//                JSONObject result = new JSONObject();
-//                double bodyMass = 0f;
-//
-//                if (data.length > 0) {
-//                    /**
-//                     * Timestamp current
-//                     */
-//                    result.put("timestamp", DateUtils.getCurrentDatetime());
-//
-//
-//                    /**
-//                     * 03: response type
-//                     *     01 - unfinished weighing
-//                     *     02 - finished weighing
-//                     */
-//                    boolean isFinalized = String.format("%02X", data[3]).equals("02");
-//                    result.put("isFinalized", isFinalized);
-//
-//                    /**
-//                     * unfinished weighing
-//                     * 08-09: weight - BE uint16 times 0.01
-//                     */
-//                    bodyMass = Integer.valueOf(String.format("%02X", data[8]) + String.format("%02X", data[9]), 16) * 0.01f;
-//                    result.put("bodyMass", bodyMass);
-//
-//                    // Body Mass Unit default
-//                    result.put("bodyMassUnit", "kg");
-//
-//                    // Finalized
-//                    if (isFinalized) {
-//                        /**
-//                         * finished weighing
-//                         * 13-14: weight - BE uint16 times 0.01
-//                         */
-//                        bodyMass = Integer.valueOf(String.format("%02X", data[13]) + String.format("%02X", data[14]), 16) * 0.01f;
-//                        result.put("bodyMass", bodyMass);
-//
-//                        /**
-//                         * 15-16: resistance - BE uint 16
-//                         */
-//                        final double resistance = Integer.valueOf(String.format("%02X", data[15]) + String.format("%02X", data[16]), 16);
-//                        result.put("resistance", resistance);
-//
-//                        /**
-//                         * Body Fat in percentage
-//                         *
-//                         * 17-18: - BE uint16 times 0.01
-//                         */
-//                        final double bodyFat = Integer.valueOf(String.format("%02X", data[17]) + String.format("%02X", data[18]), 16) * 0.01f;
-//                        result.put("bodyFat", bodyFat);
-//                        result.put("bodyFatUnit", "%"); // value fixed
-//
-//                        /**
-//                         * USER ID
-//                         * 09-12: recognized userID - BE uint32
-//                         */
-////                Integer userID = Integer.valueOf(String.format("%02X", data[9]) +
-////                        String.format("%02X", data[10]) +
-////                        String.format("%02X", data[11]) +
-////                        String.format("%02X", data[12]), 32
-////                );
-////
-////                result.put("userID", userID);
-//                    }
-
-//
-//                        //final String bodyMassMeasurement = formatNumber(result.getDouble("bodyMass"));
-//                        //inal String bodyMassUnit = result.getString("bodyMassUnit");
-//
-//                        //bodyMassTextView.setText(bodyMassMeasurement);
-//                        //.setText(bodyMassUnit);
-//
-//                        //if (isFinalized) {
-//                        // showAnimation = false;
-//                        Session session = new Session(getContext());
-//                        User user = session.getUserLogged();
-//
-//                        Measurement bodyMassMeasurement = JsonToMeasurementParser.bodyMass(result.toString());
-//                        bodyMassMeasurement.setUser(user);
-//                        //bodyMass.setDevice(mDevice);
-//
-//                        Measurement bmi = new Measurement(calcBMI(bodyMassMeasurement.getValue()),
-//                                "kg/m2", bodyMassMeasurement.getRegistrationDate(), MeasurementType.BMI);
-//                        bmi.setUser(user);
-//                        //  bmi.setDevice(mDevice);
-//
-//                        Measurement bodyFatMeasurement = JsonToMeasurementParser.bodyFat(result.toString());
-//                        bodyFatMeasurement.setUser(user);
-//                        //  bodyFat.setDevice(mDevice);
-//
-//                        /**
-//                         * Add relationships
-//                         */
-//                        bodyMassMeasurement.addMeasurement(bmi, bodyFatMeasurement);
-
-
-                        //  }
-//            Intent intent = new Intent("Measurement");
-//            intent.putExtra("Device", MeasurementType.BODY_FAT);
-//            intent.putExtra("Value", temperature);
-//            EventBus.getDefault().post(intent);
-
                     }
                 }
             } catch (JSONException e) {
@@ -269,39 +156,23 @@ public class ScaleManager extends BluetoothManager {
         @Override
         public void onDeviceConnecting(@NonNull BluetoothDevice device) {
             Log.i(TAG, "Connecting to Scale" + device.getName());
-            //showToast("Connecting to " + device.getName());
-//            Intent intent = new Intent("Connecting");
-//            intent.putExtra("device", MeasurementType.BODY_FAT);
-//            EventBus.getDefault().post(intent);
         }
 
         @Override
         public void onDeviceConnected(@NonNull BluetoothDevice device) {
             Log.i(TAG, "Connected to Scale" + device.getName());
-            //showToast("Connected to " + device.getName());
-//            Intent intent = new Intent("Connected");
-//            intent.putExtra("device", MeasurementType.BODY_FAT);
-//            EventBus.getDefault().post(intent);
             scaleDataCallback.onConnected();
-
         }
 
         @Override
         public void onDeviceDisconnecting(@NonNull BluetoothDevice device) {
             Log.i(TAG, "Disconnecting from " + device.getName());
-            //showToast("Disconnecting from " + device.getName());
-
         }
 
         @Override
         public void onDeviceDisconnected(@NonNull BluetoothDevice device) {
             Log.i(TAG, "Disconnected from " + device.getName());
-            //showToast("Disconnected to " + device.getName());
-//            Intent intent = new Intent("Disconnected");
-//            intent.putExtra("device", MeasurementType.BODY_FAT);
-//            EventBus.getDefault().post(intent);
             scaleDataCallback.onDisconnected();
-
         }
 
         @Override
@@ -312,8 +183,6 @@ public class ScaleManager extends BluetoothManager {
         @Override
         public void onServicesDiscovered(@NonNull BluetoothDevice device, boolean optionalServicesFound) {
             Log.i(TAG, "Services Discovered from " + device.getName());
-            //showToast("Services Discovered from " + device.getName());
-
         }
 
         @Override
@@ -339,8 +208,6 @@ public class ScaleManager extends BluetoothManager {
         @Override
         public void onError(@NonNull BluetoothDevice device, @NonNull String message, int errorCode) {
             Log.i(TAG, "Error from " + device.getName() + " - " + message);
-            //showToast("Error from " + device.getName() + " - " + message);
-
         }
 
         @Override
@@ -368,6 +235,7 @@ public class ScaleManager extends BluetoothManager {
      * @return double
      */
     private double calcBMI(double bodyMass) {
+        //TODO pegar altura do paciente selecionado
         //double height = (session.getUserLogged().getHeight()) / 100D;
         double height = 1.0;
         return bodyMass / (Math.pow(height, 2));

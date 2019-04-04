@@ -70,12 +70,8 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
     private final String TAG = "ScaleActivity";
     private final int LIMIT_PER_PAGE = 20;
 
-    private BluetoothLeService mBluetoothLeService;
     private boolean mConnected = false;
     private boolean showAnimation = true;
-    private BluetoothGattCharacteristic mNotifyCharacteristic;
-
-    private String mDeviceAddress;
     private Animation animation;
     private Device mDevice;
     private AppPreferencesHelper appPreferencesHelper;
@@ -473,9 +469,8 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
     protected void onStart() {
         super.onStart();
         if (mDevice != null)
-            scaleManager.connect(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(mDevice.getAddress())).useAutoConnect(true).enqueue();
-
-        //scaleManager.connectDevice(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(mDevice.getAddress()));
+            scaleManager.connect(BluetoothAdapter.getDefaultAdapter()
+                    .getRemoteDevice(mDevice.getAddress())).useAutoConnect(true).enqueue();
     }
 
     @Override

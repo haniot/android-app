@@ -149,8 +149,11 @@ public class PatientRegisterActivity extends AppCompatActivity {
                     .updatePatient(patient)
                     .doOnSubscribe(disposable -> showLoading(true))
                     .doAfterTerminate(() -> showLoading(false))
-                    .subscribe(patient1 -> showMessage(R.string.update_success),
-                            this::errorHandler));
+                    .subscribe(patient1 -> {
+                        patientDAO.save(patient);
+                        showMessage(R.string.update_success);
+                        startActivity(new Intent(PatientRegisterActivity.this, PatientQuizActivity.class));
+                    }, this::errorHandler));
         else
             DisposableManager.add(haniotNetRepository
                     .savePatient(patient)
@@ -256,7 +259,7 @@ public class PatientRegisterActivity extends AppCompatActivity {
      */
     private void initComponents() {
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
-        Log.i(TAG,appPreferencesHelper.getUserAccessHaniot().getAccessToken());
+        Log.i(TAG, appPreferencesHelper.getUserAccessHaniot().getAccessToken());
         haniotNetRepository = HaniotNetRepository.getInstance(this);
         patientDAO = PatientDAO.getInstance(this);
         myCalendar = Calendar.getInstance();

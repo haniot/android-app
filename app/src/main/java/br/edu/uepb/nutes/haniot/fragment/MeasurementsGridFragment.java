@@ -86,7 +86,8 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
     private SimpleBleScanner simpleBleScanner;
     private DashboardChartsFragment.Communicator communicator;
     private List<Device> devices;
-    SimpleBleScanner.Builder builder;
+    private SimpleBleScanner.Builder builder;
+    private SharedPreferences prefSettings;
 
     @BindView(R.id.gridMeasurement)
     RecyclerView gridMeasurement;
@@ -112,14 +113,14 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
         ButterKnife.bind(this, view);
         initComponents();
         initRecyclerView();
-        updateManagerBLE();
+        refreshManagerBLE();
         return view;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        updateManagerBLE();
+        refreshManagerBLE();
     }
 
     @Override
@@ -137,7 +138,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
     @Override
     public void onResume() {
         super.onResume();
-        updateManagerBLE();
+        refreshManagerBLE();
     }
 
     @Override
@@ -221,7 +222,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
 
         @Override
         public void onFinish() {
-           startScan();
+            startScan();
         }
     };
 
@@ -392,108 +393,101 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
      * @param type
      */
     private void setupMonitorItem(int type) {
-        int icon;
-        int itemType;
-        int deviceType;
-        String name;
-        String unit;
+        int deviceType = -1;
+        MeasurementMonitor measurementMonitor = null;
+        if (type == R.string.key_weight) {
+            deviceType = DeviceType.BODY_COMPOSITION;
+            measurementMonitor = new MeasurementMonitor(
+                    mContext, R.drawable.xweight,
+                    getResources().getString(R.string.weight),
+                    "", ItemGridType.WEIGHT,
+                    getString(R.string.unit_kg));
 
-        switch (type) {
-            case R.string.key_weight:
-                icon = R.drawable.xweight;
-                name = getResources().getString(R.string.weight);
-                itemType = ItemGridType.WEIGHT;
-                unit = getString(R.string.unit_kg);
-                deviceType = DeviceType.BODY_COMPOSITION;
-                break;
-            case R.string.key_heart_rate:
-                icon = R.drawable.xcardiogram;
-                name = getResources().getString(R.string.heart_rate);
-                itemType = ItemGridType.HEART_RATE;
-                unit = getString(R.string.unit_heart_rate);
-                deviceType = DeviceType.HEART_RATE;
-                break;
-            case R.string.key_blood_glucose:
-                icon = R.drawable.xglucosemeter;
-                name = getResources().getString(R.string.blood_glucose);
-                itemType = ItemGridType.BLOOD_GLUCOSE;
-                unit = getString(R.string.unit_glucose_mg_dL);
-                deviceType = DeviceType.GLUCOMETER;
-                break;
-            case R.string.key_blood_pressure:
-                icon = R.drawable.xblood_pressure;
-                name = getResources().getString(R.string.blood_pressure);
-                itemType = ItemGridType.BLOOD_PRESSURE;
-                unit = getString(R.string.unit_pressure);
-                deviceType = DeviceType.BLOOD_PRESSURE;
-                break;
-            default:
-                return;
+        } else if (type == R.string.key_heart_rate) {
+            deviceType = DeviceType.HEART_RATE;
+            measurementMonitor = new MeasurementMonitor(
+                    mContext, R.drawable.xcardiogram,
+                    getResources().getString(R.string.heart_rate),
+                    "", ItemGridType.HEART_RATE,
+                    getString(R.string.unit_heart_rate));
+
+        } else if (type == R.string.key_blood_glucose) {
+            deviceType = DeviceType.GLUCOMETER;
+            measurementMonitor = new MeasurementMonitor(
+                    mContext, R.drawable.xglucosemeter,
+                    getResources().getString(R.string.blood_glucose),
+                    "", ItemGridType.BLOOD_GLUCOSE,
+                    getString(R.string.unit_glucose_mg_dL));
+
+        } else if (type == R.string.key_blood_pressure) {
+            deviceType = DeviceType.BLOOD_PRESSURE;
+            measurementMonitor = new MeasurementMonitor(
+                    mContext, R.drawable.xblood_pressure,
+                    getResources().getString(R.string.blood_pressure),
+                    "", ItemGridType.BLOOD_PRESSURE,
+                    getString(R.string.unit_pressure));
+
+        } else if (type == R.string.key_anthropometric){
+            deviceType = -1;
+            measurementMonitor = new MeasurementMonitor(
+                    mContext, R.drawable.xshape,
+                    getResources().getString(R.string.anthropometric),
+                    "", ItemGridType.ANTHROPOMETRIC,
+                    getString(R.string.unit_percentage));
+
         }
-        MeasurementMonitor measurementMonitor = new MeasurementMonitor(
-                mContext, icon, name,
-                "", itemType, unit);
-
-        if (getDeviceRegistered(deviceType) != null)
-            measurementMonitor.setStatus(MeasurementMonitor.DISCONNECTED);
-        else measurementMonitor.setStatus(MeasurementMonitor.NO_REGISTERED);
-        measurementMonitors.add(measurementMonitor);
+        if (measurementMonitor != null) {
+            if (getDeviceRegistered(deviceType) != null)
+                measurementMonitor.setStatus(MeasurementMonitor.DISCONNECTED);
+            else measurementMonitor.setStatus(MeasurementMonitor.NO_REGISTERED);
+            measurementMonitors.add(measurementMonitor);
+        }
     }
 
     /**
-     * Update BLE Manager of devices for monitoring.
+     * Refresh BLE Manager of devices for monitoring.
      */
-    public void updateManagerBLE() {
+    public void refreshManagerBLE() {
         measurementMonitors.clear();
-        SharedPreferences prefSettings = PreferenceManager.getDefaultSharedPreferences(mContext);
-        // Weight
         if (prefSettings.getBoolean(getResources().getString(R.string.key_weight), false)) {
             if (scaleManager == null) {
                 scaleManager = new ScaleManager(mContext);
                 scaleManager.setSimpleCallback(scaleDataCallback);
-                builder.addFilterAddress(Objects.requireNonNull(
-                        getDeviceRegistered(DeviceType.BODY_COMPOSITION)).getAddress());
+                Device device = getDeviceRegistered(DeviceType.BODY_COMPOSITION);
+                if (device != null) builder.addFilterAddress(device.getAddress());
             }
             setupMonitorItem(R.string.key_weight);
         }
-        // Heart Rate
         if (prefSettings.getBoolean(getResources().getString(R.string.key_heart_rate), false)) {
             if (heartRateManager == null) {
                 heartRateManager = new HeartRateManager(mContext);
                 heartRateManager.setSimpleCallback(heartRateDataCallback);
-                builder.addFilterAddress(Objects.requireNonNull(
-                        getDeviceRegistered(DeviceType.HEART_RATE)).getAddress());
+                Device device = getDeviceRegistered(DeviceType.HEART_RATE);
+                if (device != null) builder.addFilterAddress(device.getAddress());
             }
             setupMonitorItem(R.string.key_heart_rate);
         }
-        // Glucose
         if (prefSettings.getBoolean(getResources().getString(R.string.key_blood_glucose), false)) {
             if (glucoseManager == null) {
                 glucoseManager = new GlucoseManager(mContext);
                 glucoseManager.setSimpleCallback(glucoseDataCallback);
-                builder.addFilterAddress(Objects.requireNonNull(
-                        getDeviceRegistered(DeviceType.GLUCOMETER)).getAddress());
+                Device device = getDeviceRegistered(DeviceType.GLUCOMETER);
+                if (device != null) builder.addFilterAddress(device.getAddress());
             }
-            setupMonitorItem(R.string.key_heart_rate);
+            setupMonitorItem(R.string.key_blood_glucose);
         }
-        // Blood Pressure
         if (prefSettings.getBoolean(getResources().getString(R.string.key_blood_pressure), false)) {
             if (bloodPressureManager == null) {
                 bloodPressureManager = new BloodPressureManager(mContext);
                 bloodPressureManager.setSimpleCallback(bloodPressureDataCallback);
-                builder.addFilterAddress(Objects.requireNonNull(
-                        getDeviceRegistered(DeviceType.BLOOD_PRESSURE)).getAddress());
+                Device device = getDeviceRegistered(DeviceType.BLOOD_PRESSURE);
+                if (device != null) builder.addFilterAddress(device.getAddress());
             }
-            setupMonitorItem(R.string.blood_pressure);
+            setupMonitorItem(R.string.key_blood_pressure);
         }
-
-        // Anthropometric
-        if (prefSettings.getBoolean(getResources().getString(R.string.key_anthropometric), false)) {
-            setupMonitorItem(R.string.key_anthropometric);
-        }
-
+        if (prefSettings.getBoolean(getResources().getString(R.string.key_anthropometric), false)) setupMonitorItem(R.string.key_anthropometric);
         builder.addScanPeriod(Integer.MAX_VALUE);
-        updateListMonitor();
+        refreshListMonitor();
         simpleBleScanner = builder.build();
         startScan();
     }
@@ -501,7 +495,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
     /**
      * Update monitor list.
      */
-    private void updateListMonitor() {
+    private void refreshListMonitor() {
         mAdapter.clearItems();
         mAdapter.addItems(measurementMonitors);
 
@@ -527,6 +521,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
      * Init basics components.
      */
     private void initComponents() {
+        prefSettings = PreferenceManager.getDefaultSharedPreferences(mContext);
         mAdapter = new MeasurementMonitorAdapter(mContext);
         measurementMonitors = new ArrayList<>();
         appPreferencesHelper = AppPreferencesHelper.getInstance(mContext);
@@ -625,6 +620,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
 
     /**
      * On click item of measurement monitor list.
+     *
      * @param item
      */
     @Override
@@ -658,11 +654,6 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
         Intent it = new Intent(mContext, AddMeasurementActivity.class);
 
         switch (type) {
-//            case ItemGridType.ACTIVITY:
-//                appPreferencesHelper
-//                        .saveInt(getResources().getString(R.string.measurementType), ItemGridType.ACTIVITY);
-//                startActivity(it);
-//                break;
             case ItemGridType.BLOOD_GLUCOSE:
                 appPreferencesHelper
                         .saveInt(getResources().getString(R.string.measurementType), ItemGridType.BLOOD_GLUCOSE);
@@ -673,21 +664,11 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
                         .saveInt(getResources().getString(R.string.measurementType), ItemGridType.BLOOD_PRESSURE);
                 startActivity(it);
                 break;
-//            case ItemGridType.TEMPERATURE:
-//                appPreferencesHelper
-//                        .saveInt(getResources().getString(R.string.measurementType), ItemGridType.TEMPERATURE);
-//                startActivity(it);
-//                break;
             case ItemGridType.WEIGHT:
                 appPreferencesHelper
                         .saveInt(getResources().getString(R.string.measurementType), ItemGridType.WEIGHT);
                 startActivity(it);
                 break;
-//            case ItemGridType.SLEEP:
-//                appPreferencesHelper
-//                        .saveInt(getResources().getString(R.string.measurementType), ItemGridType.SLEEP);
-//                startActivity(it);
-//                break;
             case ItemGridType.HEART_RATE:
                 appPreferencesHelper
                         .saveInt(getResources().getString(R.string.measurementType), ItemGridType.HEART_RATE);

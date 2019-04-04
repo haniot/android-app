@@ -73,11 +73,8 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
     public final int DIALOG_SAVE_DATA = 1;
     private final int LIMIT_PER_PAGE = 20;
 
-    private BluetoothLeService mBluetoothLeService;
     private boolean mConnected = false;
-    private BluetoothGattCharacteristic mNotifyCharacteristic;
 
-    private String[] deviceInformations;
     private ObjectAnimator heartAnimation;
     private Device mDevice;
     private AppPreferencesHelper appPreferencesHelper;
@@ -156,9 +153,6 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
         mChartButton.setOnClickListener(this);
         mRecordHeartRateButton.setOnClickListener(this);
         mAddMeasurementButton.setOnClickListener(this);
-
-        //= getIntent().getStringExtra(EXTRA_DEVICE_ADDRESS);
-        deviceInformations = getIntent().getStringArrayExtra(EXTRA_DEVICE_INFORMATIONS);
 
         initComponents();
     }

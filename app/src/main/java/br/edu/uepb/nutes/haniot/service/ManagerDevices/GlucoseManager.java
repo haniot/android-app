@@ -5,12 +5,10 @@ import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -23,10 +21,10 @@ import br.edu.uepb.nutes.haniot.data.model.ContextMeasurement;
 import br.edu.uepb.nutes.haniot.data.model.ContextMeasurementType;
 import br.edu.uepb.nutes.haniot.data.model.ContextMeasurementValueType;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
-import br.edu.uepb.nutes.haniot.data.model.MeasurementType;
 import br.edu.uepb.nutes.haniot.parse.JsonToContextParser;
 import br.edu.uepb.nutes.haniot.parse.JsonToMeasurementParser;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.GlucoseDataCallback;
+import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.ManagerCallback;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import br.edu.uepb.nutes.haniot.utils.GattAttributes;
 import no.nordicsemi.android.ble.callback.DataReceivedCallback;
@@ -39,12 +37,12 @@ public class GlucoseManager extends BluetoothManager {
     private static final int UNIT_molpl = 1;
     private static final int UNIT_kg = 0;
     private static final int UNIT_l = 1;
-    GlucoseDataCallback glucoseDataCallback;
-    BluetoothGattCharacteristic characteristicRecordAccess;
-    BluetoothGattCharacteristic characteristicContext;
-    BluetoothGattCharacteristic characteristicWrite;
-    byte[] data;
-    Data dataContext;
+    private GlucoseDataCallback glucoseDataCallback;
+    private BluetoothGattCharacteristic characteristicRecordAccess;
+    private BluetoothGattCharacteristic characteristicContext;
+    private BluetoothGattCharacteristic characteristicWrite;
+    private byte[] data;
+    private Data dataContext;
 
     public GlucoseManager(@NonNull Context context) {
         super(context);
@@ -65,10 +63,10 @@ public class GlucoseManager extends BluetoothManager {
             characteristicWrite = service
                     .getCharacteristic(UUID.fromString(GattAttributes
                             .CHARACTERISTIC_GLUSOSE_RECORD_ACCESS_CONTROL));
-            byte[] data = new byte[2];
             data[0] = 0x01; // Report Stored records
             data[1] = 0x06; // last record
-
+//            data[1] = 0x01; // all records
+//            data[1] = 0x05; // first record
 
             if (characteristicRecordAccess == null) {
                 characteristicRecordAccess = service
@@ -93,7 +91,7 @@ public class GlucoseManager extends BluetoothManager {
         enableNotifications(characteristicContext).enqueue();
     }
 
-    DataReceivedCallback contextDataReceivedCallback = new DataReceivedCallback() {
+    private DataReceivedCallback contextDataReceivedCallback = new DataReceivedCallback() {
         @Override
         public void onDataReceived(@NonNull BluetoothDevice device, @NonNull Data data) {
             Log.i(TAG, "onDataReceived()");
@@ -102,7 +100,7 @@ public class GlucoseManager extends BluetoothManager {
         }
     };
 
-    ManagerCallback bleManagerCallbacks = new ManagerCallback() {
+    private ManagerCallback bleManagerCallbacks = new ManagerCallback() {
         @Override
         public void measurementReceiver(@NonNull BluetoothDevice device, @NonNull Data data) {
             //Parse
@@ -230,17 +228,12 @@ public class GlucoseManager extends BluetoothManager {
         @Override
         public void onDeviceConnecting(@NonNull BluetoothDevice device) {
             Log.i(TAG, "Connecting to " + device.getName());
-            Intent intent = new Intent("Connecting");
-            intent.putExtra("device", MeasurementType.BLOOD_GLUCOSE);
-            EventBus.getDefault().post(intent);
         }
 
         @Override
         public void onDeviceConnected(@NonNull BluetoothDevice device) {
             Log.i(TAG, "Connected to " + device.getName());
-            Intent intent = new Intent("Connected");
-            intent.putExtra("device", MeasurementType.BLOOD_GLUCOSE);
-            EventBus.getDefault().post(intent);
+            glucoseDataCallback.onConnected();
         }
 
         @Override
@@ -251,9 +244,7 @@ public class GlucoseManager extends BluetoothManager {
         @Override
         public void onDeviceDisconnected(@NonNull BluetoothDevice device) {
             Log.i(TAG, "Disconnected from " + device.getName());
-            Intent intent = new Intent("Disconnected");
-            intent.putExtra("device", MeasurementType.BLOOD_GLUCOSE);
-            EventBus.getDefault().post(intent);
+            glucoseDataCallback.onDisconnected();
         }
 
         @Override
@@ -296,7 +287,7 @@ public class GlucoseManager extends BluetoothManager {
         }
     };
 
-    public static Calendar dateParse(final Data data, final int offset) {
+    private Calendar dateParse(final Data data, final int offset) {
         final int year = data.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT16, offset);
         final int month = data.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, offset + 2) - 1;
         final int day = data.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, offset + 3);
@@ -316,7 +307,7 @@ public class GlucoseManager extends BluetoothManager {
      * @param measurement
      * @return String
      */
-    public static String parse(Measurement measurement) {
+    private String parse(Measurement measurement) {
         String value_formated = "";
         double value = measurement.getValue();
 
@@ -345,7 +336,7 @@ public class GlucoseManager extends BluetoothManager {
      * @return JSONObject
      * @throws JSONException
      */
-    public static JSONObject contextParse(final Data data) throws JSONException {
+    private JSONObject contextParse(final Data data) throws JSONException {
         Log.i("ManagerDevices", "contextParse()");
         JSONObject result = new JSONObject();
 

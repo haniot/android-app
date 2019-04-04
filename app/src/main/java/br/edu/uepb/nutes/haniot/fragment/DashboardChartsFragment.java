@@ -130,17 +130,19 @@ public class DashboardChartsFragment extends Fragment {
      * @param str @StringRes message.
      */
     public void showMessage(@StringRes int str) {
-        if (str == -1) {
-            boxMessage.setVisibility(View.GONE);
-            return;
-        }
+        if (getContext() != null) {
+            if (str == -1) {
+                boxMessage.setVisibility(View.GONE);
+                return;
+            }
 
-        String message = getString(str);
-        messageError.setText(message);
-        Objects.requireNonNull(getActivity()).runOnUiThread(() -> {
-            boxMessage.startAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_in));
-            boxMessage.setVisibility(View.VISIBLE);
-        });
+            String message = getContext().getResources().getString(str);
+            messageError.setText(message);
+            Objects.requireNonNull(getActivity()).runOnUiThread(() -> {
+                boxMessage.startAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_in));
+                boxMessage.setVisibility(View.VISIBLE);
+            });
+        }
     }
 
     /**
