@@ -43,7 +43,6 @@ import retrofit2.HttpException;
  * @copyright Copyright (c) 2019, NUTES UEPB
  */
 public class PatientRegisterActivity extends AppCompatActivity {
-    //TODO implementar edição de paciente
 
     final private String TAG = "PatientRegisterActivity";
     @BindView(R.id.toolbar)
@@ -152,7 +151,7 @@ public class PatientRegisterActivity extends AppCompatActivity {
                     .subscribe(patient1 -> {
                         patientDAO.save(patient);
                         showMessage(R.string.update_success);
-                        startActivity(new Intent(PatientRegisterActivity.this, PatientQuizActivity.class));
+                        startActivity(new Intent(PatientRegisterActivity.this, ManagePatientsActivity.class));
                     }, this::errorHandler));
         else
             DisposableManager.add(haniotNetRepository

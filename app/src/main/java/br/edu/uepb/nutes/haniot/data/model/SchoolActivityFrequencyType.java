@@ -8,7 +8,6 @@ public class SchoolActivityFrequencyType {
     public final static String FOUR_MORE_PER_WEEK = "four_more_per_week";
     public final static String NONE = "none";
 
-
     public static String getString(int type) {
         switch (type) {
             case 0:

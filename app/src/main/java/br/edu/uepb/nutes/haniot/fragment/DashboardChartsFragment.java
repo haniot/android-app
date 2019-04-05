@@ -20,6 +20,7 @@ import java.util.Objects;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.MainActivity;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
+import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import pl.bclogic.pulsator4droid.library.PulsatorLayout;
@@ -38,15 +39,17 @@ public class DashboardChartsFragment extends Fragment {
     TextView textDate;
     @BindView(R.id.textValueMeasurement)
     TextView textValueMeasurement;
-    @BindView(R.id.textIMC)
-    TextView textIMC;
-    @BindView(R.id.pulsator)
-    PulsatorLayout pulsatorLayout;
+    @BindView(R.id.text_pilot_study)
+    TextView textPilotStudy;
+    @BindView(R.id.text_professional)
+    TextView textProfessional;
     Communicator communicator;
     @BindView(R.id.box_message_error)
     LinearLayout boxMessage;
     @BindView(R.id.message_error)
     TextView messageError;
+
+    private AppPreferencesHelper helper;
 
     public DashboardChartsFragment() {
         // Required empty public constructor
@@ -66,12 +69,13 @@ public class DashboardChartsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_charts_dashboard, container, false);
         ButterKnife.bind(this, view);
-
+        helper = AppPreferencesHelper.getInstance(getContext());
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(getResources().getString(R.string.date_format2));
         textDate.setText(simpleDateFormat.format(calendar.getTime()));
-        pulsatorLayout.start();
         updateNamePatient(((MainActivity) getActivity()).getPatientSelected());
+        textPilotStudy.setText(helper.getLastPilotStudy().getName());
+        textProfessional.setText(helper.getUserLogged().getName());
         messageError.setOnClickListener(v -> ((MainActivity) getActivity()).checkPermissions());
         return view;
     }
@@ -158,18 +162,6 @@ public class DashboardChartsFragment extends Fragment {
             else
                 patientSex.setImageResource(R.drawable.x_girl);
         }
-    }
-
-    /**
-     * Calculate patient IMC.
-     *
-     * @param weight
-     * @return
-     */
-    private double calcIMC(double weight) {
-        double altura = 1.9;
-        double imc = weight / (altura * altura);
-        return imc;
     }
 
     /**

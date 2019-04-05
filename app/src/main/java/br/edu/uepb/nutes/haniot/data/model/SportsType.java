@@ -5,6 +5,7 @@ public class SportsType {
     public static final String SOCCER = "soccer";
     public static final String FUTSAL = "futsal";
     public static final String HANDBALL = "handball";
+    public static final String BASKETBALL = "basketball";
     public static final String SKATES = "skates";
     public static final String ATHLETICS = "athletics";
     public static final String SWIM = "swim";
@@ -32,38 +33,40 @@ public class SportsType {
             case 2:
                 return HANDBALL;
             case 3:
-                return SKATES;
+                return BASKETBALL;
             case 4:
-                return ATHLETICS;
+                return SKATES;
             case 5:
-                return SWIM;
+                return ATHLETICS;
             case 6:
-                return GYMNASTICS;
+                return SWIM;
             case 7:
-                return FIGHT;
+                return GYMNASTICS;
             case 8:
-                return DANCE;
+                return FIGHT;
             case 9:
-                return RUN;
+                return DANCE;
             case 10:
-                return RIDE_A_BIKE;
+                return RUN;
             case 11:
-                return WALKING_AS_A_PHYSICAL_EXERCISE;
+                return RIDE_A_BIKE;
             case 12:
-                return WALKING_AS_A_MEANS_OF_TRANSPORT;
+                return WALKING_AS_A_PHYSICAL_EXERCISE;
             case 13:
-                return VOLLEYBALL;
+                return WALKING_AS_A_MEANS_OF_TRANSPORT;
             case 14:
-                return MUSCULATION;
+                return VOLLEYBALL;
             case 15:
-                return ABDOMINAL_EXERCISE;
+                return MUSCULATION;
             case 16:
-                return TENNIS;
+                return ABDOMINAL_EXERCISE;
             case 17:
-                return WALK_WITH_DOG;
+                return TENNIS;
             case 18:
-                return GYMNASTICS_GYM;
+                return WALK_WITH_DOG;
             case 19:
+                return GYMNASTICS_GYM;
+            case 20:
                 return NO_ACTIVITY;
             default:
                 return "";

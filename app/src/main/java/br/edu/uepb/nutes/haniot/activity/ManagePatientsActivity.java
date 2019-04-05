@@ -101,11 +101,11 @@ public class ManagePatientsActivity extends AppCompatActivity {
      * Init resources.
      */
     private void initResources() {
+        message.setVisibility(View.INVISIBLE);
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
         haniotNetRepository = HaniotNetRepository.getInstance(this);
         pilotStudy = appPreferencesHelper.getLastPilotStudy();
         patientList = new ArrayList<>();
-
         disableBack();
 
         addPatient.setOnClickListener(v -> {
@@ -205,7 +205,7 @@ public class ManagePatientsActivity extends AppCompatActivity {
                             adapter.removeItem(patient);
                             adapter.notifyDataSetChanged();
                             showMessage(getResources().getString(R.string.patient_removed));
-                            if (patient.equals(appPreferencesHelper.getLastPatient()))
+                            if (patient.get_id().equals(appPreferencesHelper.getLastPatient().get_id()))
                                 appPreferencesHelper.removeLastPatient();
                         },
                         error -> showMessage(getResources().getString(R.string.error_500))));
@@ -285,7 +285,7 @@ public class ManagePatientsActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        initRecyclerView();
+        loadData();
     }
 
     @Override

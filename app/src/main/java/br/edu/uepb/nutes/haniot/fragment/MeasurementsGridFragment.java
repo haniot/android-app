@@ -215,9 +215,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
 
         @Override
         public void onScanFailed(int i) {
-            Toast.makeText(getContext(),
-                    getResources().getString(R.string.error_500),
-                    Toast.LENGTH_SHORT).show();
+
         }
 
         @Override
@@ -402,7 +400,6 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
                     getResources().getString(R.string.weight),
                     "", ItemGridType.WEIGHT,
                     getString(R.string.unit_kg));
-
         } else if (type == R.string.key_heart_rate) {
             deviceType = DeviceType.HEART_RATE;
             measurementMonitor = new MeasurementMonitor(
@@ -410,7 +407,6 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
                     getResources().getString(R.string.heart_rate),
                     "", ItemGridType.HEART_RATE,
                     getString(R.string.unit_heart_rate));
-
         } else if (type == R.string.key_blood_glucose) {
             deviceType = DeviceType.GLUCOMETER;
             measurementMonitor = new MeasurementMonitor(
@@ -418,7 +414,6 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
                     getResources().getString(R.string.blood_glucose),
                     "", ItemGridType.BLOOD_GLUCOSE,
                     getString(R.string.unit_glucose_mg_dL));
-
         } else if (type == R.string.key_blood_pressure) {
             deviceType = DeviceType.BLOOD_PRESSURE;
             measurementMonitor = new MeasurementMonitor(
@@ -426,15 +421,12 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
                     getResources().getString(R.string.blood_pressure),
                     "", ItemGridType.BLOOD_PRESSURE,
                     getString(R.string.unit_pressure));
-
         } else if (type == R.string.key_anthropometric){
-            deviceType = -1;
             measurementMonitor = new MeasurementMonitor(
                     mContext, R.drawable.xshape,
                     getResources().getString(R.string.anthropometric),
                     "", ItemGridType.ANTHROPOMETRIC,
                     getString(R.string.unit_percentage));
-
         }
         if (measurementMonitor != null) {
             if (getDeviceRegistered(deviceType) != null)

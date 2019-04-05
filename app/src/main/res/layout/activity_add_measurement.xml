@@ -48,134 +48,173 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="10dp">
+            android:layout_height="wrap_content">
 
-
-            <EditText
-                android:id="@+id/text_measurement"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/box_time"
-                android:layout_alignParentStart="false"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="20dp"
-                android:background="@android:color/transparent"
-                android:ellipsize="start"
-                android:gravity="center_horizontal"
-                android:inputType="number|numberDecimal"
-                android:text="0"
-                android:textColor="@color/colorPrimary"
-                android:textSize="80sp" />
-
-
-            <TextView
-                android:id="@+id/text_unit"
-                android:layout_width="56dp"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/text_measurement"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginStart="216dp"
-                android:layout_marginTop="-11dp"
-                android:layout_marginEnd="97dp"
-                android:text="mg/dl"
-                android:textColor="@color/colorSubmenu"
-                android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/text_value"
-                android:layout_width="122dp"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/box_time"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentEnd="true"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:layout_marginTop="10dp"
-                android:text="Valor"
-                android:textAlignment="center"
-                android:textColor="@color/colorSubmenu"
-                android:textSize="18sp" />
-
-
-            <FrameLayout
-                android:id="@+id/frame_measurement"
+            <LinearLayout
+                android:id="@+id/box_message_error"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginTop="0dp"
-                android:visibility="invisible">
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/appBarLayout2"
+                android:background="@color/colorWarningLight"
+                android:gravity="center"
+                android:visibility="visible">
 
-            </FrameLayout>
+                <TextView
+                    android:id="@+id/message_error"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:padding="16sp"
+                    android:text="@null" />
+            </LinearLayout>
 
             <RelativeLayout
-                android:id="@+id/box_time"
+                android:id="@+id/info"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:id="@+id/icon_calendar"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginStart="100dp"
-                    android:layout_marginTop="35dp"
-                    android:src="@drawable/calen"
-                    android:tint="@color/colorSubmenu" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_below="@+id/box_message_error">
 
                 <TextView
-                    android:id="@+id/text_date"
-                    android:layout_width="105dp"
-                    android:layout_height="45dp"
-                    android:layout_below="@+id/icon_calendar"
-                    android:layout_alignStart="@+id/icon_calendar"
-                    android:layout_alignEnd="@+id/icon_calendar"
-                    android:layout_marginStart="-43dp"
-                    android:layout_marginEnd="-42dp"
-                    android:gravity="center"
-                    android:text="Hoje"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="22sp" />
-
-                <ImageView
-                    android:id="@+id/icon_time"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginTop="35dp"
-                    android:layout_marginEnd="100dp"
-                    android:src="@drawable/cclock"
-                    android:tint="@color/colorSubmenu" />
-
-                <TextView
-                    android:id="@+id/text_time"
+                    android:id="@+id/message_add"
                     android:layout_width="wrap_content"
-                    android:layout_height="45dp"
-                    android:layout_below="@+id/icon_time"
-                    android:layout_alignStart="@+id/icon_time"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginStart="-27dp"
-                    android:layout_marginTop="0dp"
-                    android:layout_marginEnd="75dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/gender_icon"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="35dp"
                     android:gravity="center"
-                    android:text="18:40"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="22sp" />
-            </RelativeLayout>
+                    android:text="@string/add_measurement_message"
+                    android:textColor="@color/colorSubmenu"
+                    android:textSize="17sp" />
 
+
+                <ImageView
+                    android:id="@+id/gender_icon"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_alignTop="@+id/box_time"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="11dp"
+                    android:background="@drawable/ic_circle"
+                    app:srcCompat="@drawable/x_boy" />
+
+                <RelativeLayout
+                    android:id="@+id/box_measurement"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/message_add"
+                    android:layout_marginTop="30dp">
+
+                    <EditText
+                        android:id="@+id/text_measurement"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/text_value"
+                        android:layout_alignParentStart="false"
+                        android:layout_centerHorizontal="true"
+                        android:background="@android:color/transparent"
+                        android:ellipsize="start"
+                        android:gravity="center_horizontal"
+                        android:hint="0"
+                        android:inputType="number|numberDecimal"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="80sp" />
+
+                    <TextView
+                        android:id="@+id/text_unit"
+                        android:layout_width="56dp"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/text_measurement"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginStart="300dp"
+                        android:layout_marginTop="-11dp"
+                        android:layout_marginEnd="97dp"
+                        android:text="mg/dl"
+                        android:textColor="@color/colorSubmenu"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/text_value"
+                        android:layout_width="122dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerHorizontal="true"
+                        android:text="Valor"
+                        android:textAlignment="center"
+                        android:textColor="@color/colorSubmenu"
+                        android:textSize="18sp" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/box_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/icon_calendar"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginStart="100dp"
+                        android:layout_marginTop="35dp"
+                        android:src="@drawable/calen"
+                        android:tint="@color/colorSubmenu" />
+
+                    <TextView
+                        android:id="@+id/text_date"
+                        android:layout_width="105dp"
+                        android:layout_height="45dp"
+                        android:layout_below="@+id/icon_calendar"
+                        android:layout_alignStart="@+id/icon_calendar"
+                        android:layout_alignEnd="@+id/icon_calendar"
+                        android:layout_marginStart="-43dp"
+                        android:layout_marginEnd="-42dp"
+                        android:gravity="center"
+                        android:text="Hoje"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="22sp" />
+
+                    <ImageView
+                        android:id="@+id/icon_time"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginTop="35dp"
+                        android:layout_marginEnd="100dp"
+                        android:src="@drawable/cclock"
+                        android:tint="@color/colorSubmenu" />
+
+                    <TextView
+                        android:id="@+id/text_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="45dp"
+                        android:layout_below="@+id/icon_time"
+                        android:layout_alignStart="@+id/icon_time"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginStart="-27dp"
+                        android:layout_marginTop="0dp"
+                        android:layout_marginEnd="75dp"
+                        android:gravity="center"
+                        android:text="18:40"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="22sp" />
+                </RelativeLayout>
+            </RelativeLayout>
             <FrameLayout
                 android:id="@+id/extra"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/text_measurement"
+                android:layout_below="@+id/info"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
                 android:layout_marginStart="0dp"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginEnd="0dp"
                 android:foregroundGravity="center" />
 

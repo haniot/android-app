@@ -246,13 +246,12 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
             if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
                 final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE,
                         BluetoothAdapter.ERROR);
-                switch (state) {
-                    case BluetoothAdapter.STATE_OFF:
-                        dashboardChartsFragment.showMessage(R.string.bluetooth_disabled);
-                        break;
-                    case BluetoothAdapter.STATE_ON:
-                        dashboardChartsFragment.showMessage(-1);
-                        break;
+                if (state == BluetoothAdapter.STATE_OFF) {
+                    dashboardChartsFragment.showMessage(R.string.bluetooth_disabled);
+
+                } else if (state == BluetoothAdapter.STATE_ON) {
+                    dashboardChartsFragment.showMessage(-1);
+
                 }
             }
         }
