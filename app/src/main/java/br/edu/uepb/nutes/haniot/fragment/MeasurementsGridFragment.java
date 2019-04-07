@@ -148,7 +148,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
         bloodPressureManager = null;
         glucoseManager = null;
         heartRateManager = null;
-        simpleBleScanner.stopScan();
+        if (simpleBleScanner != null) simpleBleScanner.stopScan();
     }
 
     /**
@@ -421,7 +421,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
                     getResources().getString(R.string.blood_pressure),
                     "", ItemGridType.BLOOD_PRESSURE,
                     getString(R.string.unit_pressure));
-        } else if (type == R.string.key_anthropometric){
+        } else if (type == R.string.key_anthropometric) {
             measurementMonitor = new MeasurementMonitor(
                     mContext, R.drawable.xshape,
                     getResources().getString(R.string.anthropometric),
@@ -477,7 +477,8 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
             }
             setupMonitorItem(R.string.key_blood_pressure);
         }
-        if (prefSettings.getBoolean(getResources().getString(R.string.key_anthropometric), false)) setupMonitorItem(R.string.key_anthropometric);
+        if (prefSettings.getBoolean(getResources().getString(R.string.key_anthropometric), false))
+            setupMonitorItem(R.string.key_anthropometric);
         builder.addScanPeriod(Integer.MAX_VALUE);
         refreshListMonitor();
         simpleBleScanner = builder.build();

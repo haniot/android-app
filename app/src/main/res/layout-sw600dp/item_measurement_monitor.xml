@@ -61,7 +61,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignStart="@+id/text_last_measurement"
-                android:layout_alignBottom="@+id/btn_add_measurement"
+                android:layout_alignBottom="@+id/text_time_measurement"
+                android:layout_marginBottom="0dp"
                 android:text="--"
                 android:textSize="24sp"
                 android:textStyle="bold" />
@@ -85,7 +86,6 @@
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="46dp"
                 android:layout_marginEnd="113dp"
-                android:background="@drawable/zaddarrow"
                 android:visibility="invisible" />
 
             <TextView

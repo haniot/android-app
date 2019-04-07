@@ -6,8 +6,7 @@
     android:layout_height="wrap_content"
     android:background="?android:attr/selectableItemBackground">
 
-    <android.support.v7.widget.CardView
-        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:id="@+id/card_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -61,10 +60,9 @@
                 android:id="@+id/textMeasurement"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignBottom="@id/botAddMeasurement"
+                android:layout_alignBottom="@id/text_time_measurement"
                 android:layout_alignParentStart="true"
                 android:layout_marginStart="41dp"
-                android:layout_marginBottom="-16dp"
                 android:text="--"
                 android:textSize="24sp"
                 android:textStyle="bold" />
@@ -89,7 +87,6 @@
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="46dp"
                 android:layout_marginEnd="113dp"
-                android:background="@drawable/zaddarrow"
                 android:visibility="invisible" />
 
             <TextView
@@ -97,13 +94,11 @@
                 android:layout_width="69dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="false"
-                android:layout_alignParentLeft="false"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
                 android:layout_marginStart="280dp"
                 android:layout_marginTop="65dp"
                 android:layout_marginEnd="0dp"
-                android:layout_marginRight="0dp"
                 android:text="Adicionar"
                 android:textSize="12sp"
                 android:visibility="visible" />
