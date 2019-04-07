@@ -1,8 +1,10 @@
 package br.edu.uepb.nutes.haniot.devices;
 
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
+import android.bluetooth.BluetoothProfile;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -47,6 +49,7 @@ import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.TemperatureAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
 import br.edu.uepb.nutes.haniot.data.model.Device;
+import br.edu.uepb.nutes.haniot.data.model.DeviceType;
 import br.edu.uepb.nutes.haniot.data.model.ItemGridType;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.MeasurementType;
@@ -60,6 +63,8 @@ import br.edu.uepb.nutes.haniot.server.historical.Historical;
 import br.edu.uepb.nutes.haniot.server.historical.HistoricalType;
 import br.edu.uepb.nutes.haniot.server.historical.Params;
 import br.edu.uepb.nutes.haniot.service.BluetoothLeService;
+import br.edu.uepb.nutes.haniot.service.ManagerDevices.ThermometerManager;
+import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.TemperatureDataCallback;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import br.edu.uepb.nutes.haniot.utils.GattAttributes;
@@ -77,9 +82,7 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
     private final String TAG = "ThermometerActivity";
     private final int LIMIT_PER_PAGE = 20;
 
-    private BluetoothLeService mBluetoothLeService;
     private boolean mConnected = false;
-    private BluetoothGattCharacteristic mNotifyCharacteristic;
 
     private String mDeviceAddress;
     private Animation animation;
@@ -90,6 +93,7 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
     private DecimalFormat decimalFormat;
     private TemperatureAdapter mAdapter;
     private Params params;
+    private ThermometerManager thermometerManager;
 
     /**
      * We need this variable to lock and unlock loading more.
@@ -149,16 +153,46 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
         deviceDAO = DeviceDAO.getInstance(this);
         decimalFormat = new DecimalFormat(getString(R.string.format_number1), new DecimalFormatSymbols(Locale.US));
         params = new Params(appPreferencesHelper.getUserLogged().get_id(), MeasurementType.TEMPERATURE);
+        thermometerManager = new ThermometerManager(this);
+        thermometerManager.setSimpleCallback(temperatureDataCallback);
+
+        mDevice = deviceDAO.getByType(appPreferencesHelper.getUserLogged().get_id(), DeviceType.THERMOMETER);
 
         animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
         mChartButton.setOnClickListener(this);
         mAddButton.setOnClickListener(this);
 
-        Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
-        bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
-
         initComponents();
     }
+
+    private TemperatureDataCallback temperatureDataCallback = new TemperatureDataCallback() {
+        @Override
+        public void onConnected() {
+            mConnected = true;
+            updateConnectionState(true);
+        }
+
+        @Override
+        public void onDisconnected() {
+            mConnected = false;
+            updateConnectionState(false);
+        }
+
+        @Override
+        public void onMeasurementReceived(Measurement measurementTemperature) {
+            if (mDevice != null)
+                measurementTemperature.setDevice(mDevice);
+
+            /**
+             * Save in local
+             * Send to server saved successfully
+             */
+            if (measurementDAO.save(measurementTemperature)) {
+                synchronizeWithServer();
+                loadData();
+            }
+        }
+    };
 
     /**
      * Initialize components
@@ -421,31 +455,26 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
     @Override
     protected void onResume() {
         super.onResume();
-        registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
 
-        if (mBluetoothLeService != null) {
-            mBluetoothLeService.connect(mDeviceAddress);
-        }
+        if (thermometerManager.getConnectionState() == BluetoothProfile.STATE_DISCONNECTED && mDevice != null)
+            thermometerManager.connectDevice(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(mDevice.getAddress()));
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterReceiver(mGattUpdateReceiver);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unbindService(mServiceConnection);
-        mBluetoothLeService = null;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                mBluetoothLeService.disconnect();
+                thermometerManager.disconnect();
                 super.onBackPressed();
                 break;
         }
@@ -466,118 +495,6 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
             }
         });
     }
-
-    private static IntentFilter makeGattUpdateIntentFilter() {
-        final IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(BluetoothLeService.ACTION_GATT_CONNECTED);
-        intentFilter.addAction(BluetoothLeService.ACTION_GATT_DISCONNECTED);
-        intentFilter.addAction(BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED);
-        intentFilter.addAction(BluetoothLeService.ACTION_DATA_AVAILABLE);
-
-        return intentFilter;
-    }
-
-    public boolean setCharacteristicNotification(BluetoothGattCharacteristic characteristic) {
-        if (characteristic != null) {
-            final int charaProp = characteristic.getProperties();
-            if ((charaProp | BluetoothGattCharacteristic.PROPERTY_READ) > 0) {
-                // Se houver uma notificação ativa sobre uma característica, primeiro limpe-a,
-                // caso contrário não atualiza o campo de dados na interface do usuário.
-                if (mNotifyCharacteristic != null) {
-                    mBluetoothLeService.setCharacteristicNotification(mNotifyCharacteristic, BluetoothGattDescriptor.ENABLE_INDICATION_VALUE, false);
-                    mNotifyCharacteristic = null;
-                }
-                mBluetoothLeService.readCharacteristic(characteristic);
-            }
-            if ((charaProp | BluetoothGattCharacteristic.PROPERTY_NOTIFY) > 0) {
-                mNotifyCharacteristic = characteristic;
-                mBluetoothLeService.setCharacteristicNotification(characteristic, BluetoothGattDescriptor.ENABLE_INDICATION_VALUE, true);
-            }
-            return true;
-        }
-        return false;
-    }
-
-    // Code to manage Service lifecycle.
-    private final ServiceConnection mServiceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName componentName, IBinder service) {
-            mBluetoothLeService = ((BluetoothLeService.LocalBinder) service).getService();
-            if (!mBluetoothLeService.initialize()) {
-                Log.e(TAG, "Unable to initializeCharacteristic Bluetooth");
-                finish();
-            }
-            // Conecta-se automaticamente ao dispositivo após a inicialização bem-sucedida.
-            mBluetoothLeService.connect(mDeviceAddress);
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName componentName) {
-            mBluetoothLeService = null;
-        }
-    };
-
-    public String getAction() {
-        return action;
-    }
-
-    /**
-     * Manipula vários eventos desencadeados pelo Serviço.
-     * <p>
-     * ACTION_GATT_CONNECTED: conectado a um servidor GATT.
-     * ACTION_GATT_DISCONNECTED: desconectado a um servidor GATT.
-     * ACTION_GATT_SERVICES_DISCOVERED: serviços GATT descobertos.
-     * ACTION_DATA_AVAILABLE: recebeu dados do dispositivo. Pode ser resultado de operações de leitura ou notificação.
-     */
-
-    String action;
-    private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            action = intent.getAction();
-
-            if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
-                updateConnectionState(true);
-            } else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
-                updateConnectionState(false);
-            } else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
-                BluetoothGattService gattService = mBluetoothLeService.getGattService(UUID.fromString(GattAttributes.SERVICE_HEALTH_THERMOMETER));
-
-
-                if (gattService != null) {
-                    BluetoothGattCharacteristic characteristic = gattService.getCharacteristic(UUID.fromString(GattAttributes.CHARACTERISTIC_TEMPERATURE_MEASUREMENT));
-                    if (characteristic != null)
-                        setCharacteristicNotification(characteristic);
-                }
-
-
-            } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
-                String jsonData = intent.getStringExtra(BluetoothLeService.EXTRA_DATA);
-
-                try {
-                    Measurement measurement = JsonToMeasurementParser.temperature(jsonData);
-                    measurement.setDevice(mDevice);
-                    measurement.setUser(appPreferencesHelper.getUserLogged());
-
-                    /**
-                     * Update UI
-                     */
-                    updateUILastMeasurement(measurement, true);
-
-                    /**
-                     * Save in local
-                     * Send to server saved successfully
-                     */
-                    if (measurementDAO.save(measurement)) {
-                        synchronizeWithServer();
-                        loadData();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    };
 
     /**
      * updateOrSave the UI with the last measurement.

@@ -1,8 +1,11 @@
 package br.edu.uepb.nutes.haniot.devices;
 
+import android.Manifest;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
+import android.app.Activity;
 import android.app.FragmentTransaction;
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
@@ -13,19 +16,27 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.SystemClock;
+import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.widget.Chronometer;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
@@ -62,6 +73,8 @@ import butterknife.ButterKnife;
  */
 public class RecordHeartRateActivity extends AppCompatActivity implements View.OnClickListener, GenericDialogFragment.OnClickDialogListener {
     private final String TAG = "RecordHeartRateActivity";
+    private final int REQUEST_ENABLE_BLUETOOTH = 1;
+    private final int REQUEST_ENABLE_LOCATION = 2;
     public final int DIALOG_SAVE_DATA = 1;
 
     private long lastPause = 0;
@@ -102,6 +115,13 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
 
     @BindView(R.id.floating_button_record_stop)
     FloatingActionButton mButtonRecordStop;
+
+    @BindView(R.id.box_message_error)
+    LinearLayout boxMessage;
+
+    @BindView(R.id.message_error)
+    TextView messageError;
+
     RealTimeFragment realTimeFragment;
 
     @Override
@@ -110,6 +130,7 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
         setContentView(R.layout.activity_heart_rate_record);
 
         ButterKnife.bind(this);
+        checkPermissions();
         initComponents();
 
         mButtonRecordPausePlay.setOnClickListener(this);
@@ -136,7 +157,32 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
 
         mDeviceAddress = getIntent().getStringExtra(HeartRateActivity.EXTRA_DEVICE_ADDRESS);
         deviceInformations = getIntent().getStringArrayExtra(HeartRateActivity.EXTRA_DEVICE_INFORMATIONS);
+        messageError.setOnClickListener(v -> checkPermissions());
 
+        IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
+        registerReceiver(mReceiver, filter);
+    }
+
+    /**
+     * Displays message.
+     *
+     * @param str @StringRes message.
+     */
+    private void showMessage(@StringRes int str) {
+        if (str != -1) {
+            String message = getString(str);
+
+            messageError.setText(message);
+            runOnUiThread(() -> {
+                boxMessage.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_in));
+                boxMessage.setVisibility(View.VISIBLE);
+            });
+        } else {
+            runOnUiThread(() -> {
+                boxMessage.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_out));
+                boxMessage.setVisibility(View.INVISIBLE);
+            });
+        }
     }
 
     @Override
@@ -147,6 +193,8 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
     @Override
     protected void onResume() {
         super.onResume();
+        boxMessage.setVisibility(View.GONE);
+
         registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
 
         if (mBluetoothLeService != null) {
@@ -163,6 +211,7 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        unregisterReceiver(mReceiver);
         unbindService(mServiceConnection);
         mBluetoothLeService = null;
     }
@@ -367,6 +416,24 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
         finish();
     }
 
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
+
+            if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
+                final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE,
+                        BluetoothAdapter.ERROR);
+                if (state == BluetoothAdapter.STATE_OFF) {
+                    showMessage(R.string.bluetooth_disabled);
+
+                } else if (state == BluetoothAdapter.STATE_ON) {
+                    showMessage(-1);
+                }
+            }
+        }
+    };
+
     /**
      * Performs routine for data synchronization with server.
      */
@@ -408,4 +475,72 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
     }
+
+
+    /**
+     * Checks if you have permission to use.
+     * Required bluetooth ble and location.
+     */
+    public void checkPermissions() {
+        if (BluetoothAdapter.getDefaultAdapter() != null &&
+                !BluetoothAdapter.getDefaultAdapter().isEnabled()) {
+            requestBluetoothEnable();
+        } else if (!hasLocationPermissions()) {
+            requestLocationPermission();
+        }
+    }
+
+    /**
+     * Request Bluetooth permission
+     */
+    private void requestBluetoothEnable() {
+        startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE),
+                REQUEST_ENABLE_BLUETOOTH);
+    }
+
+    /**
+     * Checks whether the location permission was given.
+     *
+     * @return boolean
+     */
+    public boolean hasLocationPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) ==
+                    PackageManager.PERMISSION_GRANTED;
+        }
+        return true;
+    }
+
+    /**
+     * Request Location permission.
+     */
+    protected void requestLocationPermission() {
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_ENABLE_LOCATION);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        // If request is cancelled, the result arrays are empty.
+        if ((requestCode == REQUEST_ENABLE_LOCATION) &&
+                (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED)) {
+            requestLocationPermission();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_ENABLE_BLUETOOTH) {
+            if (resultCode != Activity.RESULT_OK) {
+                requestBluetoothEnable();
+            } else {
+                requestLocationPermission();
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
 }

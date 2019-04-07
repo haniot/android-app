@@ -1,13 +1,23 @@
 package br.edu.uepb.nutes.haniot.devices;
 
+import android.Manifest;
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothProfile;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +30,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -68,6 +80,8 @@ import butterknife.ButterKnife;
  */
 public class ScaleActivity extends AppCompatActivity implements View.OnClickListener {
     private final String TAG = "ScaleActivity";
+    private final int REQUEST_ENABLE_BLUETOOTH = 1;
+    private final int REQUEST_ENABLE_LOCATION = 2;
     private final int LIMIT_PER_PAGE = 20;
 
     private boolean mConnected = false;
@@ -139,11 +153,18 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
     @BindView(R.id.add_floating_button)
     FloatingActionButton mAddButton;
 
+    @BindView(R.id.box_message_error)
+    LinearLayout boxMessage;
+
+    @BindView(R.id.message_error)
+    TextView messageError;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_body_composition);
         ButterKnife.bind(this);
+        checkPermissions();
 
         // synchronization with server
         synchronizeWithServer();
@@ -159,9 +180,13 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
         mAddButton.setOnClickListener(this);
 
         mDevice = deviceDAO.getByType(appPreferencesHelper.getUserLogged().get_id(), DeviceType.BODY_COMPOSITION);
+        messageError.setOnClickListener(v -> checkPermissions());
 
         scaleManager.setSimpleCallback(scaleDataCallback);
         initComponents();
+
+        IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
+        registerReceiver(mReceiver, filter);
     }
 
     ScaleDataCallback scaleDataCallback = new ScaleDataCallback() {
@@ -179,19 +204,9 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
 
         @Override
         public void onMeasurementReceived(Measurement measurementScale) {
-            //bodyMass.setDevice(mDevice);
 
             if (mDevice != null)
                 measurementScale.setDevice(mDevice);
-            //bmi.setDevice(mDevice);
-
-            //bodyFat.setDevice(mDevice);
-
-            /**
-             * Add relationships
-             */
-            //bodyMass.addMeasurement(bmi, bodyFat);
-
 
             /**
              * Save in local
@@ -465,6 +480,28 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
         runOnUiThread(() -> Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show());
     }
 
+    /**
+     * Displays message.
+     *
+     * @param str @StringRes message.
+     */
+    private void showMessage(@StringRes int str) {
+        if (str != -1) {
+            String message = getString(str);
+
+            messageError.setText(message);
+            runOnUiThread(() -> {
+                boxMessage.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_in));
+                boxMessage.setVisibility(View.VISIBLE);
+            });
+        } else {
+            runOnUiThread(() -> {
+                boxMessage.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_out));
+                boxMessage.setVisibility(View.INVISIBLE);
+            });
+        }
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -476,6 +513,7 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onResume() {
         super.onResume();
+        boxMessage.setVisibility(View.GONE);
 
         if (scaleManager.getConnectionState() != BluetoothProfile.STATE_CONNECTED && mDevice != null) {
             scaleManager.connect(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(mDevice.getAddress()));
@@ -490,6 +528,7 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        unregisterReceiver(mReceiver);
     }
 
     @Override
@@ -583,6 +622,24 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
         SynchronizationServer.getInstance(this).run();
     }
 
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
+
+            if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
+                final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE,
+                        BluetoothAdapter.ERROR);
+                if (state == BluetoothAdapter.STATE_OFF) {
+                    showMessage(R.string.bluetooth_disabled);
+
+                } else if (state == BluetoothAdapter.STATE_ON) {
+                    showMessage(-1);
+                }
+            }
+        }
+    };
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -599,4 +656,72 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
                 break;
         }
     }
+
+
+    /**
+     * Checks if you have permission to use.
+     * Required bluetooth ble and location.
+     */
+    public void checkPermissions() {
+        if (BluetoothAdapter.getDefaultAdapter() != null &&
+                !BluetoothAdapter.getDefaultAdapter().isEnabled()) {
+            requestBluetoothEnable();
+        } else if (!hasLocationPermissions()) {
+            requestLocationPermission();
+        }
+    }
+
+    /**
+     * Request Bluetooth permission
+     */
+    private void requestBluetoothEnable() {
+        startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE),
+                REQUEST_ENABLE_BLUETOOTH);
+    }
+
+    /**
+     * Checks whether the location permission was given.
+     *
+     * @return boolean
+     */
+    public boolean hasLocationPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) ==
+                    PackageManager.PERMISSION_GRANTED;
+        }
+        return true;
+    }
+
+    /**
+     * Request Location permission.
+     */
+    protected void requestLocationPermission() {
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_ENABLE_LOCATION);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        // If request is cancelled, the result arrays are empty.
+        if ((requestCode == REQUEST_ENABLE_LOCATION) &&
+                (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED)) {
+            requestLocationPermission();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_ENABLE_BLUETOOTH) {
+            if (resultCode != Activity.RESULT_OK) {
+                requestBluetoothEnable();
+            } else {
+                requestLocationPermission();
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
 }
