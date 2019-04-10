@@ -599,8 +599,10 @@ public class PatientQuizActivity extends SimpleSurvey implements Infor.OnInfoLis
         new AlertDialog
                 .Builder(this)
                 .setMessage(getResources().getString(R.string.cancel))
-                .setPositiveButton(getResources().getText(R.string.yes_text), (dialog, which) ->
-                        startActivity(new Intent(this, ManagePatientsActivity.class)))
+                .setPositiveButton(getResources().getText(R.string.yes_text), (dialog, which) -> {
+                    startActivity(new Intent(this, ManagerPatientsActivity.class));
+                    finish();
+                })
                 .setNegativeButton(getResources().getText(R.string.no_text), null)
                 .show();
     }

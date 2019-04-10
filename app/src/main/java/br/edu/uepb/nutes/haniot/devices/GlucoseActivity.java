@@ -15,6 +15,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -32,6 +33,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -39,6 +41,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -144,8 +147,8 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
     @BindView(R.id.data_swiperefresh)
     SwipeRefreshLayout mDataSwipeRefresh;
 
-    @BindView(R.id.chart_floating_button)
-    FloatingActionButton mChartButton;
+//    @BindView(R.id.chart_floating_button)
+//    FloatingActionButton mChartButton;
 
     @BindView(R.id.add_floating_button)
     FloatingActionButton mAddButton;
@@ -158,6 +161,9 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
 
     private ProgressDialog progressDialog;
     private boolean isGetAllMonitor;
+
+    @BindView(R.id.box_measurement)
+    RelativeLayout boxMeasurement;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -177,15 +183,34 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
         glucoseManager.setSimpleCallback(glucoseDataCallback);
 
         animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
-        mChartButton.setOnClickListener(this);
+        //mChartButton.setOnClickListener(this);
         mAddButton.setOnClickListener(this);
         messageError.setOnClickListener(v -> checkPermissions());
+
+        if (isTablet(this)){
+            Log.i(TAG, "is tablet");
+            boxMeasurement.getLayoutParams().height= 600;
+            mCollapsingToolbarLayout.getLayoutParams().height= 630;
+            boxMeasurement.requestLayout();
+            mCollapsingToolbarLayout.requestLayout();
+        }
 
         mDevice = deviceDAO.getByType(appPreferencesHelper.getUserLogged().get_id(), DeviceType.GLUCOMETER);
         initComponents();
 
         IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
         registerReceiver(mReceiver, filter);
+    }
+
+    /**
+     * Check if is tablet.
+     * @param context
+     * @return
+     */
+    public static boolean isTablet(Context context) {
+        return (context.getResources().getConfiguration().screenLayout
+                & Configuration.SCREENLAYOUT_SIZE_MASK)
+                >= Configuration.SCREENLAYOUT_SIZE_LARGE;
     }
 
     private GlucoseDataCallback glucoseDataCallback = new GlucoseDataCallback() {

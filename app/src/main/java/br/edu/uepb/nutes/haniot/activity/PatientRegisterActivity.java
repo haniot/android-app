@@ -25,7 +25,6 @@ import java.util.Calendar;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.PatientsType;
-import br.edu.uepb.nutes.haniot.data.model.UserAccess;
 import br.edu.uepb.nutes.haniot.data.model.dao.PatientDAO;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
@@ -151,7 +150,8 @@ public class PatientRegisterActivity extends AppCompatActivity {
                     .subscribe(patient1 -> {
                         patientDAO.save(patient);
                         showMessage(R.string.update_success);
-                        startActivity(new Intent(PatientRegisterActivity.this, ManagePatientsActivity.class));
+                        startActivity(new Intent(PatientRegisterActivity.this, ManagerPatientsActivity.class));
+                        finish();
                     }, this::errorHandler));
         else
             DisposableManager.add(haniotNetRepository
@@ -172,6 +172,7 @@ public class PatientRegisterActivity extends AppCompatActivity {
                         patientDAO.save(patient);
                         appPreferencesHelper.saveLastPatient(patient);
                         startActivity(new Intent(PatientRegisterActivity.this, PatientQuizActivity.class));
+                        finish();
                     }, this::errorHandler));
     }
 
@@ -232,6 +233,9 @@ public class PatientRegisterActivity extends AppCompatActivity {
         nameEditTExt.setText(patient.getFirstName());
         lastNameEditTExt.setText(patient.getLastName());
         birthEdittext.setText(patient.getBirthDate());
+        myCalendar.setTimeInMillis(DateUtils
+                .getDateStringInMillis(patient.getBirthDate(),
+                        getResources().getString(R.string.date_format)));
         if (patient.getGender().equals(PatientsType.GenderType.MALE))
             genderGroup.check(R.id.male);
         else genderGroup.check(R.id.female);

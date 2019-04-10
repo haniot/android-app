@@ -640,4 +640,9 @@
         <item>11:00 da noite</item>
         <item>Meia noite</item>
     </string-array>
+
+    <!--- OTHERS -->
+    <string name="chart">Gráficos</string>
+    <string name="add_manually">Adicionar Manualmente</string>
+
 </resources>
