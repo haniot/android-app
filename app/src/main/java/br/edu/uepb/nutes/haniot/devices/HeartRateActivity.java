@@ -1,16 +1,24 @@
 package br.edu.uepb.nutes.haniot.devices;
 
+import android.Manifest;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothProfile;
-import android.content.DialogInterface;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -21,7 +29,10 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,25 +43,24 @@ import org.json.JSONObject;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.activity.ManuallyAddMeasurement;
+import br.edu.uepb.nutes.haniot.activity.AddMeasurementActivity;
 import br.edu.uepb.nutes.haniot.activity.charts.HeartRateChartActivity;
-import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.HeartRateAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
+import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.fragment.GenericDialogFragment;
-import br.edu.uepb.nutes.haniot.model.Device;
-import br.edu.uepb.nutes.haniot.model.DeviceType;
-import br.edu.uepb.nutes.haniot.model.ItemGridType;
-import br.edu.uepb.nutes.haniot.model.Measurement;
-import br.edu.uepb.nutes.haniot.model.MeasurementType;
-import br.edu.uepb.nutes.haniot.model.dao.DeviceDAO;
-import br.edu.uepb.nutes.haniot.model.dao.MeasurementDAO;
+import br.edu.uepb.nutes.haniot.data.model.Device;
+import br.edu.uepb.nutes.haniot.data.model.DeviceType;
+import br.edu.uepb.nutes.haniot.data.model.ItemGridType;
+import br.edu.uepb.nutes.haniot.data.model.Measurement;
+import br.edu.uepb.nutes.haniot.data.model.MeasurementType;
+import br.edu.uepb.nutes.haniot.data.model.dao.DeviceDAO;
+import br.edu.uepb.nutes.haniot.data.model.dao.MeasurementDAO;
 import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
 import br.edu.uepb.nutes.haniot.server.historical.CallbackHistorical;
 import br.edu.uepb.nutes.haniot.server.historical.Historical;
 import br.edu.uepb.nutes.haniot.server.historical.HistoricalType;
 import br.edu.uepb.nutes.haniot.server.historical.Params;
-import br.edu.uepb.nutes.haniot.service.BluetoothLeService;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.HeartRateManager;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.HeartRateDataCallback;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
@@ -67,24 +77,22 @@ import butterknife.ButterKnife;
  */
 public class HeartRateActivity extends AppCompatActivity implements View.OnClickListener, GenericDialogFragment.OnClickDialogListener {
     private final String TAG = "HeartRateActivity";
+    private final int REQUEST_ENABLE_BLUETOOTH = 1;
+    private final int REQUEST_ENABLE_LOCATION = 2;
     public static final String EXTRA_DEVICE_ADDRESS = "device_address";
     public static final String EXTRA_DEVICE_INFORMATIONS = "device_informations";
     public final int DIALOG_SAVE_DATA = 1;
     private final int LIMIT_PER_PAGE = 20;
 
-    private BluetoothLeService mBluetoothLeService;
     private boolean mConnected = false;
-    private BluetoothGattCharacteristic mNotifyCharacteristic;
 
-    private String[] deviceInformations;
     private ObjectAnimator heartAnimation;
     private Device mDevice;
-    private Session session;
+    private AppPreferencesHelper appPreferencesHelper;
     private MeasurementDAO measurementDAO;
     private DeviceDAO deviceDAO;
     private HeartRateAdapter mAdapter;
     private Params params;
-    private Measurement measurementSave, measurement;
     private HeartRateManager heartRateManager;
     /**
      * We need this variable to lock and unlock loading more.
@@ -135,33 +143,39 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
     @BindView(R.id.add_floating_button)
     FloatingActionButton mAddMeasurementButton;
 
+    @BindView(R.id.box_message_error)
+    LinearLayout boxMessage;
+
+    @BindView(R.id.message_error)
+    TextView messageError;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_heart_rate);
         ButterKnife.bind(this);
+        checkPermissions();
 
         // synchronization with server
         synchronizeWithServer();
 
-        session = new Session(this);
+        appPreferencesHelper = AppPreferencesHelper.getInstance(this);
         measurementDAO = MeasurementDAO.getInstance(this);
         deviceDAO = DeviceDAO.getInstance(this);
-        params = new Params(session.get_idLogged(), MeasurementType.HEART_RATE);
+        params = new Params(appPreferencesHelper.getUserLogged().get_id(), MeasurementType.HEART_RATE);
         heartRateManager = new HeartRateManager(this);
         heartRateManager.setSimpleCallback(heartRateDataCallback);
-        for (Device device : deviceDAO.list(session.getIdLogged())) {
-            if (device.getTypeId() == DeviceType.HEART_RATE)
-                mDevice = device;
-        }
+
+        mDevice = deviceDAO.getByType(appPreferencesHelper.getUserLogged().get_id(), DeviceType.HEART_RATE);
         mChartButton.setOnClickListener(this);
         mRecordHeartRateButton.setOnClickListener(this);
         mAddMeasurementButton.setOnClickListener(this);
-
-        //= getIntent().getStringExtra(EXTRA_DEVICE_ADDRESS);
-        deviceInformations = getIntent().getStringArrayExtra(EXTRA_DEVICE_INFORMATIONS);
+        messageError.setOnClickListener(v -> checkPermissions());
 
         initComponents();
+
+        IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
+        registerReceiver(mReceiver, filter);
     }
 
     HeartRateDataCallback heartRateDataCallback = new HeartRateDataCallback() {
@@ -179,8 +193,18 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
 
         @Override
         public void onMeasurementReceived(Measurement measurementHeartRate) {
-            updateUILastMeasurement(measurement, true);
+            if (mDevice != null)
+                measurementHeartRate.setDevice(mDevice);
 
+            /**
+             * Save in local
+             * Send to server saved successfully
+             */
+            if (measurementDAO.save(measurementHeartRate)) {
+                synchronizeWithServer();
+                loadData();
+            }
+            updateUILastMeasurement(measurementHeartRate, true);
         }
     };
 
@@ -188,7 +212,7 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
      * Initialize components
      */
     private void initComponents() {
-        iniAnimation();
+        initAnimation();
         initToolBar();
         initRecyclerView();
         initDataSwipeRefresh();
@@ -198,7 +222,7 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
     /**
      * Animation for heart
      */
-    private void iniAnimation() {
+    private void initAnimation() {
         /**
          * Setting heartAnimation in heart imageview
          */
@@ -305,7 +329,7 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
      * when an error occurs on the first request with the server.
      */
     private void loadDataLocal() {
-        mAdapter.addItems(measurementDAO.list(MeasurementType.HEART_RATE, session.getIdLogged(), 0, 100));
+        mAdapter.addItems(measurementDAO.list(MeasurementType.HEART_RATE, appPreferencesHelper.getUserLogged().getId(), 0, 100));
 
         if (!mAdapter.itemsIsEmpty()) {
             updateUILastMeasurement(mAdapter.getFirstItem(), false);
@@ -454,6 +478,29 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
         runOnUiThread(() -> Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show());
     }
 
+
+    /**
+     * Displays message.
+     *
+     * @param str @StringRes message.
+     */
+    private void showMessage(@StringRes int str) {
+        if (str != -1) {
+            String message = getString(str);
+
+            messageError.setText(message);
+            runOnUiThread(() -> {
+                boxMessage.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_in));
+                boxMessage.setVisibility(View.VISIBLE);
+            });
+        } else {
+            runOnUiThread(() -> {
+                boxMessage.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_out));
+                boxMessage.setVisibility(View.INVISIBLE);
+            });
+        }
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -464,6 +511,7 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
     @Override
     protected void onResume() {
         super.onResume();
+        boxMessage.setVisibility(View.GONE);
 
         if (heartRateManager.getConnectionState() == BluetoothProfile.STATE_DISCONNECTED && mDevice != null)
             heartRateManager.connectDevice(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(mDevice.getAddress()));
@@ -477,7 +525,7 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
+        unregisterReceiver(mReceiver);
     }
 
     @Override
@@ -532,6 +580,24 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
         SynchronizationServer.getInstance(this).run();
     }
 
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
+
+            if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
+                final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE,
+                        BluetoothAdapter.ERROR);
+                if (state == BluetoothAdapter.STATE_OFF) {
+                    showMessage(R.string.bluetooth_disabled);
+
+                } else if (state == BluetoothAdapter.STATE_ON) {
+                    showMessage(-1);
+                }
+            }
+        }
+    };
+
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -545,7 +611,7 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
                 startActivity(new Intent(getApplicationContext(), HeartRateChartActivity.class));
                 break;
             case R.id.add_floating_button:
-                Intent it = new Intent(getApplicationContext(), ManuallyAddMeasurement.class);
+                Intent it = new Intent(getApplicationContext(), AddMeasurementActivity.class);
                 it.putExtra(getResources().getString(R.string.measurementType),
                         ItemGridType.HEART_RATE);
                 startActivity(it);
@@ -557,22 +623,89 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
 
     @Override
     public void onClickDialog(int id, int button) {
-        if (id == DIALOG_SAVE_DATA && button == DialogInterface.BUTTON_POSITIVE) {
-            /**
-             * Add relations
-             */
-            measurementSave.setUser(session.getUserLogged());
-            if (mDevice != null)
-                measurementSave.setDevice(mDevice);
+//        if (id == DIALOG_SAVE_DATA && button == DialogInterface.BUTTON_POSITIVE) {
+//            /**
+//             * Add relations
+//             */
+//            measurementSave.setUser(appPreferencesHelper.getUserLogged());
+//            if (mDevice != null)
+//                measurementSave.setDevice(mDevice);
+//
+//            /**
+//             * Save in local
+//             * Send to server saved successfully
+//             */
+//            if (measurementDAO.save(measurementSave)) {
+//                synchronizeWithServer();
+//                loadData();
+//            }
+//        }
+    }
 
-            /**
-             * Save in local
-             * Send to server saved successfully
-             */
-            if (measurementDAO.save(measurementSave)) {
-                synchronizeWithServer();
-                loadData();
-            }
+    /**
+     * Checks if you have permission to use.
+     * Required bluetooth ble and location.
+     */
+    public void checkPermissions() {
+        if (BluetoothAdapter.getDefaultAdapter() != null &&
+                !BluetoothAdapter.getDefaultAdapter().isEnabled()) {
+            requestBluetoothEnable();
+        } else if (!hasLocationPermissions()) {
+            requestLocationPermission();
         }
     }
+
+    /**
+     * Request Bluetooth permission
+     */
+    private void requestBluetoothEnable() {
+        startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE),
+                REQUEST_ENABLE_BLUETOOTH);
+    }
+
+    /**
+     * Checks whether the location permission was given.
+     *
+     * @return boolean
+     */
+    public boolean hasLocationPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) ==
+                    PackageManager.PERMISSION_GRANTED;
+        }
+        return true;
+    }
+
+    /**
+     * Request Location permission.
+     */
+    protected void requestLocationPermission() {
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_ENABLE_LOCATION);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        // If request is cancelled, the result arrays are empty.
+        if ((requestCode == REQUEST_ENABLE_LOCATION) &&
+                (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED)) {
+            requestLocationPermission();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_ENABLE_BLUETOOTH) {
+            if (resultCode != Activity.RESULT_OK) {
+                requestBluetoothEnable();
+            } else {
+                requestLocationPermission();
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
 }

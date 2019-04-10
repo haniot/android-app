@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/alert_error_connectivity"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/colorAlertDanger"
     android:orientation="vertical"
-    android:id="@+id/alert_error_connectivity"
     android:padding="10dp">
 
     <TextView
@@ -13,7 +13,5 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal|center_vertical"
         android:gravity="center"
-        android:text="@string/error_connectivity"
-
-        android:textColor="@android:color/white" />
+        android:text="@string/error_connectivity" />
 </FrameLayout>

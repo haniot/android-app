@@ -2,27 +2,24 @@ package br.edu.uepb.nutes.haniot.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.activity.MainActivity;
-import br.edu.uepb.nutes.haniot.activity.PatientHistoricalActivity;
-import br.edu.uepb.nutes.haniot.activity.settings.Session;
-import br.edu.uepb.nutes.haniot.model.Patient;
-import br.edu.uepb.nutes.haniot.model.dao.PatientDAO;
+import br.edu.uepb.nutes.haniot.activity.PatientRegisterActivity;
+import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
+import br.edu.uepb.nutes.haniot.data.model.Patient;
+import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import br.edu.uepb.nutes.haniot.utils.Log;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,18 +30,18 @@ public class ManagePatientAdapter extends RecyclerView.Adapter<ManagePatientAdap
     private List<Patient> itemListCopy = new ArrayList<>();
     private Context context;
     private String searchQuerry = "";
-    private Session session;
     private String t = "TESTE";
     public final int REMOVE_TYPE_NOT_FILTERED = 1;
     public final int REMOVE_TYPE_FILTERED = 2;
     private final int EMPTY_VIEW = 77777;
+    private OnRecyclerViewListener onRecyclerViewListener;
 
-    public ManagePatientAdapter(List<Patient> patientList, Context context) {
+    public ManagePatientAdapter(List<Patient> patientList, Context context, OnRecyclerViewListener onRecyclerViewListener) {
 
         this.itemList = patientList;
         this.itemListCopy.addAll(patientList);
         this.context = context;
-        session = new Session(context);
+        this.onRecyclerViewListener = onRecyclerViewListener;
     }
 
     @NonNull
@@ -60,91 +57,90 @@ public class ManagePatientAdapter extends RecyclerView.Adapter<ManagePatientAdap
         if (viewType == EMPTY_VIEW) {
             view = inflater.from(parent.getContext()).inflate(R.layout.patient_empty_view, parent, false);
             ManagePatientViewHolder holder = new ManagePatientViewHolder(view, "");
+            TextView textView = view.findViewById(R.id.add_patient);
+            Intent myIntent = new Intent(context, PatientRegisterActivity.class);
+            myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            textView.setOnClickListener(v -> context.startActivity(myIntent));
             return holder;
         } else {
-            view = inflater.from(parent.getContext()).inflate(R.layout.item_children, null, false);
+            view = inflater.from(parent.getContext()).inflate(R.layout.item_patient, null, false);
             ManagePatientViewHolder holder = new ManagePatientViewHolder(view, "notEmpty");
             return holder;
         }
-
     }
 
     @Override
     public void onBindViewHolder(@NonNull ManagePatientViewHolder holder, int position) {
 
         if (!(getItemViewType(position) == EMPTY_VIEW)) {
-
             Patient patient = itemList.get(position);
-
-
-//            holder.textLetter.setText(nameText);
-            if (patient.getSex().equals("Masculino"))
+            if (patient.getGender().equals("male"))
                 holder.profile.setImageResource(R.drawable.x_boy);
             else
                 holder.profile.setImageResource(R.drawable.x_girl);
-          //  holder.textId.setText(patient.get_id());
-            holder.textName.setText(patient.getName());
-            holder.textAge.setText(patient.getAge()+ " anos");
-            holder.btnSelect.setOnClickListener(c -> {
+            holder.textName.setText(String.format("%s %s", patient.getFirstName(), patient.getLastName()));
 
-                final Intent intent = new Intent(context, PatientHistoricalActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                Bundle bundle = ActivityOptionsCompat.makeScaleUpAnimation(holder.itemView,
-                        0,
-                        0,
-                        holder.itemView.getWidth(),
-                        holder.itemView.getHeight()).toBundle();
-                intent.putExtra("Patient", patient);
-
-                context.startActivity(intent, bundle);
+            holder.textAge.setText(getAge(patient.getBirthDate()));
+            holder.btnEdit.setOnClickListener(c -> {
+//                //TODO Usar interface na activity
+//                final Intent intent = new Intent(context, PatientRegisterActivity.class);
+//                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                Bundle bundle = ActivityOptionsCompat.makeScaleUpAnimation(holder.itemView,
+//                        0,
+//                        0,
+//                        holder.itemView.getWidth(),
+//                        holder.itemView.getHeight()).toBundle();
+//                intent.putExtra("Patient", patient.getId());
+//                context.startActivity(intent, bundle);
+                onRecyclerViewListener.onMenuContextClick(holder.btnEdit, patient);
             });
             holder.btnDelete.setOnClickListener(d -> {
-
-                int oldId = searchPositionByChildrenId(patient.get_id());
-                if (oldId != -1) {
-                    if (this.searchQuerry.isEmpty()) {
-                        removeItem(patient, oldId, REMOVE_TYPE_NOT_FILTERED);
-                    } else {
-                        removeItem(patient, oldId, REMOVE_TYPE_FILTERED);
-                    }
-                    String idLastChild = context.getResources().getString(R.string.id_last_patient);
-                    String lastId = session.getString(idLastChild);
-                    if (patient.get_id().equals(lastId)) {
-                        String id = context.getResources().getString(R.string.id_last_patient);
-                        String name = context.getResources().getString(R.string.name_last_patient);
-                        session.putString(id, "");
-                        session.putString(name, "");
-                    }
-                    Snackbar snackbar = Snackbar
-                            .make(holder.itemView, context.getResources().getString(R.string.patient_removed)
-                                    , Snackbar.LENGTH_LONG).setAction(context.getResources()
-                                    .getString(R.string.undo), view -> {
-                                restoreItem(patient, position, holder.itemView);
-                            });
-                    snackbar.show();
-                    if (itemListCopy.size() == 0) {
-                        Toast.makeText(context, context.getResources().getString(R.string.no_data_available), Toast.LENGTH_SHORT).show();
-                    }
-                }
+                onRecyclerViewListener.onMenuContextClick(holder.btnDelete, patient);
+//                //TODO Usar interface na activity
+//                int oldId = searchPositionByChildrenId(patient.get_id());
+//                if (oldId != -1) {
+//                    if (this.searchQuerry.isEmpty()) {
+//                        removeItem(patient, oldId, REMOVE_TYPE_NOT_FILTERED);
+//                    } else {
+//                        removeItem(patient, oldId, REMOVE_TYPE_FILTERED);
+//                    }
+//                    Snackbar snackbar = Snackbar
+//                            .make(holder.itemView, context.getResources().getString(R.string.patient_removed)
+//                                    , Snackbar.LENGTH_LONG).setAction(context.getResources()
+//                                    .getString(R.string.undo), view -> {
+//                                restoreItem(patient, position, holder.itemView);
+//                            });
+//                    snackbar.show();
+//                    if (itemListCopy.size() == 0) {
+//                        Toast.makeText(context, context.getResources().getString(R.string.no_data_available), Toast.LENGTH_SHORT).show();
+//                    }
+//                }
             });
             holder.itemView.setOnClickListener(c -> {
-                //Código abaixo funcional!
-                Intent it = new Intent(context, MainActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putString(context.getResources().getString(R.string.id_last_patient), patient.get_id());
-                bundle.putString(context.getResources().getString(R.string.name_last_patient), patient.getName());
-                it.putExtras(bundle);
-                it.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-                String id = context.getResources().getString(R.string.id_last_patient);
-                String name = context.getResources().getString(R.string.name_last_patient);
-                session.putString(id, patient.get_id());
-                session.putString(name, patient.getName());
-
-                context.startActivity(it);
+                //TODO Usar interface na activity
+                onRecyclerViewListener.onItemClick(patient);
             });
 
         }
+    }
+
+    private String getAge(String birthday) {
+        Date date = null;
+        date = DateUtils.fromISO8601(birthday);
+        if (date == null) return "";
+        Calendar dob = Calendar.getInstance();
+        Calendar today = Calendar.getInstance();
+
+        dob.setTime(date);
+        int year = dob.get(Calendar.YEAR);
+        int month = dob.get(Calendar.MONTH);
+        int day = dob.get(Calendar.DAY_OF_MONTH);
+        dob.set(year, month + 1, day);
+        int age = today.get(Calendar.YEAR) - dob.get(Calendar.YEAR);
+        if (today.get(Calendar.DAY_OF_YEAR) < dob.get(Calendar.DAY_OF_YEAR)) {
+            age--;
+        }
+        return age + " anos";
     }
 
     public int searchPositionByChildrenId(String _id) {
@@ -174,70 +170,30 @@ public class ManagePatientAdapter extends RecyclerView.Adapter<ManagePatientAdap
     }
 
     public void restoreItem(Patient patient, int index, View view) {
-
         if (itemList.isEmpty()) {
             notifyDataSetChanged();
         }
-        Log.d(t, "1");
-        if (PatientDAO.getInstance(context).save(patient)) {
-            itemListCopy.add(index, patient);
-            itemList.add(index, patient);
-
-            String idLastPatient = context.getResources().getString(R.string.id_last_patient);
-            String lastId = session.getString(idLastPatient);
-
-            String idPatient = itemList.get(index).get_id();
-            String idLastPatientDeleted = context.getResources().getString(R.string.last_patient_deleted);
-            String lastPatient = session.getString(idLastPatientDeleted);
-
-            if (idPatient.equals(lastPatient)) {
-                String id = context.getResources().getString(R.string.id_last_patient);
-                String name = context.getResources().getString(R.string.name_last_patient);
-
-                session.putString(id, patient.get_id());
-                session.putString(name, patient.getName());
-            }
-            Log.d(t, "2");
-            notifyItemInserted(index);
-            Log.d(t, "iniciando anim");
-            Log.d(t, "3");
-        }
+        itemListCopy.add(index, patient);
+        itemList.add(index, patient);
+        notifyItemInserted(index);
     }
 
     public void removeItem(Patient patient, int oldPosition, final int updateType) {
 
         if (this.itemListCopy.size() > 0) {
-            String idPatient = patient.get_id();
-            String idLastPatient = context.getResources().getString(R.string.id_last_patient);
-            String lastId = session.getString(idLastPatient);
-
-            if (PatientDAO.getInstance(context).remove(patient)) {
-                String idLastPatientDeleted = context.getResources().getString(R.string.last_patient_deleted);
-
-                if (idPatient.equals(lastId)) {
-                    String id = context.getResources().getString(R.string.id_last_patient);
-                    String name = context.getResources().getString(R.string.name_last_patient);
-                    session.putString(id, "");
-                    session.putString(name, "");
-                    session.putString(idLastPatientDeleted, idPatient);
-                } else {
-                    session.putString(idLastPatientDeleted, "");
-                }
-
-                this.itemListCopy.remove(patient);
-                this.itemList.remove(patient);
-                if (updateType == REMOVE_TYPE_FILTERED) {
+            this.itemListCopy.remove(patient);
+            this.itemList.remove(patient);
+            if (updateType == REMOVE_TYPE_FILTERED) {
 //                    notifyDataSetChanged();
-                    notifyItemRemoved(oldPosition);
-                    notifyItemRangeChanged(oldPosition, itemList.size());
-                    Log.d(t, "tipo filtrado \n ");
-                } else {
-                    Log.d(t, "Posição: " + oldPosition);
-                    notifyItemRemoved(oldPosition);
-                    notifyItemRangeChanged(oldPosition, itemListCopy.size());
-                }
-
+                notifyItemRemoved(oldPosition);
+                notifyItemRangeChanged(oldPosition, itemList.size());
+                Log.d(t, "tipo filtrado \n ");
+            } else {
+                Log.d(t, "Posição: " + oldPosition);
+                notifyItemRemoved(oldPosition);
+                notifyItemRangeChanged(oldPosition, itemListCopy.size());
             }
+
         }
     }
 
@@ -274,11 +230,11 @@ public class ManagePatientAdapter extends RecyclerView.Adapter<ManagePatientAdap
             ArrayList<Patient> result = new ArrayList<>();
             for (Patient patient : itemListCopy) {
                 if (patient.get_id().toLowerCase().contains(text.toLowerCase())
-                        || patient.getRegisterDate().toLowerCase().equalsIgnoreCase(text.toLowerCase())
-                        || patient.getName().toLowerCase().contains(text.toLowerCase())) {
+                        //|| patient.getRegisterDate().toLowerCase().equalsIgnoreCase(text.toLowerCase())
+                        || patient.getFirstName().toLowerCase().contains(text.toLowerCase())) {
 
                     result.add(patient);
-                    Log.d("TESTE", patient.getName());
+                    Log.d("TESTE", patient.getFirstName());
                 }
             }
             itemList.clear();
@@ -289,10 +245,10 @@ public class ManagePatientAdapter extends RecyclerView.Adapter<ManagePatientAdap
 
     public static class ManagePatientViewHolder extends RecyclerView.ViewHolder {
 
-//        @BindView(R.id.textIdNumberChildren)
+        //        @BindView(R.id.textIdNumberChildren)
 //        TextView textId;
-        @BindView(R.id.btnSelectChildren)
-        ImageView btnSelect;
+        @BindView(R.id.btnEditChildren)
+        ImageView btnEdit;
         @BindView(R.id.btnDeleteChild)
         ImageView btnDelete;
         @BindView(R.id.textNameChildValue)

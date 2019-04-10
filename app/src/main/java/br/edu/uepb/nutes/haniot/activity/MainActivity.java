@@ -3,14 +3,15 @@ package br.edu.uepb.nutes.haniot.activity;
 import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
@@ -20,108 +21,99 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.activity.account.LoginActivity;
-import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.activity.settings.SettingsActivity;
+import br.edu.uepb.nutes.haniot.data.model.Patient;
+import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.fragment.DashboardChartsFragment;
 import br.edu.uepb.nutes.haniot.fragment.MeasurementsGridFragment;
-import br.edu.uepb.nutes.haniot.model.Patient;
-import br.edu.uepb.nutes.haniot.model.dao.PatientDAO;
-import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
  * Main activity, application start.
  *
- * @author Douglas Rafael <douglas.rafael@nutes.uepb.edu.br>
- * @version 1.0
- * @copyright Copyright (c) 2017, NUTES UEPB
+ * @author Copyright (c) 2018, NUTES/UEPB
  */
 public class MainActivity extends AppCompatActivity implements DashboardChartsFragment.Communicator {
-    private final String TAG = "MainActivity";
+    private final String LOG_TAG = "MainActivity";
     private final int REQUEST_ENABLE_BLUETOOTH = 1;
     private final int REQUEST_ENABLE_LOCATION = 2;
 
-    private Session session;
-    private Patient patient;
-
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-
     @BindView(R.id.frameCharts)
     FrameLayout frameChart;
-
     @BindView(R.id.frameMeasurements)
     FrameLayout frameMeasurements;
 
-    MeasurementsGridFragment measurementsGridFragment;
-    DashboardChartsFragment dashboardChartsFragment;
+    private MeasurementsGridFragment measurementsGridFragment;
+    private DashboardChartsFragment dashboardChartsFragment;
+    private AppPreferencesHelper appPreferences;
+    private Patient patient;
 
-    /**
-     * On create.
-     * @param savedInstanceState
-     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        this.session = new Session(getApplicationContext());
-
         toolbar.setTitle(getResources().getString(R.string.app_name));
         setSupportActionBar(toolbar);
-        hasPermissions();
+        appPreferences = AppPreferencesHelper.getInstance(this);
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction chartTransition = fragmentManager.beginTransaction();
-        dashboardChartsFragment = new DashboardChartsFragment();
-        chartTransition.replace(R.id.frameCharts, dashboardChartsFragment);
-        chartTransition.commit();
-        FragmentTransaction measurementsTransition = fragmentManager.beginTransaction();
-        measurementsGridFragment = new MeasurementsGridFragment();
-        measurementsTransition.replace(R.id.frameMeasurements, measurementsGridFragment);
-        measurementsTransition.commit();
+        dashboardChartsFragment = DashboardChartsFragment.newInstance();
+        measurementsGridFragment = MeasurementsGridFragment.newInstance();
+
+        IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
+        registerReceiver(mReceiver, filter);
     }
 
-    /**
-     * On start.
-     */
+    private void loadDashboard() {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.frameCharts, dashboardChartsFragment)
+                .commit();
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.frameMeasurements, measurementsGridFragment)
+                .commit();
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
-        checkPatient();
     }
 
-    /**
-     * On resume.
-     */
     @Override
     protected void onResume() {
         super.onResume();
 
-        /**
-         * User not logged
-         */
-        if (!(new Session(this).isLogged())) {
-            startActivity(new Intent(this, LoginActivity.class));
-            finish();
+        // Verify the pilot is selected
+        if (appPreferences.getLastPilotStudy() == null) {
+            startActivity(new Intent(this, WelcomeActivity.class));
+        } else {
+            checkPatient();
         }
-        checkPatient();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mReceiver);
     }
 
     /**
      * Set patient selected.
      */
     public void checkPatient() {
-        patient = PatientDAO.getInstance(this)
-                .getFromID(session.getString(getString(R.string.id_last_patient)));
+        patient = appPreferences.getLastPatient();
 
         if (patient != null) {
-            dashboardChartsFragment.updateNamePatient(patient);
+            loadDashboard();
+
+            checkPermissions();
         } else {
-            showToast("Nenhum paciente selecionado!");
             startActivity(new Intent(this, ManagePatientsActivity.class));
         }
     }
@@ -129,26 +121,22 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
     /**
      * Checks if you have permission to use.
      * Required bluetooth ble and location.
-     *
-     * @return boolean
      */
-    private boolean hasPermissions() {
-        if (!ConnectionUtils.bluetoothIsEnabled()) {
+    public void checkPermissions() {
+        if (BluetoothAdapter.getDefaultAdapter() != null &&
+                !BluetoothAdapter.getDefaultAdapter().isEnabled()) {
             requestBluetoothEnable();
-            return false;
         } else if (!hasLocationPermissions()) {
             requestLocationPermission();
-            return false;
         }
-        return true;
     }
 
     /**
      * Request Bluetooth permission
      */
     private void requestBluetoothEnable() {
-        if (!ConnectionUtils.bluetoothIsEnabled())
-            startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE), REQUEST_ENABLE_BLUETOOTH);
+        startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE),
+                REQUEST_ENABLE_BLUETOOTH);
     }
 
     /**
@@ -156,36 +144,45 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
      *
      * @return boolean
      */
-    private boolean hasLocationPermissions() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-            return checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
-
+    public boolean hasLocationPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) ==
+                    PackageManager.PERMISSION_GRANTED;
+        }
         return true;
     }
 
     /**
      * Request Location permission.
      */
-    private void requestLocationPermission() {
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_ENABLE_LOCATION);
+    protected void requestLocationPermission() {
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_ENABLE_LOCATION);
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         // If request is cancelled, the result arrays are empty.
-        if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(this, R.string.permission_location, Toast.LENGTH_LONG).show();
-            finish();
+        if ((requestCode == REQUEST_ENABLE_LOCATION) &&
+                (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED)) {
+            showToast(getString(R.string.permission_location));
+            requestLocationPermission();
         }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_ENABLE_BLUETOOTH) {
+            if (resultCode != Activity.RESULT_OK) {
+                requestBluetoothEnable();
+            } else {
+                requestLocationPermission();
+            }
+        }
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_ENABLE_BLUETOOTH && resultCode != Activity.RESULT_OK)
-            finish();
     }
 
     @Override
@@ -202,15 +199,13 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
                 break;
             case R.id.btnMenuMainSettings:
                 Intent it = new Intent(this, SettingsActivity.class);
-                it.putExtra("settingType", 1);
+                it.putExtra(SettingsActivity.SETTINGS_TYPE, SettingsActivity.SETTINGS_MAIN);
                 startActivity(it);
                 break;
             default:
                 break;
         }
-
         return super.onOptionsItemSelected(item);
-
     }
 
     private void showToast(final String menssage) {
@@ -230,11 +225,39 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
 
     /**
      * Notify new measurement received to dashboard.
-     * @param valueMeasurement
+     *
+     * @param valueMeasurement {@link String}
      */
     @Override
     public void notifyNewMeasurement(String valueMeasurement) {
         dashboardChartsFragment.updateValueMeasurement(valueMeasurement);
     }
 
+    @Override
+    public void showMessage(int message) {
+        dashboardChartsFragment.showMessage(message);
+    }
+
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
+
+            if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
+                final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE,
+                        BluetoothAdapter.ERROR);
+                if (state == BluetoothAdapter.STATE_OFF) {
+                    dashboardChartsFragment.showMessage(R.string.bluetooth_disabled);
+
+                } else if (state == BluetoothAdapter.STATE_ON) {
+                    dashboardChartsFragment.showMessage(-1);
+
+                }
+            }
+        }
+    };
+
+    public Patient getPatientSelected() {
+        return patient;
+    }
 }

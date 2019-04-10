@@ -14,7 +14,7 @@ import com.github.mikephil.charting.data.LineDataSet;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.charts.base.CreateChart;
-import br.edu.uepb.nutes.haniot.model.Measurement;
+import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 

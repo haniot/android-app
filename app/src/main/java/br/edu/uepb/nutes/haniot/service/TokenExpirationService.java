@@ -11,96 +11,65 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.auth0.android.jwt.JWT;
-
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import java.util.Date;
-
 import br.edu.uepb.nutes.haniot.activity.account.LoginActivity;
-import br.edu.uepb.nutes.haniot.activity.settings.Session;
+import br.edu.uepb.nutes.haniot.data.model.UserAccess;
+import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 
 /**
  * Service for token expiration.
  *
- * @author Fábio Júnior <fabio.pequeno@nutes.uepb.edu.br>
- * @version 1.6
- * @copyright Copyright (c) 2018, NUTES UEPB
+ * @author Copyright (c) 2018, NUTES/UEPB
  */
 public class TokenExpirationService extends Service {
     private final String TAG = "TokenExpirationService";
     private final IBinder mBinder = new LocalBinder();
-    private Session session;
+    private AppPreferencesHelper appPreferences;
 
-    /**
-     *  OnCreate of service.
-     */
     @Override
     public void onCreate() {
-        Log.i(TAG, "Token Service - onCreate()");
-        session = new Session(this);
+        appPreferences = AppPreferencesHelper.getInstance(getApplicationContext());
+
         EventBus.getDefault().register(this);
     }
 
-    /**
-     *  OnStartCommand of Service.
-     * @param intent
-     * @param flags
-     * @param startId
-     * @return
-     */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
-        Log.i(TAG, "Register event bus");
         return START_STICKY;
     }
 
-    /**
-     *  OnDestroy of Service.
-     */
     @Override
     public void onDestroy() {
-        Log.i(TAG, "onDestroy()");
         EventBus.getDefault().unregister(this);
     }
 
-    /**
-     *  Event receiver from Event Bus.
-     * @param event
-     */
     @Subscribe
     public void eventReceiver(String event) {
-        Log.i(TAG, "eventReceiver()");
-        Log.i(TAG, event);
-        if (session.isLogged()) redirectToLogin();
+        Log.w("TokenExpirationService", "eventReceiver() - " + event);
+        if (!event.equalsIgnoreCase("unauthorized")) return;
+
+        if (appPreferences.getUserLogged() != null) appPreferences.removeUserLogged();
+        redirectToLogin();
     }
 
-    /**
-     *  onBind service.
-     * @param intent
-     * @return
-     */
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
         return mBinder;
     }
 
-    /**
-     *  Unbind service.
-     * @param intent
-     * @return
-     */
     @Override
     public boolean onUnbind(Intent intent) {
         return true;
     }
 
     /**
-     *  Verify if token is expired.
-     * @param expiresAt
+     * Verify if token is expired.
+     *
+     * @param expiresAt in milliseconds
      * @return {@link boolean}
      */
     private boolean isExpired(long expiresAt) {
@@ -112,39 +81,33 @@ public class TokenExpirationService extends Service {
      * Start the monitor for token expiration.
      */
     public void initTokenMonitor() {
-        Log.i(TAG, "Initializing Token Monitor");
-        Session session = new Session(this);
-        JWT jwt = new JWT(session.getTokenLogged());
-        long expiresAt = jwt.getExpiresAt().getTime();
-        setScheduler(jwt.getExpiresAt());
+        UserAccess userAccess = appPreferences.getUserAccessHaniot();
+        setScheduler(userAccess.getExpirationDate());
     }
 
     /**
-     *  Set scheduler for verify token expiration.
-     * @param expireAt
+     * Set scheduler for verify token expiration.
+     *
+     * @param expireAt in milliseconds
      */
-    private void setScheduler(Date expireAt) {
-        Log.i(TAG, "Verificador de token agendado para: " + expireAt.toString());
+    private void setScheduler(long expireAt) {
         Intent it = new Intent(this, TokenAlarmReceiver.class);
         PendingIntent p = PendingIntent.getBroadcast(this, 0, it, 0);
-        long time = expireAt.getTime();
         AlarmManager tokenAlarm = (AlarmManager) getSystemService(ALARM_SERVICE);
-        tokenAlarm.set(AlarmManager.RTC_WAKEUP, time, p);
+        tokenAlarm.set(AlarmManager.RTC_WAKEUP, expireAt, p);
     }
 
     /**
-     *  Redirect to login.
+     * Redirect to login.
      */
     private void redirectToLogin() {
-        Log.i(TAG, "Token Expired");
-        if (session.removeLogged()) {
-            Intent intent = new Intent(this, LoginActivity.class);
-            startActivity(intent);
-        }
+        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        getApplicationContext().startActivity(intent);
     }
 
     /**
-     *  Class of Local Binder of Token Expiration Service.
+     * Class of Local Binder of Token Expiration Service.
      */
     public class LocalBinder extends Binder {
         public TokenExpirationService getService() {
@@ -153,7 +116,7 @@ public class TokenExpirationService extends Service {
     }
 
     /**
-     *  Class of Broadcast Receiver of Token Alarm.
+     * Class of Broadcast Receiver of Token Alarm.
      */
     public class TokenAlarmReceiver extends BroadcastReceiver {
         @Override

@@ -1,7 +1,6 @@
 package br.edu.uepb.nutes.haniot.activity.charts;
 
 import android.graphics.Color;
-import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -14,11 +13,8 @@ import java.util.List;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.charts.base.BaseChartActivity;
 import br.edu.uepb.nutes.haniot.activity.charts.base.CreateChart;
-import br.edu.uepb.nutes.haniot.activity.settings.Session;
-import br.edu.uepb.nutes.haniot.model.Measurement;
-import br.edu.uepb.nutes.haniot.model.MeasurementType;
-import br.edu.uepb.nutes.haniot.server.historical.Params;
-import butterknife.ButterKnife;
+import br.edu.uepb.nutes.haniot.data.model.Measurement;
+import br.edu.uepb.nutes.haniot.data.model.MeasurementType;
 
 /**
  * HeartRateChartActivity implementation.

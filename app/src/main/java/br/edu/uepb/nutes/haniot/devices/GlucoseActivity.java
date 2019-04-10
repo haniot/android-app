@@ -1,21 +1,30 @@
 package br.edu.uepb.nutes.haniot.devices;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.ProgressDialog;
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
+import android.bluetooth.BluetoothProfile;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -23,12 +32,13 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,21 +51,22 @@ import java.util.List;
 import java.util.UUID;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.activity.ManuallyAddMeasurement;
+import br.edu.uepb.nutes.haniot.activity.AddMeasurementActivity;
 import br.edu.uepb.nutes.haniot.activity.charts.GlucoseChartActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.GlucoseAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
-import br.edu.uepb.nutes.haniot.model.ContextMeasurement;
-import br.edu.uepb.nutes.haniot.model.ContextMeasurementType;
-import br.edu.uepb.nutes.haniot.model.ContextMeasurementValueType;
-import br.edu.uepb.nutes.haniot.model.Device;
-import br.edu.uepb.nutes.haniot.model.DeviceType;
-import br.edu.uepb.nutes.haniot.model.ItemGridType;
-import br.edu.uepb.nutes.haniot.model.Measurement;
-import br.edu.uepb.nutes.haniot.model.MeasurementType;
-import br.edu.uepb.nutes.haniot.model.dao.DeviceDAO;
-import br.edu.uepb.nutes.haniot.model.dao.MeasurementDAO;
+import br.edu.uepb.nutes.haniot.data.model.ContextMeasurement;
+import br.edu.uepb.nutes.haniot.data.model.ContextMeasurementType;
+import br.edu.uepb.nutes.haniot.data.model.ContextMeasurementValueType;
+import br.edu.uepb.nutes.haniot.data.model.Device;
+import br.edu.uepb.nutes.haniot.data.model.DeviceType;
+import br.edu.uepb.nutes.haniot.data.model.ItemGridType;
+import br.edu.uepb.nutes.haniot.data.model.Measurement;
+import br.edu.uepb.nutes.haniot.data.model.MeasurementType;
+import br.edu.uepb.nutes.haniot.data.model.dao.DeviceDAO;
+import br.edu.uepb.nutes.haniot.data.model.dao.MeasurementDAO;
+import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.parse.JsonToContextParser;
 import br.edu.uepb.nutes.haniot.parse.JsonToMeasurementParser;
 import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
@@ -64,6 +75,8 @@ import br.edu.uepb.nutes.haniot.server.historical.Historical;
 import br.edu.uepb.nutes.haniot.server.historical.HistoricalType;
 import br.edu.uepb.nutes.haniot.server.historical.Params;
 import br.edu.uepb.nutes.haniot.service.BluetoothLeService;
+import br.edu.uepb.nutes.haniot.service.ManagerDevices.GlucoseManager;
+import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.GlucoseDataCallback;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import br.edu.uepb.nutes.haniot.utils.GattAttributes;
@@ -79,26 +92,20 @@ import butterknife.ButterKnife;
  */
 public class GlucoseActivity extends AppCompatActivity implements View.OnClickListener {
     private final String TAG = "GlucoseActivity";
+    private final int REQUEST_ENABLE_BLUETOOTH = 1;
+    private final int REQUEST_ENABLE_LOCATION = 2;
     private final int LIMIT_PER_PAGE = 20;
 
-    private BluetoothLeService mBluetoothLeService;
-    private BluetoothGattCharacteristic characteristicMeasurement,
-            characteristicMeasurementContext, characteristicRecordAccess;
     private boolean mConnected = false;
 
-    private BluetoothGattService mGattService;
     private Animation animation;
     private Device mDevice;
-    private Session session;
-    private Measurement glucose;
-    private List<ContextMeasurement> contextMeasurements;
+    private AppPreferencesHelper appPreferencesHelper;
     private MeasurementDAO measurementDAO;
     private DeviceDAO deviceDAO;
     private GlucoseAdapter mAdapter;
     private Params params;
-    private String jsonGlucoseData;
-    private String jsonGlucoseContextData;
-    private String action;
+    private GlucoseManager glucoseManager;
 
     /**
      * We need this variable to lock and unlock loading more.
@@ -143,6 +150,12 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
     @BindView(R.id.add_floating_button)
     FloatingActionButton mAddButton;
 
+    @BindView(R.id.box_message_error)
+    LinearLayout boxMessage;
+
+    @BindView(R.id.message_error)
+    TextView messageError;
+
     private ProgressDialog progressDialog;
     private boolean isGetAllMonitor;
 
@@ -151,29 +164,48 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_glucose);
         ButterKnife.bind(this);
-
+        checkPermissions();
         // synchronization with server
         synchronizeWithServer();
 
-        session = new Session(this);
-        for (Device device : DeviceDAO.getInstance(this).list(session.getIdLogged()))
-            if (device.getTypeId() == DeviceType.GLUCOMETER) mDevice = device;
+        appPreferencesHelper = AppPreferencesHelper.getInstance(this);
 
-        if (mDevice == null) Log.i(TAG, "No device registered");
         measurementDAO = MeasurementDAO.getInstance(this);
         deviceDAO = DeviceDAO.getInstance(this);
-        params = new Params(session.get_idLogged(), MeasurementType.BLOOD_GLUCOSE);
+        params = new Params(appPreferencesHelper.getUserLogged().get_id(), MeasurementType.BLOOD_GLUCOSE);
+        glucoseManager = new GlucoseManager(this);
+        glucoseManager.setSimpleCallback(glucoseDataCallback);
 
         animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
         mChartButton.setOnClickListener(this);
         mAddButton.setOnClickListener(this);
+        messageError.setOnClickListener(v -> checkPermissions());
 
-        Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
-        bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
-
-        isGetAllMonitor = false;
+        mDevice = deviceDAO.getByType(appPreferencesHelper.getUserLogged().get_id(), DeviceType.GLUCOMETER);
         initComponents();
+
+        IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
+        registerReceiver(mReceiver, filter);
     }
+
+    private GlucoseDataCallback glucoseDataCallback = new GlucoseDataCallback() {
+        @Override
+        public void onConnected() {
+            mConnected = true;
+            updateConnectionState(true);
+        }
+
+        @Override
+        public void onDisconnected() {
+            mConnected = false;
+            updateConnectionState(false);
+        }
+
+        @Override
+        public void onMeasurementReceived(Measurement measurementGlucose) {
+            updateUILastMeasurement(measurementGlucose, true);
+        }
+    };
 
     /**
      * Initialize components
@@ -267,11 +299,8 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
      * Initialize SwipeRefresh
      */
     private void initDataSwipeRefresh() {
-        mDataSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                if (itShouldLoadMore) loadData();
-            }
+        mDataSwipeRefresh.setOnRefreshListener(() -> {
+            if (itShouldLoadMore) loadData();
         });
     }
 
@@ -281,7 +310,8 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
      * when an error occurs on the first request with the server.
      */
     private void loadDataLocal() {
-        mAdapter.addItems(measurementDAO.list(MeasurementType.BLOOD_GLUCOSE, session.getIdLogged(), 0, 100));
+        mAdapter.addItems(measurementDAO.list(MeasurementType.BLOOD_GLUCOSE,
+                appPreferencesHelper.getUserLogged().getId(), 0, 100));
 
         if (!mAdapter.itemsIsEmpty()) {
             updateUILastMeasurement(mAdapter.getFirstItem(), false);
@@ -317,8 +347,10 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
 
                 @Override
                 public void onError(JSONObject result) {
-                    if (mAdapter.itemsIsEmpty()) printMessage(getString(R.string.error_500));
-                    else loadDataLocal();
+                    if (mAdapter.itemsIsEmpty()) {
+                        printMessage(getString(R.string.error_500));
+                        showMessage(R.string.error_500);
+                    } else loadDataLocal();
                 }
 
                 @Override
@@ -361,6 +393,7 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
             @Override
             public void onError(JSONObject result) {
                 printMessage(getString(R.string.error_500));
+                showMessage(R.string.error_500);
             }
 
             @Override
@@ -382,16 +415,13 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
      * @param enabled boolean
      */
     private void toggleLoading(boolean enabled) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (!enabled) {
-                    mDataSwipeRefresh.setRefreshing(false);
-                    itShouldLoadMore = true;
-                } else {
-                    mDataSwipeRefresh.setRefreshing(true);
-                    itShouldLoadMore = false;
-                }
+        runOnUiThread(() -> {
+            if (!enabled) {
+                mDataSwipeRefresh.setRefreshing(false);
+                itShouldLoadMore = true;
+            } else {
+                mDataSwipeRefresh.setRefreshing(true);
+                itShouldLoadMore = false;
             }
         });
     }
@@ -402,19 +432,16 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
      * @param visible boolean
      */
     private void toggleNoDataMessage(boolean visible) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (visible) {
-                    if (!ConnectionUtils.internetIsEnabled(getApplicationContext())) {
-                        noDataMessage.setText(getString(R.string.connect_network_try_again));
-                    } else {
-                        noDataMessage.setText(getString(R.string.no_data_available));
-                    }
-                    noDataMessage.setVisibility(View.VISIBLE);
+        runOnUiThread(() -> {
+            if (visible) {
+                if (!ConnectionUtils.internetIsEnabled(getApplicationContext())) {
+                    noDataMessage.setText(getString(R.string.connect_network_try_again));
                 } else {
-                    noDataMessage.setVisibility(View.GONE);
+                    noDataMessage.setText(getString(R.string.no_data_available));
                 }
+                noDataMessage.setVisibility(View.VISIBLE);
+            } else {
+                noDataMessage.setVisibility(View.GONE);
             }
         });
     }
@@ -425,39 +452,53 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
      * @param message
      */
     private void printMessage(String message) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
-            }
-        });
+        runOnUiThread(() -> Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show());
     }
 
     /**
      * @param isConnected
      */
     private void updateConnectionState(final boolean isConnected) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (progressDialog != null && !isConnected && isGetAllMonitor) {
-                    isGetAllMonitor = false;
-                    progressDialog.dismiss();
-                    synchronizeWithServer();
-                    loadData();
-                }
-                mCircularProgressBar.setProgress(0);
-                mCircularProgressBar.setProgressWithAnimation(100); // Default animate duration = 1500ms
+        runOnUiThread(() -> {
+            if (progressDialog != null && !isConnected && isGetAllMonitor) {
+                isGetAllMonitor = false;
+                progressDialog.dismiss();
+                synchronizeWithServer();
+                loadData();
+            }
+            mCircularProgressBar.setProgress(0);
+            mCircularProgressBar.setProgressWithAnimation(100); // Default animate duration = 1500ms
 
-                if (isConnected) {
-                    mCircularProgressBar.setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
-                    mCircularProgressBar.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAlertDanger));
-                } else {
-                    mCircularProgressBar.setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAlertDanger));
-                    mCircularProgressBar.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
-                }
+            if (isConnected) {
+                mCircularProgressBar.setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
+                mCircularProgressBar.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAlertDanger));
+            } else {
+                mCircularProgressBar.setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAlertDanger));
+                mCircularProgressBar.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
             }
         });
+    }
+
+    /**
+     * Displays message.
+     *
+     * @param str @StringRes message.
+     */
+    private void showMessage(@StringRes int str) {
+        if (str != -1) {
+            String message = getString(str);
+
+            messageError.setText(message);
+            runOnUiThread(() -> {
+                boxMessage.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_in));
+                boxMessage.setVisibility(View.VISIBLE);
+            });
+        } else {
+            runOnUiThread(() -> {
+                boxMessage.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_out));
+                boxMessage.setVisibility(View.INVISIBLE);
+            });
+        }
     }
 
     @Override
@@ -468,226 +509,40 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     protected void onResume() {
         super.onResume();
-        registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
+        boxMessage.setVisibility(View.GONE);
 
-        if (mBluetoothLeService != null && mDevice != null) mBluetoothLeService.connect(mDevice.getAddress());
+        if (glucoseManager.getConnectionState() == BluetoothProfile.STATE_DISCONNECTED && mDevice != null)
+            glucoseManager.connectDevice(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(mDevice.getAddress()));
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterReceiver(mGattUpdateReceiver);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unbindService(mServiceConnection);
-        mBluetoothLeService = null;
+        unregisterReceiver(mReceiver);
+
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                mBluetoothLeService.disconnect();
+                glucoseManager.disconnect();
                 super.onBackPressed();
-                break;
-            case 0:
-                getMonitor();
                 break;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    public void getMonitor() {
-        progressDialog = ProgressDialog.show(this, getString(R.string.get_monitor_dialog_tittle), getString(R.string.get_monitor_desc), true);
-        progressDialog.setCancelable(true);
-        progressDialog.show();
-
-        new Handler().postDelayed(() -> getAllRecords(), 10000);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
 
-        MenuItem menuItem = menu.add(0, 0, 0, getString(R.string.get_monitor));
-        menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-
         return true;
-    }
-
-    private static IntentFilter makeGattUpdateIntentFilter() {
-        final IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(BluetoothLeService.ACTION_GATT_CONNECTED);
-        intentFilter.addAction(BluetoothLeService.ACTION_GATT_DISCONNECTED);
-        intentFilter.addAction(BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED);
-        intentFilter.addAction(BluetoothLeService.ACTION_DATA_AVAILABLE);
-
-        return intentFilter;
-    }
-
-    public void getAllRecords() {
-        if (mGattService == null) return;
-
-        isGetAllMonitor = true;
-        BluetoothGattCharacteristic characteristic = mGattService.getCharacteristic(UUID.fromString(GattAttributes.CHARACTERISTIC_GLUSOSE_RECORD_ACCESS_CONTROL));
-
-        byte[] data = new byte[2];
-        data[0] = 0x01; // Report Stored records
-        data[1] = 0x01; // all records
-        characteristic.setValue(data);
-
-        mBluetoothLeService.writeCharacteristic(characteristic);
-        setCharacteristicRecordAccess();
-    }
-
-    private void getFirstRecord() {
-        if (mGattService == null) return;
-
-        BluetoothGattCharacteristic characteristic = mGattService.getCharacteristic(UUID.fromString(GattAttributes.CHARACTERISTIC_GLUSOSE_RECORD_ACCESS_CONTROL));
-        byte[] data = new byte[2];
-        data[0] = 0x01; // Report Stored records
-        data[1] = 0x05; // first record
-        characteristic.setValue(data);
-
-        setCharacteristicRecordAccess();
-        mBluetoothLeService.writeCharacteristic(characteristic);
-    }
-
-    private void getLastRecord() {
-        if (mGattService == null) return;
-
-        BluetoothGattCharacteristic characteristic = mGattService.getCharacteristic(UUID.fromString(GattAttributes.CHARACTERISTIC_GLUSOSE_RECORD_ACCESS_CONTROL));
-        byte[] data = new byte[2];
-        data[0] = 0x01; // Report Stored records
-        data[1] = 0x06; // last record
-        characteristic.setValue(data);
-
-        setCharacteristicRecordAccess();
-        mBluetoothLeService.writeCharacteristic(characteristic);
-    }
-
-    // Code to manage Service lifecycle.
-    private final ServiceConnection mServiceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName componentName, IBinder service) {
-            mBluetoothLeService = ((BluetoothLeService.LocalBinder) service).getService();
-            if (!mBluetoothLeService.initialize()) {
-                finish();
-            }
-            // Conecta-se automaticamente ao dispositivo após a inicialização bem-sucedida.
-            if (mDevice != null)
-            mBluetoothLeService.connect(mDevice.getAddress());
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName componentName) {
-            mBluetoothLeService = null;
-        }
-    };
-
-    public String getAction() {
-        return action;
-    }
-
-
-    /**
-     * Manipula vários eventos desencadeados pelo Serviço.
-     * <p>
-     * ACTION_GATT_CONNECTED: conectado a um servidor GATT.
-     * ACTION_GATT_DISCONNECTED: desconectado a um servidor GATT.
-     * ACTION_GATT_SERVICES_DISCOVERED: serviços GATT descobertos.
-     * ACTION_DATA_AVAILABLE: recebeu dados do dispositivo. Pode ser resultado de operações de leitura ou notificação.
-     */
-    private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            action = intent.getAction();
-
-            if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
-                mConnected = true;
-                updateConnectionState(mConnected);
-            } else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
-                mConnected = false;
-                updateConnectionState(mConnected);
-            } else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
-                mGattService = mBluetoothLeService.getGattService(UUID.fromString(GattAttributes.SERVICE_GLUCOSE));
-                if (mGattService != null) {
-                    initCharacteristics();
-                }
-            } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
-                if (intent.getStringExtra(BluetoothLeService.EXTRA_DATA) != null)
-                    jsonGlucoseData = intent.getStringExtra(BluetoothLeService.EXTRA_DATA);
-
-                if (intent.getStringExtra(BluetoothLeService.EXTRA_DATA_CONTEXT) != null)
-                    jsonGlucoseContextData = intent.getStringExtra(BluetoothLeService.EXTRA_DATA_CONTEXT);
-
-                try {
-                    if (jsonGlucoseData != null)
-                        glucose = JsonToMeasurementParser.bloodGlucose(jsonGlucoseData);
-
-                    if (jsonGlucoseContextData != null && jsonGlucoseData != null)
-                        contextMeasurements = JsonToContextParser.parse(jsonGlucoseData, jsonGlucoseContextData);
-
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (glucose != null) {
-
-                                glucose.setDevice(mDevice);
-                                glucose.setUser(session.getUserLogged());
-
-                                /**
-                                 * Add relationships
-                                 */
-                                if (contextMeasurements != null)
-                                    glucose.addContext(contextMeasurements);
-
-                                /**
-                                 * Update UI
-                                 */
-                                updateUILastMeasurement(glucose, true);
-
-                                /**
-                                 * Save in local
-                                 * Send to server saved successfully
-                                 */
-                                if (measurementDAO.save(glucose)) {
-                                    if (!isGetAllMonitor) {
-                                        synchronizeWithServer();
-                                        loadData();
-                                    }
-                                }
-                            }
-                        }
-                    }, 300);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    };
-
-    private void initCharacteristics() {
-        if (characteristicMeasurement == null) {
-            characteristicMeasurement = mGattService.getCharacteristic(UUID.fromString(GattAttributes.CHARACTERISTIC_GLUSOSE_MEASUREMENT));
-            mBluetoothLeService.setCharacteristicNotification(characteristicMeasurement, BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE, true);
-            mBluetoothLeService.readCharacteristic(characteristicMeasurement);
-        }
-
-        if (characteristicMeasurementContext == null) {
-            characteristicMeasurementContext = mGattService.getCharacteristic(UUID.fromString(GattAttributes.CHARACTERISTIC_GLUSOSE_MEASUREMENT_CONTEXT)); // read
-            mBluetoothLeService.setCharacteristicNotification(characteristicMeasurementContext, BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE, true);
-        }
-    }
-
-    private void setCharacteristicRecordAccess() {
-        if (characteristicRecordAccess == null) {
-            characteristicRecordAccess = mGattService.getCharacteristic(UUID.fromString(GattAttributes.CHARACTERISTIC_GLUSOSE_RECORD_ACCESS_CONTROL)); // read
-            mBluetoothLeService.setCharacteristicNotification(characteristicRecordAccess, BluetoothGattDescriptor.ENABLE_INDICATION_VALUE, true);
-        }
     }
 
     /**
@@ -755,6 +610,24 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
         SynchronizationServer.getInstance(this).run();
     }
 
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
+
+            if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
+                final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE,
+                        BluetoothAdapter.ERROR);
+                if (state == BluetoothAdapter.STATE_OFF) {
+                    showMessage(R.string.bluetooth_disabled);
+
+                } else if (state == BluetoothAdapter.STATE_ON) {
+                    showMessage(-1);
+                }
+            }
+        }
+    };
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -762,7 +635,7 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
                 startActivity(new Intent(getApplicationContext(), GlucoseChartActivity.class));
                 break;
             case R.id.add_floating_button:
-                Intent it = new Intent(getApplicationContext(), ManuallyAddMeasurement.class);
+                Intent it = new Intent(getApplicationContext(), AddMeasurementActivity.class);
                 it.putExtra(getResources().getString(R.string.measurementType),
                         ItemGridType.BLOOD_GLUCOSE);
                 startActivity(it);
@@ -770,5 +643,71 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
             default:
                 break;
         }
+    }
+
+    /**
+     * Checks if you have permission to use.
+     * Required bluetooth ble and location.
+     */
+    public void checkPermissions() {
+        if (BluetoothAdapter.getDefaultAdapter() != null &&
+                !BluetoothAdapter.getDefaultAdapter().isEnabled()) {
+            requestBluetoothEnable();
+        } else if (!hasLocationPermissions()) {
+            requestLocationPermission();
+        }
+    }
+
+    /**
+     * Request Bluetooth permission
+     */
+    private void requestBluetoothEnable() {
+        startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE),
+                REQUEST_ENABLE_BLUETOOTH);
+    }
+
+    /**
+     * Checks whether the location permission was given.
+     *
+     * @return boolean
+     */
+    public boolean hasLocationPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) ==
+                    PackageManager.PERMISSION_GRANTED;
+        }
+        return true;
+    }
+
+    /**
+     * Request Location permission.
+     */
+    protected void requestLocationPermission() {
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_ENABLE_LOCATION);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        // If request is cancelled, the result arrays are empty.
+        if ((requestCode == REQUEST_ENABLE_LOCATION) &&
+                (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED)) {
+            requestLocationPermission();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_ENABLE_BLUETOOTH) {
+            if (resultCode != Activity.RESULT_OK) {
+                requestBluetoothEnable();
+            } else {
+                requestLocationPermission();
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

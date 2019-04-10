@@ -267,7 +267,7 @@ public class Server {
                     String jsonString = response.body().string();
                     if (response.code() == 401) {
                         result.put("unauthorized", mContext.getString(R.string.validate_unauthorized_access));
-                        EventBus.getDefault().post("unauthorized");
+//                        EventBus.getDefault().post("unauthorized");
                     } else if (!jsonString.isEmpty()) {
                         Object json = new JSONTokener(jsonString).nextValue();
                         if (json instanceof JSONObject)

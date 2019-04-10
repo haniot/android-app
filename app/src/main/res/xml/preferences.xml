@@ -7,18 +7,22 @@
             android:summary="@string/settings_summary_your_data"
             android:title="@string/settings_your_data" />
 
-        <PreferenceScreen
-            android:key="@string/key_signout"
-            android:summary="@string/settings_summary_signout"
-            android:title="@string/settings_signout" />
+        <Preference
+            android:key="@string/key_pilot_study"
+            android:summary="@string/piloty_study_sumary"
+            android:title="@string/piloty_study_title" />
 
-    </PreferenceCategory>
-
-    <PreferenceCategory android:title="@string/devices">
-        <PreferenceScreen
+        <Preference
             android:key="@string/key_manager_device"
             android:summary="@string/settings_summary_configure_device"
             android:title="@string/settings_configure_device" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/settings_measurements">
+        <Preference
+            android:key="@string/key_monitor_measurements"
+            android:summary="@string/settings_summary_monitor_measurements"
+            android:title="@string/settings_monitor_measurements" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/settings_about">
@@ -32,11 +36,18 @@
         <Preference
             android:summary="@string/app_version"
             android:title="@string/settings_version" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/settings_general">
+        <Preference
+            android:key="@string/key_send_bug"
+            android:summary="@string/settings_summary_bug"
+            android:title="@string/settings_send_bug" />
 
         <Preference
-            android:key="@string/key_send_feedback"
-            android:summary="@string/settings_summary_support"
-            android:title="@string/settings_send_feedback" />
+            android:key="@string/key_signout"
+            android:summary="@string/settings_summary_signout"
+            android:title="@string/settings_signout" />
     </PreferenceCategory>
 
 

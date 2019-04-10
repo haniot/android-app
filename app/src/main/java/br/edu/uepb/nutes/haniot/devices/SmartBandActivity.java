@@ -45,13 +45,14 @@ import br.edu.uepb.nutes.haniot.activity.charts.SmartBandChartActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.SmartBandAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
-import br.edu.uepb.nutes.haniot.model.Device;
-import br.edu.uepb.nutes.haniot.model.DeviceType;
-import br.edu.uepb.nutes.haniot.model.Measurement;
-import br.edu.uepb.nutes.haniot.model.MeasurementType;
-import br.edu.uepb.nutes.haniot.model.User;
-import br.edu.uepb.nutes.haniot.model.dao.DeviceDAO;
-import br.edu.uepb.nutes.haniot.model.dao.MeasurementDAO;
+import br.edu.uepb.nutes.haniot.data.model.Device;
+import br.edu.uepb.nutes.haniot.data.model.DeviceType;
+import br.edu.uepb.nutes.haniot.data.model.Measurement;
+import br.edu.uepb.nutes.haniot.data.model.MeasurementType;
+import br.edu.uepb.nutes.haniot.data.model.User;
+import br.edu.uepb.nutes.haniot.data.model.dao.DeviceDAO;
+import br.edu.uepb.nutes.haniot.data.model.dao.MeasurementDAO;
+import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.parse.JsonToMeasurementParser;
 import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
 import br.edu.uepb.nutes.haniot.server.historical.CallbackHistorical;
@@ -85,7 +86,7 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
     private Animation animation;
     private ObjectAnimator heartAnimation;
     private Device mDevice;
-    private Session session;
+    private AppPreferencesHelper appPreferencesHelper;
     private MeasurementDAO measurementDAO;
     private DeviceDAO deviceDAO;
     private SmartBandAdapter mAdapter;
@@ -154,10 +155,10 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
         synchronizeWithServer();
 
         mDeviceAddress = "CD:EE:CD:A2:21:D4";
-        session = new Session(this);
+        appPreferencesHelper = AppPreferencesHelper.getInstance(this);
         measurementDAO = MeasurementDAO.getInstance(this);
         deviceDAO = DeviceDAO.getInstance(this);
-        params = new Params(session.get_idLogged(), MeasurementType.STEPS);
+        params = new Params(appPreferencesHelper.getUserLogged().get_id(), MeasurementType.STEPS);
 
         animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
         mChartButton.setOnClickListener(this);
@@ -290,7 +291,7 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
      * when an error occurs on the first request with the server.
      */
     private void loadDataLocal() {
-        mAdapter.addItems(measurementDAO.list(MeasurementType.STEPS, session.getIdLogged(), 0, 100));
+        mAdapter.addItems(measurementDAO.list(MeasurementType.STEPS, appPreferencesHelper.getUserLogged().getId(), 0, 100));
 
         if (!mAdapter.itemsIsEmpty()) {
             updateUILastMeasurement(mAdapter.getFirstItem(), false);
@@ -455,14 +456,14 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
         super.onStart();
 
         // TODO REMOVER!!! Pois o cadastro do device deverá ser no processo de emparelhamento
-        mDevice = deviceDAO.get(mDeviceAddress, session.getIdLogged());
-
-        if (mDevice == null) {
-            mDevice = new Device(mDeviceAddress, "MI BAND 2", "XIAOMI", "", DeviceType.SMARTBAND, session.getUserLogged());
-            mDevice.set_id("5a713bce7c210900147a4eda");
-            if (!deviceDAO.save(mDevice)) finish();
-            mDevice = deviceDAO.get(mDeviceAddress, session.getIdLogged());
-        }
+//        mDevice = deviceDAO.get(mDeviceAddress, session.getUserLogged().get_id());
+//
+//        if (mDevice == null) {
+//            mDevice = new Device(mDeviceAddress, "MI BAND 2", "XIAOMI", "", DeviceType.SMARTBAND, session.getUserLogged());
+//            mDevice.set_id("5a713bce7c210900147a4eda");
+//            if (!deviceDAO.save(mDevice)) finish();
+//            mDevice = deviceDAO.get(mDeviceAddress, session.getIdLogged());
+//        }
     }
 
     @Override
@@ -615,7 +616,7 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
                     Measurement steps = JsonToMeasurementParser.steps(jsonData);
                     Measurement distance = JsonToMeasurementParser.distance(jsonData);
                     Measurement calories = JsonToMeasurementParser.calories(jsonData);
-                    User user = session.getUserLogged();
+                    User user = appPreferencesHelper.getUserLogged();
 
                     /**
                      * Update UI

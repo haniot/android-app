@@ -1,57 +1,53 @@
 package br.edu.uepb.nutes.haniot.activity.account;
 
-import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.annotation.StringRes;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.Toast;
+import android.widget.TextView;
 
-import com.auth0.android.jwt.JWT;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
+import java.util.Objects;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.MainActivity;
-import br.edu.uepb.nutes.haniot.activity.settings.Session;
-import br.edu.uepb.nutes.haniot.model.Device;
-import br.edu.uepb.nutes.haniot.model.User;
-import br.edu.uepb.nutes.haniot.model.dao.DeviceDAO;
-import br.edu.uepb.nutes.haniot.model.dao.UserDAO;
-import br.edu.uepb.nutes.haniot.server.Server;
+import br.edu.uepb.nutes.haniot.data.model.Device;
+import br.edu.uepb.nutes.haniot.data.model.dao.DeviceDAO;
+import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
+import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
+import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.haniot.service.TokenExpirationService;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import okhttp3.ResponseBody;
+import retrofit2.HttpException;
+
+import static android.view.inputmethod.InputMethodManager.HIDE_NOT_ALWAYS;
 
 /**
  * LoginActivity implementation.
  *
- * @author Douglas Rafael <douglas.rafael@nutes.uepb.edu.br>, Fábio Júnior <fabio.pequeno@nutes.uepb.edu.br>
- * @version 1.0
- * @copyright Copyright (c) 2017, NUTES UEPB
+ * @author Copyright (c) 2018, NUTES/UEPB
  */
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
-    private final String TAG = "LoginActivity";
+    private final String LOG_TAG = "LoginActivity";
 
     @BindView(R.id.progressBarLogin)
     ProgressBar mProgressBar;
@@ -68,12 +64,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @BindView(R.id.btn_login)
     Button buttonLogin;
 
-    private Session session;
-    private UserDAO userDAO;
+    @BindView(R.id.box_message_error)
+    LinearLayout boxMessage;
+
+    @BindView(R.id.message_error)
+    TextView messageError;
+
     private TokenExpirationService tokenExpirationService;
     private boolean mIsBound;
-    private Server server;
     private DeviceDAO mDeviceDAO;
+    private HaniotNetRepository haniotNetRepository;
+    private AppPreferencesHelper appPreferencesHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,14 +82,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_login);
 
         ButterKnife.bind(this);
-        doBindService();
-        session = new Session(this);
-        userDAO = UserDAO.getInstance(this);
+
         mDeviceDAO = DeviceDAO.getInstance(this);
-        server = Server.getInstance(this);
+        haniotNetRepository = HaniotNetRepository.getInstance(this);
+        appPreferencesHelper = AppPreferencesHelper.getInstance(this);
+
+        doBindService();
 
         buttonLogin.setOnClickListener(this);
-
         passwordEditText.setOnEditorActionListener((textView, actionId, keyEvent) -> {
             if (actionId == EditorInfo.IME_ACTION_SEND) login();
 
@@ -105,12 +106,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     protected void onResume() {
         super.onResume();
         checkConnectivity();
+        boxMessage.setVisibility(View.GONE);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         doUnbindService();
+        DisposableManager.dispose();
     }
 
     @Override
@@ -128,16 +131,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
      * Authenticate user
      */
     private void login() {
-        // close keyboard
-        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
-        inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0); // hide
+        boxMessage.setVisibility(View.GONE);
 
-        /**
-         * Check if you have an internet connection.
-         * If yes, it does authentication with the remote server
-         */
-        if (!checkConnectivity() || !validate())
-            return;
+        // close keyboard
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(Objects.requireNonNull(
+                getCurrentFocus()).getWindowToken(), HIDE_NOT_ALWAYS);
+
+        // Check if you have an internet connection.
+        // If yes, it does authentication with the remote server
+        if (!checkConnectivity() || !validate()) return;
 
         authenticationInServer();
     }
@@ -146,118 +149,137 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
      * Authenticates the user on the remote server
      */
     private void authenticationInServer() {
-        Log.i(TAG, "authenticationInServer()");
-        loadingSend(true);
-
-        // Send for remote server /users/authenticate
-        Server.getInstance(this).post("users/auth", getJsonData(), new Server.Callback() {
-            @Override
-            public void onError(JSONObject result) {
-                printMessage(result);
-                loadingSend(false);
-                try {
-                    if (result.getString("code").equals("403")) {
-                        Intent intent = new Intent(LoginActivity.this, ChangePasswordActivity.class);
-                        intent.putExtra("pathRedirectLink", result.get("redirect_link").toString());
-                        startActivity(intent);
-                    } else {
-                        Log.i("CACA", "error 404");
+        DisposableManager.add(haniotNetRepository
+                .auth(String.valueOf(emailEditText.getText()), String.valueOf(passwordEditText.getText()))
+                .doOnSubscribe(disposable -> showLoading(true))
+                .doAfterTerminate(() -> showLoading(false))
+                .subscribe(userAccess -> {
+                    if (appPreferencesHelper.saveUserAccessHaniot(userAccess)) {
+                        getUserProfile(userAccess.getSubject());
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onSuccess(JSONObject result) {
-                try {
-                    User user = new User();
-                    final String token = result.has("token") ? new Gson().fromJson(result.getString("token"), String.class) : null;
-                    if (token != null) {
-                        JWT jwt = new JWT(token);
-                        String _id = jwt.getSubject();
-                        user.set_id(_id);
-                        user.setToken(token);
-
-                        User u = userDAO.get(user.get_id());
-                        if (u != null) {
-                            user.setIdDb(u.getIdDb());
-                            userDAO.update(user);
-                        } else {
-                            userDAO.save(user);
-                            user = userDAO.get(user.get_id());
-                        }
-                        session.setLogged(user.getIdDb(), token);
-
-                        // FCM TOKEN
-                        String fcmToken = FirebaseInstanceId.getInstance().getToken();
-                        if (fcmToken != null) {
-                            user.setToken(fcmToken);
-                            sendFcmToken(fcmToken);
-                        }
-                        tokenExpirationService.initTokenMonitor();
-                        syncDevices();
-                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                    } else {
-                        printMessage(result);
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                } finally {
-                    loadingSend(false);
-                }
-            }
-        });
+                }, this::errorHandler)
+        );
     }
 
     /**
-     * Send token in FCM.
+     * Get data user from server.
      *
-     * @param fcmToken
+     * @param userId {@link String}
      */
-    private void sendFcmToken(String fcmToken) {
-        String path = "users/".concat(session.get_idLogged()).concat("/fcm");
-        String jsonToken = "{\"fcmToken\":\"".concat(fcmToken).concat("\"}");
-
-        Server.getInstance(this).post(path, jsonToken, new Server.Callback() {
-            @Override
-            public void onError(JSONObject result) {
-                Log.d(TAG, result.toString());
-            }
-
-            @Override
-            public void onSuccess(JSONObject result) {
-                Log.d(TAG, result.toString());
-            }
-        });
-    }
-
-    /**
-     * Displays return message to user
-     *
-     * @param response
-     */
-    private void printMessage(final JSONObject response) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    if (response.has("code") && response.getInt("code") == 401) {
-                        Toast.makeText(getApplicationContext(), R.string.validate_invalid_email_or_password, Toast.LENGTH_LONG).show();
-                    } else if (response.has("code") && response.getInt("code") == 403) {
-                        Toast.makeText(getApplicationContext(), R.string.error_403, Toast.LENGTH_LONG).show();
-                    } else {
-                        Toast.makeText(getApplicationContext(), R.string.error_500, Toast.LENGTH_LONG).show();
+    private void getUserProfile(String userId) {
+        DisposableManager.add(haniotNetRepository
+                .getHealthProfissional(userId)
+                .doOnSubscribe(disposable -> showLoading(true))
+                .doAfterTerminate(() -> showLoading(false))
+                .subscribe(user -> {
+                    if (user.get_id() == null) {
+                        showMessage(R.string.error_recover_data);
+                        showLoading(false);
+                        return;
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
+
+                    appPreferencesHelper.saveUserLogged(user);
+                    tokenExpirationService.initTokenMonitor();
+                    syncDevices(userId);
+                }, this::errorHandler)
+        );
+    }
+
+    /**
+     * Get devices saved on the server and sync local.
+     */
+    public void syncDevices(String userId) {
+        if (userId == null) return;
+
+        DisposableManager.add(haniotNetRepository
+                .getAllDevices(userId)
+                .doOnSubscribe(disposable -> showLoading(true))
+                .doAfterTerminate(() -> startActivity(new Intent(this, MainActivity.class)))
+                .subscribe(devices -> {
+                    mDeviceDAO.removeAll(userId);
+                    for (Device d : devices) {
+                        d.setUserId(userId);
+                        mDeviceDAO.save(d);
+                    }
+                }, error -> Log.w(LOG_TAG, "syncDevices() error: " + error.getMessage()))
+        );
+    }
+
+    /**
+     * Open screen to change password.
+     *
+     * @param body {@link ResponseBody}
+     */
+    private void openScreenChangePassword(ResponseBody body) {
+        try {
+            JsonObject json = new JsonParser()
+                    .parse(body.string())
+                    .getAsJsonObject();
+            String redirectLink = json.get("redirect_link").getAsString();
+            Intent intent = new Intent(
+                    LoginActivity.this,
+                    ChangePasswordActivity.class
+            );
+            intent.putExtra("user_id", redirectLink.split("/")[2]);
+            startActivity(intent);
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+    }
+
+    /**
+     * Manipulates the error and displays message
+     * according to the type of error.
+     *
+     * @param e {@link Throwable}
+     */
+    private void errorHandler(Throwable e) {
+        if (e instanceof HttpException) {
+            HttpException httpEx = ((HttpException) e);
+            Log.i(LOG_TAG, httpEx.message());
+            switch (httpEx.code()) {
+                case 401:
+                    showMessage(R.string.validate_invalid_email_or_password);
+                    break;
+                case 403: {
+                    if (httpEx.response().errorBody() == null) {
+                        showMessage(R.string.error_500);
+                        return;
+                    }
+                    openScreenChangePassword(Objects.requireNonNull(httpEx.response().errorBody()));
+                    break;
                 }
+                case 404:
+                    showMessage(R.string.error_recover_data);
+                    break;
+                default:
+                    showMessage(R.string.error_500);
+                    break;
             }
+            return;
+        }
+        Log.i(LOG_TAG, e.getMessage());
+        showMessage(R.string.error_500);
+    }
+
+    /**
+     * Displays message.
+     *
+     * @param str @StringRes message.
+     */
+    private void showMessage(@StringRes int str) {
+        String message = getString(str);
+        if (message.isEmpty()) message = getString(R.string.error_500);
+
+        messageError.setText(message);
+        runOnUiThread(() -> {
+            boxMessage.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_in));
+            boxMessage.setVisibility(View.VISIBLE);
         });
     }
 
     /**
-     * Validade form
+     * Validate form.
      *
      * @return boolean
      */
@@ -285,42 +307,22 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     /**
-     * Loading message
+     * Loading message,
      *
-     * @param enabled
+     * @param enabled boolean
      */
-    private void loadingSend(final boolean enabled) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                buttonLogin.setEnabled(!enabled);
+    private void showLoading(final boolean enabled) {
+        runOnUiThread(() -> {
+            buttonLogin.setEnabled(!enabled);
 
-                if (enabled) mProgressBar.setVisibility(View.VISIBLE);
-                else mProgressBar.setVisibility(View.GONE);
-            }
+            if (enabled) mProgressBar.setVisibility(View.VISIBLE);
+            else mProgressBar.setVisibility(View.GONE);
         });
     }
 
     /**
-     * Return json with the data typed in the form
-     *
-     * @return String json format
-     */
-    private String getJsonData() {
-        final JSONObject dataJson = new JSONObject();
-
-        try {
-            dataJson.put("email", String.valueOf(emailEditText.getText()));
-            dataJson.put("password", String.valueOf(passwordEditText.getText()));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        Log.i("CACA", dataJson.toString());
-        return dataJson.toString();
-    }
-
-    /**
-     * Check if you have connectivity. If it does not, the elements in the view mounted to notify the user
+     * Check if you have connectivity.
+     * If it does not, the elements in the view mounted to notify the user.
      *
      * @return boolean
      */
@@ -339,8 +341,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
      */
     public void doBindService() {
         bindService(new Intent(this, TokenExpirationService.class),
-                mServiceConnection,
-                BIND_AUTO_CREATE);
+                mServiceConnection, BIND_AUTO_CREATE);
         mIsBound = true;
     }
 
@@ -368,49 +369,4 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             tokenExpirationService = null;
         }
     };
-
-    /**
-     * Deserialize json in a list of devices.
-     * If any error occurs it will be returned List empty.
-     *
-     * @param json {@link JSONObject}
-     * @return {@link List<Device>}
-     */
-    private List<Device> jsonToListDevice(JSONObject json) {
-        if (json == null || !json.has("devices")) return new ArrayList<>();
-
-        Type typeUserAccess = new TypeToken<List<Device>>() {
-        }.getType();
-
-        try {
-            JSONArray jsonArray = json.getJSONArray("devices");
-            return new Gson().fromJson(jsonArray.toString(), typeUserAccess);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return new ArrayList<>();
-    }
-
-    //check devices saved on the server
-    public void syncDevices() {
-        String path = "devices/users/".concat(session.get_idLogged());
-        server.get(path, new Server.Callback() {
-            @Override
-            public void onError(JSONObject result) {
-            }
-
-            @Override
-            public void onSuccess(JSONObject result) {
-                List<Device> devicesRegistered = jsonToListDevice(result);
-                mDeviceDAO.removeAll(session.getUserLogged().getIdDb());
-                if (!devicesRegistered.isEmpty()) {
-                    mDeviceDAO.removeAll(session.getUserLogged().getIdDb());
-                    for (Device d : devicesRegistered) {
-                        d.setUser(session.getUserLogged());
-                        mDeviceDAO.save(d);
-                    }
-                }
-            }
-        });
-    }
 }

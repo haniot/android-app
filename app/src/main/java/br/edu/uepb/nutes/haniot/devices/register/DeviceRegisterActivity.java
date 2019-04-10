@@ -30,7 +30,6 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 
-import org.greenrobot.essentials.DateUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -39,8 +38,10 @@ import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
-import br.edu.uepb.nutes.haniot.model.Device;
-import br.edu.uepb.nutes.haniot.model.dao.DeviceDAO;
+import br.edu.uepb.nutes.haniot.data.model.Device;
+import br.edu.uepb.nutes.haniot.data.model.User;
+import br.edu.uepb.nutes.haniot.data.model.dao.DeviceDAO;
+import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.server.Server;
 import br.edu.uepb.nutes.haniot.utils.GattAttributes;
 import br.edu.uepb.nutes.simpleblescanner.SimpleBleScanner;
@@ -56,7 +57,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     private final String NAME_DEVICE_GLUCOMETER_PERFORMA = "Accu-Chek Performa Connect";
     private final String NAME_DEVICE_SCALE_1501 = "Scale YUNMAI Mini 1501";
     private final String NAME_DEVICE_YUNMAI = "YUNMAI-SIGNAL-M1US";
-    private final String NAME_DEVICE_HEART_RATE = "Heart Rate Sensor H7, H10 ...";
+    private final String NAME_DEVICE_HEART_RATE = "Heart Rate Sensor";
     private final String NAME_DEVICE_SMARTBAND_MI2 = "Smartband MI Band 2";
     private final String SERVICE_SCALE_1501 = "00001310-0000-1000-8000-00805f9b34fb";
     private final String PIN_YUNMAI = "000000";
@@ -68,8 +69,9 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     private Device mDevice;
     private DeviceDAO mDeviceDAO;
     private Server server;
-    private Session session;
+    private AppPreferencesHelper appPreferences;
     private BluetoothDevice btDevice;
+    private User user;
 
     @BindView(R.id.box_scanner)
     FrameLayout boxScanner;
@@ -113,7 +115,6 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     @BindView(R.id.progressBar_pairing)
     ProgressBar progressBarPairing;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -126,7 +127,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         ButterKnife.bind(this);
 
         server = Server.getInstance(this);
-        session = new Session(this);
+        appPreferences = AppPreferencesHelper.getInstance(this);
         mDeviceDAO = DeviceDAO.getInstance(this);
 
 
@@ -147,13 +148,17 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
         registerReceiver(mBroadcastReceiver, filter);
 
+        user = appPreferences.getUserLogged();
+        if (user == null) {
+            finish();
+            return;
+        }
+
         initComponents();
     }
 
-    //start scanner library ble
     @Override
     protected void onResume() {
-        Log.d(TAG, "onResume: ");
         super.onResume();
         checkPermissions();
     }
@@ -319,6 +324,8 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
                         unregisterReceiver(broadCastReceiver);
                     }
                     deviceConnectionStatus.setText(R.string.failed_pairing_device);
+                    btnDeviceRegisterScanner.setEnabled(true);
+                    btnDeviceRegisterScanner.setText(R.string.device_not_found_try_again);
                     progressBarPairing.setVisibility(View.INVISIBLE);
                 }
             }
@@ -472,7 +479,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
      * @param device {@link Device}
      */
     public void saveDeviceRegister(final Device device) {
-        String path = "devices/".concat("/users/").concat(session.get_idLogged());
+        String path = "devices/".concat("/users/").concat(user.get_id());
         server.post(path, this.deviceToJson(device), new Server.Callback() {
             @Override
             public void onError(JSONObject result) {
@@ -482,7 +489,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
             public void onSuccess(JSONObject result) {
                 Device mDevice = new Gson().fromJson(String.valueOf(result), Device.class);
                 mDevice.setImg(device.getImg());
-                mDevice.setUser(session.getUserLogged());
+                mDevice.setUserId(user.get_id());
                 mDeviceDAO.save(mDevice);
             }
         });
@@ -496,13 +503,13 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
      */
     public boolean removeDeviceForType(Device device) {
         boolean confirmed = false;
-        for (Device d : mDeviceDAO.list(session.getIdLogged())) {
+        for (Device d : mDeviceDAO.list(user.get_id())) {
             if (d.getTypeId() == device.getTypeId()) {
                 confirmed = true;
                 String path = "devices/"
                         .concat(d.get_id())
                         .concat("/users/")
-                        .concat(session.get_idLogged());
+                        .concat(user.get_id());
 
                 server.delete(path, new Server.Callback() {
                     @Override

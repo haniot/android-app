@@ -54,7 +54,7 @@ com_crashlytics_export_strings.xml
 .idea/libraries/
 .idea/caches/
 .idea/sonarlint/
-.idea/caches/
+.idea/caches/**
 
 # External native build folder generated in Android Studio 2.2 and later
 .externalNativeBuild
@@ -74,3 +74,6 @@ local.properties
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# ObjectBox
+app/objectbox-models

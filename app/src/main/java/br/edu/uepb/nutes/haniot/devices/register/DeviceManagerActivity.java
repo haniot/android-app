@@ -37,9 +37,11 @@ import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.DeviceAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
-import br.edu.uepb.nutes.haniot.model.Device;
-import br.edu.uepb.nutes.haniot.model.DeviceType;
-import br.edu.uepb.nutes.haniot.model.dao.DeviceDAO;
+import br.edu.uepb.nutes.haniot.data.model.Device;
+import br.edu.uepb.nutes.haniot.data.model.DeviceType;
+import br.edu.uepb.nutes.haniot.data.model.User;
+import br.edu.uepb.nutes.haniot.data.model.dao.DeviceDAO;
+import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.server.Server;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
@@ -53,7 +55,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
     public final String NUMBER_MODEL_THERM_DL8740 = "DL8740";
     public final String NUMBER_MODEL_GLUCOMETER_PERFORMA = "Performa Connect";
     public final String NUMBER_MODEL_SCALE_1501 = "1501";
-    public final String NUMBER_MODEL_HEART_RATE = "H7, H10 ...";
+    public final String NUMBER_MODEL_HEART_RATE = "Polar H7, Polar H10...";
     public final String NUMBER_MODEL_SMARTBAND_MI2 = "MI Band 2";
 
     @BindView(R.id.toolbar)
@@ -89,12 +91,11 @@ public class DeviceManagerActivity extends AppCompatActivity {
     @BindView(R.id.devices_registered_available)
     LinearLayout boxRegisteredAvailable;
 
-
     private Server server;
-    private Session session;
-
+    private AppPreferencesHelper appPreferences;
     private DeviceAdapter mAdapterDeviceAvailable;
     private DeviceAdapter mAdapterDeviceRegistered;
+    private User user;
 
     private DeviceDAO mDeviceDAO;
 
@@ -104,10 +105,16 @@ public class DeviceManagerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_manager_devices);
         ButterKnife.bind(this);
         server = Server.getInstance(this);
-        session = new Session(this);
+        appPreferences = AppPreferencesHelper.getInstance(this);
         mDeviceDAO = DeviceDAO.getInstance(this);
 
+        user = appPreferences.getUserLogged();
+        if (user == null) {
+            finish();
+        }
+
         initComponents();
+        populateView();
     }
 
     @Override
@@ -122,9 +129,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        populateView();
     }
-
 
     /**
      * Initialize the components.
@@ -155,7 +160,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
         }
 
         displayLoading(true);
-        String path = "devices/users/".concat(session.get_idLogged());
+        String path = "devices/users/".concat(user.get_id());
         server.get(path, new Server.Callback() {
             @Override
             public void onError(JSONObject result) {
@@ -172,7 +177,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
             public void onSuccess(JSONObject result) {
                 List<Device> devicesRegistered = jsonToListDevice(result);
                 populateDevicesRegistered(newList(devicesRegistered));
-                populateDevicesAvailable(mDeviceDAO.list(session.getUserLogged().getIdDb()));
+                populateDevicesAvailable(mDeviceDAO.list(user.get_id()));
                 displayLoading(false);
             }
         });
@@ -197,8 +202,8 @@ public class DeviceManagerActivity extends AppCompatActivity {
             } else if (devices.getName().equalsIgnoreCase("Scale YUNMAI Mini ".concat(NUMBER_MODEL_SCALE_1501))) {
                 devices.setImg(R.drawable.device_scale_yunmai_mini_color);
                 listDevices.add(devices);
-            } else if (devices.getName().equalsIgnoreCase("Heart Rate Sensor ".concat(NUMBER_MODEL_HEART_RATE))) {
-                devices.setImg(R.drawable.device_heart_rate_h7);
+            } else if (devices.getName().equalsIgnoreCase("Heart Rate Sensor")) {
+                devices.setImg(R.drawable.device_heart_rate_h10);
                 listDevices.add(devices);
             } else if (devices.getName().equalsIgnoreCase("Smartband ".concat(NUMBER_MODEL_SMARTBAND_MI2))) {
                 devices.setImg(R.drawable.device_smartband_miband2);
@@ -351,9 +356,8 @@ public class DeviceManagerActivity extends AppCompatActivity {
                 "Yunmai", NUMBER_MODEL_SCALE_1501,
                 R.drawable.device_scale_yunmai_mini_color, DeviceType.BODY_COMPOSITION));
 
-        devicesAvailable.add(new Device("Heart Rate Sensor ".concat(NUMBER_MODEL_HEART_RATE),
-                "Polar", NUMBER_MODEL_HEART_RATE,
-                R.drawable.device_heart_rate_h7, DeviceType.HEART_RATE));
+        devicesAvailable.add(new Device("Heart Rate Sensor", NUMBER_MODEL_HEART_RATE,
+                NUMBER_MODEL_HEART_RATE, R.drawable.device_heart_rate_h10, DeviceType.HEART_RATE));
 
         devicesAvailable.add(new Device("Smartband ".concat(NUMBER_MODEL_SMARTBAND_MI2),
                 "Xiaomi", NUMBER_MODEL_SMARTBAND_MI2,
@@ -420,7 +424,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
 
     private void removeDeviceRegister(Device device) {
         displayLoading(true);
-        String path = "devices/".concat(device.get_id()).concat("/users/").concat(session.get_idLogged());
+        String path = "devices/".concat(device.get_id()).concat("/users/").concat(user.get_id());
         server.delete(path, new Server.Callback() {
             @Override
             public void onError(JSONObject result) {
