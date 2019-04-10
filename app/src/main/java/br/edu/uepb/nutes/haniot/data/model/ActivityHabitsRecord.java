@@ -24,18 +24,14 @@ public abstract class ActivityHabitsRecord {
     @Index
     @SerializedName("id")
     @Expose()
-    private String _id; // _id in server remote (UUID)
+    private String _id;
 
     @SerializedName("created_at")
-    @Expose
+    @Expose(serialize = false)
     private String createdAt;
 
     @Expose(serialize = false, deserialize = false)
     private String patientId;
-
-    public ActivityHabitsRecord() {
-
-    }
 
     public long getId() {
         return id;
@@ -76,9 +72,7 @@ public abstract class ActivityHabitsRecord {
      */
     public String toJson() {
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-        String a = gson.toJson(this);
-        Log.i("AAAAAAAAAA", a);
-        return a;
+        return gson.toJson(this);
     }
 
     /**

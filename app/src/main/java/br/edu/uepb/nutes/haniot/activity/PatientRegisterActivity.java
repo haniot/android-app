@@ -21,16 +21,11 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import java.util.Calendar;
-import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.data.model.ChronicDisease;
-import br.edu.uepb.nutes.haniot.data.model.FeedingHabitsRecord;
-import br.edu.uepb.nutes.haniot.data.model.MedicalRecord;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
-import br.edu.uepb.nutes.haniot.data.model.PhysicalActivityHabit;
-import br.edu.uepb.nutes.haniot.data.model.SleepHabit;
-import br.edu.uepb.nutes.haniot.data.model.WeeklyFoodRecord;
+import br.edu.uepb.nutes.haniot.data.model.PatientsType;
+import br.edu.uepb.nutes.haniot.data.model.UserAccess;
 import br.edu.uepb.nutes.haniot.data.model.dao.PatientDAO;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
@@ -48,7 +43,6 @@ import retrofit2.HttpException;
  * @copyright Copyright (c) 2019, NUTES UEPB
  */
 public class PatientRegisterActivity extends AppCompatActivity {
-    //TODO implementar edição de paciente
 
     final private String TAG = "PatientRegisterActivity";
     @BindView(R.id.toolbar)
@@ -86,14 +80,7 @@ public class PatientRegisterActivity extends AppCompatActivity {
     private AppPreferencesHelper appPreferencesHelper;
     private HaniotNetRepository haniotNetRepository;
     private PatientDAO patientDAO;
-
-
-    private PhysicalActivityHabit physicalActivityHabits;
-    private FeedingHabitsRecord feedingHabitsRecord;
-    private MedicalRecord medicalRecord;
-    private List<ChronicDisease> chronicDiseases;
-    private SleepHabit sleepHabit;
-    private List<WeeklyFoodRecord> weeklyFoodRecords;
+    private boolean isEdit = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,41 +91,8 @@ public class PatientRegisterActivity extends AppCompatActivity {
         toolbar.setTitle(getResources().getString(R.string.patient_profile));
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//
-//        physicalActivityHabits.setCreatedAt(DateUtils.getCurrentDateISO8601());
-//        physicalActivityHabits.set_id("ID");
-//        physicalActivityHabits.setId(34234234);
-//        physicalActivityHabits.setPatientId("patientID");
-//        physicalActivityHabits.setSchoolActivityFreq("Não sei");
-//        List<String> strings = new ArrayList<>();
-//        strings.add("Futebol");
-//        strings.add("Futsal");
-//        physicalActivityHabits.setWeeklyActivities(strings);
-//        Log.i(TAG, physicalActivityHabits.toJson());
-//
-//        feedingHabitsRecord.setCreatedAt(DateUtils.getCurrentDateISO8601());
-//        feedingHabitsRecord.setBreakfastDailyFrequency("breakfastFrequency");
-//        feedingHabitsRecord.setDailyWaterGlasses("AAA");
-//        strings.clear();
-//        strings.add("AVL");
-//        strings.add("Ovo");
-//        feedingHabitsRecord.setFoodAllergyIntolerance(strings);
-//        feedingHabitsRecord.setSixMonthBreastFeeding("AA");
-//        feedingHabitsRecord.set_id("ID");
-//        feedingHabitsRecord.setId(231321);
-//        feedingHabitsRecord.setPatientId("patientID");
-//        WeeklyFoodRecord weeklyFoodRecord = new WeeklyFoodRecord();
-//        weeklyFoodRecord.setId(32323);
-//        weeklyFoodRecord.setFood("Arroz");
-//        weeklyFoodRecord.setSevenDaysFreq("asa");
-//        feedingHabitsRecord.setWeeklyFeedingHabits(weeklyFoodRecords);
-//        weeklyFoodRecord.setId(32323);
-//        weeklyFoodRecord.setFood("Feijão");
-//        weeklyFoodRecord.setSevenDaysFreq("asa");
-//        feedingHabitsRecord.setWeeklyFeedingHabits(weeklyFoodRecords);
-//        Log.i(TAG, feedingHabitsRecord.toJson());
 
-
+        if (getIntent().hasExtra("action")) isEdit = true;
         initComponents();
     }
 
@@ -180,33 +134,45 @@ public class PatientRegisterActivity extends AppCompatActivity {
      * Save patient in App Preferences.
      */
     private void savePatient() {
-        patient = new Patient();
+        if (!isEdit) patient = new Patient();
         patient.setFirstName(nameEditTExt.getText().toString());
         patient.setLastName(lastNameEditTExt.getText().toString());
         patient.setBirthDate(DateUtils.formatDate(myCalendar.getTimeInMillis(), "yyyy-MM-dd"));
-        if (genderGroup.getCheckedRadioButtonId() == R.id.male) patient.setGender("male");
-        else patient.setGender("female");
+        if (genderGroup.getCheckedRadioButtonId() == R.id.male)
+            patient.setGender(PatientsType.GenderType.MALE);
+        else patient.setGender(PatientsType.GenderType.FEMALE);
         patient.setPilotId(appPreferencesHelper.getLastPilotStudy().get_id());
-
-        DisposableManager.add(haniotNetRepository
-                .savePatient(patient)
-                .doOnSubscribe(disposable -> {
-                    Log.i(TAG, "Salvando paciente no servidor!");
-                    showLoading(true);
-                })
-                .doAfterTerminate(() -> {
-                    showLoading(false);
-                    Log.i(TAG, "Salvando paciente no servidor!");
-                })
-                .subscribe(patient -> {
-                    if (patient.get_id() == null) {
-                        showMessage(R.string.error_recover_data);
-                        return;
-                    }
-                    patientDAO.save(patient);
-                    appPreferencesHelper.saveLastPatient(patient);
-                    startActivity(new Intent(PatientRegisterActivity.this, PatientQuiz.class));
-                }, this::errorHandler));
+        Log.i(TAG, patient.toJson());
+        if (isEdit)
+            DisposableManager.add(haniotNetRepository
+                    .updatePatient(patient)
+                    .doOnSubscribe(disposable -> showLoading(true))
+                    .doAfterTerminate(() -> showLoading(false))
+                    .subscribe(patient1 -> {
+                        patientDAO.save(patient);
+                        showMessage(R.string.update_success);
+                        startActivity(new Intent(PatientRegisterActivity.this, ManagePatientsActivity.class));
+                    }, this::errorHandler));
+        else
+            DisposableManager.add(haniotNetRepository
+                    .savePatient(patient)
+                    .doOnSubscribe(disposable -> {
+                        Log.i(TAG, "Salvando paciente no servidor!");
+                        showLoading(true);
+                    })
+                    .doAfterTerminate(() -> {
+                        showLoading(false);
+                        Log.i(TAG, "Salvando paciente no servidor!");
+                    })
+                    .subscribe(patient -> {
+                        if (patient.get_id() == null) {
+                            showMessage(R.string.error_recover_data);
+                            return;
+                        }
+                        patientDAO.save(patient);
+                        appPreferencesHelper.saveLastPatient(patient);
+                        startActivity(new Intent(PatientRegisterActivity.this, PatientQuizActivity.class));
+                    }, this::errorHandler));
     }
 
     /**
@@ -216,6 +182,7 @@ public class PatientRegisterActivity extends AppCompatActivity {
      * @param e {@link Throwable}
      */
     private void errorHandler(Throwable e) {
+        Log.i(TAG, e.getMessage());
         if (e instanceof HttpException) {
             HttpException httpEx = ((HttpException) e);
             switch (httpEx.code()) {
@@ -229,6 +196,9 @@ public class PatientRegisterActivity extends AppCompatActivity {
         } else showMessage(R.string.error_500);
     }
 
+    /**
+     * On back pressed.
+     */
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -254,9 +224,18 @@ public class PatientRegisterActivity extends AppCompatActivity {
     View.OnClickListener fabClick = v -> {
         if (validate()) {
             savePatient();
-            //finish();
         }
     };
+
+    private void prepareView() {
+        patient = appPreferencesHelper.getLastPatient();
+        nameEditTExt.setText(patient.getFirstName());
+        lastNameEditTExt.setText(patient.getLastName());
+        birthEdittext.setText(patient.getBirthDate());
+        if (patient.getGender().equals(PatientsType.GenderType.MALE))
+            genderGroup.check(R.id.male);
+        else genderGroup.check(R.id.female);
+    }
 
     /**
      * Displays message.
@@ -279,11 +258,15 @@ public class PatientRegisterActivity extends AppCompatActivity {
      */
     private void initComponents() {
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
+        Log.i(TAG, appPreferencesHelper.getUserAccessHaniot().getAccessToken());
         haniotNetRepository = HaniotNetRepository.getInstance(this);
         patientDAO = PatientDAO.getInstance(this);
         myCalendar = Calendar.getInstance();
         fab.setOnClickListener(fabClick);
 
+        if (isEdit) {
+            prepareView();
+        }
         genderGroup.setOnCheckedChangeListener((group, checkedId) -> {
             if (checkedId == R.id.male)
                 genderIcon.setImageResource(R.drawable.x_boy);
@@ -305,6 +288,12 @@ public class PatientRegisterActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * On options item selected.
+     *
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {

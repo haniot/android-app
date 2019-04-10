@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/settings_measurements_supported">
+        <SwitchPreference
+            android:defaultValue="false"
+            android:icon="@drawable/ic_action_scale"
+            android:key="@string/key_weight"
+            android:title="@string/weight" />
+        <SwitchPreference
+            android:defaultValue="false"
+            android:icon="@drawable/ic_action_glucose"
+            android:key="@string/key_blood_glucose"
+            android:title="@string/blood_glucose" />
+        <SwitchPreference
+            android:defaultValue="false"
+            android:icon="@drawable/ic_action_blood_pressure"
+            android:key="@string/key_blood_pressure"
+            android:title="@string/blood_pressure" />
+        <SwitchPreference
+            android:defaultValue="false"
+            android:icon="@drawable/ic_action_heart_rate"
+            android:key="@string/key_heart_rate"
+            android:title="@string/heart_rate" />
+        <SwitchPreference
+            android:defaultValue="false"
+            android:icon="@drawable/ic_action_anthropometrics"
+            android:key="@string/key_anthropometric"
+            android:title="@string/anthropometric" />
+    </PreferenceCategory>
+</PreferenceScreen>

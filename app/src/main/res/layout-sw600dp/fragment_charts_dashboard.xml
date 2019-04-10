@@ -1,26 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/colorPrimary">
 
-    <!-- TODO: Update blank fragment layout -->
+    <LinearLayout
+        android:id="@+id/box_message_error"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimaryDark"
+        android:gravity="center"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/message_error"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="16sp"
+            android:text="@null"
+            android:textColor="@color/colorTextDark" />
+    </LinearLayout>
+
     <android.support.v7.widget.CardView
         android:id="@+id/card_view"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:layout_gravity="top|center_vertical|center"
-        android:layout_marginBottom="40dp"
         android:textAlignment="center"
         app:cardBackgroundColor="@color/colorPrimary"
         app:cardCornerRadius="6dp"
         app:cardElevation="0dp"
         app:cardPreventCornerOverlap="false"
-        app:cardUseCompatPadding="true">
+        app:cardUseCompatPadding="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/box_message_error">
 
         <RelativeLayout
             android:id="@+id/relativeLayout"
@@ -30,14 +51,12 @@
             <TextView
                 android:id="@+id/patientName"
                 android:layout_width="wrap_content"
-                android:layout_height="62dp"
-                android:layout_alignTop="@+id/progressBar2"
+                android:layout_height="41dp"
                 android:layout_centerHorizontal="true"
-                android:layout_toEndOf="@+id/patient"
                 android:gravity="center"
                 android:text="Paulina Leal"
-                android:textColor="@color/cardview_light_background"
-                android:textSize="30sp" />
+                android:textColor="@color/colorWhite"
+                android:textSize="24sp" />
 
             <TextView
                 android:id="@+id/textDate"
@@ -45,135 +64,50 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/patientName"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="2dp"
                 android:layout_marginBottom="10dp"
                 android:text="segunda-feira, 24 dezembro, 2018"
                 android:textAlignment="center"
-                android:textColor="@color/cardview_light_background"
-                android:textSize="18sp" />
-
-            <com.mikhaellopez.circularprogressbar.CircularProgressBar
-                android:id="@+id/progressBar"
-                android:layout_width="100dp"
-                android:layout_height="match_parent"
-                android:layout_alignStart="@+id/widget1"
-                android:layout_alignTop="@+id/widget1"
-                android:layout_alignEnd="@+id/widget1"
-                android:layout_alignBottom="@+id/widget1"
-                android:visibility="invisible"
-                app:cpb_background_progressbar_color="@color/colorPrimary"
-                app:cpb_indeterminate_mode="true"
-                app:cpb_progress="0"
-                app:cpb_progressbar_color="@color/cardview_light_background"
-                app:cpb_progressbar_width="1dp">
-
-            </com.mikhaellopez.circularprogressbar.CircularProgressBar>
-
-            <pl.bclogic.pulsator4droid.library.PulsatorLayout
-                android:id="@+id/pulsator"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="131dp"
-                app:pulse_color="@color/colorAccent"
-                app:pulse_count="5"
-                app:pulse_duration="3000"
-                app:pulse_repeat="10">
-
-            </pl.bclogic.pulsator4droid.library.PulsatorLayout>
-
-
-            <TextView
-                android:id="@+id/textValueMeasurement"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_above="@+id/lightProgress2"
-                android:layout_below="@+id/pulsator"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="18dp"
-                android:text="-"
-                android:textAlignment="center"
-                android:textColor="@color/cardview_light_background"
-                android:textSize="40sp" />
+                android:textColor="@color/colorWhite" />
 
             <TextView
                 android:id="@+id/textUnit"
                 android:layout_width="85dp"
                 android:layout_height="wrap_content"
-                android:layout_above="@+id/textValueMeasurement"
-                android:layout_below="@+id/pulsator"
-                android:layout_alignStart="@+id/pulsator"
-                android:layout_alignEnd="@+id/pulsator"
-                android:layout_marginTop="0dp"
-                android:layout_marginBottom="-30dp"
+                android:layout_below="@+id/widget1"
+                android:layout_centerHorizontal="true"
                 android:text="@string/unit_kg"
                 android:textAlignment="center"
-                android:textColor="@color/cardview_light_background"
-                android:textSize="18sp" />
+                android:textColor="@color/cardview_light_background" />
 
             <TextView
-                android:id="@+id/textSteps"
-                android:layout_width="53dp"
-                android:layout_height="16dp"
-                android:layout_below="@+id/widget2"
-                android:layout_alignStart="@+id/widget2"
-                android:layout_alignEnd="@+id/widget2"
-                android:layout_marginStart="-8dp"
-                android:layout_marginTop="-30dp"
-                android:layout_marginEnd="-10dp"
-                android:text="IMC"
-                android:textAlignment="center"
-                android:textColor="@color/cardview_light_background"
-                android:textSize="14sp"
-                android:visibility="invisible" />
-
-            <TextView
-                android:id="@+id/textIMC"
-                android:layout_width="wrap_content"
+                android:id="@+id/textValueMeasurement"
+                android:layout_width="85dp"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/textSteps"
-                android:layout_alignStart="@+id/textSteps"
-                android:layout_alignEnd="@+id/textSteps"
-                android:layout_marginStart="-1dp"
-                android:layout_marginTop="0dp"
-                android:layout_marginEnd="-2dp"
-                android:text="1,5"
+                android:layout_below="@+id/textUnit"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="20dp"
+                android:text="-"
                 android:textAlignment="center"
-                android:textColor="@color/cardview_light_background"
-                android:textSize="18sp"
-                android:visibility="invisible" />
-
+                android:textColor="@color/colorWhite"
+                android:textSize="44sp" />
 
             <ImageView
                 android:id="@+id/widget1"
-                android:layout_width="120dp"
-                android:layout_height="120dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:layout_below="@+id/textDate"
-                android:layout_alignStart="@+id/pulsator"
-                android:layout_alignEnd="@+id/pulsator"
-                android:layout_alignBottom="@+id/pulsator"
-                android:layout_marginTop="12dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="10dp"
                 android:contentDescription="@string/unit_heart_rate"
                 android:elevation="2dp"
+                android:padding="4dp"
                 android:src="@drawable/scale" />
 
-            <ImageView
-                android:id="@+id/widget2"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="48dp"
-                android:layout_marginTop="101dp"
-                android:layout_marginEnd="62dp"
-                android:layout_toStartOf="@+id/pulsator"
-                android:contentDescription="@string/steps"
-                android:src="@drawable/imc"
-                android:visibility="invisible" />
-
             <ProgressBar
-                android:id="@+id/progressBar2"
+                android:id="@+id/receiving"
                 style="?android:attr/progressBarStyle"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
@@ -187,32 +121,75 @@
 
             <ImageView
                 android:id="@+id/patientSex"
-                android:layout_width="54dp"
-                android:layout_height="52dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_alignTop="@+id/patientName"
-                android:layout_marginTop="3dp"
+                android:layout_alignBottom="@+id/patientName"
                 android:layout_marginEnd="15dp"
                 android:layout_toStartOf="@+id/patientName"
                 android:background="@drawable/x_bg"
                 android:padding="2dp"
                 app:srcCompat="@drawable/x_boy" />
 
-            <ImageView
-                android:id="@+id/imageView3"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_above="@+id/textUnit"
-                android:layout_alignTop="@+id/pulsator"
-                android:layout_marginStart="56dp"
-                android:layout_marginTop="34dp"
-                android:layout_marginBottom="34dp"
-                android:layout_toEndOf="@+id/pulsator"
-                android:tint="@color/disconnected"
-                android:visibility="invisible"
-                app:srcCompat="@drawable/x_bg" />
+            <TextView
+                android:id="@+id/title_pilot_study"
+                android:layout_width="123dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textDate"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="29dp"
+                android:layout_marginEnd="13dp"
+                android:layout_toStartOf="@+id/widget1"
+                android:gravity="center"
+                android:text="Estudo Piloto"
+                android:textColor="@color/colorWhite"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/text_pilot_study"
+                android:layout_width="123dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/title_pilot_study"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="3dp"
+                android:layout_marginEnd="13dp"
+                android:layout_toStartOf="@+id/widget1"
+                android:background="@color/colorPrimaryDark"
+                android:gravity="center"
+                android:text="HANIoT Testes"
+                android:textColor="@color/colorWhite"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/title_professional"
+                android:layout_width="123dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textDate"
+                android:layout_alignEnd="@+id/textDate"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="29dp"
+                android:layout_marginEnd="-12dp"
+                android:layout_toEndOf="@+id/widget1"
+                android:gravity="center"
+                android:text="Profissional de Saúde"
+                android:textColor="@color/colorWhite"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/text_professional"
+                android:layout_width="123dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/title_professional"
+                android:layout_alignStart="@+id/title_professional"
+                android:layout_alignEnd="@+id/title_professional"
+                android:layout_marginTop="3dp"
+                android:layout_marginEnd="5dp"
+                android:background="@color/colorPrimaryDark"
+                android:gravity="center"
+                android:text="Isabelle Cordeiro"
+                android:textColor="@color/colorWhite"
+                android:textSize="14sp" />
 
         </RelativeLayout>
-
     </android.support.v7.widget.CardView>
-
-</android.support.design.widget.CoordinatorLayout>
+</android.support.constraint.ConstraintLayout>

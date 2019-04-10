@@ -85,11 +85,11 @@ public class FeendingHabitsRecordType {
     }
 
     public static class BreastFeeding {
-        public static final String EXCLUSIVE = "exclusive";
-        public static final String COMPLEMENTARY = "complementary";
-        public static final String INFANT_FORMULAS = "infant_formulas";
-        public static final String OTHER = "other";
-        public static final String UNDEFINED = "undefined";
+        static final String EXCLUSIVE = "exclusive";
+        static final String COMPLEMENTARY = "complementary";
+        static final String INFANT_FORMULAS = "infant_formulas";
+        static final String OTHER = "other";
+        static final String UNDEFINED = "undefined";
 
         public static String getString(int type) {
             switch (type) {

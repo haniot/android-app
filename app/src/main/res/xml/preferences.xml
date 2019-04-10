@@ -18,6 +18,13 @@
             android:title="@string/settings_configure_device" />
     </PreferenceCategory>
 
+    <PreferenceCategory android:title="@string/settings_measurements">
+        <Preference
+            android:key="@string/key_monitor_measurements"
+            android:summary="@string/settings_summary_monitor_measurements"
+            android:title="@string/settings_monitor_measurements" />
+    </PreferenceCategory>
+
     <PreferenceCategory android:title="@string/settings_about">
         <!-- preference opens url in browser -->
         <Preference android:summary="@string/settings_summary_about">

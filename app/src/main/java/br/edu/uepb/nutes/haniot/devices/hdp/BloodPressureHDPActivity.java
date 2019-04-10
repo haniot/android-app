@@ -1,14 +1,26 @@
 package br.edu.uepb.nutes.haniot.devices.hdp;
 
+import android.Manifest;
+import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothProfile;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -21,6 +33,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,24 +48,28 @@ import org.json.JSONObject;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.activity.AddMeasurement;
+import br.edu.uepb.nutes.haniot.activity.AddMeasurementActivity;
 import br.edu.uepb.nutes.haniot.activity.charts.BloodPresssureChartActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.BloodPressureAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
 import br.edu.uepb.nutes.haniot.data.model.Device;
+import br.edu.uepb.nutes.haniot.data.model.DeviceType;
 import br.edu.uepb.nutes.haniot.data.model.ItemGridType;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.MeasurementType;
 import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.model.dao.DeviceDAO;
 import br.edu.uepb.nutes.haniot.data.model.dao.MeasurementDAO;
+import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.parse.JsonToMeasurementParser;
 import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
 import br.edu.uepb.nutes.haniot.server.historical.CallbackHistorical;
 import br.edu.uepb.nutes.haniot.server.historical.Historical;
 import br.edu.uepb.nutes.haniot.server.historical.HistoricalType;
 import br.edu.uepb.nutes.haniot.server.historical.Params;
+import br.edu.uepb.nutes.haniot.service.ManagerDevices.BloodPressureManager;
+import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.BloodPressureDataCallback;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
@@ -66,19 +84,18 @@ import butterknife.ButterKnife;
  */
 public class BloodPressureHDPActivity extends AppCompatActivity implements View.OnClickListener {
     private final String TAG = "BloodPressureHDP";
+    private final int REQUEST_ENABLE_BLUETOOTH = 1;
+    private final int REQUEST_ENABLE_LOCATION = 2;
     private final int LIMIT_PER_PAGE = 20;
 
     private Animation animation;
     private Device mDevice;
-    private Session session;
+    private AppPreferencesHelper appPreferencesHelper;
     private MeasurementDAO measurementDAO;
     private DeviceDAO deviceDAO;
     private BloodPressureAdapter mAdapter;
     private Params params;
-
-    private int[] specs = {0x1007};
-    private Handler tm;
-//    private HealthServiceAPI api;
+    private BloodPressureManager bloodPressureManager;
 
     /**
      * We need this variable to lock and unlock loading more.
@@ -135,6 +152,12 @@ public class BloodPressureHDPActivity extends AppCompatActivity implements View.
     @BindView(R.id.add_floating_button)
     FloatingActionButton mAddButton;
 
+    @BindView(R.id.box_message_error)
+    LinearLayout boxMessage;
+
+    @BindView(R.id.message_error)
+    TextView messageError;
+
     /**
      * Called when the activity is first created.
      */
@@ -143,28 +166,59 @@ public class BloodPressureHDPActivity extends AppCompatActivity implements View.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_blood_pressure);
         ButterKnife.bind(this);
+        checkPermissions();
 
         // synchronization with server
         synchronizeWithServer();
 
-        session = new Session(this);
+        appPreferencesHelper = AppPreferencesHelper.getInstance(this);
         deviceDAO = DeviceDAO.getInstance(this);
         measurementDAO = MeasurementDAO.getInstance(this);
-        params = new Params(session.get_idLogged(), MeasurementType.BLOOD_PRESSURE_SYSTOLIC);
+        params = new Params(appPreferencesHelper.getUserLogged().get_id(), MeasurementType.BLOOD_PRESSURE_SYSTOLIC);
+        bloodPressureManager = new BloodPressureManager(this);
+        bloodPressureManager.setSimpleCallback(bloodPressureDataCallback);
+        messageError.setOnClickListener(v -> checkPermissions());
+
+        mDevice = deviceDAO.getByType(appPreferencesHelper.getUserLogged().get_id(), DeviceType.BLOOD_PRESSURE);
 
         animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
         mChartButton.setOnClickListener(this);
         mAddButton.setOnClickListener(this);
 
-        tm = new Handler();
-        Intent intent = new Intent("com.signove.health.service.HealthService");
-        intent.setPackage(this.getPackageName());
-        startService(intent);
-        bindService(intent, serviceConnection, 0);
-        Log.w("HST", "Activity created");
-
         initComponents();
+
+        IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
+        registerReceiver(mReceiver, filter);
     }
+
+    private BloodPressureDataCallback bloodPressureDataCallback = new BloodPressureDataCallback() {
+        @Override
+        public void onConnected() {
+            updateConnectionState(true);
+        }
+
+        @Override
+        public void onDisconnected() {
+            updateConnectionState(false);
+        }
+
+        @Override
+        public void onMeasurementReceived(Measurement measurementBloodPressure) {
+
+            if (mDevice != null)
+                measurementBloodPressure.setDevice(mDevice);
+
+            /**
+             * Save in local
+             * Send to server saved successfully
+             */
+            if (measurementDAO.save(measurementBloodPressure)) {
+                synchronizeWithServer();
+                loadData();
+            }
+            updateUILastMeasurement(measurementBloodPressure, true);
+        }
+    };
 
     /**
      * Initialize components
@@ -246,7 +300,7 @@ public class BloodPressureHDPActivity extends AppCompatActivity implements View.
                         // we must check if itShouldLoadMore variable is true [unlocked]
                         if (itShouldLoadMore) loadMoreData();
                     }
-                }else{
+                } else {
                     mAddButton.show();
                 }
             }
@@ -259,12 +313,9 @@ public class BloodPressureHDPActivity extends AppCompatActivity implements View.
      * Initialize SwipeRefresh
      */
     private void initDataSwipeRefresh() {
-        mDataSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                if (itShouldLoadMore)
-                    loadData();
-            }
+        mDataSwipeRefresh.setOnRefreshListener(() -> {
+            if (itShouldLoadMore)
+                loadData();
         });
     }
 
@@ -274,7 +325,7 @@ public class BloodPressureHDPActivity extends AppCompatActivity implements View.
      * when an error occurs on the first request with the server.
      */
     private void loadDataLocal() {
-        mAdapter.addItems(measurementDAO.list(MeasurementType.BLOOD_PRESSURE_SYSTOLIC, session.getIdLogged(), 0, 100));
+        mAdapter.addItems(measurementDAO.list(MeasurementType.BLOOD_PRESSURE_SYSTOLIC, appPreferencesHelper.getUserLogged().getId(), 0, 100));
 
         if (!mAdapter.itemsIsEmpty()) {
             updateUILastMeasurement(mAdapter.getFirstItem(), false);
@@ -383,16 +434,13 @@ public class BloodPressureHDPActivity extends AppCompatActivity implements View.
      * @param enabled boolean
      */
     private void toggleLoading(boolean enabled) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (!enabled) {
-                    mDataSwipeRefresh.setRefreshing(false);
-                    itShouldLoadMore = true;
-                } else {
-                    mDataSwipeRefresh.setRefreshing(true);
-                    itShouldLoadMore = false;
-                }
+        runOnUiThread(() -> {
+            if (!enabled) {
+                mDataSwipeRefresh.setRefreshing(false);
+                itShouldLoadMore = true;
+            } else {
+                mDataSwipeRefresh.setRefreshing(true);
+                itShouldLoadMore = false;
             }
         });
     }
@@ -403,19 +451,16 @@ public class BloodPressureHDPActivity extends AppCompatActivity implements View.
      * @param visible boolean
      */
     private void toggleNoDataMessage(boolean visible) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (visible) {
-                    if (!ConnectionUtils.internetIsEnabled(getApplicationContext())) {
-                        noDataMessage.setText(getString(R.string.connect_network_try_again));
-                    } else {
-                        noDataMessage.setText(getString(R.string.no_data_available));
-                    }
-                    noDataMessage.setVisibility(View.VISIBLE);
+        runOnUiThread(() -> {
+            if (visible) {
+                if (!ConnectionUtils.internetIsEnabled(getApplicationContext())) {
+                    noDataMessage.setText(getString(R.string.connect_network_try_again));
                 } else {
-                    noDataMessage.setVisibility(View.GONE);
+                    noDataMessage.setText(getString(R.string.no_data_available));
                 }
+                noDataMessage.setVisibility(View.VISIBLE);
+            } else {
+                noDataMessage.setVisibility(View.GONE);
             }
         });
     }
@@ -426,12 +471,7 @@ public class BloodPressureHDPActivity extends AppCompatActivity implements View.
      * @param message
      */
     private void printMessage(String message) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
-            }
-        });
+        runOnUiThread(() -> Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show());
     }
 
     /**
@@ -442,34 +482,48 @@ public class BloodPressureHDPActivity extends AppCompatActivity implements View.
     private void updateUILastMeasurement(Measurement measurement, boolean applyAnimation) {
         if (measurement == null) return;
 
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mBloodPressureSysTextView.setText(
-                        String.valueOf((int) measurement.getValue()).concat("/"));
-                mBloodPressureUnitTextView.setText(measurement.getUnit());
-                mDateLastMeasurement.setText(DateUtils.abbreviatedDate(
-                        getApplicationContext(), measurement.getRegistrationDate()));
+        runOnUiThread(() -> {
+            mBloodPressureSysTextView.setText(
+                    String.valueOf((int) measurement.getValue()).concat("/"));
+            mBloodPressureUnitTextView.setText(measurement.getUnit());
+            mDateLastMeasurement.setText(DateUtils.abbreviatedDate(
+                    getApplicationContext(), measurement.getRegistrationDate()));
 
-                /**
-                 * Relations
-                 */
-                for (Measurement m : measurement.getMeasurements()) {
-                    if (m.getTypeId() == MeasurementType.BLOOD_PRESSURE_DIASTOLIC)
-                        mBloodPressureDiaTextView.setText(String.valueOf((int) m.getValue()));
-                    else if (m.getTypeId() == MeasurementType.HEART_RATE) {
-                        mBloodPressurePulseTextView.setText(String.valueOf((int) m.getValue()));
-                        mBloodPressurePulseUnitTextView.setVisibility(View.VISIBLE);
-                    }
-                }
-
-                if (applyAnimation) {
-                    mBloodPressureSysTextView.startAnimation(animation);
-                    mBloodPressureDiaTextView.startAnimation(animation);
-                    mBloodPressureUnitTextView.startAnimation(animation);
+            /**
+             * Relations
+             */
+            for (Measurement m : measurement.getMeasurements()) {
+                if (m.getTypeId() == MeasurementType.BLOOD_PRESSURE_DIASTOLIC)
+                    mBloodPressureDiaTextView.setText(String.valueOf((int) m.getValue()));
+                else if (m.getTypeId() == MeasurementType.HEART_RATE) {
+                    mBloodPressurePulseTextView.setText(String.valueOf((int) m.getValue()));
+                    mBloodPressurePulseUnitTextView.setVisibility(View.VISIBLE);
                 }
             }
+
+            if (applyAnimation) {
+                mBloodPressureSysTextView.startAnimation(animation);
+                mBloodPressureDiaTextView.startAnimation(animation);
+                mBloodPressureUnitTextView.startAnimation(animation);
+            }
         });
+    }
+
+    /**
+     * Displays message.
+     *
+     * @param str @StringRes message.
+     */
+    private void showMessage(@StringRes int str) {
+        if (str != -1) {
+            String message = getString(str);
+
+            messageError.setText(message);
+            runOnUiThread(() -> {
+                boxMessage.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_in));
+                boxMessage.setVisibility(View.VISIBLE);
+            });
+        }
     }
 
     @Override
@@ -478,16 +532,19 @@ public class BloodPressureHDPActivity extends AppCompatActivity implements View.
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        boxMessage.setVisibility(View.GONE);
+
+        if (bloodPressureManager.getConnectionState() != BluetoothProfile.STATE_CONNECTED && mDevice != null) {
+            bloodPressureManager.connect(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(mDevice.getAddress()));
+        }
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
-
-        try {
-            Log.w("HST", "Unconfiguring...");
-//            api.Unconfigure(agent);
-        } catch (Throwable t) {
-            Log.w("HST", "Erro tentando desconectar");
-        }
-        unbindService(serviceConnection);
+        unregisterReceiver(mReceiver);
     }
 
     @Override
@@ -501,181 +558,22 @@ public class BloodPressureHDPActivity extends AppCompatActivity implements View.
     }
 
     private void updateConnectionState(final boolean isConnected) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mCircularProgressBar.setProgress(0);
-                mCircularProgressBar.setProgressWithAnimation(100); // Default animate duration = 1500ms
-                mCircularPulse.setProgress(0);
-                mCircularPulse.setProgressWithAnimation(100); // Default animate duration = 1500ms
+        runOnUiThread(() -> {
+            mCircularProgressBar.setProgress(0);
+            mCircularProgressBar.setProgressWithAnimation(100); // Default animate duration = 1500ms
+            mCircularPulse.setProgress(0);
+            mCircularPulse.setProgressWithAnimation(100); // Default animate duration = 1500ms
 
-                if (isConnected) {
-                    mCircularProgressBar.setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
-                    mCircularProgressBar.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAlertDanger));
-                    mCircularPulse.setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
-                    mCircularPulse.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAlertDanger));
-                } else {
-                    mCircularProgressBar.setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAlertDanger));
-                    mCircularProgressBar.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
-                    mCircularPulse.setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAlertDanger));
-                    mCircularPulse.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
-                }
-            }
-        });
-    }
-
-    private ServiceConnection serviceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            Log.w("HST", "Service connection established");
-
-            // that's how we get the client side of the IPC connection
-//            api = HealthServiceAPI.Stub.asInterface(service);
-//            try {
-////                api.ConfigurePassive(agent, specs);
-//            } catch (RemoteException e) {
-//                Log.e("HST", "Failed to add listener", e);
-//            }
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            Log.w("HST", "Service connection closed");
-        }
-    };
-
-//    private HealthAgentAPI.Stub agent = new HealthAgentAPI.Stub() {
-//        @Override
-//        public void Connected(String dev, String addr) {
-//            updateConnectionState(true);
-//
-//            // TODO REMOVER!!! Pois o cadastro do device deverá ser no processo de emparelhamento
-//            mDevice = deviceDAO.get(addr, session.getIdLogged());
-//
-//            if (mDevice == null) {
-//                mDevice = new Device(addr, "BLOOD PRESSURE MONITOR", "OMRON", "BP792IT", DeviceType.BLOOD_PRESSURE, session.getUserLogged());
-//                mDevice.set_id("5a62c42dd6f33400146c9b6a");
-//                if (!deviceDAO.save(mDevice)) finish();
-//                mDevice = deviceDAO.get(addr, session.getIdLogged());
-//            }
-//        }
-//
-//        @Override
-//        public void Associated(String dev, String xmldata) {
-//            Runnable req1 = new Runnable() {
-//                public void run() {
-//                    RequestConfig(dev);
-//                }
-//            };
-//            Runnable req2 = new Runnable() {
-//                public void run() {
-//                    RequestDeviceAttributes(dev);
-//                }
-//            };
-//            tm.postDelayed(req1, 1);
-//            tm.postDelayed(req2, 500);
-//        }
-//
-//        @Override
-//        public void MeasurementData(String dev, String xmldata) {
-//            br.edu.uepb.nutes.haniot.utils.Log.d(TAG, "MeasurementData: " + xmldata);
-//            runOnUiThread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    try {
-//                        JSONObject data = IEEE11073BPParser.parse(xmldata);
-//                        handleMeasurement(data.toString());
-//                    } catch (JSONException e) {
-//                        e.printStackTrace();
-//                    } catch (XmlPullParserException e) {
-//                        e.printStackTrace();
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            });
-//        }
-//
-//        @Override
-//        public void DeviceAttributes(String dev, String xmldata) {
-//            Log.w("HST", ".." + xmldata);
-//            br.edu.uepb.nutes.haniot.utils.Log.d(TAG, "DeviceAttributes: " + xmldata);
-//        }
-//
-//        @Override
-//        public void Disassociated(String dev) {
-//            Log.w("HST", "Disassociated " + dev);
-//        }
-//
-//        @Override
-//        public void Disconnected(String dev) {
-//            Log.w("HST", "Disconnected " + dev);
-//            updateConnectionState(false);
-//        }
-//    };
-
-//    private void RequestConfig(String dev) {
-//        try {
-//            String xmldata = api.GetConfiguration(dev);
-//        } catch (RemoteException e) {
-//            Log.w("HST", "Exception (RequestConfig)");
-//        }
-//    }
-//
-//    private void RequestDeviceAttributes(String dev) {
-//        try {
-//            api.RequestDeviceAttributes(dev);
-//        } catch (RemoteException e) {
-//            Log.w("HST", "Exception (RequestDeviceAttributes)");
-//        }
-//    }
-
-    /**
-     * Treats the measurement by breaking down types of measurements.
-     * Add Relationships, saves to the local database and sends it to the server.
-     *
-     * @param xmldata String
-     */
-    private void handleMeasurement(String xmldata) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    User user = session.getUserLogged();
-
-                    Measurement systolic = JsonToMeasurementParser.systolic(xmldata);
-                    systolic.setUser(user);
-                    systolic.setDevice(mDevice);
-
-                    Measurement diastolic = JsonToMeasurementParser.diastolic(xmldata);
-                    diastolic.setUser(user);
-                    diastolic.setDevice(mDevice);
-
-                    Measurement heartRate = JsonToMeasurementParser.heartRate(xmldata);
-                    heartRate.setUser(user);
-                    heartRate.setDevice(mDevice);
-
-                    /**
-                     * Add relationships
-                     */
-                    systolic.addMeasurement(diastolic, heartRate);
-
-                    /**
-                     * Update UI
-                     */
-                    updateUILastMeasurement(systolic, true);
-
-                    /**
-                     * Save in local
-                     * Send to server saved successfully
-                     */
-                    if (measurementDAO.save(systolic)) {
-                        synchronizeWithServer();
-                        loadData();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+            if (isConnected) {
+                mCircularProgressBar.setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
+                mCircularProgressBar.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAlertDanger));
+                mCircularPulse.setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
+                mCircularPulse.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAlertDanger));
+            } else {
+                mCircularProgressBar.setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAlertDanger));
+                mCircularProgressBar.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
+                mCircularPulse.setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAlertDanger));
+                mCircularPulse.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
             }
         });
     }
@@ -687,6 +585,24 @@ public class BloodPressureHDPActivity extends AppCompatActivity implements View.
         SynchronizationServer.getInstance(this).run();
     }
 
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
+
+            if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
+                final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE,
+                        BluetoothAdapter.ERROR);
+                if (state == BluetoothAdapter.STATE_OFF) {
+                    showMessage(R.string.bluetooth_disabled);
+
+                } else if (state == BluetoothAdapter.STATE_ON) {
+                    showMessage(-1);
+                }
+            }
+        }
+    };
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -694,7 +610,7 @@ public class BloodPressureHDPActivity extends AppCompatActivity implements View.
                 startActivity(new Intent(getApplicationContext(), BloodPresssureChartActivity.class));
                 break;
             case R.id.add_floating_button:
-                Intent it = new Intent(getApplicationContext(), AddMeasurement.class);
+                Intent it = new Intent(getApplicationContext(), AddMeasurementActivity.class);
                 it.putExtra(getResources().getString(R.string.measurementType),
                         ItemGridType.BLOOD_PRESSURE);
                 startActivity(it);
@@ -704,4 +620,72 @@ public class BloodPressureHDPActivity extends AppCompatActivity implements View.
                 break;
         }
     }
+
+
+    /**
+     * Checks if you have permission to use.
+     * Required bluetooth ble and location.
+     */
+    public void checkPermissions() {
+        if (BluetoothAdapter.getDefaultAdapter() != null &&
+                !BluetoothAdapter.getDefaultAdapter().isEnabled()) {
+            requestBluetoothEnable();
+        } else if (!hasLocationPermissions()) {
+            requestLocationPermission();
+        }
+    }
+
+    /**
+     * Request Bluetooth permission
+     */
+    private void requestBluetoothEnable() {
+        startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE),
+                REQUEST_ENABLE_BLUETOOTH);
+    }
+
+    /**
+     * Checks whether the location permission was given.
+     *
+     * @return boolean
+     */
+    public boolean hasLocationPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) ==
+                    PackageManager.PERMISSION_GRANTED;
+        }
+        return true;
+    }
+
+    /**
+     * Request Location permission.
+     */
+    protected void requestLocationPermission() {
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_ENABLE_LOCATION);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        // If request is cancelled, the result arrays are empty.
+        if ((requestCode == REQUEST_ENABLE_LOCATION) &&
+                (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED)) {
+            requestLocationPermission();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_ENABLE_BLUETOOTH) {
+            if (resultCode != Activity.RESULT_OK) {
+                requestBluetoothEnable();
+            } else {
+                requestLocationPermission();
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
 }

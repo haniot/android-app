@@ -1,5 +1,6 @@
 package br.edu.uepb.nutes.haniot.activity;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -22,13 +23,17 @@ import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.adapter.ManagePatientAdapter;
+import br.edu.uepb.nutes.haniot.adapter.ManagerPatientAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.PilotStudy;
@@ -39,10 +44,7 @@ import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.CompletableObserver;
-import io.reactivex.SingleObserver;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Action;
-import io.reactivex.functions.Consumer;
 import retrofit2.HttpException;
 
 import static com.github.mikephil.charting.charts.Chart.LOG_TAG;
@@ -54,7 +56,7 @@ import static com.github.mikephil.charting.charts.Chart.LOG_TAG;
  * @version 1.0
  * @copyright Copyright (c) 2019, NUTES UEPB
  */
-public class ManagePatientsActivity extends AppCompatActivity implements OnRecyclerViewListener<Patient> {
+public class ManagePatientsActivity extends AppCompatActivity {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -64,8 +66,13 @@ public class ManagePatientsActivity extends AppCompatActivity implements OnRecyc
     FloatingActionButton addPatient;
     @BindView(R.id.manager_patients_swiperefresh)
     SwipeRefreshLayout mDataSwipeRefresh;
+    @BindView(R.id.root)
+    RelativeLayout message;
+    @BindView(R.id.add_patient)
+    TextView addPatientShortCut;
+
     private List<Patient> patientList;
-    private ManagePatientAdapter adapter;
+    private ManagerPatientAdapter adapter;
     private SearchView searchView;
     private AppPreferencesHelper appPreferencesHelper;
     private HaniotNetRepository haniotNetRepository;
@@ -94,66 +101,22 @@ public class ManagePatientsActivity extends AppCompatActivity implements OnRecyc
      * Init resources.
      */
     private void initResources() {
+        message.setVisibility(View.INVISIBLE);
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
         haniotNetRepository = HaniotNetRepository.getInstance(this);
         pilotStudy = appPreferencesHelper.getLastPilotStudy();
         patientList = new ArrayList<>();
-        if (appPreferencesHelper.getLastPatient() == null)
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        disableBack();
 
         addPatient.setOnClickListener(v -> {
             startActivity(new Intent(getApplicationContext(), PatientRegisterActivity.class));
             finish();
         });
+        addPatientShortCut.setOnClickListener(v -> {
+            startActivity(new Intent(getApplicationContext(), PatientRegisterActivity.class));
+            finish();
+        });
         initDataSwipeRefresh();
-    }
-
-    /**
-     * On click item of list patients.
-     *
-     * @param item
-     */
-    @Override
-    public void onItemClick(Patient item) {
-        AppPreferencesHelper.getInstance(this).saveLastPatient(item);
-        startActivity(new Intent(this, MainActivity.class));
-    }
-
-    @Override
-    public void onLongItemClick(View v, Patient patient) {
-
-    }
-
-    @Override
-    public void onMenuContextClick(View v, Patient patient) {
-        switch (v.getId()) {
-            case R.id.btnDeleteChild:
-                //TODO Refatorar Colocar dialog de confirmação, dar update no listview
-                haniotNetRepository.deletePatient("5c86d00c2239a48ea20a0134", patient.get_id())
-                        .subscribe(new CompletableObserver() {
-                            @Override
-                            public void onSubscribe(Disposable d) {
-
-                            }
-
-                            @Override
-                            public void onComplete() {
-                                Toast.makeText(ManagePatientsActivity.this,
-                                        "Paciente removido!", Toast.LENGTH_SHORT);
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-
-                            }
-                        });
-                break;
-            case R.id.btnEditChildren:
-                appPreferencesHelper.saveLastPatient(patient);
-                //TODO Passar flag para editar
-                startActivity(new Intent(this, PatientRegisterActivity.class));
-                break;
-        }
     }
 
     private void loadData() {
@@ -165,6 +128,15 @@ public class ManagePatientsActivity extends AppCompatActivity implements OnRecyc
                     patientList = patients;
                     initRecyclerView();
                 }, this::errorHandler));
+        disableBack();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (appPreferencesHelper.getLastPatient() != null) super.onBackPressed();
+        else Toast.makeText(this,
+                getResources().getString(R.string.no_patient_registered),
+                Toast.LENGTH_LONG).show();
     }
 
     /**
@@ -177,92 +149,77 @@ public class ManagePatientsActivity extends AppCompatActivity implements OnRecyc
         if (e instanceof HttpException) {
             HttpException httpEx = ((HttpException) e);
             Log.i(LOG_TAG, httpEx.getMessage());
-            Toast.makeText(this, getResources().getString(R.string.error_500), Toast.LENGTH_LONG).show();
+            showMessage(getResources().getString(R.string.error_500));
         }
         // message 500
     }
 
     private void initRecyclerView() {
-        adapter = new ManagePatientAdapter(patientList, getApplicationContext(), this);
+        adapter = new ManagerPatientAdapter(this);
+        adapter.setListener(new OnRecyclerViewListener<Patient>() {
+            @Override
+            public void onItemClick(Patient item) {
+                appPreferencesHelper.saveLastPatient(item);
+                startActivity(new Intent(ManagePatientsActivity.this, MainActivity.class));
+            }
+
+            @Override
+            public void onLongItemClick(View v, Patient item) {
+
+            }
+
+            @Override
+            public void onMenuContextClick(View v, Patient item) {
+                if (v.getId() == R.id.btnDeleteChild) {
+                    new AlertDialog
+                            .Builder(ManagePatientsActivity.this)
+                            .setMessage(getResources().getString(R.string.remove_patient))
+                            .setPositiveButton(getResources().getText(R.string.yes_text), (dialog, which) -> removePatient(item))
+                            .setNegativeButton(getResources().getText(R.string.no_text), null)
+                            .show();
+
+                } else if (v.getId() == R.id.btnEditChildren) {
+                    Intent intent = new Intent(ManagePatientsActivity.this, PatientRegisterActivity.class);
+                    intent.putExtra("action", "edit");
+                    appPreferencesHelper.saveLastPatient(item);
+                    startActivity(intent);
+                }
+            }
+        });
 
         recyclerViewPatient.setHasFixedSize(true);
         recyclerViewPatient.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewPatient.setItemAnimator(new DefaultItemAnimator());
         recyclerViewPatient.setAdapter(adapter);
 
-        int resId = R.anim.layout_animation_fall_down;
-        LayoutAnimationController animation = AnimationUtils.loadLayoutAnimation(
-                getApplicationContext(), resId);
-        recyclerViewPatient.setLayoutAnimation(animation);
+        adapter.addItems(patientList);
+        if (patientList.isEmpty()) message.setVisibility(View.VISIBLE);
+        else message.setVisibility(View.INVISIBLE);
+    }
 
-        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0,
-                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+    private void removePatient(Patient patient) {
+        DisposableManager.add(haniotNetRepository
+                .deletePatient(pilotStudy.get_id(), patient.get_id())
+                .doAfterTerminate(this::loadData)
+                .subscribe(() -> {
+                            adapter.removeItem(patient);
+                            adapter.notifyDataSetChanged();
+                            showMessage(getResources().getString(R.string.patient_removed));
+                            if (patient.get_id().equals(appPreferencesHelper.getLastPatient().get_id()))
+                                appPreferencesHelper.removeLastPatient();
+                        },
+                        error -> showMessage(getResources().getString(R.string.error_500))));
+    }
 
-            @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
-                final int position = viewHolder.getAdapterPosition();
-                Patient patient = adapter.getPatient(position);
+    private void disableBack() {
+        if (appPreferencesHelper.getLastPatient() == null)
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+    }
 
-                Snackbar snackbar = null;
-                if (patient != null) {
-                    if (adapter.getSearchQuerry().isEmpty()) {
-                        int newPosition = adapter.searchOldPatientPosition(patient);
-
-                        adapter.removeItem(patient, newPosition
-                                , adapter.REMOVE_TYPE_NOT_FILTERED);
-                        snackbar = Snackbar
-                                .make(recyclerViewPatient, getResources().getString(R.string.patient_removed)
-                                        , Snackbar.LENGTH_LONG).setAction(getResources()
-                                        .getString(R.string.undo), view -> {
-                                    adapter.restoreItem(patient, newPosition, viewHolder.itemView);
-                                });
-                    } else {
-                        adapter.removeItem(patient, viewHolder.getAdapterPosition()
-                                , adapter.REMOVE_TYPE_FILTERED);
-                        snackbar = Snackbar
-                                .make(recyclerViewPatient, getResources().getString(R.string.patient_removed)
-                                        , Snackbar.LENGTH_LONG).setAction(getResources()
-                                        .getString(R.string.undo), view -> {
-                                    adapter.restoreItem(patient, position, viewHolder.itemView);
-                                });
-                    }
-                }
-                if (snackbar != null) snackbar.show();
-            }
-
-            @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder,
-                                  RecyclerView.ViewHolder target) {
-                return false;
-            }
-
-            @Override
-            public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-                if (adapter.getItemsSize() > 0) {
-                    return makeFlag(ItemTouchHelper.ACTION_STATE_SWIPE, ItemTouchHelper.START |
-                            ItemTouchHelper.END);
-                }
-                return makeFlag(ItemTouchHelper.ACTION_STATE_SWIPE, 0);
-            }
-
-            @Override
-            public void onChildDraw(Canvas c,
-                                    RecyclerView recyclerView,
-                                    RecyclerView.ViewHolder viewHolder,
-                                    float dX,
-                                    float dY,
-                                    int actionState,
-                                    boolean isCurrentlyActive) {
-                if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
-                    float alpha = 1 - (Math.abs(dX) / recyclerView.getWidth());
-                    viewHolder.itemView.setAlpha(alpha);
-                }
-                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
-            }
-        };
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
-        itemTouchHelper.attachToRecyclerView(recyclerViewPatient);
-
+    private void showMessage(String message) {
+        Toast.makeText(ManagePatientsActivity.this,
+                message,
+                Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -328,7 +285,7 @@ public class ManagePatientsActivity extends AppCompatActivity implements OnRecyc
     @Override
     protected void onResume() {
         super.onResume();
-        initRecyclerView();
+        loadData();
     }
 
     @Override
@@ -348,27 +305,6 @@ public class ManagePatientsActivity extends AppCompatActivity implements OnRecyc
         EditText searchEditText = searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
         searchEditText.setTextColor(Color.WHITE);
 
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                // use this method when query submitted
-//                adapter.getFilter().filter(query);
-                adapter.setSearchQuerry(query);
-                adapter.filter(query);
-
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                adapter.setSearchQuerry(newText);
-//                adapter.getFilter().filter(newText);
-                adapter.filter(newText);
-                return false;
-            }
-
-        });
-
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -382,5 +318,11 @@ public class ManagePatientsActivity extends AppCompatActivity implements OnRecyc
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        DisposableManager.dispose();
     }
 }

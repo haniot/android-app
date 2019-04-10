@@ -12,7 +12,7 @@
     <item android:state_pressed="true">
         <shape>
             <corners android:topLeftRadius="@dimen/button_radius" android:bottomLeftRadius="@dimen/button_radius" />
-            <solid android:color="@color/colorBackRadiogroup" />
+            <solid android:color="@color/colorBackRadioGroup" />
             <stroke android:width="2dp" android:color="@color/colorAccentSecondary" />
             <padding android:bottom="@dimen/button_padding" android:left="@dimen/radio_button_horizontal_padding" android:right="@dimen/radio_button_horizontal_padding" android:top="@dimen/button_padding" />
         </shape>

@@ -18,7 +18,7 @@ import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
-import static br.edu.uepb.nutes.haniot.activity.settings.MyPreferenceFragment.FORM_UPDATE;
+import static br.edu.uepb.nutes.haniot.activity.settings.MainPreferenceFragment.FORM_UPDATE;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;

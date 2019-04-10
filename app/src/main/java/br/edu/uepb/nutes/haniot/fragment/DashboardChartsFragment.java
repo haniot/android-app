@@ -2,19 +2,25 @@ package br.edu.uepb.nutes.haniot.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Objects;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.MainActivity;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
+import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import pl.bclogic.pulsator4droid.library.PulsatorLayout;
@@ -22,9 +28,7 @@ import pl.bclogic.pulsator4droid.library.PulsatorLayout;
 /**
  * DashboardChartsFragment implementation.
  *
- * @author Fábio Júnior <fabio.pequeno@nutes.uepb.edu.br>
- * @version 1.0
- * @copyright Copyright (c) 2019, NUTES UEPB
+ * @author Copyright (c) 2018, NUTES/UEPB
  */
 public class DashboardChartsFragment extends Fragment {
     @BindView(R.id.patientName)
@@ -35,11 +39,17 @@ public class DashboardChartsFragment extends Fragment {
     TextView textDate;
     @BindView(R.id.textValueMeasurement)
     TextView textValueMeasurement;
-    @BindView(R.id.textIMC)
-    TextView textIMC;
-    @BindView(R.id.pulsator)
-    PulsatorLayout pulsatorLayout;
+    @BindView(R.id.text_pilot_study)
+    TextView textPilotStudy;
+    @BindView(R.id.text_professional)
+    TextView textProfessional;
     Communicator communicator;
+    @BindView(R.id.box_message_error)
+    LinearLayout boxMessage;
+    @BindView(R.id.message_error)
+    TextView messageError;
+
+    private AppPreferencesHelper helper;
 
     public DashboardChartsFragment() {
         // Required empty public constructor
@@ -59,13 +69,14 @@ public class DashboardChartsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_charts_dashboard, container, false);
         ButterKnife.bind(this, view);
-
-
+        helper = AppPreferencesHelper.getInstance(getContext());
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(getResources().getString(R.string.date_format2));
         textDate.setText(simpleDateFormat.format(calendar.getTime()));
-        pulsatorLayout.start();
         updateNamePatient(((MainActivity) getActivity()).getPatientSelected());
+        textPilotStudy.setText(helper.getLastPilotStudy().getName());
+        textProfessional.setText(helper.getUserLogged().getName());
+        messageError.setOnClickListener(v -> ((MainActivity) getActivity()).checkPermissions());
         return view;
     }
 
@@ -105,6 +116,7 @@ public class DashboardChartsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        boxMessage.setVisibility(View.GONE);
     }
 
     /**
@@ -113,9 +125,28 @@ public class DashboardChartsFragment extends Fragment {
      * @param valueMeasurement
      */
     public void updateValueMeasurement(String valueMeasurement) {
-
         textValueMeasurement.setText(valueMeasurement);
-        //textIMC.setText(String.format("%.2f", calcIMC(Double.parseDouble(valueMeasurement))));
+    }
+
+    /**
+     * Displays message.
+     *
+     * @param str @StringRes message.
+     */
+    public void showMessage(@StringRes int str) {
+        if (getContext() != null) {
+            if (str == -1) {
+                boxMessage.setVisibility(View.GONE);
+                return;
+            }
+
+            String message = getContext().getResources().getString(str);
+            messageError.setText(message);
+            Objects.requireNonNull(getActivity()).runOnUiThread(() -> {
+                boxMessage.startAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_in));
+                boxMessage.setVisibility(View.VISIBLE);
+            });
+        }
     }
 
     /**
@@ -125,7 +156,7 @@ public class DashboardChartsFragment extends Fragment {
      */
     public void updateNamePatient(Patient patient) {
         if (patient != null) {
-            patientName.setText(patient.getFirstName());
+            patientName.setText(String.format("%s %s", patient.getFirstName(), patient.getLastName()));
             if (patient.getGender().equals("male"))
                 patientSex.setImageResource(R.drawable.x_boy);
             else
@@ -134,21 +165,11 @@ public class DashboardChartsFragment extends Fragment {
     }
 
     /**
-     * Calculate patient IMC.
-     *
-     * @param weight
-     * @return
-     */
-    private double calcIMC(double weight) {
-        double altura = 1.9;
-        double imc = weight / (altura * altura);
-        return imc;
-    }
-
-    /**
      * Interface for communication with scale data exchange.
      */
     public interface Communicator {
         void notifyNewMeasurement(String data);
+
+        void showMessage(int message);
     }
 }

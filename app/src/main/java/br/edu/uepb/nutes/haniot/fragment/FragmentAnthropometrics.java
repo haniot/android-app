@@ -25,9 +25,14 @@ public class FragmentAnthropometrics extends Fragment {
 
     @BindView(R.id.height)
     SeekBar height;
+   @BindView(R.id.height2)
+    SeekBar cintura;
 
     @BindView(R.id.meters)
     EditText meters;
+
+    @BindView(R.id.meters2)
+    EditText cm;
 
     @BindView(R.id.patient_icon)
     ImageView patientIcon;
@@ -60,7 +65,7 @@ public class FragmentAnthropometrics extends Fragment {
      */
     private void initView() {
         appPreferencesHelper = AppPreferencesHelper.getInstance(getContext());
-        if (appPreferencesHelper.getLastPatient().getGender().equals("male"))
+        if (appPreferencesHelper.getLastPatient().getGender().equals(getResources().getString(R.string.gender_male)))
             patientIcon.setImageResource(R.drawable.boy);
         else patientIcon.setImageResource(R.drawable.girl);
 
@@ -68,6 +73,23 @@ public class FragmentAnthropometrics extends Fragment {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 meters.setText(String.valueOf(progress));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        cintura.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                cm.setText(String.valueOf(progress));
             }
 
             @Override

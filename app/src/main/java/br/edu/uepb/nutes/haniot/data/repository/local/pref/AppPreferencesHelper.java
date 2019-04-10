@@ -177,13 +177,12 @@ public class AppPreferencesHelper implements PreferencesHelper {
     @Override
     public boolean removeLastPilotStudy() {
         return mPrefs.edit().remove(PREF_KEY_PILOT_STUDY).commit() &&
-                mPrefs.edit().remove(PREF_KEY_PILOT_STUDY).commit();
+                this.removeLastPatient();
     }
 
     @Override
     public boolean removeLastPatient() {
-        return mPrefs.edit().remove(PREF_KEY_PATIENT).commit() &&
-                mPrefs.edit().remove(PREF_KEY_PATIENT).commit();
+        return mPrefs.edit().remove(PREF_KEY_PATIENT).commit();
     }
 
     @Override

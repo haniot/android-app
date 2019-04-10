@@ -3,30 +3,25 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    tools:layout_editor_absoluteY="25dp">
+    android:layout_height="wrap_content">
 
     <RelativeLayout
         android:id="@+id/relativeLayout5"
-        android:layout_width="0dp"
-        android:layout_height="160dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_margin="4dp"
-        android:layout_marginTop="9dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/text_title"
-            android:layout_width="108dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:layout_centerHorizontal="false"
+            android:layout_alignParentStart="false"
+            android:layout_centerHorizontal="true"
             android:layout_marginStart="0dp"
-            android:layout_marginEnd="276dp"
-            android:layout_marginBottom="24dp"
+            android:layout_marginEnd="0dp"
+            android:layout_marginBottom="15dp"
             android:text="Período"
             android:textAlignment="center"
             android:textColor="@color/colorSubmenu"
@@ -35,15 +30,14 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
+            android:layout_below="@+id/text_title"
             android:layout_marginBottom="20dp"
-            android:gravity="center"
-            android:paddingTop="15dp">
+            android:gravity="center">
 
             <ImageView
                 android:id="@+id/fasting"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
                 android:layout_alignTop="@+id/before_bedtime"
                 android:layout_marginEnd="0dp"
                 android:background="@mipmap/ic_circle"
@@ -54,44 +48,44 @@
 
             <ImageView
                 android:id="@+id/fast"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
                 android:layout_marginStart="26dp"
                 android:layout_marginEnd="0dp"
                 android:layout_toEndOf="@+id/fasting"
                 android:background="@mipmap/ic_circle"
                 android:cropToPadding="false"
                 android:padding="5dp"
-                android:scaleX="0.8"
-                android:scaleY="0.8"
+                android:scaleX="0.9"
+                android:scaleY="0.9"
                 android:src="@drawable/z_casual" />
 
             <ImageView
                 android:id="@+id/before_bedtime"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
                 android:layout_marginStart="26dp"
                 android:layout_marginEnd="0dp"
                 android:layout_toEndOf="@+id/fast"
                 android:background="@mipmap/ic_circle"
                 android:cropToPadding="false"
                 android:padding="5dp"
-                android:scaleX="0.8"
-                android:scaleY="0.8"
+                android:scaleX="0.9"
+                android:scaleY="0.9"
                 android:src="@drawable/z_time_sleep" />
 
             <ImageView
                 android:id="@+id/pre_meal"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
                 android:layout_marginStart="26dp"
                 android:layout_marginBottom="0dp"
                 android:layout_toEndOf="@+id/before_bedtime"
                 android:background="@mipmap/ic_circle"
                 android:cropToPadding="false"
                 android:padding="5dp"
-                android:scaleX="0.8"
-                android:scaleY="0.8"
+                android:scaleX="0.9"
+                android:scaleY="0.9"
                 android:src="@drawable/z_breakfast" />
 
             <ImageView

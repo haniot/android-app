@@ -29,15 +29,72 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/appBarLayout2">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerViewPatient"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="20dp"
-            android:layoutAnimation="@anim/layout_animation_fall_down"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:scrollbars="vertical" />
+            android:layout_height="match_parent">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerViewPatient"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="0dp"
+                android:layoutAnimation="@anim/layout_animation_fall_down"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:scrollbars="vertical" />
+            <RelativeLayout
+                android:id="@+id/root"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="invisible">
+
+                <ImageView
+                    android:id="@+id/patiengImg"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="93dp"
+                    android:alpha=".50"
+                    android:src="@drawable/no_patient" />
+
+                <TextView
+                    android:id="@+id/text_empty_patient"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/patiengImg"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="16dp"
+                    android:gravity="center"
+                    android:text="Opppsssss!"
+                    android:textSize="24sp" />
+
+                <TextView
+                    android:id="@+id/text_empty_patient2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/text_empty_patient"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="6dp"
+                    android:gravity="center"
+                    android:text="@string/no_patient_registered"
+                    android:textColor="@color/colorSubmenu" />
+
+                <TextView
+                    android:id="@+id/add_patient"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/text_empty_patient2"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="6dp"
+                    android:text="Adicionar"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="18sp" />
+
+            </RelativeLayout>
+
+        </RelativeLayout>
     </android.support.v4.widget.SwipeRefreshLayout>
 
     <android.support.design.widget.FloatingActionButton

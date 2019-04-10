@@ -9,6 +9,7 @@ import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.util.Objects;
 
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
@@ -152,5 +153,18 @@ public class Patient {
                 ", gender='" + gender + '\'' +
                 ", birthDate='" + birthDate + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Patient patient = (Patient) o;
+        return Objects.equals(_id, patient._id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(_id);
     }
 }

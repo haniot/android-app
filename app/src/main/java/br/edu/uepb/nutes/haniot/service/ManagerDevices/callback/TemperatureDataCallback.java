@@ -8,12 +8,12 @@ public interface TemperatureDataCallback {
     /**
      * On Connected to Temperature Device.
      */
-    void onConnected(BluetoothDevice device);
+    void onConnected();
 
     /**
      * On Disconnected to Temperature Device.
      */
-    void onDisconnected(BluetoothDevice device);
+    void onDisconnected();
 
     /**
      * On receiver data of measurement from Temperature Device.

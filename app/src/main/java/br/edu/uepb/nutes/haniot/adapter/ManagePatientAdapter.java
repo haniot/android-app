@@ -2,17 +2,13 @@ package br.edu.uepb.nutes.haniot.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -20,8 +16,6 @@ import java.util.Date;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.activity.MainActivity;
-import br.edu.uepb.nutes.haniot.activity.ManagePatientsActivity;
 import br.edu.uepb.nutes.haniot.activity.PatientRegisterActivity;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
@@ -69,7 +63,7 @@ public class ManagePatientAdapter extends RecyclerView.Adapter<ManagePatientAdap
             textView.setOnClickListener(v -> context.startActivity(myIntent));
             return holder;
         } else {
-            view = inflater.from(parent.getContext()).inflate(R.layout.item_children, null, false);
+            view = inflater.from(parent.getContext()).inflate(R.layout.item_patient, null, false);
             ManagePatientViewHolder holder = new ManagePatientViewHolder(view, "notEmpty");
             return holder;
         }
