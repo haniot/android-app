@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -33,6 +34,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -149,6 +151,9 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
     @BindView(R.id.message_error)
     TextView messageError;
 
+    @BindView(R.id.box_measurement)
+    RelativeLayout boxMeasurement;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -166,6 +171,14 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
         heartRateManager = new HeartRateManager(this);
         heartRateManager.setSimpleCallback(heartRateDataCallback);
 
+        if (isTablet(this)){
+            Log.i(TAG, "is tablet");
+            boxMeasurement.getLayoutParams().height= 600;
+            mCollapsingToolbarLayout.getLayoutParams().height= 630;
+            boxMeasurement.requestLayout();
+            mCollapsingToolbarLayout.requestLayout();
+        }
+
         mDevice = deviceDAO.getByType(appPreferencesHelper.getUserLogged().get_id(), DeviceType.HEART_RATE);
         mChartButton.setOnClickListener(this);
         mRecordHeartRateButton.setOnClickListener(this);
@@ -176,6 +189,17 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
 
         IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
         registerReceiver(mReceiver, filter);
+    }
+
+    /**
+     * Check if is tablet.
+     * @param context
+     * @return
+     */
+    public static boolean isTablet(Context context) {
+        return (context.getResources().getConfiguration().screenLayout
+                & Configuration.SCREENLAYOUT_SIZE_MASK)
+                >= Configuration.SCREENLAYOUT_SIZE_LARGE;
     }
 
     HeartRateDataCallback heartRateDataCallback = new HeartRateDataCallback() {

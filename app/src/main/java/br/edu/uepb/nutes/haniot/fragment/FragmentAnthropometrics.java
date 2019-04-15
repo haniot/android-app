@@ -65,7 +65,7 @@ public class FragmentAnthropometrics extends Fragment {
      */
     private void initView() {
         appPreferencesHelper = AppPreferencesHelper.getInstance(getContext());
-        if (appPreferencesHelper.getLastPatient().getGender().equals(getResources().getString(R.string.gender_male)))
+        if (appPreferencesHelper.getLastPatient().getGender().equals("male"))
             patientIcon.setImageResource(R.drawable.boy);
         else patientIcon.setImageResource(R.drawable.girl);
 

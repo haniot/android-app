@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.design.widget.AppBarLayout;
@@ -28,6 +29,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -138,6 +140,9 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
     @BindView(R.id.add_floating_button)
     FloatingActionButton mAddButton;
 
+    @BindView(R.id.box_measurement)
+    RelativeLayout boxMeasurement;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -162,7 +167,26 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
         mChartButton.setOnClickListener(this);
         mAddButton.setOnClickListener(this);
 
+        if (isTablet(this)){
+            Log.i(TAG, "is tablet");
+            boxMeasurement.getLayoutParams().height= 600;
+            mCollapsingToolbarLayout.getLayoutParams().height= 630;
+            boxMeasurement.requestLayout();
+            mCollapsingToolbarLayout.requestLayout();
+        }
+
         initComponents();
+    }
+
+    /**
+     * Check if is tablet.
+     * @param context
+     * @return
+     */
+    public static boolean isTablet(Context context) {
+        return (context.getResources().getConfiguration().screenLayout
+                & Configuration.SCREENLAYOUT_SIZE_MASK)
+                >= Configuration.SCREENLAYOUT_SIZE_LARGE;
     }
 
     private TemperatureDataCallback temperatureDataCallback = new TemperatureDataCallback() {

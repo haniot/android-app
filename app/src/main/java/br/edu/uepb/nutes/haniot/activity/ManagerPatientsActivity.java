@@ -2,11 +2,9 @@ package br.edu.uepb.nutes.haniot.activity;
 
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -14,17 +12,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.AnimationUtils;
-import android.view.animation.LayoutAnimationController;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,20 +36,18 @@ import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepositor
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.CompletableObserver;
-import io.reactivex.disposables.Disposable;
 import retrofit2.HttpException;
 
 import static com.github.mikephil.charting.charts.Chart.LOG_TAG;
 
 /**
- * ManagePatientsActivity implementation.
+ * ManagerPatientsActivity implementation.
  *
  * @author Fábio Júnior <fabio.pequeno@nutes.uepb.edu.br>
  * @version 1.0
  * @copyright Copyright (c) 2019, NUTES UEPB
  */
-public class ManagePatientsActivity extends AppCompatActivity {
+public class ManagerPatientsActivity extends AppCompatActivity {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -160,7 +151,7 @@ public class ManagePatientsActivity extends AppCompatActivity {
             @Override
             public void onItemClick(Patient item) {
                 appPreferencesHelper.saveLastPatient(item);
-                startActivity(new Intent(ManagePatientsActivity.this, MainActivity.class));
+                startActivity(new Intent(ManagerPatientsActivity.this, MainActivity.class));
             }
 
             @Override
@@ -172,17 +163,18 @@ public class ManagePatientsActivity extends AppCompatActivity {
             public void onMenuContextClick(View v, Patient item) {
                 if (v.getId() == R.id.btnDeleteChild) {
                     new AlertDialog
-                            .Builder(ManagePatientsActivity.this)
+                            .Builder(ManagerPatientsActivity.this)
                             .setMessage(getResources().getString(R.string.remove_patient))
                             .setPositiveButton(getResources().getText(R.string.yes_text), (dialog, which) -> removePatient(item))
                             .setNegativeButton(getResources().getText(R.string.no_text), null)
                             .show();
 
                 } else if (v.getId() == R.id.btnEditChildren) {
-                    Intent intent = new Intent(ManagePatientsActivity.this, PatientRegisterActivity.class);
+                    Intent intent = new Intent(ManagerPatientsActivity.this, PatientRegisterActivity.class);
                     intent.putExtra("action", "edit");
                     appPreferencesHelper.saveLastPatient(item);
                     startActivity(intent);
+                    finish();
                 }
             }
         });
@@ -217,69 +209,9 @@ public class ManagePatientsActivity extends AppCompatActivity {
     }
 
     private void showMessage(String message) {
-        Toast.makeText(ManagePatientsActivity.this,
+        Toast.makeText(ManagerPatientsActivity.this,
                 message,
                 Toast.LENGTH_SHORT).show();
-    }
-
-    /**
-     * For tests.
-     *
-     * @return
-     */
-    private List<Patient> testPatients() {
-        patientList.clear();
-        Patient patient;
-
-        patient = appPreferencesHelper.getLastPatient();
-        if (patient != null)
-            patientList.add(patient);
-
-        patient = new Patient();
-        patient.setFirstName("Fábio Júnior");
-        patient.set_id("123");
-        patient.setGender("Male");
-        patient.setBirthDate(DateUtils.formatDate(878180400000L, DateUtils.DATE_FORMAT_ISO_8601));
-        patientList.add(patient);
-
-        patient = new Patient();
-        patient.setFirstName("Paulo Barbosa");
-        patient.set_id("124");
-        patient.setGender("male");
-        patient.setBirthDate(DateUtils.formatDate(878180400000L, DateUtils.DATE_FORMAT_ISO_8601));
-
-        patientList.add(patient);
-
-        patient = new Patient();
-        patient.setFirstName("Ana Beatriz");
-        patient.set_id("125");
-        patient.setGender("female");
-        patient.setBirthDate(DateUtils.formatDate(878180400000L, DateUtils.DATE_FORMAT_ISO_8601));
-        patientList.add(patient);
-
-        patient = new Patient();
-        patient.setFirstName("Isabele");
-        patient.set_id("126");
-        patient.setGender("female");
-        patient.setBirthDate(DateUtils.formatDate(878180400000L, DateUtils.DATE_FORMAT_ISO_8601));
-        patientList.add(patient);
-
-        patient = new Patient();
-        patient.setFirstName("Paulina Leal");
-        patient.set_id("127");
-        patient.setGender("female");
-        patient.setBirthDate(DateUtils.formatDate(878180400000L, DateUtils.DATE_FORMAT_ISO_8601));
-        patientList.add(patient);
-
-        patient = new Patient();
-        patient.setFirstName("Douglas Rafael");
-        patient.set_id("128");
-        patient.setGender("male");
-        patient.setBirthDate(DateUtils.formatDate(878180400000L, DateUtils.DATE_FORMAT_ISO_8601));
-
-        patientList.add(patient);
-
-        return patientList;
     }
 
     @Override

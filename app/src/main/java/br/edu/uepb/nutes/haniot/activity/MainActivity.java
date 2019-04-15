@@ -88,7 +88,6 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
     @Override
     protected void onResume() {
         super.onResume();
-
         // Verify the pilot is selected
         if (appPreferences.getLastPilotStudy() == null) {
             startActivity(new Intent(this, WelcomeActivity.class));
@@ -114,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
 
             checkPermissions();
         } else {
-            startActivity(new Intent(this, ManagePatientsActivity.class));
+            startActivity(new Intent(this, ManagerPatientsActivity.class));
         }
     }
 
@@ -195,7 +194,7 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.btnManagePatient:
-                startActivity(new Intent(getApplicationContext(), ManagePatientsActivity.class));
+                startActivity(new Intent(getApplicationContext(), ManagerPatientsActivity.class));
                 break;
             case R.id.btnMenuMainSettings:
                 Intent it = new Intent(this, SettingsActivity.class);
@@ -258,6 +257,7 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
     };
 
     public Patient getPatientSelected() {
+        patient = appPreferences.getLastPatient();
         return patient;
     }
 }

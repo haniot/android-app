@@ -1,5 +1,7 @@
 package br.edu.uepb.nutes.haniot.activity.charts.base;
 
+import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
@@ -25,6 +28,7 @@ import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.MeasurementType;
+import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.server.historical.CallbackHistorical;
 import br.edu.uepb.nutes.haniot.server.historical.Historical;
 import br.edu.uepb.nutes.haniot.server.historical.HistoricalType;
@@ -50,9 +54,9 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
     public final int CHART_TYPE_YEAR = 4;
 
     protected int currentChartType;
-    public Session session;
     public Params params;
     public int typeId;
+    private AppPreferencesHelper appPreferencesHelper;
 
     @BindView(R.id.toolbar)
     public Toolbar mToolbar;
@@ -75,6 +79,12 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
     @BindView(R.id.menu_period)
     public FloatingActionMenu fabActionMenu;
 
+    @BindView(R.id.box_measurement)
+    public RelativeLayout boxMeasurement;
+
+    @BindView(R.id.box_toolbar)
+    public RelativeLayout boxToolbar;
+
     public BaseChartActivity() {
         this.currentChartType = CHART_TYPE_MONTH;
     }
@@ -87,10 +97,18 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        session = new Session(this);
-        params = new Params(session.get_idLogged(), getTypeMeasurement());
+        appPreferencesHelper = AppPreferencesHelper.getInstance(this);
+        params = new Params(appPreferencesHelper.getUserLogged().get_id(), getTypeMeasurement());
 
         initView();
+
+        if (isTablet(this)){
+            Log.i(TAG, "is tablet");
+            boxMeasurement.getLayoutParams().height= 600;
+            boxToolbar.getLayoutParams().height= 630;
+            boxMeasurement.requestLayout();
+            boxToolbar.requestLayout();
+        }
 
         fabDay.setOnClickListener(this);
         fabWeek.setOnClickListener(this);
@@ -103,6 +121,17 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
     public abstract int getLayout();
     public abstract int getTypeMeasurement();
     public abstract Chart getChart();
+
+    /**
+     * Check if is tablet.
+     * @param context
+     * @return
+     */
+    public static boolean isTablet(Context context) {
+        return (context.getResources().getConfiguration().screenLayout
+                & Configuration.SCREENLAYOUT_SIZE_MASK)
+                >= Configuration.SCREENLAYOUT_SIZE_LARGE;
+    }
 
     @Override
     public void onClick(View v) {
