@@ -419,7 +419,7 @@
 
     <!-- TokenExpirationService -->
 
-    <!-- Patient Quiz -->
+    <!-- Patient Quiz Nutrition -->
     <string name="message_info_patient">Informe os dados básicos do paciente:</string>
     <string name="q1" translatable="false">Na semana passada você praticou:</string>
     <string name="q2" translatable="false">Você faz educação física da escola?</string>
@@ -639,6 +639,69 @@
         <item>10:00 da noite</item>
         <item>11:00 da noite</item>
         <item>Meia noite</item>
+    </string-array>
+
+    <!-- Patient Quiz Odonto -->
+    <string name="question_1">Os membros da família pedem ajuda uns aos outros?</string>
+    <string name="question_2">Aprovamos os amigos que cada um tem:</string>
+    <string name="question_3">Gostamos de fazer coisas apenas com nossa família:</string>
+    <string name="question_4">Os membros da família sentem-se mais próximos entre si que com pessoas estranhas à família:</string>
+    <string name="question_5">Os membros da família gostam de passar o tempo livre juntos:</string>
+    <string name="question_6">Os membros da família se sentem muito próximos uns aos outros:</string>
+    <string name="question_7">Estamos todos presentes quando compartilhamos atividades em nossa família:</string>
+    <string name="question_8">Facilmente nos ocorrem coisas que podemos fazer juntos, em família:</string>
+    <string name="question_9">Os membros da família consultam outras pessoas da família para tomarem suas decições:</string>
+    <string name="question_10">A união familiar é muito importante:</string>
+    <string name="question_11">Soma total coesão familiar:</string>
+    <string name="question_12">Cor ou raça:</string>
+    <string name="question_13">Escolaridade da mãe:</string>
+    <string name="question_14">Número de pessoas morando em casa:</string>
+    <string name="question_15">Quantas vezes seu filho escova os dentes ao dia?</string>
+    <string name="question_16">Apresenta cárie dentária cativada em dentes decíduos?</string>
+    <string name="question_17">Apresenta cárie dentária cativada em dentes permanentes?</string>
+    <string name="question_18">Apresenta lesões de cárie do tipo mancha branca ativa em dentes decíduos?</string>
+    <string name="question_19">Apresenta lesões de cárie do tipo mancha branca ativa em dentes permanentes?</string>
+
+    <string-array name="default_answers">
+        <item>Quase nunca</item>
+        <item>Raramente</item>
+        <item>Às vezes</item>
+        <item>Frequentemente</item>
+        <item>Quase sempre</item>
+    </string-array>
+
+    <string-array name="race_answers">
+        <item>Branca</item>
+        <item>Preta/Negra</item>
+        <item>Parda</item>
+        <item>Amarela</item>
+    </string-array>
+
+    <string-array name="scholarity_answers">
+        <item>Analfabet/Fundamental I Incompleto</item>
+        <item>Fundamental I Completo/Fundamental II Incompleto</item>
+        <item>Fundamental Completo/Médio Incompleto</item>
+        <item>Superior Completo</item>
+    </string-array>
+
+    <string-array name="number6_answers">
+        <item>Uma</item>
+        <item>Duas</item>
+        <item>Três</item>
+        <item>Quatro</item>
+        <item>Cinco</item>
+        <item>Seis ou Mais</item>
+    </string-array>
+
+    <string-array name="number3_answers">
+        <item>Uma</item>
+        <item>Duas</item>
+        <item>Três ou Mais</item>
+    </string-array>
+
+    <string-array name="yes_not_answers">
+        <item>Sim</item>
+        <item>Não</item>
     </string-array>
 
     <!--- OTHERS -->

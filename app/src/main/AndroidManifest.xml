@@ -97,7 +97,12 @@
         <activity
             android:name=".activity.PatientQuizActivity"
             android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar"
-            android:screenOrientation="portrait"/> <!-- ACTIVITIES REGISTER DEVICES -->
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".activity.PatientQuizOdontoActivity"
+            android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar"
+            android:screenOrientation="portrait"/>
+        <!-- ACTIVITIES REGISTER DEVICES -->
         <activity android:name=".devices.register.DeviceRegisterActivity" />
         <activity android:name=".devices.register.DeviceManagerActivity" /> <!-- END ACTIVITIES REGISTER DEVICES -->
         <!-- SERVICES -->

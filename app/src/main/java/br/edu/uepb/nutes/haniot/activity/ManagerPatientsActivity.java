@@ -75,6 +75,11 @@ public class ManagerPatientsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_manage_patient);
         ButterKnife.bind(this);
         toolbar.setTitle(getResources().getString(R.string.manage_patient));
+
+        //TODO TEMP
+        toolbar.setOnClickListener(v -> {
+            startActivity(new Intent(this, PatientQuizOdontoActivity.class));
+        });
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         initResources();
