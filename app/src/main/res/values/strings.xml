@@ -661,6 +661,12 @@
     <string name="question_17">Apresenta cárie dentária cativada em dentes permanentes?</string>
     <string name="question_18">Apresenta lesões de cárie do tipo mancha branca ativa em dentes decíduos?</string>
     <string name="question_19">Apresenta lesões de cárie do tipo mancha branca ativa em dentes permanentes?</string>
+    <string name="category_sociodemographic">Sociodemográfico</string>
+    <string name="category_sociodemographic_desc">As próximas perguntas referem-se a informações sociodemográicas.</string>
+   <string name="category_oralhealth">Saúde Bocal</string>
+    <string name="category_oralhealth_desc">As próximas perguntas referem-se a sua saúde bocal.</string>
+   <string name="category_family_cohesion">Coesão Familiar</string>
+    <string name="category_family_cohesion_desc">As próximas perguntas referem-se a informações sobre a sua família.</string>
 
     <string-array name="default_answers">
         <item>Quase nunca</item>
