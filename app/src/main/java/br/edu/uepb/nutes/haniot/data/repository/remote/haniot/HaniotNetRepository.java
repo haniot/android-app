@@ -156,7 +156,7 @@ public class HaniotNetRepository extends BaseNetRepository {
 
     // users.measurements
     public Single<Measurement> saveMeasurement(Measurement measurement) {
-        return haniotService.addMeasurement(measurement.getUserObj().get_id(), measurement)
+        return haniotService.addMeasurement(measurement.getUserId(), measurement)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -174,8 +174,7 @@ public class HaniotNetRepository extends BaseNetRepository {
     }
 
     public Single<Measurement> updateMeasurement(Measurement measurement) {
-        return haniotService.updateMeasurement(measurement.getUserObj().get_id(),
-                measurement.get_id(), measurement)
+        return haniotService.updateMeasurement(measurement.getUserId(), measurement.get_id(), measurement)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

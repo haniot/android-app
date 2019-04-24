@@ -2,6 +2,7 @@ package br.edu.uepb.nutes.haniot.data.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -11,7 +12,6 @@ import java.util.Objects;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.annotation.Index;
-import io.objectbox.annotation.Transient;
 
 /**
  * Represents Device object.
@@ -29,25 +29,25 @@ public class Device implements Parcelable {
     @Expose()
     private String _id; // _id in server remote (UUID)
 
-    @SerializedName("address")
-    @Expose()
-    private String address; // MAC address
-
     @SerializedName("name")
     @Expose()
     private String name;
 
-    @SerializedName("manufacturer")
+    @SerializedName("address")
     @Expose()
-    private String manufacturer;
-
-    @SerializedName("modelNumber")
-    @Expose()
-    private String modelNumber;
+    private String address; // MAC address
 
     @SerializedName("type")
     @Expose()
-    private int typeId;
+    private String type;
+
+    @SerializedName("model_number")
+    @Expose()
+    private String modelNumber;
+
+    @SerializedName("manufacturer")
+    @Expose()
+    private String manufacturer;
 
     @SerializedName("user_id")
     @Expose()
@@ -59,31 +59,22 @@ public class Device implements Parcelable {
     public Device() {
     }
 
-    public Device(String address, String name, String manufacturer, String modelNumber,
-                  int typeId, User user) {
-        this.address = address;
-        this.name = name;
-        this.manufacturer = manufacturer;
-        this.modelNumber = modelNumber;
-        this.typeId = typeId;
-    }
-
-    public Device(String name, String manufacturer, String modelNumber, int img, int typeId) {
+    public Device(String name, String manufacturer, String modelNumber, int img, String type) {
         this.name = name;
         this.manufacturer = manufacturer;
         this.modelNumber = modelNumber;
         this.img = img;
-        this.typeId = typeId;
+        this.type = type;
     }
 
     protected Device(Parcel in) {
         id = in.readLong();
         _id = in.readString();
-        address = in.readString();
         name = in.readString();
-        manufacturer = in.readString();
+        address = in.readString();
+        type = in.readString();
         modelNumber = in.readString();
-        typeId = in.readInt();
+        manufacturer = in.readString();
         userId = in.readString();
         img = in.readInt();
     }
@@ -92,11 +83,11 @@ public class Device implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(id);
         dest.writeString(_id);
-        dest.writeString(address);
         dest.writeString(name);
-        dest.writeString(manufacturer);
+        dest.writeString(address);
+        dest.writeString(type);
         dest.writeString(modelNumber);
-        dest.writeInt(typeId);
+        dest.writeString(manufacturer);
         dest.writeString(userId);
         dest.writeInt(img);
     }
@@ -134,14 +125,6 @@ public class Device implements Parcelable {
         this._id = _id;
     }
 
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
     public String getName() {
         return name;
     }
@@ -150,12 +133,20 @@ public class Device implements Parcelable {
         this.name = name;
     }
 
-    public String getManufacturer() {
-        return manufacturer;
+    public String getAddress() {
+        return address;
     }
 
-    public void setManufacturer(String manufacturer) {
-        this.manufacturer = manufacturer;
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getModelNumber() {
@@ -166,12 +157,12 @@ public class Device implements Parcelable {
         this.modelNumber = modelNumber;
     }
 
-    public int getTypeId() {
-        return typeId;
+    public String getManufacturer() {
+        return manufacturer;
     }
 
-    public void setTypeId(int typeId) {
-        this.typeId = typeId;
+    public void setManufacturer(String manufacturer) {
+        this.manufacturer = manufacturer;
     }
 
     public String getUserId() {
@@ -197,24 +188,23 @@ public class Device implements Parcelable {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof Device))
-            return false;
+        if (!(o instanceof Device)) return false;
 
         Device other = (Device) o;
-
         return this.address.equals(other.address);
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "Device{" +
                 "id=" + id +
                 ", _id='" + _id + '\'' +
-                ", address='" + address + '\'' +
                 ", name='" + name + '\'' +
-                ", manufacturer='" + manufacturer + '\'' +
+                ", address='" + address + '\'' +
+                ", type='" + type + '\'' +
                 ", modelNumber='" + modelNumber + '\'' +
-                ", typeId=" + typeId +
+                ", manufacturer='" + manufacturer + '\'' +
                 ", userId='" + userId + '\'' +
                 ", img=" + img +
                 '}';

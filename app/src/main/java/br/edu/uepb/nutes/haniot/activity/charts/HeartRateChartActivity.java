@@ -56,7 +56,8 @@ public class HeartRateChartActivity extends BaseChartActivity {
 
     @Override
     public int getTypeMeasurement() {
-        return MeasurementType.HEART_RATE;
+        return 0;
+//        return MeasurementType.HEART_RATE;
     }
 
     @Override

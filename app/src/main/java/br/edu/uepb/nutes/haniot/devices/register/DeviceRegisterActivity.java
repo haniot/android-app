@@ -37,7 +37,6 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.data.model.Device;
 import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.model.dao.DeviceDAO;
@@ -462,7 +461,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     public String deviceToJson(Device device) {
         JSONObject result = new JSONObject();
         try {
-            result.put("typeId", device.getTypeId());
+            result.put("typeId", device.getType());
             result.put("address", device.getAddress());
             result.put("name", device.getName());
             result.put("manufacturer", device.getManufacturer());
@@ -504,7 +503,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     public boolean removeDeviceForType(Device device) {
         boolean confirmed = false;
         for (Device d : mDeviceDAO.list(user.get_id())) {
-            if (d.getTypeId() == device.getTypeId()) {
+            if (d.getType().equals(device.getType())) {
                 confirmed = true;
                 String path = "devices/"
                         .concat(d.get_id())

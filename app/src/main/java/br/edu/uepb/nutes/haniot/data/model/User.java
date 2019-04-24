@@ -15,9 +15,7 @@ import io.objectbox.annotation.Index;
 /**
  * Represents User object.
  *
- * @author Douglas Rafael <douglas.rafael@nutes.uepb.edu.br>
- * @version 2.0
- * @copyright Copyright (c) 2017, NUTES UEPB
+ * @author Copyright (c) 2019, NUTES/UEPB
  */
 @Entity
 public class User {

@@ -19,16 +19,13 @@ import butterknife.ButterKnife;
 /**
  * Adapter from the RecyclerView to list the Blood Pressure.
  *
- * @author Douglas Rafael <douglasrafaelcg@gmail.com>
- * @version 1.0
- * @copyright Copyright (c) 2017, NUTES UEPB
+ * @author Copyright (c) 2019, NUTES/UEPB
  */
 public class BloodPressureAdapter extends BaseAdapter<Measurement> {
-    private final String LOG = "TemperatureAdapter";
     private final Context context;
 
     /**
-     * Contructor.
+     * Constructor.
      *
      * @param context {@link Context}
      */
@@ -52,29 +49,16 @@ public class BloodPressureAdapter extends BaseAdapter<Measurement> {
             final Measurement m = itemsList.get(position);
             ViewHolder h = (ViewHolder) holder;
 
-            h.systolic.setText(String.valueOf((int) m.getValue()).concat("/"));
-
-            // Relations
-            for (Measurement parent : m.getMeasurements()) {
-                if (parent.getTypeId() == MeasurementType.BLOOD_PRESSURE_DIASTOLIC)
-                    h.diastolic.setText(String.valueOf((int) parent.getValue()));
-                else if (parent.getTypeId() == MeasurementType.HEART_RATE)
-                    h.pulse.setText(String.valueOf((int) parent.getValue()));
-            }
+            h.systolic.setText(String.valueOf(m.getSystolic()).concat("/"));
+            h.diastolic.setText(String.valueOf(m.getDiastolic()));
+            h.pulse.setText(String.valueOf((int) m.getPulse()));
             h.unit.setText(m.getUnit());
-            h.dayWeek.setText(DateUtils.formatDate(m.getRegistrationDate(), "EEEE"));
-            h.date.setText(DateUtils.formatDate(m.getRegistrationDate(),
-                    context.getString(R.string.datetime_format)));
+            h.dayWeek.setText(DateUtils.formatDateISO8601(m.getTimestamp(), "EEEE"));
+            h.date.setText(DateUtils.formatDateISO8601(m.getTimestamp(), context.getString(R.string.datetime_format)));
 
-            /**
-             * OnClick Item
-             */
-            h.mView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (BloodPressureAdapter.super.mListener != null)
-                        BloodPressureAdapter.super.mListener.onItemClick(m);
-                }
+            // OnClick Item
+            h.mView.setOnClickListener(v -> {
+                if (super.mListener != null) super.mListener.onItemClick(m);
             });
 
             // call Animation function

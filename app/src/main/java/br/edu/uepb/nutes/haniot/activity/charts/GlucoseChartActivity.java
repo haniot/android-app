@@ -56,7 +56,8 @@ public class GlucoseChartActivity extends BaseChartActivity {
 
     @Override
     public int getTypeMeasurement() {
-        return MeasurementType.BLOOD_GLUCOSE;
+        return 0;
+//        return MeasurementType.BLOOD_GLUCOSE;
     }
 
     @Override

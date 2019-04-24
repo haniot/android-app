@@ -61,7 +61,8 @@ public class BodyCompositionChartActivity extends BaseChartActivity {
 
     @Override
     public int getTypeMeasurement() {
-        return MeasurementType.BODY_MASS;
+        return 0;
+//        return MeasurementType.BODY_MASS;
     }
     @Override
     protected void onResume() {

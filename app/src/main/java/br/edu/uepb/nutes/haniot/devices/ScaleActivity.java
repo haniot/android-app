@@ -95,7 +95,6 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
     private DeviceDAO deviceDAO;
     private DecimalFormat decimalFormat;
     private BodyCompositionAdapter mAdapter;
-    private Params params;
     private ScaleManager scaleManager;
     /**
      * We need this variable to lock and unlock loading more.
@@ -178,7 +177,6 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
         measurementDAO = MeasurementDAO.getInstance(this);
         deviceDAO = DeviceDAO.getInstance(this);
         decimalFormat = new DecimalFormat(getString(R.string.format_number2), new DecimalFormatSymbols(Locale.US));
-        params = new Params(appPreferencesHelper.getUserLogged().get_id(), MeasurementType.BODY_MASS);
         scaleManager = new ScaleManager(this);
         animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
         mChartButton.setOnClickListener(this);
@@ -195,7 +193,7 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
             mCollapsingToolbarLayout.requestLayout();
         }
 
-        scaleManager.setSimpleCallback(scaleDataCallback);
+//        scaleManager.setSimpleCallback(scaleDataCallback);
         initComponents();
 
         IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
@@ -213,44 +211,44 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
                 >= Configuration.SCREENLAYOUT_SIZE_LARGE;
     }
 
-    ScaleDataCallback scaleDataCallback = new ScaleDataCallback() {
-        @Override
-        public void onConnected() {
-            mConnected = true;
-            updateConnectionState(true);
-        }
-
-        @Override
-        public void onDisconnected() {
-            mConnected = false;
-            updateConnectionState(false);
-        }
-
-        @Override
-        public void onMeasurementReceived(Measurement measurementScale) {
-
-            if (mDevice != null)
-                measurementScale.setDevice(mDevice);
-
-            /**
-             * Save in local
-             * Send to server saved successfully
-             */
-            if (measurementDAO.save(measurementScale)) {
-                synchronizeWithServer();
-                loadData();
-            }
-            updateUILastMeasurement(measurementScale, true);
-        }
-
-        @Override
-        public void onMeasurementReceiving(String bodyMassMeasurement, long timeStamp, String bodyMassUnit) {
-            runOnUiThread(() -> {
-                bodyMassTextView.setText(bodyMassMeasurement);
-                bodyMassUnitTextView.setText(bodyMassUnit);
-            });
-        }
-    };
+//    ScaleDataCallback scaleDataCallback = new ScaleDataCallback() {
+//        @Override
+//        public void onConnected() {
+//            mConnected = true;
+//            updateConnectionState(true);
+//        }
+//
+//        @Override
+//        public void onDisconnected() {
+//            mConnected = false;
+//            updateConnectionState(false);
+//        }
+//
+//        @Override
+//        public void onMeasurementReceived(Measurement measurementScale) {
+//
+//            if (mDevice != null)
+//                measurementScale.setDevice(mDevice);
+//
+//            /**
+//             * Save in local
+//             * Send to server saved successfully
+//             */
+//            if (measurementDAO.save(measurementScale)) {
+//                synchronizeWithServer();
+//                loadData();
+//            }
+//            updateUILastMeasurement(measurementScale, true);
+//        }
+//
+//        @Override
+//        public void onMeasurementReceiving(String bodyMassMeasurement, long timeStamp, String bodyMassUnit) {
+//            runOnUiThread(() -> {
+//                bodyMassTextView.setText(bodyMassMeasurement);
+//                bodyMassUnitTextView.setText(bodyMassUnit);
+//            });
+//        }
+//    };
 
     /**
      * Initialize components
@@ -371,91 +369,91 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
      * Otherwise it displays from the remote server.
      */
     private void loadData() {
-        mAdapter.clearItems();
-
-        if (!ConnectionUtils.internetIsEnabled(this)) {
-            loadDataLocal();
-        } else {
-            Historical historical = new Historical.Query()
-                    .type(HistoricalType.MEASUREMENTS_TYPE_USER)
-                    .params(params) // Measurements of the body mass type, associated to the user
-                    .pagination(0, LIMIT_PER_PAGE)
-                    .build();
-
-            historical.request(this, new CallbackHistorical<Measurement>() {
-                @Override
-                public void onBeforeSend() {
-                    Log.w(TAG, "loadData - onBeforeSend()");
-                    toggleLoading(true); // Enable loading
-                    toggleNoDataMessage(false); // Disable message no data
-                }
-
-                @Override
-                public void onError(JSONObject result) {
-                    Log.w(TAG, "loadData - onError()");
-                    if (!mAdapter.itemsIsEmpty()) printMessage(getString(R.string.error_500));
-                    else loadDataLocal();
-                }
-
-                @Override
-                public void onResult(List<Measurement> result) {
-                    Log.w(TAG, "loadData - onResult()");
-                    if (result != null && result.size() > 0) {
-                        mAdapter.addItems(result);
-                        updateUILastMeasurement(mAdapter.getItems().get(0), false);
-                    } else {
-                        toggleNoDataMessage(true); // Enable message no data
-                    }
-                }
-
-                @Override
-                public void onAfterSend() {
-                    Log.w(TAG, "loadData - onAfterSend()");
-                    toggleLoading(false); // Disable loading
-                }
-            });
-        }
+//        mAdapter.clearItems();
+//
+//        if (!ConnectionUtils.internetIsEnabled(this)) {
+//            loadDataLocal();
+//        } else {
+//            Historical historical = new Historical.Query()
+//                    .type(HistoricalType.MEASUREMENTS_TYPE_USER)
+//                    .params(params) // Measurements of the body mass type, associated to the user
+//                    .pagination(0, LIMIT_PER_PAGE)
+//                    .build();
+//
+//            historical.request(this, new CallbackHistorical<Measurement>() {
+//                @Override
+//                public void onBeforeSend() {
+//                    Log.w(TAG, "loadData - onBeforeSend()");
+//                    toggleLoading(true); // Enable loading
+//                    toggleNoDataMessage(false); // Disable message no data
+//                }
+//
+//                @Override
+//                public void onError(JSONObject result) {
+//                    Log.w(TAG, "loadData - onError()");
+//                    if (!mAdapter.itemsIsEmpty()) printMessage(getString(R.string.error_500));
+//                    else loadDataLocal();
+//                }
+//
+//                @Override
+//                public void onResult(List<Measurement> result) {
+//                    Log.w(TAG, "loadData - onResult()");
+//                    if (result != null && result.size() > 0) {
+//                        mAdapter.addItems(result);
+//                        updateUILastMeasurement(mAdapter.getItems().get(0), false);
+//                    } else {
+//                        toggleNoDataMessage(true); // Enable message no data
+//                    }
+//                }
+//
+//                @Override
+//                public void onAfterSend() {
+//                    Log.w(TAG, "loadData - onAfterSend()");
+//                    toggleLoading(false); // Disable loading
+//                }
+//            });
+//        }
     }
 
     /**
      * List more itemsList from the remote server.
      */
     private void loadMoreData() {
-        if (!ConnectionUtils.internetIsEnabled(this))
-            return;
-
-        Historical historical = new Historical.Query()
-                .type(HistoricalType.MEASUREMENTS_TYPE_USER)
-                .params(params) // Measurements of the body mass type, associated to the user
-                .pagination(mAdapter.getItemCount(), LIMIT_PER_PAGE)
-                .build();
-
-        historical.request(this, new CallbackHistorical<Measurement>() {
-            @Override
-            public void onBeforeSend() {
-                Log.w(TAG, "loadMoreData - onBeforeSend()");
-                toggleLoading(true); // Enable loading
-            }
-
-            @Override
-            public void onError(JSONObject result) {
-                Log.w(TAG, "loadMoreData - onError()");
-                printMessage(getString(R.string.error_500));
-            }
-
-            @Override
-            public void onResult(List<Measurement> result) {
-                Log.w(TAG, "loadMoreData - onResult()");
-                if (result != null && result.size() > 0) mAdapter.addItems(result);
-                else printMessage(getString(R.string.no_more_data));
-            }
-
-            @Override
-            public void onAfterSend() {
-                Log.w(TAG, "loadMoreData - onAfterSend()");
-                toggleLoading(false); // Disable loading
-            }
-        });
+//        if (!ConnectionUtils.internetIsEnabled(this))
+//            return;
+//
+//        Historical historical = new Historical.Query()
+//                .type(HistoricalType.MEASUREMENTS_TYPE_USER)
+//                .params(params) // Measurements of the body mass type, associated to the user
+//                .pagination(mAdapter.getItemCount(), LIMIT_PER_PAGE)
+//                .build();
+//
+//        historical.request(this, new CallbackHistorical<Measurement>() {
+//            @Override
+//            public void onBeforeSend() {
+//                Log.w(TAG, "loadMoreData - onBeforeSend()");
+//                toggleLoading(true); // Enable loading
+//            }
+//
+//            @Override
+//            public void onError(JSONObject result) {
+//                Log.w(TAG, "loadMoreData - onError()");
+//                printMessage(getString(R.string.error_500));
+//            }
+//
+//            @Override
+//            public void onResult(List<Measurement> result) {
+//                Log.w(TAG, "loadMoreData - onResult()");
+//                if (result != null && result.size() > 0) mAdapter.addItems(result);
+//                else printMessage(getString(R.string.no_more_data));
+//            }
+//
+//            @Override
+//            public void onAfterSend() {
+//                Log.w(TAG, "loadMoreData - onAfterSend()");
+//                toggleLoading(false); // Disable loading
+//            }
+//        });
     }
 
     /**
@@ -614,29 +612,29 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
      */
     private void updateUILastMeasurement(Measurement measurement, boolean applyAnimation) {
         if (measurement == null) return;
-
-        runOnUiThread(() -> {
-            bodyMassTextView.setText(formatNumber(measurement.getValue()));
-            bodyMassUnitTextView.setText(measurement.getUnit());
-            mDateLastMeasurement.setText(DateUtils.abbreviatedDate(
-                    getApplicationContext(), measurement.getRegistrationDate()));
-
-            /**
-             * Relations
-             */
-            for (Measurement m : measurement.getMeasurements()) {
-                if (m.getTypeId() == MeasurementType.BMI) {
-                    bmiTextView.setText(formatNumber(m.getValue()));
-                    titleBmiTextView.setVisibility(View.VISIBLE);
-                } else if (m.getTypeId() == MeasurementType.BODY_FAT) {
-                    bodyFatTextView.setText(formatNumber(m.getValue()));
-                    unitBodyFatTextView.setText(m.getUnit());
-                    titleBodyFatTextView.setVisibility(View.VISIBLE);
-                }
-            }
-
-            if (applyAnimation) bodyMassTextView.startAnimation(animation);
-        });
+//
+//        runOnUiThread(() -> {
+//            bodyMassTextView.setText(formatNumber(measurement.getValue()));
+//            bodyMassUnitTextView.setText(measurement.getUnit());
+//            mDateLastMeasurement.setText(DateUtils.abbreviatedDate(
+//                    getApplicationContext(), measurement.getRegistrationDate()));
+//
+//            /**
+//             * Relations
+//             */
+//            for (Measurement m : measurement.getMeasurements()) {
+//                if (m.getTypeId() == MeasurementType.BMI) {
+//                    bmiTextView.setText(formatNumber(m.getValue()));
+//                    titleBmiTextView.setVisibility(View.VISIBLE);
+//                } else if (m.getTypeId() == MeasurementType.BODY_FAT) {
+//                    bodyFatTextView.setText(formatNumber(m.getValue()));
+//                    unitBodyFatTextView.setText(m.getUnit());
+//                    titleBodyFatTextView.setVisibility(View.VISIBLE);
+//                }
+//            }
+//
+//            if (applyAnimation) bodyMassTextView.startAnimation(animation);
+//        });
     }
 
     /**

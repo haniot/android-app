@@ -21,24 +21,23 @@ import butterknife.ButterKnife;
 /**
  * Adapter from the RecyclerView to list the temperatures.
  *
- * @author Douglas Rafael <douglasrafaelcg@gmail.com>
- * @version 1.0
- * @copyright Copyright (c) 2017, NUTES UEPB
+ * @author Copyright (c) 2019, NUTES/UEPB
  */
 public class TemperatureAdapter extends BaseAdapter<Measurement> {
-    private final String LOG = "TemperatureAdapter";
     private final Context context;
-
     private DecimalFormat decimalFormat;
 
     /**
-     * Contructor.
+     * Constructor.
      *
      * @param context {@link Context}
      */
     public TemperatureAdapter(Context context) {
         this.context = context;
-        this.decimalFormat = new DecimalFormat(context.getResources().getString(R.string.format_number1), new DecimalFormatSymbols(Locale.US));
+        this.decimalFormat = new DecimalFormat(
+                context.getResources().getString(R.string.format_number1),
+                new DecimalFormatSymbols(Locale.US)
+        );
     }
 
     @Override
@@ -59,17 +58,12 @@ public class TemperatureAdapter extends BaseAdapter<Measurement> {
 
             h.value.setText(decimalFormat.format(m.getValue()));
             h.unit.setText(m.getUnit());
-            h.dayWeek.setText(DateUtils.formatDate(m.getRegistrationDate(), "EEEE"));
-            h.date.setText(DateUtils.formatDate(
-                    m.getRegistrationDate(), context.getString(R.string.datetime_format))
-            );
+            h.dayWeek.setText(DateUtils.formatDateISO8601(m.getTimestamp(), "EEEE"));
+            h.date.setText(DateUtils.formatDateISO8601(m.getTimestamp(), context.getString(R.string.datetime_format)));
 
-            /**
-             * OnClick Item
-             */
+            // OnClick Item
             h.mView.setOnClickListener(v -> {
-                if (TemperatureAdapter.super.mListener != null)
-                    TemperatureAdapter.super.mListener.onItemClick(m);
+                if (super.mListener != null) super.mListener.onItemClick(m);
             });
 
             // call Animation function

@@ -14,9 +14,7 @@ import io.objectbox.BoxStore;
 /**
  * DeviceDAO implementation.
  *
- * @author Douglas Rafael <douglas.rafael@nutes.uepb.edu.br>
- * @version 1.5
- * @copyright Copyright (c) 2017, NUTES UEPB
+ * @author Copyright (c) 2019, NUTES/UEPB
  */
 public class DeviceDAO {
     public static DeviceDAO instance;
@@ -26,7 +24,9 @@ public class DeviceDAO {
     }
 
     /**
-     * @param context
+     * Get singleton instance.
+     *
+     * @param context {@link Context}
      * @return DeviceDAO
      */
     public static synchronized DeviceDAO getInstance(@NonNull Context context) {
@@ -78,13 +78,14 @@ public class DeviceDAO {
     /**
      * Retrieves all device according to userId and type.
      *
-     * @param userId long
-     * @return List<T>
+     * @param userId {@link String}
+     * @param type   {@link String}
+     * @return Device
      */
-    public Device getByType(@NonNull String userId, int type) {
+    public Device getByType(@NonNull String userId, String type) {
         return deviceBox.query()
                 .equal(Device_.userId, userId)
-                .equal(Device_.typeId, type)
+                .equal(Device_.type, type)
                 .build().findFirst();
     }
 
@@ -111,10 +112,8 @@ public class DeviceDAO {
         if (device.getId() == 0) {
             Device deviceUp = get(device.getId());
 
-            /**
-             * Id is required for an updateOrSave
-             * Otherwise it will be an insert
-             */
+            // Id is required for an updateOrSave
+            // Otherwise it will be an insert
             if (deviceUp == null) return false;
 
             device.setId(deviceUp.getId());

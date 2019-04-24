@@ -3,23 +3,19 @@ package br.edu.uepb.nutes.haniot.service.ManagerDevices.callback;
 import android.bluetooth.BluetoothDevice;
 import android.support.annotation.NonNull;
 
-public interface BloodPressureDataCallback extends DeviceStatusCallback {
+public interface BloodGlucoseDataCallback extends DeviceStatusCallback {
     /**
-     * Blood Pressure measurement receiver.
+     * Blood Glucose measurement receiver.
      *
      * @param device    {@link BluetoothDevice} Device that collected the measurement.
-     * @param systolic  Systolic value.
-     * @param diastolic Diastolic value.
-     * @param pulse     Pulse value in bpm.
-     * @param unit      Unit of systolic to diastolic pressure.
+     * @param glucose   Measurement value.
+     * @param meal      Meal value.
      * @param timestamp Datetime of collection.
      */
     void onMeasurementReceived(
             @NonNull final BluetoothDevice device,
-            final int systolic,
-            final int diastolic,
-            final int pulse,
-            final String unit,
+            final int glucose,
+            final String meal,
             final String timestamp
     );
 }

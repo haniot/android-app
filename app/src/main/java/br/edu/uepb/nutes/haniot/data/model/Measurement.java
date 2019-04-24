@@ -1,5 +1,12 @@
 package br.edu.uepb.nutes.haniot.data.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.support.annotation.NonNull;
+
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -7,64 +14,138 @@ import io.objectbox.annotation.Backlink;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.annotation.Index;
+import io.objectbox.annotation.Transient;
 import io.objectbox.relation.ToMany;
 import io.objectbox.relation.ToOne;
 
 /**
  * Represents Object of a Measurement.
  *
- * @author Douglas Rafael <douglas.rafael@nutes.uepb.edu.br>
- * @version 1.0
- * @copyright Copyright (c) 2017, NUTES UEPB
+ * @author Copyright (c) 2019, NUTES/UEPB
  */
 @Entity
-public class Measurement {
+public class Measurement implements Parcelable {
     @Id
+    @Expose(serialize = false, deserialize = false)
     private long id;
 
     @Index
+    @SerializedName("id")
+    @Expose()
     private String _id; // _id in server remote (UUID)
 
+    @SerializedName("value")
+    @Expose()
     private double value;
+
+    @SerializedName("unit")
+    @Expose()
     private String unit;
-    private long registrationDate;
 
-    /**
-     * RELATIONS
-     */
-    private ToOne<User> user;
-    private ToOne<Patient> children;
-    private ToOne<Device> device;
-    @Backlink(to = "measurement")
-    private ToMany<ContextMeasurement> contextMeasurements;
-    private ToMany<Measurement> measurements;
+    @SerializedName("type")
+    @Expose()
+    private String type;
 
-    /**
-     * {@link MeasurementType()}
-     */
-    private int typeId;
+    @SerializedName("timestamp")
+    @Expose()
+    private String timestamp;
 
-    private int hasSent; // Measurement sent?
+    @SerializedName("user_id")
+    @Expose()
+    private String userId;
+
+    @SerializedName("device_id")
+    @Expose()
+    private String deviceId;
+
+    @SerializedName("fat")
+    @Expose()
+    @Transient()
+    private BodyFat bodyFat; // not persisted in ObjectBox
+
+    @SerializedName("dataset")
+    @Expose()
+    @Transient()
+    private List<HeartRateItem> dataset; // not persisted in ObjectBox
+
+    @SerializedName("systolic")
+    @Expose()
+    private int systolic;
+
+    @SerializedName("diastolic")
+    @Expose()
+    private int diastolic;
+
+    @SerializedName("pulse")
+    @Expose()
+    private int pulse;
+
+    @SerializedName("meal")
+    @Expose()
+    private String meal;
+
+    // RELATIONS ObjectBox
+    @Expose(serialize = false, deserialize = false)
+    @Backlink(to = "heartRate")
+    private ToMany<HeartRateItem> datasetDB;
+
+    @Expose(serialize = false, deserialize = false)
+    private ToOne<BodyFat> bodyFatDB;
 
     public Measurement() {
     }
 
-    public Measurement(long id) {
-        this.id = id;
+    protected Measurement(Parcel in) {
+        id = in.readLong();
+        _id = in.readString();
+        value = in.readDouble();
+        unit = in.readString();
+        type = in.readString();
+        timestamp = in.readString();
+        userId = in.readString();
+        deviceId = in.readString();
+        bodyFat = in.readParcelable(BodyFat.class.getClassLoader());
+        dataset = in.createTypedArrayList(HeartRateItem.CREATOR);
+        systolic = in.readInt();
+        diastolic = in.readInt();
+        pulse = in.readInt();
+        meal = in.readString();
     }
 
-    public Measurement(double value, String unit, int typeId) {
-        this.value = value;
-        this.unit = unit;
-        this.typeId = typeId;
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(id);
+        dest.writeString(_id);
+        dest.writeDouble(value);
+        dest.writeString(unit);
+        dest.writeString(type);
+        dest.writeString(timestamp);
+        dest.writeString(userId);
+        dest.writeString(deviceId);
+        dest.writeParcelable(bodyFat, flags);
+        dest.writeTypedList(dataset);
+        dest.writeInt(systolic);
+        dest.writeInt(diastolic);
+        dest.writeInt(pulse);
+        dest.writeString(meal);
     }
 
-    public Measurement(double value, String unit, long registrationDate, int typeId) {
-        this.value = value;
-        this.unit = unit;
-        this.registrationDate = registrationDate;
-        this.typeId = typeId;
+    @Override
+    public int describeContents() {
+        return 0;
     }
+
+    public static final Creator<Measurement> CREATOR = new Creator<Measurement>() {
+        @Override
+        public Measurement createFromParcel(Parcel in) {
+            return new Measurement(in);
+        }
+
+        @Override
+        public Measurement[] newArray(int size) {
+            return new Measurement[size];
+        }
+    };
 
     public long getId() {
         return id;
@@ -98,122 +179,135 @@ public class Measurement {
         this.unit = unit;
     }
 
-    public long getRegistrationDate() {
-        return registrationDate;
+    public String getType() {
+        return type;
     }
 
-    public void setRegistrationDate(long registrationDate) {
-        this.registrationDate = registrationDate;
+    public void setType(String type) {
+        this.type = type;
     }
 
-    public ToOne<Patient> getChildren() {
-        return children;
+    public String getTimestamp() {
+        return timestamp;
     }
 
-    public void setChildren(ToOne<Patient> children) {
-        this.children = children;
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
     }
 
-    public User getUserObj() {
-        return user.getTarget();
+    public String getUserId() {
+        return userId;
     }
 
-    public ToOne<User> getUser() {
-        return user;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
-    public ToOne<Device> getDevice() {
-        return device;
+    public String getDeviceId() {
+        return deviceId;
     }
 
-    public void setUser(User user) {
-        this.user.setTarget(user);
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
     }
 
-    public void setDevice(Device device) {
-        this.device.setTarget(device);
+    public BodyFat getBodyFat() {
+        return bodyFat;
     }
 
-    public boolean addContext(ContextMeasurement contextMeasurement) {
-        return this.contextMeasurements.add(contextMeasurement);
+    public void setBodyFat(BodyFat bodyFat) {
+        this.bodyFat = bodyFat;
     }
 
-    public void addContext(ContextMeasurement... contextMeasurements) {
-        for (ContextMeasurement c : contextMeasurements)
-            this.contextMeasurements.add(c);
+    public List<HeartRateItem> getDataset() {
+        return dataset;
     }
 
-    public boolean addContext(List<ContextMeasurement> contextsMeasurements) {
-        return this.contextMeasurements.addAll(contextsMeasurements);
+    public void setDataset(List<HeartRateItem> dataset) {
+        this.dataset = dataset;
     }
 
-    public boolean addMeasurement(Measurement measurement) {
-        return this.getMeasurements().add(measurement);
+    public int getSystolic() {
+        return systolic;
     }
 
-    public void addMeasurement(Measurement... measurements) {
-        for (Measurement m : measurements)
-            this.getMeasurements().add(m);
+    public void setSystolic(int systolic) {
+        this.systolic = systolic;
     }
 
-    public boolean addMeasurement(List<Measurement> measurement) {
-        return this.getMeasurements().addAll(measurement);
+    public int getDiastolic() {
+        return diastolic;
     }
 
-    public void setHasSent(int hasSent) {
-        this.hasSent = hasSent;
+    public void setDiastolic(int diastolic) {
+        this.diastolic = diastolic;
     }
 
-    public int getTypeId() {
-        return typeId;
+    public int getPulse() {
+        return pulse;
     }
 
-    public void setTypeId(int typeId) {
-        this.typeId = typeId;
+    public void setPulse(int pulse) {
+        this.pulse = pulse;
     }
 
-    public ToMany<ContextMeasurement> getContextMeasurements() {
-        return contextMeasurements;
+    public String getMeal() {
+        return meal;
     }
 
-    public ToMany<Measurement> getMeasurements() {
-        return measurements;
+    public void setMeal(String meal) {
+        this.meal = meal;
     }
 
-    public int getHasSent() {
-        return hasSent;
+    public ToMany<HeartRateItem> getDatasetDB() {
+        return datasetDB;
+    }
+
+    public void setDatasetDB(ToMany<HeartRateItem> datasetDB) {
+        this.datasetDB = datasetDB;
+    }
+
+    public ToOne<BodyFat> getBodyFatDB() {
+        return bodyFatDB;
+    }
+
+    public void setBodyFatDB(ToOne<BodyFat> bodyFatDB) {
+        this.bodyFatDB = bodyFatDB;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(value, unit, registrationDate);
+        return Objects.hash(timestamp, userId);
     }
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof Measurement))
-            return false;
-
-        Measurement other = (Measurement) o;
-
-        return other.value == this.value &&
-                other.getRegistrationDate() == this.getRegistrationDate() &&
-                other.user.equals(this.user) &&
-                other.device.equals(this.device);
+        if (!(o instanceof Measurement)) return false;
+        Measurement that = (Measurement) o;
+        return Objects.equals(timestamp, that.timestamp) &&
+                Objects.equals(userId, that.userId);
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "Measurement{" +
                 "id=" + id +
-                ", value='" + value + '\'' +
+                ", _id='" + _id + '\'' +
+                ", value=" + value +
                 ", unit='" + unit + '\'' +
-                ", registrationDate=" + registrationDate +
-                ", user=" + user +
-                ", device=" + device +
-                ", contextMeasurements=" + contextMeasurements +
-                ", typeId=" + typeId +
-                ", hasSent=" + hasSent +
+                ", type='" + type + '\'' +
+                ", timestamp='" + timestamp + '\'' +
+                ", userId='" + userId + '\'' +
+                ", deviceId='" + deviceId + '\'' +
+                ", bodyFat=" + bodyFat +
+                ", dataset=" + dataset +
+                ", systolic=" + systolic +
+                ", diastolic=" + diastolic +
+                ", pulse=" + pulse +
+                ", meal=" + meal +
+                ", datasetDB=" + datasetDB +
+                ", bodyFatDB=" + bodyFatDB +
                 '}';
     }
 }

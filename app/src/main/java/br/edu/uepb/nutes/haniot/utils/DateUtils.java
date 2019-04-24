@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 import java.util.TimeZone;
 
 import br.edu.uepb.nutes.haniot.R;
@@ -84,10 +85,9 @@ public final class DateUtils {
      * @return Date/Time formatted
      */
     public static String calendarToString(Calendar calendar, String format_date) {
-        if (format_date == null || calendar == null)
-            return null;
+        if (format_date == null || calendar == null) return null;
 
-        DateFormat dateFormat = new SimpleDateFormat(format_date);
+        DateFormat dateFormat = new SimpleDateFormat(format_date, Locale.getDefault());
         return dateFormat.format(calendar.getTime());
     }
 

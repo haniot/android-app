@@ -44,8 +44,8 @@ public class PatientDAO {
         return patientBox.query().equal(Patient_._id, _id).build().findFirst();
     }
 
-    public List<Patient> list(@NonNull String userId) {
-        return patientBox.query().equal(Patient_.userId, userId).build().find();
+    public List<Patient> list(@NonNull String healthProfessionalId) {
+        return patientBox.query().equal(Patient_.healthProfessionalId, healthProfessionalId).build().find();
     }
 
     public boolean save(@NonNull Patient patient) {

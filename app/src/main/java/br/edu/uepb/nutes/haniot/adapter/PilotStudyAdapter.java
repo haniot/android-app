@@ -23,14 +23,14 @@ import butterknife.ButterKnife;
 /**
  * Adapter from the RecyclerView to list the Pilots Studies.
  *
- * @author Copyright (c) 2018, NUTES/UEPB
+ * @author Copyright (c) 2019, NUTES/UEPB
  */
 public class PilotStudyAdapter extends BaseAdapter<PilotStudy> {
     private final String LOG = "PilotStudyAdapter";
     private final Context context;
 
     /**
-     * Contructor.
+     * Constructor.
      *
      * @param context {@link Context}
      */
@@ -82,9 +82,7 @@ public class PilotStudyAdapter extends BaseAdapter<PilotStudy> {
 
             // Click events
             h.mView.setOnClickListener(v -> {
-                if (PilotStudyAdapter.super.mListener != null) {
-                    PilotStudyAdapter.super.mListener.onItemClick(pilot);
-                }
+                if (super.mListener != null) super.mListener.onItemClick(pilot);
             });
 
             // call Animation function

@@ -77,18 +77,18 @@ public final class Historical<T> {
     private List<T> buildObjects(JSONObject data) {
         List<T> result = new ArrayList<>();
 
-        try {
-            if (type == HistoricalType.MEASUREMENTS_USER || type == HistoricalType.MEASUREMENTS_TYPE_USER
-                    || type == HistoricalType.MEASUREMENTS_DEVICE_USER) {
-                if (data.has(NameColumnsDB.MEASUREMENT)) {
-                    JSONArray arrayData = data.getJSONArray(NameColumnsDB.MEASUREMENT);
-                    for (int i = 0; i < arrayData.length(); i++)
-                        result.add((T) buildMeasurement(arrayData.getJSONObject(i)));
-                }
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            if (type == HistoricalType.MEASUREMENTS_USER || type == HistoricalType.MEASUREMENTS_TYPE_USER
+//                    || type == HistoricalType.MEASUREMENTS_DEVICE_USER) {
+//                if (data.has(NameColumnsDB.MEASUREMENT)) {
+//                    JSONArray arrayData = data.getJSONArray(NameColumnsDB.MEASUREMENT);
+//                    for (int i = 0; i < arrayData.length(); i++)
+//                        result.add((T) buildMeasurement(arrayData.getJSONObject(i)));
+//                }
+//            }
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
 
         return result;
     }
@@ -101,20 +101,20 @@ public final class Historical<T> {
      * @throws JSONException
      */
     private Measurement buildMeasurement(JSONObject o) throws JSONException {
-        Measurement m = new Measurement(
-                o.getDouble(NameColumnsDB.MEASUREMENT_VALUE),
-                o.getString(NameColumnsDB.MEASUREMENT_UNIT),
-                o.getLong(NameColumnsDB.MEASUREMENT_REGISTRATION_DATE),
-                o.getInt(NameColumnsDB.MEASUREMENT_TYPE_ID)
-        );
+//        Measurement m = new Measurement(
+//                o.getDouble(NameColumnsDB.MEASUREMENT_VALUE),
+//                o.getString(NameColumnsDB.MEASUREMENT_UNIT),
+//                o.getLong(NameColumnsDB.MEASUREMENT_REGISTRATION_DATE),
+//                o.getInt(NameColumnsDB.MEASUREMENT_TYPE_ID)
+//        );
+//
+//        if (o.has(NameColumnsDB.CONTEXT))
+//            m.addContext(buildContextMeasurement(o.getJSONArray(NameColumnsDB.CONTEXT)));
+//
+//        if (o.has(NameColumnsDB.MEASUREMENT))
+//            m.addMeasurement(buildMeasurements(o.getJSONArray(NameColumnsDB.MEASUREMENT)));
 
-        if (o.has(NameColumnsDB.CONTEXT))
-            m.addContext(buildContextMeasurement(o.getJSONArray(NameColumnsDB.CONTEXT)));
-
-        if (o.has(NameColumnsDB.MEASUREMENT))
-            m.addMeasurement(buildMeasurements(o.getJSONArray(NameColumnsDB.MEASUREMENT)));
-
-        return m;
+        return null;
     }
 
     /**
@@ -126,11 +126,11 @@ public final class Historical<T> {
      */
     private List<Measurement> buildMeasurements(JSONArray arrayData) throws JSONException {
         List<Measurement> result = new ArrayList<>();
-
-        for (int i = 0; i < arrayData.length(); i++) {
-            JSONObject o = arrayData.getJSONObject(i);
-            result.add(buildMeasurement(o));
-        }
+//
+//        for (int i = 0; i < arrayData.length(); i++) {
+//            JSONObject o = arrayData.getJSONObject(i);
+//            result.add(buildMeasurement(o));
+//        }
 
         return result;
     }
@@ -145,14 +145,14 @@ public final class Historical<T> {
     private List<ContextMeasurement> buildContextMeasurement(JSONArray arrayData) throws JSONException {
         List<ContextMeasurement> result = new ArrayList<>();
 
-        for (int i = 0; i < arrayData.length(); i++) {
-            JSONObject o = arrayData.getJSONObject(i);
-
-            result.add(new ContextMeasurement(
-                    o.getInt(NameColumnsDB.CONTEXT_VALUE_ID),
-                    o.getInt(NameColumnsDB.CONTEXT_TYPE_ID)
-            ));
-        }
+//        for (int i = 0; i < arrayData.length(); i++) {
+//            JSONObject o = arrayData.getJSONObject(i);
+//
+//            result.add(new ContextMeasurement(
+//                    o.getInt(NameColumnsDB.CONTEXT_VALUE_ID),
+//                    o.getInt(NameColumnsDB.CONTEXT_TYPE_ID)
+//            ));
+//        }
 
         return result;
     }

@@ -14,7 +14,6 @@ import java.util.Locale;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.adapter.base.BaseAdapter;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
-import br.edu.uepb.nutes.haniot.data.model.MeasurementType;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -22,16 +21,18 @@ import butterknife.ButterKnife;
 /**
  * Adapter from the RecyclerView to list the body composition.
  *
- * @author Douglas Rafael <douglasrafaelcg@gmail.com>
- * @version 1.0
- * @copyright Copyright (c) 2017, NUTES UEPB
+ * @author Copyright (c) 2019, NUTES/UEPB
  */
 public class BodyCompositionAdapter extends BaseAdapter<Measurement> {
-    private final String LOG = "BodyCompositionAdapter";
     private final Context context;
 
     private DecimalFormat decimalFormat;
 
+    /**
+     * Constructor.
+     *
+     * @param context {@link Context}
+     */
     public BodyCompositionAdapter(Context context) {
         this.context = context;
         this.decimalFormat = new DecimalFormat(context.getResources().getString(R.string.format_number2), new DecimalFormatSymbols(Locale.US));
@@ -55,27 +56,13 @@ public class BodyCompositionAdapter extends BaseAdapter<Measurement> {
 
             h.bodyMass.setText(decimalFormat.format(m.getValue()));
             h.unitBodyMass.setText(m.getUnit());
-            h.dayWeek.setText(DateUtils.formatDate(m.getRegistrationDate(), "EEEE"));
-            h.date.setText(DateUtils.formatDate(m.getRegistrationDate(),
-                    context.getString(R.string.datetime_format)));
+            h.dayWeek.setText(DateUtils.formatDateISO8601(m.getTimestamp(), "EEEE"));
+            h.date.setText(DateUtils.formatDateISO8601(m.getTimestamp(), context.getString(R.string.datetime_format)));
+            h.bodyFat.setText(decimalFormat.format(m.getBodyFat().getValue()));
 
-            /**
-             * Relations
-             */
-            for (Measurement parent : m.getMeasurements()) {
-                if (parent.getTypeId() == MeasurementType.BODY_FAT)
-                    h.bodyFat.setText(decimalFormat.format(parent.getValue()));
-            }
-
-            /**
-             * OnClick Item
-             */
-            h.mView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (BodyCompositionAdapter.super.mListener != null)
-                        BodyCompositionAdapter.super.mListener.onItemClick(m);
-                }
+            // OnClick Item
+            h.mView.setOnClickListener(v -> {
+                if (super.mListener != null) super.mListener.onItemClick(m);
             });
 
             // call Animation function

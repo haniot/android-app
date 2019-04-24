@@ -28,10 +28,7 @@
     <string name="temperature">Temperatura</string>
     <string name="weight">Peso</string>
     <string name="body_weight_scale">Escala de peso corporal</string>
-    <string name="heart_rate">Frequência Cardíaca</string>
     <string name="glucose">Glicose</string>
-    <string name="blood_pressure">Pressão Arterial</string>
-    <string name="body_composition">Composição Corporal</string>
     <string name="smart_band">Pulseira Inteligente</string>
     <string name="most_recent_entries">Entradas mais recentes</string>
     <string name="body_fat_title">Gordura Corporal</string>
@@ -218,6 +215,7 @@
     <string name="manage_patient">Gerenciar Pacientes</string>
     <string name="search">Pesquisar</string>
     <string name="unit_kilometer">KM</string>
+    <string name="key_temperature">key_temperature</string>
     <string name="key_weight">key_weight</string>
     <string name="key_blood_glucose">key_blood_glucose</string>
     <string name="key_blood_pressure">key_blood_pressure</string>
@@ -340,14 +338,6 @@
 
     <string name="title_activity_manage_children">ManageChildrenActivity</string>
 
-    <!-- Strings related to Settings -->
-
-    <!-- Example General settings -->
-
-    <!-- Example settings for Data & Sync -->
-
-    <!-- Example settings for Notifications -->
-
     <string-array name="measurement_context_types_array">
         <item>Glucose Carbohydrate</item>
         <item>Glucose Meal</item>
@@ -417,7 +407,15 @@
         <item>Smart Band</item>
     </string-array>
 
-    <!-- TokenExpirationService -->
+    <!-- MEASUREMENTS TYPES -->
+    <string name="thermometer">Termômetro</string>
+    <string name="glucometer">Glicosímetro</string>
+    <string name="body_composition">Balança</string>
+    <string name="blood_pressure">Pressão Sanguínea</string>
+    <string name="heart_rate">Frequência Cardíaca</string>
+    <string name="smartwatch">Smartwatch</string>
+    <string name="smartband">Smartband</string>
+    <!-- END MEASUREMENTS TYPES -->
 
     <!-- Patient Quiz -->
     <string name="message_info_patient">Informe os dados básicos do paciente:</string>

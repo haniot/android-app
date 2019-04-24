@@ -284,28 +284,28 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
                 }
 
             }
-            measurementValueAvarage /= measurements.size();
-            String unit = " " + measurements.get(0).getUnit();
-            String firstMeasurement = DateUtils.formatDate(measurements.get(0).getRegistrationDate(), getString(R.string.date_format));
-            String lastMeasurement = DateUtils.formatDate(measurements.get(measurements.size() - 1).getRegistrationDate(), getString(R.string.date_format));
+//            measurementValueAvarage /= measurements.size();
+//            String unit = " " + measurements.get(0).getUnit();
+//            String firstMeasurement = DateUtils.formatDate(measurements.get(0).getRegistrationDate(), getString(R.string.date_format));
+//            String lastMeasurement = DateUtils.formatDate(measurements.get(measurements.size() - 1).getRegistrationDate(), getString(R.string.date_format));
+//
+//            if (getTypeMeasurement() == MeasurementType.BLOOD_PRESSURE_DIASTOLIC
+//                    || getTypeMeasurement() == MeasurementType.HEART_RATE
+//                    || getTypeMeasurement() == MeasurementType.BLOOD_PRESSURE_SYSTOLIC
+//                    || getTypeMeasurement() == MeasurementType.BLOOD_GLUCOSE) {
+//                infos.add(new InfoMeasurement(getString(R.string.info_max), (int) measurementValueMax + unit));
+//                infos.add(new InfoMeasurement(getString(R.string.info_min), (int) measurementValueMin + unit));
+//                infos.add(new InfoMeasurement(getString(R.string.info_avarage), (int) measurementValueAvarage + unit));
+//            } else {
+//                infos.add(new InfoMeasurement(getString(R.string.info_max), (String.format("%.1f", measurementValueMax)) + unit));
+//                infos.add(new InfoMeasurement(getString(R.string.info_min), (String.format("%.1f", measurementValueMin)) + unit));
+//                infos.add(new InfoMeasurement(getString(R.string.info_avarage), (String.format("%.1f", measurementValueAvarage)) + unit));
+//            }
 
-            if (getTypeMeasurement() == MeasurementType.BLOOD_PRESSURE_DIASTOLIC
-                    || getTypeMeasurement() == MeasurementType.HEART_RATE
-                    || getTypeMeasurement() == MeasurementType.BLOOD_PRESSURE_SYSTOLIC
-                    || getTypeMeasurement() == MeasurementType.BLOOD_GLUCOSE) {
-                infos.add(new InfoMeasurement(getString(R.string.info_max), (int) measurementValueMax + unit));
-                infos.add(new InfoMeasurement(getString(R.string.info_min), (int) measurementValueMin + unit));
-                infos.add(new InfoMeasurement(getString(R.string.info_avarage), (int) measurementValueAvarage + unit));
-            } else {
-                infos.add(new InfoMeasurement(getString(R.string.info_max), (String.format("%.1f", measurementValueMax)) + unit));
-                infos.add(new InfoMeasurement(getString(R.string.info_min), (String.format("%.1f", measurementValueMin)) + unit));
-                infos.add(new InfoMeasurement(getString(R.string.info_avarage), (String.format("%.1f", measurementValueAvarage)) + unit));
-            }
-
-            if (firstMeasurement.equals(lastMeasurement))
-                infos.add(new InfoMeasurement(getString(R.string.info_period), firstMeasurement));
-            else
-                infos.add(new InfoMeasurement(getString(R.string.info_period), firstMeasurement + "\n-\n" + lastMeasurement));
+//            if (firstMeasurement.equals(lastMeasurement))
+//                infos.add(new InfoMeasurement(getString(R.string.info_period), firstMeasurement));
+//            else
+//                infos.add(new InfoMeasurement(getString(R.string.info_period), firstMeasurement + "\n-\n" + lastMeasurement));
         }
 
         return infos;

@@ -19,16 +19,14 @@ import butterknife.ButterKnife;
 /**
  * Adapter from the RecyclerView to list the available devices.
  *
- * @author Douglas Rafael <douglasrafaelcg@gmail.com>
- * @version 1.0
- * @copyright Copyright (c) 2017, NUTES UEPB
+ * @author Copyright (c) 2019, NUTES/UEPB
  */
 public class DeviceAdapter extends BaseAdapter<Device> {
     private final String LOG = "DeviceAdapter";
     private final Context context;
 
     /**
-     * Contructor.
+     * Constructor.
      *
      * @param context {@link Context}
      */

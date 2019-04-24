@@ -57,7 +57,8 @@ public class BloodPresssureChartActivity extends BaseChartActivity {
 
     @Override
     public int getTypeMeasurement() {
-        return MeasurementType.BLOOD_PRESSURE_SYSTOLIC;
+        return 0;
+//        return MeasurementType.BLOOD_PRESSURE_SYSTOLIC;
     }
 
     @Override
