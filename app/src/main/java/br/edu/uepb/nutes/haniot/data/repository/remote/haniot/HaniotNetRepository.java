@@ -161,20 +161,24 @@ public class HaniotNetRepository extends BaseNetRepository {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Single<List<Measurement>> getAllMeasurements(String userId, String type, String sort, int page, int limit) {
-        return haniotService.getAllMeasurements(userId, type, sort, page, limit)
+    public Single<List<Measurement>> getAllMeasurementsByType(String userId, String type,
+                                                              String sort, String dateStart,
+                                                              String dateEnd, int page, int limit) {
+        return haniotService.getAllMeasurements(userId, type, dateStart, dateEnd, sort, page, limit)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Single<List<Measurement>> getAllMeasurements(String userId, String sort,
+                                                        String dateStart, String dateEnd,
+                                                        int page, int limit) {
+        return haniotService.getAllMeasurements(userId, dateStart, dateEnd, sort, page, limit)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     public Single<Measurement> getMeasurement(String userId, String measurementId) {
         return haniotService.getMeasurement(userId, measurementId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-    }
-
-    public Single<Measurement> updateMeasurement(Measurement measurement) {
-        return haniotService.updateMeasurement(measurement.getUserId(), measurement.get_id(), measurement)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -200,12 +204,6 @@ public class HaniotNetRepository extends BaseNetRepository {
 
     public Single<Device> getDevice(String userId, String deviceId) {
         return haniotService.getDevice(userId, deviceId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-    }
-
-    public Single<Device> updateDevice(Device device) {
-        return haniotService.updateDevice(device.getUserId(), device.get_id(), device)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
