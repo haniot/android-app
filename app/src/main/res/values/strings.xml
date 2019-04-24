@@ -421,6 +421,7 @@
 
     <!-- Patient Quiz Nutrition -->
     <string name="message_info_patient">Informe os dados básicos do paciente:</string>
+    <string name="message_welcome_nutrition">Este questionário que você irá responder agora faz parte de uma pesquisa que tem como objetivo de conhecer alguns aspectos importantes da saúde dos(as) crianças e adolescentes que frequentam a clínica de odontologia da UEPB. Voce não será identificado(a).</string>
     <string name="q1" translatable="false">Na semana passada você praticou:</string>
     <string name="q2" translatable="false">Você faz educação física da escola?</string>
     <string name="q3" translatable="false">Você toma café da manhã?</string>
@@ -451,7 +452,7 @@
     <string name="category_4_desc">Agora você responderá questões sobre sua saúde de um modo geral.</string>
     <string name="category_5">Hábitos de Sono</string>
     <string name="category_5_desc">Agora você responderá a perguntas sobre sono.</string>
-    <string name="final_instructions">Você deve permanecer no seu lugar e informar o pesquisador que terminou de responder o questionario no tablet e ele o encaminhará para fazer as medições de peso, estatura, perimetro da cintura e pressão arterial.</string>
+    <string name="nutrition_final_instructions">Você deve permanecer no seu lugar e informar o pesquisador que terminou de responder o questionario no tablet e ele o encaminhará para fazer as medições de peso, estatura, perimetro da cintura e pressão arterial.</string>
     <string name="error_409_patient">Já possui um paciente cadastrado com esses dados!</string>
     <string name="remove_patient">Tem certeza que deseja remover o paciente?</string>
     <string name="add_measurement_message">Medição referente a %s para\n%s:</string>
@@ -641,7 +642,8 @@
         <item>Meia noite</item>
     </string-array>
 
-    <!-- Patient Quiz Odonto -->
+    <!-- Patient Odonto Quiz -->
+    <string name="message_welcome_odontology">"Este questionário que você irá responder agora faz parte de uma pesquisa que tem como objetivo de conhecer alguns aspectos importantes da saúde dos(as) crianças e adolescentes que frequentam a clínica de odontologia da UEPB. Voce não será identificado(a)."</string>
     <string name="question_1">Os membros da família pedem ajuda uns aos outros?</string>
     <string name="question_2">Aprovamos os amigos que cada um tem:</string>
     <string name="question_3">Gostamos de fazer coisas apenas com nossa família:</string>
@@ -650,23 +652,24 @@
     <string name="question_6">Os membros da família se sentem muito próximos uns aos outros:</string>
     <string name="question_7">Estamos todos presentes quando compartilhamos atividades em nossa família:</string>
     <string name="question_8">Facilmente nos ocorrem coisas que podemos fazer juntos, em família:</string>
-    <string name="question_9">Os membros da família consultam outras pessoas da família para tomarem suas decições:</string>
+    <string name="question_9">Os membros da família consultam outras pessoas da família para tomarem suas decisões:</string>
     <string name="question_10">A união familiar é muito importante:</string>
     <string name="question_11">Soma total coesão familiar:</string>
     <string name="question_12">Cor ou raça:</string>
     <string name="question_13">Escolaridade da mãe:</string>
     <string name="question_14">Número de pessoas morando em casa:</string>
     <string name="question_15">Quantas vezes seu filho escova os dentes ao dia?</string>
-    <string name="question_16">Apresenta cárie dentária cativada em dentes decíduos?</string>
-    <string name="question_17">Apresenta cárie dentária cativada em dentes permanentes?</string>
+    <string name="question_16">Apresenta cárie dentária cavitada em dentes decíduos?</string>
+    <string name="question_17">Apresenta cárie dentária cavitada em dentes permanentes?</string>
     <string name="question_18">Apresenta lesões de cárie do tipo mancha branca ativa em dentes decíduos?</string>
     <string name="question_19">Apresenta lesões de cárie do tipo mancha branca ativa em dentes permanentes?</string>
     <string name="category_sociodemographic">Sociodemográfico</string>
     <string name="category_sociodemographic_desc">As próximas perguntas referem-se a informações sociodemográicas.</string>
-   <string name="category_oralhealth">Saúde Bocal</string>
+    <string name="category_oralhealth">Saúde Bucal</string>
     <string name="category_oralhealth_desc">As próximas perguntas referem-se a sua saúde bocal.</string>
-   <string name="category_family_cohesion">Coesão Familiar</string>
+    <string name="category_family_cohesion">Coesão Familiar</string>
     <string name="category_family_cohesion_desc">As próximas perguntas referem-se a informações sobre a sua família.</string>
+    <string name="odontology_final_instructions">Você deve permanecer no seu lugar e informar o pesquisador que terminou de responder o questionario no tablet!</string>
 
     <string-array name="default_answers">
         <item>Quase nunca</item>

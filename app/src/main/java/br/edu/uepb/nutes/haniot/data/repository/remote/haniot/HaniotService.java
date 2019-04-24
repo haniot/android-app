@@ -3,13 +3,16 @@ package br.edu.uepb.nutes.haniot.data.repository.remote.haniot;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.data.model.Device;
+import br.edu.uepb.nutes.haniot.data.model.FamilyCohesionRecord;
 import br.edu.uepb.nutes.haniot.data.model.FeedingHabitsRecord;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.MedicalRecord;
+import br.edu.uepb.nutes.haniot.data.model.OralHealthRecord;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.PhysicalActivityHabit;
 import br.edu.uepb.nutes.haniot.data.model.PilotStudy;
 import br.edu.uepb.nutes.haniot.data.model.SleepHabit;
+import br.edu.uepb.nutes.haniot.data.model.SociodemographicRecord;
 import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.model.UserAccess;
 import io.reactivex.Completable;
@@ -28,7 +31,8 @@ import retrofit2.http.Query;
  * @author Copyright (c) 2018, NUTES/UEPB
  */
 public interface HaniotService {
-    String BASE_URL_HANIOT = "http://haniot.nutes.uepb.edu.br:8080"; // API GATEWAY LOCAL
+    String BASE_URL_HANIOT = "http://192.168.50.38"; // API GATEWAY LOCAL
+//    String BASE_URL_HANIOT = "http://haniot.nutes.uepb.edu.br:8080"; // API GATEWAY LOCAL
 
     // auth
     @POST("auth")
@@ -177,5 +181,43 @@ public interface HaniotService {
     Completable deleteMedicalRecord(
             @Path("patient_id") String patientId,
             @Path("medicalrecord_id") String medicalRecordId
+    );
+
+    // patients.familycohesionrecord
+    @POST("patients/{patient_id}/familycohesionrecords")
+    Single<FamilyCohesionRecord> addFamilyCohesionRecord(
+            @Path("patient_id") String patientId,
+            @Body FamilyCohesionRecord familyCohesionRecord
+    );
+
+    @DELETE("patients/{patient_id}/familycohesionrecords/{familycohesionrecord_id}")
+    Completable deleteFamilyCohesionRecord(
+            @Path("patient_id") String patientId,
+            @Path("familycohesionrecord_id") String familyCohesionRecordId
+    );
+
+    // patients.oralhealthrecords
+    @POST("patients/{patient_id}/oralhealthrecords")
+    Single<OralHealthRecord> addOralHealthRecord(
+            @Path("patient_id") String patientId,
+            @Body OralHealthRecord oralHealthRecord
+    );
+
+    @DELETE("patients/{patient_id}/oralhealthrecords/{oralhealthrecord_id}")
+    Completable deleteOralHealthRecord(
+            @Path("patient_id") String patientId,
+            @Path("oralhealthrecord_id") String oralhealthrecordId
+    );
+
+    // patients.sociodemographicrecord
+    @POST("patients/{patient_id}/sociodemographicrecords")
+    Single<SociodemographicRecord> addSociodemographicRecord(
+            @Path("patient_id") String patientId,
+            @Body SociodemographicRecord sociodemographicRecord
+    );
+    @DELETE("patients/{patient_id}/sociodemographicrecords/{sociodemographicrecord_id}")
+    Completable deleteSociodemographicRecord(
+            @Path("patient_id") String patientId,
+            @Path("sociodemographicrecord_id") String sociodemographicRecordId
     );
 }

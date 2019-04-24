@@ -7,6 +7,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.objectbox.annotation.Backlink;
@@ -24,15 +25,19 @@ public class OralHealthRecord {
     @Expose()
     private String _id;
 
+
+    @Expose(serialize = false, deserialize = false)
+    private String patientId;
+
     @SerializedName("created_at")
-    @Expose()
+    @Expose(serialize = false)
     private String createdAt;
 
     @SerializedName("teeth_brushing_freq")
     @Expose()
     private String teethBrushingFreq;
 
-    @SerializedName("toothLesions")
+    @SerializedName("teeth_lesions")
     @Expose()
     @Transient // not persisted
     private List<ToothLesion> toothLesions;
@@ -85,8 +90,16 @@ public class OralHealthRecord {
         return toothLesionsDB;
     }
 
-    public void setToothLesionsDB(List<ToothLesion> toothLesionsDB) {
-        this.toothLesionsDB.addAll(toothLesionsDB);
+    public void setToothLesionsDB(ToMany<ToothLesion> toothLesionsDB) {
+        this.toothLesionsDB = toothLesionsDB;
+    }
+
+    public String getPatientId() {
+        return patientId;
+    }
+
+    public void setPatientId(String patientId) {
+        this.patientId = patientId;
     }
 
     /**

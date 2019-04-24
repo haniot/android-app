@@ -19,17 +19,20 @@ public class SociodemographicRecord {
     @Expose()
     private String _id;
 
+    @Expose(serialize = false, deserialize = false)
+    private String patientId;
+
     @SerializedName("created_at")
-    @Expose()
+    @Expose(serialize = false)
     private String createdAt;
 
     @SerializedName("color_race")
     @Expose()
     private String colorRace;
 
-    @SerializedName("mother_scholarity")
+    @SerializedName("mother_schoolarity")
     @Expose()
-    private String motherScholarity;
+    private String motherSchoolarity;
 
     @SerializedName("people_in_home")
     @Expose()
@@ -70,12 +73,12 @@ public class SociodemographicRecord {
         this.colorRace = colorRace;
     }
 
-    public String getMotherScholarity() {
-        return motherScholarity;
+    public String getMotherSchoolarity() {
+        return motherSchoolarity;
     }
 
-    public void setMotherScholarity(String motherScholarity) {
-        this.motherScholarity = motherScholarity;
+    public void setMotherSchoolarity(String motherSchoolarity) {
+        this.motherSchoolarity = motherSchoolarity;
     }
 
     public int getPeopleInHome() {
@@ -84,6 +87,14 @@ public class SociodemographicRecord {
 
     public void setPeopleInHome(int peopleInHome) {
         this.peopleInHome = peopleInHome;
+    }
+
+    public String getPatientId() {
+        return patientId;
+    }
+
+    public void setPatientId(String patientId) {
+        this.patientId = patientId;
     }
 
     /**

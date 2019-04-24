@@ -40,18 +40,18 @@ import br.edu.uepb.nutes.simplesurvey.question.Single;
 import retrofit2.HttpException;
 
 /**
- * PatientQuizActivity implementation.
+ * QuizNutritionActivity implementation.
  *
  * @author Fábio Júnior <fabio.pequeno@nutes.uepb.edu.br>
  * @version 1.0
  * @copyright Copyright (c) 2019, NUTES UEPB
  */
-public class PatientQuizActivity extends SimpleSurvey implements Infor.OnInfoListener,
+public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoListener,
         Dichotomic.OnDichotomicListener, Single.OnSingleListener,
         Multiple.OnMultipleListener,
         Open.OnTextBoxListener {
 
-    private final String LOG_TAG = PatientQuizActivity.class.getSimpleName();
+    private final String LOG_TAG = QuizNutritionActivity.class.getSimpleName();
     private final int FIRST_PAGE = 0;
     private final int END_PAGE = -1;
     private final int CATEGORY_PHYSICAL_ACTIVITIES = 1;
@@ -196,7 +196,7 @@ public class PatientQuizActivity extends SimpleSurvey implements Infor.OnInfoLis
 
         //INTRO PAGE
         addQuestion(new Infor.Config()
-                .layout(R.layout.welcome)
+                .layout(R.layout.welcome_nutrition_quiz)
                 .colorBackground(getResources().getColor(R.color.colorPrimaryDark))
                 .nextQuestionAuto()
                 .pageNumber(FIRST_PAGE)
@@ -566,7 +566,7 @@ public class PatientQuizActivity extends SimpleSurvey implements Infor.OnInfoLis
         addQuestion(new Infor.Config()
                 .title(R.string.thank_you, Color.WHITE)
                 .titleTextSize(28)
-                .description(R.string.final_instructions)
+                .description(R.string.nutrition_final_instructions)
                 .descriptionTextSize(14)
                 .descriptionColor(Color.WHITE)
                 .colorBackground(getResources().getColor(R.color.colorPrimaryDark))

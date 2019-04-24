@@ -5,7 +5,7 @@ public class ToothLesionType {
     public static class ToothType {
 
         public static final String DECIDUOUS_TOOTH = "deciduous_tooth";
-        public static final String PERMANENT_TOOTH = "permanent_tooth ";
+        public static final String PERMANENT_TOOTH = "permanent_tooth";
 
         public static String getString(int type) {
             switch (type) {
@@ -22,7 +22,7 @@ public class ToothLesionType {
     public static class LesionType {
 
         public static final String WHITE_SPOT_LESION = "white_spot_lesion";
-        public static final String CAVITATED_LESION = "cavitated_lesion ";
+        public static final String CAVITATED_LESION = "cavitated_lesion";
 
         public static String getString(int type) {
             switch (type) {

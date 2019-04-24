@@ -33,7 +33,6 @@ import br.edu.uepb.nutes.haniot.data.model.PilotStudy;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
-import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.HttpException;
@@ -78,7 +77,7 @@ public class ManagerPatientsActivity extends AppCompatActivity {
 
         //TODO TEMP
         toolbar.setOnClickListener(v -> {
-            startActivity(new Intent(this, PatientQuizOdontoActivity.class));
+            startActivity(new Intent(this, QuizOdontologyActivity.class));
         });
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

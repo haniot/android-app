@@ -19,8 +19,11 @@ public class FamilyCohesionRecord {
     @Expose()
     private String _id;
 
+    @Expose(serialize = false, deserialize = false)
+    private String patientId;
+
     @SerializedName("created_at")
-    @Expose()
+    @Expose(serialize = false)
     private String createdAt;
 
     @SerializedName("family_mutual_aid_freq")
@@ -72,6 +75,10 @@ public class FamilyCohesionRecord {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public long getId() {
+        return id;
     }
 
     public String get_Id() {
@@ -176,6 +183,14 @@ public class FamilyCohesionRecord {
 
     public void setFamilyCohesionResult(int familyCohesionResult) {
         this.familyCohesionResult = familyCohesionResult;
+    }
+
+    public String getPatientId() {
+        return patientId;
+    }
+
+    public void setPatientId(String patientId) {
+        this.patientId = patientId;
     }
 
     /**

@@ -4,12 +4,12 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
+import android.text.InputType;
 import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
@@ -24,7 +24,6 @@ import br.edu.uepb.nutes.haniot.data.model.ToothLesionType;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
-import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import br.edu.uepb.nutes.simplesurvey.base.SimpleSurvey;
 import br.edu.uepb.nutes.simplesurvey.question.Dichotomic;
 import br.edu.uepb.nutes.simplesurvey.question.Infor;
@@ -34,18 +33,18 @@ import br.edu.uepb.nutes.simplesurvey.question.Single;
 import retrofit2.HttpException;
 
 /**
- * PatientQuizActivity implementation.
+ * QuizOdontologyActivity implementation.
  *
  * @author Fábio Júnior <fabio.pequeno@nutes.uepb.edu.br>
  * @version 1.0
  * @copyright Copyright (c) 2019, NUTES UEPB
  */
-public class PatientQuizOdontoActivity extends SimpleSurvey implements Infor.OnInfoListener,
+public class QuizOdontologyActivity extends SimpleSurvey implements Infor.OnInfoListener,
         Dichotomic.OnDichotomicListener, Single.OnSingleListener,
         Multiple.OnMultipleListener,
         Open.OnTextBoxListener {
 
-    private final String LOG_TAG = PatientQuizOdontoActivity.class.getSimpleName();
+    private final String LOG_TAG = QuizOdontologyActivity.class.getSimpleName();
     private final int FIRST_PAGE = 0;
     private final int END_PAGE = -1;
     private final int GATEGORY_FAMILY_COHESION = -2;
@@ -100,25 +99,48 @@ public class PatientQuizOdontoActivity extends SimpleSurvey implements Infor.OnI
     }
 
     private void saveFamilyCohesion() {
+        familyCohesionRecord.setPatientId(patient.get_id());
         int totalPoints = 0;
         for (Integer integer : points) {
             totalPoints += integer;
         }
         familyCohesionRecord.setFamilyCohesionResult(totalPoints);
-        familyCohesionRecord.setCreatedAt(DateUtils.getCurrentDateISO8601());
         familyCohesionRecord.toJson();
+
+        DisposableManager.add(haniotNetRepository
+                .saveFamilyCohesionRecord(familyCohesionRecord)
+                .doOnSubscribe(disposable -> Log.i(LOG_TAG, "Salvando familyCohesionRecord no servidor!"))
+                .doAfterTerminate(() -> Log.i(LOG_TAG, "familyCohesionRecord"))
+                .subscribe(familyCohesionRecord1 -> {
+                    Log.i(LOG_TAG, "Salvo familyCohesionRecord no servidor!");
+                }, this::errorHandler));
     }
 
     private void saveOralHealth() {
-        oralHealthRecord.setCreatedAt(DateUtils.getCurrentDateISO8601());
+        oralHealthRecord.setPatientId(patient.get_id());
         oralHealthRecord.setToothLesions(toothLesions);
-        oralHealthRecord.setToothLesionsDB(toothLesions);
         oralHealthRecord.toJson();
+
+        DisposableManager.add(haniotNetRepository
+                .saveOralHealthRecord(oralHealthRecord)
+                .doOnSubscribe(disposable -> Log.i(LOG_TAG, "Salvando oralHealthRecord no servidor!"))
+                .doAfterTerminate(() -> Log.i(LOG_TAG, "oralHealthRecord"))
+                .subscribe(oralHealthRecord1 -> {
+                    Log.i(LOG_TAG, "Salvo oralHealthRecord no servidor!");
+                }, this::errorHandler));
     }
 
     private void saveSociodemographic() {
-        sociodemographicRecord.setCreatedAt(DateUtils.getCurrentDateISO8601());
+        sociodemographicRecord.setPatientId(patient.get_id());
         sociodemographicRecord.toJson();
+
+        DisposableManager.add(haniotNetRepository
+                .saveSociodemographicRecord(sociodemographicRecord)
+                .doOnSubscribe(disposable -> Log.i(LOG_TAG, "Salvando sociodemographicRecord no servidor!"))
+                .doAfterTerminate(() -> Log.i(LOG_TAG, "sociodemographicRecord"))
+                .subscribe(sociodemographicRecord1 -> {
+                    Log.i(LOG_TAG, "Salvo sociodemographicRecord no servidor!");
+                }, this::errorHandler));
     }
 
     /**
@@ -132,7 +154,7 @@ public class PatientQuizOdontoActivity extends SimpleSurvey implements Infor.OnI
 
         //INTRO PAGE
         addQuestion(new Infor.Config()
-                .layout(R.layout.welcome)
+                .layout(R.layout.welcome_odontology_quiz)
                 .colorBackground(getResources().getColor(R.color.colorPrimaryDark))
                 .nextQuestionAuto()
                 .pageNumber(FIRST_PAGE)
@@ -183,6 +205,21 @@ public class PatientQuizOdontoActivity extends SimpleSurvey implements Infor.OnI
                 .build());
 
         addQuestion(new Single.Config()
+                .title(getString(R.string.question_3), Color.WHITE)
+                .titleTextSize(28)
+                .colorBackground(ContextCompat.getColor(this, R.color.colorAmber))
+                .description("")
+                .image(R.drawable.z_only_family)
+                .buttonClose(R.drawable.ic_action_close_dark)
+                .inputColorBackgroundTint(Color.WHITE)
+                .inputColorSelectedText(Color.WHITE)
+                .inputItems(parseAnswers(R.array.default_answers))
+                .inputDisableAddNewItem()
+                .nextQuestionAuto()
+                .pageNumber(3)
+                .build());
+
+        addQuestion(new Single.Config()
                 .title(getString(R.string.question_4), Color.WHITE)
                 .titleTextSize(28)
                 .colorBackground(ContextCompat.getColor(this, R.color.colorOrange))
@@ -194,7 +231,7 @@ public class PatientQuizOdontoActivity extends SimpleSurvey implements Infor.OnI
                 .inputItems(parseAnswers(R.array.default_answers))
                 .inputDisableAddNewItem()
                 .nextQuestionAuto()
-                .pageNumber(3)
+                .pageNumber(4)
                 .build());
 
         addQuestion(new Single.Config()
@@ -209,7 +246,7 @@ public class PatientQuizOdontoActivity extends SimpleSurvey implements Infor.OnI
                 .inputItems(parseAnswers(R.array.default_answers))
                 .inputDisableAddNewItem()
                 .nextQuestionAuto()
-                .pageNumber(4)
+                .pageNumber(5)
                 .build());
 
         addQuestion(new Single.Config()
@@ -224,7 +261,7 @@ public class PatientQuizOdontoActivity extends SimpleSurvey implements Infor.OnI
                 .inputItems(parseAnswers(R.array.default_answers))
                 .inputDisableAddNewItem()
                 .nextQuestionAuto()
-                .pageNumber(5)
+                .pageNumber(6)
                 .build());
 
         addQuestion(new Single.Config()
@@ -239,7 +276,7 @@ public class PatientQuizOdontoActivity extends SimpleSurvey implements Infor.OnI
                 .inputItems(parseAnswers(R.array.default_answers))
                 .inputDisableAddNewItem()
                 .nextQuestionAuto()
-                .pageNumber(6)
+                .pageNumber(7)
                 .build());
 
         addQuestion(new Single.Config()
@@ -254,7 +291,7 @@ public class PatientQuizOdontoActivity extends SimpleSurvey implements Infor.OnI
                 .inputItems(parseAnswers(R.array.default_answers))
                 .inputDisableAddNewItem()
                 .nextQuestionAuto()
-                .pageNumber(7)
+                .pageNumber(8)
                 .build());
 
         addQuestion(new Single.Config()
@@ -269,7 +306,7 @@ public class PatientQuizOdontoActivity extends SimpleSurvey implements Infor.OnI
                 .inputItems(parseAnswers(R.array.default_answers))
                 .inputDisableAddNewItem()
                 .nextQuestionAuto()
-                .pageNumber(8)
+                .pageNumber(9)
                 .build());
 
         addQuestion(new Single.Config()
@@ -284,7 +321,7 @@ public class PatientQuizOdontoActivity extends SimpleSurvey implements Infor.OnI
                 .inputItems(parseAnswers(R.array.default_answers))
                 .inputDisableAddNewItem()
                 .nextQuestionAuto()
-                .pageNumber(9)
+                .pageNumber(10)
                 .build());
 
         //CATEGORY SociodemographicRecord
@@ -313,7 +350,7 @@ public class PatientQuizOdontoActivity extends SimpleSurvey implements Infor.OnI
                 .inputItems(parseAnswers(R.array.race_answers))
                 .inputDisableAddNewItem()
                 .nextQuestionAuto()
-                .pageNumber(10)
+                .pageNumber(11)
                 .build());
 
         addQuestion(new Single.Config()
@@ -328,10 +365,10 @@ public class PatientQuizOdontoActivity extends SimpleSurvey implements Infor.OnI
                 .inputItems(parseAnswers(R.array.scholarity_answers))
                 .inputDisableAddNewItem()
                 .nextQuestionAuto()
-                .pageNumber(11)
+                .pageNumber(12)
                 .build());
 
-        addQuestion(new Single.Config()
+        addQuestion(new Open.Config()
                 .title(getString(R.string.question_14), Color.WHITE)
                 .titleTextSize(28)
                 .colorBackground(ContextCompat.getColor(this, R.color.colorBlue))
@@ -339,11 +376,9 @@ public class PatientQuizOdontoActivity extends SimpleSurvey implements Infor.OnI
                 .image(R.drawable.z_house)
                 .buttonClose(R.drawable.ic_action_close_dark)
                 .inputColorBackgroundTint(Color.WHITE)
-                .inputColorSelectedText(Color.WHITE)
-                .inputItems(parseAnswers(R.array.number6_answers))
-                .inputDisableAddNewItem()
+                .inputType(InputType.TYPE_CLASS_NUMBER)
                 .nextQuestionAuto()
-                .pageNumber(12)
+                .pageNumber(13)
                 .build());
 
         //CATEGORY OralHealthRecord
@@ -372,7 +407,7 @@ public class PatientQuizOdontoActivity extends SimpleSurvey implements Infor.OnI
                 .inputItems(parseAnswers(R.array.number3_answers))
                 .inputDisableAddNewItem()
                 .nextQuestionAuto()
-                .pageNumber(13)
+                .pageNumber(14)
                 .build());
 
         addQuestion(new Single.Config()
@@ -387,7 +422,7 @@ public class PatientQuizOdontoActivity extends SimpleSurvey implements Infor.OnI
                 .inputColorSelectedText(Color.WHITE)
                 .nextQuestionAuto()
                 .inputDisableAddNewItem()
-                .pageNumber(14)
+                .pageNumber(15)
                 .build());
 
         addQuestion(new Single.Config()
@@ -402,7 +437,7 @@ public class PatientQuizOdontoActivity extends SimpleSurvey implements Infor.OnI
                 .inputItems(parseAnswers(R.array.yes_not_answers))
                 .inputDisableAddNewItem()
                 .nextQuestionAuto()
-                .pageNumber(15)
+                .pageNumber(16)
                 .build());
 
         addQuestion(new Single.Config()
@@ -417,7 +452,7 @@ public class PatientQuizOdontoActivity extends SimpleSurvey implements Infor.OnI
                 .inputItems(parseAnswers(R.array.yes_not_answers))
                 .inputDisableAddNewItem()
                 .nextQuestionAuto()
-                .pageNumber(16)
+                .pageNumber(17)
                 .build());
 
         addQuestion(new Single.Config()
@@ -432,14 +467,14 @@ public class PatientQuizOdontoActivity extends SimpleSurvey implements Infor.OnI
                 .inputItems(parseAnswers(R.array.yes_not_answers))
                 .inputDisableAddNewItem()
                 .nextQuestionAuto()
-                .pageNumber(17)
+                .pageNumber(18)
                 .build());
 
         //END PAGE
         addQuestion(new Infor.Config()
                 .title(R.string.thank_you, Color.WHITE)
                 .titleTextSize(28)
-                .description(R.string.final_instructions)
+                .description(R.string.odontology_final_instructions)
                 .descriptionTextSize(14)
                 .descriptionColor(Color.WHITE)
                 .colorBackground(getResources().getColor(R.color.colorPrimaryDark))
@@ -481,7 +516,7 @@ public class PatientQuizOdontoActivity extends SimpleSurvey implements Infor.OnI
     }
 
     private void setPoint(int index, int value) {
-        points.add(index - 1, value);
+        points.add(index - 1, value + 1);
     }
 
     /**
@@ -503,7 +538,7 @@ public class PatientQuizOdontoActivity extends SimpleSurvey implements Infor.OnI
                 saveSociodemographic();
                 break;
             case END_PAGE:
-                saveOralHealth();g
+                saveOralHealth();
                 startActivity(new Intent(this, MainActivity.class));
                 finish();
                 break;
@@ -579,23 +614,15 @@ public class PatientQuizOdontoActivity extends SimpleSurvey implements Infor.OnI
                 sociodemographicRecord.setColorRace(SociodemographicType.ColorRace.getString(indexValue));
                 break;
             case 12:
-                sociodemographicRecord.setMotherScholarity(SociodemographicType.MotherScholarity.getString(indexValue));
-                break;
-            case 13:
-                oralHealthRecord.setTeethBrushingFreq(ToothLesionType.TeethBrushingFreq.getString(indexValue));
+                sociodemographicRecord.setMotherSchoolarity(SociodemographicType.MotherScholarity.getString(indexValue));
                 break;
             case 14:
-                if (indexValue == 0) {
-                    ToothLesion toothLesion = new ToothLesion();
-                    toothLesion.setToothType(ToothLesionType.ToothType.DECIDUOUS_TOOTH);
-                    toothLesion.setLesionType(ToothLesionType.LesionType.CAVITATED_LESION);
-                    toothLesions.add(toothLesion);
-                }
+                oralHealthRecord.setTeethBrushingFreq(ToothLesionType.TeethBrushingFreq.getString(indexValue));
                 break;
             case 15:
                 if (indexValue == 0) {
                     ToothLesion toothLesion = new ToothLesion();
-                    toothLesion.setToothType(ToothLesionType.ToothType.PERMANENT_TOOTH);
+                    toothLesion.setToothType(ToothLesionType.ToothType.DECIDUOUS_TOOTH);
                     toothLesion.setLesionType(ToothLesionType.LesionType.CAVITATED_LESION);
                     toothLesions.add(toothLesion);
                 }
@@ -603,12 +630,20 @@ public class PatientQuizOdontoActivity extends SimpleSurvey implements Infor.OnI
             case 16:
                 if (indexValue == 0) {
                     ToothLesion toothLesion = new ToothLesion();
+                    toothLesion.setToothType(ToothLesionType.ToothType.PERMANENT_TOOTH);
+                    toothLesion.setLesionType(ToothLesionType.LesionType.CAVITATED_LESION);
+                    toothLesions.add(toothLesion);
+                }
+                break;
+            case 17:
+                if (indexValue == 0) {
+                    ToothLesion toothLesion = new ToothLesion();
                     toothLesion.setToothType(ToothLesionType.ToothType.DECIDUOUS_TOOTH);
                     toothLesion.setLesionType(ToothLesionType.LesionType.WHITE_SPOT_LESION);
                     toothLesions.add(toothLesion);
                 }
                 break;
-            case 17:
+            case 18:
                 if (indexValue == 0) {
                     ToothLesion toothLesion = new ToothLesion();
                     toothLesion.setToothType(ToothLesionType.ToothType.PERMANENT_TOOTH);
@@ -644,7 +679,7 @@ public class PatientQuizOdontoActivity extends SimpleSurvey implements Infor.OnI
         Log.d(LOG_TAG, "onAnswerTextBox() | PAGE:  " + page
                 + " | ANSWER: " + value);
 
-        if (page == 14) {
+        if (page == 13) {
             sociodemographicRecord.setPeopleInHome(Integer.valueOf(value));
         }
     }

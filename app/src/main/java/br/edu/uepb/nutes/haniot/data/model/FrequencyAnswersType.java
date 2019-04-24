@@ -8,8 +8,7 @@ public class FrequencyAnswersType {
         public static final String RARELY = "rarely";
         public static final String SOMETIMES = "sometimes";
         public static final String OFTEN = "often";
-        public static final String ALMOST_AWAYS = "almost_aways ";
-
+        public static final String ALMOST_EVERYDAY = "almost_everyday";
 
         public static String getString(int type) {
             switch (type) {
@@ -22,37 +21,10 @@ public class FrequencyAnswersType {
                 case 3:
                     return OFTEN;
                 case 4:
-                    return ALMOST_AWAYS;
+                    return ALMOST_EVERYDAY;
                 default:
                     return "";
             }
         }
     }
-
-//    public static class Quantitative {
-//
-//        public static final String ALMOST_NEVER = "almost_never";
-//        public static final String RARELY = "rarely";
-//        public static final String SOMETIMES = "sometimes";
-//        public static final String OFTEN = "often";
-//        public static final String ALMOST_AWAYS = "almost_aways ";
-//
-//
-//        public static String getString(int type) {
-//            switch (type) {
-//                case 0:
-//                    return ALMOST_NEVER;
-//                case 1:
-//                    return RARELY;
-//                case 2:
-//                    return SOMETIMES;
-//                case 3:
-//                    return OFTEN;
-//                case 4:
-//                    return ALMOST_AWAYS;
-//                default:
-//                    return "";
-//            }
-//        }
-//    }
 }

@@ -171,7 +171,7 @@ public class PatientRegisterActivity extends AppCompatActivity {
                         }
                         patientDAO.save(patient);
                         appPreferencesHelper.saveLastPatient(patient);
-                        startActivity(new Intent(PatientRegisterActivity.this, PatientQuizActivity.class));
+                        startActivity(new Intent(PatientRegisterActivity.this, QuizNutritionActivity.class));
                         finish();
                     }, this::errorHandler));
     }

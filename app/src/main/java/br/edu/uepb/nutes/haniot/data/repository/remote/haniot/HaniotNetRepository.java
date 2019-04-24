@@ -10,13 +10,16 @@ import org.greenrobot.eventbus.EventBus;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.data.model.Device;
+import br.edu.uepb.nutes.haniot.data.model.FamilyCohesionRecord;
 import br.edu.uepb.nutes.haniot.data.model.FeedingHabitsRecord;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.MedicalRecord;
+import br.edu.uepb.nutes.haniot.data.model.OralHealthRecord;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.PhysicalActivityHabit;
 import br.edu.uepb.nutes.haniot.data.model.PilotStudy;
 import br.edu.uepb.nutes.haniot.data.model.SleepHabit;
+import br.edu.uepb.nutes.haniot.data.model.SociodemographicRecord;
 import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.model.UserAccess;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
@@ -94,6 +97,7 @@ public class HaniotNetRepository extends BaseNetRepository {
                     .getInstance(mContext).getUserLogged() != null) {
                 EventBus.getDefault().post("unauthorized");
             }
+//            Log.i("AAA", ":"+chain.proceed(chain.request()).body().string());
 
             return response;
         };
@@ -302,6 +306,60 @@ public class HaniotNetRepository extends BaseNetRepository {
 
     public Completable deleteMedicalRecord(String patientId, String medicalRecordId) {
         return haniotService.deleteMedicalRecord(patientId, medicalRecordId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    // pilotstudies.patients.familycohesionrecord
+    public Single<FamilyCohesionRecord> saveFamilyCohesionRecord(
+            FamilyCohesionRecord familyCohesionRecord) {
+        return haniotService
+                .addFamilyCohesionRecord(
+                        familyCohesionRecord.getPatientId(),
+                        familyCohesionRecord
+                )
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Completable deleteFamilyCohesionRecord(String patientId, String familyCohesionRecordId) {
+        return haniotService.deleteFamilyCohesionRecord(patientId, familyCohesionRecordId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    // pilotstudies.patients.oralhealthrecords
+    public Single<OralHealthRecord> saveOralHealthRecord(
+            OralHealthRecord oralhealthrecord) {
+        return haniotService
+                .addOralHealthRecord(
+                        oralhealthrecord.getPatientId(),
+                        oralhealthrecord
+                )
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Completable deleteOralHealthRecord(String patientId, String oralHealthRecordsId) {
+        return haniotService.deleteOralHealthRecord(patientId, oralHealthRecordsId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    // pilotstudies.patients.sociodemographicrecord
+    public Single<SociodemographicRecord> saveSociodemographicRecord(
+            SociodemographicRecord sociodemographicrecord) {
+        return haniotService
+                .addSociodemographicRecord(
+                        sociodemographicrecord.getPatientId(),
+                        sociodemographicrecord
+                )
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Completable deleteSociodemographicRecord(String patientId, String sociodemographicRecordId) {
+        return haniotService.deleteSociodemographicRecord(patientId, sociodemographicRecordId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

@@ -95,11 +95,11 @@
             android:name=".activity.PatientRegisterActivity"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".activity.PatientQuizActivity"
+            android:name=".activity.QuizNutritionActivity"
             android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".activity.PatientQuizOdontoActivity"
+            android:name=".activity.QuizOdontologyActivity"
             android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar"
             android:screenOrientation="portrait"/>
         <!-- ACTIVITIES REGISTER DEVICES -->
