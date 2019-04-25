@@ -112,7 +112,7 @@ public class QuizOdontologyActivity extends SimpleSurvey implements Infor.OnInfo
                 .doOnSubscribe(disposable -> Log.i(LOG_TAG, "Salvando familyCohesionRecord no servidor!"))
                 .doAfterTerminate(() -> Log.i(LOG_TAG, "familyCohesionRecord"))
                 .subscribe(familyCohesionRecord1 -> {
-                    Log.i(LOG_TAG, "Salvo familyCohesionRecord no servidor!");
+                    Log.i(LOG_TAG, "FamilyCohesionRecord saved in server!");
                 }, this::errorHandler));
     }
 
@@ -123,10 +123,10 @@ public class QuizOdontologyActivity extends SimpleSurvey implements Infor.OnInfo
 
         DisposableManager.add(haniotNetRepository
                 .saveOralHealthRecord(oralHealthRecord)
-                .doOnSubscribe(disposable -> Log.i(LOG_TAG, "Salvando oralHealthRecord no servidor!"))
+                .doOnSubscribe(disposable -> Log.i(LOG_TAG, "Saving oralHealthRecord in server!"))
                 .doAfterTerminate(() -> Log.i(LOG_TAG, "oralHealthRecord"))
                 .subscribe(oralHealthRecord1 -> {
-                    Log.i(LOG_TAG, "Salvo oralHealthRecord no servidor!");
+                    Log.i(LOG_TAG, "OralHealthRecord saved in server!");
                 }, this::errorHandler));
     }
 

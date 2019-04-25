@@ -2,32 +2,27 @@ package br.edu.uepb.nutes.haniot.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.ColorStateList;
-import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import br.edu.uepb.nutes.haniot.App;
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.activity.PatientRegisterActivity;
+import br.edu.uepb.nutes.haniot.activity.QuizNutritionActivity;
+import br.edu.uepb.nutes.haniot.activity.QuizOdontologyActivity;
 import br.edu.uepb.nutes.haniot.adapter.base.BaseAdapter;
-import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.PatientsType;
-import br.edu.uepb.nutes.haniot.utils.DateUtils;
-import br.edu.uepb.nutes.haniot.utils.Log;
+import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -35,6 +30,7 @@ public class ManagerPatientAdapter extends BaseAdapter<Patient> {
 
     private final String LOG = "ManagerPatientAdapter";
     private final Context context;
+    private AppPreferencesHelper appPreferencesHelper;
 
     /**
      * Contructor.
@@ -43,6 +39,7 @@ public class ManagerPatientAdapter extends BaseAdapter<Patient> {
      */
     public ManagerPatientAdapter(Context context) {
         this.context = context;
+        this.appPreferencesHelper = AppPreferencesHelper.getInstance(context);
     }
 
     private String calculateAge(String birthDate) {
@@ -103,10 +100,34 @@ public class ManagerPatientAdapter extends BaseAdapter<Patient> {
                 }
             });
 
-            h.btnDelete.setOnClickListener(v -> {
-                if (ManagerPatientAdapter.super.mListener != null) {
-                    ManagerPatientAdapter.super.mListener.onMenuContextClick(h.btnDelete, patient);
-                }
+            h.btnMore.setOnClickListener(v -> {
+                //creating a popup menu
+                PopupMenu popup = new PopupMenu(context, ((ManagerPatientViewHolder) holder).btnMore);
+                //inflating menu from xml resource
+                popup.inflate(R.menu.menu_patient_actions);
+                //adding click listener
+                popup.setOnMenuItemClickListener(item -> {
+                    switch (item.getItemId()) {
+                        case R.id.remove:
+                            if (ManagerPatientAdapter.super.mListener != null) {
+                                ManagerPatientAdapter.super.mListener.onMenuContextClick(h.btnMore, patient);
+                            }
+                            break;
+                        case R.id.nutrition_quiz:
+                            appPreferencesHelper.saveLastPatient(patient);
+                            context.startActivity(new Intent(context, QuizNutritionActivity.class));
+                            break;
+                        case R.id.odontotoly_quiz:
+                            appPreferencesHelper.saveLastPatient(patient);
+                            context.startActivity(new Intent(context, QuizOdontologyActivity.class));
+                            break;
+                        default:
+                            break;
+                    }
+                    return true;
+                });
+                //displaying the popup
+                popup.show();
             });
 
             h.btnEdit.setOnClickListener(v -> {
@@ -129,8 +150,8 @@ public class ManagerPatientAdapter extends BaseAdapter<Patient> {
 
         @BindView(R.id.btnEditChildren)
         ImageView btnEdit;
-        @BindView(R.id.btnDeleteChild)
-        ImageView btnDelete;
+        @BindView(R.id.btnMore)
+        ImageView btnMore;
         @BindView(R.id.textNameChildValue)
         TextView textName;
         @BindView(R.id.textAge)

@@ -165,7 +165,7 @@ public class ManagerPatientsActivity extends AppCompatActivity {
 
             @Override
             public void onMenuContextClick(View v, Patient item) {
-                if (v.getId() == R.id.btnDeleteChild) {
+                if (v.getId() == R.id.btnMore) {
                     new AlertDialog
                             .Builder(ManagerPatientsActivity.this)
                             .setMessage(getResources().getString(R.string.remove_patient))

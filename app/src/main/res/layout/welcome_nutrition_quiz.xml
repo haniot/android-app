@@ -15,7 +15,7 @@
         android:paddingRight="30dp">
 
         <ImageView
-            android:id="@+id/imageView5"
+            android:id="@+id/logo"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             app:srcCompat="@drawable/app_logo_dark" />
@@ -40,7 +40,7 @@
             android:textSize="20sp" />
 
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/icon"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_gravity="center"
@@ -54,7 +54,7 @@
             android:layout_width="250dp"
             android:layout_height="50dp"
             android:layout_gravity="center"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="100dp"
             android:background="@drawable/button_stylezed"
             android:text="Começar"
             android:textColor="@color/colorAccent"

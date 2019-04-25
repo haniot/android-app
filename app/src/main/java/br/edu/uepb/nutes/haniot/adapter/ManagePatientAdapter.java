@@ -249,7 +249,7 @@ public class ManagePatientAdapter extends RecyclerView.Adapter<ManagePatientAdap
 //        TextView textId;
         @BindView(R.id.btnEditChildren)
         ImageView btnEdit;
-        @BindView(R.id.btnDeleteChild)
+        @BindView(R.id.btnMore)
         ImageView btnDelete;
         @BindView(R.id.textNameChildValue)
         TextView textName;
