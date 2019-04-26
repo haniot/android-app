@@ -16,12 +16,12 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:screenOrientation="portrait"
-        android:usesCleartextTraffic="true"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
+        <activity android:name=".activity.EvaluationActivity"></activity>
         <!-- RECEIVER ACCOUNT SERVICE -->
-        <receiver android:name=".service.TokenExpirationService$TokenAlarmReceiver" />
-        <!-- ACTIVITIES -->
+        <receiver android:name=".service.TokenExpirationService$TokenAlarmReceiver" /> <!-- ACTIVITIES -->
         <activity android:name=".activity.WelcomeActivity" />
         <activity android:name=".activity.PilotStudyActivity" />
         <activity android:name=".activity.SplashScreenActivity">
@@ -96,13 +96,12 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name=".activity.QuizNutritionActivity"
-            android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar" />
         <activity
             android:name=".activity.QuizOdontologyActivity"
-            android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar"
-            android:screenOrientation="portrait"/>
-        <!-- ACTIVITIES REGISTER DEVICES -->
+            android:screenOrientation="portrait"
+            android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar" /> <!-- ACTIVITIES REGISTER DEVICES -->
         <activity android:name=".devices.register.DeviceRegisterActivity" />
         <activity android:name=".devices.register.DeviceManagerActivity" /> <!-- END ACTIVITIES REGISTER DEVICES -->
         <!-- SERVICES -->

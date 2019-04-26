@@ -101,11 +101,8 @@ public class ManagerPatientAdapter extends BaseAdapter<Patient> {
             });
 
             h.btnMore.setOnClickListener(v -> {
-                //creating a popup menu
                 PopupMenu popup = new PopupMenu(context, ((ManagerPatientViewHolder) holder).btnMore);
-                //inflating menu from xml resource
                 popup.inflate(R.menu.menu_patient_actions);
-                //adding click listener
                 popup.setOnMenuItemClickListener(item -> {
                     switch (item.getItemId()) {
                         case R.id.remove:
@@ -146,8 +143,8 @@ public class ManagerPatientAdapter extends BaseAdapter<Patient> {
     }
 
     public static class ManagerPatientViewHolder extends RecyclerView.ViewHolder {
-        final View mView;
 
+        final View mView;
         @BindView(R.id.btnEditChildren)
         ImageView btnEdit;
         @BindView(R.id.btnMore)

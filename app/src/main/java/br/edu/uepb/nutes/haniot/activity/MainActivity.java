@@ -17,8 +17,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
+
+import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.SettingsActivity;
@@ -46,6 +50,9 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
     @BindView(R.id.frameMeasurements)
     FrameLayout frameMeasurements;
 
+    @BindView(R.id.evaluation_odonto)
+    FloatingActionButton floatingActionMenu;
+
     private MeasurementsGridFragment measurementsGridFragment;
     private DashboardChartsFragment dashboardChartsFragment;
     private AppPreferencesHelper appPreferences;
@@ -66,6 +73,10 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
 
         IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
         registerReceiver(mReceiver, filter);
+
+        floatingActionMenu.setOnClickListener(v -> {
+                    startActivity(new Intent(MainActivity.this, EvaluationActivity.class));
+        });
     }
 
     private void loadDashboard() {
