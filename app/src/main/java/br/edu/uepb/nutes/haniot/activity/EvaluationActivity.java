@@ -1,11 +1,13 @@
 package br.edu.uepb.nutes.haniot.activity;
 
+import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -14,22 +16,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.adapter.EvaluationAdapter;
-import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
+import br.edu.uepb.nutes.haniot.adapter.EvaluationExpandableAdapter;
 import br.edu.uepb.nutes.haniot.data.model.Evaluation;
+import br.edu.uepb.nutes.haniot.data.model.GroupItemEvaluation;
 import br.edu.uepb.nutes.haniot.data.model.ItemEvaluation;
-import br.edu.uepb.nutes.haniot.data.model.Measurement;
+import br.edu.uepb.nutes.haniot.data.model.ItemGridType;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
+import br.edu.uepb.nutes.haniot.data.model.TypeEvaluation;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
+import br.edu.uepb.nutes.haniot.devices.GlucoseActivity;
+import br.edu.uepb.nutes.haniot.devices.HeartRateActivity;
+import br.edu.uepb.nutes.haniot.devices.ScaleActivity;
+import br.edu.uepb.nutes.haniot.devices.hdp.BloodPressureHDPActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class EvaluationActivity extends AppCompatActivity implements OnRecyclerViewListener<ItemEvaluation> {
+public class EvaluationActivity extends AppCompatActivity implements EvaluationExpandableAdapter.OnClick<ItemEvaluation> {
 
     @BindView(R.id.list_evaluation)
     RecyclerView evaluation;
-    EvaluationAdapter evaluationAdapter;
+    EvaluationExpandableAdapter evaluationAdapter;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.gender_icon)
@@ -39,8 +46,8 @@ public class EvaluationActivity extends AppCompatActivity implements OnRecyclerV
     @BindView(R.id.message_patient)
     TextView messagePatient;
 
+    private List<GroupItemEvaluation> groupItemEvaluations;
     private AppPreferencesHelper helper;
-    private List<ItemEvaluation> itemEvaluations;
     private Patient patient;
     HaniotNetRepository haniotNetRepository;
 
@@ -52,144 +59,18 @@ public class EvaluationActivity extends AppCompatActivity implements OnRecyclerV
 
         initResources();
         initViews();
-        initRecyclerView();
 
-        prepareMeasurementEvaluation();
+        prepareGlucoseMeasurement();
+        prepareBloodPressureMeasurement();
+        prepareHeartRateMeasurement();
+        prepareWeightMeasurement();
         prepareQuizNutritionEvaluation();
         prepareQuizOdontoEvaluation();
-        evaluationAdapter.addItems(itemEvaluations);
-
+        initRecyclerView();
     }
-
-    private String getTypeMeasurement(int type) {
-        return null;
-    }
-
-    private int getIcon(int type) {
-        //TODO implementar
-        return R.drawable.xshape;
-    }
-
-    private void prepareMeasurementEvaluation() {
-
-        //TESTE TODO get no servidor
-        ItemEvaluation header = new ItemEvaluation();
-        header.setTypeHeader(ItemEvaluation.TYPE_HEADER);
-        header.setTitle("Medições");
-        itemEvaluations.add(header);
-//
-//        for (Measurement measurement : measurementsServer) {
-//            ItemEvaluation itemEvaluation = new ItemEvaluation();
-//            itemEvaluation.setTypeHeader(ItemEvaluation.TYPE_EMPTY);
-//            itemEvaluation.setIcon(getIcon(measurement.getTypeId()));
-//            itemEvaluation.setTitle(getTypeMeasurement(measurement.getTypeId()));
-//            itemEvaluation.setQuizText("Sem registros! Clique para inserir.");
-//            itemEvaluations.add(itemEvaluation);
-//        }
-
-        ItemEvaluation itemEvaluation = new ItemEvaluation();
-        itemEvaluation.setTypeHeader(ItemEvaluation.TYPE_EMPTY);
-        itemEvaluation.setIcon(R.drawable.xcardiogram);
-        itemEvaluation.setTitle("Frequência Cardíaca");
-        itemEvaluation.setQuizText("Sem registros! Clique para inserir.");
-        itemEvaluations.add(itemEvaluation);
-
-        itemEvaluation = new ItemEvaluation();
-        itemEvaluation.setTypeHeader(ItemEvaluation.TYPE_MEASUREMENT);
-        itemEvaluation.setIcon(R.drawable.xweight);
-        itemEvaluation.setTitle("Peso");
-        itemEvaluation.setTime("12:23");
-        itemEvaluation.setDate("28 de Abril, 2019");
-        itemEvaluation.setValueMeasurement("76");
-        itemEvaluation.setUnitMeasurement("kg");
-        itemEvaluations.add(itemEvaluation);
-
-        itemEvaluation = new ItemEvaluation();
-        itemEvaluation.setTypeHeader(ItemEvaluation.TYPE_MEASUREMENT);
-        itemEvaluation.setIcon(R.drawable.xweight);
-        itemEvaluation.setTitle("Peso");
-        itemEvaluation.setTime("12:23");
-        itemEvaluation.setDate("29 de Abril, 2019");
-        itemEvaluation.setValueMeasurement("86");
-        itemEvaluation.setUnitMeasurement("kg");
-        itemEvaluations.add(itemEvaluation);
-
-        itemEvaluation = new ItemEvaluation();
-        itemEvaluation.setTypeHeader(ItemEvaluation.TYPE_MEASUREMENT);
-        itemEvaluation.setIcon(R.drawable.xglucosemeter);
-        itemEvaluation.setTitle("Glucose");
-        itemEvaluation.setTime("12:28");
-        itemEvaluation.setDate("28 de Abril, 2019");
-        itemEvaluation.setValueMeasurement("543");
-        itemEvaluation.setUnitMeasurement(getString(R.string.unit_glucose_mg_dL));
-        itemEvaluations.add(itemEvaluation);
-
-    }
-
-    private void prepareQuizOdontoEvaluation() {
-
-        //TESTE TODO get no servidor
-        ItemEvaluation header = new ItemEvaluation();
-        header.setTypeHeader(ItemEvaluation.TYPE_HEADER);
-        header.setTitle("Questionário Odontológico");
-        itemEvaluations.add(header);
-
-        ItemEvaluation itemEvaluation = new ItemEvaluation();
-        itemEvaluation.setTypeHeader(ItemEvaluation.TYPE_QUIZ);
-        itemEvaluation.setIcon(R.drawable.action_quiz);
-        itemEvaluation.setTitle("Questionário Odontológico");
-        itemEvaluation.setTime("12:23");
-        itemEvaluation.setDate("28 de Abril, 2019");
-        itemEvaluation.setQuizText("Respostas: bla bla bla bla bla bal balb alba sfgsdfsd sdfsdjfsdf sdfjsd fsdkjf sdkjfsdfsdfs ");
-        itemEvaluations.add(itemEvaluation);
-
-        itemEvaluation = new ItemEvaluation();
-        itemEvaluation.setTypeHeader(ItemEvaluation.TYPE_QUIZ);
-        itemEvaluation.setIcon(R.drawable.action_quiz);
-        itemEvaluation.setTitle("Questionário Odontológico");
-        itemEvaluation.setTime("12:34");
-        itemEvaluation.setDate("28 de Abril, 2019");
-        itemEvaluation.setQuizText("Respostas: bla bla bla bla bla bal b sds  dsd dsd sd sds alb alba sfgsdfsd sdfsdjfsdf sdfjsd fsdkjf sdkjfsdfsdfs ");
-        itemEvaluations.add(itemEvaluation);
-
-    }
-
-    private void prepareQuizNutritionEvaluation() {
-//        DisposableManager.add(haniotNetRepository
-//                .getAllMeasurements(patient.get_id(), ));
-
-        //TESTE TODO get no servidor
-
-        //HEADER
-        ItemEvaluation header = new ItemEvaluation();
-        header.setTypeHeader(ItemEvaluation.TYPE_HEADER);
-        header.setTitle("Questionário Nutricional");
-        itemEvaluations.add(header);
-
-        ItemEvaluation itemEvaluation = new ItemEvaluation();
-        itemEvaluation = new ItemEvaluation();
-        itemEvaluation.setTypeHeader(ItemEvaluation.TYPE_QUIZ);
-        itemEvaluation.setIcon(R.drawable.action_quiz);
-        itemEvaluation.setTitle("Questionário Nutricional");
-        itemEvaluation.setTime("12:23");
-        itemEvaluation.setDate("28 de Abril, 2019");
-        itemEvaluation.setQuizText("Respostas: bla bla bla bla bla bal basadfasdasdasdasdasdasdas dfsdd sdfv s s dlb alba sfgsdfsd sdfsdjfsdf sdfjsd fsdkjf sdkjfsdfsdfs ");
-        itemEvaluations.add(itemEvaluation);
-
-    }
-
-    private Evaluation prepareEvaluation() {
-        for (ItemEvaluation itemEvaluation : itemEvaluations) {
-            if (itemEvaluation.isChecked()) {
-
-            }
-        }
-        return null;
-    }
-
 
     private void initRecyclerView() {
-        evaluationAdapter = new EvaluationAdapter(this);
+        evaluationAdapter = new EvaluationExpandableAdapter(groupItemEvaluations, this);
         evaluation.setLayoutManager(new LinearLayoutManager(this));
         evaluationAdapter.setListener(this);
         evaluation.setAdapter(evaluationAdapter);
@@ -212,26 +93,225 @@ public class EvaluationActivity extends AppCompatActivity implements OnRecyclerV
     }
 
     private void initResources() {
+        groupItemEvaluations = new ArrayList<>();
         helper = AppPreferencesHelper.getInstance(this);
         haniotNetRepository = HaniotNetRepository.getInstance(this);
-        itemEvaluations = new ArrayList<>();
+//        itemEvaluations = new ArrayList<>();
         patient = helper.getLastPatient();
 
         sendEvaluation.setOnClickListener(v -> {
-            sendEvaluation(prepareEvaluation());
         });
     }
 
+    private void prepareHeartRateMeasurement() {
+        List<ItemEvaluation> itemEvaluations = new ArrayList<>();
+
+        //if (itemEvaluations.isEmpty()) {
+        if (true) {
+            ItemEvaluation itemEvaluation = new ItemEvaluation();
+            itemEvaluation.setTypeHeader(ItemEvaluation.TYPE_EMPTY);
+            itemEvaluation.setIcon(R.drawable.xcardiogram);
+            itemEvaluation.setTitle("Frequência Cardíaca");
+            itemEvaluation.setTypeEvaluation(TypeEvaluation.HEARTRATE);
+            itemEvaluation.setQuizText("Sem registros! Clique para inserir.");
+            itemEvaluations.add(itemEvaluation);
+        } else {
+
+            for (int i = 0; i <= 3; i++) {
+                //Teste
+                ItemEvaluation itemEvaluation = new ItemEvaluation();
+                itemEvaluation.setTypeHeader(ItemEvaluation.TYPE_EMPTY);
+                itemEvaluation.setIcon(R.drawable.xcardiogram);
+                itemEvaluation.setTitle("Frequência Cardíaca");
+                itemEvaluation.setTypeEvaluation(TypeEvaluation.HEARTRATE);
+                itemEvaluation.setQuizText("Sem registros! Clique para inserir.");
+                itemEvaluations.add(itemEvaluation);
+            }
+        }
+        GroupItemEvaluation groupItemEvaluation = new GroupItemEvaluation(getString(R.string.heart_rate), itemEvaluations);
+        groupItemEvaluations.add(groupItemEvaluation);
+
+    }
+
+
+    private void prepareBloodPressureMeasurement() {
+        List<ItemEvaluation> itemEvaluations = new ArrayList<>();
+
+        //if (itemEvaluations.isEmpty()) {
+        if (true) {
+            ItemEvaluation itemEvaluation = new ItemEvaluation();
+            itemEvaluation.setTypeHeader(ItemEvaluation.TYPE_EMPTY);
+            itemEvaluation.setIcon(R.drawable.xblood_pressure);
+            itemEvaluation.setTypeEvaluation(TypeEvaluation.BLOOD_PRESSURE);
+            itemEvaluation.setTitle("Pressão Arterial");
+            itemEvaluation.setQuizText("Sem registros! Clique para inserir.");
+            itemEvaluations.add(itemEvaluation);
+        } else {
+
+            for (int i = 0; i <= 3; i++) {
+
+                ItemEvaluation itemEvaluation = new ItemEvaluation();
+
+                itemEvaluation.setTypeHeader(ItemEvaluation.TYPE_MEASUREMENT);
+                itemEvaluation.setIcon(R.drawable.xblood_pressure);
+                itemEvaluation.setTypeEvaluation(TypeEvaluation.BLOOD_PRESSURE);
+                itemEvaluation.setTitle("Pressão Arterial");
+                itemEvaluation.setTime("12:23");
+                itemEvaluation.setDate("28 de Abril, 2019");
+                itemEvaluation.setValueMeasurement("76");
+                itemEvaluation.setUnitMeasurement(getString(R.string.unit_pressure));
+                itemEvaluations.add(itemEvaluation);
+            }
+
+        }
+        GroupItemEvaluation groupItemEvaluation = new GroupItemEvaluation(getString(R.string.blood_pressure), itemEvaluations);
+        groupItemEvaluations.add(groupItemEvaluation);
+
+    }
+
+
+    private void prepareWeightMeasurement() {
+        List<ItemEvaluation> itemEvaluations = new ArrayList<>();
+
+        //if (itemEvaluations.isEmpty()) {
+        if (true) {
+            ItemEvaluation itemEvaluation = new ItemEvaluation();
+            itemEvaluation.setTypeHeader(ItemEvaluation.TYPE_EMPTY);
+            itemEvaluation.setIcon(R.drawable.xweight);
+            itemEvaluation.setTypeEvaluation(TypeEvaluation.WEIGHT);
+            itemEvaluation.setTitle("Peso");
+            itemEvaluation.setQuizText("Sem registros! Clique para inserir.");
+            itemEvaluations.add(itemEvaluation);
+        } else {
+
+            for (int i = 0; i <= 3; i++) {
+
+                ItemEvaluation itemEvaluation = new ItemEvaluation();
+
+                itemEvaluation.setTypeHeader(ItemEvaluation.TYPE_MEASUREMENT);
+                itemEvaluation.setIcon(R.drawable.xweight);
+                itemEvaluation.setTypeEvaluation(TypeEvaluation.WEIGHT);
+                itemEvaluation.setTitle("Peso");
+                itemEvaluation.setTime("12:23");
+                itemEvaluation.setDate("28 de Abril, 2019");
+                itemEvaluation.setValueMeasurement("76");
+                itemEvaluation.setUnitMeasurement("kg");
+                itemEvaluations.add(itemEvaluation);
+            }
+        }
+        GroupItemEvaluation groupItemEvaluation = new GroupItemEvaluation(getString(R.string.weight), itemEvaluations);
+        groupItemEvaluations.add(groupItemEvaluation);
+
+    }
+
+    private void prepareGlucoseMeasurement() {
+        List<ItemEvaluation> itemEvaluations = new ArrayList<>();
+        //TESTE
+        for (int i = 0; i <= 3; i++) {
+            ItemEvaluation itemEvaluation = new ItemEvaluation();
+            itemEvaluation.setTypeHeader(ItemEvaluation.TYPE_MEASUREMENT);
+            itemEvaluation.setIcon(R.drawable.xglucosemeter);
+            itemEvaluation.setTypeEvaluation(TypeEvaluation.GLUCOSE);
+            itemEvaluation.setTitle("Glucose");
+            itemEvaluation.setTime("12:28");
+            itemEvaluation.setDate("28 de Abril, 2019");
+            itemEvaluation.setValueMeasurement("543");
+            itemEvaluation.setUnitMeasurement(getString(R.string.unit_glucose_mg_dL));
+            itemEvaluations.add(itemEvaluation);
+        }
+        GroupItemEvaluation groupItemEvaluation = new GroupItemEvaluation(getString(R.string.glucose), itemEvaluations);
+        groupItemEvaluations.add(groupItemEvaluation);
+
+    }
+
+    private void prepareQuizOdontoEvaluation() {
+
+        List<ItemEvaluation> itemEvaluations = new ArrayList<>();
+
+        ItemEvaluation itemEvaluation = new ItemEvaluation();
+        itemEvaluation.setTypeHeader(ItemEvaluation.TYPE_QUIZ);
+        itemEvaluation.setIcon(R.drawable.action_quiz);
+//        itemEvaluation.setTypeEvaluation(TypeEvaluation.FAMILY_COHESION);
+        itemEvaluation.setTitle("Coesão Familiar");
+        itemEvaluation.setTime("12:23");
+        itemEvaluation.setDate("28 de Abril, 2019");
+        itemEvaluation.setQuizText("Respostas: bla bla bla bla bla bal balb alba sfgsdfsd sdfsdjfsdf sdfjsd fsdkjf sdkjfsdfsdfs ");
+        itemEvaluations.add(itemEvaluation);
+
+        itemEvaluation = new ItemEvaluation();
+        itemEvaluation.setTypeHeader(ItemEvaluation.TYPE_QUIZ);
+        itemEvaluation.setIcon(R.drawable.action_quiz);
+        itemEvaluation.setTypeEvaluation(TypeEvaluation.ORAL_HEALTH);
+        itemEvaluation.setTitle("Saúde Bucal");
+        itemEvaluation.setTime("12:34");
+        itemEvaluation.setDate("28 de Abril, 2019");
+        itemEvaluation.setQuizText("Respostas: bla bla bla bla bla bal b sds  dsd dsd sd sds alb alba sfgsdfsd sdfsdjfsdf sdfjsd fsdkjf sdkjfsdfsdfs ");
+        itemEvaluations.add(itemEvaluation);
+
+
+        itemEvaluation = new ItemEvaluation();
+        itemEvaluation.setTypeHeader(ItemEvaluation.TYPE_EMPTY);
+        itemEvaluation.setIcon(R.drawable.action_quiz);
+        itemEvaluation.setTypeEvaluation(TypeEvaluation.SOCIODEMOGRAPHICS);
+        itemEvaluation.setTitle("Sociodemográfico");
+        itemEvaluations.add(itemEvaluation);
+
+        GroupItemEvaluation groupItemEvaluation = new GroupItemEvaluation("Questionário Odontológico", itemEvaluations);
+        groupItemEvaluations.add(groupItemEvaluation);
+
+    }
+
+    private void prepareQuizNutritionEvaluation() {
+
+        //TESTE TODO get no servidor
+        List<ItemEvaluation> itemEvaluations = new ArrayList<>();
+
+        ItemEvaluation itemEvaluation = new ItemEvaluation();
+        itemEvaluation.setTypeHeader(ItemEvaluation.TYPE_QUIZ);
+        itemEvaluation.setIcon(R.drawable.action_quiz);
+        itemEvaluation.setTitle("Hábitos Alimentares");
+        itemEvaluation.setTime("12:23");
+        itemEvaluation.setDate("28 de Abril, 2019");
+        itemEvaluation.setQuizText("Respostas: bla bla bla bla bla bal balb alba sfgsdfsd sdfsdjfsdf sdfjsd fsdkjf sdkjfsdfsdfs ");
+        itemEvaluations.add(itemEvaluation);
+
+        itemEvaluation = new ItemEvaluation();
+        itemEvaluation.setTypeHeader(ItemEvaluation.TYPE_QUIZ);
+        itemEvaluation.setIcon(R.drawable.action_quiz);
+        itemEvaluation.setTitle("Hábitos do Sono");
+        itemEvaluation.setTime("12:23");
+        itemEvaluation.setDate("28 de Abril, 2019");
+        itemEvaluation.setQuizText("Respostas: bla bla bla bla bla bal balb alba sfgsdfsd sdfsdjfsdf sdfjsd fsdkjf sdkjfsdfsdfs ");
+        itemEvaluations.add(itemEvaluation);
+
+        itemEvaluation = new ItemEvaluation();
+        itemEvaluation.setTypeHeader(ItemEvaluation.TYPE_QUIZ);
+        itemEvaluation.setIcon(R.drawable.action_quiz);
+        itemEvaluation.setTitle("Hábitos do Sono");
+        itemEvaluation.setTime("12:23");
+        itemEvaluation.setDate("28 de Abril, 2019");
+        itemEvaluation.setQuizText("Respostas: bla bla bla bla bla bal balb alba sfgsdfsd sdfsdjfsdf sdfjsd fsdkjf sdkjfsdfsdfs ");
+        itemEvaluations.add(itemEvaluation);
+
+
+        itemEvaluation = new ItemEvaluation();
+        itemEvaluation.setTypeHeader(ItemEvaluation.TYPE_EMPTY);
+        itemEvaluation.setIcon(R.drawable.action_quiz);
+        itemEvaluation.setTitle("Hábitos Físicos");
+        itemEvaluations.add(itemEvaluation);
+
+        GroupItemEvaluation groupItemEvaluation = new GroupItemEvaluation("Questionário Nutricional", itemEvaluations);
+        groupItemEvaluations.add(groupItemEvaluation);
+    }
+
     private void sendEvaluation(Evaluation evaluation) {
-//
-//        DisposableManager.add(haniotNetRepository.
-//                saveEvaluation());
         finish();
     }
 
     @Override
     public void onItemClick(ItemEvaluation item) {
         item.setChecked(!item.isChecked());
+        evaluationAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -242,5 +322,52 @@ public class EvaluationActivity extends AppCompatActivity implements OnRecyclerV
     @Override
     public void onMenuContextClick(View v, ItemEvaluation item) {
 
+    }
+
+    @Override
+    public void onAddMeasurementClick(String name, int type) {
+        Intent intent;
+        switch (type) {
+            case TypeEvaluation
+                    .GLUCOSE:
+                intent = new Intent(this, GlucoseActivity.class);
+                break;
+            case TypeEvaluation
+                    .HEARTRATE:
+                intent = new Intent(this, HeartRateActivity.class);
+                break;
+            case TypeEvaluation
+                    .BLOOD_PRESSURE:
+                intent = new Intent(this, BloodPressureHDPActivity.class);
+                break;
+
+            case TypeEvaluation
+                    .WEIGHT:
+                intent = new Intent(this, ScaleActivity.class);
+                break;
+
+            case TypeEvaluation
+                    .ANTROPOMETRICHS:
+                intent = new Intent(this, AddMeasurementActivity.class);
+                AppPreferencesHelper.getInstance(this)
+                        .saveInt(getResources().getString(R.string.measurementType), ItemGridType.ANTHROPOMETRIC);
+                break;
+
+            case TypeEvaluation
+                    .MEDICAL_RECORDS:
+                intent = new Intent(this, HeartRateActivity.class);
+                break;
+
+            case TypeEvaluation
+                    .ORAL_HEALTH:
+                intent = new Intent(this, HeartRateActivity.class);
+                break;
+
+            default:
+                return;
+        }
+
+        Log.i("AAA", "indo para " + name);
+        startActivity(intent);
     }
 }

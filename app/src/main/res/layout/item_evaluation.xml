@@ -82,7 +82,7 @@
                     android:layout_marginStart="45dp"
                     android:gravity="center_vertical"
                     android:text="97"
-                    android:textSize="18sp"
+                    android:textSize="24sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -115,7 +115,7 @@
                     android:layout_toEndOf="@+id/time_measuerement"
                     android:gravity="center_vertical"
                     android:text="12:30"
-                    android:textSize="12sp"
+                    android:textSize="16sp"
                     android:visibility="visible" />
 
                 <ImageView
@@ -137,7 +137,7 @@
                     android:layout_toEndOf="@+id/date_measuerement"
                     android:gravity="center_vertical"
                     android:text="26 de Abril, 2019"
-                    android:textSize="12sp"
+                    android:textSize="16sp"
                     android:visibility="visible" />
 
             </LinearLayout>

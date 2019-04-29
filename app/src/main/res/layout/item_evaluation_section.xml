@@ -14,10 +14,18 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="25dp"
         android:layout_marginEnd="1dp"
         android:text="@string/heart_rate"
         android:textAlignment="textStart"
         android:textSize="18sp" />
+
+    <ImageView
+        android:id="@+id/expand"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="25dp"
+        app:srcCompat="@drawable/ic_expand" />
 
 </RelativeLayout>
