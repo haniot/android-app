@@ -717,4 +717,6 @@
     <string name="chart">Gráficos</string>
     <string name="add_manually">Adicionar Manualmente</string>
 
+    <!-- EVALUATION -->
+    <string name="evaluation_message">Escolha os dados referentes a %s para a Avaliação \n%s:</string>
 </resources>

@@ -4,30 +4,20 @@
     android:id="@+id/layoutItemGrid"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?android:attr/selectableItemBackground">
-
-    <ImageView
-        android:id="@+id/imageItem"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="10dp"
-        android:contentDescription="@string/dash_item_description"
-        android:padding="4dp"
-        android:src="@drawable/category_quiz"
-        android:tint="@color/colorPrimary" />
+    android:background="?android:attr/selectableItemBackground"
+    android:padding="10dp">
 
 
     <TextView
-        android:id="@+id/textDescription"
+        android:id="@+id/category_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
-        android:layout_marginStart="7dp"
+        android:layout_marginStart="10dp"
         android:layout_marginEnd="1dp"
-        android:layout_toEndOf="@id/imageItem"
         android:text="@string/heart_rate"
         android:textAlignment="textStart"
-        android:textSize="16sp" />
+        android:textSize="18sp" />
 
 </RelativeLayout>

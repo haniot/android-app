@@ -19,7 +19,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activity.EvaluationActivity"></activity>
+        <activity android:name=".activity.EvaluationActivity"
+            android:parentActivityName=".activity.MainActivity"
+            ></activity>
         <!-- RECEIVER ACCOUNT SERVICE -->
         <receiver android:name=".service.TokenExpirationService$TokenAlarmReceiver" /> <!-- ACTIVITIES -->
         <activity android:name=".activity.WelcomeActivity" />

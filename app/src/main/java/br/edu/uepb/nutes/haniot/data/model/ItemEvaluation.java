@@ -1,8 +1,13 @@
 package br.edu.uepb.nutes.haniot.data.model;
 
 public class ItemEvaluation {
+    public static final int TYPE_HEADER = 1;
+    public static final int TYPE_MEASUREMENT = 2;
+    public static final int TYPE_QUIZ = 3;
+    public static final int TYPE_EMPTY = 4;
 
     private int icon;
+    private int typeHeader;
     private String title;
     private String quizText;
     private String valueMeasurement;
@@ -76,5 +81,13 @@ public class ItemEvaluation {
 
     public void setChecked(boolean checked) {
         this.checked = checked;
+    }
+
+    public int getType() {
+        return typeHeader;
+    }
+
+    public void setTypeHeader(int typeHeader) {
+        this.typeHeader = typeHeader;
     }
 }

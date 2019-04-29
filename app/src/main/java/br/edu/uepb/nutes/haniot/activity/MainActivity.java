@@ -75,7 +75,9 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
         registerReceiver(mReceiver, filter);
 
         floatingActionMenu.setOnClickListener(v -> {
-                    startActivity(new Intent(MainActivity.this, EvaluationActivity.class));
+            Intent intent = new Intent(MainActivity.this, EvaluationActivity.class);
+            intent.putExtra("type", "odonto");
+            startActivity(intent);
         });
     }
 
