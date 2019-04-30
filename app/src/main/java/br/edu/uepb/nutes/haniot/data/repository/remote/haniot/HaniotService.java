@@ -28,7 +28,8 @@ import retrofit2.http.Query;
  * @author Copyright (c) 2018, NUTES/UEPB
  */
 public interface HaniotService {
-    String BASE_URL_HANIOT = "http://haniot.nutes.uepb.edu.br:8080"; // API GATEWAY LOCAL
+    //String BASE_URL_HANIOT = "http://haniot.nutes.uepb.edu.br:8080"; // API GATEWAY
+    String BASE_URL_HANIOT = "http://192.168.0.106:8080"; // API GATEWAY LOCAL
 
     // auth
     @POST("auth")
@@ -96,7 +97,7 @@ public interface HaniotService {
     @POST("users/{user_id}/devices")
     Single<Device> addDevice(@Path("user_id") String userId, @Body Device device);
 
-    @GET("users/healthprofessionals/{user_id}/devices")
+    @GET("users/{user_id}/devices")
     Single<List<Device>> getAllDevices(@Path("user_id") String userId);
 
     @GET("users/{user_id}/devices/{device_id}")

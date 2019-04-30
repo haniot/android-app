@@ -266,6 +266,7 @@
     <string name="remove_device">Tem certeza que deseja remover %s?\nUma vez removido, não será possível recuperar os dados desse dispositivo.</string>
     <string name="remove">Remover</string>
     <string name="start_scanner">Iniciar scanner</string>
+    <string name="start_scanner_try">Tentar novamente</string>
     <string name="stop_scanner">Parar scanner</string>
     <string name="device_not_found_try_again">Dispositivo não encontrado tente novamente</string>
     <string name="no_devices_registered">Não há dispositivos cadastrados&#8230;</string>

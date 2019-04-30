@@ -15,9 +15,7 @@ import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
-import br.edu.uepb.nutes.haniot.data.model.ContextMeasurement;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
-import br.edu.uepb.nutes.haniot.data.model.dao.ContextMeasurementDAO;
 import br.edu.uepb.nutes.haniot.data.model.dao.MeasurementDAO;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 
@@ -164,25 +162,25 @@ public class SynchronizationServer {
         return result;
     }
 
-    /**
-     * @param contextMeasurements
-     * @return JsonArray
-     */
-    private JsonArray processContextMeasurement(List<ContextMeasurement> contextMeasurements) {
-        JsonArray result = new JsonArray();
-
-        if (contextMeasurements != null) {
-            for (ContextMeasurement c : contextMeasurements) {
-                JsonObject o = new JsonObject();
-                o.addProperty("valueId", c.getValueId());
-                o.addProperty("typeId", c.getTypeId());
-
-                result.add(o);
-            }
-        }
-
-        return result;
-    }
+//    /**
+//     * @param contextMeasurements
+//     * @return JsonArray
+//     */
+//    private JsonArray processContextMeasurement(List<ContextMeasurement> contextMeasurements) {
+//        JsonArray result = new JsonArray();
+//
+//        if (contextMeasurements != null) {
+//            for (ContextMeasurement c : contextMeasurements) {
+//                JsonObject o = new JsonObject();
+//                o.addProperty("valueId", c.getValueId());
+//                o.addProperty("typeId", c.getTypeId());
+//
+//                result.add(o);
+//            }
+//        }
+//
+//        return result;
+//    }
 
     /**
      * Sends all measurements not sent to the server.

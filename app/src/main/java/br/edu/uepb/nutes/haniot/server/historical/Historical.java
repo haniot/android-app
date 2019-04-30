@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
-import br.edu.uepb.nutes.haniot.data.model.ContextMeasurement;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import br.edu.uepb.nutes.haniot.server.Server;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
@@ -135,27 +134,27 @@ public final class Historical<T> {
         return result;
     }
 
-    /**
-     * Construct objects of the context measurement type from the JSONArray.
-     *
-     * @param arrayData JSONArray
-     * @return List<ContextMeasurement>
-     * @throws JSONException
-     */
-    private List<ContextMeasurement> buildContextMeasurement(JSONArray arrayData) throws JSONException {
-        List<ContextMeasurement> result = new ArrayList<>();
-
-//        for (int i = 0; i < arrayData.length(); i++) {
-//            JSONObject o = arrayData.getJSONObject(i);
+//    /**
+//     * Construct objects of the context measurement type from the JSONArray.
+//     *
+//     * @param arrayData JSONArray
+//     * @return List<ContextMeasurement>
+//     * @throws JSONException
+//     */
+//    private List<ContextMeasurement> buildContextMeasurement(JSONArray arrayData) throws JSONException {
+//        List<ContextMeasurement> result = new ArrayList<>();
 //
-//            result.add(new ContextMeasurement(
-//                    o.getInt(NameColumnsDB.CONTEXT_VALUE_ID),
-//                    o.getInt(NameColumnsDB.CONTEXT_TYPE_ID)
-//            ));
-//        }
-
-        return result;
-    }
+////        for (int i = 0; i < arrayData.length(); i++) {
+////            JSONObject o = arrayData.getJSONObject(i);
+////
+////            result.add(new ContextMeasurement(
+////                    o.getInt(NameColumnsDB.CONTEXT_VALUE_ID),
+////                    o.getInt(NameColumnsDB.CONTEXT_TYPE_ID)
+////            ));
+////        }
+//
+//        return result;
+//    }
 
     public static class Query {
         final char SEPARATOR = '&';

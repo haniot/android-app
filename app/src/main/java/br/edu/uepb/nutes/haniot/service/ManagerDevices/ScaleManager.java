@@ -64,7 +64,6 @@ public class ScaleManager extends BluetoothManager {
                 bodyMass = Integer.valueOf(String.format("%02X", data[8]) +
                         String.format("%02X", data[9]), 16) * 0.01f;
 
-
                 // Finalized
                 if (isFinalized) {
                     // finished weighing

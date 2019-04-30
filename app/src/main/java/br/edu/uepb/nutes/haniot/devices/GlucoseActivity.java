@@ -40,18 +40,11 @@ import android.widget.Toast;
 
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
-import org.json.JSONObject;
-
-import java.util.List;
-
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.AddMeasurementActivity;
 import br.edu.uepb.nutes.haniot.activity.charts.GlucoseChartActivity;
 import br.edu.uepb.nutes.haniot.adapter.GlucoseAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
-import br.edu.uepb.nutes.haniot.data.model.ContextMeasurement;
-import br.edu.uepb.nutes.haniot.data.model.ContextMeasurementType;
-import br.edu.uepb.nutes.haniot.data.model.ContextMeasurementValueType;
 import br.edu.uepb.nutes.haniot.data.model.Device;
 import br.edu.uepb.nutes.haniot.data.model.DeviceType;
 import br.edu.uepb.nutes.haniot.data.model.ItemGridType;
@@ -61,9 +54,6 @@ import br.edu.uepb.nutes.haniot.data.model.dao.DeviceDAO;
 import br.edu.uepb.nutes.haniot.data.model.dao.MeasurementDAO;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
-import br.edu.uepb.nutes.haniot.server.historical.CallbackHistorical;
-import br.edu.uepb.nutes.haniot.server.historical.Historical;
-import br.edu.uepb.nutes.haniot.server.historical.HistoricalType;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.GlucoseManager;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.BloodGlucoseDataCallback;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
@@ -562,19 +552,19 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
         return true;
     }
 
-    /**
-     * Recover text from context value meal.
-     *
-     * @param contextMeasurements
-     * @return String
-     */
-    public String mealToString(List<ContextMeasurement> contextMeasurements) {
-        for (ContextMeasurement c : contextMeasurements) {
-            if (c.getTypeId() == ContextMeasurementType.GLUCOSE_MEAL)
-                return ContextMeasurementValueType.getString(this, c.getValueId());
-        }
-        return "";
-    }
+//    /**
+//     * Recover text from context value meal.
+//     *
+//     * @param contextMeasurements
+//     * @return String
+//     */
+//    public String mealToString(List<ContextMeasurement> contextMeasurements) {
+//        for (ContextMeasurement c : contextMeasurements) {
+//            if (c.getTypeId() == ContextMeasurementType.GLUCOSE_MEAL)
+//                return ContextMeasurementValueType.getString(this, c.getValueId());
+//        }
+//        return "";
+//    }
 
     /**
      * Convert value glucose for String.

@@ -28,7 +28,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
+import androidx.annotation.RequiresApi;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,7 +41,8 @@ import br.edu.uepb.nutes.haniot.data.model.Device;
 import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.model.dao.DeviceDAO;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
-import br.edu.uepb.nutes.haniot.server.Server;
+import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
+import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.haniot.utils.GattAttributes;
 import br.edu.uepb.nutes.simpleblescanner.SimpleBleScanner;
 import br.edu.uepb.nutes.simpleblescanner.SimpleScannerCallback;
@@ -50,7 +51,7 @@ import butterknife.ButterKnife;
 import pl.bclogic.pulsator4droid.library.PulsatorLayout;
 
 public class DeviceRegisterActivity extends AppCompatActivity implements View.OnClickListener {
-    private final String TAG = "DeviceRegisterActivity ";
+    private final String LOG_TAG = "DeviceRegisterActivity ";
 
     private final String NAME_DEVICE_THERM_DL8740 = "Ear Thermometer DL8740";
     private final String NAME_DEVICE_GLUCOMETER_PERFORMA = "Accu-Chek Performa Connect";
@@ -67,8 +68,8 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     private SimpleBleScanner mScanner;
     private Device mDevice;
     private DeviceDAO mDeviceDAO;
-    private Server server;
     private AppPreferencesHelper appPreferences;
+    private HaniotNetRepository haniotRepository;
     private BluetoothDevice btDevice;
     private User user;
 
@@ -125,10 +126,9 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         setContentView(R.layout.activity_device_register);
         ButterKnife.bind(this);
 
-        server = Server.getInstance(this);
-        appPreferences = AppPreferencesHelper.getInstance(this);
         mDeviceDAO = DeviceDAO.getInstance(this);
-
+        appPreferences = AppPreferencesHelper.getInstance(this);
+        haniotRepository = HaniotNetRepository.getInstance(this);
 
         btnDeviceRegisterScanner.setOnClickListener(this);
         btnDeviceRegisterStop.setOnClickListener(this);
@@ -148,7 +148,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         registerReceiver(mBroadcastReceiver, filter);
 
         user = appPreferences.getUserLogged();
-        if (user == null) {
+        if (user == null || user.get_id() == null) {
             finish();
             return;
         }
@@ -165,7 +165,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     @Override
 
     protected void onDestroy() {
-        Log.d(TAG, "onDestroy: called.");
+        Log.d(LOG_TAG, "onDestroy: called.");
         super.onDestroy();
         unregisterReceiver(mBroadcastReceiver);
     }
@@ -175,12 +175,8 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
      * Required bluetooth ble and location.
      */
     private void checkPermissions() {
-        if (!BluetoothAdapter.getDefaultAdapter().isEnabled()) {
-            requestBluetoothEnable();
-        }
-        if (!hasLocationPermissions()) {
-            requestLocationPermission();
-        }
+        if (!BluetoothAdapter.getDefaultAdapter().isEnabled()) requestBluetoothEnable();
+        if (!hasLocationPermissions()) requestLocationPermission();
     }
 
     /**
@@ -232,29 +228,23 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     }
 
     public final SimpleScannerCallback mScanCallback = new SimpleScannerCallback() {
+        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         @Override
         public void onScanResult(int callbackType, @NonNull ScanResult scanResult) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                btDevice = scanResult.getDevice();
-            }
+            mScanner.stopScan();
+            btDevice = scanResult.getDevice();
             if (btDevice == null) {
-                mScanner.stopScan();
                 return;
             }
-            Log.d(TAG, "onScanResult: " + btDevice.getName());
-            mScanner.stopScan();
+            Log.d(LOG_TAG, "onScanResult: " + btDevice.getName());
 
-            //removes a device from the local database and server
+            // removes a device from the local database and server
             mDevice.setAddress(btDevice.getAddress());
             if (removeDeviceForType(mDevice)) {
-                if (unpairDevice(mDevice)) {
-                    btDevice.createBond();
-                }
+                if (unpairDevice(mDevice)) btDevice.createBond();
             } else {
                 if (btDevice.getBondState() == BluetoothDevice.BOND_BONDED) {
-                    if (unpairDevice(mDevice)) {
-                        btDevice.createBond();
-                    }
+                    if (unpairDevice(mDevice)) btDevice.createBond();
                 } else {
                     btDevice.createBond();
                 }
@@ -294,7 +284,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
 
                 //case1: bonded already
                 if (mBluetoothDevice.getBondState() == BluetoothDevice.BOND_BONDED) {
-                    Log.d(TAG, "BroadcastReceiver: BOND_BONDED.");
+                    Log.d(LOG_TAG, "BroadcastReceiver: BOND_BONDED.");
                     deviceAvailable(mBluetoothDevice);
 
                     if (mBluetoothDevice.getName().equals(NAME_DEVICE_YUNMAI)) {
@@ -303,7 +293,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
                 }
                 //case2: creating a bone
                 if (mBluetoothDevice.getBondState() == BluetoothDevice.BOND_BONDING) {
-                    Log.d(TAG, "BroadcastReceiver: BOND_BONDING. " + mBluetoothDevice.getName());
+                    Log.d(LOG_TAG, "BroadcastReceiver: BOND_BONDING. " + mBluetoothDevice.getName());
                     deviceConnectionStatus.setText(R.string.pairing_device);
                     progressBarPairing.setVisibility(View.VISIBLE);
                     btnDeviceRegisterScanner.setEnabled(false);
@@ -317,14 +307,14 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
                 }
                 //case3: breaking a bond
                 if (mBluetoothDevice.getBondState() == BluetoothDevice.BOND_NONE) {
-                    Log.d(TAG, "BroadcastReceiver: BOND_NONE.");
+                    Log.d(LOG_TAG, "BroadcastReceiver: BOND_NONE.");
 
                     if (mBluetoothDevice.getName().equals(NAME_DEVICE_YUNMAI)) {
                         unregisterReceiver(broadCastReceiver);
                     }
                     deviceConnectionStatus.setText(R.string.failed_pairing_device);
                     btnDeviceRegisterScanner.setEnabled(true);
-                    btnDeviceRegisterScanner.setText(R.string.device_not_found_try_again);
+                    btnDeviceRegisterScanner.setText(R.string.start_scanner_try);
                     progressBarPairing.setVisibility(View.INVISIBLE);
                 }
             }
@@ -343,7 +333,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
                 bluetoothDevice.setPin(PIN_YUNMAI.getBytes());
                 //does not display the pairing request for the user
                 abortBroadcast();
-                Log.e(TAG, "Auto-entering pin: " + PIN_YUNMAI);
+                Log.e(LOG_TAG, "Auto-entering pin: " + PIN_YUNMAI);
             }
         }
     };
@@ -397,16 +387,9 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     public void deviceAvailable(BluetoothDevice device) {
         if (device != null) {
             mDevice.setAddress(device.getAddress());
+            mDevice.setUserId(user.get_id());
             // Save in the server
             saveDeviceRegister(mDevice);
-            mPulsatorLayout.stop();
-            deviceSuccessfullyRegistered.setText(
-                    getString(R.string.device_registered_success,
-                            device.getName())
-            );
-            boxRegister.setVisibility(View.GONE);
-            boxScanner.setVisibility(View.GONE);
-            boxResponse.setVisibility(View.VISIBLE);
         } else {
             nameDeviceScannerRegister.setText(mDevice.getName());
             deviceConnectionStatus.setText(R.string.device_not_found_try_again);
@@ -435,7 +418,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         int id = v.getId();
 
         if (id == R.id.btn_device_register_scanner) {
-            Log.d(TAG, "onClick: start scanner");
+            Log.d(LOG_TAG, "onClick: start scanner");
             if (mScanner != null) {
                 mScanner.stopScan();
                 animationScanner(true);
@@ -443,7 +426,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
             }
 
         } else if (id == R.id.btn_device_register_stop) {
-            Log.d(TAG, "onClick: stop scanner");
+            Log.d(LOG_TAG, "onClick: stop scanner");
             animationScanner(false);
             mScanner.stopScan();
         } else if (id == R.id.btn_close_register) {
@@ -478,20 +461,25 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
      * @param device {@link Device}
      */
     public void saveDeviceRegister(final Device device) {
-        String path = "devices/".concat("/users/").concat(user.get_id());
-        server.post(path, this.deviceToJson(device), new Server.Callback() {
-            @Override
-            public void onError(JSONObject result) {
-            }
+        DisposableManager.add(
+                haniotRepository
+                        .saveDevice(device)
+                        .subscribe(deviceRes -> {
+//                            mDevice.setImg(device.getImg());
+                            deviceRes.setUserId(user.get_id());
+                            mDeviceDAO.save(deviceRes);
 
-            @Override
-            public void onSuccess(JSONObject result) {
-                Device mDevice = new Gson().fromJson(String.valueOf(result), Device.class);
-                mDevice.setImg(device.getImg());
-                mDevice.setUserId(user.get_id());
-                mDeviceDAO.save(mDevice);
-            }
-        });
+                            deviceSuccessfullyRegistered.setText(
+                                    getString(R.string.device_registered_success, device.getName())
+                            );
+                            mPulsatorLayout.stop();
+                            boxRegister.setVisibility(View.GONE);
+                            boxScanner.setVisibility(View.GONE);
+                            boxResponse.setVisibility(View.VISIBLE);
+                        }, err -> {
+                            Log.w(LOG_TAG, "ERROR SAVE DEVICE: " + err.getMessage());
+                        })
+        );
     }
 
     /**
@@ -505,31 +493,19 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         for (Device d : mDeviceDAO.list(user.get_id())) {
             if (d.getType().equals(device.getType())) {
                 confirmed = true;
-                String path = "devices/"
-                        .concat(d.get_id())
-                        .concat("/users/")
-                        .concat(user.get_id());
-
-                server.delete(path, new Server.Callback() {
-                    @Override
-                    public void onError(JSONObject result) {
-                        Log.d(TAG, "onError: ");
-                    }
-
-                    @Override
-                    public void onSuccess(JSONObject result) {
-                        try {
-                            if (result.has("code") && result.getInt("code") == 204) {
-                                mDeviceDAO.remove(d.getAddress());
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
+                DisposableManager.add(
+                        haniotRepository
+                                .deleteDevice(user.get_id(), d.get_id())
+                                .subscribe(() -> {
+                                    mDeviceDAO.remove(d.getAddress());
+                                }, err -> {
+                                    Log.w(LOG_TAG, "ERROR DELETE DEVICE: " + err.getMessage());
+                                })
+                );
             }
+            if (confirmed) return true;
         }
-        return confirmed;
+        return false;
     }
 
     private boolean unpairDevice(Device device) {
@@ -543,7 +519,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
                 m.invoke(mBluetoothDevice, (Object[]) null);
                 confirmed = true;
             } catch (Exception e) {
-                Log.d(TAG, "error removing pairing " + e.getMessage());
+                Log.d(LOG_TAG, "error removing pairing " + e.getMessage());
             }
         }
         return confirmed;
