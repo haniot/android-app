@@ -2,7 +2,6 @@ package br.edu.uepb.nutes.haniot.adapter;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,27 +21,21 @@ import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
-import br.edu.uepb.nutes.haniot.data.model.FamilyCohesionRecord;
 import br.edu.uepb.nutes.haniot.data.model.ItemEvaluation;
-import br.edu.uepb.nutes.haniot.data.model.MedicalRecord;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static android.view.View.GONE;
 
-public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<EvaluationExpandableAdapter.HeaderViewHolder, EvaluationExpandableAdapter.ViewHolder> {
+public class QuizItemExpandableAdapter extends ExpandableRecyclerViewAdapter<QuizItemExpandableAdapter.HeaderViewHolder, QuizItemExpandableAdapter.ViewHolder> {
     private Context context;
     protected int lastPosition = -1;
-    public OnClick<ItemEvaluation> mListener;
 
-    public EvaluationExpandableAdapter(List<? extends ExpandableGroup> groups, Context context) {
+    public QuizItemExpandableAdapter(List<? extends ExpandableGroup> groups, Context context) {
         super(groups);
         this.context = context;
     }
 
-    public void setListener(OnClick<ItemEvaluation> mListener) {
-        this.mListener = mListener;
-    }
 
     /**
      * Apply animation to list itemsList.
@@ -83,57 +76,8 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
         ItemEvaluation ig = (ItemEvaluation) group.getItems().get(childIndex);
         ViewHolder h = (ViewHolder) holder;
 
-        h.box.setVisibility(View.VISIBLE);
-        h.textMeasurement.setVisibility(View.VISIBLE);
-        h.textMeasurementType.setVisibility(View.VISIBLE);
-        h.checkItem.setVisibility(View.VISIBLE);
-        h.QuizText.setVisibility(View.VISIBLE);
-        h.warning.setVisibility(View.INVISIBLE);
-
-        h.imageItem.setImageResource(ig.getIcon());
-        h.textDescription.setText(ig.getTitle());
-        h.textDate.setText(ig.getDate());
-        h.texTime.setText(ig.getTime());
-        if (ig.getType() == ItemEvaluation.TYPE_QUIZ) {
-
-            h.textMeasurement.setVisibility(View.GONE);
-            h.textMeasurementType.setVisibility(View.GONE);
-            h.QuizText.setText(ig.getQuizText());
-            MedicalRecord medicalRecord = ig.getMedicalRecord();
-
-
-        } else if (ig.getType() == ItemEvaluation.TYPE_MEASUREMENT) {
-            h.mView.setOnClickListener(v -> {
-                if (mListener != null) {
-                    mListener.onItemClick(ig);
-                }
-            });
-            h.textMeasurement.setVisibility(View.VISIBLE);
-            h.textMeasurementType.setVisibility(View.VISIBLE);
-            h.textMeasurement.setText(ig.getValueMeasurement());
-            h.textMeasurementType.setText(ig.getUnitMeasurement());
-            h.QuizText.setVisibility(View.GONE);
-
-        } else if (ig.getType() == ItemEvaluation.TYPE_EMPTY) {
-            h.mView.setOnClickListener(v -> {
-                if (mListener != null) {
-                    mListener.onAddMeasurementClick(ig.getTitle(), ig.getTypeEvaluation());
-                }
-            });
-            h.warning.setVisibility(View.VISIBLE);
-            h.QuizText.setText(context.getResources().getString(R.string.evaluation_empty_message));
-            h.box.setVisibility(GONE);
-            h.checkItem.setChecked(ig.isChecked());
-            h.checkItem.setVisibility(View.INVISIBLE);
-            h.checkItem.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                ig.setChecked(!ig.isChecked());
-                notifyDataSetChanged();
-            });
-        }
-
         setAnimation(h.mView, childIndex);
     }
-
 
     @Override
     public void onBindGroupViewHolder(HeaderViewHolder holder, int flatPosition, ExpandableGroup group) {
@@ -145,26 +89,10 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
     public class ViewHolder extends ChildViewHolder {
         final View mView;
 
-        @BindView(R.id.imageItem)
-        ImageView imageItem;
         @BindView(R.id.textDescription)
         TextView textDescription;
         @BindView(R.id.textMeasurement)
         TextView textMeasurement;
-        @BindView(R.id.textMeasurementType)
-        TextView textMeasurementType;
-        @BindView(R.id.text_time_measurement)
-        TextView texTime;
-        @BindView(R.id.quiz_text)
-        TextView QuizText;
-        @BindView(R.id.text_date_measurement)
-        TextView textDate;
-        @BindView(R.id.check_item)
-        CheckBox checkItem;
-        @BindView(R.id.box_measurement)
-        LinearLayout box;
-        @BindView(R.id.warning)
-        ImageView warning;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -210,8 +138,36 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
         }
     }
 
-    public interface OnClick<I> extends OnRecyclerViewListener<ItemEvaluation> {
+    public class GroupQuiz extends ExpandableGroup<ItemEvaluation> {
 
-        void onAddMeasurementClick(String name, int type);
+        public GroupQuiz(String title, List<ItemEvaluation> items) {
+            super(title, items);
+        }
+    }
+
+    public class ItemQuiz {
+        private String question;
+        private String answer;
+
+        public ItemQuiz(String question, String answer) {
+            this.question = question;
+            this.answer = answer;
+        }
+
+        public String getQuestion() {
+            return question;
+        }
+
+        public void setQuestion(String question) {
+            this.question = question;
+        }
+
+        public String getAnswer() {
+            return answer;
+        }
+
+        public void setAnswer(String answer) {
+            this.answer = answer;
+        }
     }
 }

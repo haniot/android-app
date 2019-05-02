@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -50,22 +49,28 @@ public class EvaluationActivity extends AppCompatActivity implements EvaluationE
     private AppPreferencesHelper helper;
     private Patient patient;
     HaniotNetRepository haniotNetRepository;
+    private String typeEvaluation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_evaluation);
         ButterKnife.bind(this);
-
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         initResources();
         initViews();
 
+        typeEvaluation = getIntent().getStringExtra("typeEvaluation");
+
+        if (typeEvaluation.equals("dentrist")) {
+            prepareQuizOdontoEvaluation();
+        }
         prepareGlucoseMeasurement();
         prepareBloodPressureMeasurement();
         prepareHeartRateMeasurement();
         prepareWeightMeasurement();
         prepareQuizNutritionEvaluation();
-        prepareQuizOdontoEvaluation();
         initRecyclerView();
     }
 
@@ -78,10 +83,9 @@ public class EvaluationActivity extends AppCompatActivity implements EvaluationE
 
     private void initViews() {
 
-        String type = getIntent().getStringExtra("type");
         String nameType = "";
-        if (type.equals("odonto")) nameType = "Odontológica";
-        else if (type.equals("nutrition")) nameType = "Nutricional";
+        if (typeEvaluation.equals("dentrist")) nameType = "Odontológica";
+        else if (typeEvaluation.equals("nutrition")) nameType = "Nutricional";
         toolbar.setTitle("Gerar Avaliação " + nameType);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -96,7 +100,6 @@ public class EvaluationActivity extends AppCompatActivity implements EvaluationE
         groupItemEvaluations = new ArrayList<>();
         helper = AppPreferencesHelper.getInstance(this);
         haniotNetRepository = HaniotNetRepository.getInstance(this);
-//        itemEvaluations = new ArrayList<>();
         patient = helper.getLastPatient();
 
         sendEvaluation.setOnClickListener(v -> {
@@ -111,7 +114,7 @@ public class EvaluationActivity extends AppCompatActivity implements EvaluationE
             ItemEvaluation itemEvaluation = new ItemEvaluation();
             itemEvaluation.setTypeHeader(ItemEvaluation.TYPE_EMPTY);
             itemEvaluation.setIcon(R.drawable.xcardiogram);
-            itemEvaluation.setTitle("Frequência Cardíaca");
+            itemEvaluation.setTitle(getString(R.string.heart_rate));
             itemEvaluation.setTypeEvaluation(TypeEvaluation.HEARTRATE);
             itemEvaluation.setQuizText("Sem registros! Clique para inserir.");
             itemEvaluations.add(itemEvaluation);
@@ -122,7 +125,7 @@ public class EvaluationActivity extends AppCompatActivity implements EvaluationE
                 ItemEvaluation itemEvaluation = new ItemEvaluation();
                 itemEvaluation.setTypeHeader(ItemEvaluation.TYPE_EMPTY);
                 itemEvaluation.setIcon(R.drawable.xcardiogram);
-                itemEvaluation.setTitle("Frequência Cardíaca");
+                itemEvaluation.setTitle(getString(R.string.heart_rate));
                 itemEvaluation.setTypeEvaluation(TypeEvaluation.HEARTRATE);
                 itemEvaluation.setQuizText("Sem registros! Clique para inserir.");
                 itemEvaluations.add(itemEvaluation);
@@ -143,7 +146,7 @@ public class EvaluationActivity extends AppCompatActivity implements EvaluationE
             itemEvaluation.setTypeHeader(ItemEvaluation.TYPE_EMPTY);
             itemEvaluation.setIcon(R.drawable.xblood_pressure);
             itemEvaluation.setTypeEvaluation(TypeEvaluation.BLOOD_PRESSURE);
-            itemEvaluation.setTitle("Pressão Arterial");
+            itemEvaluation.setTitle(getString(R.string.blood_pressure));
             itemEvaluation.setQuizText("Sem registros! Clique para inserir.");
             itemEvaluations.add(itemEvaluation);
         } else {
@@ -155,7 +158,7 @@ public class EvaluationActivity extends AppCompatActivity implements EvaluationE
                 itemEvaluation.setTypeHeader(ItemEvaluation.TYPE_MEASUREMENT);
                 itemEvaluation.setIcon(R.drawable.xblood_pressure);
                 itemEvaluation.setTypeEvaluation(TypeEvaluation.BLOOD_PRESSURE);
-                itemEvaluation.setTitle("Pressão Arterial");
+                itemEvaluation.setTitle(getString(R.string.blood_pressure));
                 itemEvaluation.setTime("12:23");
                 itemEvaluation.setDate("28 de Abril, 2019");
                 itemEvaluation.setValueMeasurement("76");
@@ -179,7 +182,7 @@ public class EvaluationActivity extends AppCompatActivity implements EvaluationE
             itemEvaluation.setTypeHeader(ItemEvaluation.TYPE_EMPTY);
             itemEvaluation.setIcon(R.drawable.xweight);
             itemEvaluation.setTypeEvaluation(TypeEvaluation.WEIGHT);
-            itemEvaluation.setTitle("Peso");
+            itemEvaluation.setTitle(getString(R.string.weight));
             itemEvaluation.setQuizText("Sem registros! Clique para inserir.");
             itemEvaluations.add(itemEvaluation);
         } else {
@@ -191,7 +194,7 @@ public class EvaluationActivity extends AppCompatActivity implements EvaluationE
                 itemEvaluation.setTypeHeader(ItemEvaluation.TYPE_MEASUREMENT);
                 itemEvaluation.setIcon(R.drawable.xweight);
                 itemEvaluation.setTypeEvaluation(TypeEvaluation.WEIGHT);
-                itemEvaluation.setTitle("Peso");
+                itemEvaluation.setTitle(getString(R.string.weight));
                 itemEvaluation.setTime("12:23");
                 itemEvaluation.setDate("28 de Abril, 2019");
                 itemEvaluation.setValueMeasurement("76");
@@ -212,7 +215,7 @@ public class EvaluationActivity extends AppCompatActivity implements EvaluationE
             itemEvaluation.setTypeHeader(ItemEvaluation.TYPE_MEASUREMENT);
             itemEvaluation.setIcon(R.drawable.xglucosemeter);
             itemEvaluation.setTypeEvaluation(TypeEvaluation.GLUCOSE);
-            itemEvaluation.setTitle("Glucose");
+            itemEvaluation.setTitle(getString(R.string.glucose));
             itemEvaluation.setTime("12:28");
             itemEvaluation.setDate("28 de Abril, 2019");
             itemEvaluation.setValueMeasurement("543");
@@ -367,7 +370,6 @@ public class EvaluationActivity extends AppCompatActivity implements EvaluationE
                 return;
         }
 
-        Log.i("AAA", "indo para " + name);
         startActivity(intent);
     }
 }

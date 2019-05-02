@@ -20,7 +20,18 @@ public class ItemEvaluation implements Parcelable {
     private boolean checked;
     private int typeEvaluation;
 
+    private FeedingHabitsRecord feedingHabitsRecord;
+    private MedicalRecord medicalRecord;
+    private PhysicalActivityHabit physicalActivityHabit;
+    private SleepHabit sleepHabit;
+    private WeeklyFoodRecord weeklyFoodRecord;
+
+    private OralHealthRecord oralHealthRecord;
+    private FamilyCohesionRecord familyCohesionRecord;
+    private SociodemographicRecord sociodemographicRecord;
+
     public ItemEvaluation() {
+
     }
 
     protected ItemEvaluation(Parcel in) {
@@ -33,6 +44,7 @@ public class ItemEvaluation implements Parcelable {
         date = in.readString();
         time = in.readString();
         checked = in.readByte() != 0;
+        typeEvaluation = in.readInt();
     }
 
     public static final Creator<ItemEvaluation> CREATOR = new Creator<ItemEvaluation>() {
@@ -127,6 +139,71 @@ public class ItemEvaluation implements Parcelable {
         this.typeHeader = typeHeader;
     }
 
+    public FeedingHabitsRecord getFeedingHabitsRecord() {
+        return feedingHabitsRecord;
+    }
+
+    public void setFeedingHabitsRecord(FeedingHabitsRecord feedingHabitsRecord) {
+        this.feedingHabitsRecord = feedingHabitsRecord;
+    }
+
+    public MedicalRecord getMedicalRecord() {
+        return medicalRecord;
+    }
+
+    public void setMedicalRecord(MedicalRecord medicalRecord) {
+        this.medicalRecord = medicalRecord;
+    }
+
+    public PhysicalActivityHabit getPhysicalActivityHabit() {
+        return physicalActivityHabit;
+    }
+
+    public void setPhysicalActivityHabit(PhysicalActivityHabit physicalActivityHabit) {
+        this.physicalActivityHabit = physicalActivityHabit;
+    }
+
+    public SleepHabit getSleepHabit() {
+        return sleepHabit;
+    }
+
+    public void setSleepHabit(SleepHabit sleepHabit) {
+        this.sleepHabit = sleepHabit;
+    }
+
+    public WeeklyFoodRecord getWeeklyFoodRecord() {
+        return weeklyFoodRecord;
+    }
+
+    public void setWeeklyFoodRecord(WeeklyFoodRecord weeklyFoodRecord) {
+        this.weeklyFoodRecord = weeklyFoodRecord;
+    }
+
+    public OralHealthRecord getOralHealthRecord() {
+        return oralHealthRecord;
+    }
+
+    public void setOralHealthRecord(OralHealthRecord oralHealthRecord) {
+        this.oralHealthRecord = oralHealthRecord;
+    }
+
+    public FamilyCohesionRecord getFamilyCohesionRecord() {
+        return familyCohesionRecord;
+    }
+
+    public void setFamilyCohesionRecord(FamilyCohesionRecord familyCohesionRecord) {
+        this.familyCohesionRecord = familyCohesionRecord;
+    }
+
+    public SociodemographicRecord getSociodemographicRecord() {
+        return sociodemographicRecord;
+    }
+
+    public void setSociodemographicRecord(SociodemographicRecord sociodemographicRecord) {
+        this.sociodemographicRecord = sociodemographicRecord;
+    }
+
+
     @Override
     public int describeContents() {
         return 0;
@@ -134,6 +211,7 @@ public class ItemEvaluation implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+
         dest.writeInt(icon);
         dest.writeInt(typeHeader);
         dest.writeString(title);
@@ -143,5 +221,7 @@ public class ItemEvaluation implements Parcelable {
         dest.writeString(date);
         dest.writeString(time);
         dest.writeByte((byte) (checked ? 1 : 0));
+        dest.writeInt(typeEvaluation);
     }
+
 }

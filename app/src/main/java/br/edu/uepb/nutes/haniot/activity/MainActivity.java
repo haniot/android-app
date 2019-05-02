@@ -38,7 +38,7 @@ import butterknife.ButterKnife;
  *
  * @author Copyright (c) 2018, NUTES/UEPB
  */
-public class MainActivity extends AppCompatActivity implements DashboardChartsFragment.Communicator {
+public class MainActivity extends AppCompatActivity implements DashboardChartsFragment.Communicator, View.OnClickListener {
     private final String LOG_TAG = "MainActivity";
     private final int REQUEST_ENABLE_BLUETOOTH = 1;
     private final int REQUEST_ENABLE_LOCATION = 2;
@@ -272,5 +272,30 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
     public Patient getPatientSelected() {
         patient = appPreferences.getLastPatient();
         return patient;
+    }
+
+    @Override
+    public void onClick(View v) {
+        Intent intent;
+        switch (v.getId()) {
+            case R.id.evaluation_odonto:
+                intent = new Intent(this, EvaluationActivity.class);
+                intent.putExtra("typeEvaluation", "dentrist");
+                break;
+            case R.id.evaluation_nutrition:
+                intent = new Intent(this, EvaluationActivity.class);
+                intent.putExtra("typeEvaluation", "nutrition");
+                break;
+            case R.id.quiz_nutrition:
+                intent = new Intent(this, QuizNutritionActivity.class);
+                break;
+            case R.id.quiz_odonto:
+                intent = new Intent(this, QuizOdontologyActivity.class);
+                break;
+            default:
+                return;
+        }
+        startActivity(intent);
+
     }
 }
