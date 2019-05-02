@@ -232,10 +232,8 @@ public class PatientRegisterActivity extends AppCompatActivity {
         patient = appPreferencesHelper.getLastPatient();
         nameEditTExt.setText(patient.getFirstName());
         lastNameEditTExt.setText(patient.getLastName());
-        birthEdittext.setText(patient.getBirthDate());
-        myCalendar.setTimeInMillis(DateUtils
-                .getDateStringInMillis(patient.getBirthDate(),
-                        getResources().getString(R.string.date_format)));
+        birthEdittext.setText(DateUtils.formatDate(patient.getBirthDate(), getString(R.string.date_format)));
+        myCalendar = DateUtils.convertStringDateToCalendar(patient.getBirthDate(), getResources().getString(R.string.date_format));
         if (patient.getGender().equals(PatientsType.GenderType.MALE))
             genderGroup.check(R.id.male);
         else genderGroup.check(R.id.female);
@@ -286,7 +284,8 @@ public class PatientRegisterActivity extends AppCompatActivity {
                         myCalendar.set(Calendar.YEAR, year);
                         myCalendar.set(Calendar.MONTH, month);
                         myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                        birthEdittext.setText(DateUtils.formatDate(myCalendar.getTimeInMillis(), getResources().getString(R.string.date_format)));
+                        birthEdittext.setText(DateUtils.formatDate(myCalendar.getTimeInMillis(),
+                                getResources().getString(R.string.date_format)));
                     }, 2010, 1, 1);
             dialog.show();
         });

@@ -55,11 +55,11 @@ public class PilotStudyAdapter extends BaseAdapter<PilotStudy> {
             ViewHolder h = (ViewHolder) holder;
 
             h.name.setText(pilot.getName());
-            h.dateStart.setText(DateUtils.formatDateISO8601(pilot.getStart(),
+            h.dateStart.setText(DateUtils.convertDateTimeUTCToLocale(pilot.getStart(),
                     context.getResources().getString(R.string.date_format)));
 
             if (pilot.getEnd() != null && !pilot.getEnd().isEmpty()) {
-                h.dateEnd.setText(DateUtils.formatDateISO8601(pilot.getEnd(),
+                h.dateEnd.setText(DateUtils.convertDateTimeUTCToLocale(pilot.getEnd(),
                         context.getResources().getString(R.string.date_format)));
             }
 

@@ -27,7 +27,7 @@ public class GattGlucoseParser {
     /**
      * Parse for the ACCU-CHEK device, according to GATT.
      * Supported Models: Accu-Chek Performa Connect.
-     *
+     * <p>
      * {@link <https://www.bluetooth.com/specifications/gatt/viewer?attributeXmlFile=org.bluetooth.characteristic.glucose_measurement.xml>}
      *
      * @param characteristic
@@ -98,8 +98,7 @@ public class GattGlucoseParser {
         result.put("glucoseUnit", unit);
         result.put("sequenceNumber", sequenceNumber);
         result.put("timestamp", calendar != null ?
-                calendar.getTimeInMillis() :
-                DateUtils.getCurrentTimestamp());
+                calendar.getTimeInMillis() : DateUtils.getCurrentDateUTC());
 
         return result;
     }

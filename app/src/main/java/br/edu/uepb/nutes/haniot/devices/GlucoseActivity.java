@@ -603,9 +603,14 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
         runOnUiThread(() -> {
             mBloodGlucoseTextView.setText(valueToString(measurement));
             mUnitBloodGlucoseTextView.setText(measurement.getUnit());
-            mDateLastMeasurement.setText(DateUtils.abbreviatedDate(
-                    getApplicationContext(), DateUtils.fromISO8601(measurement.getTimestamp()).getTime()));
-
+            if (DateUtils.isToday(DateUtils.convertDateTime(measurement.getTimestamp()).getTime())) {
+                mDateLastMeasurement.setText(R.string.today_text);
+            } else {
+                mDateLastMeasurement.setText(DateUtils.convertDateTimeUTCToLocale(
+                        measurement.getTimestamp(),
+                        "MMMM dd, EEE"
+                ));
+            }
             if (applyAnimation) mBloodGlucoseTextView.startAnimation(animation);
         });
     }

@@ -8,7 +8,6 @@ import com.auth0.android.jwt.JWT;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
-import java.util.Objects;
 
 import br.edu.uepb.nutes.haniot.data.model.Device;
 import br.edu.uepb.nutes.haniot.data.model.FeedingHabitsRecord;
@@ -29,8 +28,6 @@ import io.reactivex.schedulers.Schedulers;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
-import okhttp3.ResponseBody;
-import okio.Okio;
 
 /**
  * Repository to consume the OCARIoT API.
@@ -47,7 +44,7 @@ public class HaniotNetRepository extends BaseNetRepository {
 
         super.addInterceptor(requestInterceptor());
         super.addInterceptor(responseInterceptor());
-        haniotService = super.provideRetrofit(HaniotService.BASE_URL_HANIOT)
+        haniotService = super.provideRetrofit(HaniotService.BASE_URL_HANIoT)
                 .create(HaniotService.class);
     }
 

@@ -111,7 +111,7 @@ public class GlucoseManager extends BluetoothManager {
 
             final Calendar calendar = Calendar.getInstance();
             calendar.set(year, month, day, hours, minutes, seconds);
-            final String timestamp = DateUtils.calendarToString(calendar, DateUtils.DATE_FORMAT_ISO_8601);
+            final String timestamp = DateUtils.convertDateTimeToUTC(calendar.getTime());
             offset += 7;
 
             if (timeOffsetPresent) {

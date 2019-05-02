@@ -82,10 +82,10 @@ public class BloodPressureManager extends BluetoothManager {
 
                 final Calendar calendar = Calendar.getInstance();
                 calendar.set(year, month, day, hours, minutes, seconds);
-                timestamp = DateUtils.calendarToString(calendar, DateUtils.DATE_FORMAT_ISO_8601);
+                timestamp = DateUtils.convertDateTimeToUTC(calendar.getTime());
                 offset += 7;
             } else {
-                timestamp = DateUtils.getCurrentDateISO8601();
+                timestamp = DateUtils.getCurrentDateUTC();
             }
 
             // parse pulse rate if present

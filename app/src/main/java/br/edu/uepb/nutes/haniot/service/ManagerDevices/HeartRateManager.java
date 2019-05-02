@@ -59,7 +59,7 @@ public class HeartRateManager extends BluetoothManager {
             int heartRate = data.getIntValue(value16bit ? Data.FORMAT_UINT16 :
                     Data.FORMAT_UINT8, offset++); // bits per minute
 
-            heartRateDataCallback.onMeasurementReceived(device, heartRate, DateUtils.getCurrentDateISO8601());
+            heartRateDataCallback.onMeasurementReceived(device, heartRate, DateUtils.getCurrentDateUTC());
         }
 
         @Override

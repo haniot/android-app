@@ -52,7 +52,7 @@ public class ScaleManager extends BluetoothManager {
             String timestamp;
 
             if (data != null && data.length > 0) {
-                timestamp = DateUtils.getCurrentDateISO8601();
+                timestamp = DateUtils.getCurrentDateUTC();
 
                 // 03: response type
                 //    01 - unfinished weighing
@@ -103,7 +103,7 @@ public class ScaleManager extends BluetoothManager {
         @Override
         public void onDeviceConnected(@NonNull BluetoothDevice device) {
             Log.i(TAG, "Connected to Scale" + device.getName());
-            scaleDataCallback.onConnected(device);
+            if (scaleDataCallback != null) scaleDataCallback.onConnected(device);
         }
 
         @Override
@@ -114,7 +114,7 @@ public class ScaleManager extends BluetoothManager {
         @Override
         public void onDeviceDisconnected(@NonNull BluetoothDevice device) {
             Log.i(TAG, "Disconnected from " + device.getName());
-            scaleDataCallback.onDisconnected(device);
+            if (scaleDataCallback != null) scaleDataCallback.onDisconnected(device);
         }
 
         @Override

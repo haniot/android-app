@@ -76,7 +76,7 @@ public class GattHTParser {
          */
         result.put("temperature", tempValue);
         result.put("temperatureUnit", unit);
-        result.put("timestamp", DateUtils.getCurrentDatetime());
+        result.put("timestamp", DateUtils.getCurrentDateUTC());
 
         return result;
     }

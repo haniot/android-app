@@ -7,7 +7,6 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.UUID;
 
@@ -90,10 +89,10 @@ public class ThermometerManager extends BluetoothManager {
 
                 final Calendar calendar = Calendar.getInstance();
                 calendar.set(year, month, day, hours, minutes, seconds);
-                timestamp = DateUtils.calendarToString(calendar, DateUtils.DATE_FORMAT_ISO_8601);
+                timestamp = DateUtils.convertDateTimeToUTC(calendar.getTime());
                 offset += 7;
             } else {
-                timestamp = DateUtils.getCurrentDateISO8601();
+                timestamp = DateUtils.getCurrentDateUTC();
             }
 
             if (temperatureTypeIncluded) {

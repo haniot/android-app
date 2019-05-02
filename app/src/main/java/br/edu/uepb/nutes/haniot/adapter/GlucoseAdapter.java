@@ -51,8 +51,8 @@ public class GlucoseAdapter extends BaseAdapter<Measurement> {
 
             h.glucose.setText(String.valueOf((int) m.getValue()));
             h.unitGlucose.setText(m.getUnit());
-            h.dayWeek.setText(DateUtils.formatDateISO8601(m.getTimestamp(), "EEEE"));
-            h.date.setText(DateUtils.formatDateISO8601(m.getTimestamp(), context.getString(R.string.datetime_format)));
+            h.dayWeek.setText(DateUtils.convertDateTimeUTCToLocale(m.getTimestamp(), "EEEE"));
+            h.date.setText(DateUtils.convertDateTimeUTCToLocale(m.getTimestamp(), context.getString(R.string.datetime_format)));
             h.glucoseMeal.setText(BloodGlucoseMealType.getString(context, m.getMeal()));
 
             // OnClick Item

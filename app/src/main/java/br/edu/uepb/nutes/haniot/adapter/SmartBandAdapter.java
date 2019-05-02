@@ -49,8 +49,8 @@ public class SmartBandAdapter extends BaseAdapter<Measurement> {
             ViewHolder h = (ViewHolder) holder;
 
             h.steps.setText(String.valueOf((int) m.getValue()));
-            h.dayWeek.setText(DateUtils.formatDateISO8601(m.getTimestamp(), "EEEE"));
-            h.date.setText(DateUtils.formatDateISO8601(m.getTimestamp(), context.getString(R.string.datetime_format)));
+            h.dayWeek.setText(DateUtils.convertDateTimeUTCToLocale(m.getTimestamp(), "EEEE"));
+            h.date.setText(DateUtils.convertDateTimeUTCToLocale(m.getTimestamp(), context.getString(R.string.datetime_format)));
 
             // call Animation function
             setAnimation(h.mView, position);

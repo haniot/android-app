@@ -54,9 +54,9 @@ public class HeartRateAdapter extends BaseAdapter<Measurement> {
                     (int) m.getDataset().get(0).getValue())
             );
             h.unit.setText(m.getUnit());
-            h.dayWeek.setText(DateUtils.formatDateISO8601(m.getDataset().get(0).getTimestamp(),
+            h.dayWeek.setText(DateUtils.convertDateTimeUTCToLocale(m.getDataset().get(0).getTimestamp(),
                     "EEEE"));
-            h.date.setText(DateUtils.formatDateISO8601(m.getDataset().get(0).getTimestamp(),
+            h.date.setText(DateUtils.convertDateTimeUTCToLocale(m.getDataset().get(0).getTimestamp(),
                     context.getString(R.string.datetime_format)));
             h.imageHeart.setVisibility(View.VISIBLE);
 
