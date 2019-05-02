@@ -113,10 +113,10 @@ public class DeviceManagerActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onResume() {
+        super.onResume();
+        populateView();
     }
 
     /**
@@ -126,7 +126,6 @@ public class DeviceManagerActivity extends AppCompatActivity {
         initToolBar();
         initRegisteredDevicesRecyclerView();
         initAvailableDevicesRecyclerView();
-        populateView();
     }
 
     /**
@@ -157,7 +156,6 @@ public class DeviceManagerActivity extends AppCompatActivity {
                             populateDevicesRegistered(populateImagesDevices(devices));
                             populateDevicesAvailable(mDeviceDAO.list(user.get_id()));
                         }, err -> {
-                            Log.w(LOG_TAG, "ERROR GET DEVICES: " + err.getMessage());
                             messageErrorServer.setVisibility(View.VISIBLE);
                             boxRegisteredAvailable.setVisibility(View.INVISIBLE);
                         })
@@ -171,8 +169,6 @@ public class DeviceManagerActivity extends AppCompatActivity {
      * @return {@link List<Device>}
      */
     public List<Device> populateImagesDevices(List<Device> devices) {
-        List<Device> listDevices = new ArrayList<>();
-
         for (Device d : devices) {
             switch (d.getType()) {
                 case DeviceType.THERMOMETER:
@@ -342,8 +338,8 @@ public class DeviceManagerActivity extends AppCompatActivity {
      * @param availableList  {@link List<Device>}
      * @return {@link List<Device>}
      */
-    private List<Device> mergeDevicesAvailableRegistered
-    (List<Device> registeredList, List<Device> availableList) {
+    private List<Device> mergeDevicesAvailableRegistered(List<Device> registeredList,
+                                                         List<Device> availableList) {
         // Add only devices that have not been registered
         for (Device d : registeredList) {
             if (availableList.contains(d)) {
@@ -382,22 +378,6 @@ public class DeviceManagerActivity extends AppCompatActivity {
     }
 
     private void removeDeviceRegister(Device device) {
-//        displayLoading(true);
-//        String path = "devices/".concat(device.get_id()).concat("/users/").concat(user.get_id());
-//
-//        server.delete(path, new Server.Callback() {
-//            @Override
-//            public void onError(JSONObject result) {
-//                displayLoading(false);
-//            }
-//
-//            @Override
-//            public void onSuccess(JSONObject result) {
-//                mDeviceDAO.remove(device.getAddress());
-//                unpairDevice(device);
-//                populateView();
-//            }
-//        });
         DisposableManager.add(
                 haniotRepository.deleteDevice(user.get_id(), device.get_id())
                         .doOnSubscribe(disposable -> displayLoading(true))

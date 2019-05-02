@@ -61,7 +61,7 @@ public class Measurement implements Parcelable {
     @SerializedName("fat")
     @Expose()
     @Transient()
-    private BodyFat bodyFat; // not persisted in ObjectBox
+    private BodyFat fat; // not persisted in ObjectBox
 
     @SerializedName("dataset")
     @Expose()
@@ -104,7 +104,7 @@ public class Measurement implements Parcelable {
         timestamp = in.readString();
         userId = in.readString();
         deviceId = in.readString();
-        bodyFat = in.readParcelable(BodyFat.class.getClassLoader());
+        fat = in.readParcelable(BodyFat.class.getClassLoader());
         dataset = in.createTypedArrayList(HeartRateItem.CREATOR);
         systolic = in.readInt();
         diastolic = in.readInt();
@@ -122,7 +122,7 @@ public class Measurement implements Parcelable {
         dest.writeString(timestamp);
         dest.writeString(userId);
         dest.writeString(deviceId);
-        dest.writeParcelable(bodyFat, flags);
+        dest.writeParcelable(fat, flags);
         dest.writeTypedList(dataset);
         dest.writeInt(systolic);
         dest.writeInt(diastolic);
@@ -211,12 +211,12 @@ public class Measurement implements Parcelable {
         this.deviceId = deviceId;
     }
 
-    public BodyFat getBodyFat() {
-        return bodyFat;
+    public BodyFat getFat() {
+        return fat;
     }
 
-    public void setBodyFat(BodyFat bodyFat) {
-        this.bodyFat = bodyFat;
+    public void setFat(BodyFat fat) {
+        this.fat = fat;
     }
 
     public List<HeartRateItem> getDataset() {
@@ -300,7 +300,7 @@ public class Measurement implements Parcelable {
                 ", timestamp='" + timestamp + '\'' +
                 ", userId='" + userId + '\'' +
                 ", deviceId='" + deviceId + '\'' +
-                ", bodyFat=" + bodyFat +
+                ", fat=" + fat +
                 ", dataset=" + dataset +
                 ", systolic=" + systolic +
                 ", diastolic=" + diastolic +

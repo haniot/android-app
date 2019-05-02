@@ -21,7 +21,7 @@
                 style="@style/Base.TextAppearance.AppCompat.Large"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="55dp"
+                android:layout_marginTop="60dp"
                 android:gravity="center"
                 android:text="@string/device_registered_success"
                 android:textAlignment="center"
@@ -35,23 +35,25 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1">
+            android:layout_weight="2"
+            android:gravity="center">
 
             <ImageView
                 android:id="@+id/imageSuccess"
-                android:layout_width="match_parent"
+                android:layout_width="150dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:contentDescription="@string/image"
                 app:srcCompat="@drawable/success" />
-            <!--END BOX IMAGE -->
         </LinearLayout>
+        <!--END BOX IMAGE -->
 
         <!-- BOX BUTTON -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="3"
-            android:gravity="bottom">
+            android:layout_weight="4"
+            android:gravity="bottom"
+            android:padding="20dp">
 
             <Button
                 android:id="@+id/btn_close_response"

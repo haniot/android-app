@@ -1,7 +1,6 @@
 package br.edu.uepb.nutes.haniot.devices.register;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -29,9 +28,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -126,9 +122,10 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         setContentView(R.layout.activity_device_register);
         ButterKnife.bind(this);
 
-        mDeviceDAO = DeviceDAO.getInstance(this);
         appPreferences = AppPreferencesHelper.getInstance(this);
         haniotRepository = HaniotNetRepository.getInstance(this);
+        mDeviceDAO = DeviceDAO.getInstance(this);
+
 
         btnDeviceRegisterScanner.setOnClickListener(this);
         btnDeviceRegisterStop.setOnClickListener(this);
@@ -148,7 +145,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         registerReceiver(mBroadcastReceiver, filter);
 
         user = appPreferences.getUserLogged();
-        if (user == null || user.get_id() == null) {
+        if (user == null) {
             finish();
             return;
         }
@@ -168,6 +165,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         Log.d(LOG_TAG, "onDestroy: called.");
         super.onDestroy();
         unregisterReceiver(mBroadcastReceiver);
+        DisposableManager.dispose();
     }
 
     /**
@@ -175,8 +173,12 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
      * Required bluetooth ble and location.
      */
     private void checkPermissions() {
-        if (!BluetoothAdapter.getDefaultAdapter().isEnabled()) requestBluetoothEnable();
-        if (!hasLocationPermissions()) requestLocationPermission();
+        if (!BluetoothAdapter.getDefaultAdapter().isEnabled()) {
+            requestBluetoothEnable();
+        }
+        if (!hasLocationPermissions()) {
+            requestLocationPermission();
+        }
     }
 
     /**
@@ -233,22 +235,18 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         public void onScanResult(int callbackType, @NonNull ScanResult scanResult) {
             mScanner.stopScan();
             btDevice = scanResult.getDevice();
+
             if (btDevice == null) {
+                mScanner.stopScan();
                 return;
             }
+
             Log.d(LOG_TAG, "onScanResult: " + btDevice.getName());
+            mDevice.setAddress(btDevice.getAddress());
+            mDevice.setUserId(user.get_id());
 
             // removes a device from the local database and server
-            mDevice.setAddress(btDevice.getAddress());
-            if (removeDeviceForType(mDevice)) {
-                if (unpairDevice(mDevice)) btDevice.createBond();
-            } else {
-                if (btDevice.getBondState() == BluetoothDevice.BOND_BONDED) {
-                    if (unpairDevice(mDevice)) btDevice.createBond();
-                } else {
-                    btDevice.createBond();
-                }
-            }
+            removeDeviceForType(mDevice);
         }
 
         @Override
@@ -258,9 +256,8 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
 
         @Override
         public void onFinish() {
-            animationScanner(false);
+            Log.d(LOG_TAG, "Scanner onFinish()");
             deviceAvailable(null);
-            Log.d("MainActivity", "onFinish()");
         }
 
         @Override
@@ -274,7 +271,6 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
      */
 
     private final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
-        @SuppressLint("MissingPermission")
         @Override
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
@@ -305,7 +301,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
                         registerReceiver(broadCastReceiver, intentFilter);
                     }
                 }
-                //case3: breaking a bond
+                // case3: breaking a bond
                 if (mBluetoothDevice.getBondState() == BluetoothDevice.BOND_NONE) {
                     Log.d(LOG_TAG, "BroadcastReceiver: BOND_NONE.");
 
@@ -387,10 +383,19 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     public void deviceAvailable(BluetoothDevice device) {
         if (device != null) {
             mDevice.setAddress(device.getAddress());
-            mDevice.setUserId(user.get_id());
             // Save in the server
             saveDeviceRegister(mDevice);
+
+            mPulsatorLayout.stop();
+            deviceSuccessfullyRegistered.setText(
+                    getString(R.string.device_registered_success,
+                            device.getName())
+            );
+            boxRegister.setVisibility(View.GONE);
+            boxScanner.setVisibility(View.GONE);
+            boxResponse.setVisibility(View.VISIBLE);
         } else {
+            animationScanner(false);
             nameDeviceScannerRegister.setText(mDevice.getName());
             deviceConnectionStatus.setText(R.string.device_not_found_try_again);
         }
@@ -437,48 +442,22 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     }
 
     /**
-     * Convert Device in JSON
-     *
-     * @param device {@link Device}
-     */
-    public String deviceToJson(Device device) {
-        JSONObject result = new JSONObject();
-        try {
-            result.put("typeId", device.getType());
-            result.put("address", device.getAddress());
-            result.put("name", device.getName());
-            result.put("manufacturer", device.getManufacturer());
-            result.put("modelNumber", device.getModelNumber());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return String.valueOf(result);
-    }
-
-    /**
      * Save device in remote server.
      *
      * @param device {@link Device}
      */
     public void saveDeviceRegister(final Device device) {
-        DisposableManager.add(
-                haniotRepository
-                        .saveDevice(device)
-                        .subscribe(deviceRes -> {
-//                            mDevice.setImg(device.getImg());
-                            deviceRes.setUserId(user.get_id());
-                            mDeviceDAO.save(deviceRes);
-
-                            deviceSuccessfullyRegistered.setText(
-                                    getString(R.string.device_registered_success, device.getName())
-                            );
-                            mPulsatorLayout.stop();
-                            boxRegister.setVisibility(View.GONE);
-                            boxScanner.setVisibility(View.GONE);
-                            boxResponse.setVisibility(View.VISIBLE);
-                        }, err -> {
-                            Log.w(LOG_TAG, "ERROR SAVE DEVICE: " + err.getMessage());
-                        })
+        device.setModelNumber(null); // TODO Remover quando a API der suporte
+        DisposableManager.add(haniotRepository
+                .saveDevice(device)
+                .subscribe(deviceRest -> {
+                    deviceRest.setImg(device.getImg());
+                    deviceRest.setUserId(user.get_id());
+                    mDeviceDAO.save(deviceRest);
+                }, err -> {
+                    deviceAvailable(null);
+                    Log.w(LOG_TAG, "ERROR SAVE:" + err.getMessage() + device);
+                })
         );
     }
 
@@ -488,24 +467,23 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
      *
      * @param device {@link Device}
      */
-    public boolean removeDeviceForType(Device device) {
-        boolean confirmed = false;
-        for (Device d : mDeviceDAO.list(user.get_id())) {
-            if (d.getType().equals(device.getType())) {
-                confirmed = true;
-                DisposableManager.add(
-                        haniotRepository
-                                .deleteDevice(user.get_id(), d.get_id())
-                                .subscribe(() -> {
-                                    mDeviceDAO.remove(d.getAddress());
-                                }, err -> {
-                                    Log.w(LOG_TAG, "ERROR DELETE DEVICE: " + err.getMessage());
-                                })
-                );
-            }
-            if (confirmed) return true;
+    public void removeDeviceForType(Device device) {
+        Device registered = mDeviceDAO.getByType(user.get_id(), device.getType());
+        Log.w(LOG_TAG, "registered:" + registered);
+        if (registered != null) {
+            DisposableManager.add(
+                    haniotRepository
+                            .deleteDevice(user.get_id(), registered.get_id())
+                            .subscribe(() -> {
+                                mDeviceDAO.remove(registered.getAddress());
+                                unpairDevice(mDevice);
+                                btDevice.createBond();
+                            }, err -> Log.w(LOG_TAG, "ERROR DELETE:" + err.getMessage()))
+            );
+        } else {
+            unpairDevice(mDevice);
+            btDevice.createBond();
         }
-        return false;
     }
 
     private boolean unpairDevice(Device device) {

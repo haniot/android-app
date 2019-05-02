@@ -58,7 +58,7 @@ public class BodyCompositionAdapter extends BaseAdapter<Measurement> {
             h.unitBodyMass.setText(m.getUnit());
             h.dayWeek.setText(DateUtils.formatDateISO8601(m.getTimestamp(), "EEEE"));
             h.date.setText(DateUtils.formatDateISO8601(m.getTimestamp(), context.getString(R.string.datetime_format)));
-            h.bodyFat.setText(decimalFormat.format(m.getBodyFat().getValue()));
+            h.bodyFat.setText(decimalFormat.format(m.getFat().getValue()));
 
             // OnClick Item
             h.mView.setOnClickListener(v -> {

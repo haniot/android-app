@@ -29,7 +29,7 @@ import retrofit2.http.Query;
  */
 public interface HaniotService {
     //String BASE_URL_HANIOT = "http://haniot.nutes.uepb.edu.br:8080"; // API GATEWAY
-    String BASE_URL_HANIOT = "http://192.168.0.106:8080"; // API GATEWAY LOCAL
+    String BASE_URL_HANIOT = "http://192.168.1.6:8080"; // API GATEWAY LOCAL
 
     // auth
     @POST("auth")

@@ -266,13 +266,14 @@
     <string name="remove_device">Tem certeza que deseja remover %s?\nUma vez removido, não será possível recuperar os dados desse dispositivo.</string>
     <string name="remove">Remover</string>
     <string name="start_scanner">Iniciar scanner</string>
+    <string name="start_search_device">Procurar dispositivo</string>
     <string name="start_scanner_try">Tentar novamente</string>
     <string name="stop_scanner">Parar scanner</string>
-    <string name="device_not_found_try_again">Dispositivo não encontrado tente novamente</string>
+    <string name="device_not_found_try_again">Dispositivo não encontrado. Por favor, tente novamente!</string>
     <string name="no_devices_registered">Não há dispositivos cadastrados&#8230;</string>
     <string name="no_devices_available">Nenhum dispositivo disponível. Em breve a lista será atualizada&#8230;</string>
     <string name="device_registered_success">Dispositivo %s cadastrado com sucesso!</string>
-    <string name="connection">Conectando, segure o telefone perto do dispositivo</string>
+    <string name="connection">Matenha o dispositivo de saúde próximo ao telefone/tablet.</string>
     <string name="come_back">Voltar</string>
     <string name="attention">Atenção</string>
     s
