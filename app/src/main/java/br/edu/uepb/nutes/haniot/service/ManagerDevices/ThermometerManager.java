@@ -7,6 +7,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.UUID;
 
@@ -33,7 +34,6 @@ public class ThermometerManager extends BluetoothManager {
     protected void setCharacteristicWrite(BluetoothGatt gatt) {
         final BluetoothGattService service = gatt.getService(UUID.fromString(GattAttributes.SERVICE_HEALTH_THERMOMETER));
         if (service != null) {
-            Log.i(TAG, "Não nulo");
             mCharacteristic = service.getCharacteristic(UUID.fromString(GattAttributes.CHARACTERISTIC_TEMPERATURE_MEASUREMENT));
         }
     }
@@ -41,7 +41,7 @@ public class ThermometerManager extends BluetoothManager {
     @Override
     protected void initializeCharacteristic() {
         Log.i(TAG, "iniatialize()");
-        setNotificationCallback(mCharacteristic).with(dataReceivedCallback);
+        setIndicationCallback(mCharacteristic).with(dataReceivedCallback);
         enableNotifications(mCharacteristic).enqueue();
     }
 
@@ -51,7 +51,7 @@ public class ThermometerManager extends BluetoothManager {
             final byte TEMPERATURE_UNIT_FLAG = 0x01; // 1 bit
             final byte TIMESTAMP_FLAG = 0x02; // 1 bits
             final byte TEMPERATURE_TYPE_FLAG = 0x04; // 1 bit
-
+            Log.i(TAG, "measurementReceiver()");
             int offset = 0;
             final int flags = data.getIntValue(Data.FORMAT_UINT8, offset++);
 
@@ -99,7 +99,7 @@ public class ThermometerManager extends BluetoothManager {
             if (temperatureTypeIncluded) {
                 // offset++;
             }
-
+            Log.i(TAG, "measurementReceiver() " + data.toString());
             temperatureDataCallback.onMeasurementReceived(device, tempValue, unit, timestamp);
         }
 

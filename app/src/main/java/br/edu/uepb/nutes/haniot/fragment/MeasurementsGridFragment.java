@@ -258,7 +258,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
                                           String unit, String timestamp) {
             Log.i(TAG, "Receiver measurement of Thermometer");
             String result = decimalFormat.format(temp);
-            updateMeasurement(result, unit, timestamp, ItemGridType.BLOOD_PRESSURE);
+            updateMeasurement(result, unit, timestamp, ItemGridType.TEMPERATURE);
         }
     };
 
@@ -426,7 +426,14 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
     private void setupMonitorItem(int type) {
         String deviceType = "";
         MeasurementMonitor measurementMonitor = null;
-        if (type == R.string.key_weight) {
+        if (type == R.string.key_temperature) {
+            deviceType = DeviceType.THERMOMETER;
+            measurementMonitor = new MeasurementMonitor(
+                    mContext, R.drawable.ic_action_thermometer,
+                    getResources().getString(R.string.temperature),
+                    "", ItemGridType.TEMPERATURE,
+                    getString(R.string.unit_celsius));
+        }else if (type == R.string.key_weight) {
             deviceType = DeviceType.BODY_COMPOSITION;
             measurementMonitor = new MeasurementMonitor(
                     mContext, R.drawable.xweight,
