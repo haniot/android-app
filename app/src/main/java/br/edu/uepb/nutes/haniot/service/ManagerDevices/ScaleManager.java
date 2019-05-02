@@ -52,7 +52,7 @@ public class ScaleManager extends BluetoothManager {
             String timestamp;
 
             if (data != null && data.length > 0) {
-                timestamp = DateUtils.getCurrentDateUTC();
+                timestamp = DateUtils.getCurrentDateTimeUTC();
 
                 // 03: response type
                 //    01 - unfinished weighing

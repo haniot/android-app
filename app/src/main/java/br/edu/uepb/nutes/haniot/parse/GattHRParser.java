@@ -49,7 +49,7 @@ public class GattHRParser {
          */
         result.put("heartRate", heartRateValue);
         result.put("heartRateUnit", "bpm");
-        result.put("timestamp", DateUtils.getCurrentDateUTC());
+        result.put("timestamp", DateUtils.getCurrentDateTimeUTC());
 
         return result;
     }

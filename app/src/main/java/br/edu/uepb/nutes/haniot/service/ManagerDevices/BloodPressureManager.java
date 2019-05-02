@@ -85,7 +85,7 @@ public class BloodPressureManager extends BluetoothManager {
                 timestamp = DateUtils.convertDateTimeToUTC(calendar.getTime());
                 offset += 7;
             } else {
-                timestamp = DateUtils.getCurrentDateUTC();
+                timestamp = DateUtils.getCurrentDateTimeUTC();
             }
 
             // parse pulse rate if present

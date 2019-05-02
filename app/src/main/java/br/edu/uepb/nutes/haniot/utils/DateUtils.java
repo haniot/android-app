@@ -1,6 +1,5 @@
 package br.edu.uepb.nutes.haniot.utils;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -12,8 +11,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.TimeZone;
-
-import br.edu.uepb.nutes.haniot.R;
 
 /**
  * Provides useful methods for handling date/time.
@@ -41,9 +38,9 @@ public final class DateUtils {
     public static Date convertDateTime(String datetime) {
         if (datetime == null) return null;
 
-        DateFormat formatUTC = new SimpleDateFormat(DateUtils.DATE_FORMAT_DATE_TIME, Locale.getDefault());
+        DateFormat dateFormat = new SimpleDateFormat(DateUtils.DATE_FORMAT_DATE_TIME, Locale.getDefault());
         try {
-            return formatUTC.parse(datetime);
+            return dateFormat.parse(datetime);
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -230,21 +227,6 @@ public final class DateUtils {
         return dateFormat.format(calendar.getTime());
     }
 
-    /**
-     * Convert string date in string format.
-     *
-     * @param date       {@link String}
-     * @param formatDate {@link String}
-     * @return String
-     */
-    public static String formatDateHour(String date, @Nullable String formatDate) {
-        if (formatDate == null || formatDate.length() == 0)
-            formatDate = "HH:mm:ss";
-
-        return getFormatDataTime(date, formatDate, false, true);
-    }
-
-
     private static String getFormatDataTime(String date_input, String formatDate,
                                             boolean date, boolean time) {
         String result = "";
@@ -297,7 +279,7 @@ public final class DateUtils {
      *
      * @return String
      */
-    public static String getCurrentDateUTC() {
+    public static String getCurrentDateTimeUTC() {
         SimpleDateFormat format = new SimpleDateFormat(DateUtils.DATE_FORMAT_DATE_TIME, Locale.getDefault());
         format.setTimeZone(TimeZone.getTimeZone("UTC"));
         return format.format(new Date());

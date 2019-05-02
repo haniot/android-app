@@ -98,7 +98,7 @@ public class GattGlucoseParser {
         result.put("glucoseUnit", unit);
         result.put("sequenceNumber", sequenceNumber);
         result.put("timestamp", calendar != null ?
-                calendar.getTimeInMillis() : DateUtils.getCurrentDateUTC());
+                calendar.getTimeInMillis() : DateUtils.getCurrentDateTimeUTC());
 
         return result;
     }

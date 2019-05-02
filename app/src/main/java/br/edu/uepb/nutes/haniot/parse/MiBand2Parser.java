@@ -43,7 +43,7 @@ public class MiBand2Parser {
         result.put("distanceUnit", "m");
         result.put("calories", caloriesValue);
         result.put("caloriesUnit", "kcal");
-        result.put("timestamp", DateUtils.getCurrentDateUTC());
+        result.put("timestamp", DateUtils.getCurrentDateTimeUTC());
 
         return result;
     }

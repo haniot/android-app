@@ -330,7 +330,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
             result = result.equals(".0") ? "00.0" : result;
             Objects.requireNonNull(getMeasurementMonitor(ItemGridType.WEIGHT))
                     .setStatus(MeasurementMonitor.RECEIVING);
-            updateMeasurement(result, bodyMassUnit, DateUtils.getCurrentDateUTC(),
+            updateMeasurement(result, bodyMassUnit, DateUtils.getCurrentDateTimeUTC(),
                     ItemGridType.WEIGHT);
             communicator.notifyNewMeasurement(result);
         }

@@ -92,7 +92,7 @@ public class ThermometerManager extends BluetoothManager {
                 timestamp = DateUtils.convertDateTimeToUTC(calendar.getTime());
                 offset += 7;
             } else {
-                timestamp = DateUtils.getCurrentDateUTC();
+                timestamp = DateUtils.getCurrentDateTimeUTC();
             }
 
             if (temperatureTypeIncluded) {
