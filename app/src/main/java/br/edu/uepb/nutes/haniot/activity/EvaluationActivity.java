@@ -58,14 +58,14 @@ public class EvaluationActivity extends AppCompatActivity implements EvaluationE
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        typeEvaluation = getIntent().getStringExtra("typeEvaluation");
         initResources();
         initViews();
 
-        typeEvaluation = getIntent().getStringExtra("typeEvaluation");
 
-        if (typeEvaluation.equals("dentrist")) {
-            prepareQuizOdontoEvaluation();
-        }
+      //  if (typeEvaluation.equals("dentrist")) {
+      //      prepareQuizOdontoEvaluation();
+       // }
         prepareGlucoseMeasurement();
         prepareBloodPressureMeasurement();
         prepareHeartRateMeasurement();
@@ -84,8 +84,8 @@ public class EvaluationActivity extends AppCompatActivity implements EvaluationE
     private void initViews() {
 
         String nameType = "";
-        if (typeEvaluation.equals("dentrist")) nameType = "Odontológica";
-        else if (typeEvaluation.equals("nutrition")) nameType = "Nutricional";
+//        if (typeEvaluation.equals("dentrist")) nameType = "Odontológica";
+      //  else if (typeEvaluation.equals("nutrition")) nameType = "Nutricional";
         toolbar.setTitle("Gerar Avaliação " + nameType);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);

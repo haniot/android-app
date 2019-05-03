@@ -2,6 +2,7 @@ package br.edu.uepb.nutes.haniot.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -98,9 +99,10 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
 
             h.textMeasurement.setVisibility(View.GONE);
             h.textMeasurementType.setVisibility(View.GONE);
-            h.QuizText.setText(ig.getQuizText());
-            MedicalRecord medicalRecord = ig.getMedicalRecord();
-
+//            h.QuizText.setText(ig.getQuizText());
+//            MedicalRecord medicalRecord = ig.getMedicalRecord();
+            ((ItemQuizView) h.itemQuizView).addItem("Água", "5 a 6 vezes");
+            ((ItemQuizView) h.itemQuizView).addItem("Guloseimas", "5 a 6 vezes");
 
         } else if (ig.getType() == ItemEvaluation.TYPE_MEASUREMENT) {
             h.mView.setOnClickListener(v -> {
@@ -165,11 +167,13 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
         LinearLayout box;
         @BindView(R.id.warning)
         ImageView warning;
+        RecyclerView itemQuizView;
 
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
 
+            itemQuizView = itemView.findViewById(R.id.item_quiz);
             this.mView = itemView.getRootView();
         }
 

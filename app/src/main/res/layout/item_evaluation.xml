@@ -163,8 +163,8 @@
                 android:visibility="invisible"
                 app:srcCompat="@drawable/ic_warning" />
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/quiz_list"
+            <br.edu.uepb.nutes.haniot.adapter.ItemQuizView
+                android:id="@+id/item_quiz"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:layout_below="@+id/textDescription"
@@ -172,7 +172,7 @@
                 android:layout_marginTop="27dp"
                 android:layout_toStartOf="@+id/check_item">
 
-            </android.support.v7.widget.RecyclerView>
+            </br.edu.uepb.nutes.haniot.adapter.ItemQuizView>
         </RelativeLayout>
     </android.support.v7.widget.CardView>
 
