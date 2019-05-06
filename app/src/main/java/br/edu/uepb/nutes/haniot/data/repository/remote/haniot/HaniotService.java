@@ -224,52 +224,45 @@ public interface HaniotService {
 
     @GET("users/{patient_id}/sleephabits")
     Single<List<SleepHabit>> getAllSleepHabits(@Path("patient_id") String patientId,
-                                               @Query("type") String type,
                                                @Query("sort") String sort,
                                                @Query("page") int page,
                                                @Query("limit") int limit);
 
     @GET("users/{patient_id}/physicalactivityhabits")
     Single<List<PhysicalActivityHabit>> getAllPhysicalActivity(@Path("patient_id") String patientId,
-                                               @Query("type") String type,
-                                               @Query("sort") String sort,
-                                               @Query("page") int page,
-                                               @Query("limit") int limit);
+                                                               @Query("sort") String sort,
+                                                               @Query("page") int page,
+                                                               @Query("limit") int limit);
 
     @GET("users/{patient_id}/feedinghabitsrecords")
     Single<List<FeedingHabitsRecord>> getAllFeedingHabits(@Path("patient_id") String patientId,
-                                               @Query("type") String type,
-                                               @Query("sort") String sort,
-                                               @Query("page") int page,
-                                               @Query("limit") int limit);
+                                                          @Query("sort") String sort,
+                                                          @Query("page") int page,
+                                                          @Query("limit") int limit);
 
     @GET("users/{patient_id}/medicalrecords")
     Single<List<MedicalRecord>> getAllMedicalRecord(@Path("patient_id") String patientId,
-                                               @Query("type") String type,
-                                               @Query("sort") String sort,
-                                               @Query("page") int page,
-                                               @Query("limit") int limit);
+                                                    @Query("sort") String sort,
+                                                    @Query("page") int page,
+                                                    @Query("limit") int limit);
 
-  @GET("users/{patient_id}/sociodemographicrecords")
+    @GET("users/{patient_id}/sociodemographicrecords")
     Single<List<SociodemographicRecord>> getAllSociodemographic(@Path("patient_id") String patientId,
-                                               @Query("type") String type,
-                                               @Query("sort") String sort,
-                                               @Query("page") int page,
-                                               @Query("limit") int limit);
+                                                                @Query("sort") String sort,
+                                                                @Query("page") int page,
+                                                                @Query("limit") int limit);
 
-  @GET("users/{patient_id}/familycohesionrecords")
+    @GET("users/{patient_id}/familycohesionrecords")
     Single<List<FamilyCohesionRecord>> getAllFamilyCohesion(@Path("patient_id") String patientId,
-                                               @Query("type") String type,
-                                               @Query("sort") String sort,
-                                               @Query("page") int page,
-                                               @Query("limit") int limit);
+                                                            @Query("sort") String sort,
+                                                            @Query("page") int page,
+                                                            @Query("limit") int limit);
 
-  @GET("users/{patient_id}/familycohesionrecords")
+    @GET("users/{patient_id}/familycohesionrecords")
     Single<List<OralHealthRecord>> getAllOralHealth(@Path("patient_id") String patientId,
-                                               @Query("type") String type,
-                                               @Query("sort") String sort,
-                                               @Query("page") int page,
-                                               @Query("limit") int limit);
+                                                    @Query("sort") String sort,
+                                                    @Query("page") int page,
+                                                    @Query("limit") int limit);
 
 
 }

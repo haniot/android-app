@@ -77,11 +77,11 @@ public class EvaluationActivity extends AppCompatActivity implements EvaluationE
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         initResources();
-        typeEvaluation = helper.getString("typeEvaluation");
+//        typeEvaluation = helper.;getString("typeEvaluation");
+        typeEvaluation = "dentrist";
         initViews();
 
         downloadData();
-        initRecyclerView();
     }
 
     private void initRecyclerView() {
@@ -180,62 +180,64 @@ public class EvaluationActivity extends AppCompatActivity implements EvaluationE
 
     private void downloadData() {
         DisposableManager.add(haniotNetRepository
-                .getAllMeasurements(helper.getLastPatient().getUserId()
+                .getAllMeasurements(helper.getUserLogged().get_id()
                         , "heart_rate", "created_at", 1, 1000)
                 .subscribe(this::prepareHeartRateMeasurement));
 
         DisposableManager.add(haniotNetRepository
-                .getAllMeasurements(helper.getLastPatient().getUserId()
+                .getAllMeasurements(helper.getUserLogged().get_id()
                         , "blood_pressure", "created_at", 1, 1000)
                 .subscribe(this::prepareBloodPressureMeasurement));
 
         DisposableManager.add(haniotNetRepository
-                .getAllMeasurements(helper.getLastPatient().getUserId()
+                .getAllMeasurements(helper.getUserLogged().get_id()
                         , "weight", "created_at", 1, 1000)
                 .subscribe(this::prepareWeightMeasurement));
 
         DisposableManager.add(haniotNetRepository
-                .getAllMeasurements(helper.getLastPatient().getUserId()
+                .getAllMeasurements(helper.getUserLogged().get_id()
                         , "glucose", "created_at", 1, 1000)
                 .subscribe(this::prepareGlucoseMeasurement));
 
         if (typeEvaluation.equals("dentrist")) {
             DisposableManager.add(haniotNetRepository
-                    .getAllOralHealth(helper.getLastPatient().getUserId()
-                            , "glucose", "created_at", 1, 1000)
+                    .getAllOralHealth(helper.getLastPatient().get_id()
+                            , "created_at", 1, 1000)
                     .subscribe(this::prepareOralHealth));
 
             DisposableManager.add(haniotNetRepository
-                    .getAllFamilyCohesion(helper.getLastPatient().getUserId()
-                            , "glucose", "created_at", 1, 1000)
+                    .getAllFamilyCohesion(helper.getLastPatient().get_id()
+                            , "created_at", 1, 1000)
                     .subscribe(this::prepareFamilyCohesion));
 
             DisposableManager.add(haniotNetRepository
-                    .getAllSociodemographic(helper.getLastPatient().getUserId()
-                            , "glucose", "created_at", 1, 1000)
+                    .getAllSociodemographic(helper.getLastPatient().get_id()
+                            , "created_at", 1, 1000)
                     .subscribe(this::prepareSociodemographic));
 
         }
 
         DisposableManager.add(haniotNetRepository
-                .getAllMedicalRecord(helper.getLastPatient().getUserId()
-                        , "glucose", "created_at", 1, 1000)
+                .getAllMedicalRecord(helper.getLastPatient().get_id()
+                        , "created_at", 1, 1000)
                 .subscribe(this::prepareMedicalRecords));
 
         DisposableManager.add(haniotNetRepository
-                .getAllFeedingHabits(helper.getLastPatient().getUserId()
-                        , "glucose", "created_at", 1, 1000)
+                .getAllFeedingHabits(helper.getLastPatient().get_id()
+                        , "created_at", 1, 1000)
                 .subscribe(this::prepareFeedingHabits));
 
         DisposableManager.add(haniotNetRepository
-                .getAllPhysicalActivity(helper.getLastPatient().getUserId()
-                        , "glucose", "created_at", 1, 1000)
+                .getAllPhysicalActivity(helper.getLastPatient().get_id()
+                        , "created_at", 1, 1000)
                 .subscribe(this::preparePhysicalHabits));
 
         DisposableManager.add(haniotNetRepository
-                .getAllSleepHabits(helper.getLastPatient().getUserId()
-                        , "glucose", "created_at", 1, 1000)
+                .getAllSleepHabits(helper.getLastPatient().get_id()
+                        , "created_at", 1, 1000)
                 .subscribe(this::prepareSleepHatits));
+
+        initRecyclerView();
 
     }
 
