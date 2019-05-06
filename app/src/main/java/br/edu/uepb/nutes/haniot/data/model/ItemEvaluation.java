@@ -4,7 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class ItemEvaluation implements Parcelable {
-    public static final int TYPE_HEADER = 1;
     public static final int TYPE_MEASUREMENT = 2;
     public static final int TYPE_QUIZ = 3;
     public static final int TYPE_EMPTY = 4;
@@ -24,7 +23,6 @@ public class ItemEvaluation implements Parcelable {
     private MedicalRecord medicalRecord;
     private PhysicalActivityHabit physicalActivityHabit;
     private SleepHabit sleepHabit;
-    private WeeklyFoodRecord weeklyFoodRecord;
 
     private OralHealthRecord oralHealthRecord;
     private FamilyCohesionRecord familyCohesionRecord;
@@ -32,6 +30,40 @@ public class ItemEvaluation implements Parcelable {
 
     public ItemEvaluation() {
 
+    }
+
+    public ItemEvaluation(int icon, int typeHeader, String title, String quizText, int typeEvaluation) {
+        this.icon = icon;
+        this.typeHeader = typeHeader;
+        this.title = title;
+        this.quizText = quizText;
+        this.typeEvaluation = typeEvaluation;
+    }
+
+    public ItemEvaluation(int icon, int typeHeader, String title, String valueMeasurement, String unitMeasurement, String time, int typeEvaluation) {
+        this.icon = icon;
+        this.typeHeader = typeHeader;
+        this.title = title;
+        this.valueMeasurement = valueMeasurement;
+        this.unitMeasurement = unitMeasurement;
+        this.time = time;
+        this.typeEvaluation = typeEvaluation;
+    }
+
+    public ItemEvaluation(int icon, int typeHeader, String title, String quizText, String time, int typeEvaluation) {
+        this.icon = icon;
+        this.typeHeader = typeHeader;
+        this.title = title;
+        this.quizText = quizText;
+        this.time = time;
+        this.typeEvaluation = typeEvaluation;
+    }
+
+    public ItemEvaluation(int icon, int typeHeader, String title, int typeEvaluation) {
+        this.icon = icon;
+        this.typeHeader = typeHeader;
+        this.title = title;
+        this.typeEvaluation = typeEvaluation;
     }
 
     protected ItemEvaluation(Parcel in) {
@@ -169,14 +201,6 @@ public class ItemEvaluation implements Parcelable {
 
     public void setSleepHabit(SleepHabit sleepHabit) {
         this.sleepHabit = sleepHabit;
-    }
-
-    public WeeklyFoodRecord getWeeklyFoodRecord() {
-        return weeklyFoodRecord;
-    }
-
-    public void setWeeklyFoodRecord(WeeklyFoodRecord weeklyFoodRecord) {
-        this.weeklyFoodRecord = weeklyFoodRecord;
     }
 
     public OralHealthRecord getOralHealthRecord() {

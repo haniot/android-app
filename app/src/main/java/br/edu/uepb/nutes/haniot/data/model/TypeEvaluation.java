@@ -11,6 +11,8 @@ public class TypeEvaluation {
     public final static int SOCIODEMOGRAPHICS = 6;
     public final static int SLEEP_HABITS = 7;
     public final static int MEDICAL_RECORDS = 8;
-    public final static int PHYSICAL_ACTIVITY= 9;
+    public final static int PHYSICAL_ACTIVITY = 9;
+    public final static int FAMILY_COHESION = 10;
+    public final static int FEEDING_HABITS = 1;
 
 }

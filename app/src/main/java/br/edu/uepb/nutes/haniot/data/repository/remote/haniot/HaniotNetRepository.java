@@ -363,4 +363,47 @@ public class HaniotNetRepository extends BaseNetRepository {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
+
+    public Single<List<SleepHabit>> getAllSleepHabits(String userId, String type, String sort, int page, int limit) {
+        return haniotService.getAllSleepHabits(userId, type, sort, page, limit)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Single<List<PhysicalActivityHabit>> getAllPhysicalActivity(String userId, String type, String sort, int page, int limit) {
+        return haniotService.getAllPhysicalActivity(userId, type, sort, page, limit)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Single<List<FeedingHabitsRecord>> getAllFeedingHabits(String userId, String type, String sort, int page, int limit) {
+        return haniotService.getAllFeedingHabits(userId, type, sort, page, limit)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Single<List<MedicalRecord>> getAllMedicalRecord(String userId, String type, String sort, int page, int limit) {
+        return haniotService.getAllMedicalRecord(userId, type, sort, page, limit)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Single<List<SociodemographicRecord>> getAllSociodemographic(String userId, String type, String sort, int page, int limit) {
+        return haniotService.getAllSociodemographic(userId, type, sort, page, limit)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Single<List<FamilyCohesionRecord>> getAllFamilyCohesion(String userId, String type, String sort, int page, int limit) {
+        return haniotService.getAllFamilyCohesion(userId, type, sort, page, limit)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Single<List<OralHealthRecord>> getAllOralHealth(String userId, String type, String sort, int page, int limit) {
+        return haniotService.getAllOralHealth(userId, type, sort, page, limit)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
 }

@@ -41,7 +41,7 @@ public class EvaluationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-        if (viewType == ItemEvaluation.TYPE_HEADER) {
+        if (viewType == ItemEvaluation.TYPE_EMPTY) {
             View itemView = mInflater.inflate(R.layout.item_evaluation_section, parent, false);
             return new HeaderViewHolder(itemView);
         } else {
@@ -61,7 +61,7 @@ public class EvaluationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
         int type = getItemViewType(i);
-        if (type == ItemEvaluation.TYPE_HEADER) {
+        if (type == ItemEvaluation.TYPE_EMPTY) {
             ItemEvaluation header = itemEvaluations.get(i);
             HeaderViewHolder holder2 = (HeaderViewHolder) viewHolder;
             holder2.categoryTitle.setText(header.getTitle());

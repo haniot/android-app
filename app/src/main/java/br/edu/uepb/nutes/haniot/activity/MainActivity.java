@@ -276,26 +276,22 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
 
     @Override
     public void onClick(View v) {
-        Intent intent;
         switch (v.getId()) {
             case R.id.evaluation_odonto:
-                intent = new Intent(this, EvaluationActivity.class);
-                intent.putExtra("typeEvaluation", "dentrist");
+                appPreferences.saveString("typeEvaluation", "dentrist");
+                startActivity(new Intent(this, EvaluationActivity.class));
                 break;
             case R.id.evaluation_nutrition:
-                intent = new Intent(this, EvaluationActivity.class);
-                intent.putExtra("typeEvaluation", "nutrition");
+                appPreferences.saveString("typeEvaluation", "nutrition");
+                startActivity(new Intent(this, EvaluationActivity.class));
                 break;
             case R.id.quiz_nutrition:
-                intent = new Intent(this, QuizNutritionActivity.class);
+                startActivity(new Intent(this, QuizNutritionActivity.class));
                 break;
             case R.id.quiz_odonto:
-                intent = new Intent(this, QuizOdontologyActivity.class);
+                startActivity(new Intent(this, QuizOdontologyActivity.class));
                 break;
             default:
-                return;
         }
-        startActivity(intent);
-
     }
 }
