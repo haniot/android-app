@@ -94,7 +94,6 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
     private MeasurementDAO measurementDAO;
     private DeviceDAO deviceDAO;
     private HeartRateAdapter mAdapter;
-    private Params params;
     private HeartRateManager heartRateManager;
     /**
      * We need this variable to lock and unlock loading more.
@@ -167,9 +166,8 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
         measurementDAO = MeasurementDAO.getInstance(this);
         deviceDAO = DeviceDAO.getInstance(this);
-        params = new Params(appPreferencesHelper.getUserLogged().get_id(), MeasurementType.HEART_RATE);
         heartRateManager = new HeartRateManager(this);
-        heartRateManager.setSimpleCallback(heartRateDataCallback);
+//        heartRateManager.setSimpleCallback(heartRateDataCallback);
 
         if (isTablet(this)){
             Log.i(TAG, "is tablet");
@@ -201,36 +199,36 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
                 & Configuration.SCREENLAYOUT_SIZE_MASK)
                 >= Configuration.SCREENLAYOUT_SIZE_LARGE;
     }
-
-    HeartRateDataCallback heartRateDataCallback = new HeartRateDataCallback() {
-        @Override
-        public void onConnected() {
-            mConnected = true;
-            updateConnectionState(true);
-        }
-
-        @Override
-        public void onDisconnected() {
-            mConnected = false;
-            updateConnectionState(false);
-        }
-
-        @Override
-        public void onMeasurementReceived(Measurement measurementHeartRate) {
-            if (mDevice != null)
-                measurementHeartRate.setDevice(mDevice);
-
-            /**
-             * Save in local
-             * Send to server saved successfully
-             */
-            if (measurementDAO.save(measurementHeartRate)) {
-                synchronizeWithServer();
-                loadData();
-            }
-            updateUILastMeasurement(measurementHeartRate, true);
-        }
-    };
+//
+//    HeartRateDataCallback heartRateDataCallback = new HeartRateDataCallback() {
+//        @Override
+//        public void onConnected() {
+//            mConnected = true;
+//            updateConnectionState(true);
+//        }
+//
+//        @Override
+//        public void onDisconnected() {
+//            mConnected = false;
+//            updateConnectionState(false);
+//        }
+//
+//        @Override
+//        public void onMeasurementReceived(Measurement measurementHeartRate) {
+//            if (mDevice != null)
+//                measurementHeartRate.setDevice(mDevice);
+//
+//            /**
+//             * Save in local
+//             * Send to server saved successfully
+//             */
+//            if (measurementDAO.save(measurementHeartRate)) {
+//                synchronizeWithServer();
+//                loadData();
+//            }
+//            updateUILastMeasurement(measurementHeartRate, true);
+//        }
+//    };
 
     /**
      * Initialize components
@@ -369,91 +367,91 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
      * Otherwise it displays from the remote server.
      */
     private void loadData() {
-        mAdapter.clearItems(); // clear list
-
-        if (!ConnectionUtils.internetIsEnabled(this)) {
-            loadDataLocal();
-        } else {
-            Historical historical = new Historical.Query()
-                    .type(HistoricalType.MEASUREMENTS_TYPE_USER)
-                    .params(params) // Measurements of the blood heart rate type, associated to the user
-                    .pagination(0, LIMIT_PER_PAGE)
-                    .build();
-
-            historical.request(this, new CallbackHistorical<Measurement>() {
-                @Override
-                public void onBeforeSend() {
-                    Log.w(TAG, "loadData - onBeforeSend()");
-                    toggleLoading(true); // Enable loading
-                    toggleNoDataMessage(false); // Disable message no data
-                }
-
-                @Override
-                public void onError(JSONObject result) {
-                    Log.w(TAG, "loadData - onError()");
-                    if (mAdapter.itemsIsEmpty()) printMessage(getString(R.string.error_500));
-                    else loadDataLocal();
-                }
-
-                @Override
-                public void onResult(List<Measurement> result) {
-                    Log.w(TAG, "loadData - onResult()");
-                    if (result != null && result.size() > 0) {
-                        mAdapter.addItems(result);
-                        updateUILastMeasurement(mAdapter.getFirstItem(), false);
-                    } else {
-                        toggleNoDataMessage(true); // Enable message no data
-                    }
-                }
-
-                @Override
-                public void onAfterSend() {
-                    Log.w(TAG, "loadData - onAfterSend()");
-                    toggleLoading(false); // Disable loading
-                }
-            });
-        }
+//        mAdapter.clearItems(); // clear list
+//
+//        if (!ConnectionUtils.internetIsEnabled(this)) {
+//            loadDataLocal();
+//        } else {
+//            Historical historical = new Historical.Query()
+//                    .type(HistoricalType.MEASUREMENTS_TYPE_USER)
+//                    .params(params) // Measurements of the blood heart rate type, associated to the user
+//                    .pagination(0, LIMIT_PER_PAGE)
+//                    .build();
+//
+//            historical.request(this, new CallbackHistorical<Measurement>() {
+//                @Override
+//                public void onBeforeSend() {
+//                    Log.w(TAG, "loadData - onBeforeSend()");
+//                    toggleLoading(true); // Enable loading
+//                    toggleNoDataMessage(false); // Disable message no data
+//                }
+//
+//                @Override
+//                public void onError(JSONObject result) {
+//                    Log.w(TAG, "loadData - onError()");
+//                    if (mAdapter.itemsIsEmpty()) printMessage(getString(R.string.error_500));
+//                    else loadDataLocal();
+//                }
+//
+//                @Override
+//                public void onResult(List<Measurement> result) {
+//                    Log.w(TAG, "loadData - onResult()");
+//                    if (result != null && result.size() > 0) {
+//                        mAdapter.addItems(result);
+//                        updateUILastMeasurement(mAdapter.getFirstItem(), false);
+//                    } else {
+//                        toggleNoDataMessage(true); // Enable message no data
+//                    }
+//                }
+//
+//                @Override
+//                public void onAfterSend() {
+//                    Log.w(TAG, "loadData - onAfterSend()");
+//                    toggleLoading(false); // Disable loading
+//                }
+//            });
+//        }
     }
 
     /**
      * List more itemsList from the remote server.
      */
     private void loadMoreData() {
-        if (!ConnectionUtils.internetIsEnabled(this))
-            return;
-
-        Historical historical = new Historical.Query()
-                .type(HistoricalType.MEASUREMENTS_TYPE_USER)
-                .params(params) // Measurements of the blood heart rate type, associated to the user
-                .pagination(mAdapter.getItemCount(), LIMIT_PER_PAGE)
-                .build();
-
-        historical.request(this, new CallbackHistorical<Measurement>() {
-            @Override
-            public void onBeforeSend() {
-                Log.w(TAG, "loadMoreData - onBeforeSend()");
-                toggleLoading(true); // Enable loading
-            }
-
-            @Override
-            public void onError(JSONObject result) {
-                Log.w(TAG, "loadMoreData - onError()");
-                printMessage(getString(R.string.error_500));
-            }
-
-            @Override
-            public void onResult(List<Measurement> result) {
-                Log.w(TAG, "loadMoreData - onResult()");
-                if (result != null && result.size() > 0) mAdapter.addItems(result);
-                else printMessage(getString(R.string.no_more_data));
-            }
-
-            @Override
-            public void onAfterSend() {
-                Log.w(TAG, "loadMoreData - onAfterSend()");
-                toggleLoading(false); // Disable loading
-            }
-        });
+//        if (!ConnectionUtils.internetIsEnabled(this))
+//            return;
+//
+//        Historical historical = new Historical.Query()
+//                .type(HistoricalType.MEASUREMENTS_TYPE_USER)
+//                .params(params) // Measurements of the blood heart rate type, associated to the user
+//                .pagination(mAdapter.getItemCount(), LIMIT_PER_PAGE)
+//                .build();
+//
+//        historical.request(this, new CallbackHistorical<Measurement>() {
+//            @Override
+//            public void onBeforeSend() {
+//                Log.w(TAG, "loadMoreData - onBeforeSend()");
+//                toggleLoading(true); // Enable loading
+//            }
+//
+//            @Override
+//            public void onError(JSONObject result) {
+//                Log.w(TAG, "loadMoreData - onError()");
+//                printMessage(getString(R.string.error_500));
+//            }
+//
+//            @Override
+//            public void onResult(List<Measurement> result) {
+//                Log.w(TAG, "loadMoreData - onResult()");
+//                if (result != null && result.size() > 0) mAdapter.addItems(result);
+//                else printMessage(getString(R.string.no_more_data));
+//            }
+//
+//            @Override
+//            public void onAfterSend() {
+//                Log.w(TAG, "loadMoreData - onAfterSend()");
+//                toggleLoading(false); // Disable loading
+//            }
+//        });
     }
 
     /**
@@ -587,14 +585,14 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
      */
     private void updateUILastMeasurement(Measurement measurement, boolean applyAnimation) {
         if (measurement == null) return;
-
-        runOnUiThread(() -> {
-            mHeartRateTextView.setText(String.format("%03d", (int) measurement.getValue()));
-            mUnitHeartRateTextView.setText(measurement.getUnit());
-            mDateLastMeasurement.setText(DateUtils.abbreviatedDate(
-                    getApplicationContext(), measurement.getRegistrationDate()));
-            mHeartImageView.setVisibility(View.VISIBLE);
-        });
+//
+//        runOnUiThread(() -> {
+//            mHeartRateTextView.setText(String.format("%03d", (int) measurement.getValue()));
+//            mUnitHeartRateTextView.setText(measurement.getUnit());
+//            mDateLastMeasurement.setText(DateUtils.abbreviatedDate(
+//                    getApplicationContext(), measurement.getRegistrationDate()));
+//            mHeartImageView.setVisibility(View.VISIBLE);
+//        });
     }
 
     /**

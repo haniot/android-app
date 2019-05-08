@@ -1,9 +1,9 @@
 package br.edu.uepb.nutes.haniot.activity;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -31,13 +31,10 @@ import br.edu.uepb.nutes.haniot.data.model.SleepHabit;
 import br.edu.uepb.nutes.haniot.data.model.SociodemographicRecord;
 import br.edu.uepb.nutes.haniot.data.model.TypeEvaluation;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
-import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.haniot.devices.GlucoseActivity;
 import br.edu.uepb.nutes.haniot.devices.HeartRateActivity;
 import br.edu.uepb.nutes.haniot.devices.ScaleActivity;
-import br.edu.uepb.nutes.haniot.devices.hdp.BloodPressureHDPActivity;
-import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -416,11 +413,9 @@ public class EvaluationActivity extends AppCompatActivity implements EvaluationE
             case GLUCOSE:
                 intent = new Intent(this, GlucoseActivity.class);
                 break;
+
             case HEARTRATE:
                 intent = new Intent(this, HeartRateActivity.class);
-                break;
-            case BLOOD_PRESSURE:
-                intent = new Intent(this, BloodPressureHDPActivity.class);
                 break;
 
             case WEIGHT:

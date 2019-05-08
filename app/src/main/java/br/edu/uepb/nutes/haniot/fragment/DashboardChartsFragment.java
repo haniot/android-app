@@ -10,11 +10,11 @@ import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 import java.util.Objects;
 
 import br.edu.uepb.nutes.haniot.R;
@@ -23,7 +23,6 @@ import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import pl.bclogic.pulsator4droid.library.PulsatorLayout;
 
 /**
  * DashboardChartsFragment implementation.
@@ -49,8 +48,6 @@ public class DashboardChartsFragment extends Fragment {
     @BindView(R.id.message_error)
     TextView messageError;
 
-    private AppPreferencesHelper helper;
-
     public DashboardChartsFragment() {
         // Required empty public constructor
     }
@@ -65,54 +62,46 @@ public class DashboardChartsFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_charts_dashboard, container, false);
         ButterKnife.bind(this, view);
-        helper = AppPreferencesHelper.getInstance(getContext());
+        AppPreferencesHelper preferencesHelper = AppPreferencesHelper.getInstance(getContext());
+
         Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(getResources().getString(R.string.date_format2));
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
+                getResources().getString(R.string.date_format2),
+                Locale.getDefault()
+        );
+
         textDate.setText(simpleDateFormat.format(calendar.getTime()));
-        updateNamePatient(((MainActivity) getActivity()).getPatientSelected());
-        textPilotStudy.setText(helper.getLastPilotStudy().getName());
-        textProfessional.setText(helper.getUserLogged().getName());
-        messageError.setOnClickListener(v -> ((MainActivity) getActivity()).checkPermissions());
+        updateNamePatient(preferencesHelper.getLastPatient());
+        textPilotStudy.setText(preferencesHelper.getLastPilotStudy().getName());
+        textProfessional.setText(preferencesHelper.getUserLogged().getName());
+        messageError.setOnClickListener(v -> ((MainActivity) Objects.requireNonNull(getActivity()))
+                .checkPermissions());
         return view;
     }
 
-    /**
-     * On attach.
-     *
-     * @param context
-     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         try {
             communicator = (DashboardChartsFragment.Communicator) context;
         } catch (ClassCastException castException) {
+            throw new ClassCastException();
         }
     }
 
-    /**
-     * On start.
-     */
     @Override
     public void onStart() {
         super.onStart();
     }
 
-    /**
-     * On stop.
-     */
     @Override
     public void onStop() {
         super.onStop();
     }
 
-    /**
-     * On resume.
-     */
     @Override
     public void onResume() {
         super.onResume();
@@ -122,7 +111,7 @@ public class DashboardChartsFragment extends Fragment {
     /**
      * Update value of measurement in screen.
      *
-     * @param valueMeasurement
+     * @param valueMeasurement {@link String}
      */
     public void updateValueMeasurement(String valueMeasurement) {
         textValueMeasurement.setText(valueMeasurement);
@@ -152,7 +141,7 @@ public class DashboardChartsFragment extends Fragment {
     /**
      * Update name patient selected.
      *
-     * @param patient
+     * @param patient {@link Patient}
      */
     public void updateNamePatient(Patient patient) {
         if (patient != null) {

@@ -47,7 +47,7 @@ public class Patient {
     private String birthDate;
 
     @Expose(serialize = false, deserialize = false)
-    private String userId;
+    private String healthProfessionalId;
 
     public Patient() {
 
@@ -109,12 +109,12 @@ public class Patient {
         this.birthDate = birthDate;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getHealthProfessionalId() {
+        return healthProfessionalId;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setHealthProfessionalId(String healthProfessionalId) {
+        this.healthProfessionalId = healthProfessionalId;
     }
 
     /**

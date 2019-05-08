@@ -62,7 +62,8 @@ public class TemperatureChartActivity extends BaseChartActivity {
 
     @Override
     public int getTypeMeasurement() {
-        return MeasurementType.TEMPERATURE;
+        return 0;
+//        return MeasurementType.TEMPERATURE;
     }
 
     @Override

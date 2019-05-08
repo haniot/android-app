@@ -20,7 +20,7 @@ public class GattHRParser {
     /**
      * Parse for the POLAR device, according to GATT.
      * Supported Models: H7, H10.
-     *
+     * <p>
      * {@link <https://www.bluetooth.com/specifications/gatt/viewer?attributeXmlFile=org.bluetooth.characteristic.heart_rate_measurement.xml>}
      *
      * @param characteristic
@@ -34,10 +34,10 @@ public class GattHRParser {
 
         final int flags = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT8, offset++);
 
-		/*
+        /*
          * false 	Heart Rate Value Format is set to UINT8. Units: beats per minute (bpm)
-		 * true 	Heart Rate Value Format is set to UINT16. Units: beats per minute (bpm)
-		 */
+         * true 	Heart Rate Value Format is set to UINT16. Units: beats per minute (bpm)
+         */
         final boolean value16bit = (flags & HEART_RATE_VALUE_FORMAT) > 0;
 
         // heart rate value is 8 or 16 bit long
@@ -49,7 +49,7 @@ public class GattHRParser {
          */
         result.put("heartRate", heartRateValue);
         result.put("heartRateUnit", "bpm");
-        result.put("timestamp", DateUtils.getCurrentDatetime());
+        result.put("timestamp", DateUtils.getCurrentDateTimeUTC());
 
         return result;
     }

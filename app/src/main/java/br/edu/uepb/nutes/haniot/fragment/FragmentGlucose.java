@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.data.model.ContextMeasurementValueType;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -65,7 +64,7 @@ public class FragmentGlucose extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_glucose_measurement, container, false);
         ButterKnife.bind(this, view);
-        period = ContextMeasurementValueType.GLUCOSE_MEAL_FASTING;
+//        period = ContextMeasurementValueType.GLUCOSE_MEAL_FASTING;
 
         return view;
     }
@@ -105,19 +104,19 @@ public class FragmentGlucose extends Fragment {
     public void initViews() {
         preMeal.setOnClickListener(v -> {
             choose(preMeal, titlePreMeal, checkPreMeal);
-            period = ContextMeasurementValueType.GLUCOSE_MEAL_FASTING;
+//            period = ContextMeasurementValueType.GLUCOSE_MEAL_FASTING;
         });
         beforeBedtime.setOnClickListener(v -> {
             choose(beforeBedtime, titleBeforeBedtime, checkBeforeBedtime);
-            period = ContextMeasurementValueType.GLUCOSE_MEAL_BEDTIME;
+//            period = ContextMeasurementValueType.GLUCOSE_MEAL_BEDTIME;
         });
         fast.setOnClickListener(v -> {
             choose(fast, titleFast, checkFast);
-            period = ContextMeasurementValueType.GLUCOSE_CARBOHYDRATE_BREAKFAST;
+//            period = ContextMeasurementValueType.GLUCOSE_CARBOHYDRATE_BREAKFAST;
         });
         fasting.setOnClickListener(v -> {
             choose(fasting, titleFasting, checkFasting);
-            period = ContextMeasurementValueType.GLUCOSE_MEAL_FASTING;
+//            period = ContextMeasurementValueType.GLUCOSE_MEAL_FASTING;
         });
     }
 

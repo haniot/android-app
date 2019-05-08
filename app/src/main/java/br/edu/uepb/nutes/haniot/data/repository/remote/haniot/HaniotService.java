@@ -26,7 +26,7 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 /**
- * Interface for OCARIoT API.
+ * Interface for HANIoT API.
  *
  * @author Copyright (c) 2018, NUTES/UEPB
  */
@@ -73,19 +73,24 @@ public interface HaniotService {
 
     @GET("users/{user_id}/measurements")
     Single<List<Measurement>> getAllMeasurements(@Path("user_id") String userId,
+                                                 @Query("sort") String sort,
+                                                 @Query("timestamp") String dateStart,
+                                                 @Query("timestamp") String dateEnd,
+                                                 @Query("page") int page,
+                                                 @Query("limit") int limit);
+
+    @GET("users/{user_id}/measurements")
+    Single<List<Measurement>> getAllMeasurements(@Path("user_id") String userId,
                                                  @Query("type") String type,
                                                  @Query("sort") String sort,
+                                                 @Query("timestamp") String dateStart,
+                                                 @Query("timestamp") String dateEnd,
                                                  @Query("page") int page,
                                                  @Query("limit") int limit);
 
     @GET("users/{user_id}/measurements/{measurement_id}")
     Single<Measurement> getMeasurement(@Path("user_id") String userId,
                                        @Path("measurement_id") String measurementId);
-
-    @PATCH("users/{user_id}/measurements/{measurement_id}")
-    Single<Measurement> updateMeasurement(@Path("user_id") String userId,
-                                          @Path("measurement_id") String measurementId,
-                                          @Body Measurement measurement);
 
     @DELETE("users/{user_id}/measurements/{measurement_id}")
     Completable deleteMeasurement(@Path("user_id") String userId,
@@ -95,17 +100,12 @@ public interface HaniotService {
     @POST("users/{user_id}/devices")
     Single<Device> addDevice(@Path("user_id") String userId, @Body Device device);
 
-    @GET("users/healthprofessionals/{user_id}/devices")
+    @GET("users/{user_id}/devices")
     Single<List<Device>> getAllDevices(@Path("user_id") String userId);
 
     @GET("users/{user_id}/devices/{device_id}")
     Single<Device> getDevice(@Path("user_id") String userId,
                              @Path("device_id") String deviceId);
-
-    @PATCH("users/{user_id}/devices/{device_id}")
-    Single<Device> updateDevice(@Path("user_id") String userId,
-                                @Path("device_id") String deviceId,
-                                @Body Device device);
 
     @DELETE("users/{user_id}/devices/{device_id}")
     Completable deleteDevice(@Path("user_id") String userId,

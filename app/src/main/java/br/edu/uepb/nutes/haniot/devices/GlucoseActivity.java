@@ -4,22 +4,16 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothGattCharacteristic;
-import android.bluetooth.BluetoothGattDescriptor;
-import android.bluetooth.BluetoothGattService;
+import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothProfile;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.design.widget.AppBarLayout;
@@ -40,28 +34,17 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.List;
-import java.util.UUID;
-
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.AddMeasurementActivity;
 import br.edu.uepb.nutes.haniot.activity.charts.GlucoseChartActivity;
-import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.GlucoseAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
-import br.edu.uepb.nutes.haniot.data.model.ContextMeasurement;
-import br.edu.uepb.nutes.haniot.data.model.ContextMeasurementType;
-import br.edu.uepb.nutes.haniot.data.model.ContextMeasurementValueType;
 import br.edu.uepb.nutes.haniot.data.model.Device;
 import br.edu.uepb.nutes.haniot.data.model.DeviceType;
 import br.edu.uepb.nutes.haniot.data.model.ItemGridType;
@@ -70,19 +53,11 @@ import br.edu.uepb.nutes.haniot.data.model.MeasurementType;
 import br.edu.uepb.nutes.haniot.data.model.dao.DeviceDAO;
 import br.edu.uepb.nutes.haniot.data.model.dao.MeasurementDAO;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
-import br.edu.uepb.nutes.haniot.parse.JsonToContextParser;
-import br.edu.uepb.nutes.haniot.parse.JsonToMeasurementParser;
 import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
-import br.edu.uepb.nutes.haniot.server.historical.CallbackHistorical;
-import br.edu.uepb.nutes.haniot.server.historical.Historical;
-import br.edu.uepb.nutes.haniot.server.historical.HistoricalType;
-import br.edu.uepb.nutes.haniot.server.historical.Params;
-import br.edu.uepb.nutes.haniot.service.BluetoothLeService;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.GlucoseManager;
-import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.GlucoseDataCallback;
+import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.BloodGlucoseDataCallback;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
-import br.edu.uepb.nutes.haniot.utils.GattAttributes;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -103,11 +78,10 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
 
     private Animation animation;
     private Device mDevice;
-    private AppPreferencesHelper appPreferencesHelper;
+    private AppPreferencesHelper appPreferences;
     private MeasurementDAO measurementDAO;
     private DeviceDAO deviceDAO;
     private GlucoseAdapter mAdapter;
-    private Params params;
     private GlucoseManager glucoseManager;
 
     /**
@@ -174,11 +148,10 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
         // synchronization with server
         synchronizeWithServer();
 
-        appPreferencesHelper = AppPreferencesHelper.getInstance(this);
+        appPreferences = AppPreferencesHelper.getInstance(this);
 
         measurementDAO = MeasurementDAO.getInstance(this);
         deviceDAO = DeviceDAO.getInstance(this);
-        params = new Params(appPreferencesHelper.getUserLogged().get_id(), MeasurementType.BLOOD_GLUCOSE);
         glucoseManager = new GlucoseManager(this);
         glucoseManager.setSimpleCallback(glucoseDataCallback);
 
@@ -187,15 +160,15 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
         mAddButton.setOnClickListener(this);
         messageError.setOnClickListener(v -> checkPermissions());
 
-        if (isTablet(this)){
+        if (isTablet(this)) {
             Log.i(TAG, "is tablet");
-            boxMeasurement.getLayoutParams().height= 600;
-            mCollapsingToolbarLayout.getLayoutParams().height= 630;
+            boxMeasurement.getLayoutParams().height = 600;
+            mCollapsingToolbarLayout.getLayoutParams().height = 630;
             boxMeasurement.requestLayout();
             mCollapsingToolbarLayout.requestLayout();
         }
 
-        mDevice = deviceDAO.getByType(appPreferencesHelper.getUserLogged().get_id(), DeviceType.GLUCOMETER);
+        mDevice = deviceDAO.getByType(appPreferences.getUserLogged().get_id(), DeviceType.GLUCOMETER);
         initComponents();
 
         IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
@@ -204,6 +177,7 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
 
     /**
      * Check if is tablet.
+     *
      * @param context
      * @return
      */
@@ -213,22 +187,30 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
                 >= Configuration.SCREENLAYOUT_SIZE_LARGE;
     }
 
-    private GlucoseDataCallback glucoseDataCallback = new GlucoseDataCallback() {
+    private BloodGlucoseDataCallback glucoseDataCallback = new BloodGlucoseDataCallback() {
         @Override
-        public void onConnected() {
+        public void onConnected(@androidx.annotation.NonNull BluetoothDevice device) {
             mConnected = true;
             updateConnectionState(true);
         }
 
         @Override
-        public void onDisconnected() {
+        public void onDisconnected(@androidx.annotation.NonNull BluetoothDevice device) {
             mConnected = false;
             updateConnectionState(false);
         }
 
         @Override
-        public void onMeasurementReceived(Measurement measurementGlucose) {
-            updateUILastMeasurement(measurementGlucose, true);
+        public void onMeasurementReceived(@NonNull BluetoothDevice device, int glucose, String meal, String timestamp) {
+            Measurement measurement = new Measurement();
+            measurement.setType(MeasurementType.BLOOD_GLUCOSE);
+            measurement.setValue(glucose);
+            measurement.setMeal(meal);
+            measurement.setTimestamp(timestamp);
+            measurement.setDeviceId(mDevice.get_id());
+            measurement.setUserId(appPreferences.getLastPatient().get_id());
+
+            updateUILastMeasurement(measurement, true);
         }
     };
 
@@ -336,7 +318,7 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
      */
     private void loadDataLocal() {
         mAdapter.addItems(measurementDAO.list(MeasurementType.BLOOD_GLUCOSE,
-                appPreferencesHelper.getUserLogged().getId(), 0, 100));
+                appPreferences.getUserLogged().getId(), 0, 100));
 
         if (!mAdapter.itemsIsEmpty()) {
             updateUILastMeasurement(mAdapter.getFirstItem(), false);
@@ -353,85 +335,85 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
      */
     private void loadData() {
         mAdapter.clearItems(); // clear list
-
-        if (!ConnectionUtils.internetIsEnabled(this)) {
-            loadDataLocal();
-        } else {
-            Historical historical = new Historical.Query()
-                    .type(HistoricalType.MEASUREMENTS_TYPE_USER)
-                    .params(params) // Measurements of the blood glucose type, associated to the user
-                    .pagination(0, LIMIT_PER_PAGE)
-                    .build();
-
-            historical.request(this, new CallbackHistorical<Measurement>() {
-                @Override
-                public void onBeforeSend() {
-                    toggleLoading(true); // Enable loading
-                    toggleNoDataMessage(false); // Disable message no data
-                }
-
-                @Override
-                public void onError(JSONObject result) {
-                    if (mAdapter.itemsIsEmpty()) {
-                        printMessage(getString(R.string.error_500));
-                        showMessage(R.string.error_500);
-                    } else loadDataLocal();
-                }
-
-                @Override
-                public void onResult(List<Measurement> result) {
-                    if (result != null && result.size() > 0) {
-                        mAdapter.addItems(result);
-                        updateUILastMeasurement(mAdapter.getFirstItem(), false);
-                    } else {
-                        toggleNoDataMessage(true); // Enable message no data
-                    }
-                }
-
-                @Override
-                public void onAfterSend() {
-                    toggleLoading(false); // Disable loading
-                }
-            });
-        }
+//
+//        if (!ConnectionUtils.internetIsEnabled(this)) {
+//            loadDataLocal();
+//        } else {
+//            Historical historical = new Historical.Query()
+//                    .type(HistoricalType.MEASUREMENTS_TYPE_USER)
+//                    .params(params) // Measurements of the blood glucose type, associated to the user
+//                    .pagination(0, LIMIT_PER_PAGE)
+//                    .build();
+//
+//            historical.request(this, new CallbackHistorical<Measurement>() {
+//                @Override
+//                public void onBeforeSend() {
+//                    toggleLoading(true); // Enable loading
+//                    toggleNoDataMessage(false); // Disable message no data
+//                }
+//
+//                @Override
+//                public void onError(JSONObject result) {
+//                    if (mAdapter.itemsIsEmpty()) {
+//                        printMessage(getString(R.string.error_500));
+//                        showMessage(R.string.error_500);
+//                    } else loadDataLocal();
+//                }
+//
+//                @Override
+//                public void onResult(List<Measurement> result) {
+//                    if (result != null && result.size() > 0) {
+//                        mAdapter.addItems(result);
+//                        updateUILastMeasurement(mAdapter.getFirstItem(), false);
+//                    } else {
+//                        toggleNoDataMessage(true); // Enable message no data
+//                    }
+//                }
+//
+//                @Override
+//                public void onAfterSend() {
+//                    toggleLoading(false); // Disable loading
+//                }
+//            });
+//        }
     }
 
     /**
      * List more itemsList from the remote server.
      */
     private void loadMoreData() {
-        if (!ConnectionUtils.internetIsEnabled(this))
-            return;
-
-        Historical historical = new Historical.Query()
-                .type(HistoricalType.MEASUREMENTS_TYPE_USER)
-                .params(params) // Measurements of the blood glucose type, associated to the user
-                .pagination(mAdapter.getItemCount(), LIMIT_PER_PAGE)
-                .build();
-
-        historical.request(this, new CallbackHistorical<Measurement>() {
-            @Override
-            public void onBeforeSend() {
-                toggleLoading(true); // Enable loading
-            }
-
-            @Override
-            public void onError(JSONObject result) {
-                printMessage(getString(R.string.error_500));
-                showMessage(R.string.error_500);
-            }
-
-            @Override
-            public void onResult(List<Measurement> result) {
-                if (result != null && result.size() > 0) mAdapter.addItems(result);
-                else printMessage(getString(R.string.no_more_data));
-            }
-
-            @Override
-            public void onAfterSend() {
-                toggleLoading(false); // Disable loading
-            }
-        });
+//        if (!ConnectionUtils.internetIsEnabled(this))
+//            return;
+//
+//        Historical historical = new Historical.Query()
+//                .type(HistoricalType.MEASUREMENTS_TYPE_USER)
+//                .params(params) // Measurements of the blood glucose type, associated to the user
+//                .pagination(mAdapter.getItemCount(), LIMIT_PER_PAGE)
+//                .build();
+//
+//        historical.request(this, new CallbackHistorical<Measurement>() {
+//            @Override
+//            public void onBeforeSend() {
+//                toggleLoading(true); // Enable loading
+//            }
+//
+//            @Override
+//            public void onError(JSONObject result) {
+//                printMessage(getString(R.string.error_500));
+//                showMessage(R.string.error_500);
+//            }
+//
+//            @Override
+//            public void onResult(List<Measurement> result) {
+//                if (result != null && result.size() > 0) mAdapter.addItems(result);
+//                else printMessage(getString(R.string.no_more_data));
+//            }
+//
+//            @Override
+//            public void onAfterSend() {
+//                toggleLoading(false); // Disable loading
+//            }
+//        });
     }
 
     /**
@@ -570,19 +552,19 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
         return true;
     }
 
-    /**
-     * Recover text from context value meal.
-     *
-     * @param contextMeasurements
-     * @return String
-     */
-    public String mealToString(List<ContextMeasurement> contextMeasurements) {
-        for (ContextMeasurement c : contextMeasurements) {
-            if (c.getTypeId() == ContextMeasurementType.GLUCOSE_MEAL)
-                return ContextMeasurementValueType.getString(this, c.getValueId());
-        }
-        return "";
-    }
+//    /**
+//     * Recover text from context value meal.
+//     *
+//     * @param contextMeasurements
+//     * @return String
+//     */
+//    public String mealToString(List<ContextMeasurement> contextMeasurements) {
+//        for (ContextMeasurement c : contextMeasurements) {
+//            if (c.getTypeId() == ContextMeasurementType.GLUCOSE_MEAL)
+//                return ContextMeasurementValueType.getString(this, c.getValueId());
+//        }
+//        return "";
+//    }
 
     /**
      * Convert value glucose for String.
@@ -621,9 +603,14 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
         runOnUiThread(() -> {
             mBloodGlucoseTextView.setText(valueToString(measurement));
             mUnitBloodGlucoseTextView.setText(measurement.getUnit());
-            mDateLastMeasurement.setText(DateUtils.abbreviatedDate(
-                    getApplicationContext(), measurement.getRegistrationDate()));
-
+            if (DateUtils.isToday(DateUtils.convertDateTime(measurement.getTimestamp()).getTime())) {
+                mDateLastMeasurement.setText(R.string.today_text);
+            } else {
+                mDateLastMeasurement.setText(DateUtils.convertDateTimeUTCToLocale(
+                        measurement.getTimestamp(),
+                        "MMMM dd, EEE"
+                ));
+            }
             if (applyAnimation) mBloodGlucoseTextView.startAnimation(animation);
         });
     }

@@ -11,7 +11,6 @@ import java.util.List;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.adapter.base.BaseAdapter;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
-import br.edu.uepb.nutes.haniot.data.model.MeasurementType;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -19,16 +18,13 @@ import butterknife.ButterKnife;
 /**
  * Adapter from the RecyclerView to list the SmartBand.
  *
- * @author Douglas Rafael <douglasrafaelcg@gmail.com>
- * @version 1.0
- * @copyright Copyright (c) 2017, NUTES UEPB
+ * @author Copyright (c) 2019, NUTES/UEPB
  */
 public class SmartBandAdapter extends BaseAdapter<Measurement> {
-    private final String LOG = "SmartBandAdapter";
     private final Context context;
 
     /**
-     * Contructor.
+     * Constructor.
      *
      * @param context {@link Context}
      */
@@ -53,30 +49,8 @@ public class SmartBandAdapter extends BaseAdapter<Measurement> {
             ViewHolder h = (ViewHolder) holder;
 
             h.steps.setText(String.valueOf((int) m.getValue()));
-            h.dayWeek.setText(DateUtils.formatDate(m.getRegistrationDate(), "EEEE"));
-            h.date.setText(DateUtils.formatDate(m.getRegistrationDate(),
-                    context.getString(R.string.datetime_format)));
-
-            /**
-             * Relations
-             */
-            for (Measurement parent : m.getMeasurements()) {
-                if (parent.getTypeId() == MeasurementType.DISTANCE)
-                    h.distance.setText(String.valueOf((int) parent.getValue()).concat(parent.getUnit()));
-                else if (parent.getTypeId() == MeasurementType.CALORIES_BURNED)
-                    h.calories.setText(String.valueOf((int) parent.getValue()).concat(parent.getUnit()));
-            }
-
-            /**
-             * OnClick Item
-             */
-            h.mView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (SmartBandAdapter.super.mListener != null)
-                        SmartBandAdapter.super.mListener.onItemClick(m);
-                }
-            });
+            h.dayWeek.setText(DateUtils.convertDateTimeUTCToLocale(m.getTimestamp(), "EEEE"));
+            h.date.setText(DateUtils.convertDateTimeUTCToLocale(m.getTimestamp(), context.getString(R.string.datetime_format)));
 
             // call Animation function
             setAnimation(h.mView, position);

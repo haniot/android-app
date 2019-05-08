@@ -3,6 +3,11 @@
     <PreferenceCategory android:title="@string/settings_measurements_supported">
         <SwitchPreference
             android:defaultValue="false"
+            android:icon="@drawable/ic_action_thermometer"
+            android:key="@string/key_temperature"
+            android:title="@string/temperature" />
+        <SwitchPreference
+            android:defaultValue="false"
             android:icon="@drawable/ic_action_scale"
             android:key="@string/key_weight"
             android:title="@string/weight" />

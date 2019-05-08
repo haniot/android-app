@@ -45,8 +45,8 @@ public class HaniotNetRepository extends BaseNetRepository {
         super(context);
         this.mContext = context;
 
-        super.addRequestInterceptor(requestInterceptor());
-        super.addResponseInterceptor(responseInterceptor());
+        super.addInterceptor(requestInterceptor());
+        super.addInterceptor(responseInterceptor());
         haniotService = super.provideRetrofit(HaniotService.BASE_URL_HANIOT)
                 .create(HaniotService.class);
     }
@@ -99,6 +99,8 @@ public class HaniotNetRepository extends BaseNetRepository {
             }
 //            Log.i("AAA", ":"+chain.proceed(chain.request()).body().string());
 
+//            Log.w("RESPONSEBODY", response.code() + " | " +
+//                    Objects.requireNonNull(response.body()).string());
             return response;
         };
     }
@@ -160,26 +162,29 @@ public class HaniotNetRepository extends BaseNetRepository {
 
     // users.measurements
     public Single<Measurement> saveMeasurement(Measurement measurement) {
-        return haniotService.addMeasurement(measurement.getUserObj().get_id(), measurement)
+        return haniotService.addMeasurement(measurement.getUserId(), measurement)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Single<List<Measurement>> getAllMeasurements(String userId, String type, String sort, int page, int limit) {
-        return haniotService.getAllMeasurements(userId, type, sort, page, limit)
+    public Single<List<Measurement>> getAllMeasurementsByType(String userId, String type,
+                                                              String sort, String dateStart,
+                                                              String dateEnd, int page, int limit) {
+        return haniotService.getAllMeasurements(userId, type, dateStart, dateEnd, sort, page, limit)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Single<List<Measurement>> getAllMeasurements(String userId, String sort,
+                                                        String dateStart, String dateEnd,
+                                                        int page, int limit) {
+        return haniotService.getAllMeasurements(userId, dateStart, dateEnd, sort, page, limit)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     public Single<Measurement> getMeasurement(String userId, String measurementId) {
         return haniotService.getMeasurement(userId, measurementId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-    }
-
-    public Single<Measurement> updateMeasurement(Measurement measurement) {
-        return haniotService.updateMeasurement(measurement.getUserObj().get_id(),
-                measurement.get_id(), measurement)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -205,12 +210,6 @@ public class HaniotNetRepository extends BaseNetRepository {
 
     public Single<Device> getDevice(String userId, String deviceId) {
         return haniotService.getDevice(userId, deviceId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-    }
-
-    public Single<Device> updateDevice(Device device) {
-        return haniotService.updateDevice(device.getUserId(), device.get_id(), device)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

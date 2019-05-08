@@ -2,7 +2,6 @@ package br.edu.uepb.nutes.haniot.data.repository.remote;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -56,17 +55,11 @@ public abstract class BaseNetRepository {
         return mClient.build();
     }
 
-    protected void addRequestInterceptor(Interceptor interceptor) {
+    protected void addInterceptor(Interceptor interceptor) {
         if (interceptor == null) return;
         if (mClient == null) mClient = this.getUnsafeOkHttpClient();
 
         mClient.addInterceptor(interceptor);
-    }
-
-    protected void addResponseInterceptor(Interceptor interceptor) {
-        if (interceptor == null) return;
-        if (mClient == null) mClient = this.getUnsafeOkHttpClient();
-        mClient.addNetworkInterceptor(interceptor);
     }
 
     protected Retrofit provideRetrofit(@NonNull String baseUrl) {

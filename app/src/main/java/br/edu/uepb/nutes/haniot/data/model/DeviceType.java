@@ -1,6 +1,7 @@
 package br.edu.uepb.nutes.haniot.data.model;
 
 import android.content.Context;
+import android.content.res.Resources;
 
 import br.edu.uepb.nutes.haniot.R;
 
@@ -12,26 +13,24 @@ import br.edu.uepb.nutes.haniot.R;
  * @copyright Copyright (c) 2017, NUTES UEPB
  */
 public class DeviceType {
-    public static final int THERMOMETER = 1;
-    public static final int GLUCOMETER = 2;
-    public static final int BODY_COMPOSITION = 3;
-    public static final int BLOOD_PRESSURE = 4;
-    public static final int HEART_RATE = 5;
-    public static final int SMARTWATCH = 6;
-    public static final int SMARTBAND = 7;
+    public static final String THERMOMETER = "thermometer";
+    public static final String GLUCOMETER = "glucometer";
+    public static final String BODY_COMPOSITION = "body_composition";
+    public static final String BLOOD_PRESSURE = "blood_pressure";
+    public static final String HEART_RATE = "heart_rate";
+    public static final String SMARTWATCH = "smartwatch";
+    public static final String SMARTBAND = "smartband";
 
     /**
      * Retrieve the mapped type name in resources.
      *
-     * @param context ContextMeasurement
-     * @param type    int
+     * @param context {@link Context}
+     * @param type Measurement type
      * @return String
      */
-    public static String getString(Context context, int type) {
-        String types[] = context.getResources().getStringArray(R.array.device_types_array);
-
-        if (types.length > type && types.length < type) return types[type];
-
-        return "";
+    public static String getString(Context context, String type) {
+        if (type == null || type.isEmpty()) return "";
+        Resources res = context.getResources();
+        return res.getString(res.getIdentifier(type, "string", context.getPackageName()));
     }
 }

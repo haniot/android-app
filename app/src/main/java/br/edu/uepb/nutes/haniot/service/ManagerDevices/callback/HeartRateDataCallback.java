@@ -1,22 +1,19 @@
 package br.edu.uepb.nutes.haniot.service.ManagerDevices.callback;
 
-import br.edu.uepb.nutes.haniot.data.model.Measurement;
+import android.bluetooth.BluetoothDevice;
+import android.support.annotation.NonNull;
 
-public interface HeartRateDataCallback {
-
+public interface HeartRateDataCallback extends DeviceStatusCallback {
     /**
-     * On Connected to Heart Rate Device.
+     * Heart rate measurement receiver.
+     *
+     * @param device    {@link BluetoothDevice} Device that collected the measurement.
+     * @param heartRate Measurement value in bpm.
+     * @param timestamp Datetime of collection.
      */
-    void onConnected();
-
-    /**
-     * On Disconnected to Heart Rate Device.
-     */
-    void onDisconnected();
-
-    /**
-     * On receiver data of measurement from Heart Rate Device.
-     */
-    void onMeasurementReceived(Measurement measurementHeartRate);
-
+    void onMeasurementReceived(
+            @NonNull final BluetoothDevice device,
+            final int heartRate,
+            final String timestamp
+    );
 }

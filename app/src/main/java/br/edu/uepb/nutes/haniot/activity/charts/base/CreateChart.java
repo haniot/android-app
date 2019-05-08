@@ -141,16 +141,16 @@ public final class CreateChart<T> {
 
         }
         List<Measurement> data = (List<Measurement>) dataList;
-
-        for (int i = 0; i < data.size(); i++) {
-            String date = DateUtils.formatDate(
-                    data.get(i).getRegistrationDate(),
-                    params.formatDate);
-
-            entriesBar.add(new BarEntry((float) i, (float) data.get(i).getValue()));
-
-            quarters[i] = date;
-        }
+//
+//        for (int i = 0; i < data.size(); i++) {
+//            String date = DateUtils.formatDate(
+//                    data.get(i).getRegistrationDate(),
+//                    params.formatDate);
+//
+//            entriesBar.add(new BarEntry((float) i, (float) data.get(i).getValue()));
+//
+//            quarters[i] = date;
+//        }
 
 
         IAxisValueFormatter formatter = ((value, axis) -> {
@@ -174,19 +174,19 @@ public final class CreateChart<T> {
 
         List<Measurement> data = (List<Measurement>) dataList;
 
-        for (int i = 0; i < data.size(); i++) {
-
-            String date = DateUtils.formatDate(
-                    data.get(i).getRegistrationDate(),
-                    params.formatDate);
-
-                entries.add(new Entry((float) i, (int) data.get(i).getValue()));
-
-                if (!data.get(i).getMeasurements().isEmpty())
-                    if (data.get(i).getMeasurements().get(0).getTypeId() == MeasurementType.BLOOD_PRESSURE_DIASTOLIC)
-                        entries2.add(new Entry(i, (float) data.get(i).getMeasurements().get(0).getValue()));
-            quarters[i] = date;
-        }
+//        for (int i = 0; i < data.size(); i++) {
+//
+//            String date = DateUtils.formatDate(
+//                    data.get(i).getRegistrationDate(),
+//                    params.formatDate);
+//
+//                entries.add(new Entry((float) i, (int) data.get(i).getValue()));
+//
+//                if (!data.get(i).getMeasurements().isEmpty())
+//                    if (data.get(i).getMeasurements().get(0).getTypeId() == MeasurementType.BLOOD_PRESSURE_DIASTOLIC)
+//                        entries2.add(new Entry(i, (float) data.get(i).getMeasurements().get(0).getValue()));
+//            quarters[i] = date;
+//        }
 
 
         //Format date

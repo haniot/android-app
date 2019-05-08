@@ -105,22 +105,6 @@ public class MeasurementDAO {
     }
 
     /**
-     * Remove all measurements associated with the user that are expired.
-     * A Measurement expires if a registration data for less than the current year
-     *
-     * @param userId long
-     * @return boolean
-     */
-    public boolean removeAllExpired(@NonNull long userId) {
-        return measurementBox.query()
-                .equal(Measurement_.userId, userId)
-                .less(Measurement_.registrationDate, DateUtils.getCurrentYear())
-                .equal(Measurement_.hasSent, 0)
-                .build()
-                .remove() > 0;
-    }
-
-    /**
      * Select a measurement.
      *
      * @param id long
@@ -152,17 +136,17 @@ public class MeasurementDAO {
     /**
      * Select all measurements of a type associated with the user.
      *
-     * @param typeId int
+     * @param type {@link String}
      * @param userId long
      * @param offset int
      * @param limit  int
      * @return List<Measurement>
      */
-    public List<Measurement> list(@NonNull int typeId, @NonNull long userId, @NonNull int offset, @NonNull int limit) {
+    public List<Measurement> list(@NonNull String type, @NonNull long userId, @NonNull int offset, @NonNull int limit) {
         return measurementBox.query()
-                .equal(Measurement_.typeId, typeId)
+                .equal(Measurement_.type, type)
                 .equal(Measurement_.userId, userId)
-                .orderDesc(Measurement_.registrationDate)
+                .orderDesc(Measurement_.timestamp)
                 .build()
                 .find(offset, limit);
     }
@@ -186,25 +170,6 @@ public class MeasurementDAO {
     }
 
     /**
-     * Select measurements of a type associated with a user according to the start and end date.
-     *
-     * @param dateStart long
-     * @param dateEnd   long
-     * @param typeId    int
-     * @param userId    long
-     * @return List<Measurement>
-     */
-    public List<Measurement> filter(@NonNull long dateStart, @NonNull long dateEnd, @NonNull int typeId, @NonNull long userId) {
-        return measurementBox.query()
-                .equal(Measurement_.typeId, typeId)
-                .equal(Measurement_.userId, userId)
-                .between(Measurement_.registrationDate, dateStart, dateEnd)
-                .orderDesc(Measurement_.id)
-                .build()
-                .find();
-    }
-
-    /**
      * Select all measurements of a user that were not sent to the remote server.
      *
      * @param userId long
@@ -213,21 +178,6 @@ public class MeasurementDAO {
     public List<Measurement> getNotSent(@NonNull long userId) {
         return measurementBox.query()
                 .equal(Measurement_.userId, userId)
-                .equal(Measurement_.hasSent, 0)
-                .build()
-                .find();
-    }
-
-    /**
-     * Select all measurements from a user that have been sent to the remote server.
-     *
-     * @param userId long
-     * @return List<Measurement>
-     */
-    public List<Measurement> getWasSent(@NonNull long userId) {
-        return measurementBox.query()
-                .equal(Measurement_.userId, userId)
-                .equal(Measurement_.hasSent, 1)
                 .build()
                 .find();
     }

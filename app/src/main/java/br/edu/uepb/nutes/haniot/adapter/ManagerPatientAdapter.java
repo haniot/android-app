@@ -15,7 +15,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import br.edu.uepb.nutes.haniot.App;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.QuizNutritionActivity;
 import br.edu.uepb.nutes.haniot.activity.QuizOdontologyActivity;
@@ -33,7 +32,7 @@ public class ManagerPatientAdapter extends BaseAdapter<Patient> {
     private AppPreferencesHelper appPreferencesHelper;
 
     /**
-     * Contructor.
+     * Constructor.
      *
      * @param context {@link Context}
      */

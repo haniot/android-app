@@ -1,7 +1,5 @@
 package br.edu.uepb.nutes.haniot.data.model;
 
-import android.util.Log;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
@@ -11,7 +9,6 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 
 import io.objectbox.annotation.BaseEntity;
-import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.annotation.Index;
 

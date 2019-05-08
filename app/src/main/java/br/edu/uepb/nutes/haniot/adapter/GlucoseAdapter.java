@@ -10,9 +10,7 @@ import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.adapter.base.BaseAdapter;
-import br.edu.uepb.nutes.haniot.data.model.ContextMeasurement;
-import br.edu.uepb.nutes.haniot.data.model.ContextMeasurementType;
-import br.edu.uepb.nutes.haniot.data.model.ContextMeasurementValueType;
+import br.edu.uepb.nutes.haniot.data.BloodGlucoseMealType;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
@@ -21,12 +19,9 @@ import butterknife.ButterKnife;
 /**
  * Adapter from the RecyclerView to list the glucose.
  *
- * @author Douglas Rafael <douglasrafaelcg@gmail.com>
- * @version 1.0
- * @copyright Copyright (c) 2017, NUTES UEPB
+ * @author Copyright (c) 2019, NUTES/UEPB
  */
 public class GlucoseAdapter extends BaseAdapter<Measurement> {
-    private final String LOG = "BluetoothDeviceAdapter";
     private final Context context;
 
     /**
@@ -56,28 +51,13 @@ public class GlucoseAdapter extends BaseAdapter<Measurement> {
 
             h.glucose.setText(String.valueOf((int) m.getValue()));
             h.unitGlucose.setText(m.getUnit());
-            h.dayWeek.setText(DateUtils.formatDate(m.getRegistrationDate(), "EEEE"));
-            h.date.setText(DateUtils.formatDate(
-                    m.getRegistrationDate(), context.getString(R.string.datetime_format))
-            );
+            h.dayWeek.setText(DateUtils.convertDateTimeUTCToLocale(m.getTimestamp(), "EEEE"));
+            h.date.setText(DateUtils.convertDateTimeUTCToLocale(m.getTimestamp(), context.getString(R.string.datetime_format)));
+            h.glucoseMeal.setText(BloodGlucoseMealType.getString(context, m.getMeal()));
 
-            /**
-             * Relations
-             */
-            for (ContextMeasurement c : m.getContextMeasurements()) {
-                if (c.getTypeId() == ContextMeasurementType.GLUCOSE_MEAL)
-                    h.glucoseMeal.setText(ContextMeasurementValueType.getString(context, c.getValueId()));
-            }
-
-            /**
-             * OnClick Item
-             */
-            h.mView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (GlucoseAdapter.super.mListener != null)
-                        GlucoseAdapter.super.mListener.onItemClick(m);
-                }
+            // OnClick Item
+            h.mView.setOnClickListener(v -> {
+                if (super.mListener != null) super.mListener.onItemClick(m);
             });
 
             // call Animation function
