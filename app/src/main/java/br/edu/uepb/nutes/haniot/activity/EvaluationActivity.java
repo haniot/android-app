@@ -39,6 +39,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static br.edu.uepb.nutes.haniot.data.model.ItemEvaluation.TYPE_EMPTY;
+import static br.edu.uepb.nutes.haniot.data.model.ItemEvaluation.TYPE_LOADING;
 import static br.edu.uepb.nutes.haniot.data.model.ItemEvaluation.TYPE_MEASUREMENT;
 import static br.edu.uepb.nutes.haniot.data.model.ItemEvaluation.TYPE_QUIZ;
 import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.BLOOD_PRESSURE;
@@ -86,6 +87,7 @@ public class EvaluationActivity extends AppCompatActivity implements EvaluationE
         evaluation.setLayoutManager(new LinearLayoutManager(this));
         evaluationAdapter.setListener(this);
         evaluation.setAdapter(evaluationAdapter);
+        evaluationAdapter.expandAll();
     }
 
     private void initViews() {
@@ -110,29 +112,41 @@ public class EvaluationActivity extends AppCompatActivity implements EvaluationE
         patient = helper.getLastPatient();
 
         sendEvaluation.setOnClickListener(v -> {
+            ItemEvaluation itemEvaluation = new ItemEvaluation(R.drawable.xcardiogram, TYPE_MEASUREMENT,
+                    getString(R.string.heart_rate), String.valueOf("232"),
+                    String.valueOf("212"), HEARTRATE);
+            itemEvaluation.setValueMeasurement("92");
+            itemEvaluation.setUnitMeasurement("bpm");
+            itemEvaluation.setDate("22/05/2019");
+            itemEvaluation.setTime("03:34");
+            groupItemEvaluationHeartRate.getItems().clear();
+            groupItemEvaluationHeartRate.getItems().add(itemEvaluation);
+            evaluationAdapter.notifyDataSetChanged();
         });
     }
 
-    private void prepareHeartRateMeasurement(List<Measurement> measurementsList) {
-        List<ItemEvaluation> itemEvaluations = new ArrayList<>();
+    GroupItemEvaluation groupItemEvaluationHeartRate;
 
+    List<ItemEvaluation> itemEvaluationsHeartRate = new ArrayList<>();
+
+    private void prepareHeartRateMeasurement(List<Measurement> measurementsList) {
+        groupItemEvaluationHeartRate = new GroupItemEvaluation(getString(R.string.heart_rate), itemEvaluationsHeartRate);
         if (measurementsList.isEmpty())
-            itemEvaluations.add(new ItemEvaluation(R.drawable.xcardiogram, TYPE_EMPTY,
+            itemEvaluationsHeartRate.add(new ItemEvaluation(R.drawable.xcardiogram, TYPE_LOADING,
                     getString(R.string.heart_rate), HEARTRATE));
         else
             for (Measurement measurement : measurementsList)
-                itemEvaluations.add(new ItemEvaluation(R.drawable.xcardiogram, TYPE_MEASUREMENT,
+                itemEvaluationsHeartRate.add(new ItemEvaluation(R.drawable.xcardiogram, TYPE_MEASUREMENT,
                         getString(R.string.heart_rate), String.valueOf(measurement.getValue()),
                         String.valueOf(measurement.getUnit()), HEARTRATE));
-
-        groupItemEvaluations.add(new GroupItemEvaluation(getString(R.string.heart_rate), itemEvaluations));
+        groupItemEvaluations.add(groupItemEvaluationHeartRate);
     }
 
     private void prepareBloodPressureMeasurement(List<Measurement> measurementsList) {
         List<ItemEvaluation> itemEvaluations = new ArrayList<>();
 
         if (measurementsList.isEmpty())
-            itemEvaluations.add(new ItemEvaluation(R.drawable.xblood_pressure, TYPE_EMPTY,
+            itemEvaluations.add(new ItemEvaluation(R.drawable.xblood_pressure, TYPE_LOADING,
                     getString(R.string.blood_pressure), BLOOD_PRESSURE));
         else
             for (Measurement measurement : measurementsList)
@@ -147,7 +161,7 @@ public class EvaluationActivity extends AppCompatActivity implements EvaluationE
         List<ItemEvaluation> itemEvaluations = new ArrayList<>();
 
         if (measurementsList.isEmpty())
-            itemEvaluations.add(new ItemEvaluation(R.drawable.xweight, TYPE_EMPTY,
+            itemEvaluations.add(new ItemEvaluation(R.drawable.xweight, TYPE_LOADING,
                     getString(R.string.blood_pressure), BLOOD_PRESSURE));
         else
             for (Measurement measurement : measurementsList)
@@ -162,7 +176,7 @@ public class EvaluationActivity extends AppCompatActivity implements EvaluationE
         List<ItemEvaluation> itemEvaluations = new ArrayList<>();
 
         if (measurementsList.isEmpty())
-            itemEvaluations.add(new ItemEvaluation(R.drawable.xglucosemeter, TYPE_EMPTY,
+            itemEvaluations.add(new ItemEvaluation(R.drawable.xglucosemeter, TYPE_LOADING,
                     getString(R.string.glucose), GLUCOSE));
         else
             for (Measurement measurement : measurementsList)
@@ -174,6 +188,7 @@ public class EvaluationActivity extends AppCompatActivity implements EvaluationE
     }
 
     /////////////////////////////////
+    List<Measurement> itemEvaluations = new ArrayList<>();
 
     private void downloadData() {
 //        DisposableManager.add(haniotNetRepository
@@ -181,43 +196,51 @@ public class EvaluationActivity extends AppCompatActivity implements EvaluationE
 //                        , "heart_rate", "created_at", 1, 1000)
 //                .subscribe(this::prepareHeartRateMeasurement));
 //
+        prepareHeartRateMeasurement(itemEvaluations);
 //        DisposableManager.add(haniotNetRepository
 //                .getAllMeasurements(helper.getUserLogged().get_id()
 //                        , "blood_pressure", "created_at", 1, 1000)
 //                .subscribe(this::prepareBloodPressureMeasurement));
 //
+        prepareBloodPressureMeasurement(itemEvaluations);
 //        DisposableManager.add(haniotNetRepository
 //                .getAllMeasurements(helper.getUserLogged().get_id()
 //                        , "weight", "created_at", 1, 1000)
 //                .subscribe(this::prepareWeightMeasurement));
+        prepareWeightMeasurement(new ArrayList<>());
 //
 //        DisposableManager.add(haniotNetRepository
 //                .getAllMeasurements(helper.getUserLogged().get_id()
 //                        , "glucose", "created_at", 1, 1000)
 //                .subscribe(this::prepareGlucoseMeasurement));
 //
+        prepareGlucoseMeasurement(new ArrayList<>());
 //        if (typeEvaluation.equals("dentrist")) {
 //            DisposableManager.add(haniotNetRepository
 //                    .getAllOralHealth(helper.getLastPatient().get_id()
 //                            , "created_at", 1, 1000)
 //                    .subscribe(this::prepareOralHealth));
+        prepareOralHealth(new ArrayList<>());
 //
 //            DisposableManager.add(haniotNetRepository
 //                    .getAllFamilyCohesion(helper.getLastPatient().get_id()
 //                            , "created_at", 1, 1000)
 //                    .subscribe(this::prepareFamilyCohesion));
+        prepareFamilyCohesion(new ArrayList<>());
 //
 //            DisposableManager.add(haniotNetRepository
 //                    .getAllSociodemographic(helper.getLastPatient().get_id()
 //                            , "created_at", 1, 1000)
 //                    .subscribe(this::prepareSociodemographic));
 //
+        prepareSociodemographic(new ArrayList<>());
 //        }
 //
 //        DisposableManager.add(haniotNetRepository
 //                .getAllMedicalRecord(helper.getLastPatient().get_id()
 //                        , "created_at", 1, 1000)
 //                .subscribe(this::prepareMedicalRecords));
+        prepareMedicalRecords(new ArrayList<>());
 //
 //        DisposableManager.add(haniotNetRepository
 //                .getAllFeedingHabits(helper.getLastPatient().get_id()
@@ -234,7 +257,7 @@ public class EvaluationActivity extends AppCompatActivity implements EvaluationE
 //                        ,1, 1000,"created_at")
 //                .subscribe(this::prepareSleepHatits), }, this::errorHandler) );
 //
-//        initRecyclerView();
+        initRecyclerView();
 
     }
 

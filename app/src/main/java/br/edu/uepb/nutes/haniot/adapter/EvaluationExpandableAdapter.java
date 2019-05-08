@@ -12,6 +12,7 @@ import android.view.animation.ScaleAnimation;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.thoughtbot.expandablerecyclerview.ExpandableRecyclerViewAdapter;
@@ -19,11 +20,13 @@ import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup;
 import com.thoughtbot.expandablerecyclerview.viewholders.ChildViewHolder;
 import com.thoughtbot.expandablerecyclerview.viewholders.GroupViewHolder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
 import br.edu.uepb.nutes.haniot.data.model.FamilyCohesionRecord;
+import br.edu.uepb.nutes.haniot.data.model.GroupItemEvaluation;
 import br.edu.uepb.nutes.haniot.data.model.ItemEvaluation;
 import br.edu.uepb.nutes.haniot.data.model.MedicalRecord;
 import butterknife.BindView;
@@ -43,6 +46,14 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
 
     public void setListener(OnClick<ItemEvaluation> mListener) {
         this.mListener = mListener;
+    }
+
+    public void expandAll() {
+        for (int i = 0; i < getItemCount(); i++) {
+            if (!isGroupExpanded(i)) {
+                toggleGroup(i);
+            }
+        }
     }
 
     /**
@@ -90,19 +101,26 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
         h.checkItem.setVisibility(View.VISIBLE);
         h.QuizText.setVisibility(View.VISIBLE);
         h.warning.setVisibility(View.INVISIBLE);
+        h.loading.setVisibility(View.GONE);
 
         h.imageItem.setImageResource(ig.getIcon());
         h.textDescription.setText(ig.getTitle());
         h.textDate.setText(ig.getDate());
         h.texTime.setText(ig.getTime());
-        if (ig.getType() == ItemEvaluation.TYPE_QUIZ) {
+        if (ig.getType() == ItemEvaluation.TYPE_LOADING) {
+            h.loading.setVisibility(View.VISIBLE);
+            h.box.setVisibility(GONE);
+            h.QuizText.setVisibility(GONE);
+            //  h.itemQuizView.setVisibility(GONE);
+            h.checkItem.setVisibility(GONE);
+        } else if (ig.getType() == ItemEvaluation.TYPE_QUIZ) {
 
             h.textMeasurement.setVisibility(View.GONE);
             h.textMeasurementType.setVisibility(View.GONE);
 //            h.QuizText.setText(ig.getQuizText());
 //            MedicalRecord medicalRecord = ig.getMedicalRecord();
-            ((ItemQuizView) h.itemQuizView).addItem("Água", "5 a 6 vezes");
-            ((ItemQuizView) h.itemQuizView).addItem("Guloseimas", "5 a 6 vezes");
+//            ((ItemQuizView) h.itemQuizView).addItem("Água", "5 a 6 vezes");
+//            ((ItemQuizView) h.itemQuizView).addItem("Guloseimas", "5 a 6 vezes");
 
         } else if (ig.getType() == ItemEvaluation.TYPE_MEASUREMENT) {
             h.mView.setOnClickListener(v -> {
@@ -132,14 +150,12 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
                 notifyDataSetChanged();
             });
         }
-
         setAnimation(h.mView, childIndex);
     }
 
-
     @Override
-    public void onBindGroupViewHolder(HeaderViewHolder holder, int flatPosition, ExpandableGroup group) {
-
+    public void onBindGroupViewHolder(HeaderViewHolder holder, int flatPosition, ExpandableGroup
+            group) {
         HeaderViewHolder holder2 = (HeaderViewHolder) holder;
         holder2.categoryTitle.setText(group.getTitle());
     }
@@ -167,6 +183,8 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
         LinearLayout box;
         @BindView(R.id.warning)
         ImageView warning;
+        @BindView(R.id.loading)
+        ProgressBar loading;
         RecyclerView itemQuizView;
 
         public ViewHolder(View itemView) {
@@ -183,6 +201,7 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
     }
 
     public class HeaderViewHolder extends GroupViewHolder {
+
         final View mView;
 
         @BindView(R.id.category_title)
@@ -194,6 +213,7 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
         public HeaderViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            this.expand();
 
             this.mView = itemView.getRootView();
         }

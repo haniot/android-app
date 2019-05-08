@@ -22,6 +22,7 @@ import java.util.Calendar;
 import java.util.Locale;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.PatientsType;
 import br.edu.uepb.nutes.haniot.data.model.User;
@@ -313,5 +314,13 @@ public class AddMeasurementActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         boxMessage.setVisibility(View.GONE);
+    }
+
+    public void setValidated(boolean enabled) {
+        saveMeasurement.setEnabled(enabled);
+    }
+
+    public interface MeasurementCommunicator {
+        void getMeasurement(Measurement measurement);
     }
 }

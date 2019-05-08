@@ -31,6 +31,16 @@
             android:orientation="vertical"
             android:padding="8dp">
 
+            <ProgressBar
+                android:id="@+id/loading"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="30dp"
+                android:layout_height="72dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="51dp"
+                android:layout_marginTop="36dp" />
+
             <ImageView
                 android:id="@+id/imageItem"
                 android:layout_width="20dp"
@@ -62,7 +72,8 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:layout_marginEnd="13dp" />
+                android:layout_marginEnd="13dp"
+                android:visibility="invisible" />
 
             <LinearLayout
                 android:id="@+id/box_measurement"
@@ -71,7 +82,7 @@
                 android:layout_below="@+id/quiz_text"
                 android:layout_marginTop="11dp"
                 android:orientation="horizontal"
-                android:visibility="visible">
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/textMeasurement"
@@ -151,7 +162,8 @@
                 android:layout_marginStart="34dp"
                 android:layout_marginTop="8dp"
                 android:layout_toStartOf="@+id/check_item"
-                android:text="Respostas:" />
+                android:text="Respostas:"
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/warning"
@@ -166,11 +178,12 @@
             <br.edu.uepb.nutes.haniot.adapter.ItemQuizView
                 android:id="@+id/item_quiz"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/textDescription"
                 android:layout_alignParentStart="true"
                 android:layout_marginTop="27dp"
-                android:layout_toStartOf="@+id/check_item">
+                android:layout_toStartOf="@+id/check_item"
+                android:visibility="gone">
 
             </br.edu.uepb.nutes.haniot.adapter.ItemQuizView>
         </RelativeLayout>
