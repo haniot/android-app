@@ -7,8 +7,11 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.GridView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -19,22 +22,23 @@ import br.edu.uepb.nutes.haniot.R;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ItemQuizView extends RecyclerView {
+public class ItemQuizView extends RelativeLayout {
 
     ItemAdapter itemAdapter;
-    ItemQuizView recyclerView;
+    GridView recyclerView;
+    RelativeLayout rootView;
 
     public ItemQuizView(Context context, AttributeSet attrs) {
-        super(context);
+        super(context, attrs);
         ButterKnife.bind(this);
-        this.recyclerView = this;
         init(context, attrs);
     }
 
     private void init(Context context, AttributeSet attrs) {
-//        inflate(context, R.layout.item_show_quiz, this);
+
+        rootView = (RelativeLayout) inflate(context, R.layout.card_quiz_answers, this);
+        recyclerView = findViewById(R.id.items);
         itemAdapter = new ItemAdapter(context);
-        recyclerView.setLayoutManager(new LinearLayoutManager(context));
         recyclerView.setAdapter(itemAdapter);
     }
 
@@ -106,7 +110,7 @@ public class ItemQuizView extends RecyclerView {
         }
     }
 
-    public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemHolder> {
+    public class ItemAdapter extends BaseAdapter {
 
         private List<Item> items;
         private Context context;
@@ -114,29 +118,6 @@ public class ItemQuizView extends RecyclerView {
         public ItemAdapter(Context context) {
             this.context = context;
             items = new ArrayList<>();
-        }
-
-        @NonNull
-        @Override
-        public ItemHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-            return new ItemHolder(View.inflate(context, R.layout.item_show_quiz, null));
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull ItemHolder itemHolder, int i) {
-            Item item = items.get(i);
-
-            itemHolder.answer.setVisibility(VISIBLE);
-            itemHolder.question.setText(item.getQuestion());
-            itemHolder.question.setBackgroundColor(item.getColorQuestion());
-
-            if (item.getAnswer() == null) {
-                itemHolder.answer.setVisibility(GONE);
-            } else {
-                itemHolder.answer.setText(item.getAnswer());
-                itemHolder.answer.setBackgroundColor(item.getColorQuestion());
-            }
-
         }
 
         /**
@@ -148,7 +129,7 @@ public class ItemQuizView extends RecyclerView {
             if (item != null) {
                 items.add(item);
 
-                new Handler(Looper.getMainLooper()).post(() -> notifyItemInserted(items.size() - 1));
+                new Handler(Looper.getMainLooper()).post(this::notifyDataSetChanged);
             }
         }
 
@@ -162,22 +143,37 @@ public class ItemQuizView extends RecyclerView {
         }
 
         @Override
-        public int getItemCount() {
+        public int getCount() {
             return items.size();
         }
 
-        public class ItemHolder extends RecyclerView.ViewHolder {
+        @Override
+        public Object getItem(int position) {
+            return null;
+        }
 
-            @BindView(R.id.question)
-            TextView question;
+        @Override
+        public long getItemId(int position) {
+            return 0;
+        }
 
-            @BindView(R.id.answer)
-            TextView answer;
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
 
-            public ItemHolder(@NonNull View itemView) {
-                super(itemView);
-                ButterKnife.bind(this, itemView);
+            Item item = items.get(position);
+
+            // 2
+            if (convertView == null) {
+                final LayoutInflater layoutInflater = LayoutInflater.from(context);
+                convertView = layoutInflater.inflate(R.layout.item_show_quiz, null);
             }
+            TextView question = convertView.findViewById(R.id.question);
+            TextView answer = convertView.findViewById(R.id.answer);
+
+            answer.setText(item.getAnswer());
+            question.setText(item.getQuestion());
+
+            return convertView;
         }
     }
 }

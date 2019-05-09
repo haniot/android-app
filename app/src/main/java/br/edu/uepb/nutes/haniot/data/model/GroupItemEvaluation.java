@@ -2,6 +2,7 @@ package br.edu.uepb.nutes.haniot.data.model;
 
 import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GroupItemEvaluation extends ExpandableGroup<ItemEvaluation> {

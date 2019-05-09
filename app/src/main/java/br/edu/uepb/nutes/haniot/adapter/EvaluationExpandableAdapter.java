@@ -95,6 +95,7 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
         ItemEvaluation ig = (ItemEvaluation) group.getItems().get(childIndex);
         ViewHolder h = (ViewHolder) holder;
 
+        h.itemQuizView.setVisibility(View.INVISIBLE);
         h.box.setVisibility(View.VISIBLE);
         h.textMeasurement.setVisibility(View.VISIBLE);
         h.textMeasurementType.setVisibility(View.VISIBLE);
@@ -102,55 +103,80 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
         h.QuizText.setVisibility(View.VISIBLE);
         h.warning.setVisibility(View.INVISIBLE);
         h.loading.setVisibility(View.GONE);
-
         h.imageItem.setImageResource(ig.getIcon());
         h.textDescription.setText(ig.getTitle());
         h.textDate.setText(ig.getDate());
         h.texTime.setText(ig.getTime());
+
         if (ig.getType() == ItemEvaluation.TYPE_LOADING) {
-            h.loading.setVisibility(View.VISIBLE);
-            h.box.setVisibility(GONE);
-            h.QuizText.setVisibility(GONE);
-            //  h.itemQuizView.setVisibility(GONE);
-            h.checkItem.setVisibility(GONE);
+            createLoadingView(h, ig);
         } else if (ig.getType() == ItemEvaluation.TYPE_QUIZ) {
-
-            h.textMeasurement.setVisibility(View.GONE);
-            h.textMeasurementType.setVisibility(View.GONE);
-//            h.QuizText.setText(ig.getQuizText());
-//            MedicalRecord medicalRecord = ig.getMedicalRecord();
-//            ((ItemQuizView) h.itemQuizView).addItem("Água", "5 a 6 vezes");
-//            ((ItemQuizView) h.itemQuizView).addItem("Guloseimas", "5 a 6 vezes");
-
+            createQuizView(h, ig);
         } else if (ig.getType() == ItemEvaluation.TYPE_MEASUREMENT) {
-            h.mView.setOnClickListener(v -> {
-                if (mListener != null) {
-                    mListener.onItemClick(ig);
-                }
-            });
-            h.textMeasurement.setVisibility(View.VISIBLE);
-            h.textMeasurementType.setVisibility(View.VISIBLE);
-            h.textMeasurement.setText(ig.getValueMeasurement());
-            h.textMeasurementType.setText(ig.getUnitMeasurement());
-            h.QuizText.setVisibility(View.GONE);
-
+            createMeasurementView(h, ig);
         } else if (ig.getType() == ItemEvaluation.TYPE_EMPTY) {
-            h.mView.setOnClickListener(v -> {
-                if (mListener != null) {
-                    mListener.onAddMeasurementClick(ig.getTitle(), ig.getTypeEvaluation());
-                }
-            });
-            h.warning.setVisibility(View.VISIBLE);
-            h.QuizText.setText(context.getResources().getString(R.string.evaluation_empty_message));
-            h.box.setVisibility(GONE);
-            h.checkItem.setChecked(ig.isChecked());
-            h.checkItem.setVisibility(View.INVISIBLE);
-            h.checkItem.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                ig.setChecked(!ig.isChecked());
-                notifyDataSetChanged();
-            });
+            createEmptyView(h, ig);
         }
         setAnimation(h.mView, childIndex);
+    }
+
+    private void createEmptyView(ViewHolder h, ItemEvaluation ig) {
+
+        h.mView.setOnClickListener(v -> {
+            if (mListener != null) {
+                mListener.onAddMeasurementClick(ig.getTitle(), ig.getTypeEvaluation());
+            }
+        });
+        h.warning.setVisibility(View.VISIBLE);
+        h.QuizText.setVisibility(View.VISIBLE);
+        h.QuizText.setText(context.getResources().getString(R.string.evaluation_empty_message));
+        h.box.setVisibility(GONE);
+        h.checkItem.setChecked(ig.isChecked());
+        h.checkItem.setVisibility(View.INVISIBLE);
+        h.checkItem.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            ig.setChecked(!ig.isChecked());
+            notifyDataSetChanged();
+        });
+    }
+
+    private void createMeasurementView(ViewHolder h, ItemEvaluation ig) {
+
+        h.mView.setOnClickListener(v -> {
+            if (mListener != null) {
+                mListener.onItemClick(ig);
+            }
+        });
+        h.textMeasurement.setVisibility(View.VISIBLE);
+        h.textMeasurementType.setVisibility(View.VISIBLE);
+        h.textMeasurement.setText(ig.getValueMeasurement());
+        h.textMeasurementType.setText(ig.getUnitMeasurement());
+        h.QuizText.setVisibility(View.GONE);
+    }
+
+    private void createQuizView(ViewHolder h, ItemEvaluation ig) {
+        h.textMeasurement.setVisibility(View.GONE);
+        h.textMeasurementType.setVisibility(View.GONE);
+        h.box.setVisibility(GONE);
+        h.itemQuizView.setVisibility(View.VISIBLE);
+        h.itemQuizView.addItem("AAAA", "AAAA");
+        h.itemQuizView.addItem("BBBB", "BBB");
+        h.itemQuizView.addItem("BBBB", "BBB");
+        h.itemQuizView.addItem("BBBB", "BBB");
+        h.itemQuizView.addItem("BBBB", "BBB");
+        h.itemQuizView.addItem("BBBB", "BBB");
+        h.itemQuizView.addItem("BBBB", "BBB");
+        h.itemQuizView.addItem("BBBB", "BBB");
+        h.itemQuizView.addItem("BBBB", "BBB");
+        h.itemQuizView.addItem("BBBB", "BBB");
+        h.itemQuizView.addItem("BBBB", "BBB");
+    }
+
+    private void createLoadingView(ViewHolder h, ItemEvaluation ig) {
+        h.loading.setVisibility(View.VISIBLE);
+        h.box.setVisibility(GONE);
+        h.QuizText.setVisibility(GONE);
+        h.checkItem.setVisibility(GONE);
+
     }
 
     @Override
@@ -185,13 +211,14 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
         ImageView warning;
         @BindView(R.id.loading)
         ProgressBar loading;
-        RecyclerView itemQuizView;
+
+        @BindView(R.id.item_quiz)
+        ItemQuizView itemQuizView;
 
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
 
-            itemQuizView = itemView.findViewById(R.id.item_quiz);
             this.mView = itemView.getRootView();
         }
 

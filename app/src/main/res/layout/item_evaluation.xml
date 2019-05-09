@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layoutItemGrid"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -177,13 +178,13 @@
 
             <br.edu.uepb.nutes.haniot.adapter.ItemQuizView
                 android:id="@+id/item_quiz"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_height="300dp"
                 android:layout_below="@+id/textDescription"
                 android:layout_alignParentStart="true"
                 android:layout_marginTop="27dp"
                 android:layout_toStartOf="@+id/check_item"
-                android:visibility="gone">
+                tools:visibility="gone">
 
             </br.edu.uepb.nutes.haniot.adapter.ItemQuizView>
         </RelativeLayout>
