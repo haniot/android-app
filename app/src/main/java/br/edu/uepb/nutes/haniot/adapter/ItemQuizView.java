@@ -47,6 +47,11 @@ public class ItemQuizView extends RelativeLayout {
 
     }
 
+    public void addItem(String question) {
+        itemAdapter.addItem(new Item(question));
+
+    }
+
     public void addItem(String question, String answer, int colorQuestion, int colorAnswer) {
         itemAdapter.addItem(new Item(question, answer, colorQuestion, colorAnswer));
 
@@ -63,6 +68,10 @@ public class ItemQuizView extends RelativeLayout {
         private int colorAnswer;
 
         public Item() {
+        }
+
+        public Item(String question) {
+            this.question = question;
         }
 
         public Item(String question, String answer) {
@@ -170,8 +179,13 @@ public class ItemQuizView extends RelativeLayout {
             TextView question = convertView.findViewById(R.id.question);
             TextView answer = convertView.findViewById(R.id.answer);
 
-            answer.setText(item.getAnswer());
             question.setText(item.getQuestion());
+
+            if (item.getAnswer() != null) answer.setText(item.getAnswer());
+            else{
+                question.setGravity(CENTER_HORIZONTAL);
+                answer.setVisibility(INVISIBLE);
+            }
 
             return convertView;
         }

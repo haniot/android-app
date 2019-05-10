@@ -77,6 +77,16 @@
                 android:visibility="invisible" />
 
             <LinearLayout
+                android:id="@+id/box_quiz"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/quiz_text"
+
+                android:layout_marginTop="28dp"
+                android:layout_marginStart="28dp"
+                android:orientation="vertical"/>
+
+            <LinearLayout
                 android:id="@+id/box_measurement"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
@@ -173,18 +183,18 @@
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="18dp"
-                android:visibility="invisible"
+                android:visibility="gone"
                 app:srcCompat="@drawable/ic_warning" />
 
             <br.edu.uepb.nutes.haniot.adapter.ItemQuizView
                 android:id="@+id/item_quiz"
                 android:layout_width="wrap_content"
-                android:layout_height="300dp"
+                android:layout_height="250dp"
                 android:layout_below="@+id/textDescription"
                 android:layout_alignParentStart="true"
-                android:layout_marginTop="27dp"
-                android:layout_toStartOf="@+id/check_item"
-                tools:visibility="gone">
+                android:layout_marginTop="4dp"
+                android:visibility="gone"
+                android:layout_toStartOf="@+id/check_item">
 
             </br.edu.uepb.nutes.haniot.adapter.ItemQuizView>
         </RelativeLayout>

@@ -2,8 +2,6 @@ package br.edu.uepb.nutes.haniot.adapter;
 
 import android.app.Activity;
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,15 +18,11 @@ import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup;
 import com.thoughtbot.expandablerecyclerview.viewholders.ChildViewHolder;
 import com.thoughtbot.expandablerecyclerview.viewholders.GroupViewHolder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
-import br.edu.uepb.nutes.haniot.data.model.FamilyCohesionRecord;
-import br.edu.uepb.nutes.haniot.data.model.GroupItemEvaluation;
 import br.edu.uepb.nutes.haniot.data.model.ItemEvaluation;
-import br.edu.uepb.nutes.haniot.data.model.MedicalRecord;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -88,6 +82,11 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
         LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         View itemView = mInflater.inflate(R.layout.item_evaluation, parent, false);
         return new ViewHolder(itemView);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
     }
 
     @Override
@@ -154,21 +153,40 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
     }
 
     private void createQuizView(ViewHolder h, ItemEvaluation ig) {
+        h.itemQuizView.clear();
         h.textMeasurement.setVisibility(View.GONE);
         h.textMeasurementType.setVisibility(View.GONE);
+        h.QuizText.setVisibility(GONE);
         h.box.setVisibility(GONE);
-        h.itemQuizView.setVisibility(View.VISIBLE);
-        h.itemQuizView.addItem("AAAA", "AAAA");
-        h.itemQuizView.addItem("BBBB", "BBB");
-        h.itemQuizView.addItem("BBBB", "BBB");
-        h.itemQuizView.addItem("BBBB", "BBB");
-        h.itemQuizView.addItem("BBBB", "BBB");
-        h.itemQuizView.addItem("BBBB", "BBB");
-        h.itemQuizView.addItem("BBBB", "BBB");
-        h.itemQuizView.addItem("BBBB", "BBB");
-        h.itemQuizView.addItem("BBBB", "BBB");
-        h.itemQuizView.addItem("BBBB", "BBB");
-        h.itemQuizView.addItem("BBBB", "BBB");
+        TextView item2 = new TextView(context);
+
+        item2.setText("Quantidade de copos de água: Cinco ou mais");
+        h.boxQuiz.addView(item2);
+
+        for (int i = 0; i <= 6; i++) {
+            TextView item = new TextView(context);
+            item.setText("Refrigerante: Todos os dias");
+
+            h.boxQuiz.addView(item);
+        }
+
+        TextView item3 = new TextView(context);
+        item3.setText("\n\nRespondido em 23/02/2019 às 13:00");
+        h.boxQuiz.addView(item3);
+
+//        h.itemQuizView.setVisibility(View.VISIBLE);
+//        h.itemQuizView.addItem("Feijão, Arroz e Carne", "5 a 6 vezes");
+//        h.itemQuizView.addItem("Refrigerante", "5 a 6 vezes");
+//        h.itemQuizView.addItem("Guloseimas", "5 a 6 vezes");
+//        h.itemQuizView.addItem("Peixe");
+//        h.itemQuizView.addItem("Comida");
+//        h.itemQuizView.addItem("Comida", "5 a 6 vezes");
+//        h.itemQuizView.addItem("Comida", "5 a 6 vezes");
+//        h.itemQuizView.addItem("Comida", "Todos os dias");
+//        h.itemQuizView.addItem("Comida", "Nunca");
+//        h.itemQuizView.addItem("Comida", "5 a 6 vezes");
+//        h.itemQuizView.addItem("Comida", "Não lembro");
+
     }
 
     private void createLoadingView(ViewHolder h, ItemEvaluation ig) {
@@ -215,6 +233,9 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
         @BindView(R.id.item_quiz)
         ItemQuizView itemQuizView;
 
+        @BindView(R.id.box_quiz)
+        LinearLayout boxQuiz;
+
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
@@ -240,7 +261,6 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
         public HeaderViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            this.expand();
 
             this.mView = itemView.getRootView();
         }

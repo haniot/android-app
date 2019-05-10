@@ -46,6 +46,7 @@ import static br.edu.uepb.nutes.haniot.data.model.ItemEvaluation.TYPE_LOADING;
 import static br.edu.uepb.nutes.haniot.data.model.ItemEvaluation.TYPE_MEASUREMENT;
 import static br.edu.uepb.nutes.haniot.data.model.ItemEvaluation.TYPE_QUIZ;
 import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.BLOOD_PRESSURE;
+import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.FEEDING_HABITS;
 import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.GLUCOSE;
 import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.HEARTRATE;
 import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.SLEEP_HABITS;
@@ -189,7 +190,7 @@ public class EvaluationActivity extends AppCompatActivity implements EvaluationE
         patient = helper.getLastPatient();
 
         sendEvaluation.setOnClickListener(v -> {
-            ItemEvaluation itemEvaluation = new ItemEvaluation(R.drawable.action_quiz, TYPE_QUIZ, "Hábitos do Sono", SLEEP_HABITS);
+            ItemEvaluation itemEvaluation = new ItemEvaluation(R.drawable.action_quiz, TYPE_QUIZ, "Hábitos Alimentares", FEEDING_HABITS);
 
             //
 // TESTE

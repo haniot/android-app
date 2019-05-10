@@ -256,9 +256,11 @@ public class AddMeasurementActivity extends AppCompatActivity {
         iconTime.setOnClickListener(timeClick);
         textTime.setOnClickListener(timeClick);
 
-        View.OnClickListener dateClick = v -> new DatePickerDialog(AddMeasurementActivity.this, date, myCalendar
-                .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+        View.OnClickListener dateClick = (v -> {
+            DatePickerDialog datePickerDialog = new DatePickerDialog(AddMeasurementActivity.this, date, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH));
+            datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+            datePickerDialog.show();
+        });
         icon_calendar.setOnClickListener(dateClick);
         textDate.setOnClickListener(dateClick);
     }
