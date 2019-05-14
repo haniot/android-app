@@ -8,6 +8,8 @@ public class ItemEvaluation implements Parcelable {
     public static final int TYPE_QUIZ = 3;
     public static final int TYPE_EMPTY = 4;
     public static final int TYPE_LOADING = 5;
+    public static final int TYPE_EMPTY_REQUIRED = 6;
+    public static final int TYPE_ERROR = 7;
 
     private int icon;
     private int typeHeader;

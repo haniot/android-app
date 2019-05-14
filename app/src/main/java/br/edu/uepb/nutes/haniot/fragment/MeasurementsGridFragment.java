@@ -125,6 +125,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
         super.onCreate(savedInstanceState);
         haniotRepository = HaniotNetRepository.getInstance(mContext);
         measurementDAO = MeasurementDAO.getInstance(mContext);
+
     }
 
     @Override
@@ -194,7 +195,8 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
         @Override
         public void onScanResult(int i, ScanResult scanResult) {
             String address = scanResult.getDevice().getAddress();
-            Device device = deviceDAO.get(scanResult.getDevice().getAddress(), user.get_id());
+            //TODO TEMP
+            Device device = getDeviceRegisteredFromAddress(address);
             BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
             if (device != null) {
                 switch (device.getType()) {
@@ -427,7 +429,14 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
      * @return Device
      */
     private Device getDeviceRegistered(String type) {
-        for (Device device : devices) if (device.getType().equals(type)) return device;
+
+        for (Device device1 : devices) if (device1.getType().equals(type)) return device1;
+        return null;
+    }
+
+    private Device getDeviceRegisteredFromAddress(String address) {
+
+        for (Device device1 : devices) if (device1.getAddress().equals(address)) return device1;
         return null;
     }
 
@@ -575,6 +584,9 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
     /**
      * Init basics components.
      */
+    Device deviceTEMP = new Device();
+    Device deviceTEMP2 = new Device();
+
     private void initComponents() {
         decimalFormat = new DecimalFormat(getString(R.string.format_number2),
                 new DecimalFormatSymbols(Locale.US));
@@ -586,7 +598,16 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
         deviceDAO = DeviceDAO.getInstance(mContext);
         devices = deviceDAO.list(user.get_id());
         builder = new SimpleBleScanner.Builder();
+        //TODO TEMP
+        deviceTEMP.setName("YUNMAY");
+        deviceTEMP.setType(DeviceType.BODY_COMPOSITION);
+        deviceTEMP.setAddress("D4:36:39:91:75:71");
+        devices.add(deviceTEMP);
 
+        deviceTEMP2.setName("PHILIPS THERMOMETER");
+        deviceTEMP2.setType(DeviceType.THERMOMETER);
+        deviceTEMP2.setAddress("1C:87:74:01:73:10");
+        devices.add(deviceTEMP2);
 
         editMonitor.setOnClickListener(editMonitorClick);
         addMonitor.setOnClickListener(editMonitorClick);

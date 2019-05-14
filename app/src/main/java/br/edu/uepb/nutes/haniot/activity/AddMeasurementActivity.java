@@ -130,6 +130,12 @@ public class AddMeasurementActivity extends AppCompatActivity {
                 getSupportActionBar().setTitle("Inserir Peso");
                 textUnit.setText(getString(R.string.unit_kg));
                 break;
+            case ItemGridType.TEMPERATURE:
+                measurementText = getResources().getString(R.string.temperature);
+                messageInfo.setText(String.format(getResources().getString(R.string.add_measurement_message), measurementText, patientName));
+                getSupportActionBar().setTitle("Inserir Temperatura");
+                textUnit.setText(getString(R.string.unit_celsius));
+                break;
 
             case ItemGridType.BLOOD_GLUCOSE:
                 measurementText = getResources().getString(R.string.blood_glucose);
@@ -179,11 +185,12 @@ public class AddMeasurementActivity extends AppCompatActivity {
      * Save measurement in server.
      */
     public void saveMeasurement() {
-        if (textMeasurement.getText().toString().isEmpty()) {
-            messageError.setText("Insira o valor da medição para continuar!");
-            boxMessage.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_in));
-            boxMessage.setVisibility(View.VISIBLE);
-        }
+        finish();
+//        if (textMeasurement.getText().toString().isEmpty()) {
+//            messageError.setText("Insira o valor da medição para continuar!");
+//            boxMessage.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_in));
+//            boxMessage.setVisibility(View.VISIBLE);
+//        }
 //        Measurement measurement = new Measurement();
 //        measurement.setUser(user);
 //        measurement.setValue(Double.valueOf(textMeasurement.getText().toString()));

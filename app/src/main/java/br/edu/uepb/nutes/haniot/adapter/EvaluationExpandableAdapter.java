@@ -21,7 +21,6 @@ import com.thoughtbot.expandablerecyclerview.viewholders.GroupViewHolder;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
 import br.edu.uepb.nutes.haniot.data.model.ItemEvaluation;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,19 +30,19 @@ import static android.view.View.GONE;
 public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<EvaluationExpandableAdapter.HeaderViewHolder, EvaluationExpandableAdapter.ViewHolder> {
     private Context context;
     protected int lastPosition = -1;
-    public OnClick<ItemEvaluation> mListener;
+    public OnClick mListener;
 
     public EvaluationExpandableAdapter(List<? extends ExpandableGroup> groups, Context context) {
         super(groups);
         this.context = context;
     }
 
-    public void setListener(OnClick<ItemEvaluation> mListener) {
+    public void setListener(OnClick mListener) {
         this.mListener = mListener;
     }
 
     public void expandAll() {
-        for (int i = 0; i < getItemCount(); i++) {
+        for (int i = 0; i < getItemCount()-1; i++) {
             if (!isGroupExpanded(i)) {
                 toggleGroup(i);
             }
@@ -84,10 +83,10 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
         return new ViewHolder(itemView);
     }
 
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
+//    @Override
+//    public long getItemId(int position) {
+//        return position;
+//    }
 
     @Override
     public void onBindChildViewHolder(ViewHolder holder, int flatPosition, ExpandableGroup group, int childIndex) {
@@ -107,6 +106,11 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
         h.textDate.setText(ig.getDate());
         h.texTime.setText(ig.getTime());
 
+        h.checkItem.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            ig.setChecked(!ig.isChecked());
+            notifyDataSetChanged();
+        });
+
         if (ig.getType() == ItemEvaluation.TYPE_LOADING) {
             createLoadingView(h, ig);
         } else if (ig.getType() == ItemEvaluation.TYPE_QUIZ) {
@@ -115,20 +119,23 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
             createMeasurementView(h, ig);
         } else if (ig.getType() == ItemEvaluation.TYPE_EMPTY) {
             createEmptyView(h, ig);
+        } else if (ig.getType() == ItemEvaluation.TYPE_EMPTY_REQUIRED) {
+            createEmptyView(h, ig);
+            h.warning.setVisibility(View.VISIBLE);
+        } else if (ig.getType() == ItemEvaluation.TYPE_ERROR) {
+            createErrorView(h, ig);
         }
         setAnimation(h.mView, childIndex);
     }
 
-    private void createEmptyView(ViewHolder h, ItemEvaluation ig) {
-
+    private void createErrorView(ViewHolder h, ItemEvaluation ig) {
         h.mView.setOnClickListener(v -> {
             if (mListener != null) {
-                mListener.onAddMeasurementClick(ig.getTitle(), ig.getTypeEvaluation());
+                mListener.onRefreshClick(ig.getTitle(), ig.getTypeEvaluation());
             }
         });
-        h.warning.setVisibility(View.VISIBLE);
         h.QuizText.setVisibility(View.VISIBLE);
-        h.QuizText.setText(context.getResources().getString(R.string.evaluation_empty_message));
+        h.QuizText.setText(context.getResources().getString(R.string.evaluation_error_message));
         h.box.setVisibility(GONE);
         h.checkItem.setChecked(ig.isChecked());
         h.checkItem.setVisibility(View.INVISIBLE);
@@ -138,11 +145,26 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
         });
     }
 
+    private void createEmptyView(ViewHolder h, ItemEvaluation ig) {
+
+        h.mView.setOnClickListener(v -> {
+            if (mListener != null) {
+                mListener.onAddItemClick(ig.getTitle(), ig.getTypeEvaluation());
+            }
+        });
+        h.QuizText.setVisibility(View.VISIBLE);
+        h.QuizText.setText(context.getResources().getString(R.string.evaluation_empty_message));
+        h.box.setVisibility(GONE);
+        h.checkItem.setChecked(ig.isChecked());
+        h.checkItem.setVisibility(View.INVISIBLE);
+
+    }
+
     private void createMeasurementView(ViewHolder h, ItemEvaluation ig) {
 
         h.mView.setOnClickListener(v -> {
             if (mListener != null) {
-                mListener.onItemClick(ig);
+                mListener.onSelectClick(ig);
             }
         });
         h.textMeasurement.setVisibility(View.VISIBLE);
@@ -158,6 +180,8 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
         h.textMeasurementType.setVisibility(View.GONE);
         h.QuizText.setVisibility(GONE);
         h.box.setVisibility(GONE);
+
+        //TODO TESTE
         TextView item2 = new TextView(context);
 
         item2.setText("Quantidade de copos de água: Cinco ou mais");
@@ -173,20 +197,7 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
         TextView item3 = new TextView(context);
         item3.setText("\n\nRespondido em 23/02/2019 às 13:00");
         h.boxQuiz.addView(item3);
-
-//        h.itemQuizView.setVisibility(View.VISIBLE);
-//        h.itemQuizView.addItem("Feijão, Arroz e Carne", "5 a 6 vezes");
-//        h.itemQuizView.addItem("Refrigerante", "5 a 6 vezes");
-//        h.itemQuizView.addItem("Guloseimas", "5 a 6 vezes");
-//        h.itemQuizView.addItem("Peixe");
-//        h.itemQuizView.addItem("Comida");
-//        h.itemQuizView.addItem("Comida", "5 a 6 vezes");
-//        h.itemQuizView.addItem("Comida", "5 a 6 vezes");
-//        h.itemQuizView.addItem("Comida", "Todos os dias");
-//        h.itemQuizView.addItem("Comida", "Nunca");
-//        h.itemQuizView.addItem("Comida", "5 a 6 vezes");
-//        h.itemQuizView.addItem("Comida", "Não lembro");
-
+        //
     }
 
     private void createLoadingView(ViewHolder h, ItemEvaluation ig) {
@@ -194,7 +205,6 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
         h.box.setVisibility(GONE);
         h.QuizText.setVisibility(GONE);
         h.checkItem.setVisibility(GONE);
-
     }
 
     @Override
@@ -281,8 +291,13 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
         }
     }
 
-    public interface OnClick<I> extends OnRecyclerViewListener<ItemEvaluation> {
+    public interface OnClick {
 
-        void onAddMeasurementClick(String name, int type);
+        void onAddItemClick(String name, int type);
+
+        void onRefreshClick(String name, int type);
+
+        void onSelectClick(ItemEvaluation itemEvaluation);
+
     }
 }

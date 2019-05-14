@@ -81,7 +81,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/quiz_text"
-
                 android:layout_marginTop="28dp"
                 android:layout_marginStart="28dp"
                 android:orientation="vertical"/>

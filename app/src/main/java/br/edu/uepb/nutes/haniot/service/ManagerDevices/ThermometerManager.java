@@ -33,6 +33,7 @@ public class ThermometerManager extends BluetoothManager {
     protected void setCharacteristicWrite(BluetoothGatt gatt) {
         final BluetoothGattService service = gatt.getService(UUID.fromString(GattAttributes.SERVICE_HEALTH_THERMOMETER));
         if (service != null) {
+
             mCharacteristic = service.getCharacteristic(UUID.fromString(GattAttributes.CHARACTERISTIC_TEMPERATURE_MEASUREMENT));
         }
     }
@@ -41,12 +42,13 @@ public class ThermometerManager extends BluetoothManager {
     protected void initializeCharacteristic() {
         Log.i(TAG, "iniatialize()");
         setIndicationCallback(mCharacteristic).with(dataReceivedCallback);
-        enableNotifications(mCharacteristic).enqueue();
+        enableIndications(mCharacteristic).enqueue();
     }
 
     private ManagerCallback bleManagerCallbacks = new ManagerCallback() {
         @Override
         public void measurementReceiver(@NonNull BluetoothDevice device, @NonNull Data data) {
+            Log.i("AAA", "Recebi");
             final byte TEMPERATURE_UNIT_FLAG = 0x01; // 1 bit
             final byte TIMESTAMP_FLAG = 0x02; // 1 bits
             final byte TEMPERATURE_TYPE_FLAG = 0x04; // 1 bit

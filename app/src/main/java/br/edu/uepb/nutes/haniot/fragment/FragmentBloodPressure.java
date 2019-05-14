@@ -22,6 +22,8 @@ import butterknife.ButterKnife;
  */
 public class FragmentBloodPressure extends Fragment {
 
+    final private int MIN_HEART_RATE = 60;
+
     @BindView(R.id.heart_rate_control)
     SeekBar seekBar;
 
@@ -34,7 +36,7 @@ public class FragmentBloodPressure extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_blood_pressure_measurement, container, false);
         ButterKnife.bind(this, view);
-        valueMeasurement = 90;
+        valueMeasurement = MIN_HEART_RATE + 28;
         initView();
         return view;
     }
@@ -57,6 +59,7 @@ public class FragmentBloodPressure extends Fragment {
      * Init views.
      */
     public void initView() {
+        seekBar.setProgress(MIN_HEART_RATE + 28);
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
             @Override
@@ -71,8 +74,8 @@ public class FragmentBloodPressure extends Fragment {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress,
                                           boolean fromUser) {
-                value.setText(String.valueOf(progress));
-                valueMeasurement = progress;
+                value.setText(String.valueOf(progress + MIN_HEART_RATE));
+                valueMeasurement = progress + MIN_HEART_RATE;
             }
         });
     }

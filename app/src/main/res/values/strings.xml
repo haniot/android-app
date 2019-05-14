@@ -720,4 +720,5 @@
     <!-- EVALUATION -->
     <string name="evaluation_message">Escolha os dados referentes a %s para a Avaliação \n%s:</string>
     <string name="evaluation_empty_message">Sem resgistros! É necessário pelo menos uma medição\nClique aqui para inserir</string>
+    <string name="evaluation_error_message">Opss! Problema de sincronização\n Clique para tentar novamente!</string>
 </resources>

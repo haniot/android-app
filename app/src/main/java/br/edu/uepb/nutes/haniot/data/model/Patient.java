@@ -138,7 +138,7 @@ public class Patient {
     public static Patient jsonDeserialize(String json) {
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         Type typePatient = new TypeToken<Patient>() {
-        }.getType();
+        }.getType( );
         return gson.fromJson(json, typePatient);
     }
 
