@@ -22,10 +22,13 @@ import butterknife.ButterKnife;
  */
 public class FragmentHeartRate extends Fragment {
 
+    final private int MIN_HEART_RATE = 60;
+
     @BindView(R.id.seekBar)
     SeekBar seekBar;
 
     EditText value;
+
     public FragmentHeartRate() {
     }
 
@@ -47,10 +50,12 @@ public class FragmentHeartRate extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         value = getActivity().findViewById(R.id.text_measurement);
+        value.setText(String.valueOf(MIN_HEART_RATE + 28));
         init();
     }
 
     public void init() {
+        seekBar.setProgress(MIN_HEART_RATE + 28);
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
             @Override
@@ -68,7 +73,7 @@ public class FragmentHeartRate extends Fragment {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress,
                                           boolean fromUser) {
-                value.setText(String.valueOf(progress));
+                value.setText(String.valueOf(progress + MIN_HEART_RATE));
             }
         });
     }

@@ -23,18 +23,20 @@ import butterknife.ButterKnife;
  */
 public class FragmentAnthropometrics extends Fragment {
 
+    private final int MIN_WEASY = 50;
     @BindView(R.id.height)
     SeekBar height;
-   @BindView(R.id.height2)
+
+    @BindView(R.id.waist)
     SeekBar cintura;
 
-    @BindView(R.id.meters)
+    @BindView(R.id.heightText)
     EditText meters;
 
-    @BindView(R.id.meters2)
+    @BindView(R.id.waistText)
     EditText cm;
 
-    @BindView(R.id.patient_icon)
+    @BindView(R.id.heigthIcon)
     ImageView patientIcon;
 
     private double heightValue;
@@ -86,10 +88,11 @@ public class FragmentAnthropometrics extends Fragment {
             }
         });
 
+        cintura.setProgress(MIN_WEASY);
         cintura.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                cm.setText(String.valueOf(progress));
+                cm.setText(String.valueOf(progress + MIN_WEASY));
             }
 
             @Override
