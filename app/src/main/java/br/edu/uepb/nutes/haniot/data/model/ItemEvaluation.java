@@ -158,22 +158,6 @@ public class ItemEvaluation implements Parcelable {
         this.checked = checked;
     }
 
-    public int getType() {
-        return typeHeader;
-    }
-
-    public int getTypeEvaluation() {
-        return typeEvaluation;
-    }
-
-    public void setTypeEvaluation(int typeEvaluation) {
-        this.typeEvaluation = typeEvaluation;
-    }
-
-    public void setTypeHeader(int typeHeader) {
-        this.typeHeader = typeHeader;
-    }
-
     public FeedingHabitsRecord getFeedingHabitsRecord() {
         return feedingHabitsRecord;
     }
@@ -230,6 +214,21 @@ public class ItemEvaluation implements Parcelable {
         this.sociodemographicRecord = sociodemographicRecord;
     }
 
+    public int getTypeHeader() {
+        return typeHeader;
+    }
+
+    public void setTypeHeader(int typeHeader) {
+        this.typeHeader = typeHeader;
+    }
+
+    public int getTypeEvaluation() {
+        return typeEvaluation;
+    }
+
+    public void setTypeEvaluation(int typeEvaluation) {
+        this.typeEvaluation = typeEvaluation;
+    }
 
     @Override
     public int describeContents() {

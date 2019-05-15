@@ -21,11 +21,26 @@ import com.thoughtbot.expandablerecyclerview.viewholders.GroupViewHolder;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.data.model.ChronicDisease;
+import br.edu.uepb.nutes.haniot.data.model.ChronicDiseaseType;
+import br.edu.uepb.nutes.haniot.data.model.FeedingHabitsRecord;
+import br.edu.uepb.nutes.haniot.data.model.FeendingHabitsRecordType;
+import br.edu.uepb.nutes.haniot.data.model.FoodType;
+import br.edu.uepb.nutes.haniot.data.model.FrequencyAnswersType;
 import br.edu.uepb.nutes.haniot.data.model.ItemEvaluation;
+import br.edu.uepb.nutes.haniot.data.model.MedicalRecord;
+import br.edu.uepb.nutes.haniot.data.model.PhysicalActivityHabit;
+import br.edu.uepb.nutes.haniot.data.model.SchoolActivityFrequencyType;
+import br.edu.uepb.nutes.haniot.data.model.SleepHabit;
+import br.edu.uepb.nutes.haniot.data.model.WeeklyFoodRecord;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static android.view.View.GONE;
+import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.FEEDING_HABITS;
+import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.MEDICAL_RECORDS;
+import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.PHYSICAL_ACTIVITY;
+import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.SLEEP_HABITS;
 
 public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<EvaluationExpandableAdapter.HeaderViewHolder, EvaluationExpandableAdapter.ViewHolder> {
     private Context context;
@@ -42,7 +57,7 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
     }
 
     public void expandAll() {
-        for (int i = 0; i < getItemCount()-1; i++) {
+        for (int i = 0; i < getItemCount(); i++) {
             if (!isGroupExpanded(i)) {
                 toggleGroup(i);
             }
@@ -93,7 +108,7 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
         ItemEvaluation ig = (ItemEvaluation) group.getItems().get(childIndex);
         ViewHolder h = (ViewHolder) holder;
 
-        h.itemQuizView.setVisibility(View.INVISIBLE);
+        h.itemQuizView.setVisibility(GONE);
         h.box.setVisibility(View.VISIBLE);
         h.textMeasurement.setVisibility(View.VISIBLE);
         h.textMeasurementType.setVisibility(View.VISIBLE);
@@ -111,18 +126,18 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
             notifyDataSetChanged();
         });
 
-        if (ig.getType() == ItemEvaluation.TYPE_LOADING) {
+        if (ig.getTypeHeader() == ItemEvaluation.TYPE_LOADING) {
             createLoadingView(h, ig);
-        } else if (ig.getType() == ItemEvaluation.TYPE_QUIZ) {
+        } else if (ig.getTypeHeader() == ItemEvaluation.TYPE_QUIZ) {
             createQuizView(h, ig);
-        } else if (ig.getType() == ItemEvaluation.TYPE_MEASUREMENT) {
+        } else if (ig.getTypeHeader() == ItemEvaluation.TYPE_MEASUREMENT) {
             createMeasurementView(h, ig);
-        } else if (ig.getType() == ItemEvaluation.TYPE_EMPTY) {
+        } else if (ig.getTypeHeader() == ItemEvaluation.TYPE_EMPTY) {
             createEmptyView(h, ig);
-        } else if (ig.getType() == ItemEvaluation.TYPE_EMPTY_REQUIRED) {
+        } else if (ig.getTypeHeader() == ItemEvaluation.TYPE_EMPTY_REQUIRED) {
             createEmptyView(h, ig);
             h.warning.setVisibility(View.VISIBLE);
-        } else if (ig.getType() == ItemEvaluation.TYPE_ERROR) {
+        } else if (ig.getTypeHeader() == ItemEvaluation.TYPE_ERROR) {
             createErrorView(h, ig);
         }
         setAnimation(h.mView, childIndex);
@@ -157,7 +172,6 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
         h.box.setVisibility(GONE);
         h.checkItem.setChecked(ig.isChecked());
         h.checkItem.setVisibility(View.INVISIBLE);
-
     }
 
     private void createMeasurementView(ViewHolder h, ItemEvaluation ig) {
@@ -178,25 +192,55 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
         h.itemQuizView.clear();
         h.textMeasurement.setVisibility(View.GONE);
         h.textMeasurementType.setVisibility(View.GONE);
-        h.QuizText.setVisibility(GONE);
+        h.QuizText.setVisibility(View.VISIBLE);
         h.box.setVisibility(GONE);
 
         //TODO TESTE
-        TextView item2 = new TextView(context);
 
-        item2.setText("Quantidade de copos de água: Cinco ou mais");
-        h.boxQuiz.addView(item2);
-
+        String a = "";
         for (int i = 0; i <= 6; i++) {
-            TextView item = new TextView(context);
-            item.setText("Refrigerante: Todos os dias");
-
-            h.boxQuiz.addView(item);
+            a += "Refrigerante: Todos os dias\n";
         }
 
-        TextView item3 = new TextView(context);
-        item3.setText("\n\nRespondido em 23/02/2019 às 13:00");
-        h.boxQuiz.addView(item3);
+        StringBuilder stringBuilder = new StringBuilder();
+        switch (ig.getTypeEvaluation()) {
+            case SLEEP_HABITS:
+                SleepHabit sleepHabit = ig.getSleepHabit();
+                stringBuilder.append("\nDorme às ").append(sleepHabit.getWeekDaySleep()).append(" horas");
+                stringBuilder.append("\nAcorda às ").append(sleepHabit.getWeekDayWakeUp()).append(" horas");
+                break;
+            case MEDICAL_RECORDS:
+                MedicalRecord medicalRecord = ig.getMedicalRecord();
+                for (ChronicDisease chronicDisease : medicalRecord.getChronicDiseases())
+                    stringBuilder
+                            .append(ChronicDiseaseType.ChronicDisease.getString_PTBR(chronicDisease.getType()))
+                            .append(": ")
+                            .append(ChronicDiseaseType.DisieaseHistory.getStringPTBR(chronicDisease.getDiseaseHistory()))
+                            .append("\n");
+                break;
+            case FEEDING_HABITS:
+                FeedingHabitsRecord feedingHabitsRecord = ig.getFeedingHabitsRecord();
+                stringBuilder.append("\nCopos de água por dia: ").append(FoodType.getStringPTBR(feedingHabitsRecord.getDailyWaterGlasses()));
+                stringBuilder.append("\nCafé da manhã: ").append(FrequencyAnswersType.Frequency.getStringPTBR(feedingHabitsRecord.getBreakfastDailyFrequency()));
+                for (WeeklyFoodRecord weeklyFoodRecord : feedingHabitsRecord.getWeeklyFeedingHabits())
+                    stringBuilder
+                            .append("\n")
+                            .append(FoodType.getStringPTBR(weeklyFoodRecord.getFood()))
+                            .append(": ")
+                            .append(FeendingHabitsRecordType.SevenDaysFeedingFrequency.getStringPTBR(weeklyFoodRecord.getSevenDaysFreq()));
+                break;
+            case PHYSICAL_ACTIVITY:
+                PhysicalActivityHabit physicalActivityHabit = ig.getPhysicalActivityHabit();
+                stringBuilder.append("\nEsportes praticados durante a semana: \n");
+                for (String sport : physicalActivityHabit.getWeeklyActivities()) {
+                    stringBuilder.append(sport).append(",\n");
+                }
+                stringBuilder.append("\nFrequência de atividades físicas na escola: \n")
+                        .append(SchoolActivityFrequencyType.getStringPTBR(physicalActivityHabit.getSchoolActivityFreq()));
+                break;
+        }
+
+        h.QuizText.setText(stringBuilder.append("\n\nRespondido em 23/02/2019 às 13:00").toString());
         //
     }
 

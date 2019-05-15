@@ -75,13 +75,13 @@ public class EvaluationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             h.textDescription.setText(ig.getTitle());
             h.textDate.setText(ig.getDate());
             h.texTime.setText(ig.getTime());
-            if (ig.getType() == ItemEvaluation.TYPE_QUIZ) {
+            if (ig.getTypeHeader() == ItemEvaluation.TYPE_QUIZ) {
 
                 h.textMeasurement.setVisibility(View.GONE);
                 h.textMeasurementType.setVisibility(View.GONE);
                 h.QuizText.setText(ig.getQuizText());
 
-            } else if (ig.getType() == ItemEvaluation.TYPE_MEASUREMENT) {
+            } else if (ig.getTypeHeader() == ItemEvaluation.TYPE_MEASUREMENT) {
 
                 h.textMeasurement.setVisibility(View.VISIBLE);
                 h.textMeasurementType.setVisibility(View.VISIBLE);
@@ -89,7 +89,7 @@ public class EvaluationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 h.textMeasurementType.setText(ig.getUnitMeasurement());
                 h.QuizText.setVisibility(View.GONE);
 
-            } else if (ig.getType() == ItemEvaluation.TYPE_EMPTY) {
+            } else if (ig.getTypeHeader() == ItemEvaluation.TYPE_EMPTY) {
 
                 h.QuizText.setText(ig.getQuizText());
                 h.box.setVisibility(GONE);
@@ -128,7 +128,7 @@ public class EvaluationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public int getItemViewType(int position) {
-        return itemEvaluations.get(position).getType();
+        return itemEvaluations.get(position).getTypeHeader();
     }
 
     @Override
