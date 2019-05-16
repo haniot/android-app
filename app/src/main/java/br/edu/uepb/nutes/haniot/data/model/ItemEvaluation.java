@@ -3,6 +3,8 @@ package br.edu.uepb.nutes.haniot.data.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.List;
+
 public class ItemEvaluation implements Parcelable {
     public static final int TYPE_MEASUREMENT = 2;
     public static final int TYPE_QUIZ = 3;
@@ -30,6 +32,7 @@ public class ItemEvaluation implements Parcelable {
     private OralHealthRecord oralHealthRecord;
     private FamilyCohesionRecord familyCohesionRecord;
     private SociodemographicRecord sociodemographicRecord;
+    private List<HeartRateItem> dataset;
 
     public ItemEvaluation() {
 
@@ -228,6 +231,14 @@ public class ItemEvaluation implements Parcelable {
 
     public void setTypeEvaluation(int typeEvaluation) {
         this.typeEvaluation = typeEvaluation;
+    }
+
+    public List<HeartRateItem> getDataset() {
+        return dataset;
+    }
+
+    public void setDataset(List<HeartRateItem> dataset) {
+        this.dataset = dataset;
     }
 
     @Override

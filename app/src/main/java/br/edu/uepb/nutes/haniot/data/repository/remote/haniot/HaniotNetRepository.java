@@ -183,6 +183,13 @@ public class HaniotNetRepository extends BaseNetRepository {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
+    public Single<List<Measurement>> getAllMeasurements(String userId, int page,
+                                                        int limit, String sort) {
+        return haniotService.getAllMeasurements(userId, page, limit, sort)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
     public Single<Measurement> getMeasurement(String userId, String measurementId) {
         return haniotService.getMeasurement(userId, measurementId)
                 .subscribeOn(Schedulers.io())
@@ -364,43 +371,43 @@ public class HaniotNetRepository extends BaseNetRepository {
     }
 
     public Single<List<SleepHabit>> getAllSleepHabits(String patientId, int page, int limit, String sort) {
-        return haniotService.getAllSleepHabits(patientId,  page, limit, sort)
+        return haniotService.getAllSleepHabits(patientId, page, limit, sort)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     public Single<List<PhysicalActivityHabit>> getAllPhysicalActivity(String patientId, int page, int limit, String sort) {
-        return haniotService.getAllPhysicalActivity(patientId,  page, limit, sort)
+        return haniotService.getAllPhysicalActivity(patientId, page, limit, sort)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     public Single<List<FeedingHabitsRecord>> getAllFeedingHabits(String patientId, int page, int limit, String sort) {
-        return haniotService.getAllFeedingHabits(patientId,  page, limit, sort)
+        return haniotService.getAllFeedingHabits(patientId, page, limit, sort)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     public Single<List<MedicalRecord>> getAllMedicalRecord(String patientId, int page, int limit, String sort) {
-        return haniotService.getAllMedicalRecord(patientId,  page, limit, sort)
+        return haniotService.getAllMedicalRecord(patientId, page, limit, sort)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     public Single<List<SociodemographicRecord>> getAllSociodemographic(String patientId, int page, int limit, String sort) {
-        return haniotService.getAllSociodemographic(patientId,  page, limit, sort)
+        return haniotService.getAllSociodemographic(patientId, page, limit, sort)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     public Single<List<FamilyCohesionRecord>> getAllFamilyCohesion(String patientId, int page, int limit, String sort) {
-        return haniotService.getAllFamilyCohesion(patientId,  page, limit, sort)
+        return haniotService.getAllFamilyCohesion(patientId, page, limit, sort)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     public Single<List<OralHealthRecord>> getAllOralHealth(String patientId, int page, int limit, String sort) {
-        return haniotService.getAllOralHealth(patientId,  page, limit, sort)
+        return haniotService.getAllOralHealth(patientId, page, limit, sort)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

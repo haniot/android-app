@@ -18,7 +18,12 @@ import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup;
 import com.thoughtbot.expandablerecyclerview.viewholders.ChildViewHolder;
 import com.thoughtbot.expandablerecyclerview.viewholders.GroupViewHolder;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.data.model.ChronicDisease;
@@ -27,12 +32,15 @@ import br.edu.uepb.nutes.haniot.data.model.FeedingHabitsRecord;
 import br.edu.uepb.nutes.haniot.data.model.FeendingHabitsRecordType;
 import br.edu.uepb.nutes.haniot.data.model.FoodType;
 import br.edu.uepb.nutes.haniot.data.model.FrequencyAnswersType;
+import br.edu.uepb.nutes.haniot.data.model.HeartRateItem;
 import br.edu.uepb.nutes.haniot.data.model.ItemEvaluation;
 import br.edu.uepb.nutes.haniot.data.model.MedicalRecord;
 import br.edu.uepb.nutes.haniot.data.model.PhysicalActivityHabit;
 import br.edu.uepb.nutes.haniot.data.model.SchoolActivityFrequencyType;
 import br.edu.uepb.nutes.haniot.data.model.SleepHabit;
+import br.edu.uepb.nutes.haniot.data.model.TypeEvaluation;
 import br.edu.uepb.nutes.haniot.data.model.WeeklyFoodRecord;
+import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -118,10 +126,39 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
         h.loading.setVisibility(View.GONE);
         h.imageItem.setImageResource(ig.getIcon());
         h.textDescription.setText(ig.getTitle());
-        h.textDate.setText(ig.getDate());
-        h.texTime.setText(ig.getTime());
+        h.textMax.setVisibility(GONE);
+        h.textMaxType.setVisibility(GONE);
+        h.textMin.setVisibility(GONE);
+        h.textMinType.setVisibility(GONE);
+        h.textDate.setTextSize(16);
+        h.textMinType.setTextSize(16);
+        h.textMaxType.setTextSize(16);
+        h.textMeasurementType.setTextSize(16);
+//
+//        Date date = fromISO8601UTC(ig.getDate());
+//        String pattern = "yyyy-MM-dd";
+//        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+//
+//        String dateString = simpleDateFormat.format(date);
+//
+//        String patternHour = "HH:mm";
+//        SimpleDateFormat simpleDateFormatHour = new SimpleDateFormat(patternHour);
+//
+//        String hourString = simpleDateFormatHour.format(date);
+//
+//        h.textDate.setText(dateString);
+//        h.texTime.setText(hourString);
+//        String time = DateUtils.formatDateTime(ig.getDate(), context.getString(R.string.time_format_simple));
+        // h.texTime.setText(ig.getDate());
 
+        h.checkItem.setChecked(ig.isChecked());
         h.checkItem.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            // ig.setChecked(!ig.isChecked());
+            mListener.onSelectClick(ig);
+        });
+
+        h.mView.setOnClickListener(v -> {
+            //h.checkItem.setChecked(!h.checkItem.isChecked());
             ig.setChecked(!ig.isChecked());
             notifyDataSetChanged();
         });
@@ -141,6 +178,20 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
             createErrorView(h, ig);
         }
         setAnimation(h.mView, childIndex);
+    }
+
+    private Date fromISO8601UTC(String dateStr) {
+        TimeZone tz = TimeZone.getTimeZone("UTC");
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
+        df.setTimeZone(tz);
+
+        try {
+            return df.parse(dateStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     private void createErrorView(ViewHolder h, ItemEvaluation ig) {
@@ -183,8 +234,40 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
         });
         h.textMeasurement.setVisibility(View.VISIBLE);
         h.textMeasurementType.setVisibility(View.VISIBLE);
-        h.textMeasurement.setText(ig.getValueMeasurement());
-        h.textMeasurementType.setText(ig.getUnitMeasurement());
+        if (ig.getTypeEvaluation() == TypeEvaluation.HEARTRATE) {
+            h.textMax.setVisibility(View.VISIBLE);
+            h.textMaxType.setVisibility(View.VISIBLE);
+            h.textMin.setVisibility(View.VISIBLE);
+            h.textMinType.setVisibility(View.VISIBLE);
+            double average = 0.0;
+            HeartRateItem min = ig.getDataset().get(0);
+            HeartRateItem max = ig.getDataset().get(0);
+            for (HeartRateItem heartRateItem : ig.getDataset()) {
+                if (heartRateItem.getValue() <= min.getValue()) min = heartRateItem;
+                if (heartRateItem.getValue() >= max.getValue()) max = heartRateItem;
+                average += heartRateItem.getValue();
+            }
+
+            average = average / ig.getDataset().size();
+            h.textMeasurement.setText(String.valueOf((int) average));
+            h.textMeasurementType.setText(String.format("%s (Média)", ig.getUnitMeasurement()));
+            h.textMeasurementType.setTextSize(12);
+            h.textMin.setText(String.valueOf(min.getValue()));
+            h.textMinType.setText(String.format("%s (Min)", ig.getUnitMeasurement()));
+            h.textMinType.setTextSize(12);
+            h.textMax.setText(String.valueOf(max.getValue()));
+            h.textMaxType.setText(String.format("%s (Max)", ig.getUnitMeasurement()));
+            h.textMaxType.setTextSize(12);
+//            h.textDate.setText(String.format("%s - %s", min.getTimestamp(), max.getTimestamp()));
+            h.textDate.setText("26 de abril - 28 de abril");
+            h.textDate.setTextSize(12);
+            h.texTime.setVisibility(GONE);
+            h.timeIcon.setVisibility(GONE);
+
+        } else {
+            h.textMeasurement.setText(ig.getValueMeasurement());
+            h.textMeasurementType.setText(ig.getUnitMeasurement());
+        }
         h.QuizText.setVisibility(View.GONE);
     }
 
@@ -269,6 +352,14 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
         TextView textMeasurement;
         @BindView(R.id.textMeasurementType)
         TextView textMeasurementType;
+        @BindView(R.id.textMin)
+        TextView textMin;
+        @BindView(R.id.textMinType)
+        TextView textMinType;
+        @BindView(R.id.textMax)
+        TextView textMax;
+        @BindView(R.id.textMaxType)
+        TextView textMaxType;
         @BindView(R.id.text_time_measurement)
         TextView texTime;
         @BindView(R.id.quiz_text)
@@ -283,10 +374,10 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
         ImageView warning;
         @BindView(R.id.loading)
         ProgressBar loading;
-
+        @BindView(R.id.time_measuerement)
+        ImageView timeIcon;
         @BindView(R.id.item_quiz)
         ItemQuizView itemQuizView;
-
         @BindView(R.id.box_quiz)
         LinearLayout boxQuiz;
 

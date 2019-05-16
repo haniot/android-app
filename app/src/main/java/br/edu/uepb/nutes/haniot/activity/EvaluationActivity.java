@@ -8,7 +8,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -44,7 +43,7 @@ import retrofit2.HttpException;
 import static br.edu.uepb.nutes.haniot.data.model.ItemEvaluation.*;
 import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.*;
 
-public class EvaluationActivity<T> extends AppCompatActivity implements EvaluationExpandableAdapter.OnClick {
+public class EvaluationActivity extends AppCompatActivity implements EvaluationExpandableAdapter.OnClick {
 
     @BindView(R.id.list_evaluation)
     RecyclerView evaluation;
@@ -63,18 +62,6 @@ public class EvaluationActivity<T> extends AppCompatActivity implements Evaluati
     private Patient patient;
     HaniotNetRepository haniotNetRepository;
     private String typeEvaluation;
-//
-//    GroupItemEvaluation groupItemEvaluationHeartRate;
-//    GroupItemEvaluation groupItemEvaluationBloodPressure;
-//    GroupItemEvaluation groupItemEvaluationWeight;
-//    GroupItemEvaluation groupItemEvaluationGlucose;
-//    GroupItemEvaluation groupItemEvaluationOralHealth;
-//    GroupItemEvaluation groupItemEvaluationFamilyCohesion;
-//    GroupItemEvaluation groupItemEvaluationMedicalRecords;
-//    GroupItemEvaluation groupItemEvaluationFeedingsHabits;
-//    GroupItemEvaluation groupItemEvaluationPhysicalHabits;
-//    GroupItemEvaluation groupItemEvaluationSociodemographics;
-//    GroupItemEvaluation groupItemEvaluationSleepHabits;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,9 +74,11 @@ public class EvaluationActivity<T> extends AppCompatActivity implements Evaluati
         initViews();
         loading();
 
-//        downloadData();
     }
 
+    /**
+     * Initialize Evaluation recyclerview.
+     */
     private void initRecyclerView() {
         evaluationAdapter = new EvaluationExpandableAdapter(groupItemEvaluations, this);
         evaluation.setLayoutManager(new LinearLayoutManager(this));
@@ -98,6 +87,9 @@ public class EvaluationActivity<T> extends AppCompatActivity implements Evaluati
         evaluationAdapter.expandAll();
     }
 
+    /**
+     * Initialize views.
+     */
     private void initViews() {
 
         String nameType = "";
@@ -113,30 +105,23 @@ public class EvaluationActivity<T> extends AppCompatActivity implements Evaluati
         else gender.setImageResource(R.drawable.x_boy);
     }
 
+    /**
+     * Initialize resources.
+     */
     private void initResources() {
         groupItemEvaluations = new ArrayList<>();
         helper = AppPreferencesHelper.getInstance(this);
         haniotNetRepository = HaniotNetRepository.getInstance(this);
         patient = helper.getLastPatient();
-
-        sendEvaluation.setOnClickListener(v -> {
-            ItemEvaluation itemEvaluation = new ItemEvaluation(R.drawable.action_quiz, TYPE_QUIZ, "Hábitos Alimentares", FEEDING_HABITS);
-
-//// TESTE
-////            ItemEvaluation itemEvaluation = new ItemEvaluation(R.drawable.xcardiogram, TYPE_QUIZ,
-////                    getString(R.string.heart_rate), String.valueOf("232"),
-////                    String.valueOf("212"), HEARTRATE);
-////            itemEvaluation.setValueMeasurement("92");
-////            itemEvaluation.setUnitMeasurement("bpm");
-////            itemEvaluation.setDate("22/05/2019");
-////            itemEvaluation.setTime("03:34");
-//            groupItemEvaluationSleepHabits.getItems().clear();
-//            groupItemEvaluationSleepHabits.getItems().add(itemEvaluation);
-//            evaluationAdapter.notifyDataSetChanged();
-        });
     }
 
-    private GroupItemEvaluation getGroupEvaluationByType(int type) {
+    /**
+     * Get get evaluation group object by type.
+     *
+     * @param type
+     * @return
+     */
+    private GroupItemEvaluation getEvaluationGroupByType(int type) {
         for (GroupItemEvaluation groupItemEvaluation : groupItemEvaluations) {
             if (groupItemEvaluation.getType() == type) {
                 return groupItemEvaluation;
@@ -145,8 +130,10 @@ public class EvaluationActivity<T> extends AppCompatActivity implements Evaluati
         return null;
     }
 
+    /**
+     * Show recyclerview items in loading mode.
+     */
     private void loading() {
-
 
         List<ItemEvaluation> itemsLoading = new ArrayList<>();
         itemsLoading.add(new ItemEvaluation(R.drawable.xcardiogram, TYPE_LOADING,
@@ -161,7 +148,7 @@ public class EvaluationActivity<T> extends AppCompatActivity implements Evaluati
         itemsLoading = new ArrayList<>();
         itemsLoading.add(new ItemEvaluation(R.drawable.xweight, TYPE_LOADING,
                 getString(R.string.weight), BLOOD_PRESSURE));
-        groupItemEvaluations.add(new GroupItemEvaluation(getString(R.string.weight), itemsLoading, BLOOD_PRESSURE));
+        groupItemEvaluations.add(new GroupItemEvaluation(getString(R.string.weight), itemsLoading, WEIGHT));
 
         itemsLoading = new ArrayList<>();
         itemsLoading.add(new ItemEvaluation(R.drawable.xglucosemeter, TYPE_LOADING,
@@ -211,205 +198,14 @@ public class EvaluationActivity<T> extends AppCompatActivity implements Evaluati
 
     }
 
-//
-//    private void prepareHeartRateMeasurement(List<Measurement> measurementsList) {
-//        List<ItemEvaluation> itemEvaluationsHeartRate = new ArrayList<>();
-//        groupItemEvaluationHeartRate = new GroupItemEvaluation(getString(R.string.heart_rate), itemEvaluationsHeartRate);
-//        if (measurementsList.isEmpty())
-//            itemEvaluationsHeartRate.add(new ItemEvaluation(R.drawable.xcardiogram, TYPE_LOADING,
-//                    getString(R.string.heart_rate), HEARTRATE));
-//        else
-//            for (Measurement measurement : measurementsList)
-//                itemEvaluationsHeartRate.add(new ItemEvaluation(R.drawable.xcardiogram, TYPE_MEASUREMENT,
-//                        getString(R.string.heart_rate), String.valueOf(measurement.getValue()),
-//                        String.valueOf(measurement.getUnit()), HEARTRATE));
-//        groupItemEvaluations.add(groupItemEvaluationHeartRate);
-//    }
-//
-//    private void prepareBloodPressureMeasurement(List<Measurement> measurementsList) {
-//        List<ItemEvaluation> itemEvaluations = new ArrayList<>();
-//
-//        if (measurementsList.isEmpty())
-//            itemEvaluations.add(new ItemEvaluation(R.drawable.xblood_pressure, TYPE_LOADING,
-//                    getString(R.string.blood_pressure), BLOOD_PRESSURE));
-//        else
-//            for (Measurement measurement : measurementsList)
-//                itemEvaluations.add(new ItemEvaluation(R.drawable.xcardiogram, TYPE_MEASUREMENT,
-//                        getString(R.string.blood_pressure), String.valueOf(measurement.getValue()),
-//                        String.valueOf(measurement.getUnit()), BLOOD_PRESSURE));
-//
-//        groupItemEvaluations.add(new GroupItemEvaluation(getString(R.string.blood_pressure), itemEvaluations));
-//    }
-//
-//    private void prepareWeightMeasurement(List<Measurement> measurementsList) {
-//        List<ItemEvaluation> itemEvaluations = new ArrayList<>();
-//
-//        if (measurementsList.isEmpty())
-//            itemEvaluations.add(new ItemEvaluation(R.drawable.xweight, TYPE_LOADING,
-//                    getString(R.string.blood_pressure), BLOOD_PRESSURE));
-//        else
-//            for (Measurement measurement : measurementsList)
-//                itemEvaluations.add(new ItemEvaluation(R.drawable.xweight, TYPE_MEASUREMENT,
-//                        getString(R.string.weight), String.valueOf(measurement.getValue()),
-//                        String.valueOf(measurement.getUnit()), WEIGHT));
-//
-//        groupItemEvaluations.add(new GroupItemEvaluation(getString(R.string.weight), itemEvaluations));
-//    }
-//
-//    private void prepareGlucoseMeasurement(List<Measurement> measurementsList) {
-//        List<ItemEvaluation> itemEvaluations = new ArrayList<>();
-//
-//        if (measurementsList.isEmpty())
-//            itemEvaluations.add(new ItemEvaluation(R.drawable.xglucosemeter, TYPE_LOADING,
-//                    getString(R.string.glucose), GLUCOSE));
-//        else
-//            for (Measurement measurement : measurementsList)
-//                itemEvaluations.add(new ItemEvaluation(R.drawable.xglucosemeter, TYPE_MEASUREMENT,
-//                        getString(R.string.glucose), String.valueOf(measurement.getValue()),
-//                        String.valueOf(measurement.getUnit()), GLUCOSE));
-//
-//        groupItemEvaluations.add(new GroupItemEvaluation(getString(R.string.glucose), itemEvaluations));
-//    }
-//
-//    private void prepareOralHealth(List<OralHealthRecord> oralHealthRecords) {
-//        List<ItemEvaluation> itemEvaluations = new ArrayList<>();
-//
-//        if (oralHealthRecords.isEmpty()) {
-//            itemEvaluations.add(new ItemEvaluation(R.drawable.action_quiz, TYPE_QUIZ,
-//                    "Saúde Bucal", TypeEvaluation.ORAL_HEALTH));
-//        } else {
-//
-//            for (OralHealthRecord oralHealthRecord : oralHealthRecords) {
-//                ItemEvaluation itemEvaluation = new ItemEvaluation(R.drawable.action_quiz, TYPE_QUIZ,
-//                        "Coesão Familiar", "Respostas:  ", oralHealthRecord.getCreatedAt(),
-//                        TypeEvaluation.ORAL_HEALTH);
-//                itemEvaluation.setOralHealthRecord(oralHealthRecord);
-//                itemEvaluations.add(itemEvaluation);
-//            }
-//        }
-//
-//        GroupItemEvaluation groupItemEvaluation = new GroupItemEvaluation(
-//                "Questionário Odontológico - Saúde Bucal", itemEvaluations);
-//        groupItemEvaluations.add(groupItemEvaluation);
-//    }
-//
-//    private void prepareFamilyCohesion(List<FamilyCohesionRecord> cohesionFamily) {
-//        groupItemEvaluationFamilyCohesion.getItems().clear();
-//
-//        if (cohesionFamily.isEmpty()) {
-//            groupItemEvaluationFamilyCohesion.getItems().add(new ItemEvaluation(R.drawable.action_quiz, TYPE_EMPTY,
-//                    "Coesão Familiar", TypeEvaluation.FAMILY_COHESION));
-//        } else {
-//            for (FamilyCohesionRecord familyCohesionRecord : cohesionFamily) {
-//                ItemEvaluation itemEvaluation = new ItemEvaluation(R.drawable.action_quiz, TYPE_QUIZ,
-//                        "Coesão Familiar", "Respostas:  ", familyCohesionRecord.getCreatedAt(),
-//                        TypeEvaluation.FAMILY_COHESION);
-//                itemEvaluation.setFamilyCohesionRecord(familyCohesionRecord);
-//                groupItemEvaluationFamilyCohesion.getItems().add(itemEvaluation);
-//            }
-//        }
-//        evaluationAdapter.notifyDataSetChanged();
-//    }
-//
-//    private void prepareMedicalRecords(List<MedicalRecord> medicalRecords) {
-//        List<ItemEvaluation> itemEvaluations = new ArrayList<>();
-//
-//        if (medicalRecords.isEmpty()) {
-//            itemEvaluations.add(new ItemEvaluation(R.drawable.action_quiz, TYPE_QUIZ,
-//                    "Histórico de Saúde", TypeEvaluation.MEDICAL_RECORDS));
-//        } else {
-//            for (MedicalRecord medicalRecord : medicalRecords) {
-//                ItemEvaluation itemEvaluation = new ItemEvaluation(R.drawable.action_quiz, TYPE_QUIZ,
-//                        "Histórico de Saúde", "Respostas:  ", medicalRecord.getCreatedAt(),
-//                        TypeEvaluation.FAMILY_COHESION);
-//                itemEvaluation.setMedicalRecord(medicalRecord);
-//                itemEvaluations.add(itemEvaluation);
-//            }
-//        }
-//
-//        GroupItemEvaluation groupItemEvaluation = new GroupItemEvaluation(
-//                "Questionário Odontológico - Histórico de Saúde", itemEvaluations);
-//        groupItemEvaluations.add(groupItemEvaluation);
-//    }
-//
-//    private void prepareFeedingHabits(List<FeedingHabitsRecord> feedingHabitsRecords) {
-//        List<ItemEvaluation> itemEvaluations = new ArrayList<>();
-//
-//        if (feedingHabitsRecords.isEmpty()) {
-//            itemEvaluations.add(new ItemEvaluation(R.drawable.action_quiz, TYPE_QUIZ,
-//                    "Hábitos Alimentares", TypeEvaluation.FEEDING_HABITS));
-//        } else {
-//            for (FeedingHabitsRecord feedingHabitsRecord : feedingHabitsRecords) {
-//                ItemEvaluation itemEvaluation = new ItemEvaluation(R.drawable.action_quiz, TYPE_QUIZ,
-//                        "Histórico de Saúde", "Respostas:  ", feedingHabitsRecord.getCreatedAt(),
-//                        TypeEvaluation.FAMILY_COHESION);
-//                itemEvaluation.setFeedingHabitsRecord(feedingHabitsRecord);
-//                itemEvaluations.add(itemEvaluation);
-//            }
-//        }
-//        GroupItemEvaluation groupItemEvaluation = new GroupItemEvaluation(
-//                "Questionário Odontológico - Hábitos Alimentares", itemEvaluations);
-//        groupItemEvaluations.add(groupItemEvaluation);
-//    }
-//
-//    private void preparePhysicalHabits(List<PhysicalActivityHabit> physicalActivityHabits) {
-//        List<ItemEvaluation> itemEvaluations = new ArrayList<>();
-//
-//        if (physicalActivityHabits.isEmpty()) {
-//            itemEvaluations.add(new ItemEvaluation(R.drawable.action_quiz, TYPE_QUIZ,
-//                    "Hábitos Físicos", TypeEvaluation.PHYSICAL_ACTIVITY));
-//        } else {
-//            for (PhysicalActivityHabit physicalActivityHabit : physicalActivityHabits) {
-//                ItemEvaluation itemEvaluation = new ItemEvaluation(R.drawable.action_quiz, TYPE_QUIZ,
-//                        "Histórico de Saúde", "Respostas:  ", physicalActivityHabit.getCreatedAt(),
-//                        TypeEvaluation.PHYSICAL_ACTIVITY);
-//                itemEvaluation.setPhysicalActivityHabit(physicalActivityHabit);
-//                itemEvaluations.add(itemEvaluation);
-//            }
-//        }
-//        GroupItemEvaluation groupItemEvaluation = new GroupItemEvaluation(
-//                "Questionário Odontológico - Hábitos Físicos", itemEvaluations);
-//        groupItemEvaluations.add(groupItemEvaluation);
-//    }
-//
-//    private void prepareSociodemographic(List<SociodemographicRecord> sociodemographicRecords) {
-//        groupItemEvaluationSociodemographics.getItems().clear();
-//
-//        if (sociodemographicRecords.isEmpty()) {
-//            groupItemEvaluationSociodemographics.getItems().add(new ItemEvaluation(R.drawable.action_quiz, TYPE_EMPTY,
-//                    "Sociodemográfico", TypeEvaluation.SOCIODEMOGRAPHICS));
-//        } else {
-//            for (SociodemographicRecord sociodemographicRecord : sociodemographicRecords) {
-//                ItemEvaluation itemEvaluation = new ItemEvaluation(R.drawable.action_quiz, TYPE_QUIZ,
-//                        "Sociodemográfico", "Respostas:  ", sociodemographicRecord.getCreatedAt(),
-//                        TypeEvaluation.SOCIODEMOGRAPHICS);
-//                itemEvaluation.setSociodemographicRecord(sociodemographicRecord);
-//                groupItemEvaluationSociodemographics.getItems().add(itemEvaluation);
-//            }
-//        }
-//        evaluationAdapter.notifyDataSetChanged();
-//    }
-//
-//    private void prepareSleepHatits(List<SleepHabit> sleepHabits) {
-//        groupItemEvaluationSleepHabits.getItems().clear();
-//
-//        if (sleepHabits.isEmpty()) {
-//            groupItemEvaluationSleepHabits.getItems().add(new ItemEvaluation(R.drawable.action_quiz, TYPE_EMPTY,
-//                    "Hábitos do Sono", TypeEvaluation.SLEEP_HABITS));
-//        } else {
-//            for (SleepHabit sleepHabit : sleepHabits) {
-//                ItemEvaluation itemEvaluation = new ItemEvaluation(R.drawable.action_quiz, TYPE_QUIZ,
-//                        "Hábitos do Sono", "Respostas:  ", sleepHabit.getCreatedAt(),
-//                        TypeEvaluation.SLEEP_HABITS);
-//                itemEvaluation.setSleepHabit(sleepHabit);
-//                groupItemEvaluationSleepHabits.getItems().add(itemEvaluation);
-//            }
-//        }
-//        evaluationAdapter.notifyDataSetChanged();
-//    }
-
+    /**
+     * Prepare evaluation data from the server.
+     *
+     * @param data
+     * @param type
+     */
     private void prepareData(List data, int type) {
-        GroupItemEvaluation groupItemEvaluation = getGroupEvaluationByType(type);
+        GroupItemEvaluation groupItemEvaluation = getEvaluationGroupByType(type);
 
         if (groupItemEvaluation == null) {
             Log.i("AAAAA", "groupItemEvaluation não encontrado");
@@ -454,7 +250,6 @@ public class EvaluationActivity<T> extends AppCompatActivity implements Evaluati
                     }
                     break;
                 case MEDICAL_RECORDS:
-                    Log.i("AAAAA", "Medical records");
                     for (MedicalRecord medicalRecord : (List<MedicalRecord>) data) {
                         itemEvaluation.setTypeHeader(TYPE_QUIZ);
                         itemEvaluation.setMedicalRecord(medicalRecord);
@@ -490,35 +285,45 @@ public class EvaluationActivity<T> extends AppCompatActivity implements Evaluati
                         itemEvaluation.setTypeHeader(TYPE_MEASUREMENT);
                         itemEvaluation.setValueMeasurement(measurement.getSystolic() + "/" + measurement.getDiastolic());
                         itemEvaluation.setUnitMeasurement(measurement.getUnit());
+                        itemEvaluation.setDate(measurement.getTimestamp()); //TODO Mudar lógica no adapter
                         groupItemEvaluation.getItems().add(itemEvaluation);
                     }
                     break;
-                case TEMPERATURE:
+//                case TEMPERATURE:
+//                case WAIST_CIRCUMFERENCE:
+//                case HEIGHT:
+//                case FAT:
                 case WEIGHT:
-                case WAIST_CIRCUMFERENCE:
-                case HEIGHT:
-                case FAT:
                     for (Measurement measurement : (List<Measurement>) data) {
                         itemEvaluation.setTypeHeader(TYPE_MEASUREMENT);
                         itemEvaluation.setValueMeasurement(String.valueOf(measurement.getValue()));
                         itemEvaluation.setUnitMeasurement(measurement.getUnit());
+                        itemEvaluation.setDate(measurement.getTimestamp()); //TODO Mudar lógica no adapter
                         groupItemEvaluation.getItems().add(itemEvaluation);
                     }
                     break;
                 case HEARTRATE:
                     for (Measurement measurement : (List<Measurement>) data) {
                         itemEvaluation.setTypeHeader(TYPE_MEASUREMENT);
+                        itemEvaluation.setDataset(measurement.getDataset());
 //                        itemEvaluation.setValueMeasurement(measurement.getDataset().get(0).getValue() + " - "+measurement.getDataset().get(0).getTimestamp());
                         itemEvaluation.setUnitMeasurement(measurement.getUnit());
+                        itemEvaluation.setDate(measurement.getTimestamp()); //TODO Mudar lógica no adapter
                         groupItemEvaluation.getItems().add(itemEvaluation);
                     }
                     break;
             }
+            groupItemEvaluation.getItems().get(0).setChecked(true);
         }
+
         evaluationAdapter.notifyDataSetChanged();
     }
 
-    /////////////////////////////////
+    /**
+     * Show error.
+     *
+     * @param e
+     */
     private void errorHandler(Throwable e) {
         if (e instanceof HttpException) {
             HttpException httpEx = ((HttpException) e);
@@ -527,6 +332,9 @@ public class EvaluationActivity<T> extends AppCompatActivity implements Evaluati
         // message 500
     }
 
+    /**
+     * Download data evaluation from the server.
+     */
     private void downloadData() {
 
 //        if (typeEvaluation.equals("dentrist")) {
@@ -574,37 +382,92 @@ public class EvaluationActivity<T> extends AppCompatActivity implements Evaluati
                 .subscribe(sleepHabits ->
                         prepareData(sleepHabits, SLEEP_HABITS), this::errorHandler));
 
-        //TODO Mudar o dateStart e o dateEnd
+//        //TODO Mudar o dateStart e o dateEnd
+//        DisposableManager.add(haniotNetRepository
+//                .getAllMeasurementsByType(helper.getLastPatient().get_id()
+//                        , "heart_rate", "created_at", "created_at", "created_at", 1, 1000)
+//                .subscribe(measurements ->
+//                        prepareData(measurements, HEARTRATE), this::errorHandler));
+//
+//        DisposableManager.add(haniotNetRepository
+//                .getAllMeasurementsByType(helper.getLastPatient().get_id()
+//                        , "blood_pressure", "created_at", "created_at", "created_at", 1, 1000)
+//                .subscribe(measurements ->
+//                        prepareData(measurements, BLOOD_PRESSURE), this::errorHandler));
+//
+//        DisposableManager.add(haniotNetRepository
+//                .getAllMeasurementsByType(helper.getLastPatient().get_id()
+//                        , "weight", "created_at", "created_at", "created_at", 1, 1000)
+//                .subscribe(measurements ->
+//                        prepareData(measurements, WEIGHT), this::errorHandler));
+//
+//        DisposableManager.add(haniotNetRepository
+//                .getAllMeasurementsByType(helper.getLastPatient().get_id()
+//                        , "glucose", "created_at", "created_at", "created_at", 1, 1000)
+//                .subscribe(measurements ->
+//                        prepareData(measurements, GLUCOSE), this::errorHandler));
         DisposableManager.add(haniotNetRepository
-                .getAllMeasurementsByType(helper.getLastPatient().get_id()
-                        , "heart_rate", "created_at", "created_at", "created_at", 1, 1000)
-                .subscribe(measurements ->
-                        prepareData(measurements, HEARTRATE), this::errorHandler));
-
-        DisposableManager.add(haniotNetRepository
-                .getAllMeasurementsByType(helper.getLastPatient().get_id()
-                        , "blood_pressure", "created_at", "created_at", "created_at", 1, 1000)
-                .subscribe(measurements ->
-                        prepareData(measurements, BLOOD_PRESSURE), this::errorHandler));
-
-        DisposableManager.add(haniotNetRepository
-                .getAllMeasurementsByType(helper.getLastPatient().get_id()
-                        , "weight", "created_at", "created_at", "created_at", 1, 1000)
-                .subscribe(measurements ->
-                        prepareData(measurements, WEIGHT), this::errorHandler));
-
-        DisposableManager.add(haniotNetRepository
-                .getAllMeasurementsByType(helper.getLastPatient().get_id()
-                        , "glucose", "created_at", "created_at", "created_at", 1, 1000)
-                .subscribe(measurements ->
-                        prepareData(measurements, GLUCOSE), this::errorHandler));
+                .getAllMeasurements(helper.getLastPatient().get_id()
+                        , 1, 1000, "created_at")
+                .subscribe(this::prepareMeasurements, this::errorHandler));
     }
 
-    //////////////
+    private void prepareMeasurements(List<Measurement> measurements) {
+
+        List<Measurement> glucose = new ArrayList<>();
+        List<Measurement> bloodPressure = new ArrayList<>();
+        List<Measurement> temperature = new ArrayList<>();
+        List<Measurement> fat = new ArrayList<>();
+        List<Measurement> heartRate = new ArrayList<>();
+        List<Measurement> height = new ArrayList<>();
+        List<Measurement> waistCircumference = new ArrayList<>();
+        List<Measurement> weight = new ArrayList<>();
+
+        for (Measurement measurement : measurements) {
+            Log.i("AAA", measurement.getValue() + " - " + measurement.getType());
+            switch (measurement.getType()) {
+                case "blood_glucose":
+                    glucose.add(measurement);
+                    break;
+                case "blood_pressure":
+                    bloodPressure.add(measurement);
+                    break;
+                case "body_temperature":
+                    temperature.add(measurement);
+                    break;
+                case "fat":
+                    fat.add(measurement);
+                    break;
+                case "heart_rate":
+                    heartRate.add(measurement);
+                    break;
+                case "height":
+                    height.add(measurement);
+                    break;
+                case "waist_circumference":
+                    waistCircumference.add(measurement);
+                    break;
+                case "weight":
+                    weight.add(measurement);
+                    break;
+            }
+        }
+
+        prepareData(weight, WEIGHT);
+        prepareData(heartRate, HEARTRATE);
+        prepareData(bloodPressure, BLOOD_PRESSURE);
+        prepareData(glucose, GLUCOSE);
+        prepareData(heartRate, HEARTRATE);
+    }
+
+    /**
+     * Send evaluation for server.
+     *
+     * @param evaluation
+     */
     private void sendEvaluation(Evaluation evaluation) {
         finish();
     }
-
 
     @Override
     public void onAddItemClick(String name, int type) {
@@ -656,6 +519,5 @@ public class EvaluationActivity<T> extends AppCompatActivity implements Evaluati
     @Override
     public void onSelectClick(ItemEvaluation itemEvaluation) {
         itemEvaluation.setChecked(!itemEvaluation.isChecked());
-        evaluationAdapter.notifyDataSetChanged();
     }
 }

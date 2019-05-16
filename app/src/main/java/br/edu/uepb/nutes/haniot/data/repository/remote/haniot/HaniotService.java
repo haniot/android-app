@@ -88,6 +88,12 @@ public interface HaniotService {
                                                  @Query("page") int page,
                                                  @Query("limit") int limit);
 
+    @GET("users/{user_id}/measurements")
+    Single<List<Measurement>> getAllMeasurements(@Path("user_id") String userId,
+                                                 @Query("page") int page,
+                                                 @Query("limit") int limit,
+                                                 @Query("sort") String sort);
+
     @GET("users/{user_id}/measurements/{measurement_id}")
     Single<Measurement> getMeasurement(@Path("user_id") String userId,
                                        @Path("measurement_id") String measurementId);
