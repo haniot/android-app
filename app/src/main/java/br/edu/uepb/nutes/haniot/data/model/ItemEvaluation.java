@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 import java.util.List;
 
-public class ItemEvaluation implements Parcelable {
+public class ItemEvaluation implements Parcelable, Cloneable {
     public static final int TYPE_MEASUREMENT = 2;
     public static final int TYPE_QUIZ = 3;
     public static final int TYPE_EMPTY = 4;
@@ -24,6 +24,7 @@ public class ItemEvaluation implements Parcelable {
     private boolean checked;
     private int typeEvaluation;
 
+    private Measurement measurement;
     private FeedingHabitsRecord feedingHabitsRecord;
     private MedicalRecord medicalRecord;
     private PhysicalActivityHabit physicalActivityHabit;
@@ -53,6 +54,14 @@ public class ItemEvaluation implements Parcelable {
         this.valueMeasurement = valueMeasurement;
         this.unitMeasurement = unitMeasurement;
         this.time = time;
+        this.typeEvaluation = typeEvaluation;
+    }
+
+    public ItemEvaluation(int icon, int typeHeader, String title, Measurement measurement, int typeEvaluation) {
+        this.icon = icon;
+        this.typeHeader = typeHeader;
+        this.title = title;
+        this.measurement = measurement;
         this.typeEvaluation = typeEvaluation;
     }
 
@@ -241,6 +250,14 @@ public class ItemEvaluation implements Parcelable {
         this.dataset = dataset;
     }
 
+    public Measurement getMeasurement() {
+        return measurement;
+    }
+
+    public void setMeasurement(Measurement measurement) {
+        this.measurement = measurement;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -261,4 +278,15 @@ public class ItemEvaluation implements Parcelable {
         dest.writeInt(typeEvaluation);
     }
 
+    @Override
+    public Object clone() {
+        ItemEvaluation c = null; //Chama o clone de Object. Isso copia automaticamente todos os atributos.
+        try {
+            c = (ItemEvaluation) super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        //Como a lista de lojas é mutável, o ideal é copia-la também. Senão a alteração da lista num cliente afetará o outro.
+        return c;        //String é um objeto, mas é imutável. Podemos compartilha-lo.
+    }
 }

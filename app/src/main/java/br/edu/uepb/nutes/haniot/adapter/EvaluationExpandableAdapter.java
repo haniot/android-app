@@ -1,5 +1,6 @@
 package br.edu.uepb.nutes.haniot.adapter;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -18,12 +19,7 @@ import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup;
 import com.thoughtbot.expandablerecyclerview.viewholders.ChildViewHolder;
 import com.thoughtbot.expandablerecyclerview.viewholders.GroupViewHolder;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.data.model.ChronicDisease;
@@ -34,6 +30,7 @@ import br.edu.uepb.nutes.haniot.data.model.FoodType;
 import br.edu.uepb.nutes.haniot.data.model.FrequencyAnswersType;
 import br.edu.uepb.nutes.haniot.data.model.HeartRateItem;
 import br.edu.uepb.nutes.haniot.data.model.ItemEvaluation;
+import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.MedicalRecord;
 import br.edu.uepb.nutes.haniot.data.model.PhysicalActivityHabit;
 import br.edu.uepb.nutes.haniot.data.model.SchoolActivityFrequencyType;
@@ -64,6 +61,9 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
         this.mListener = mListener;
     }
 
+    /**
+     * Expand all groups.
+     */
     public void expandAll() {
         for (int i = 0; i < getItemCount(); i++) {
             if (!isGroupExpanded(i)) {
@@ -106,62 +106,10 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
         return new ViewHolder(itemView);
     }
 
-//    @Override
-//    public long getItemId(int position) {
-//        return position;
-//    }
-
     @Override
-    public void onBindChildViewHolder(ViewHolder holder, int flatPosition, ExpandableGroup group, int childIndex) {
+    public void onBindChildViewHolder(ViewHolder h, int flatPosition, ExpandableGroup group, int childIndex) {
         ItemEvaluation ig = (ItemEvaluation) group.getItems().get(childIndex);
-        ViewHolder h = (ViewHolder) holder;
-
-        h.itemQuizView.setVisibility(GONE);
-        h.box.setVisibility(View.VISIBLE);
-        h.textMeasurement.setVisibility(View.VISIBLE);
-        h.textMeasurementType.setVisibility(View.VISIBLE);
-        h.checkItem.setVisibility(View.VISIBLE);
-        h.QuizText.setVisibility(View.VISIBLE);
-        h.warning.setVisibility(View.INVISIBLE);
-        h.loading.setVisibility(View.GONE);
-        h.imageItem.setImageResource(ig.getIcon());
-        h.textDescription.setText(ig.getTitle());
-        h.textMax.setVisibility(GONE);
-        h.textMaxType.setVisibility(GONE);
-        h.textMin.setVisibility(GONE);
-        h.textMinType.setVisibility(GONE);
-        h.textDate.setTextSize(16);
-        h.textMinType.setTextSize(16);
-        h.textMaxType.setTextSize(16);
-        h.textMeasurementType.setTextSize(16);
-//
-//        Date date = fromISO8601UTC(ig.getDate());
-//        String pattern = "yyyy-MM-dd";
-//        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-//
-//        String dateString = simpleDateFormat.format(date);
-//
-//        String patternHour = "HH:mm";
-//        SimpleDateFormat simpleDateFormatHour = new SimpleDateFormat(patternHour);
-//
-//        String hourString = simpleDateFormatHour.format(date);
-//
-//        h.textDate.setText(dateString);
-//        h.texTime.setText(hourString);
-//        String time = DateUtils.formatDateTime(ig.getDate(), context.getString(R.string.time_format_simple));
-        // h.texTime.setText(ig.getDate());
-
-        h.checkItem.setChecked(ig.isChecked());
-        h.checkItem.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            // ig.setChecked(!ig.isChecked());
-            mListener.onSelectClick(ig);
-        });
-
-        h.mView.setOnClickListener(v -> {
-            //h.checkItem.setChecked(!h.checkItem.isChecked());
-            ig.setChecked(!ig.isChecked());
-            notifyDataSetChanged();
-        });
+        resetView(h, ig);
 
         if (ig.getTypeHeader() == ItemEvaluation.TYPE_LOADING) {
             createLoadingView(h, ig);
@@ -177,168 +125,248 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
         } else if (ig.getTypeHeader() == ItemEvaluation.TYPE_ERROR) {
             createErrorView(h, ig);
         }
+
         setAnimation(h.mView, childIndex);
     }
 
-    private Date fromISO8601UTC(String dateStr) {
-        TimeZone tz = TimeZone.getTimeZone("UTC");
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
-        df.setTimeZone(tz);
-
-        try {
-            return df.parse(dateStr);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        return null;
+    /**
+     * Restore view to default.
+     *
+     * @param h
+     * @param ig
+     */
+    private void resetView(ViewHolder h, ItemEvaluation ig) {
+        h.checkItem.setChecked(false);
+        h.texTime.setVisibility(View.VISIBLE);
+        h.timeIcon.setVisibility(View.VISIBLE);
+        h.itemQuizView.setVisibility(GONE);
+        h.box.setVisibility(View.VISIBLE);
+        h.textMeasurement.setVisibility(View.VISIBLE);
+        h.textMeasurementType.setVisibility(View.VISIBLE);
+        h.checkItem.setVisibility(View.VISIBLE);
+        h.messageText.setVisibility(View.VISIBLE);
+        h.warning.setVisibility(View.INVISIBLE);
+        h.loading.setVisibility(View.GONE);
+        h.imageItem.setImageResource(ig.getIcon());
+        h.textDescription.setText(ig.getTitle());
+        h.textMax.setVisibility(GONE);
+        h.textMaxType.setVisibility(GONE);
+        h.textMin.setVisibility(GONE);
+        h.textMinType.setVisibility(GONE);
+        h.textDate.setTextSize(16);
+        h.textMinType.setTextSize(16);
+        h.textMaxType.setTextSize(16);
+        h.textMeasurementType.setTextSize(16);
     }
 
+    /**
+     * View displayed when there is no data.
+     *
+     * @param h
+     * @param ig
+     */
     private void createErrorView(ViewHolder h, ItemEvaluation ig) {
+        h.warning.setVisibility(View.VISIBLE);
+        h.messageText.setVisibility(View.VISIBLE);
+        h.messageText.setText(context.getResources().getString(R.string.evaluation_error_message));
+        h.box.setVisibility(GONE);
+        h.checkItem.setVisibility(View.INVISIBLE);
         h.mView.setOnClickListener(v -> {
             if (mListener != null) {
                 mListener.onRefreshClick(ig.getTitle(), ig.getTypeEvaluation());
             }
         });
-        h.QuizText.setVisibility(View.VISIBLE);
-        h.QuizText.setText(context.getResources().getString(R.string.evaluation_error_message));
-        h.box.setVisibility(GONE);
-        h.checkItem.setChecked(ig.isChecked());
-        h.checkItem.setVisibility(View.INVISIBLE);
-        h.checkItem.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            ig.setChecked(!ig.isChecked());
-            notifyDataSetChanged();
-        });
     }
 
     private void createEmptyView(ViewHolder h, ItemEvaluation ig) {
-
         h.mView.setOnClickListener(v -> {
             if (mListener != null) {
                 mListener.onAddItemClick(ig.getTitle(), ig.getTypeEvaluation());
             }
         });
-        h.QuizText.setVisibility(View.VISIBLE);
-        h.QuizText.setText(context.getResources().getString(R.string.evaluation_empty_message));
+        h.messageText.setVisibility(View.VISIBLE);
+        h.messageText.setText(context.getResources().getString(R.string.evaluation_empty_message));
         h.box.setVisibility(GONE);
-        h.checkItem.setChecked(ig.isChecked());
         h.checkItem.setVisibility(View.INVISIBLE);
     }
 
+    /**
+     * View responsible for displaying measurement data.
+     *
+     * @param h
+     * @param ig
+     */
+    @SuppressLint("DefaultLocale")
     private void createMeasurementView(ViewHolder h, ItemEvaluation ig) {
-
-        h.mView.setOnClickListener(v -> {
-            if (mListener != null) {
-                mListener.onSelectClick(ig);
-            }
-        });
+        h.checkItem.setChecked(ig.isChecked());
         h.textMeasurement.setVisibility(View.VISIBLE);
         h.textMeasurementType.setVisibility(View.VISIBLE);
-        if (ig.getTypeEvaluation() == TypeEvaluation.HEARTRATE) {
+        h.mView.setOnClickListener(v -> {
+            ig.setChecked(!ig.isChecked());
+            h.checkItem.setChecked(!h.checkItem.isChecked());
+        });
+
+        int type = ig.getTypeEvaluation();
+        Measurement measurement = ig.getMeasurement();
+        h.textMeasurementType.setText(measurement.getUnit());
+
+        if (type == TypeEvaluation.HEARTRATE) {
             h.textMax.setVisibility(View.VISIBLE);
             h.textMaxType.setVisibility(View.VISIBLE);
             h.textMin.setVisibility(View.VISIBLE);
             h.textMinType.setVisibility(View.VISIBLE);
+            h.textMinType.setTextSize(12);
+            h.textMaxType.setTextSize(12);
+            h.textDate.setTextSize(12);
+            h.texTime.setTextSize(12);
+            h.textMeasurementType.setTextSize(12);
+
             double average = 0.0;
-            HeartRateItem min = ig.getDataset().get(0);
-            HeartRateItem max = ig.getDataset().get(0);
-            for (HeartRateItem heartRateItem : ig.getDataset()) {
+            HeartRateItem min = measurement.getDataset().get(0);
+            HeartRateItem max = measurement.getDataset().get(0);
+
+            for (HeartRateItem heartRateItem : measurement.getDataset()) {
                 if (heartRateItem.getValue() <= min.getValue()) min = heartRateItem;
                 if (heartRateItem.getValue() >= max.getValue()) max = heartRateItem;
                 average += heartRateItem.getValue();
             }
-
-            average = average / ig.getDataset().size();
+            average = average / measurement.getDataset().size();
             h.textMeasurement.setText(String.valueOf((int) average));
-            h.textMeasurementType.setText(String.format("%s (Média)", ig.getUnitMeasurement()));
-            h.textMeasurementType.setTextSize(12);
+            h.textMeasurementType.setText(String.format("%s (Média)", measurement.getUnit()));
             h.textMin.setText(String.valueOf(min.getValue()));
-            h.textMinType.setText(String.format("%s (Min)", ig.getUnitMeasurement()));
-            h.textMinType.setTextSize(12);
+            h.textMinType.setText(String.format("%s (Min)", measurement.getUnit()));
             h.textMax.setText(String.valueOf(max.getValue()));
-            h.textMaxType.setText(String.format("%s (Max)", ig.getUnitMeasurement()));
-            h.textMaxType.setTextSize(12);
-//            h.textDate.setText(String.format("%s - %s", min.getTimestamp(), max.getTimestamp()));
-            h.textDate.setText("26 de abril - 28 de abril");
-            h.textDate.setTextSize(12);
-            h.texTime.setVisibility(GONE);
-            h.timeIcon.setVisibility(GONE);
-
+            h.textMaxType.setText(String.format("%s (Max)", measurement.getUnit()));
+            h.texTime.setText(String.format("%s - %s",
+                    DateUtils.convertDateTimeUTCToLocale(min.getTimestamp(),
+                            context.getString(R.string.time_format_simple)),
+                    DateUtils.convertDateTimeUTCToLocale(max.getTimestamp(),
+                            context.getString(R.string.time_format_simple))));
+            h.textDate.setText(DateUtils
+                    .convertDateTimeUTCToLocale(min.getTimestamp(),
+                            context.getString(R.string.date_format)));
         } else {
-            h.textMeasurement.setText(ig.getValueMeasurement());
-            h.textMeasurementType.setText(ig.getUnitMeasurement());
+            h.textDate.setText(DateUtils
+                    .convertDateTimeUTCToLocale(measurement.getTimestamp(),
+                            context.getString(R.string.date_format)));
+            h.texTime.setText(DateUtils
+                    .convertDateTimeUTCToLocale(measurement.getTimestamp(),
+                            context.getString(R.string.time_format_simple)));
+            if (type == TypeEvaluation.TEMPERATURE
+                    || type == TypeEvaluation.WAIST_CIRCUMFERENCE
+                    || type == TypeEvaluation.WEIGHT
+                    || type == TypeEvaluation.FAT
+                    || type == TypeEvaluation.HEIGHT) {
+                h.textMeasurement.setText(String.valueOf(measurement.getValue()));
+
+            } else if (type == TypeEvaluation.BLOOD_PRESSURE) {
+                h.textMeasurement.setText(String
+                        .format("%d/%d", measurement.getSystolic(), measurement.getDiastolic()));
+            }
         }
-        h.QuizText.setVisibility(View.GONE);
+        h.messageText.setVisibility(View.GONE);
     }
 
+    /**
+     * View responsible for displaying questionnaire data.
+     *
+     * @param h
+     * @param ig
+     */
     private void createQuizView(ViewHolder h, ItemEvaluation ig) {
         h.itemQuizView.clear();
         h.textMeasurement.setVisibility(View.GONE);
         h.textMeasurementType.setVisibility(View.GONE);
-        h.QuizText.setVisibility(View.VISIBLE);
+        h.messageText.setVisibility(View.VISIBLE);
         h.box.setVisibility(GONE);
-
-        //TODO TESTE
-
-        String a = "";
-        for (int i = 0; i <= 6; i++) {
-            a += "Refrigerante: Todos os dias\n";
-        }
-
+        h.checkItem.setChecked(ig.isChecked());
+        h.mView.setOnClickListener(v -> {
+            ig.setChecked(!ig.isChecked());
+            h.checkItem.setChecked(!h.checkItem.isChecked());
+        });
         StringBuilder stringBuilder = new StringBuilder();
+        String date = "";
+        String time = "";
         switch (ig.getTypeEvaluation()) {
             case SLEEP_HABITS:
                 SleepHabit sleepHabit = ig.getSleepHabit();
-                stringBuilder.append("\nDorme às ").append(sleepHabit.getWeekDaySleep()).append(" horas");
-                stringBuilder.append("\nAcorda às ").append(sleepHabit.getWeekDayWakeUp()).append(" horas");
+                date = DateUtils.convertDateTimeUTCToLocale(sleepHabit.getCreatedAt(),
+                        context.getString(R.string.date_format));
+                time = DateUtils.convertDateTimeUTCToLocale(sleepHabit.getCreatedAt(),
+                        context.getString(R.string.time_format_simple));
+                stringBuilder.append("\nDorme às ").append(sleepHabit.getWeekDaySleep())
+                        .append(" horas");
+                stringBuilder.append("\nAcorda às ").append(sleepHabit.getWeekDayWakeUp())
+                        .append(" horas");
                 break;
             case MEDICAL_RECORDS:
                 MedicalRecord medicalRecord = ig.getMedicalRecord();
+                date = DateUtils.convertDateTimeUTCToLocale(medicalRecord.getCreatedAt(),
+                        context.getString(R.string.date_format));
+                time = DateUtils.convertDateTimeUTCToLocale(medicalRecord.getCreatedAt(),
+                        context.getString(R.string.time_format_simple));
                 for (ChronicDisease chronicDisease : medicalRecord.getChronicDiseases())
                     stringBuilder
-                            .append(ChronicDiseaseType.ChronicDisease.getString_PTBR(chronicDisease.getType()))
+                            .append(ChronicDiseaseType.ChronicDisease
+                                    .getString_PTBR(chronicDisease.getType()))
                             .append(": ")
-                            .append(ChronicDiseaseType.DisieaseHistory.getStringPTBR(chronicDisease.getDiseaseHistory()))
+                            .append(ChronicDiseaseType.DisieaseHistory
+                                    .getStringPTBR(chronicDisease.getDiseaseHistory()))
                             .append("\n");
                 break;
             case FEEDING_HABITS:
                 FeedingHabitsRecord feedingHabitsRecord = ig.getFeedingHabitsRecord();
-                stringBuilder.append("\nCopos de água por dia: ").append(FoodType.getStringPTBR(feedingHabitsRecord.getDailyWaterGlasses()));
-                stringBuilder.append("\nCafé da manhã: ").append(FrequencyAnswersType.Frequency.getStringPTBR(feedingHabitsRecord.getBreakfastDailyFrequency()));
+                date = DateUtils.convertDateTimeUTCToLocale(feedingHabitsRecord.getCreatedAt(),
+                        context.getString(R.string.date_format));
+                time = DateUtils.convertDateTimeUTCToLocale(feedingHabitsRecord.getCreatedAt(),
+                        context.getString(R.string.time_format_simple));
+                stringBuilder.append("\nCopos de água por dia: ").append(FoodType
+                        .getStringPTBR(feedingHabitsRecord.getDailyWaterGlasses()));
+                stringBuilder.append("\nCafé da manhã: ").append(FrequencyAnswersType.Frequency
+                        .getStringPTBR(feedingHabitsRecord.getBreakfastDailyFrequency()));
                 for (WeeklyFoodRecord weeklyFoodRecord : feedingHabitsRecord.getWeeklyFeedingHabits())
                     stringBuilder
                             .append("\n")
                             .append(FoodType.getStringPTBR(weeklyFoodRecord.getFood()))
                             .append(": ")
-                            .append(FeendingHabitsRecordType.SevenDaysFeedingFrequency.getStringPTBR(weeklyFoodRecord.getSevenDaysFreq()));
+                            .append(FeendingHabitsRecordType.SevenDaysFeedingFrequency
+                                    .getStringPTBR(weeklyFoodRecord.getSevenDaysFreq()));
                 break;
             case PHYSICAL_ACTIVITY:
                 PhysicalActivityHabit physicalActivityHabit = ig.getPhysicalActivityHabit();
+                date = DateUtils.convertDateTimeUTCToLocale(physicalActivityHabit.getCreatedAt(),
+                        context.getString(R.string.date_format));
+                time = DateUtils.convertDateTimeUTCToLocale(physicalActivityHabit.getCreatedAt(),
+                        context.getString(R.string.time_format_simple));
                 stringBuilder.append("\nEsportes praticados durante a semana: \n");
                 for (String sport : physicalActivityHabit.getWeeklyActivities()) {
                     stringBuilder.append(sport).append(",\n");
                 }
                 stringBuilder.append("\nFrequência de atividades físicas na escola: \n")
-                        .append(SchoolActivityFrequencyType.getStringPTBR(physicalActivityHabit.getSchoolActivityFreq()));
+                        .append(SchoolActivityFrequencyType
+                                .getStringPTBR(physicalActivityHabit.getSchoolActivityFreq()));
                 break;
         }
-
-        h.QuizText.setText(stringBuilder.append("\n\nRespondido em 23/02/2019 às 13:00").toString());
-        //
+        h.messageText.setText(stringBuilder.append(String.format("\n\nRespondido em %s às %s", date, time)));
     }
 
+    /**
+     * View displayed while downloading the data.
+     *
+     * @param h
+     * @param ig
+     */
     private void createLoadingView(ViewHolder h, ItemEvaluation ig) {
         h.loading.setVisibility(View.VISIBLE);
         h.box.setVisibility(GONE);
-        h.QuizText.setVisibility(GONE);
+        h.messageText.setVisibility(GONE);
         h.checkItem.setVisibility(GONE);
     }
 
     @Override
     public void onBindGroupViewHolder(HeaderViewHolder holder, int flatPosition, ExpandableGroup
             group) {
-        HeaderViewHolder holder2 = (HeaderViewHolder) holder;
-        holder2.categoryTitle.setText(group.getTitle());
+        holder.categoryTitle.setText(group.getTitle());
     }
 
     public class ViewHolder extends ChildViewHolder {
@@ -363,7 +391,7 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
         @BindView(R.id.text_time_measurement)
         TextView texTime;
         @BindView(R.id.quiz_text)
-        TextView QuizText;
+        TextView messageText;
         @BindView(R.id.text_date_measurement)
         TextView textDate;
         @BindView(R.id.check_item)

@@ -720,5 +720,8 @@
     <!-- EVALUATION -->
     <string name="evaluation_message">Escolha os dados referentes a %s para a Avaliação \n%s:</string>
     <string name="evaluation_empty_message">Sem resgistros! É necessário pelo menos uma medição\nClique aqui para inserir</string>
-    <string name="evaluation_error_message">Opss! Problema de sincronização\n Clique para tentar novamente!</string>
+    <string name="evaluation_error_message">Opss! Não foi possível fazer a sincronização dos seus dados...\n Atualize a página para tentar novamente!</string>
+    <string name="fat">Gordura Corporal</string>
+    <string name="height">Altura</string>
+    <string name="waits_circumference">Circunferência da Cintura</string>
 </resources>

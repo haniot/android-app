@@ -22,7 +22,6 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
-import com.github.clans.fab.FloatingActionMenu;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.SettingsActivity;
@@ -51,7 +50,10 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
     FrameLayout frameMeasurements;
 
     @BindView(R.id.evaluation_odonto)
-    FloatingActionButton floatingActionMenu;
+    FloatingActionButton dentristEvaluation;
+
+    @BindView(R.id.evaluation_nutrition)
+    FloatingActionButton nutritioEvaluation;
 
     private MeasurementsGridFragment measurementsGridFragment;
     private DashboardChartsFragment dashboardChartsFragment;
@@ -74,9 +76,14 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
         IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
         registerReceiver(mReceiver, filter);
 
-        floatingActionMenu.setOnClickListener(v -> {
+        dentristEvaluation.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, EvaluationActivity.class);
-            intent.putExtra("type", "odonto");
+            intent.putExtra("type", "dentrist");
+            startActivity(intent);
+        });
+        nutritioEvaluation.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, EvaluationActivity.class);
+            intent.putExtra("type", "nutrition");
             startActivity(intent);
         });
     }

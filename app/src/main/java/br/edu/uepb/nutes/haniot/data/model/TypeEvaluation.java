@@ -18,5 +18,6 @@ public class TypeEvaluation {
     public final static int PHYSICAL_ACTIVITY = 13;
     public final static int FAMILY_COHESION = 14;
     public final static int FEEDING_HABITS = 15;
+    public final static int ALL_MEASUREMENT = 16;
 
 }
