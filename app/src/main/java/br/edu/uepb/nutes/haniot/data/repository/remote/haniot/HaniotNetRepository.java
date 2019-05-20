@@ -14,6 +14,8 @@ import br.edu.uepb.nutes.haniot.data.model.FamilyCohesionRecord;
 import br.edu.uepb.nutes.haniot.data.model.FeedingHabitsRecord;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.MedicalRecord;
+import br.edu.uepb.nutes.haniot.data.model.NutritionalEvaluation;
+import br.edu.uepb.nutes.haniot.data.model.NutritionalEvaluationResult;
 import br.edu.uepb.nutes.haniot.data.model.OralHealthRecord;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.PhysicalActivityHabit;
@@ -408,6 +410,17 @@ public class HaniotNetRepository extends BaseNetRepository {
 
     public Single<List<OralHealthRecord>> getAllOralHealth(String patientId, int page, int limit, String sort) {
         return haniotService.getAllOralHealth(patientId, page, limit, sort)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    // patients.nutritionalevaluation
+    public Single<NutritionalEvaluationResult> saveNutritionalEvaluation(
+            NutritionalEvaluation nutritionalEvaluation) {
+        return haniotService
+                .saveNutritionalEvaluation(
+                        nutritionalEvaluation.getPatient().get_id(),
+                        nutritionalEvaluation)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

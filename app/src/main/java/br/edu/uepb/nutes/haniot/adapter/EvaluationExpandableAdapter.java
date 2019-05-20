@@ -3,12 +3,14 @@ package br.edu.uepb.nutes.haniot.adapter;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -114,7 +116,7 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
         if (ig.getTypeHeader() == ItemEvaluation.TYPE_LOADING) {
             createLoadingView(h, ig);
         } else if (ig.getTypeHeader() == ItemEvaluation.TYPE_QUIZ) {
-            createQuizView(h, ig);
+            createQuizView(h, ig, group);
         } else if (ig.getTypeHeader() == ItemEvaluation.TYPE_MEASUREMENT) {
             createMeasurementView(h, ig);
         } else if (ig.getTypeHeader() == ItemEvaluation.TYPE_EMPTY) {
@@ -157,6 +159,7 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
         h.textMinType.setTextSize(16);
         h.textMaxType.setTextSize(16);
         h.textMeasurementType.setTextSize(16);
+    //    ((CardView) h.mView).setCardBackgroundColor(context.getResources().getColor(R.color.colorWhite));
     }
 
     /**
@@ -179,6 +182,11 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
     }
 
     private void createEmptyView(ViewHolder h, ItemEvaluation ig) {
+      //  ((CardView) h.mView).setCardBackgroundColor(context.getResources().getColor(R.color.colorPrimaryDark));
+        h.messageText.setTextColor(context.getResources().getColor(R.color.colorWhite));
+        h.textDescription.setTextColor(context.getResources().getColor(R.color.colorWhite));
+        h.imageItem.setColorFilter(context.getResources().getColor(R.color.colorWhite));
+        h.warning.setVisibility(GONE);
         h.mView.setOnClickListener(v -> {
             if (mListener != null) {
                 mListener.onAddItemClick(ig.getTitle(), ig.getTypeEvaluation());
@@ -188,6 +196,7 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
         h.messageText.setText(context.getResources().getString(R.string.evaluation_empty_message));
         h.box.setVisibility(GONE);
         h.checkItem.setVisibility(View.INVISIBLE);
+
     }
 
     /**
@@ -199,11 +208,13 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
     @SuppressLint("DefaultLocale")
     private void createMeasurementView(ViewHolder h, ItemEvaluation ig) {
         h.checkItem.setChecked(ig.isChecked());
+        h.checkItem.setOnCheckedChangeListener((buttonView, isChecked) -> ig.setChecked(!ig.isChecked()));
         h.textMeasurement.setVisibility(View.VISIBLE);
         h.textMeasurementType.setVisibility(View.VISIBLE);
         h.mView.setOnClickListener(v -> {
             ig.setChecked(!ig.isChecked());
             h.checkItem.setChecked(!h.checkItem.isChecked());
+            mListener.onSelectClick(ig, ig.isChecked());
         });
 
         int type = ig.getTypeEvaluation();
@@ -272,8 +283,9 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
      *
      * @param h
      * @param ig
+     * @param group
      */
-    private void createQuizView(ViewHolder h, ItemEvaluation ig) {
+    private void createQuizView(ViewHolder h, ItemEvaluation ig, ExpandableGroup group) {
         h.itemQuizView.clear();
         h.textMeasurement.setVisibility(View.GONE);
         h.textMeasurementType.setVisibility(View.GONE);
@@ -281,8 +293,12 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
         h.box.setVisibility(GONE);
         h.checkItem.setChecked(ig.isChecked());
         h.mView.setOnClickListener(v -> {
+            for (ItemEvaluation itemEvaluation : (List<ItemEvaluation>) group.getItems()) {
+                itemEvaluation.setChecked(false);
+            }
             ig.setChecked(!ig.isChecked());
             h.checkItem.setChecked(!h.checkItem.isChecked());
+            mListener.onSelectClick(ig, ig.isChecked());
         });
         StringBuilder stringBuilder = new StringBuilder();
         String date = "";
@@ -460,7 +476,7 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
 
         void onRefreshClick(String name, int type);
 
-        void onSelectClick(ItemEvaluation itemEvaluation);
+        void onSelectClick(ItemEvaluation itemEvaluation, boolean selected);
 
     }
 }

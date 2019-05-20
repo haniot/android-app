@@ -7,6 +7,8 @@ import br.edu.uepb.nutes.haniot.data.model.FamilyCohesionRecord;
 import br.edu.uepb.nutes.haniot.data.model.FeedingHabitsRecord;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.MedicalRecord;
+import br.edu.uepb.nutes.haniot.data.model.NutritionalEvaluation;
+import br.edu.uepb.nutes.haniot.data.model.NutritionalEvaluationResult;
 import br.edu.uepb.nutes.haniot.data.model.OralHealthRecord;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.PhysicalActivityHabit;
@@ -270,5 +272,9 @@ public interface HaniotService {
                                                     @Query("limit") int limit,
                                                     @Query("sort") String sort);
 
+    // users.measurements
+    @POST("patients/{patient_id}/nutritional/evaluations")
+    Single<NutritionalEvaluationResult> saveNutritionalEvaluation(@Path("patient_id") String patientId,
+                                                                  @Body NutritionalEvaluation nutritionalEvaluation);
 
 }

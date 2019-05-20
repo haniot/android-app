@@ -55,6 +55,12 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
     @BindView(R.id.evaluation_nutrition)
     FloatingActionButton nutritioEvaluation;
 
+    @BindView(R.id.quiz_odonto)
+    FloatingActionButton quizOdonto;
+
+    @BindView(R.id.quiz_nutrition)
+    FloatingActionButton quizNutrition;
+
     private MeasurementsGridFragment measurementsGridFragment;
     private DashboardChartsFragment dashboardChartsFragment;
     private AppPreferencesHelper appPreferences;
@@ -76,16 +82,7 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
         IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
         registerReceiver(mReceiver, filter);
 
-        dentristEvaluation.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, EvaluationActivity.class);
-            intent.putExtra("type", "dentrist");
-            startActivity(intent);
-        });
-        nutritioEvaluation.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, EvaluationActivity.class);
-            intent.putExtra("type", "nutrition");
-            startActivity(intent);
-        });
+        setClickListener();
     }
 
     private void loadDashboard() {
@@ -120,6 +117,34 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(mReceiver);
+    }
+
+    /**
+     * Init click listener of patient action buttons.
+     */
+    private void setClickListener() {
+        dentristEvaluation.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, EvaluationActivity.class);
+            intent.putExtra("type", "dentrist");
+            startActivity(intent);
+            finish();
+        });
+        nutritioEvaluation.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, EvaluationActivity.class);
+            intent.putExtra("type", "nutrition");
+            startActivity(intent);
+            finish();
+        });
+
+        quizNutrition.setOnClickListener(v -> {
+            startActivity(new Intent(this, QuizNutritionActivity.class));
+            finish();
+        });
+
+        quizOdonto.setOnClickListener(v -> {
+            startActivity(new Intent(this, QuizOdontologyActivity.class));
+            finish();
+        });
     }
 
     /**
