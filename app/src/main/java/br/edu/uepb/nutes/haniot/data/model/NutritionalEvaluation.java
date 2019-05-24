@@ -1,5 +1,7 @@
 package br.edu.uepb.nutes.haniot.data.model;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -16,30 +18,39 @@ public class NutritionalEvaluation {
     private long id;
 
     @SerializedName("id")
+    @Expose()
     private String _id;
 
     @SerializedName("patient")
+    @Expose()
     private Patient patient;
 
     @SerializedName("health_professional_id")
+    @Expose()
     private String healthProfessionalId;
 
     @SerializedName("pilotstudy_id")
+    @Expose()
     private String pilotStudy;
 
     @SerializedName("measurements")
+    @Expose()
     private List<Measurement> measurements;
 
     @SerializedName("feeding_habits_record")
+    @Expose()
     private FeedingHabitsRecord feedingHabits;
 
     @SerializedName("sleep_habits")
+    @Expose()
     private SleepHabit sleepHabits;
 
     @SerializedName("physical_activity_habits")
+    @Expose()
     private PhysicalActivityHabit physicalActivityHabits;
 
     @SerializedName("medical_record")
+    @Expose()
     private MedicalRecord medicalRecord;
 
     public NutritionalEvaluation() {
@@ -137,6 +148,16 @@ public class NutritionalEvaluation {
         measurements.remove(measurement);
     }
 
+    /**
+     * Convert object to json format.
+     *
+     * @return String
+     */
+    public String toJson() {
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        return gson.toJson(this);
+    }
+
     @Override
     public String toString() {
         return "NutritionalEvaluation{" +
@@ -160,4 +181,6 @@ public class NutritionalEvaluation {
         NutritionalEvaluation that = (NutritionalEvaluation) o;
         return Objects.equals(id, that.id);
     }
+
+
 }

@@ -89,6 +89,50 @@
                 android:src="@drawable/z_breakfast" />
 
             <ImageView
+                android:id="@+id/post_meal"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginStart="26dp"
+                android:layout_marginBottom="0dp"
+                android:layout_toEndOf="@+id/pre_meal"
+                android:background="@mipmap/ic_circle"
+                android:cropToPadding="false"
+                android:padding="5dp"
+                android:scaleX="0.9"
+                android:scaleY="0.9"
+                android:src="@drawable/z_postpandrial" />
+
+            <ImageView
+                android:id="@+id/check_pre_meal"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignTop="@+id/fasting"
+                android:layout_marginStart="-12dp"
+                android:layout_marginTop="39dp"
+                android:layout_marginEnd="0dp"
+                android:layout_toEndOf="@+id/pre_meal"
+                android:background="@drawable/circle_white"
+                android:cropToPadding="false"
+                android:padding="5dp"
+                android:src="@drawable/z_check"
+                android:visibility="invisible" />
+
+            <TextView
+                android:id="@+id/title_post_meal"
+                android:layout_width="95dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/post_meal"
+                android:layout_alignStart="@+id/post_meal"
+                android:layout_alignEnd="@+id/post_meal"
+                android:layout_marginStart="-6dp"
+                android:layout_marginTop="13dp"
+                android:layout_marginEnd="-9dp"
+                android:text="Pós-refeição"
+                android:textAlignment="center"
+                android:textColor="@color/colorSubmenu"
+                android:textSize="14sp" />
+
+            <ImageView
                 android:id="@+id/check_fasting"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
@@ -133,14 +177,14 @@
                 android:visibility="invisible" />
 
             <ImageView
-                android:id="@+id/check_pre_meal"
+                android:id="@+id/check_post_meal"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_alignTop="@+id/fasting"
-                android:layout_marginStart="-12dp"
-                android:layout_marginTop="39dp"
+                android:layout_marginStart="-4dp"
+                android:layout_marginTop="38dp"
                 android:layout_marginEnd="0dp"
-                android:layout_toEndOf="@+id/pre_meal"
+                android:layout_toEndOf="@+id/post_meal"
                 android:background="@drawable/circle_white"
                 android:cropToPadding="false"
                 android:padding="5dp"

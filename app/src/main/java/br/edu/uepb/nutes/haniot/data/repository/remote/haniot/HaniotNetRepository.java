@@ -231,7 +231,7 @@ public class HaniotNetRepository extends BaseNetRepository {
 
     // pilotstudies.patients
     public Single<Patient> savePatient(Patient patient) {
-        return haniotService.addPatient(patient.getPilotId(), patient)
+        return haniotService.addPatient(patient)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

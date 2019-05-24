@@ -124,13 +124,13 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
      */
     private void setClickListener() {
         dentristEvaluation.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, EvaluationActivity.class);
+            Intent intent = new Intent(MainActivity.this, NutritionalEvaluationActivity.class);
             intent.putExtra("type", "dentrist");
             startActivity(intent);
             finish();
         });
         nutritioEvaluation.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, EvaluationActivity.class);
+            Intent intent = new Intent(MainActivity.this, NutritionalEvaluationActivity.class);
             intent.putExtra("type", "nutrition");
             startActivity(intent);
             finish();
@@ -311,11 +311,11 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
         switch (v.getId()) {
             case R.id.evaluation_odonto:
                 appPreferences.saveString("typeEvaluation", "dentrist");
-                startActivity(new Intent(this, EvaluationActivity.class));
+                startActivity(new Intent(this, NutritionalEvaluationActivity.class));
                 break;
             case R.id.evaluation_nutrition:
                 appPreferences.saveString("typeEvaluation", "nutrition");
-                startActivity(new Intent(this, EvaluationActivity.class));
+                startActivity(new Intent(this, NutritionalEvaluationActivity.class));
                 break;
             case R.id.quiz_nutrition:
                 startActivity(new Intent(this, QuizNutritionActivity.class));

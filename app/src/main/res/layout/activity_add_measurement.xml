@@ -106,7 +106,7 @@
                     android:layout_marginTop="30dp">
 
                     <EditText
-                        android:id="@+id/text_measurement"
+                        android:id="@+id/text_systolic"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/text_value"
@@ -124,7 +124,7 @@
                         android:id="@+id/text_unit"
                         android:layout_width="56dp"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/text_measurement"
+                        android:layout_below="@+id/text_systolic"
                         android:layout_alignParentStart="true"
                         android:layout_marginStart="270dp"
                         android:layout_marginTop="-11dp"

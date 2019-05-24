@@ -127,7 +127,11 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
         } else if (ig.getTypeHeader() == ItemEvaluation.TYPE_ERROR) {
             createErrorView(h, ig);
         }
-
+//
+//        h.checkItem.setOnCheckedChangeListener((buttonView, isChecked) -> {
+//            ig.setChecked(!ig.isChecked());
+//            mListener.onSelectClick(ig, ig.isChecked());
+//        });
         setAnimation(h.mView, childIndex);
     }
 
@@ -138,7 +142,7 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
      * @param ig
      */
     private void resetView(ViewHolder h, ItemEvaluation ig) {
-        h.checkItem.setChecked(false);
+        h.checkItem.setChecked(ig.isChecked());
         h.texTime.setVisibility(View.VISIBLE);
         h.timeIcon.setVisibility(View.VISIBLE);
         h.itemQuizView.setVisibility(GONE);
@@ -159,7 +163,6 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
         h.textMinType.setTextSize(16);
         h.textMaxType.setTextSize(16);
         h.textMeasurementType.setTextSize(16);
-    //    ((CardView) h.mView).setCardBackgroundColor(context.getResources().getColor(R.color.colorWhite));
     }
 
     /**
@@ -182,11 +185,6 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
     }
 
     private void createEmptyView(ViewHolder h, ItemEvaluation ig) {
-      //  ((CardView) h.mView).setCardBackgroundColor(context.getResources().getColor(R.color.colorPrimaryDark));
-        h.messageText.setTextColor(context.getResources().getColor(R.color.colorWhite));
-        h.textDescription.setTextColor(context.getResources().getColor(R.color.colorWhite));
-        h.imageItem.setColorFilter(context.getResources().getColor(R.color.colorWhite));
-        h.warning.setVisibility(GONE);
         h.mView.setOnClickListener(v -> {
             if (mListener != null) {
                 mListener.onAddItemClick(ig.getTitle(), ig.getTypeEvaluation());
@@ -208,14 +206,15 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
     @SuppressLint("DefaultLocale")
     private void createMeasurementView(ViewHolder h, ItemEvaluation ig) {
         h.checkItem.setChecked(ig.isChecked());
-        h.checkItem.setOnCheckedChangeListener((buttonView, isChecked) -> ig.setChecked(!ig.isChecked()));
-        h.textMeasurement.setVisibility(View.VISIBLE);
-        h.textMeasurementType.setVisibility(View.VISIBLE);
+        //h.checkItem.setOnCheckedChangeListener((buttonView, isChecked) -> ig.setChecked(!ig.isChecked()));
         h.mView.setOnClickListener(v -> {
             ig.setChecked(!ig.isChecked());
             h.checkItem.setChecked(!h.checkItem.isChecked());
             mListener.onSelectClick(ig, ig.isChecked());
         });
+
+        h.textMeasurement.setVisibility(View.VISIBLE);
+        h.textMeasurementType.setVisibility(View.VISIBLE);
 
         int type = ig.getTypeEvaluation();
         Measurement measurement = ig.getMeasurement();
@@ -292,17 +291,20 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
         h.messageText.setVisibility(View.VISIBLE);
         h.box.setVisibility(GONE);
         h.checkItem.setChecked(ig.isChecked());
+
         h.mView.setOnClickListener(v -> {
             for (ItemEvaluation itemEvaluation : (List<ItemEvaluation>) group.getItems()) {
                 itemEvaluation.setChecked(false);
             }
+
             ig.setChecked(!ig.isChecked());
-            h.checkItem.setChecked(!h.checkItem.isChecked());
+            h.checkItem.setChecked(ig.isChecked());
             mListener.onSelectClick(ig, ig.isChecked());
         });
         StringBuilder stringBuilder = new StringBuilder();
         String date = "";
         String time = "";
+
         switch (ig.getTypeEvaluation()) {
             case SLEEP_HABITS:
                 SleepHabit sleepHabit = ig.getSleepHabit();
@@ -336,7 +338,7 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
                         context.getString(R.string.date_format));
                 time = DateUtils.convertDateTimeUTCToLocale(feedingHabitsRecord.getCreatedAt(),
                         context.getString(R.string.time_format_simple));
-                stringBuilder.append("\nCopos de água por dia: ").append(FoodType
+                stringBuilder.append("\nCopos de água por dia: ").append(FrequencyAnswersType.Frequency
                         .getStringPTBR(feedingHabitsRecord.getDailyWaterGlasses()));
                 stringBuilder.append("\nCafé da manhã: ").append(FrequencyAnswersType.Frequency
                         .getStringPTBR(feedingHabitsRecord.getBreakfastDailyFrequency()));
@@ -356,7 +358,7 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
                         context.getString(R.string.time_format_simple));
                 stringBuilder.append("\nEsportes praticados durante a semana: \n");
                 for (String sport : physicalActivityHabit.getWeeklyActivities()) {
-                    stringBuilder.append(sport).append(",\n");
+                    stringBuilder.append(sport).append("\n");
                 }
                 stringBuilder.append("\nFrequência de atividades físicas na escola: \n")
                         .append(SchoolActivityFrequencyType

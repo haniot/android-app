@@ -30,13 +30,13 @@ public class Patient {
     @Expose()
     private String pilotId;
 
-    @SerializedName("first_name")
+    @SerializedName("name")
     @Expose()
-    private String firstName;
+    private String name;
 
-    @SerializedName("last_name")
+    @SerializedName("email")
     @Expose()
-    private String lastName;
+    private String email;
 
     @SerializedName("gender")
     @Expose()
@@ -77,20 +77,12 @@ public class Patient {
         this.pilotId = pilotId;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getName() {
+        return name;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getGender() {
@@ -103,6 +95,14 @@ public class Patient {
 
     public String getBirthDate() {
         return birthDate;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public void setBirthDate(String birthDate) {
@@ -148,8 +148,8 @@ public class Patient {
                 "id=" + id +
                 ", _id='" + _id + '\'' +
                 ", pilotId='" + pilotId + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
                 ", gender='" + gender + '\'' +
                 ", birthDate='" + birthDate + '\'' +
                 '}';

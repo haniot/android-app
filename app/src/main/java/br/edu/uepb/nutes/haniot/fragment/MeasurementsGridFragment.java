@@ -410,16 +410,18 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
      * @param type      Type measurement in grid
      */
     private void updateMeasurement(String value, String unit, String timestamp, int type) {
-        new Handler().post(() -> {
-            for (MeasurementMonitor measurementMonitor : measurementMonitors) {
-                if (measurementMonitor.getType() == type) {
-                    measurementMonitor.setMeasurementValue(value);
-                    measurementMonitor.setTime(DateUtils.convertDateTimeUTCToLocale(timestamp, getString(R.string.time_format_simple)));
-                    mAdapter.notifyDataSetChanged();
-                    return;
+        if (isAdded()) {
+            new Handler().post(() -> {
+                for (MeasurementMonitor measurementMonitor : measurementMonitors) {
+                    if (measurementMonitor.getType() == type) {
+                        measurementMonitor.setMeasurementValue(value);
+                        measurementMonitor.setTime(DateUtils.convertDateTimeUTCToLocale(timestamp, getString(R.string.time_format_simple)));
+                        mAdapter.notifyDataSetChanged();
+                        return;
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     /**
@@ -586,6 +588,8 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
      */
     Device deviceTEMP = new Device();
     Device deviceTEMP2 = new Device();
+    Device deviceTEMP3 = new Device();
+    Device deviceTEMP4 = new Device();
 
     private void initComponents() {
         decimalFormat = new DecimalFormat(getString(R.string.format_number2),
@@ -608,6 +612,16 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
         deviceTEMP2.setType(DeviceType.THERMOMETER);
         deviceTEMP2.setAddress("1C:87:74:01:73:10");
         devices.add(deviceTEMP2);
+
+        deviceTEMP3.setName("POLAR H10");
+        deviceTEMP3.setType(DeviceType.HEART_RATE);
+        deviceTEMP3.setAddress("D4:27:B5:B3:93:F3");
+        devices.add(deviceTEMP3);
+
+        deviceTEMP4.setName("GLUCOSEMETER");
+        deviceTEMP4.setType(DeviceType.GLUCOMETER);
+        deviceTEMP4.setAddress("6F:3D:98:70:E1:79");
+        devices.add(deviceTEMP4);
 
         editMonitor.setOnClickListener(editMonitorClick);
         addMonitor.setOnClickListener(editMonitorClick);

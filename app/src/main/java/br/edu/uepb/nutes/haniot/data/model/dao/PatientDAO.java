@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 import java.util.List;
 
 import javax.annotation.Nullable;
-import javax.sql.StatementEvent;
 
 import br.edu.uepb.nutes.haniot.App;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
@@ -54,7 +53,7 @@ public class PatientDAO {
 
     public boolean update(@NonNull Patient patient) {
         if (patient.getId() == 0) {
-            Patient patientUp = get(patient.getFirstName());
+            Patient patientUp = get(patient.getName());
 
             if (patientUp == null) return false;
 
