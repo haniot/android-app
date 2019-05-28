@@ -793,10 +793,10 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
                 haniotRepository
                         .saveMeasurement(measurement)
                         .subscribe(m -> {
-                            Log.w(LOG_TAG, "saveMeasurement() Success: " + m);
+                            Log.w(LOG_TAG, "prepareMeasurement() Success: " + m);
                         }, err -> {
                             measurementDAO.save(measurement);
-                            Log.w(LOG_TAG, "saveMeasurement() Error: " + err.getMessage());
+                            Log.w(LOG_TAG, "prepareMeasurement() Error: " + err.getMessage());
                         })
         );
     }

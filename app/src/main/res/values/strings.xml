@@ -727,4 +727,10 @@
     <string name="waits_circumference">Circunferência da Cintura</string>
     <string name="evaluation_sucessfull">Avaliação Nutricional gerada com sucesso!</string>
     <string name="cm">cm</string>
+    <string name="back_confirm">Clique novamente para sair!</string>
+    <string name="value_empty">Digite um valor para continuar!</string>
+    <string name="confirm_save_measurement">Deseja salvar essa medição?</string>
+    <string name="measurement_save">Medição salva com sucesso!</string>
+    <string name="confirm_save_evaluation">Deseja salvar essa avaliação?</string>
+    <string name="evaluation_saved">Avaliação salva com sucesso!</string>
 </resources>

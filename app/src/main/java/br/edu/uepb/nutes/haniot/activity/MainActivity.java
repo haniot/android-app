@@ -49,9 +49,6 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
     @BindView(R.id.frameMeasurements)
     FrameLayout frameMeasurements;
 
-    @BindView(R.id.evaluation_odonto)
-    FloatingActionButton dentristEvaluation;
-
     @BindView(R.id.evaluation_nutrition)
     FloatingActionButton nutritioEvaluation;
 
@@ -65,6 +62,8 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
     private DashboardChartsFragment dashboardChartsFragment;
     private AppPreferencesHelper appPreferences;
     private Patient patient;
+    private long backPressed;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,12 +122,6 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
      * Init click listener of patient action buttons.
      */
     private void setClickListener() {
-        dentristEvaluation.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, NutritionalEvaluationActivity.class);
-            intent.putExtra("type", "dentrist");
-            startActivity(intent);
-            finish();
-        });
         nutritioEvaluation.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, NutritionalEvaluationActivity.class);
             intent.putExtra("type", "nutrition");
@@ -262,9 +255,12 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        this.finishAffinity();
-        System.exit(0);
+        if (backPressed + 2000 > System.currentTimeMillis()) {
+            super.onBackPressed();
+            this.finishAffinity();
+        } else
+            Toast.makeText(getBaseContext(), getString(R.string.back_confirm), Toast.LENGTH_SHORT).show();
+        backPressed = System.currentTimeMillis();
     }
 
     /**
@@ -309,10 +305,6 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.evaluation_odonto:
-                appPreferences.saveString("typeEvaluation", "dentrist");
-                startActivity(new Intent(this, NutritionalEvaluationActivity.class));
-                break;
             case R.id.evaluation_nutrition:
                 appPreferences.saveString("typeEvaluation", "nutrition");
                 startActivity(new Intent(this, NutritionalEvaluationActivity.class));

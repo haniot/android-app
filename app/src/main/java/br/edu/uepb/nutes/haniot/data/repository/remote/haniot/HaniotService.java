@@ -33,7 +33,7 @@ import retrofit2.http.Query;
  * @author Copyright (c) 2018, NUTES/UEPB
  */
 public interface HaniotService {
-    String BASE_URL_HANIOT = "http://192.168.0.129:8080"; // API GATEWAY LOCAL
+    String BASE_URL_HANIOT = "http://192.168.50.38:8080"; // API GATEWAY LOCAL
 //    String BASE_URL_HANIOT = "http://haniot.nutes.uepb.edu.br:8080"; // API GATEWAY LOCAL
 
     // auth
@@ -124,23 +124,20 @@ public interface HaniotService {
     Single<Patient> addPatient(@Body Patient patient);
 
     @GET("pilotstudies/{pilotstudy_id}/patients")
-    Single<List<Patient>> getAllPatients(@Path("pilotstudy_id") String pilotId,
-                                         @Query("sort") String sort,
-                                         @Query("page") int page,
-                                         @Query("limit") int limit);
+    Single<List<Patient>> getAllPilotStudiesPatients(@Path("pilotstudy_id") String pilotId,
+                                                     @Query("sort") String sort,
+                                                     @Query("page") int page,
+                                                     @Query("limit") int limit);
 
-    @GET("pilotstudies/{pilotstudy_id}/patients/{patient_id}")
-    Single<Patient> getPatient(@Path("pilotstudy_id") String pilotId,
-                               @Path("patient_id") String patientId);
+    @GET("users/patients/{patient_id}")
+    Single<Patient> getPatient(@Path("patient_id") String patientId);
 
-    @PATCH("pilotstudies/{pilotstudy_id}/patients/{patient_id}")
-    Single<Patient> updatePatient(@Path("pilotstudy_id") String pilotId,
-                                  @Path("patient_id") String patientId,
+    @PATCH("users/patients/{patient_id}")
+    Single<Patient> updatePatient(@Path("patient_id") String patientId,
                                   @Body Patient patient);
 
-    @DELETE("pilotstudies/{pilotstudy_id}/patients/{patient_id}")
-    Completable deletePatient(@Path("pilotstudy_id") String pilotId,
-                              @Path("patient_id") String patientId);
+    @DELETE("users/{patient_id}")
+    Completable deletePatient(@Path("patient_id") String patientId);
 
     // patients.sleephabits
     @POST("patients/{patient_id}/sleephabits")

@@ -87,7 +87,7 @@
             android:id="@+id/quiz_odonto"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/action_quiz"
+            app:srcCompat="@drawable/action_quiz"
             fab:fab_colorNormal="@color/colorAccent"
             fab:fab_colorPressed="@color/colorPrimary"
             fab:fab_label="Responder questionário de Odontologia"
@@ -97,27 +97,18 @@
             android:id="@+id/quiz_nutrition"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/action_quiz"
+            app:srcCompat="@drawable/action_quiz"
             fab:fab_colorNormal="@color/colorAccent"
             fab:fab_colorPressed="@color/colorPrimary"
             fab:fab_label="Responder questionário de Nutrição"
             fab:fab_size="mini" />
 
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/evaluation_odonto"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/action_odonto"
-            fab:fab_colorNormal="@color/colorAccent"
-            fab:fab_colorPressed="@color/colorPrimary"
-            fab:fab_label="Fazer avaliação Odontológica"
-            fab:fab_size="mini" />
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/evaluation_nutrition"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/action_nutrition"
+            app:srcCompat="@drawable/action_nutrition"
             fab:fab_colorNormal="@color/colorAccent"
             fab:fab_colorPressed="@color/colorPrimary"
             fab:fab_label="Fazer avaliação Nutricional"

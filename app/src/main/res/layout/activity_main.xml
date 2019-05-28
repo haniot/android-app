@@ -106,16 +106,6 @@
             fab:fab_size="mini" />
 
         <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/evaluation_odonto"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/action_odonto"
-            fab:fab_colorNormal="@color/colorAccent"
-            fab:fab_colorPressed="@color/colorPrimary"
-            fab:fab_label="Fazer avaliação Odontológica"
-            fab:fab_size="mini" />
-
-        <com.github.clans.fab.FloatingActionButton
             android:id="@+id/evaluation_nutrition"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -209,7 +209,7 @@ public class FeendingHabitsRecordType {
     public static class FoodAllergyStringolerance {
         public static final String GLUTEN = "gluten";
         //TODO aplv
-        public static final String APLV = "apvl";
+        public static final String APLV = "aplv";
         public static final String LACTOSE = "lactose";
         public static final String DYE = "dye";
         public static final String EGG = "egg";

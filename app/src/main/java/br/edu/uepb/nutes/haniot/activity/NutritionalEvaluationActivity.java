@@ -1,5 +1,6 @@
 package br.edu.uepb.nutes.haniot.activity;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
@@ -98,7 +99,17 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
         prepareItems();
         showMessage(-1);
         sendEvaluation.setOnClickListener(v -> {
-            sendEvaluation();
+
+            new AlertDialog.Builder(this)
+                    .setMessage(getString(R.string.confirm_save_evaluation))
+                    .setCancelable(false)
+                    .setPositiveButton(getString(R.string.yes_text), (dialog, id) -> {
+                        sendEvaluation();
+                        showToast(getString(R.string.evaluation_saved));
+                        finish();
+                    })
+                    .setNegativeButton(getString(R.string.no_text), null)
+                    .show();
         });
     }
 
@@ -136,6 +147,13 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
         haniotNetRepository = HaniotNetRepository.getInstance(this);
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
         patient = helper.getLastPatient();
+    }
+
+    private void showToast(final String menssage) {
+        runOnUiThread(() -> {
+            Toast toast = Toast.makeText(getApplicationContext(), menssage, Toast.LENGTH_LONG);
+            toast.show();
+        });
     }
 
     /**
@@ -425,6 +443,7 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
      * Send nutritionalEvaluation for server.
      */
     private void sendEvaluation() {
+
         Log.i("AAA", "Preparing evaluation...");
         nutritionalEvaluation.setPatient(patient);
         nutritionalEvaluation.setHealthProfessionalId(appPreferencesHelper.getUserLogged().get_id());

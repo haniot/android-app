@@ -195,7 +195,7 @@ public class ManagerPatientsActivity extends AppCompatActivity {
 
     private void removePatient(Patient patient) {
         DisposableManager.add(haniotNetRepository
-                .deletePatient(pilotStudy.get_id(), patient.get_id())
+                .deletePatient(patient.get_id())
                 .doAfterTerminate(this::loadData)
                 .subscribe(() -> {
                             adapter.removeItem(patient);

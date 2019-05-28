@@ -52,6 +52,8 @@ public class User {
     @Expose()
     private String healthArea; // provide by the server
 
+    @Expose()
+    private String pilotStudyIDSelected;
     /**
      * {@link UserType ()}
      */
@@ -149,6 +151,14 @@ public class User {
         this.healthArea = healthArea;
     }
 
+    public String getPilotStudyIDSelected() {
+        return pilotStudyIDSelected;
+    }
+
+    public void setPilotStudyIDSelected(String pilotStudyIDSelected) {
+        this.pilotStudyIDSelected = pilotStudyIDSelected;
+    }
+
     /**
      * Convert object to json format.
      *
@@ -193,6 +203,7 @@ public class User {
                 ", oldPassword='" + oldPassword + '\'' +
                 ", newPassword='" + newPassword + '\'' +
                 ", healthArea='" + healthArea + '\'' +
+                ", pilotStudyIDSelected='" + pilotStudyIDSelected + '\'' +
                 ", userType=" + userType +
                 '}';
     }
