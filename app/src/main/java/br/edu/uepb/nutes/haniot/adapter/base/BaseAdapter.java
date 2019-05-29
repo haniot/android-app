@@ -132,7 +132,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
      */
     public void replace(List<T> items) {
         if (items != null && !items.isEmpty()) {
-            items.clear();
+            this.itemsList.clear();
             addItems(items);
         }
     }

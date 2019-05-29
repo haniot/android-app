@@ -17,7 +17,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -32,42 +31,36 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.clans.fab.FloatingActionButton;
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
-
-import org.json.JSONObject;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.util.List;
 import java.util.Locale;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.AddMeasurementActivity;
 import br.edu.uepb.nutes.haniot.activity.charts.BodyCompositionChartActivity;
-import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.BodyCompositionAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
+import br.edu.uepb.nutes.haniot.data.model.BodyFat;
 import br.edu.uepb.nutes.haniot.data.model.Device;
 import br.edu.uepb.nutes.haniot.data.model.DeviceType;
 import br.edu.uepb.nutes.haniot.data.model.ItemGridType;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.MeasurementType;
+import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.dao.DeviceDAO;
 import br.edu.uepb.nutes.haniot.data.model.dao.MeasurementDAO;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
+import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
+import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
-import br.edu.uepb.nutes.haniot.server.historical.CallbackHistorical;
-import br.edu.uepb.nutes.haniot.server.historical.Historical;
-import br.edu.uepb.nutes.haniot.server.historical.HistoricalType;
-import br.edu.uepb.nutes.haniot.server.historical.Params;
-import br.edu.uepb.nutes.haniot.service.BluetoothLeService;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.ScaleManager;
-import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.ScaleDataCallback;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
@@ -85,6 +78,7 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
     private final int REQUEST_ENABLE_BLUETOOTH = 1;
     private final int REQUEST_ENABLE_LOCATION = 2;
     private final int LIMIT_PER_PAGE = 20;
+    private final int INITIAL_PAGE = 1;
 
     private boolean mConnected = false;
     private boolean showAnimation = true;
@@ -96,6 +90,11 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
     private DecimalFormat decimalFormat;
     private BodyCompositionAdapter mAdapter;
     private ScaleManager scaleManager;
+
+    private HaniotNetRepository haniotNetRepository;
+    private Patient patient;
+    private int page = INITIAL_PAGE;
+
     /**
      * We need this variable to lock and unlock loading more.
      * We should not charge more when a request has already been made.
@@ -154,11 +153,11 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
     @BindView(R.id.add_floating_button)
     FloatingActionButton mAddButton;
 
-    @BindView(R.id.box_message_error)
-    LinearLayout boxMessage;
-
-    @BindView(R.id.message_error)
-    TextView messageError;
+//    @BindView(R.id.box_message_error)
+//    LinearLayout boxMessage;
+//
+//    @BindView(R.id.message_error)
+//    TextView messageError;
 
     @BindView(R.id.box_measurement)
     RelativeLayout boxMeasurement;
@@ -178,12 +177,16 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
         deviceDAO = DeviceDAO.getInstance(this);
         decimalFormat = new DecimalFormat(getString(R.string.format_number2), new DecimalFormatSymbols(Locale.US));
         scaleManager = new ScaleManager(this);
+
         animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
         mChartButton.setOnClickListener(this);
         mAddButton.setOnClickListener(this);
 
+        haniotNetRepository = HaniotNetRepository.getInstance(this);
+        patient = appPreferencesHelper.getLastPatient();
+
         mDevice = deviceDAO.getByType(appPreferencesHelper.getUserLogged().get_id(), DeviceType.BODY_COMPOSITION);
-        messageError.setOnClickListener(v -> checkPermissions());
+//        messageError.setOnClickListener(v -> checkPermissions());
 
         if (isTablet(this)){
             Log.i(TAG, "is tablet");
@@ -305,14 +308,10 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
             }
 
             @Override
-            public void onLongItemClick(View v, Measurement item) {
-
-            }
+            public void onLongItemClick(View v, Measurement item) { }
 
             @Override
-            public void onMenuContextClick(View v, Measurement item) {
-
-            }
+            public void onMenuContextClick(View v, Measurement item) { }
         });
 
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -320,16 +319,14 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 if (dy > 0) {
-                    mAddButton.hide();
+//                    mAddButton.hide();
                     // Recycle view scrolling downwards...
                     // this if statement detects when user reaches the end of recyclerView, this is only time we should load more
                     if (!recyclerView.canScrollVertically(RecyclerView.FOCUS_DOWN)) {
                         // here we are now allowed to load more, but we need to be careful
                         // we must check if itShouldLoadMore variable is true [unlocked]
-                        if (itShouldLoadMore) loadMoreData();
+                        if (itShouldLoadMore) loadData();
                     }
-                } else {
-                    mAddButton.show();
                 }
             }
         });
@@ -342,8 +339,8 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
      */
     private void initDataSwipeRefresh() {
         mDataSwipeRefresh.setOnRefreshListener(() -> {
-            if (itShouldLoadMore)
-                loadData();
+            page = INITIAL_PAGE;
+            loadData();
         });
     }
 
@@ -353,7 +350,8 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
      * when an error occurs on the first request with the server.
      */
     private void loadDataLocal() {
-        mAdapter.addItems(measurementDAO.list(MeasurementType.BODY_MASS, appPreferencesHelper.getUserLogged().getId(), 0, 100));
+        page = INITIAL_PAGE; // returns to initial page
+        mAdapter.addItems(measurementDAO.list(MeasurementType.BODY_MASS, patient.getId(), 0, 100));
 
         if (!mAdapter.itemsIsEmpty()) {
             updateUILastMeasurement(mAdapter.getFirstItem(), false);
@@ -369,50 +367,46 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
      * Otherwise it displays from the remote server.
      */
     private void loadData() {
-//        mAdapter.clearItems();
-//
-//        if (!ConnectionUtils.internetIsEnabled(this)) {
-//            loadDataLocal();
-//        } else {
-//            Historical historical = new Historical.Query()
-//                    .type(HistoricalType.MEASUREMENTS_TYPE_USER)
-//                    .params(params) // Measurements of the body mass type, associated to the user
-//                    .pagination(0, LIMIT_PER_PAGE)
-//                    .build();
-//
-//            historical.request(this, new CallbackHistorical<Measurement>() {
-//                @Override
-//                public void onBeforeSend() {
-//                    Log.w(TAG, "loadData - onBeforeSend()");
-//                    toggleLoading(true); // Enable loading
-//                    toggleNoDataMessage(false); // Disable message no data
-//                }
-//
-//                @Override
-//                public void onError(JSONObject result) {
-//                    Log.w(TAG, "loadData - onError()");
-//                    if (!mAdapter.itemsIsEmpty()) printMessage(getString(R.string.error_500));
-//                    else loadDataLocal();
-//                }
-//
-//                @Override
-//                public void onResult(List<Measurement> result) {
-//                    Log.w(TAG, "loadData - onResult()");
-//                    if (result != null && result.size() > 0) {
-//                        mAdapter.addItems(result);
-//                        updateUILastMeasurement(mAdapter.getItems().get(0), false);
-//                    } else {
-//                        toggleNoDataMessage(true); // Enable message no data
-//                    }
-//                }
-//
-//                @Override
-//                public void onAfterSend() {
-//                    Log.w(TAG, "loadData - onAfterSend()");
-//                    toggleLoading(false); // Disable loading
-//                }
-//            });
-//        }
+        if (page == INITIAL_PAGE)
+            mAdapter.clearItems();
+
+        if (!ConnectionUtils.internetIsEnabled(this)) {
+            loadDataLocal();
+        } else {
+            DisposableManager.add(haniotNetRepository
+                    .getAllMeasurementsByType(patient.get_id(),
+                            MeasurementType.BODY_MASS, "-timestamp",
+                            null, null, page, LIMIT_PER_PAGE)
+            .doOnSubscribe(disposable -> {
+                Log.w(TAG, "loadData - doOnSubscribe");
+                toggleLoading(true);
+                toggleNoDataMessage(false);
+            })
+            .doAfterTerminate(() -> {
+                Log.w(TAG, "loadData - doAfterTerminate");
+                toggleLoading(false); // Disable loading
+            })
+            .subscribe(measurements -> {
+                Log.w(TAG, "loadData - onResult()");
+                if (measurements != null && measurements.size() > 0) {
+                    mAdapter.addItems(measurements);
+                    page++;
+                    itShouldLoadMore = true;
+                    updateUILastMeasurement(mAdapter.getFirstItem(), false);
+                } else {
+                    toggleLoading(false);
+                    if (mAdapter.itemsIsEmpty())
+                        toggleNoDataMessage(true); // Enable message no data
+                    itShouldLoadMore = false;
+                }
+            }, erro -> {
+                Log.w(TAG, "loadData - onError()");
+                if (mAdapter.itemsIsEmpty())
+                    printMessage(getString(R.string.error_500));
+                else
+                    loadDataLocal();
+            }));
+        }
     }
 
     /**
@@ -463,13 +457,14 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
      */
     private void toggleLoading(boolean enabled) {
         runOnUiThread(() -> {
-            if (!enabled) {
-                mDataSwipeRefresh.setRefreshing(false);
-                itShouldLoadMore = true;
-            } else {
-                mDataSwipeRefresh.setRefreshing(true);
-                itShouldLoadMore = false;
-            }
+            mDataSwipeRefresh.setRefreshing(enabled);
+//            if (!enabled) {
+//                mDataSwipeRefresh.setRefreshing(false);
+//                itShouldLoadMore = true;
+//            } else {
+//                mDataSwipeRefresh.setRefreshing(true);
+//                itShouldLoadMore = false;
+//            }
         });
     }
 
@@ -502,27 +497,27 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
         runOnUiThread(() -> Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show());
     }
 
-    /**
-     * Displays message.
-     *
-     * @param str @StringRes message.
-     */
-    private void showMessage(@StringRes int str) {
-        if (str != -1) {
-            String message = getString(str);
-
-            messageError.setText(message);
-            runOnUiThread(() -> {
-                boxMessage.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_in));
-                boxMessage.setVisibility(View.VISIBLE);
-            });
-        } else {
-            runOnUiThread(() -> {
-                boxMessage.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_out));
-                boxMessage.setVisibility(View.INVISIBLE);
-            });
-        }
-    }
+//    /**
+//     * Displays message.
+//     *
+//     * @param str @StringRes message.
+//     */
+//    private void showMessage(@StringRes int str) {
+//        if (str != -1) {
+//            String message = getString(str);
+//
+//            messageError.setText(message);
+//            runOnUiThread(() -> {
+//                boxMessage.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_in));
+//                boxMessage.setVisibility(View.VISIBLE);
+//            });
+//        } else {
+//            runOnUiThread(() -> {
+//                boxMessage.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_out));
+//                boxMessage.setVisibility(View.INVISIBLE);
+//            });
+//        }
+//    }
 
     @Override
     protected void onStart() {
@@ -535,7 +530,7 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onResume() {
         super.onResume();
-        boxMessage.setVisibility(View.GONE);
+//        boxMessage.setVisibility(View.GONE);
 
         if (scaleManager.getConnectionState() != BluetoothProfile.STATE_CONNECTED && mDevice != null) {
             scaleManager.connect(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(mDevice.getAddress()));
@@ -550,6 +545,7 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        DisposableManager.dispose();
         unregisterReceiver(mReceiver);
     }
 
@@ -586,11 +582,11 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
      * formula: bodyMass(kg)/height(m)^2
      *
      * @param bodyMass double
+     * @param height in cm
      * @return double
      */
-    private double calcBMI(double bodyMass) {
-        //double height = (session.getUserLogged().getHeight()) / 100D;
-        double height = 1.0;
+    private double calcBMI(double bodyMass, double height) {
+        height /= 100;
         return bodyMass / (Math.pow(height, 2));
     }
 
@@ -612,29 +608,42 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
      */
     private void updateUILastMeasurement(Measurement measurement, boolean applyAnimation) {
         if (measurement == null) return;
-//
-//        runOnUiThread(() -> {
-//            bodyMassTextView.setText(formatNumber(measurement.getValue()));
-//            bodyMassUnitTextView.setText(measurement.getUnit());
-//            mDateLastMeasurement.setText(DateUtils.abbreviatedDate(
-//                    getApplicationContext(), measurement.getRegistrationDate()));
-//
-//            /**
-//             * Relations
-//             */
-//            for (Measurement m : measurement.getMeasurements()) {
-//                if (m.getTypeId() == MeasurementType.BMI) {
-//                    bmiTextView.setText(formatNumber(m.getValue()));
-//                    titleBmiTextView.setVisibility(View.VISIBLE);
-//                } else if (m.getTypeId() == MeasurementType.BODY_FAT) {
-//                    bodyFatTextView.setText(formatNumber(m.getValue()));
-//                    unitBodyFatTextView.setText(m.getUnit());
-//                    titleBodyFatTextView.setVisibility(View.VISIBLE);
-//                }
-//            }
-//
-//            if (applyAnimation) bodyMassTextView.startAnimation(animation);
-//        });
+
+        runOnUiThread(() -> {
+            bodyMassTextView.setText(formatNumber(measurement.getValue()));
+            bodyMassUnitTextView.setText(measurement.getUnit());
+
+            String timeStamp = measurement.getTimestamp();
+
+            if (DateUtils.isToday(DateUtils.convertDateTime(timeStamp).getTime())) {
+                mDateLastMeasurement.setText(R.string.today_text);
+            } else {
+                mDateLastMeasurement.setText(DateUtils.convertDateTimeUTCToLocale(
+                        timeStamp,"MMMM dd, EEE"
+                ));
+            }
+
+            if (measurement.getFat() != null) {
+                bodyFatTextView.setText(formatNumber(measurement.getFat().getValue()));
+                unitBodyFatTextView.setText(measurement.getFat().getUnit());
+                titleBodyFatTextView.setVisibility(View.VISIBLE);
+            }
+
+            DisposableManager.add(haniotNetRepository.
+                    getAllMeasurementsByType(patient.get_id(),
+                            MeasurementType.HEIGHT, "-timestamp", null, null, 1, 1)
+            .subscribe(measurements -> {
+                double height = measurements.get(0).getValue();
+                double bmi = calcBMI(measurement.getValue(), height);
+
+                bmiTextView.setText(formatNumber(bmi));
+                titleBmiTextView.setVisibility(View.VISIBLE);
+            }, error -> {
+                Log.w(TAG, "Error to process BMI");
+            }));
+
+            if (applyAnimation) bodyMassTextView.startAnimation(animation);
+        });
     }
 
     /**
@@ -653,10 +662,10 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
                 final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE,
                         BluetoothAdapter.ERROR);
                 if (state == BluetoothAdapter.STATE_OFF) {
-                    showMessage(R.string.bluetooth_disabled);
+//                    showMessage(R.string.bluetooth_disabled);
 
                 } else if (state == BluetoothAdapter.STATE_ON) {
-                    showMessage(-1);
+//                    showMessage(-1);
                 }
             }
         }
@@ -670,15 +679,14 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
                 break;
             case R.id.add_floating_button:
                 Intent it = new Intent(getApplicationContext(), AddMeasurementActivity.class);
-                it.putExtra(getResources().getString(R.string.measurementType),
-                        ItemGridType.WEIGHT);
+               appPreferencesHelper.saveInt(
+                        getResources().getString(R.string.measurementType), ItemGridType.WEIGHT);
                 startActivity(it);
                 break;
             default:
                 break;
         }
     }
-
 
     /**
      * Checks if you have permission to use.
@@ -745,5 +753,4 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
-
 }

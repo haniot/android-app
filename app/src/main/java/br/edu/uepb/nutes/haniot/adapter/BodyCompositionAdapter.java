@@ -2,6 +2,7 @@ package br.edu.uepb.nutes.haniot.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -58,7 +59,7 @@ public class BodyCompositionAdapter extends BaseAdapter<Measurement> {
             h.unitBodyMass.setText(m.getUnit());
             h.dayWeek.setText(DateUtils.convertDateTimeUTCToLocale(m.getTimestamp(), "EEEE"));
             h.date.setText(DateUtils.convertDateTimeUTCToLocale(m.getTimestamp(), context.getString(R.string.datetime_format)));
-            h.bodyFat.setText(decimalFormat.format(m.getFat().getValue()));
+            h.bodyFat.setText(m.getFat() != null ? decimalFormat.format(m.getFat().getValue()) : "--");
 
             // OnClick Item
             h.mView.setOnClickListener(v -> {

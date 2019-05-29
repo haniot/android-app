@@ -172,7 +172,7 @@ public class HaniotNetRepository extends BaseNetRepository {
     public Single<List<Measurement>> getAllMeasurementsByType(String userId, String type,
                                                               String sort, String dateStart,
                                                               String dateEnd, int page, int limit) {
-        return haniotService.getAllMeasurements(userId, type, dateStart, dateEnd, sort, page, limit)
+        return haniotService.getAllMeasurements(userId, type, sort, dateStart, dateEnd, page, limit)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -180,7 +180,7 @@ public class HaniotNetRepository extends BaseNetRepository {
     public Single<List<Measurement>> getAllMeasurements(String userId, String sort,
                                                         String dateStart, String dateEnd,
                                                         int page, int limit) {
-        return haniotService.getAllMeasurements(userId, dateStart, dateEnd, sort, page, limit)
+        return haniotService.getAllMeasurements(userId, sort, dateStart, dateEnd, page, limit)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
