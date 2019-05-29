@@ -9,7 +9,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.List;
+
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.activity.AddMeasurementActivity;
+import br.edu.uepb.nutes.haniot.data.model.MealGlucoseType;
+import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -20,7 +25,7 @@ import butterknife.ButterKnife;
  * @version 1.0
  * @copyright Copyright (c) 2019, NUTES UEPB
  */
-public class FragmentGlucose extends Fragment {
+public class FragmentGlucose extends Fragment implements AddMeasurementActivity.MeasurementCommunicator {
 
     @BindView(R.id.check_before_bedtime)
     ImageView checkBeforeBedtime;
@@ -34,6 +39,9 @@ public class FragmentGlucose extends Fragment {
     @BindView(R.id.check_pre_meal)
     ImageView checkPreMeal;
 
+    @BindView(R.id.check_post_meal)
+    ImageView checkPostMeal;
+
     @BindView(R.id.before_bedtime)
     ImageView beforeBedtime;
 
@@ -45,6 +53,9 @@ public class FragmentGlucose extends Fragment {
 
     @BindView(R.id.pre_meal)
     ImageView preMeal;
+
+    @BindView(R.id.post_meal)
+    ImageView postMeal;
 
     @BindView(R.id.title_before_bedtime)
     TextView titleBeforeBedtime;
@@ -58,13 +69,16 @@ public class FragmentGlucose extends Fragment {
     @BindView(R.id.title_pre_meal)
     TextView titlePreMeal;
 
-    private int period;
+    @BindView(R.id.title_post_meal)
+    TextView titlePostMeal;
+
+    private String period;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_glucose_measurement, container, false);
         ButterKnife.bind(this, view);
-//        period = ContextMeasurementValueType.GLUCOSE_MEAL_FASTING;
 
         return view;
     }
@@ -73,18 +87,12 @@ public class FragmentGlucose extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initViews();
-    }
-
-    /**
-     * Get period selected.
-     * @return
-     */
-    public int getPeriod() {
-        return period;
+        period = MealGlucoseType.FASTING;
     }
 
     /**
      * Update view on choose option.
+     *
      * @param choose
      * @param chooseText
      * @param check
@@ -104,19 +112,23 @@ public class FragmentGlucose extends Fragment {
     public void initViews() {
         preMeal.setOnClickListener(v -> {
             choose(preMeal, titlePreMeal, checkPreMeal);
-//            period = ContextMeasurementValueType.GLUCOSE_MEAL_FASTING;
+            period = MealGlucoseType.PREPRANDIAL;
+        });
+        postMeal.setOnClickListener(v -> {
+            choose(postMeal, titlePostMeal, checkPostMeal);
+            period = MealGlucoseType.POSTPRANDIAL;
         });
         beforeBedtime.setOnClickListener(v -> {
             choose(beforeBedtime, titleBeforeBedtime, checkBeforeBedtime);
-//            period = ContextMeasurementValueType.GLUCOSE_MEAL_BEDTIME;
+            period = MealGlucoseType.BEDTIME;
         });
         fast.setOnClickListener(v -> {
             choose(fast, titleFast, checkFast);
-//            period = ContextMeasurementValueType.GLUCOSE_CARBOHYDRATE_BREAKFAST;
+            period = MealGlucoseType.CASUAL;
         });
         fasting.setOnClickListener(v -> {
+            period = MealGlucoseType.FASTING;
             choose(fasting, titleFasting, checkFasting);
-//            period = ContextMeasurementValueType.GLUCOSE_MEAL_FASTING;
         });
     }
 
@@ -143,5 +155,23 @@ public class FragmentGlucose extends Fragment {
         preMeal.setScaleY(0.9f);
         titlePreMeal.setTextColor(getContext().getResources().getColor(R.color.colorSubmenu));
         checkPreMeal.setVisibility(View.INVISIBLE);
+
+        postMeal.setScaleX(0.9f);
+        postMeal.setScaleY(0.9f);
+        titlePostMeal.setTextColor(getContext().getResources().getColor(R.color.colorSubmenu));
+        checkPostMeal.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public Measurement getMeasurement() {
+        Measurement measurement = new Measurement();
+        measurement.setMeal(period);
+        measurement.setType("blood_glucose");
+        return measurement;
+    }
+
+    @Override
+    public List<Measurement> getMeasurements() {
+        return null;
     }
 }

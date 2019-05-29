@@ -231,31 +231,31 @@ public class HaniotNetRepository extends BaseNetRepository {
 
     // pilotstudies.patients
     public Single<Patient> savePatient(Patient patient) {
-        return haniotService.addPatient(patient.getPilotId(), patient)
+        return haniotService.addPatient(patient)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     public Single<List<Patient>> getAllPatients(String pilotId, String sort, int page, int limit) {
-        return haniotService.getAllPatients(pilotId, sort, page, limit)
+        return haniotService.getAllPilotStudiesPatients(pilotId, sort, page, limit)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Single<Patient> getPatient(String pilotId, String patientId) {
-        return haniotService.getPatient(pilotId, patientId)
+    public Single<Patient> getPatient(String patientId) {
+        return haniotService.getPatient(patientId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     public Single<Patient> updatePatient(Patient patient) {
-        return haniotService.updatePatient(patient.getPilotId(), patient.get_id(), patient)
+        return haniotService.updatePatient(patient.get_id(), patient)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Completable deletePatient(String pilotId, String patientId) {
-        return haniotService.deletePatient(pilotId, patientId)
+    public Completable deletePatient(String patientId) {
+        return haniotService.deletePatient(patientId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

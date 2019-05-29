@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.EvaluationActivity">
+    tools:context=".activity.NutritionalEvaluationActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appBarLayout"
@@ -30,9 +30,9 @@
         android:id="@+id/box_message_error"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimaryDark"
+        android:background="@color/colorWarningLight"
         android:gravity="center"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appBarLayout">
@@ -43,8 +43,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:padding="16sp"
-            android:text="@null"
-            android:textColor="@color/colorTextDark" />
+            android:text="@null" />
     </LinearLayout>
 
     <ImageView

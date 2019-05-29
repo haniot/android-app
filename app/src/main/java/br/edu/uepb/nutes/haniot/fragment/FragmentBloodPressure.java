@@ -6,10 +6,15 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import java.util.List;
+
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.activity.AddMeasurementActivity;
+import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -20,7 +25,7 @@ import butterknife.ButterKnife;
  * @version 1.0
  * @copyright Copyright (c) 2019, NUTES UEPB
  */
-public class FragmentBloodPressure extends Fragment {
+public class FragmentBloodPressure extends Fragment implements AddMeasurementActivity.MeasurementCommunicator {
 
     final private int MIN_HEART_RATE = 60;
 
@@ -30,13 +35,19 @@ public class FragmentBloodPressure extends Fragment {
     @BindView(R.id.value)
     TextView value;
 
-    private int valueMeasurement;
+    @BindView(R.id.text_systolic)
+    EditText systolic;
+
+    @BindView(R.id.text_diastolic)
+    EditText diastolic;
+
+    private int pulseValue;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_blood_pressure_measurement, container, false);
         ButterKnife.bind(this, view);
-        valueMeasurement = MIN_HEART_RATE + 28;
+        pulseValue = MIN_HEART_RATE + 28;
         initView();
         return view;
     }
@@ -45,14 +56,6 @@ public class FragmentBloodPressure extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-    }
-
-    /**
-     * Get value measurement.
-     * @return
-     */
-    public int getValueMeasurement() {
-        return valueMeasurement;
     }
 
     /**
@@ -75,8 +78,43 @@ public class FragmentBloodPressure extends Fragment {
             public void onProgressChanged(SeekBar seekBar, int progress,
                                           boolean fromUser) {
                 value.setText(String.valueOf(progress + MIN_HEART_RATE));
-                valueMeasurement = progress + MIN_HEART_RATE;
+                pulseValue = progress + MIN_HEART_RATE;
             }
         });
+    }
+
+    private boolean validate() {
+        boolean validated = false;
+
+        if (systolic.getText() != null) {
+            validated = true;
+        }
+
+        if (diastolic.getText() != null) {
+            validated = true;
+        }
+
+        return validated;
+    }
+
+    @Override
+    public Measurement getMeasurement() {
+        if (validate()) {
+            Measurement measurement = new Measurement();
+            measurement.setValue(pulseValue);
+            measurement.setSystolic(Integer.parseInt(systolic.getText().toString()));
+            measurement.setDiastolic(Integer.parseInt(diastolic.getText().toString()));
+            measurement.setPulse(pulseValue);
+            measurement.setUnit(getContext().getResources().getString(R.string.unit_glucose_mg_dL));
+            measurement.setType("blood_pressure");
+            return measurement;
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public List<Measurement> getMeasurements() {
+        return null;
     }
 }

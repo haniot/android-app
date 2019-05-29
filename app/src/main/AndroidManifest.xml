@@ -19,7 +19,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activity.EvaluationActivity"
+        <activity android:name=".activity.NutritionalEvaluationActivity"
             android:parentActivityName=".activity.MainActivity"
             ></activity>
         <!-- RECEIVER ACCOUNT SERVICE -->

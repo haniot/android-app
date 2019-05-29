@@ -39,6 +39,11 @@ import br.edu.uepb.nutes.simplesurvey.question.Open;
 import br.edu.uepb.nutes.simplesurvey.question.Single;
 import retrofit2.HttpException;
 
+import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.FEEDING_HABITS;
+import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.MEDICAL_RECORDS;
+import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.PHYSICAL_ACTIVITY;
+import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.SLEEP_HABITS;
+
 /**
  * QuizNutritionActivity implementation.
  *
@@ -74,6 +79,7 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
 
     private AppPreferencesHelper appPreferencesHelper;
     private HaniotNetRepository haniotNetRepository;
+    int checkpoint;
 
     /**
      * Init view.
@@ -81,7 +87,33 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
     @Override
     protected void initView() {
         initResources();
-        addPages();
+
+        checkpoint = getIntent().getIntExtra("checkpoint", -1);
+        setMessageBlocked(getResources().getString(R.string.not_answered));
+        // Animation
+        setFadeAnimation();
+        addStartPage();
+
+        switch (checkpoint) {
+            case MEDICAL_RECORDS:
+                addMedicalRocordsPages();
+                break;
+            case PHYSICAL_ACTIVITY:
+                addPhysicalHabitsPages();
+                break;
+            case FEEDING_HABITS:
+                addFeedingHabitsPages();
+                break;
+            case SLEEP_HABITS:
+                addSleepHabitsPages();
+                break;
+            default:
+                addPhysicalHabitsPages();
+                addFeedingHabitsPages();
+                addMedicalRocordsPages();
+                addSleepHabitsPages();
+        }
+        addEndPage();
     }
 
     /**
@@ -185,67 +217,71 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
         // message 500
     }
 
-    /**
-     * Construct quiz.
-     */
-    private void addPages() {
-        setMessageBlocked(getResources().getString(R.string.not_answered));
+    private void addMedicalRocordsPages() {
 
-        // Animation
-        setFadeAnimation();
-
-        //INTRO PAGE
+        //CATEGORY 4
         addQuestion(new Infor.Config()
-                .layout(R.layout.welcome_nutrition_quiz)
-                .colorBackground(getResources().getColor(R.color.colorPrimaryDark))
-                .nextQuestionAuto()
-                .pageNumber(FIRST_PAGE)
-                .build());
-
-        //CATEGORY 2
-        addQuestion(new Infor.Config()
-                .title(R.string.category_2, Color.WHITE)
+                .title(R.string.category_4, Color.WHITE)
                 .titleTextSize(28)
-                .description(R.string.category_2_desc, Color.WHITE)
-                .descriptionTextSize(14)
-                .image(R.drawable.x_sneaker)
+                .description(R.string.category_4_desc,
+                        Color.WHITE)
+                .image(R.drawable.x_drug)
                 .colorBackground(getResources().getColor(R.color.colorAccent))
                 .inputText(R.string.bt_next)
                 .buttonBackground(R.drawable.button_stylezed)
                 .nextQuestionAuto()
-                .pageNumber(CATEGORY_PHYSICAL_ACTIVITIES)
+                .pageNumber(CATEGORY_MEDICAL_RECORDS)
                 .build());
 
-
-        addQuestion(new Multiple.Config()
-                .title(getString(R.string.q1), Color.WHITE)
-                .titleTextSize(28)
-                .colorBackground(ContextCompat.getColor(this, R.color.colorCyan))
-                .description("")
-                .image(R.drawable.x_trophy)
-                .buttonClose(R.drawable.ic_action_close_dark)
-                .inputItems(parseAnswers(R.array.sports_answers))
-                .inputColorBackgroundTint(Color.WHITE)
-                .inputColorSelectedText(Color.WHITE)
-                .nextQuestionAuto()
-                .inputDisableAddNewItem()
-                .pageNumber(4)
-                .build());
 
         addQuestion(new Single.Config()
-                .title(getString(R.string.q2), Color.WHITE)
+                .title(getString(R.string.q16), Color.WHITE)
                 .titleTextSize(28)
                 .colorBackground(ContextCompat.getColor(this, R.color.colorRed))
                 .description("")
-                .image(R.drawable.x_gymnastics)
+                .image(R.drawable.x_blood_pressure)
                 .buttonClose(R.drawable.ic_action_close_dark)
                 .inputColorBackgroundTint(Color.WHITE)
                 .inputColorSelectedText(Color.WHITE)
-                .inputItems(parseAnswers(R.array.frequency_sports_answers))
+                .inputItems(parseAnswers(R.array.yes_or_no_answers))
                 .inputDisableAddNewItem()
                 .nextQuestionAuto()
-                .pageNumber(5)
+                .pageNumber(19)
                 .build());
+
+        addQuestion(new Single.Config()
+                .title(getString(R.string.q17), Color.WHITE)
+                .titleTextSize(28)
+                .colorBackground(ContextCompat.getColor(this, R.color.colorOrange))
+                .description("")
+                .image(R.drawable.x_glucosemeter)
+                .buttonClose(R.drawable.ic_action_close_dark)
+                .inputColorBackgroundTint(Color.WHITE)
+                .inputColorSelectedText(Color.WHITE)
+                .inputItems(parseAnswers(R.array.yes_or_no_answers))
+                .inputDisableAddNewItem()
+                .nextQuestionAuto()
+                .pageNumber(20)
+                .build());
+
+        addQuestion(new Single.Config()
+                .title(getString(R.string.q18), Color.WHITE)
+                .titleTextSize(28)
+                .colorBackground(ContextCompat.getColor(this, R.color.colorDeepPurple))
+                .description("")
+                .image(R.drawable.x_blood)
+                .buttonClose(R.drawable.ic_action_close_dark)
+                .inputColorBackgroundTint(Color.WHITE)
+                .inputColorSelectedText(Color.WHITE)
+                .inputItems(parseAnswers(R.array.yes_or_no_answers))
+                .inputDisableAddNewItem()
+                .nextQuestionAuto()
+                .pageNumber(21)
+                .build());
+
+    }
+
+    private void addFeedingHabitsPages() {
 
         //CATEGORY 3
         addQuestion(new Infor.Config()
@@ -458,65 +494,57 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
                 .pageNumber(18)
                 .build());
 
-        //CATEGORY 4
+    }
+
+    private void addPhysicalHabitsPages() {
+        //CATEGORY 2
         addQuestion(new Infor.Config()
-                .title(R.string.category_4, Color.WHITE)
+                .title(R.string.category_2, Color.WHITE)
                 .titleTextSize(28)
-                .description(R.string.category_4_desc,
-                        Color.WHITE)
-                .image(R.drawable.x_drug)
+                .description(R.string.category_2_desc, Color.WHITE)
+                .descriptionTextSize(14)
+                .image(R.drawable.x_sneaker)
                 .colorBackground(getResources().getColor(R.color.colorAccent))
                 .inputText(R.string.bt_next)
                 .buttonBackground(R.drawable.button_stylezed)
                 .nextQuestionAuto()
-                .pageNumber(CATEGORY_MEDICAL_RECORDS)
+                .pageNumber(CATEGORY_PHYSICAL_ACTIVITIES)
                 .build());
 
 
+        addQuestion(new Multiple.Config()
+                .title(getString(R.string.q1), Color.WHITE)
+                .titleTextSize(28)
+                .colorBackground(ContextCompat.getColor(this, R.color.colorCyan))
+                .description("")
+                .image(R.drawable.x_trophy)
+                .buttonClose(R.drawable.ic_action_close_dark)
+                .inputItems(parseAnswers(R.array.sports_answers))
+                .inputColorBackgroundTint(Color.WHITE)
+                .inputColorSelectedText(Color.WHITE)
+                .nextQuestionAuto()
+                .inputDisableAddNewItem()
+                .pageNumber(4)
+                .build());
+
         addQuestion(new Single.Config()
-                .title(getString(R.string.q16), Color.WHITE)
+                .title(getString(R.string.q2), Color.WHITE)
                 .titleTextSize(28)
                 .colorBackground(ContextCompat.getColor(this, R.color.colorRed))
                 .description("")
-                .image(R.drawable.x_blood_pressure)
+                .image(R.drawable.x_gymnastics)
                 .buttonClose(R.drawable.ic_action_close_dark)
                 .inputColorBackgroundTint(Color.WHITE)
                 .inputColorSelectedText(Color.WHITE)
-                .inputItems(parseAnswers(R.array.yes_or_no_answers))
+                .inputItems(parseAnswers(R.array.frequency_sports_answers))
                 .inputDisableAddNewItem()
                 .nextQuestionAuto()
-                .pageNumber(19)
+                .pageNumber(5)
                 .build());
 
-        addQuestion(new Single.Config()
-                .title(getString(R.string.q17), Color.WHITE)
-                .titleTextSize(28)
-                .colorBackground(ContextCompat.getColor(this, R.color.colorOrange))
-                .description("")
-                .image(R.drawable.x_glucosemeter)
-                .buttonClose(R.drawable.ic_action_close_dark)
-                .inputColorBackgroundTint(Color.WHITE)
-                .inputColorSelectedText(Color.WHITE)
-                .inputItems(parseAnswers(R.array.yes_or_no_answers))
-                .inputDisableAddNewItem()
-                .nextQuestionAuto()
-                .pageNumber(20)
-                .build());
+    }
 
-        addQuestion(new Single.Config()
-                .title(getString(R.string.q18), Color.WHITE)
-                .titleTextSize(28)
-                .colorBackground(ContextCompat.getColor(this, R.color.colorDeepPurple))
-                .description("")
-                .image(R.drawable.x_blood)
-                .buttonClose(R.drawable.ic_action_close_dark)
-                .inputColorBackgroundTint(Color.WHITE)
-                .inputColorSelectedText(Color.WHITE)
-                .inputItems(parseAnswers(R.array.yes_or_no_answers))
-                .inputDisableAddNewItem()
-                .nextQuestionAuto()
-                .pageNumber(21)
-                .build());
+    private void addSleepHabitsPages() {
 
         //CATEGORY 5
         addQuestion(new Infor.Config()
@@ -562,6 +590,28 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
                 .pageNumber(23)
                 .build());
 
+    }
+
+    /**
+     * Construct quiz.
+     */
+    private void addStartPage() {
+        setMessageBlocked(getResources().getString(R.string.not_answered));
+
+        // Animation
+        setFadeAnimation();
+
+        //INTRO PAGE
+        addQuestion(new Infor.Config()
+                .layout(R.layout.welcome_nutrition_quiz)
+                .colorBackground(getResources().getColor(R.color.colorPrimaryDark))
+                .nextQuestionAuto()
+                .pageNumber(FIRST_PAGE)
+                .build());
+
+    }
+
+    private void addEndPage() {
         //END PAGE
         addQuestion(new Infor.Config()
                 .title(R.string.thank_you, Color.WHITE)
@@ -615,24 +665,33 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
     @Override
     public void onAnswerInfo(int page) {
         Log.d(LOG_TAG, "onAnswerInfo() | PAGE: " + page);
-        switch (page) {
-            case CATEGORY_PHYSICAL_ACTIVITIES:
+        if (page == CATEGORY_FEENDING_HABITS && checkpoint == -1) {
+            saveActivityHabits();
+        } else if (page == CATEGORY_MEDICAL_RECORDS && checkpoint == -1) {
+            saveFeedingHabits();
+        } else if (page == CATEGORY_SLEEP_HABITS && checkpoint == -1) {
+            saveMedicalRecords();
+        } else if (page == END_PAGE) {
+            switch (checkpoint) {
+                case MEDICAL_RECORDS:
+                    saveMedicalRecords();
+                    break;
+                case PHYSICAL_ACTIVITY:
+                    saveActivityHabits();
+                    break;
+                case FEEDING_HABITS:
+                    saveFeedingHabits();
+                    break;
+                case SLEEP_HABITS:
+                    saveSleepHabits();
+                    break;
+                default:
+                    saveSleepHabits();
+                    startActivity(new Intent(this, MainActivity.class));
+            }
+            finish();
+        } else {
 
-                break;
-            case CATEGORY_FEENDING_HABITS:
-                saveActivityHabits();
-                break;
-            case CATEGORY_MEDICAL_RECORDS:
-                saveFeedingHabits();
-                break;
-            case CATEGORY_SLEEP_HABITS:
-                saveMedicalRecords();
-                break;
-            case END_PAGE:
-                saveSleepHabits();
-                startActivity(new Intent(this, MainActivity.class));
-                finish();
-                break;
         }
     }
 
@@ -675,7 +734,7 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
                 break;
             case 8:
                 WeeklyFoodRecord weeklyFoodRecord = new WeeklyFoodRecord();
-                weeklyFoodRecord.setFood(FoodType.FISH_CHICKEN_BEEF);
+                weeklyFoodRecord.setFood(FoodType.FISH_CHICKEN_MEAT);
                 weeklyFoodRecord.setSevenDaysFreq(FeendingHabitsRecordType
                         .SevenDaysFeedingFrequency.getString(indexValue));
                 weeklyFoodRecords.add(weeklyFoodRecord);
@@ -689,14 +748,14 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
                 break;
             case 10:
                 WeeklyFoodRecord weeklyFoodRecord2 = new WeeklyFoodRecord();
-                weeklyFoodRecord2.setFood(FoodType.SALAD);
+                weeklyFoodRecord2.setFood(FoodType.SALAD_VEGETABLE);
                 weeklyFoodRecord2.setSevenDaysFreq(FeendingHabitsRecordType
                         .SevenDaysFeedingFrequency.getString(indexValue));
                 weeklyFoodRecords.add(weeklyFoodRecord2);
                 break;
             case 11:
                 WeeklyFoodRecord weeklyFoodRecord3 = new WeeklyFoodRecord();
-                weeklyFoodRecord3.setFood(FoodType.FRIED);
+                weeklyFoodRecord3.setFood(FoodType.FRIED_SALT_FOOD);
                 weeklyFoodRecord3.setSevenDaysFreq(FeendingHabitsRecordType
                         .SevenDaysFeedingFrequency.getString(indexValue));
                 weeklyFoodRecords.add(weeklyFoodRecord3);
@@ -724,14 +783,14 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
                 break;
             case 15:
                 WeeklyFoodRecord weeklyFoodRecord7 = new WeeklyFoodRecord();
-                weeklyFoodRecord7.setFood(FoodType.GOODIES);
+                weeklyFoodRecord7.setFood(FoodType.CANDY_SUGAR_COOKIE);
                 weeklyFoodRecord7.setSevenDaysFreq(FeendingHabitsRecordType
                         .SevenDaysFeedingFrequency.getString(indexValue));
                 weeklyFoodRecords.add(weeklyFoodRecord7);
                 break;
             case 16:
                 WeeklyFoodRecord weeklyFoodRecord8 = new WeeklyFoodRecord();
-                weeklyFoodRecord8.setFood(FoodType.HAMBURGER_SAUSAGE_OTHERS);
+                weeklyFoodRecord8.setFood(FoodType.BURGER_SAUSAGE);
                 weeklyFoodRecord8.setSevenDaysFreq(FeendingHabitsRecordType
                         .SevenDaysFeedingFrequency.getString(indexValue));
                 weeklyFoodRecords.add(weeklyFoodRecord8);

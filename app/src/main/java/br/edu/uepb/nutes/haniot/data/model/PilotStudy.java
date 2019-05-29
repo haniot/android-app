@@ -10,6 +10,8 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Objects;
 
+import javax.annotation.Nullable;
+
 import br.edu.uepb.nutes.haniot.utils.ConverterStringToDatabase;
 import io.objectbox.annotation.Convert;
 import io.objectbox.annotation.Entity;
@@ -51,7 +53,7 @@ public class PilotStudy {
     @Expose()
     private List<String> healthProfessionalsId;
 
-    @Expose(serialize = false, deserialize = false)
+    @Expose()
     private String userId;
 
     public PilotStudy() {
@@ -145,6 +147,7 @@ public class PilotStudy {
      * @param json String
      * @return PilotStudy
      */
+    @Nullable
     public static PilotStudy jsonDeserialize(String json) {
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         Type typePilot = new TypeToken<PilotStudy>() {

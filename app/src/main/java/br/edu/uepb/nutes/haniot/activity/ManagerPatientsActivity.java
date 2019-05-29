@@ -75,10 +75,6 @@ public class ManagerPatientsActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         toolbar.setTitle(getResources().getString(R.string.manage_patient));
 
-        //TODO TEMP
-        toolbar.setOnClickListener(v -> {
-            startActivity(new Intent(this, QuizOdontologyActivity.class));
-        });
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         initResources();
@@ -195,7 +191,7 @@ public class ManagerPatientsActivity extends AppCompatActivity {
 
     private void removePatient(Patient patient) {
         DisposableManager.add(haniotNetRepository
-                .deletePatient(pilotStudy.get_id(), patient.get_id())
+                .deletePatient(patient.get_id())
                 .doAfterTerminate(this::loadData)
                 .subscribe(() -> {
                             adapter.removeItem(patient);

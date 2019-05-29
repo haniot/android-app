@@ -87,7 +87,7 @@ public class ManagerPatientAdapter extends BaseAdapter<Patient> {
             final Patient patient = itemsList.get(position);
             ManagerPatientViewHolder h = (ManagerPatientViewHolder) holder;
 
-            h.textName.setText(String.format("%s %s", patient.getFirstName(), patient.getLastName()));
+            h.textName.setText(patient.getName());
             h.textAge.setText(calculateAge(patient.getBirthDate()));
             if (patient.getGender().equals(PatientsType.GenderType.FEMALE))
                 h.profile.setImageResource(R.drawable.x_girl);

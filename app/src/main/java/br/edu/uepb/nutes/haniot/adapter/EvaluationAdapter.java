@@ -3,14 +3,12 @@ package br.edu.uepb.nutes.haniot.adapter;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -49,12 +47,12 @@ import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.MEDICAL_RECORDS
 import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.PHYSICAL_ACTIVITY;
 import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.SLEEP_HABITS;
 
-public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<EvaluationExpandableAdapter.HeaderViewHolder, EvaluationExpandableAdapter.ViewHolder> {
+public class EvaluationAdapter extends ExpandableRecyclerViewAdapter<EvaluationAdapter.HeaderViewHolder, EvaluationAdapter.ViewHolder> {
     private Context context;
     protected int lastPosition = -1;
     public OnClick mListener;
 
-    public EvaluationExpandableAdapter(List<? extends ExpandableGroup> groups, Context context) {
+    public EvaluationAdapter(List<? extends ExpandableGroup> groups, Context context) {
         super(groups);
         this.context = context;
     }
@@ -138,7 +136,7 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
      * @param ig
      */
     private void resetView(ViewHolder h, ItemEvaluation ig) {
-        h.checkItem.setChecked(false);
+        h.checkItem.setChecked(ig.isChecked());
         h.texTime.setVisibility(View.VISIBLE);
         h.timeIcon.setVisibility(View.VISIBLE);
         h.itemQuizView.setVisibility(GONE);
@@ -159,7 +157,6 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
         h.textMinType.setTextSize(16);
         h.textMaxType.setTextSize(16);
         h.textMeasurementType.setTextSize(16);
-    //    ((CardView) h.mView).setCardBackgroundColor(context.getResources().getColor(R.color.colorWhite));
     }
 
     /**
@@ -174,19 +171,14 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
         h.messageText.setText(context.getResources().getString(R.string.evaluation_error_message));
         h.box.setVisibility(GONE);
         h.checkItem.setVisibility(View.INVISIBLE);
-        h.mView.setOnClickListener(v -> {
-            if (mListener != null) {
-                mListener.onRefreshClick(ig.getTitle(), ig.getTypeEvaluation());
-            }
-        });
+//        h.mView.setOnClickListener(v -> {
+//            if (mListener != null) {
+//                mListener.onRefreshClick(ig.getTitle(), ig.getTypeEvaluation());
+//            }
+//        });
     }
 
     private void createEmptyView(ViewHolder h, ItemEvaluation ig) {
-      //  ((CardView) h.mView).setCardBackgroundColor(context.getResources().getColor(R.color.colorPrimaryDark));
-        h.messageText.setTextColor(context.getResources().getColor(R.color.colorWhite));
-        h.textDescription.setTextColor(context.getResources().getColor(R.color.colorWhite));
-        h.imageItem.setColorFilter(context.getResources().getColor(R.color.colorWhite));
-        h.warning.setVisibility(GONE);
         h.mView.setOnClickListener(v -> {
             if (mListener != null) {
                 mListener.onAddItemClick(ig.getTitle(), ig.getTypeEvaluation());
@@ -196,7 +188,6 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
         h.messageText.setText(context.getResources().getString(R.string.evaluation_empty_message));
         h.box.setVisibility(GONE);
         h.checkItem.setVisibility(View.INVISIBLE);
-
     }
 
     /**
@@ -208,14 +199,14 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
     @SuppressLint("DefaultLocale")
     private void createMeasurementView(ViewHolder h, ItemEvaluation ig) {
         h.checkItem.setChecked(ig.isChecked());
-        h.checkItem.setOnCheckedChangeListener((buttonView, isChecked) -> ig.setChecked(!ig.isChecked()));
-        h.textMeasurement.setVisibility(View.VISIBLE);
-        h.textMeasurementType.setVisibility(View.VISIBLE);
         h.mView.setOnClickListener(v -> {
             ig.setChecked(!ig.isChecked());
             h.checkItem.setChecked(!h.checkItem.isChecked());
             mListener.onSelectClick(ig, ig.isChecked());
         });
+
+        h.textMeasurement.setVisibility(View.VISIBLE);
+        h.textMeasurementType.setVisibility(View.VISIBLE);
 
         int type = ig.getTypeEvaluation();
         Measurement measurement = ig.getMeasurement();
@@ -292,17 +283,22 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
         h.messageText.setVisibility(View.VISIBLE);
         h.box.setVisibility(GONE);
         h.checkItem.setChecked(ig.isChecked());
+
         h.mView.setOnClickListener(v -> {
             for (ItemEvaluation itemEvaluation : (List<ItemEvaluation>) group.getItems()) {
                 itemEvaluation.setChecked(false);
             }
+            notifyDataSetChanged();
+
             ig.setChecked(!ig.isChecked());
             h.checkItem.setChecked(!h.checkItem.isChecked());
             mListener.onSelectClick(ig, ig.isChecked());
         });
+
         StringBuilder stringBuilder = new StringBuilder();
         String date = "";
         String time = "";
+
         switch (ig.getTypeEvaluation()) {
             case SLEEP_HABITS:
                 SleepHabit sleepHabit = ig.getSleepHabit();
@@ -317,18 +313,21 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
                 break;
             case MEDICAL_RECORDS:
                 MedicalRecord medicalRecord = ig.getMedicalRecord();
+                if (medicalRecord == null) return;
                 date = DateUtils.convertDateTimeUTCToLocale(medicalRecord.getCreatedAt(),
                         context.getString(R.string.date_format));
                 time = DateUtils.convertDateTimeUTCToLocale(medicalRecord.getCreatedAt(),
                         context.getString(R.string.time_format_simple));
-                for (ChronicDisease chronicDisease : medicalRecord.getChronicDiseases())
-                    stringBuilder
-                            .append(ChronicDiseaseType.ChronicDisease
-                                    .getString_PTBR(chronicDisease.getType()))
-                            .append(": ")
-                            .append(ChronicDiseaseType.DisieaseHistory
-                                    .getStringPTBR(chronicDisease.getDiseaseHistory()))
-                            .append("\n");
+                if (medicalRecord.getChronicDiseases() != null) {
+                    for (ChronicDisease chronicDisease : medicalRecord.getChronicDiseases())
+                        stringBuilder
+                                .append(ChronicDiseaseType.ChronicDisease
+                                        .getString_PTBR(chronicDisease.getType()))
+                                .append(": ")
+                                .append(ChronicDiseaseType.DisieaseHistory
+                                        .getStringPTBR(chronicDisease.getDiseaseHistory()))
+                                .append("\n");
+                }
                 break;
             case FEEDING_HABITS:
                 FeedingHabitsRecord feedingHabitsRecord = ig.getFeedingHabitsRecord();
@@ -336,7 +335,7 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
                         context.getString(R.string.date_format));
                 time = DateUtils.convertDateTimeUTCToLocale(feedingHabitsRecord.getCreatedAt(),
                         context.getString(R.string.time_format_simple));
-                stringBuilder.append("\nCopos de água por dia: ").append(FoodType
+                stringBuilder.append("\nCopos de água por dia: ").append(FrequencyAnswersType.Frequency
                         .getStringPTBR(feedingHabitsRecord.getDailyWaterGlasses()));
                 stringBuilder.append("\nCafé da manhã: ").append(FrequencyAnswersType.Frequency
                         .getStringPTBR(feedingHabitsRecord.getBreakfastDailyFrequency()));
@@ -356,7 +355,7 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
                         context.getString(R.string.time_format_simple));
                 stringBuilder.append("\nEsportes praticados durante a semana: \n");
                 for (String sport : physicalActivityHabit.getWeeklyActivities()) {
-                    stringBuilder.append(sport).append(",\n");
+                    stringBuilder.append(sport).append("\n");
                 }
                 stringBuilder.append("\nFrequência de atividades físicas na escola: \n")
                         .append(SchoolActivityFrequencyType
@@ -473,8 +472,6 @@ public class EvaluationExpandableAdapter extends ExpandableRecyclerViewAdapter<E
     public interface OnClick {
 
         void onAddItemClick(String name, int type);
-
-        void onRefreshClick(String name, int type);
 
         void onSelectClick(ItemEvaluation itemEvaluation, boolean selected);
 
