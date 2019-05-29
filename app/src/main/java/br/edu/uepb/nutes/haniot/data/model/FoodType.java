@@ -1,20 +1,16 @@
 package br.edu.uepb.nutes.haniot.data.model;
 
-import android.content.Context;
-import android.content.res.Resources;
-
-import br.edu.uepb.nutes.haniot.R;
-
 public class FoodType {
-    public static final String FISH_CHICKEN_BEEF = "fish, chicken or red meat";
+
+    public static final String FISH_CHICKEN_MEAT = "fish_chicken_meat";
     public static final String SODA = "soda";
-    public static final String SALAD = "raw salad, greens or vegetables";
-    public static final String FRIED = "fried";
+    public static final String SALAD_VEGETABLE = "salad_vegetable";
+    public static final String FRIED_SALT_FOOD = "fried_salt_food";
     public static final String MILK = "milk";
     public static final String BEAN = "bean";
     public static final String FRUITS = "fruits";
-    public static final String GOODIES = "goodies";
-    public static final String HAMBURGER_SAUSAGE_OTHERS = "hamburger or sausages";
+    public static final String CANDY_SUGAR_COOKIE = "candy_sugar_cookie";
+    public static final String BURGER_SAUSAGE = "burger_sausage";
 
     public static final String FISH_CHICKEN_BEEF_PTBR = "Peixe, frango ou carne vermelha";
     public static final String SODA_PTBR = "Refrigerante";
@@ -28,13 +24,13 @@ public class FoodType {
 
     public static String getStringPTBR(String type) {
         switch (type) {
-            case FISH_CHICKEN_BEEF:
+            case FISH_CHICKEN_MEAT:
                 return FISH_CHICKEN_BEEF_PTBR;
             case SODA:
                 return SODA_PTBR;
-            case SALAD:
+            case SALAD_VEGETABLE:
                 return SALAD_PTBR;
-            case FRIED:
+            case FRIED_SALT_FOOD:
                 return FRIED_PTBR;
             case MILK:
                 return MILK_PTBR;
@@ -42,9 +38,9 @@ public class FoodType {
                 return BEAN_PTBR;
             case FRUITS:
                 return FRUITS_PTBR;
-            case GOODIES:
+            case CANDY_SUGAR_COOKIE:
                 return GOODIES_PTBR;
-            case HAMBURGER_SAUSAGE_OTHERS:
+            case BURGER_SAUSAGE:
                 return HAMBURGER_SAUSAGE_OTHERS_PTBR;
             default:
                 return "";
