@@ -3,7 +3,6 @@ package br.edu.uepb.nutes.haniot.activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.support.design.widget.FloatingActionButton;
@@ -27,6 +26,7 @@ import java.util.List;
 import java.util.Locale;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.data.model.ItemGridType;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.PatientsType;
@@ -35,14 +35,12 @@ import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.haniot.fragment.FragmentAnthropometrics;
-import br.edu.uepb.nutes.haniot.fragment.FragmentHeartRate;
-import br.edu.uepb.nutes.haniot.data.model.ItemGridType;
 import br.edu.uepb.nutes.haniot.fragment.FragmentBloodPressure;
 import br.edu.uepb.nutes.haniot.fragment.FragmentGlucose;
+import br.edu.uepb.nutes.haniot.fragment.FragmentHeartRate;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import retrofit2.HttpException;
 
 public class AddMeasurementActivity extends AppCompatActivity {
 

@@ -180,6 +180,7 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
         }
 
         mDevice = deviceDAO.getByType(appPreferencesHelper.getUserLogged().get_id(), DeviceType.GLUCOMETER);
+
         initComponents();
 
         IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);

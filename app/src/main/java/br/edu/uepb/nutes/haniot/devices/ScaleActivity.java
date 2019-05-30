@@ -3,7 +3,7 @@ package br.edu.uepb.nutes.haniot.devices;
 import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothGattCharacteristic;
+import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothProfile;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -14,7 +14,6 @@ import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.StringRes;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.ActivityCompat;
@@ -30,7 +29,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,7 +42,6 @@ import java.util.Locale;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.AddMeasurementActivity;
-import br.edu.uepb.nutes.haniot.activity.charts.BodyCompositionChartActivity;
 import br.edu.uepb.nutes.haniot.adapter.BodyCompositionAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
 import br.edu.uepb.nutes.haniot.data.model.BodyFat;
@@ -61,6 +58,7 @@ import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.ScaleManager;
+import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.ScaleDataCallback;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
@@ -163,6 +161,7 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
         ButterKnife.bind(this);
         checkPermissions();
 
+        // synchronization with server
         synchronizeWithServer();
 
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
@@ -180,15 +179,15 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
 
         mDevice = deviceDAO.getByType(appPreferencesHelper.getUserLogged().get_id(), DeviceType.BODY_COMPOSITION);
 
-        if (isTablet(this)){
+        if (isTablet(this)) {
             Log.i(TAG, "is tablet");
-            boxMeasurement.getLayoutParams().height= 600;
-            mCollapsingToolbarLayout.getLayoutParams().height= 630;
+            boxMeasurement.getLayoutParams().height = 600;
+            mCollapsingToolbarLayout.getLayoutParams().height = 630;
             boxMeasurement.requestLayout();
             mCollapsingToolbarLayout.requestLayout();
         }
 
-//        scaleManager.setSimpleCallback(scaleDataCallback);
+        scaleManager.setSimpleCallback(scaleDataCallback);
         initComponents();
 
         IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
@@ -197,6 +196,7 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
 
     /**
      * Check if is tablet.
+     *
      * @param context
      * @return
      */
@@ -206,44 +206,50 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
                 >= Configuration.SCREENLAYOUT_SIZE_LARGE;
     }
 
-//    ScaleDataCallback scaleDataCallback = new ScaleDataCallback() {
-//        @Override
-//        public void onConnected() {
-//            mConnected = true;
-//            updateConnectionState(true);
-//        }
-//
-//        @Override
-//        public void onDisconnected() {
-//            mConnected = false;
-//            updateConnectionState(false);
-//        }
-//
-//        @Override
-//        public void onMeasurementReceived(Measurement measurementScale) {
-//
-//            if (mDevice != null)
-//                measurementScale.setDevice(mDevice);
-//
-//            /**
-//             * Save in local
-//             * Send to server saved successfully
-//             */
-//            if (measurementDAO.save(measurementScale)) {
-//                synchronizeWithServer();
-//                loadData();
-//            }
-//            updateUILastMeasurement(measurementScale, true);
-//        }
-//
-//        @Override
-//        public void onMeasurementReceiving(String bodyMassMeasurement, long timeStamp, String bodyMassUnit) {
-//            runOnUiThread(() -> {
-//                bodyMassTextView.setText(bodyMassMeasurement);
-//                bodyMassUnitTextView.setText(bodyMassUnit);
-//            });
-//        }
-//    };
+    ScaleDataCallback scaleDataCallback = new ScaleDataCallback() {
+        @Override
+        public void onMeasurementReceiving(double bodyMass, String bodyMassUnit) {
+            runOnUiThread(() -> {
+                bodyMassTextView.setText(String.valueOf(bodyMass));
+                bodyMassUnitTextView.setText(bodyMassUnit);
+            });
+        }
+
+        @Override
+        public void onMeasurementReceived(@NonNull BluetoothDevice device, double bodyMass, String bodyMassUnit, double bodyFat, String timestamp) {
+            Measurement measurement = new Measurement();
+            measurement.setUserId(patient.get_id());
+            measurement.setType("weight");
+            measurement.setUnit(bodyMassUnit);
+            measurement.setFat(new BodyFat(bodyFat, "%"));
+            measurement.setTimestamp(timestamp);
+
+            if (mDevice != null)
+                measurement.setDeviceId(mDevice.get_id());
+
+            /**
+             * Save in local
+             * Send to server saved successfully
+             */
+            if (measurementDAO.save(measurement)) {
+                synchronizeWithServer();
+                loadData();
+            }
+            updateUILastMeasurement(measurement, true);
+        }
+
+        @Override
+        public void onConnected(@androidx.annotation.NonNull BluetoothDevice device) {
+            mConnected = true;
+            updateConnectionState(true);
+        }
+
+        @Override
+        public void onDisconnected(@androidx.annotation.NonNull BluetoothDevice device) {
+            mConnected = false;
+            updateConnectionState(false);
+        }
+    };
 
     /**
      * Initialize components
@@ -300,10 +306,12 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
             }
 
             @Override
-            public void onLongItemClick(View v, Measurement item) { }
+            public void onLongItemClick(View v, Measurement item) {
+            }
 
             @Override
-            public void onMenuContextClick(View v, Measurement item) { }
+            public void onMenuContextClick(View v, Measurement item) {
+            }
         });
 
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -368,35 +376,33 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
                     .getAllMeasurementsByType(patient.get_id(),
                             MeasurementType.BODY_MASS, "-timestamp",
                             null, null, page, LIMIT_PER_PAGE)
-            .doOnSubscribe(disposable -> {
-                Log.w(TAG, "loadData - doOnSubscribe");
-                toggleLoading(true);
-                toggleNoDataMessage(false);
-            })
-            .doAfterTerminate(() -> {
-                Log.w(TAG, "loadData - doAfterTerminate");
-                toggleLoading(false); // Disable loading
-            })
-            .subscribe(measurements -> {
-                Log.w(TAG, "loadData - onResult()");
-                if (measurements != null && measurements.size() > 0) {
-                    mAdapter.addItems(measurements);
-                    page++;
-                    itShouldLoadMore = true;
-                    updateUILastMeasurement(mAdapter.getFirstItem(), false);
-                } else {
-                    toggleLoading(false);
-                    if (mAdapter.itemsIsEmpty())
-                        toggleNoDataMessage(true); // Enable message no data
-                    itShouldLoadMore = false;
-                }
-            }, erro -> {
-                Log.w(TAG, "loadData - onError()");
-                if (mAdapter.itemsIsEmpty())
-                    printMessage(getString(R.string.error_500));
-                else
-                    loadDataLocal();
-            }));
+                    .doOnSubscribe(disposable -> {
+                        Log.w(TAG, "loadData - doOnSubscribe");
+                        toggleLoading(true);
+                        toggleNoDataMessage(false);
+                    })
+                    .doAfterTerminate(() -> {
+                        Log.w(TAG, "loadData - doAfterTerminate");
+                        toggleLoading(false); // Disable loading
+                    })
+                    .subscribe(measurements -> {
+                        Log.w(TAG, "loadData - onResult()");
+                        if (measurements != null && measurements.size() > 0) {
+                            mAdapter.addItems(measurements);
+                            page++;
+                            itShouldLoadMore = true;
+                            updateUILastMeasurement(mAdapter.getFirstItem(), false);
+                        } else {
+                            toggleLoading(false);
+                            if (mAdapter.itemsIsEmpty())
+                                toggleNoDataMessage(true); // Enable message no data
+                            itShouldLoadMore = false;
+                        }
+                    }, erro -> {
+                        Log.w(TAG, "loadData - onError()");
+                        if (mAdapter.itemsIsEmpty()) printMessage(getString(R.string.error_500));
+                        else loadDataLocal();
+                    }));
         }
     }
 
@@ -544,7 +550,7 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
      * formula: bodyMass(kg)/height(m)^2
      *
      * @param bodyMass double
-     * @param height in cm
+     * @param height   in cm
      * @return double
      */
     private double calcBMI(double bodyMass, double height) {
@@ -581,7 +587,7 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
                 mDateLastMeasurement.setText(R.string.today_text);
             } else {
                 mDateLastMeasurement.setText(DateUtils.convertDateTimeUTCToLocale(
-                        timeStamp,"MMMM dd, EEE"
+                        timeStamp, "MMMM dd, EEE"
                 ));
             }
 
@@ -594,15 +600,15 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
             DisposableManager.add(haniotNetRepository.
                     getAllMeasurementsByType(patient.get_id(),
                             MeasurementType.HEIGHT, "-timestamp", null, null, 1, 1)
-            .subscribe(measurements -> {
-                double height = measurements.get(0).getValue();
-                double bmi = calcBMI(measurement.getValue(), height);
+                    .subscribe(measurements -> {
+                        double height = measurements.get(0).getValue();
+                        double bmi = calcBMI(measurement.getValue(), height);
 
-                bmiTextView.setText(formatNumber(bmi));
-                titleBmiTextView.setVisibility(View.VISIBLE);
-            }, error -> {
-                Log.w(TAG, "Error to process BMI");
-            }));
+                        bmiTextView.setText(formatNumber(bmi));
+                        titleBmiTextView.setVisibility(View.VISIBLE);
+                    }, error -> {
+                        Log.w(TAG, "Error to process BMI");
+                    }));
 
             if (applyAnimation) bodyMassTextView.startAnimation(animation);
         });
@@ -641,7 +647,7 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
                 break;
             case R.id.add_floating_button:
                 Intent it = new Intent(getApplicationContext(), AddMeasurementActivity.class);
-               appPreferencesHelper.saveInt(
+                appPreferencesHelper.saveInt(
                         getResources().getString(R.string.measurementType), ItemGridType.WEIGHT);
                 startActivity(it);
                 break;

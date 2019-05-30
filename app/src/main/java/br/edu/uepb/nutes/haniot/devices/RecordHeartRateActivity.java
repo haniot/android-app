@@ -402,7 +402,7 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
     @Override
     public void onClickDialog(int id, int button) {
         if (button == DialogInterface.BUTTON_POSITIVE) {
-            //TODO CONCERTAR!!! Deverá ser salvo como um treino
+            //TODO CONSERTAR!!! Deverá ser salvo como um treino
         }
         // close activity
         finish();

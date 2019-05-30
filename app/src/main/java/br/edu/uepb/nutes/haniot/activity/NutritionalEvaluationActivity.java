@@ -49,7 +49,6 @@ import static br.edu.uepb.nutes.haniot.data.model.ItemEvaluation.TYPE_LOADING;
 import static br.edu.uepb.nutes.haniot.data.model.ItemEvaluation.TYPE_MEASUREMENT;
 import static br.edu.uepb.nutes.haniot.data.model.ItemEvaluation.TYPE_QUIZ;
 import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.ALL_MEASUREMENT;
-import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.ANTROPOMETRICHS;
 import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.BLOOD_PRESSURE;
 import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.FEEDING_HABITS;
 import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.GLUCOSE;
@@ -98,7 +97,6 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
         showMessage(-1);
         sendEvaluation.setOnClickListener(v -> {
             sendEvaluation();
-
         });
     }
 
@@ -461,17 +459,22 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
         nutritionalEvaluation.setPatient(patient);
         nutritionalEvaluation.setHealthProfessionalId(appPreferencesHelper.getUserLogged().get_id());
         nutritionalEvaluation.setPilotStudy(appPreferencesHelper.getLastPilotStudy().get_id());
+        if (nutritionalEvaluation.getMeasurements() != null)
+            nutritionalEvaluation.getMeasurements().clear();
 
-        if (hasMeasurement(HEARTRATE)
-                && hasMeasurement(GLUCOSE)
-                && hasMeasurement(BLOOD_PRESSURE)
-                && hasMeasurement(WEIGHT)
-                && hasMeasurement(WAIST_CIRCUMFERENCE)
-                && hasQuiz(PHYSICAL_ACTIVITY)
-                && hasQuiz(MEDICAL_RECORDS)
-                && hasQuiz(SLEEP_HABITS)
-                && hasQuiz(FEEDING_HABITS)) {
+        if (getCheckedMeasurement(HEARTRATE)
+                && getCheckedMeasurement(GLUCOSE)
+                && getCheckedMeasurement(BLOOD_PRESSURE)
+                && getCheckedMeasurement(WEIGHT)
+                && getCheckedMeasurement(WAIST_CIRCUMFERENCE)
+                && getCheckedMeasurement(HEIGHT)
+                && getCheckedQuiz(PHYSICAL_ACTIVITY)
+                && getCheckedQuiz(MEDICAL_RECORDS)
+                && getCheckedQuiz(SLEEP_HABITS)
+                && getCheckedQuiz(FEEDING_HABITS)) {
+
             Log.i("AAA", "Saida: " + nutritionalEvaluation.toJson());
+
             new AlertDialog.Builder(this)
                     .setMessage(getString(R.string.confirm_save_evaluation))
                     .setCancelable(false)
@@ -490,7 +493,7 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
         }
     }
 
-    private boolean hasQuiz(int type) {
+    private boolean getCheckedQuiz(int type) {
         boolean contains = false;
         if (getEvaluationGroupByType(type) == null) return false;
         for (ItemEvaluation itemEvaluation : getEvaluationGroupByType(type).getItems())
@@ -523,19 +526,19 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
      * @param type
      * @return
      */
-    private boolean hasMeasurement(int type) {
-        List<Measurement> measurementChecked = new ArrayList<>();
-
+    private boolean getCheckedMeasurement(int type) {
+        int count = 0;
         GroupItemEvaluation groupItemEvaluation = getEvaluationGroupByType(type);
         if (groupItemEvaluation == null) return false;
 
         for (ItemEvaluation itemEvaluation1 : groupItemEvaluation.getItems()) {
             if (itemEvaluation1.isChecked()) {
-                measurementChecked.add(itemEvaluation1.getMeasurement());
+                nutritionalEvaluation.addMeasuerement(itemEvaluation1.getMeasurement());
+                count++;
             }
         }
 
-        return !measurementChecked.isEmpty();
+        return count > 0;
     }
 
     @Override
