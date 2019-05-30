@@ -622,7 +622,7 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
 //                startActivity(intent);
 //                break;
             case R.id.chart_floating_button:
-                startActivity(new Intent(getApplicationContext(), HeartRateChartActivity.class));
+//                startActivity(new Intent(getApplicationContext(), HeartRateChartActivity.class));
                 break;
             case R.id.add_floating_button:
                 Intent it = new Intent(getApplicationContext(), AddMeasurementActivity.class);

@@ -153,12 +153,6 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
     @BindView(R.id.add_floating_button)
     FloatingActionButton mAddButton;
 
-//    @BindView(R.id.box_message_error)
-//    LinearLayout boxMessage;
-//
-//    @BindView(R.id.message_error)
-//    TextView messageError;
-
     @BindView(R.id.box_measurement)
     RelativeLayout boxMeasurement;
 
@@ -169,7 +163,6 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
         ButterKnife.bind(this);
         checkPermissions();
 
-        // synchronization with server
         synchronizeWithServer();
 
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
@@ -186,7 +179,6 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
         patient = appPreferencesHelper.getLastPatient();
 
         mDevice = deviceDAO.getByType(appPreferencesHelper.getUserLogged().get_id(), DeviceType.BODY_COMPOSITION);
-//        messageError.setOnClickListener(v -> checkPermissions());
 
         if (isTablet(this)){
             Log.i(TAG, "is tablet");
@@ -319,7 +311,6 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 if (dy > 0) {
-//                    mAddButton.hide();
                     // Recycle view scrolling downwards...
                     // this if statement detects when user reaches the end of recyclerView, this is only time we should load more
                     if (!recyclerView.canScrollVertically(RecyclerView.FOCUS_DOWN)) {
@@ -458,13 +449,6 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
     private void toggleLoading(boolean enabled) {
         runOnUiThread(() -> {
             mDataSwipeRefresh.setRefreshing(enabled);
-//            if (!enabled) {
-//                mDataSwipeRefresh.setRefreshing(false);
-//                itShouldLoadMore = true;
-//            } else {
-//                mDataSwipeRefresh.setRefreshing(true);
-//                itShouldLoadMore = false;
-//            }
         });
     }
 
@@ -496,28 +480,6 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
     private void printMessage(String message) {
         runOnUiThread(() -> Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show());
     }
-
-//    /**
-//     * Displays message.
-//     *
-//     * @param str @StringRes message.
-//     */
-//    private void showMessage(@StringRes int str) {
-//        if (str != -1) {
-//            String message = getString(str);
-//
-//            messageError.setText(message);
-//            runOnUiThread(() -> {
-//                boxMessage.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_in));
-//                boxMessage.setVisibility(View.VISIBLE);
-//            });
-//        } else {
-//            runOnUiThread(() -> {
-//                boxMessage.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_out));
-//                boxMessage.setVisibility(View.INVISIBLE);
-//            });
-//        }
-//    }
 
     @Override
     protected void onStart() {
@@ -675,7 +637,7 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.chart_floating_button:
-                startActivity(new Intent(getApplicationContext(), BodyCompositionChartActivity.class));
+//                startActivity(new Intent(getApplicationContext(), BodyCompositionChartActivity.class));
                 break;
             case R.id.add_floating_button:
                 Intent it = new Intent(getApplicationContext(), AddMeasurementActivity.class);

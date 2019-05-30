@@ -552,7 +552,7 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.chart_floating_button:
-                startActivity(new Intent(getApplicationContext(), TemperatureChartActivity.class));
+//                startActivity(new Intent(getApplicationContext(), TemperatureChartActivity.class));
                 break;
             case R.id.add_floating_button:
                 Intent it = new Intent(getApplicationContext(), AddMeasurementActivity.class);

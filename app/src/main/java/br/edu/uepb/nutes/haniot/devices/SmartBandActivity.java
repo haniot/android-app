@@ -757,7 +757,7 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.chart_floating_button:
-                startActivity(new Intent(getApplicationContext(), SmartBandChartActivity.class));
+//                startActivity(new Intent(getApplicationContext(), SmartBandChartActivity.class));
                 break;
             case R.id.heart_rate_floating_button:
                 startScanHeartRate();

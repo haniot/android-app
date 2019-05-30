@@ -135,11 +135,11 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
     @BindView(R.id.add_floating_button)
     FloatingActionButton mAddButton;
 
-    @BindView(R.id.box_message_error)
-    LinearLayout boxMessage;
-
-    @BindView(R.id.message_error)
-    TextView messageError;
+//    @BindView(R.id.box_message_error)
+//    LinearLayout boxMessage;
+//
+//    @BindView(R.id.message_error)
+//    TextView messageError;
 
     private ProgressDialog progressDialog;
     private boolean isGetAllMonitor;
@@ -166,7 +166,7 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
         animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
         mChartButton.setOnClickListener(this);
         mAddButton.setOnClickListener(this);
-        messageError.setOnClickListener(v -> checkPermissions());
+//        messageError.setOnClickListener(v -> checkPermissions());
 
         patient = appPreferencesHelper.getLastPatient();
         haniotNetRepository = HaniotNetRepository.getInstance(this);
@@ -277,13 +277,16 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
 
         mAdapter.setListener(new OnRecyclerViewListener<Measurement>() {
             @Override
-            public void onItemClick(Measurement item) { }
+            public void onItemClick(Measurement item) {
+            }
 
             @Override
-            public void onLongItemClick(View v, Measurement item) { }
+            public void onLongItemClick(View v, Measurement item) {
+            }
 
             @Override
-            public void onMenuContextClick(View v, Measurement item) { }
+            public void onMenuContextClick(View v, Measurement item) {
+            }
         });
 
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -358,25 +361,24 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
                         toggleLoading(false); // Disable loading
                     })
                     .subscribe(measurements -> {
-                        Log.w(TAG, "loadData - onResult()");
-                        if (measurements != null && measurements.size() > 0) {
-                            mAdapter.addItems(measurements);
-                            page++;
-                            itShouldLoadMore = true;
-                            updateUILastMeasurement(mAdapter.getFirstItem(), false);
-                        } else {
-                            toggleLoading(false);
-                            if (mAdapter.itemsIsEmpty())
-                                toggleNoDataMessage(true); // Enable message no data
-                            itShouldLoadMore = false;
-                        }
-                    }, error -> {
-                        Log.w(TAG, "loadData - onError()");
-                        if (mAdapter.itemsIsEmpty()) {
-                            printMessage(getString(R.string.error_500));
-                        }
-                        else loadDataLocal();
-                    }
+                                Log.w(TAG, "loadData - onResult()");
+                                if (measurements != null && measurements.size() > 0) {
+                                    mAdapter.addItems(measurements);
+                                    page++;
+                                    itShouldLoadMore = true;
+                                    updateUILastMeasurement(mAdapter.getFirstItem(), false);
+                                } else {
+                                    toggleLoading(false);
+                                    if (mAdapter.itemsIsEmpty())
+                                        toggleNoDataMessage(true); // Enable message no data
+                                    itShouldLoadMore = false;
+                                }
+                            }, error -> {
+                                Log.w(TAG, "loadData - onError()");
+                                if (mAdapter.itemsIsEmpty()) {
+                                    printMessage(getString(R.string.error_500));
+                                } else loadDataLocal();
+                            }
                     )
             );
         }
@@ -484,27 +486,27 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
         });
     }
 
-    /**
-     * Displays message.
-     *
-     * @param str @StringRes message.
-     */
-    private void showMessage(@StringRes int str) {
-        if (str != -1) {
-            String message = getString(str);
-
-            messageError.setText(message);
-            runOnUiThread(() -> {
-                boxMessage.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_in));
-                boxMessage.setVisibility(View.VISIBLE);
-            });
-        } else {
-            runOnUiThread(() -> {
-                boxMessage.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_out));
-                boxMessage.setVisibility(View.INVISIBLE);
-            });
-        }
-    }
+//    /**
+//     * Displays message.
+//     *
+//     * @param str @StringRes message.
+//     */
+//    private void showMessage(@StringRes int str) {
+//        if (str != -1) {
+//            String message = getString(str);
+//
+//            messageError.setText(message);
+//            runOnUiThread(() -> {
+//                boxMessage.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_in));
+//                boxMessage.setVisibility(View.VISIBLE);
+//            });
+//        } else {
+//            runOnUiThread(() -> {
+//                boxMessage.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_out));
+//                boxMessage.setVisibility(View.INVISIBLE);
+//            });
+//        }
+//    }
 
     @Override
     protected void onStart() {
@@ -514,7 +516,7 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     protected void onResume() {
         super.onResume();
-        boxMessage.setVisibility(View.GONE);
+//        boxMessage.setVisibility(View.GONE);
 
         if (glucoseManager.getConnectionState() == BluetoothProfile.STATE_DISCONNECTED && mDevice != null)
             glucoseManager.connectDevice(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(mDevice.getAddress()));
@@ -608,7 +610,7 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
                 mDateLastMeasurement.setText(R.string.today_text);
             } else {
                 mDateLastMeasurement.setText(DateUtils.convertDateTimeUTCToLocale(
-                        timeStamp,"MMMM dd, EEE"
+                        timeStamp, "MMMM dd, EEE"
                 ));
             }
             if (applyAnimation) mBloodGlucoseTextView.startAnimation(animation);
@@ -631,10 +633,10 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
                 final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE,
                         BluetoothAdapter.ERROR);
                 if (state == BluetoothAdapter.STATE_OFF) {
-                    showMessage(R.string.bluetooth_disabled);
+//                    showMessage(R.string.bluetooth_disabled);
 
                 } else if (state == BluetoothAdapter.STATE_ON) {
-                    showMessage(-1);
+//                    showMessage(-1);
                 }
             }
         }
@@ -644,7 +646,7 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.chart_floating_button:
-                startActivity(new Intent(getApplicationContext(), GlucoseChartActivity.class));
+//                startActivity(new Intent(getApplicationContext(), GlucoseChartActivity.class));
                 break;
             case R.id.add_floating_button:
                 Intent it = new Intent(getApplicationContext(), AddMeasurementActivity.class);
