@@ -179,7 +179,12 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
             mCollapsingToolbarLayout.requestLayout();
         }
 
-        mDevice = deviceDAO.getByType(appPreferencesHelper.getUserLogged().get_id(), DeviceType.GLUCOMETER);
+        //TODO TEMP - Há problemas no cadastro dos dispositivos
+//        mDevice = deviceDAO.getByType(appPreferencesHelper.getUserLogged().get_id(), DeviceType.GLUCOMETER);
+        mDevice = new Device();
+        mDevice.setAddress("1C:87:74:01:73:10");
+        mDevice.setType(DeviceType.THERMOMETER);
+        mDevice.setName("GLUCOSEMETER");
         initComponents();
 
         IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
@@ -277,13 +282,16 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
 
         mAdapter.setListener(new OnRecyclerViewListener<Measurement>() {
             @Override
-            public void onItemClick(Measurement item) { }
+            public void onItemClick(Measurement item) {
+            }
 
             @Override
-            public void onLongItemClick(View v, Measurement item) { }
+            public void onLongItemClick(View v, Measurement item) {
+            }
 
             @Override
-            public void onMenuContextClick(View v, Measurement item) { }
+            public void onMenuContextClick(View v, Measurement item) {
+            }
         });
 
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -358,25 +366,24 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
                         toggleLoading(false); // Disable loading
                     })
                     .subscribe(measurements -> {
-                        Log.w(TAG, "loadData - onResult()");
-                        if (measurements != null && measurements.size() > 0) {
-                            mAdapter.addItems(measurements);
-                            page++;
-                            itShouldLoadMore = true;
-                            updateUILastMeasurement(mAdapter.getFirstItem(), false);
-                        } else {
-                            toggleLoading(false);
-                            if (mAdapter.itemsIsEmpty())
-                                toggleNoDataMessage(true); // Enable message no data
-                            itShouldLoadMore = false;
-                        }
-                    }, error -> {
-                        Log.w(TAG, "loadData - onError()");
-                        if (mAdapter.itemsIsEmpty()) {
-                            printMessage(getString(R.string.error_500));
-                        }
-                        else loadDataLocal();
-                    }
+                                Log.w(TAG, "loadData - onResult()");
+                                if (measurements != null && measurements.size() > 0) {
+                                    mAdapter.addItems(measurements);
+                                    page++;
+                                    itShouldLoadMore = true;
+                                    updateUILastMeasurement(mAdapter.getFirstItem(), false);
+                                } else {
+                                    toggleLoading(false);
+                                    if (mAdapter.itemsIsEmpty())
+                                        toggleNoDataMessage(true); // Enable message no data
+                                    itShouldLoadMore = false;
+                                }
+                            }, error -> {
+                                Log.w(TAG, "loadData - onError()");
+                                if (mAdapter.itemsIsEmpty()) {
+                                    printMessage(getString(R.string.error_500));
+                                } else loadDataLocal();
+                            }
                     )
             );
         }
@@ -608,7 +615,7 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
                 mDateLastMeasurement.setText(R.string.today_text);
             } else {
                 mDateLastMeasurement.setText(DateUtils.convertDateTimeUTCToLocale(
-                        timeStamp,"MMMM dd, EEE"
+                        timeStamp, "MMMM dd, EEE"
                 ));
             }
             if (applyAnimation) mBloodGlucoseTextView.startAnimation(animation);

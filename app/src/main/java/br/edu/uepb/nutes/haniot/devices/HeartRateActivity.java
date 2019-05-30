@@ -5,6 +5,7 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothProfile;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -39,11 +40,15 @@ import android.widget.Toast;
 import com.github.clans.fab.FloatingActionButton;
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.AddMeasurementActivity;
 import br.edu.uepb.nutes.haniot.activity.charts.HeartRateChartActivity;
 import br.edu.uepb.nutes.haniot.adapter.HeartRateAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
+import br.edu.uepb.nutes.haniot.data.model.HeartRateItem;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
@@ -58,6 +63,7 @@ import br.edu.uepb.nutes.haniot.data.model.dao.DeviceDAO;
 import br.edu.uepb.nutes.haniot.data.model.dao.MeasurementDAO;
 import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.HeartRateManager;
+import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.HeartRateDataCallback;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
@@ -166,20 +172,26 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
         measurementDAO = MeasurementDAO.getInstance(this);
         deviceDAO = DeviceDAO.getInstance(this);
         heartRateManager = new HeartRateManager(this);
-//        heartRateManager.setSimpleCallback(heartRateDataCallback);
+        heartRateManager.setSimpleCallback(heartRateDataCallback);
 
         patient = appPreferencesHelper.getLastPatient();
         haniotNetRepository = HaniotNetRepository.getInstance(this);
 
-        if (isTablet(this)){
+        if (isTablet(this)) {
             Log.i(TAG, "is tablet");
-            boxMeasurement.getLayoutParams().height= 600;
-            mCollapsingToolbarLayout.getLayoutParams().height= 630;
+            boxMeasurement.getLayoutParams().height = 600;
+            mCollapsingToolbarLayout.getLayoutParams().height = 630;
             boxMeasurement.requestLayout();
             mCollapsingToolbarLayout.requestLayout();
         }
 
-        mDevice = deviceDAO.getByType(appPreferencesHelper.getUserLogged().get_id(), DeviceType.HEART_RATE);
+        //TODO TEMP - Há problemas no cadastro dos dispositivos
+//        mDevice = deviceDAO.getByType(appPreferencesHelper.getUserLogged().get_id(), DeviceType.HEART_RATE);
+        mDevice = new Device();
+        mDevice.setAddress("D4:27:B5:B3:93:F3");
+        mDevice.setType(DeviceType.HEART_RATE);
+        mDevice.setName("Polar H10");
+
         mChartButton.setOnClickListener(this);
 //        mRecordHeartRateButton.setOnClickListener(this);
         mAddMeasurementButton.setOnClickListener(this);
@@ -193,6 +205,7 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
 
     /**
      * Check if is tablet.
+     *
      * @param context
      * @return
      */
@@ -201,36 +214,41 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
                 & Configuration.SCREENLAYOUT_SIZE_MASK)
                 >= Configuration.SCREENLAYOUT_SIZE_LARGE;
     }
-//
-//    HeartRateDataCallback heartRateDataCallback = new HeartRateDataCallback() {
-//        @Override
-//        public void onConnected() {
-//            mConnected = true;
-//            updateConnectionState(true);
-//        }
-//
-//        @Override
-//        public void onDisconnected() {
-//            mConnected = false;
-//            updateConnectionState(false);
-//        }
-//
-//        @Override
-//        public void onMeasurementReceived(Measurement measurementHeartRate) {
-//            if (mDevice != null)
-//                measurementHeartRate.setDevice(mDevice);
-//
-//            /**
-//             * Save in local
-//             * Send to server saved successfully
-//             */
-//            if (measurementDAO.save(measurementHeartRate)) {
-//                synchronizeWithServer();
-//                loadData();
-//            }
-//            updateUILastMeasurement(measurementHeartRate, true);
-//        }
-//    };
+
+    HeartRateDataCallback heartRateDataCallback = new HeartRateDataCallback() {
+        @Override
+        public void onMeasurementReceived(@NonNull BluetoothDevice device, int heartRate, String timestamp) {
+            Measurement measurement = new Measurement();
+            measurement.setTimestamp(timestamp);
+            List<HeartRateItem> heartRateItems = new ArrayList<>();
+            heartRateItems.add(new HeartRateItem(heartRate, timestamp));
+            measurement.setDataset(heartRateItems);
+            if (mDevice != null)
+                measurement.setDeviceId(mDevice.get_id());
+
+            /**
+             * Save in local
+             * Send to server saved successfully
+             */
+            if (measurementDAO.save(measurement)) {
+                synchronizeWithServer();
+                loadData();
+            }
+            updateUILastMeasurement(measurement, true);
+        }
+
+        @Override
+        public void onConnected(@androidx.annotation.NonNull BluetoothDevice device) {
+            mConnected = true;
+            updateConnectionState(true);
+        }
+
+        @Override
+        public void onDisconnected(@androidx.annotation.NonNull BluetoothDevice device) {
+            mConnected = false;
+            updateConnectionState(false);
+        }
+    };
 
     /**
      * Initialize components
@@ -304,10 +322,12 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
             }
 
             @Override
-            public void onLongItemClick(View v, Measurement item) { }
+            public void onLongItemClick(View v, Measurement item) {
+            }
 
             @Override
-            public void onMenuContextClick(View v, Measurement item) { }
+            public void onMenuContextClick(View v, Measurement item) {
+            }
         });
 
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -370,35 +390,35 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
             DisposableManager.add(haniotNetRepository.
                     getAllMeasurementsByType(patient.get_id(), MeasurementType.HEART_RATE,
                             "-timestamp", null, null, page, LIMIT_PER_PAGE)
-            .doOnSubscribe(disposable -> {
-                Log.w(TAG, "loadData - doOnSubscribe");
-                toggleLoading(true);
-                toggleNoDataMessage(false);
-            })
-            .doAfterTerminate(()-> {
-                Log.w(TAG, "loadData - doAfterTerminate");
-                toggleLoading(false); // Disable loading
-            })
-            .subscribe(measurements -> {
-                Log.w(TAG, "loadData - onResult()");
-                if (measurements != null && measurements.size() > 0) {
-                    mAdapter.addItems(measurements);
-                    page++;
-                    itShouldLoadMore = true;
-                    updateUILastMeasurement(mAdapter.getFirstItem(), false);
-                } else {
-                    toggleLoading(false);
-                    if (mAdapter.itemsIsEmpty())
-                        toggleNoDataMessage(true); // Enable message no data
-                    itShouldLoadMore = false;
-                }
-            }, error -> {
-                Log.w(TAG, "loadData - onError()");
-                if (mAdapter.itemsIsEmpty())
-                    printMessage(getString(R.string.error_500));
-                else
-                    loadDataLocal();
-            }));
+                    .doOnSubscribe(disposable -> {
+                        Log.w(TAG, "loadData - doOnSubscribe");
+                        toggleLoading(true);
+                        toggleNoDataMessage(false);
+                    })
+                    .doAfterTerminate(() -> {
+                        Log.w(TAG, "loadData - doAfterTerminate");
+                        toggleLoading(false); // Disable loading
+                    })
+                    .subscribe(measurements -> {
+                        Log.w(TAG, "loadData - onResult()");
+                        if (measurements != null && measurements.size() > 0) {
+                            mAdapter.addItems(measurements);
+                            page++;
+                            itShouldLoadMore = true;
+                            updateUILastMeasurement(mAdapter.getFirstItem(), false);
+                        } else {
+                            toggleLoading(false);
+                            if (mAdapter.itemsIsEmpty())
+                                toggleNoDataMessage(true); // Enable message no data
+                            itShouldLoadMore = false;
+                        }
+                    }, error -> {
+                        Log.w(TAG, "loadData - onError()");
+                        if (mAdapter.itemsIsEmpty())
+                            printMessage(getString(R.string.error_500));
+                        else
+                            loadDataLocal();
+                    }));
         }
     }
 
@@ -580,7 +600,7 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
                 mDateLastMeasurement.setText(R.string.today_text);
             } else {
                 mDateLastMeasurement.setText(DateUtils.convertDateTimeUTCToLocale(
-                        timeStamp,"MMMM dd, EEE"
+                        timeStamp, "MMMM dd, EEE"
                 ));
             }
             mHeartImageView.setVisibility(View.VISIBLE);

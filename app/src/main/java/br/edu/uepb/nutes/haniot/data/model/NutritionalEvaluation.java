@@ -41,7 +41,7 @@ public class NutritionalEvaluation {
     @Expose()
     private FeedingHabitsRecord feedingHabits;
 
-    @SerializedName("sleep_habits")
+    @SerializedName("sleep_habit")
     @Expose()
     private SleepHabit sleepHabits;
 

@@ -194,7 +194,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         DisposableManager.add(haniotNetRepository
                 .getAllDevices(userId)
                 .doOnSubscribe(disposable -> showLoading(true))
-                .doAfterTerminate(() -> startActivity(new Intent(this, MainActivity.class)))
+                .doAfterTerminate(() -> {
+                    startActivity(new Intent(this, MainActivity.class));
+                    finish();
+                })
                 .subscribe(devices -> {
                     mDeviceDAO.removeAll(userId);
                     for (Device d : devices) {
