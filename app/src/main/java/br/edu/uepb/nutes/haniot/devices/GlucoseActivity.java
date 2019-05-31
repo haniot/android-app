@@ -15,7 +15,6 @@ import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.StringRes;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.ActivityCompat;
@@ -32,7 +31,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,7 +40,6 @@ import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.AddMeasurementActivity;
-import br.edu.uepb.nutes.haniot.activity.charts.GlucoseChartActivity;
 import br.edu.uepb.nutes.haniot.adapter.GlucoseAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
 import br.edu.uepb.nutes.haniot.data.model.Device;
@@ -56,7 +53,6 @@ import br.edu.uepb.nutes.haniot.data.model.dao.MeasurementDAO;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
-import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.GlucoseManager;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.BloodGlucoseDataCallback;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
@@ -135,12 +131,6 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
     @BindView(R.id.add_floating_button)
     FloatingActionButton mAddButton;
 
-//    @BindView(R.id.box_message_error)
-//    LinearLayout boxMessage;
-//
-//    @BindView(R.id.message_error)
-//    TextView messageError;
-
     private ProgressDialog progressDialog;
     private boolean isGetAllMonitor;
 
@@ -153,8 +143,6 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
         setContentView(R.layout.activity_glucose);
         ButterKnife.bind(this);
         checkPermissions();
-        // synchronization with server
-        synchronizeWithServer();
 
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
 
@@ -166,7 +154,6 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
         animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
         mChartButton.setOnClickListener(this);
         mAddButton.setOnClickListener(this);
-//        messageError.setOnClickListener(v -> checkPermissions());
 
         patient = appPreferencesHelper.getLastPatient();
         haniotNetRepository = HaniotNetRepository.getInstance(this);
@@ -233,7 +220,6 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
         initToolBar();
         initRecyclerView();
         initDataSwipeRefresh();
-        loadData();
     }
 
     /**
@@ -300,12 +286,11 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
                     if (!recyclerView.canScrollVertically(RecyclerView.FOCUS_DOWN)) {
                         // here we are now allowed to load more, but we need to be careful
                         // we must check if itShouldLoadMore variable is true [unlocked]
-                        if (itShouldLoadMore) loadData();
+                        if (itShouldLoadMore) loadData(false);
                     }
                 }
             }
         });
-
         mRecyclerView.setAdapter(mAdapter);
     }
 
@@ -314,8 +299,7 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
      */
     private void initDataSwipeRefresh() {
         mDataSwipeRefresh.setOnRefreshListener(() -> {
-
-            if (itShouldLoadMore) loadData();
+            if (itShouldLoadMore) loadData(true);
         });
     }
 
@@ -340,10 +324,14 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
      * Load data.
      * If there is no internet connection, we can display the local database.
      * Otherwise it displays from the remote server.
+     *
+     * @param clearList True if clearList
      */
-    private void loadData() {
-        if (page == INITIAL_PAGE)
+    private void loadData(boolean clearList) {
+        if (clearList) {
             mAdapter.clearItems(); // clear list
+            page = INITIAL_PAGE;
+        }
 
         if (!ConnectionUtils.internetIsEnabled(this)) {
             loadDataLocal();
@@ -383,44 +371,6 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
                     )
             );
         }
-    }
-
-    /**
-     * List more itemsList from the remote server.
-     */
-    private void loadMoreData() {
-//        if (!ConnectionUtils.internetIsEnabled(this))
-//            return;
-//
-//        Historical historical = new Historical.Query()
-//                .type(HistoricalType.MEASUREMENTS_TYPE_USER)
-//                .params(params) // Measurements of the blood glucose type, associated to the user
-//                .pagination(mAdapter.getItemCount(), LIMIT_PER_PAGE)
-//                .build();
-//
-//        historical.request(this, new CallbackHistorical<Measurement>() {
-//            @Override
-//            public void onBeforeSend() {
-//                toggleLoading(true); // Enable loading
-//            }
-//
-//            @Override
-//            public void onError(JSONObject result) {
-//                printMessage(getString(R.string.error_500));
-//                showMessage(R.string.error_500);
-//            }
-//
-//            @Override
-//            public void onResult(List<Measurement> result) {
-//                if (result != null && result.size() > 0) mAdapter.addItems(result);
-//                else printMessage(getString(R.string.no_more_data));
-//            }
-//
-//            @Override
-//            public void onAfterSend() {
-//                toggleLoading(false); // Disable loading
-//            }
-//        });
     }
 
     /**
@@ -471,8 +421,8 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
             if (progressDialog != null && !isConnected && isGetAllMonitor) {
                 isGetAllMonitor = false;
                 progressDialog.dismiss();
-                synchronizeWithServer();
-                loadData();
+                loadData(true);
+//                synchronizeWithServer();
             }
             mCircularProgressBar.setProgress(0);
             mCircularProgressBar.setProgressWithAnimation(100); // Default animate duration = 1500ms
@@ -487,45 +437,13 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
         });
     }
 
-//    /**
-//     * Displays message.
-//     *
-//     * @param str @StringRes message.
-//     */
-//    private void showMessage(@StringRes int str) {
-//        if (str != -1) {
-//            String message = getString(str);
-//
-//            messageError.setText(message);
-//            runOnUiThread(() -> {
-//                boxMessage.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_in));
-//                boxMessage.setVisibility(View.VISIBLE);
-//            });
-//        } else {
-//            runOnUiThread(() -> {
-//                boxMessage.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_out));
-//                boxMessage.setVisibility(View.INVISIBLE);
-//            });
-//        }
-//    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
-//        boxMessage.setVisibility(View.GONE);
+        loadData(true);
 
         if (glucoseManager.getConnectionState() == BluetoothProfile.STATE_DISCONNECTED && mDevice != null)
             glucoseManager.connectDevice(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(mDevice.getAddress()));
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
     }
 
     @Override
@@ -589,7 +507,6 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
         } else {
             value_formated = String.format("%02d", (int) value);
         }
-
         return value_formated;
     }
 
@@ -620,9 +537,21 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
 
     /**
      * Performs routine for data synchronization with server.
+     *
+     * @param measurement Measurement to save in server
      */
-    private void synchronizeWithServer() {
-        SynchronizationServer.getInstance(this).run();
+    private void synchronizeWithServer(Measurement measurement) {
+        DisposableManager.add(haniotNetRepository
+                .saveMeasurement(measurement)
+                .doAfterSuccess(measurement1 -> {
+                    printMessage(getString(R.string.measurement_save));
+                    loadData(true);
+                })
+                .subscribe(measurement1 -> {
+                }, error -> {
+                    Log.w(TAG, error.getMessage());
+                    printMessage(getString(R.string.error_500));
+                }));
     }
 
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -634,8 +563,7 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
                 final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE,
                         BluetoothAdapter.ERROR);
                 if (state == BluetoothAdapter.STATE_OFF) {
-//                    showMessage(R.string.bluetooth_disabled);
-
+                    printMessage(getString(R.string.bluetooth_disabled));
                 } else if (state == BluetoothAdapter.STATE_ON) {
 //                    showMessage(-1);
                 }
@@ -653,8 +581,6 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
                 Intent it = new Intent(getApplicationContext(), AddMeasurementActivity.class);
                 appPreferencesHelper.saveInt(getResources().getString(R.string.measurementType), ItemGridType.BLOOD_GLUCOSE);
                 startActivity(it);
-                break;
-            default:
                 break;
         }
     }

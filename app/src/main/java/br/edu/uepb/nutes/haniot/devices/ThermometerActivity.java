@@ -162,7 +162,6 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
             boxMeasurement.requestLayout();
             mCollapsingToolbarLayout.requestLayout();
         }
-
         initComponents();
     }
 
@@ -216,11 +215,6 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
         initToolBar();
         initRecyclerView();
         initDataSwipeRefresh();
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
     }
 
     /**
@@ -284,21 +278,13 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
                 super.onScrolled(recyclerView, dx, dy);
 
                 if (dy > 0) {
-//                    mAddButton.hide();
-
                     // Recycle view scrolling downwards...
                     // this if statement detects when user reaches the end of recyclerView, this is only time we should load more
                     if (!recyclerView.canScrollVertically(RecyclerView.FOCUS_DOWN)) {
                         // here we are now allowed to load more, but we need to be careful
                         // we must check if itShouldLoadMore variable is true [unlocked]
-                        Log.w(TAG, "itShouldLoadMore = " + itShouldLoadMore);
-                        if (itShouldLoadMore) {
-                            loadData();
-//                            loadMoreData();
-                        }
+                        if (itShouldLoadMore) loadData(false);
                     }
-                } else {
-//                    mAddButton.show();
                 }
             }
         });
@@ -310,9 +296,7 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
      */
     private void initDataSwipeRefresh() {
         mDataSwipeRefresh.setOnRefreshListener(() -> {
-            page = INITIAL_PAGE;
-            loadData();
-//            if (itShouldLoadMore) loadData();
+            loadData(true);
         });
     }
 
@@ -337,15 +321,18 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
      * Load data.
      * If there is no internet connection, we can display the local database.
      * Otherwise it displays from the remote server.
+     *
+     * @param clearList True if clearList
      */
-    private void loadData() {
-        if (page == INITIAL_PAGE)
+    private void loadData(boolean clearList) {
+        if (clearList) {
             mAdapter.clearItems();
+            page = INITIAL_PAGE;
+        }
 
         if (!ConnectionUtils.internetIsEnabled(this)) {
             loadDataLocal();
         } else {
-            Log.w(TAG, "Page = " + page);
             DisposableManager.add(haniotNetRepository
                     .getAllMeasurementsByType(patient.get_id(),
                             MeasurementType.BODY_TEMPERATURE, "-timestamp", null,
@@ -427,22 +414,16 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
     @Override
     protected void onResume() {
         super.onResume();
-        page = INITIAL_PAGE;
-        loadData();
+        loadData(true);
 
         if (thermometerManager.getConnectionState() == BluetoothProfile.STATE_DISCONNECTED && mDevice != null)
             thermometerManager.connectDevice(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(mDevice.getAddress()));
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
     protected void onDestroy() {
-        DisposableManager.dispose();
         super.onDestroy();
+        DisposableManager.dispose();
     }
 
     @Override
@@ -498,20 +479,20 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
 
     /**
      * Performs routine for data synchronization with server.
+     *
+     * @param measurement Measurement to save in server
      */
     private void saveMeasurementInServer(Measurement measurement) {
-        Log.w(TAG, measurement.toJson());
         DisposableManager.add(haniotNetRepository
                 .saveMeasurement(measurement)
                 .doAfterSuccess(measurement1 -> {
-                    Toast.makeText(this, getString(R.string.measurement_save), Toast.LENGTH_LONG).show();
-                    page = INITIAL_PAGE;
-                    loadData();
+                    printMessage(getString(R.string.measurement_save));
+                    loadData(true);
                 })
                 .subscribe(measurement1 -> {
                 }, error -> {
                     Log.w(TAG, error.getMessage());
-                    Toast.makeText(this, getString(R.string.error_500), Toast.LENGTH_LONG).show();
+                    printMessage(getString(R.string.error_500));
                 }));
     }
 
@@ -525,8 +506,6 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
                 Intent it = new Intent(getApplicationContext(), AddMeasurementActivity.class);
                 appPreferencesHelper.saveInt(getResources().getString(R.string.measurementType), ItemGridType.TEMPERATURE);
                 startActivity(it);
-                break;
-            default:
                 break;
         }
     }

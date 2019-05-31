@@ -16,7 +16,6 @@ import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.StringRes;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.ActivityCompat;
@@ -30,9 +29,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,23 +42,21 @@ import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.AddMeasurementActivity;
-import br.edu.uepb.nutes.haniot.activity.charts.HeartRateChartActivity;
 import br.edu.uepb.nutes.haniot.adapter.HeartRateAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
+import br.edu.uepb.nutes.haniot.data.model.Device;
+import br.edu.uepb.nutes.haniot.data.model.DeviceType;
 import br.edu.uepb.nutes.haniot.data.model.HeartRateItem;
+import br.edu.uepb.nutes.haniot.data.model.ItemGridType;
+import br.edu.uepb.nutes.haniot.data.model.Measurement;
+import br.edu.uepb.nutes.haniot.data.model.MeasurementType;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
+import br.edu.uepb.nutes.haniot.data.model.dao.DeviceDAO;
+import br.edu.uepb.nutes.haniot.data.model.dao.MeasurementDAO;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.haniot.fragment.GenericDialogFragment;
-import br.edu.uepb.nutes.haniot.data.model.Device;
-import br.edu.uepb.nutes.haniot.data.model.DeviceType;
-import br.edu.uepb.nutes.haniot.data.model.ItemGridType;
-import br.edu.uepb.nutes.haniot.data.model.Measurement;
-import br.edu.uepb.nutes.haniot.data.model.MeasurementType;
-import br.edu.uepb.nutes.haniot.data.model.dao.DeviceDAO;
-import br.edu.uepb.nutes.haniot.data.model.dao.MeasurementDAO;
-import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.HeartRateManager;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.HeartRateDataCallback;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
@@ -140,20 +135,11 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
     @BindView(R.id.chart_floating_button)
     FloatingActionButton mChartButton;
 
-//    @BindView(R.id.record_floating_button)
-//    FloatingActionButton mRecordHeartRateButton;
-
     @BindView(R.id.heart_imageview)
     ImageView mHeartImageView;
 
     @BindView(R.id.add_floating_button)
     FloatingActionButton mAddMeasurementButton;
-
-    @BindView(R.id.box_message_error)
-    LinearLayout boxMessage;
-
-    @BindView(R.id.message_error)
-    TextView messageError;
 
     @BindView(R.id.box_measurement)
     RelativeLayout boxMeasurement;
@@ -164,9 +150,6 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
         setContentView(R.layout.activity_heart_rate);
         ButterKnife.bind(this);
         checkPermissions();
-
-        // synchronization with server
-        synchronizeWithServer();
 
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
         measurementDAO = MeasurementDAO.getInstance(this);
@@ -188,9 +171,7 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
         mDevice = deviceDAO.getByType(appPreferencesHelper.getUserLogged().get_id(), DeviceType.HEART_RATE);
 
         mChartButton.setOnClickListener(this);
-//        mRecordHeartRateButton.setOnClickListener(this);
         mAddMeasurementButton.setOnClickListener(this);
-        messageError.setOnClickListener(v -> checkPermissions());
 
         initComponents();
 
@@ -214,10 +195,14 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
         @Override
         public void onMeasurementReceived(@NonNull BluetoothDevice device, int heartRate, String timestamp) {
             Measurement measurement = new Measurement();
-            measurement.setTimestamp(timestamp);
+            measurement.setUserId(patient.get_id());
+            measurement.setUnit("bpm");
+            measurement.setType(MeasurementType.HEART_RATE);
+            measurement.setTimestamp(DateUtils.getCurrentDateTimeUTC());
             List<HeartRateItem> heartRateItems = new ArrayList<>();
-            heartRateItems.add(new HeartRateItem(heartRate, timestamp));
+            heartRateItems.add(new HeartRateItem(heartRate, DateUtils.getCurrentDateTimeUTC()));
             measurement.setDataset(heartRateItems);
+
             if (mDevice != null)
                 measurement.setDeviceId(mDevice.get_id());
 
@@ -226,8 +211,7 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
              * Send to server saved successfully
              */
             if (measurementDAO.save(measurement)) {
-                synchronizeWithServer();
-                loadData();
+                synchronizeWithServer(measurement);
             }
             updateUILastMeasurement(measurement, true);
         }
@@ -253,7 +237,6 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
         initToolBar();
         initRecyclerView();
         initDataSwipeRefresh();
-        loadData();
     }
 
     /**
@@ -335,7 +318,7 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
                     if (!recyclerView.canScrollVertically(RecyclerView.FOCUS_DOWN)) {
                         // here we are now allowed to load more, but we need to be careful
                         // we must check if itShouldLoadMore variable is true [unlocked]
-                        if (itShouldLoadMore) loadData();
+                        if (itShouldLoadMore) loadData(false);
                     }
                 }
             }
@@ -349,8 +332,7 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
      */
     private void initDataSwipeRefresh() {
         mDataSwipeRefresh.setOnRefreshListener(() -> {
-            page = INITIAL_PAGE;
-            loadData();
+            loadData(true);
         });
     }
 
@@ -374,10 +356,14 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
      * Load data.
      * If there is no internet connection, we can display the local database.
      * Otherwise it displays from the remote server.
+     *
+     * @param clearList True if clearList
      */
-    private void loadData() {
-        if (page == INITIAL_PAGE)
+    private void loadData(boolean clearList) {
+        if (clearList) {
             mAdapter.clearItems(); // clear list
+            page = INITIAL_PAGE;
+        }
 
         if (!ConnectionUtils.internetIsEnabled(this)) {
             loadDataLocal();
@@ -415,47 +401,6 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
                             loadDataLocal();
                     }));
         }
-    }
-
-    /**
-     * List more itemsList from the remote server.
-     */
-    private void loadMoreData() {
-//        if (!ConnectionUtils.internetIsEnabled(this))
-//            return;
-//
-//        Historical historical = new Historical.Query()
-//                .type(HistoricalType.MEASUREMENTS_TYPE_USER)
-//                .params(params) // Measurements of the blood heart rate type, associated to the user
-//                .pagination(mAdapter.getItemCount(), LIMIT_PER_PAGE)
-//                .build();
-//
-//        historical.request(this, new CallbackHistorical<Measurement>() {
-//            @Override
-//            public void onBeforeSend() {
-//                Log.w(TAG, "loadMoreData - onBeforeSend()");
-//                toggleLoading(true); // Enable loading
-//            }
-//
-//            @Override
-//            public void onError(JSONObject result) {
-//                Log.w(TAG, "loadMoreData - onError()");
-//                printMessage(getString(R.string.error_500));
-//            }
-//
-//            @Override
-//            public void onResult(List<Measurement> result) {
-//                Log.w(TAG, "loadMoreData - onResult()");
-//                if (result != null && result.size() > 0) mAdapter.addItems(result);
-//                else printMessage(getString(R.string.no_more_data));
-//            }
-//
-//            @Override
-//            public void onAfterSend() {
-//                Log.w(TAG, "loadMoreData - onAfterSend()");
-//                toggleLoading(false); // Disable loading
-//            }
-//        });
     }
 
     /**
@@ -498,29 +443,6 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
         runOnUiThread(() -> Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show());
     }
 
-
-    /**
-     * Displays message.
-     *
-     * @param str @StringRes message.
-     */
-    private void showMessage(@StringRes int str) {
-        if (str != -1) {
-            String message = getString(str);
-
-            messageError.setText(message);
-            runOnUiThread(() -> {
-                boxMessage.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_in));
-                boxMessage.setVisibility(View.VISIBLE);
-            });
-        } else {
-            runOnUiThread(() -> {
-                boxMessage.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_out));
-                boxMessage.setVisibility(View.INVISIBLE);
-            });
-        }
-    }
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -531,15 +453,10 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
     @Override
     protected void onResume() {
         super.onResume();
-        boxMessage.setVisibility(View.GONE);
+        loadData(true);
 
         if (heartRateManager.getConnectionState() == BluetoothProfile.STATE_DISCONNECTED && mDevice != null)
             heartRateManager.connectDevice(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(mDevice.getAddress()));
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
     }
 
     @Override
@@ -604,9 +521,21 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
 
     /**
      * Performs routine for data synchronization with server.
+     *
+     * @param measurement Measurement to save in server
      */
-    private void synchronizeWithServer() {
-        SynchronizationServer.getInstance(this).run();
+    private void synchronizeWithServer(Measurement measurement) {
+        DisposableManager.add(haniotNetRepository
+                .saveMeasurement(measurement)
+                .doAfterSuccess(measurement1 -> {
+                    printMessage(getString(R.string.measurement_save));
+                    loadData(true);
+                })
+                .subscribe(measurement1 -> {
+                }, error -> {
+                    Log.w(TAG, error.getMessage());
+                    printMessage(getString(R.string.error_500));
+                }));
     }
 
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -618,10 +547,9 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
                 final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE,
                         BluetoothAdapter.ERROR);
                 if (state == BluetoothAdapter.STATE_OFF) {
-                    showMessage(R.string.bluetooth_disabled);
-
+                    printMessage(getString(R.string.bluetooth_disabled));
                 } else if (state == BluetoothAdapter.STATE_ON) {
-                    showMessage(-1);
+//                    showMessage(-1);
                 }
             }
         }
@@ -630,12 +558,6 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-//            case R.id.record_floating_button:
-//                Intent intent = new Intent(this, RecordHeartRateActivity.class);
-//                if (mDevice != null)
-//                    intent.putExtra(HeartRateActivity.EXTRA_DEVICE_ADDRESS, mDevice.getAddress());
-//                startActivity(intent);
-//                break;
             case R.id.chart_floating_button:
 //                startActivity(new Intent(getApplicationContext(), HeartRateChartActivity.class));
                 break;
@@ -644,8 +566,6 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
                 appPreferencesHelper.saveInt(getResources().getString(R.string.measurementType),
                         ItemGridType.HEART_RATE);
                 startActivity(it);
-                break;
-            default:
                 break;
         }
     }

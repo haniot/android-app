@@ -40,48 +40,6 @@
             app:contentScrim="?attr/colorPrimary"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-            <!--<com.github.clans.fab.FloatingActionMenu xmlns:fab="http://schemas.android.com/apk/res-auto"-->
-            <!--android:id="@+id/chart_floating_button"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_gravity="bottom|end"-->
-            <!--android:layout_margin="@dimen/fab_margin"-->
-            <!--android:clickable="true"-->
-            <!--android:focusable="true"-->
-            <!--app:layout_anchor="@id/box_bar_layout"-->
-            <!--fab:layout_anchorGravity="center_horizontal"-->
-            <!--fab:menu_colorNormal="@color/colorAccent"-->
-            <!--fab:menu_colorPressed="@color/colorPrimaryDark"-->
-            <!--fab:menu_fab_label="@string/period"-->
-            <!--fab:menu_icon="@drawable/ic_month"-->
-            <!--fab:menu_labels_colorNormal="@color/cardview_light_background"-->
-            <!--fab:menu_labels_ellipsize="end"-->
-            <!--fab:menu_labels_singleLine="true"-->
-            <!--fab:menu_labels_textColor="@color/cardview_dark_background"-->
-            <!--fab:menu_openDirection="up">-->
-
-            <!--<com.github.clans.fab.FloatingActionButton-->
-            <!--android:id="@+id/chart"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:src="@drawable/ic_action_show_chart"-->
-            <!--fab:fab_colorNormal="@color/colorAccent"-->
-            <!--fab:fab_colorPressed="@color/colorPrimary"-->
-            <!--fab:fab_label="@string/chart"-->
-            <!--fab:fab_size="mini" />-->
-
-            <!--<com.github.clans.fab.FloatingActionButton-->
-            <!--android:id="@+id/add_manually"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:src="@drawable/ic_add"-->
-            <!--fab:fab_colorNormal="@color/colorAccent"-->
-            <!--fab:fab_colorPressed="@color/colorPrimary"-->
-            <!--fab:fab_label="@string/add_manually"-->
-            <!--fab:fab_size="mini" />-->
-
-            <!--</com.github.clans.fab.FloatingActionMenu>-->
-
             <RelativeLayout
                 android:id="@+id/box_measurement"
                 android:layout_width="match_parent"

@@ -56,7 +56,6 @@ import br.edu.uepb.nutes.haniot.data.model.dao.MeasurementDAO;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
-import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.ScaleManager;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.ScaleDataCallback;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
@@ -161,9 +160,6 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
         ButterKnife.bind(this);
         checkPermissions();
 
-        // synchronization with server
-        synchronizeWithServer();
-
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
         measurementDAO = MeasurementDAO.getInstance(this);
         deviceDAO = DeviceDAO.getInstance(this);
@@ -219,10 +215,12 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
         public void onMeasurementReceived(@NonNull BluetoothDevice device, double bodyMass, String bodyMassUnit, double bodyFat, String timestamp) {
             Measurement measurement = new Measurement();
             measurement.setUserId(patient.get_id());
-            measurement.setType("weight");
-            measurement.setUnit(bodyMassUnit);
+            measurement.setTimestamp(DateUtils.getCurrentDateTimeUTC());
+            measurement.setType(MeasurementType.BODY_MASS);
+            measurement.setUnit("kg");
+            measurement.setValue(bodyMass);
             measurement.setFat(new BodyFat(bodyFat, "%"));
-            measurement.setTimestamp(timestamp);
+            measurement.setTimestamp(DateUtils.getCurrentDateTimeUTC());
 
             if (mDevice != null)
                 measurement.setDeviceId(mDevice.get_id());
@@ -232,8 +230,7 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
              * Send to server saved successfully
              */
             if (measurementDAO.save(measurement)) {
-                synchronizeWithServer();
-                loadData();
+                synchronizeWithServer(measurement);
             }
             updateUILastMeasurement(measurement, true);
         }
@@ -258,7 +255,6 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
         initToolBar();
         initRecyclerView();
         initDataSwipeRefresh();
-        loadData();
     }
 
 
@@ -324,12 +320,11 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
                     if (!recyclerView.canScrollVertically(RecyclerView.FOCUS_DOWN)) {
                         // here we are now allowed to load more, but we need to be careful
                         // we must check if itShouldLoadMore variable is true [unlocked]
-                        if (itShouldLoadMore) loadData();
+                        if (itShouldLoadMore) loadData(false);
                     }
                 }
             }
         });
-
         mRecyclerView.setAdapter(mAdapter);
     }
 
@@ -338,8 +333,7 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
      */
     private void initDataSwipeRefresh() {
         mDataSwipeRefresh.setOnRefreshListener(() -> {
-            page = INITIAL_PAGE;
-            loadData();
+            loadData(true);
         });
     }
 
@@ -364,10 +358,14 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
      * Load data.
      * If there is no internet connection, we can display the local database.
      * Otherwise it displays from the remote server.
+     *
+     * @param clearList True if clearList
      */
-    private void loadData() {
-        if (page == INITIAL_PAGE)
+    private void loadData(boolean clearList) {
+        if (clearList) {
+            page = INITIAL_PAGE;
             mAdapter.clearItems();
+        }
 
         if (!ConnectionUtils.internetIsEnabled(this)) {
             loadDataLocal();
@@ -404,47 +402,6 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
                         else loadDataLocal();
                     }));
         }
-    }
-
-    /**
-     * List more itemsList from the remote server.
-     */
-    private void loadMoreData() {
-//        if (!ConnectionUtils.internetIsEnabled(this))
-//            return;
-//
-//        Historical historical = new Historical.Query()
-//                .type(HistoricalType.MEASUREMENTS_TYPE_USER)
-//                .params(params) // Measurements of the body mass type, associated to the user
-//                .pagination(mAdapter.getItemCount(), LIMIT_PER_PAGE)
-//                .build();
-//
-//        historical.request(this, new CallbackHistorical<Measurement>() {
-//            @Override
-//            public void onBeforeSend() {
-//                Log.w(TAG, "loadMoreData - onBeforeSend()");
-//                toggleLoading(true); // Enable loading
-//            }
-//
-//            @Override
-//            public void onError(JSONObject result) {
-//                Log.w(TAG, "loadMoreData - onError()");
-//                printMessage(getString(R.string.error_500));
-//            }
-//
-//            @Override
-//            public void onResult(List<Measurement> result) {
-//                Log.w(TAG, "loadMoreData - onResult()");
-//                if (result != null && result.size() > 0) mAdapter.addItems(result);
-//                else printMessage(getString(R.string.no_more_data));
-//            }
-//
-//            @Override
-//            public void onAfterSend() {
-//                Log.w(TAG, "loadMoreData - onAfterSend()");
-//                toggleLoading(false); // Disable loading
-//            }
-//        });
     }
 
     /**
@@ -498,16 +455,11 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onResume() {
         super.onResume();
-//        boxMessage.setVisibility(View.GONE);
+        loadData(true);
 
         if (scaleManager.getConnectionState() != BluetoothProfile.STATE_CONNECTED && mDevice != null) {
             scaleManager.connect(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(mDevice.getAddress()));
         }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
     }
 
     @Override
@@ -616,9 +568,22 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
 
     /**
      * Performs routine for data synchronization with server.
+     *
+     * @param measurement Measurement to save in server
      */
-    private void synchronizeWithServer() {
-        SynchronizationServer.getInstance(this).run();
+    private void synchronizeWithServer(Measurement measurement) {
+        Log.w(TAG, measurement.toJson());
+        DisposableManager.add(haniotNetRepository
+                .saveMeasurement(measurement)
+                .doAfterSuccess(measurement1 -> {
+                    printMessage(getString(R.string.measurement_save));
+                    loadData(true);
+                })
+                .subscribe(measurement1 -> {
+                }, error -> {
+                    Log.w(TAG, error.getMessage());
+                    printMessage(getString(R.string.error_500));
+                }));
     }
 
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -630,8 +595,7 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
                 final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE,
                         BluetoothAdapter.ERROR);
                 if (state == BluetoothAdapter.STATE_OFF) {
-//                    showMessage(R.string.bluetooth_disabled);
-
+                    printMessage(getString(R.string.bluetooth_disabled));
                 } else if (state == BluetoothAdapter.STATE_ON) {
 //                    showMessage(-1);
                 }
