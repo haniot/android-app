@@ -146,11 +146,7 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
 
 
         //TODO TEMP - Há problemas no cadastro dos dispositivos
-//        mDevice = deviceDAO.getByType(appPreferencesHelper.getUserLogged().get_id(), DeviceType.THERMOMETER);
-        mDevice = new Device();
-        mDevice.setAddress("1C:87:74:01:73:10");
-        mDevice.setType(DeviceType.THERMOMETER);
-        mDevice.setName("PHILIPS THERMOMETER");
+        mDevice = deviceDAO.getByType(appPreferencesHelper.getUserLogged().get_id(), DeviceType.THERMOMETER);
         animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
         mChartButton.setOnClickListener(this);
         mAddButton.setOnClickListener(this);
