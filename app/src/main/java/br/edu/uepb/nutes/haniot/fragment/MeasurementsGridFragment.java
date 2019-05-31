@@ -586,11 +586,6 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
     /**
      * Init basics components.
      */
-    Device deviceTEMP = new Device();
-    Device deviceTEMP2 = new Device();
-    Device deviceTEMP3 = new Device();
-    Device deviceTEMP4 = new Device();
-
     private void initComponents() {
         decimalFormat = new DecimalFormat(getString(R.string.format_number2),
                 new DecimalFormatSymbols(Locale.US));
@@ -602,26 +597,6 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
         deviceDAO = DeviceDAO.getInstance(mContext);
         devices = deviceDAO.list(user.get_id());
         builder = new SimpleBleScanner.Builder();
-        //TODO TEMP
-        deviceTEMP.setName("YUNMAY");
-        deviceTEMP.setType(DeviceType.BODY_COMPOSITION);
-        deviceTEMP.setAddress("D4:36:39:91:75:71");
-        devices.add(deviceTEMP);
-
-        deviceTEMP2.setName("PHILIPS THERMOMETER");
-        deviceTEMP2.setType(DeviceType.THERMOMETER);
-        deviceTEMP2.setAddress("1C:87:74:01:73:10");
-        devices.add(deviceTEMP2);
-
-        deviceTEMP3.setName("POLAR H10");
-        deviceTEMP3.setType(DeviceType.HEART_RATE);
-        deviceTEMP3.setAddress("D4:27:B5:B3:93:F3");
-        devices.add(deviceTEMP3);
-
-        deviceTEMP4.setName("GLUCOSEMETER");
-        deviceTEMP4.setType(DeviceType.GLUCOMETER);
-        deviceTEMP4.setAddress("6F:3D:98:70:E1:79");
-        devices.add(deviceTEMP4);
 
         editMonitor.setOnClickListener(editMonitorClick);
         addMonitor.setOnClickListener(editMonitorClick);

@@ -50,17 +50,17 @@ public class SplashScreenActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        SynchronizationServer.getInstance(this).run(new SynchronizationServer.Callback() {
-            @Override
-            public void onError(JSONObject result) {
-                openActivity();
-            }
-
-            @Override
-            public void onSuccess(JSONObject result) {
-                openActivity();
-            }
-        });
+        openActivity();
+//        SynchronizationServer.getInstance(this).run(new SynchronizationServer.Callback() {
+//            @Override
+//            public void onError(JSONObject result) {
+//            }
+//
+//            @Override
+//            public void onSuccess(JSONObject result) {
+//                openActivity();
+//            }
+//        });
     }
 
     private void openActivity() {

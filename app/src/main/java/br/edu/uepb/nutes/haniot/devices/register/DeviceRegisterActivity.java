@@ -305,7 +305,8 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
                 if (mBluetoothDevice.getBondState() == BluetoothDevice.BOND_NONE) {
                     Log.d(LOG_TAG, "BroadcastReceiver: BOND_NONE.");
 
-                    if (mBluetoothDevice.getName().equals(NAME_DEVICE_YUNMAI)) {
+                    if (mBluetoothDevice.getName().equals(NAME_DEVICE_YUNMAI) && broadCastReceiver != null) {
+                        Log.i("AAA", mBluetoothDevice.getName() + " - " +broadCastReceiver.getResultCode());
                         unregisterReceiver(broadCastReceiver);
                     }
                     deviceConnectionStatus.setText(R.string.failed_pairing_device);

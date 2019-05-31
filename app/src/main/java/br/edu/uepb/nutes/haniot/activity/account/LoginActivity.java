@@ -223,6 +223,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     LoginActivity.this,
                     ChangePasswordActivity.class
             );
+            Log.i("AAA", redirectLink);
             intent.putExtra("user_id", redirectLink.split("/")[2]);
             startActivity(intent);
         } catch (IOException e1) {
@@ -249,6 +250,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         showMessage(R.string.error_500);
                         return;
                     }
+                    Log.i("AAA", "" + httpEx.response().errorBody());
                     openScreenChangePassword(Objects.requireNonNull(httpEx.response().errorBody()));
                     break;
                 }
