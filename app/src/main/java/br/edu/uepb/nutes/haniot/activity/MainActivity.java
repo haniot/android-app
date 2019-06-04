@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
         IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
         registerReceiver(mReceiver, filter);
 
-        setClickListener();
+        setupPatientActions();
     }
 
     private void loadDashboard() {
@@ -121,23 +121,32 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
     /**
      * Init click listener of patient action buttons.
      */
-    private void setClickListener() {
-        nutritioEvaluation.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, NutritionalEvaluationActivity.class);
-            intent.putExtra("type", "nutrition");
-            startActivity(intent);
-            finish();
-        });
+    private void setupPatientActions() {
 
-        quizNutrition.setOnClickListener(v -> {
-            startActivity(new Intent(this, QuizNutritionActivity.class));
-            finish();
-        });
+        if (appPreferences.getUserLogged().getHealthArea().equals("dentistry")) {
+            quizNutrition.setVisibility(View.GONE);
+            nutritioEvaluation.setVisibility(View.GONE);
 
-        quizOdonto.setOnClickListener(v -> {
-            startActivity(new Intent(this, QuizOdontologyActivity.class));
-            finish();
-        });
+            quizOdonto.setOnClickListener(v -> {
+                startActivity(new Intent(this, QuizOdontologyActivity.class));
+                finish();
+            });
+
+        } else {
+            quizOdonto.setVisibility(View.GONE);
+            quizNutrition.setOnClickListener(v -> {
+                startActivity(new Intent(this, QuizNutritionActivity.class));
+                finish();
+            });
+            nutritioEvaluation.setOnClickListener(v -> {
+                Intent intent = new Intent(MainActivity.this, NutritionalEvaluationActivity.class);
+                intent.putExtra("type", "nutrition");
+                startActivity(intent);
+                finish();
+            });
+
+
+        }
     }
 
     /**

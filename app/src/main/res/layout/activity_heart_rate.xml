@@ -171,7 +171,7 @@
         android:id="@+id/btn_actions"
         fab:menu_colorNormal="@color/colorAccent"
         fab:menu_colorPressed="@color/colorPrimaryDark"
-        fab:menu_icon="@drawable/ic_action_send"
+        fab:menu_icon="@drawable/ic_add"
         fab:menu_labels_colorNormal="@color/cardview_light_background"
         fab:menu_labels_ellipsize="end"
         fab:menu_labels_singleLine="true"

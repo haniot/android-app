@@ -65,9 +65,6 @@ public class ManagerPatientAdapter extends BaseAdapter<Patient> {
 
         int age = today.get(Calendar.YEAR) - dob.get(Calendar.YEAR);
 
-//        if (today.get(Calendar.DAY_OF_YEAR) < dob.get(Calendar.DAY_OF_YEAR)) {
-//            age--;
-//        }
         return age + " anos";
     }
 
@@ -102,6 +99,10 @@ public class ManagerPatientAdapter extends BaseAdapter<Patient> {
             h.btnMore.setOnClickListener(v -> {
                 PopupMenu popup = new PopupMenu(context, ((ManagerPatientViewHolder) holder).btnMore);
                 popup.inflate(R.menu.menu_patient_actions);
+                if (appPreferencesHelper.getUserLogged().getHealthArea().equals("nutrition"))
+                    popup.getMenu().getItem(2).setVisible(false);
+                else if (appPreferencesHelper.getUserLogged().getHealthArea().equals("dentistry"))
+                    popup.getMenu().getItem(3).setVisible(false);
                 popup.setOnMenuItemClickListener(item -> {
                     switch (item.getItemId()) {
                         case R.id.remove:

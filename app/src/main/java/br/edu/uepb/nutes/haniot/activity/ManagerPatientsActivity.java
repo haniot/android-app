@@ -190,6 +190,7 @@ public class ManagerPatientsActivity extends AppCompatActivity {
     }
 
     private void removePatient(Patient patient) {
+
         DisposableManager.add(haniotNetRepository
                 .deletePatient(patient.get_id())
                 .doAfterTerminate(this::loadData)
@@ -197,8 +198,10 @@ public class ManagerPatientsActivity extends AppCompatActivity {
                             adapter.removeItem(patient);
                             adapter.notifyDataSetChanged();
                             showMessage(getResources().getString(R.string.patient_removed));
-                            if (patient.get_id().equals(appPreferencesHelper.getLastPatient().get_id()))
+                            if (patient.get_id().equals(appPreferencesHelper.getLastPatient().get_id())) {
+                                Log.i("AAA", "Removendo atual paciente");
                                 appPreferencesHelper.removeLastPatient();
+                            }
                         },
                         error -> showMessage(getResources().getString(R.string.error_500))));
     }
