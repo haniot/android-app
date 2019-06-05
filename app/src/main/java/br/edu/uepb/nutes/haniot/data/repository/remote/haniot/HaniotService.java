@@ -33,8 +33,8 @@ import retrofit2.http.Query;
  * @author Copyright (c) 2018, NUTES/UEPB
  */
 public interface HaniotService {
-    String BASE_URL_HANIOT = "https://haniot.nutes.uepb.edu.br:8081"; // API GATEWAY LOCAL
-//    String BASE_URL_HANIOT = "http://haniot.nutes.uepb.edu.br:8080"; // API GATEWAY LOCAL
+//    String BASE_URL_HANIOT = "http://192.168.0.119:8080/"; // API GATEWAY LOCAL
+    String BASE_URL_HANIOT = "https://haniot.nutes.uepb.edu.br:8081";
 
     // auth
     @POST("auth")

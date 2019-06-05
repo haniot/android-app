@@ -17,6 +17,7 @@ import no.nordicsemi.android.ble.data.Data;
 
 public class ScaleManager extends BluetoothManager {
     private ScaleDataCallback scaleDataCallback;
+    private boolean isFinishMeasurement = false;
 
     public ScaleManager(@NonNull Context context) {
         super(context);
@@ -65,7 +66,9 @@ public class ScaleManager extends BluetoothManager {
                         String.format("%02X", data[9]), 16) * 0.01f;
 
                 // Finalized
-                if (isFinalized) {
+                if (isFinalized && !isFinishMeasurement) {
+                    isFinishMeasurement = true;
+
                     // finished weighing
                     // 13-14: weight - BE uint16 times 0.01
                     bodyMass = Integer.valueOf(String.format("%02X", data[13]) +
@@ -79,18 +82,21 @@ public class ScaleManager extends BluetoothManager {
                     //  17-18: - BE uint16 times 0.01
                     bodyFat = Integer.valueOf(String.format("%02X", data[17]) +
                             String.format("%02X", data[18]), 16) * 0.01f;
-                }
 
-                scaleDataCallback.onMeasurementReceiving(bodyMass, bodyMassUnit);
-
-                if (isFinalized) {
-                    scaleDataCallback.onMeasurementReceived(
-                            device,
-                            bodyMass,
-                            bodyMassUnit,
-                            bodyFat,
-                            timestamp
-                    );
+                    if (scaleDataCallback != null) {
+                        scaleDataCallback.onMeasurementReceived(
+                                device,
+                                bodyMass,
+                                bodyMassUnit,
+                                bodyFat,
+                                timestamp
+                        );
+                    }
+                } else {
+                    if (scaleDataCallback != null && !isFinishMeasurement) {
+                        scaleDataCallback.onMeasurementReceiving(bodyMass, bodyMassUnit);
+                    }
+                    isFinishMeasurement = false;
                 }
             }
         }
