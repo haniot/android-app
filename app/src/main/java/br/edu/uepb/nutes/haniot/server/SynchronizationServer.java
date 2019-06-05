@@ -37,11 +37,11 @@ public class SynchronizationServer {
     }
 
     public static synchronized SynchronizationServer getInstance(Context c) {
-        if (instance == null) {
-            instance = new SynchronizationServer();
-            session = new Session(c);
-            context = c;
-        }
+//        if (instance == null) {
+//            instance = new SynchronizationServer();
+//            session = new Session(c);
+//            context = c;
+//        }
 
         return instance;
     }
@@ -53,15 +53,15 @@ public class SynchronizationServer {
      */
     public void run(SynchronizationServer.Callback callbackSynchronization) {
         // User not connected or does not have active internet connection
-        if (!session.isLogged() || !ConnectionUtils.internetIsEnabled(context)) {
-            if (callbackSynchronization != null)
-                callbackSynchronization.onError(null);
+//        if (!session.isLogged() || !ConnectionUtils.internetIsEnabled(context)) {
+//            if (callbackSynchronization != null)
+//                callbackSynchronization.onError(null);
+//
+//            return;
+//        }
 
-            return;
-        }
-
-        List<Measurement> measurements = MeasurementDAO.getInstance(context).getNotSent(session.getIdLogged());
-        sendMeasurementToServer(prepareMeasurements(measurements), callbackSynchronization);
+//        List<Measurement> measurements = MeasurementDAO.getInstance(context).getNotSent(session.getIdLogged());
+//        sendMeasurementToServer(prepareMeasurements(measurements), callbackSynchronization);
     }
 
     /**
@@ -79,13 +79,13 @@ public class SynchronizationServer {
      */
     private String prepareMeasurements(List<Measurement> measurements) {
         // No data send
-        if (measurements == null || measurements.isEmpty()) {
-            return null;
-        }
-
-        JsonArray resultArrayJson = new JsonArray();
-        List<Measurement> measurementsNoRelations = new ArrayList<>();
-        List<Measurement> measurementsWithRelations = new ArrayList<>();
+//        if (measurements == null || measurements.isEmpty()) {
+//            return null;
+//        }
+//
+//        JsonArray resultArrayJson = new JsonArray();
+//        List<Measurement> measurementsNoRelations = new ArrayList<>();
+//        List<Measurement> measurementsWithRelations = new ArrayList<>();
 
 //        /**
 //         * Separates the measurements that have self-relation from those that do not have.
@@ -130,11 +130,12 @@ public class SynchronizationServer {
         /**
          * Mount the json to send to the server
          */
-        JsonObject resultJson = new JsonObject();
-        resultJson.add("measurements", resultArrayJson);
-        Log.i(TAG, "RESULT_JSON: " + resultJson.toString());
-
-        return resultJson.toString();
+//        JsonObject resultJson = new JsonObject();
+//        resultJson.add("measurements", resultArrayJson);
+//        Log.i(TAG, "RESULT_JSON: " + resultJson.toString());
+//
+//        return resultJson.toString();
+        return "";
     }
 
     /**
@@ -189,65 +190,65 @@ public class SynchronizationServer {
      * @param callbackSynchronization SynchronizationServer.Callback
      */
     private void sendMeasurementToServer(String jsonMeasurements, final SynchronizationServer.Callback callbackSynchronization) {
-        /**
-         * There is no data to send...
-         */
-        if (jsonMeasurements == null || jsonMeasurements.isEmpty()) {
-            if (callbackSynchronization == null)
-                return;
-
-            JSONObject jsonObject = new JSONObject();
-            try {
-                jsonObject.put("message",
-                        context.getResources().getString(R.string.synchronization_no_data_to_send));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            callbackSynchronization.onSuccess(jsonObject);
-            return;
-        }
-
-        /**
-         * Send to server
-         * /measurements/users/:userId
-         */
-        Server.getInstance(context).post("measurements/users/" + session.getUserLogged().get_id(),
-                jsonMeasurements, new Server.Callback() {
-                    @Override
-                    public void onError(JSONObject result) {
-                        if (callbackSynchronization != null)
-                            callbackSynchronization.onError(result);
-                    }
-
-                    @Override
-                    public void onSuccess(JSONObject result) {
-                        // Sending successfully, we can remove from the database these measurements
-                        removeAllMeasurements();
-
-                        if (callbackSynchronization != null)
-                            callbackSynchronization.onSuccess(result);
-                    }
-                });
+//        /**
+//         * There is no data to send...
+//         */
+//        if (jsonMeasurements == null || jsonMeasurements.isEmpty()) {
+//            if (callbackSynchronization == null)
+//                return;
+//
+//            JSONObject jsonObject = new JSONObject();
+//            try {
+//                jsonObject.put("message",
+//                        context.getResources().getString(R.string.synchronization_no_data_to_send));
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            }
+//
+//            callbackSynchronization.onSuccess(jsonObject);
+//            return;
+//        }
+//
+//        /**
+//         * Send to server
+//         * /measurements/users/:userId
+//         */
+//        Server.getInstance(context).post("measurements/users/" + session.getUserLogged().get_id(),
+//                jsonMeasurements, new Server.Callback() {
+//                    @Override
+//                    public void onError(JSONObject result) {
+//                        if (callbackSynchronization != null)
+//                            callbackSynchronization.onError(result);
+//                    }
+//
+//                    @Override
+//                    public void onSuccess(JSONObject result) {
+//                        // Sending successfully, we can remove from the database these measurements
+//                        removeAllMeasurements();
+//
+//                        if (callbackSynchronization != null)
+//                            callbackSynchronization.onSuccess(result);
+//                    }
+//                });
     }
 
     /**
      * Removes all measurements and their associations.
      */
     private void removeAllMeasurements() {
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                Log.i(TAG, "removeAllMeasurements()");
-//                ContextMeasurementDAO contextMeasurementDAO = ContextMeasurementDAO.getInstance(context);
-//                MeasurementDAO measurementDAO = MeasurementDAO.getInstance(context);
-//                for (Measurement m : measurementDAO.getNotSent(session.getIdLogged())) {
-//                    if (m.getContextMeasurements().size() > 0)
-//                        contextMeasurementDAO.removeAllOfMeasurement(m.getId());
-//                }
-//                measurementDAO.removeAll(session.getIdLogged());
-            }
-        });
+//        AsyncTask.execute(new Runnable() {
+//            @Override
+//            public void run() {
+//                Log.i(TAG, "removeAllMeasurements()");
+////                ContextMeasurementDAO contextMeasurementDAO = ContextMeasurementDAO.getInstance(context);
+////                MeasurementDAO measurementDAO = MeasurementDAO.getInstance(context);
+////                for (Measurement m : measurementDAO.getNotSent(session.getIdLogged())) {
+////                    if (m.getContextMeasurements().size() > 0)
+////                        contextMeasurementDAO.removeAllOfMeasurement(m.getId());
+////                }
+////                measurementDAO.removeAll(session.getIdLogged());
+//            }
+//        });
     }
 
     /**

@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.nfc.Tag;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -56,6 +57,7 @@ import br.edu.uepb.nutes.haniot.data.model.dao.MeasurementDAO;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
+import br.edu.uepb.nutes.haniot.fragment.MeasurementsGridFragment;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.ScaleManager;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.ScaleDataCallback;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
@@ -164,7 +166,6 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
         measurementDAO = MeasurementDAO.getInstance(this);
         deviceDAO = DeviceDAO.getInstance(this);
         decimalFormat = new DecimalFormat(getString(R.string.format_number2), new DecimalFormatSymbols(Locale.US));
-        scaleManager = new ScaleManager(this);
 
         animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
         mChartButton.setOnClickListener(this);
@@ -182,8 +183,6 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
             boxMeasurement.requestLayout();
             mCollapsingToolbarLayout.requestLayout();
         }
-
-        scaleManager.setSimpleCallback(scaleDataCallback);
         initComponents();
 
         IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
@@ -202,25 +201,36 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
                 >= Configuration.SCREENLAYOUT_SIZE_LARGE;
     }
 
+    /**
+     * @param bodyMass
+     * @param bodyMassUnit
+     */
+    private void setValueLastMeasurement(double bodyMass, String bodyMassUnit) {
+        bodyMassTextView.setText(String.valueOf(formatNumber(bodyMass)));
+        bodyMassUnit = bodyMassUnit.equals("") ? "kg" : bodyMassUnit;
+        bodyMassUnitTextView.setText(bodyMassUnit);
+    }
+
     ScaleDataCallback scaleDataCallback = new ScaleDataCallback() {
         @Override
         public void onMeasurementReceiving(double bodyMass, String bodyMassUnit) {
             runOnUiThread(() -> {
-                bodyMassTextView.setText(String.valueOf(bodyMass));
-                bodyMassUnitTextView.setText(bodyMassUnit);
+                setValueLastMeasurement(bodyMass, bodyMassUnit);
             });
         }
 
         @Override
-        public void onMeasurementReceived(@NonNull BluetoothDevice device, double bodyMass, String bodyMassUnit, double bodyFat, String timestamp) {
+        public void onMeasurementReceived(@NonNull BluetoothDevice device, double bodyMass,
+                                          String bodyMassUnit, double bodyFat, String timestamp) {
             Measurement measurement = new Measurement();
             measurement.setUserId(patient.get_id());
-            measurement.setTimestamp(DateUtils.getCurrentDateTimeUTC());
+            measurement.setTimestamp(timestamp);
             measurement.setType(MeasurementType.BODY_MASS);
             measurement.setUnit("kg");
             measurement.setValue(bodyMass);
-            measurement.setFat(new BodyFat(bodyFat, "%"));
-            measurement.setTimestamp(DateUtils.getCurrentDateTimeUTC());
+
+            if (bodyFat != 0)
+                measurement.setFat(new BodyFat(bodyFat, "%"));
 
             if (mDevice != null)
                 measurement.setDeviceId(mDevice.get_id());
@@ -229,10 +239,10 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
              * Save in local
              * Send to server saved successfully
              */
-            if (measurementDAO.save(measurement)) {
+            if (bodyMass > 0) {
                 synchronizeWithServer(measurement);
+                updateUILastMeasurement(measurement, true);
             }
-            updateUILastMeasurement(measurement, true);
         }
 
         @Override
@@ -387,9 +397,11 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
                         Log.w(TAG, "loadData - onResult()");
                         if (measurements != null && measurements.size() > 0) {
                             mAdapter.addItems(measurements);
-                            page++;
                             itShouldLoadMore = true;
-                            updateUILastMeasurement(mAdapter.getFirstItem(), false);
+                            if (page == INITIAL_PAGE) {
+                                updateUILastMeasurement(mAdapter.getFirstItem(), false);
+                            }
+                            page++;
                         } else {
                             toggleLoading(false);
                             if (mAdapter.itemsIsEmpty())
@@ -441,32 +453,39 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
      * @param message
      */
     private void printMessage(String message) {
-        runOnUiThread(() -> Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show());
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (mDevice != null)
-            scaleManager.connect(BluetoothAdapter.getDefaultAdapter()
-                    .getRemoteDevice(mDevice.getAddress())).useAutoConnect(true).enqueue();
+        runOnUiThread(() -> Toast.makeText(this, message, Toast.LENGTH_LONG).show());
     }
 
     @Override
     protected void onResume() {
-        super.onResume();
+        scaleManager = new ScaleManager(this);
+        scaleManager.setSimpleCallback(scaleDataCallback);
         loadData(true);
+
+        if (mDevice != null)
+            scaleManager.connect(BluetoothAdapter.getDefaultAdapter()
+                    .getRemoteDevice(mDevice.getAddress())).useAutoConnect(true).enqueue();
 
         if (scaleManager.getConnectionState() != BluetoothProfile.STATE_CONNECTED && mDevice != null) {
             scaleManager.connect(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(mDevice.getAddress()));
         }
+        super.onResume();
     }
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         DisposableManager.dispose();
         unregisterReceiver(mReceiver);
+        Log.w(TAG, "onDestroy");
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onPause() {
+        scaleManager.setSimpleCallback(null);
+        scaleManager = null;
+        Log.w(TAG, "onPause");
+        super.onPause();
     }
 
     @Override
@@ -530,8 +549,7 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
         if (measurement == null) return;
 
         runOnUiThread(() -> {
-            bodyMassTextView.setText(formatNumber(measurement.getValue()));
-            bodyMassUnitTextView.setText(measurement.getUnit());
+            setValueLastMeasurement(measurement.getValue(), measurement.getUnit());
 
             String timeStamp = measurement.getTimestamp();
 
@@ -553,11 +571,14 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
                     getAllMeasurementsByType(patient.get_id(),
                             MeasurementType.HEIGHT, "-timestamp", null, null, 1, 1)
                     .subscribe(measurements -> {
-                        double height = measurements.get(0).getValue();
-                        double bmi = calcBMI(measurement.getValue(), height);
 
-                        bmiTextView.setText(formatNumber(bmi));
-                        titleBmiTextView.setVisibility(View.VISIBLE);
+                        if (measurements != null && measurements.size() > 0) {
+                            double height = measurements.get(0).getValue();
+                            double bmi = calcBMI(measurement.getValue(), height);
+
+                            bmiTextView.setText(formatNumber(bmi));
+                            titleBmiTextView.setVisibility(View.VISIBLE);
+                        }
                     }, error -> {
                         Log.w(TAG, "Error to process BMI");
                     }));
@@ -572,7 +593,6 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
      * @param measurement Measurement to save in server
      */
     private void synchronizeWithServer(Measurement measurement) {
-        Log.w(TAG, measurement.toJson());
         DisposableManager.add(haniotNetRepository
                 .saveMeasurement(measurement)
                 .doAfterSuccess(measurement1 -> {
@@ -581,6 +601,7 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
                 })
                 .subscribe(measurement1 -> {
                 }, error -> {
+                    measurementDAO.save(measurement);
                     Log.w(TAG, error.getMessage());
                     printMessage(getString(R.string.error_500));
                 }));
