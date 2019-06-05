@@ -40,7 +40,7 @@
     <string name="welcome_app_functionalities_title">Aqui você pode:</string>
     <string name="welcome_app_functionalities">• Cadastrar/gerenciar seus pacientes;\n• Submeter questionários para seus pacientes responderem;\n• Realizar medições;\n• Consultar históricos e muito mais.</string>
     <string name="welcome_hp">Seja bem-vindo(a), %s</string>
-    <string name="welcome_hp_instructions">Para continuarmos você precisa selecionar o piloto que deseja relizar o estudo.</string>
+    <string name="welcome_hp_instructions">Para continuarmos você precisa selecionar o piloto que deseja realizar o estudo.</string>
     <string name="piloty_study_title">Estudo Piloto</string>
     <string name="piloty_study_sumary">Selecione o estudo piloto que você estar alocado.</string>
     <string name="piloty_study_desc">Selecione o piloto que deseja realizar o estudo. Você poderá a qualquer momento voltar aqui e mudar sua escolha.</string>
@@ -421,7 +421,7 @@
 
     <!-- Patient Quiz Nutrition -->
     <string name="message_info_patient">Informe os dados básicos do paciente:</string>
-    <string name="message_welcome_nutrition">Este questionário que você irá responder agora faz parte de uma pesquisa que tem como objetivo de conhecer alguns aspectos importantes da saúde dos(as) crianças e adolescentes que frequentam a clínica de odontologia da UEPB. Voce não será identificado(a).</string>
+    <string name="message_welcome_nutrition">Este questionário que você irá responder agora faz parte de uma pesquisa que tem como objetivo de conhecer alguns aspectos importantes da saúde dos(as) crianças e adolescentes que frequentam a clínica de odontologia da UEPB.</string>
     <string name="q1" translatable="false">Na semana passada você praticou:</string>
     <string name="q2" translatable="false">Você faz educação física da escola?</string>
     <string name="q3" translatable="false">Você toma café da manhã?</string>
@@ -643,7 +643,7 @@
     </string-array>
 
     <!-- Patient Odonto Quiz -->
-    <string name="message_welcome_odontology">"Este questionário que você irá responder agora faz parte de uma pesquisa que tem como objetivo de conhecer alguns aspectos importantes da saúde dos(as) crianças e adolescentes que frequentam a clínica de odontologia da UEPB. Voce não será identificado(a)."</string>
+    <string name="message_welcome_odontology">"Este questionário que você irá responder agora faz parte de uma pesquisa que tem como objetivo de conhecer alguns aspectos importantes da saúde dos(as) crianças e adolescentes que frequentam a clínica de odontologia da UEPB."</string>
     <string name="question_1">Os membros da família pedem ajuda uns aos outros?</string>
     <string name="question_2">Aprovamos os amigos que cada um tem:</string>
     <string name="question_3">Gostamos de fazer coisas apenas com nossa família:</string>

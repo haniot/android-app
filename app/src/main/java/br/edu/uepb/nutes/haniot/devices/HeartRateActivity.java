@@ -202,6 +202,7 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
             List<HeartRateItem> heartRateItems = new ArrayList<>();
             heartRateItems.add(new HeartRateItem(heartRate, DateUtils.getCurrentDateTimeUTC()));
             measurement.setDataset(heartRateItems);
+            measurement.setDatasetDB(heartRateItems);
 
             if (mDevice != null)
                 measurement.setDeviceId(mDevice.get_id());
@@ -342,7 +343,7 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
      * when an error occurs on the first request with the server.
      */
     private void loadDataLocal() {
-        mAdapter.addItems(measurementDAO.list(MeasurementType.HEART_RATE, patient.getId(), 0, 100));
+        //mAdapter.addItems(measurementDAO.list(MeasurementType.HEART_RATE, patient.get_id(), 0, 100));
 
         if (!mAdapter.itemsIsEmpty()) {
             updateUILastMeasurement(mAdapter.getFirstItem(), false);
@@ -503,6 +504,7 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
         if (measurement == null) return;
 
         runOnUiThread(() -> {
+            if(measurement.getDataset() != null && measurement.getDataset().isEmpty()) return;
             mHeartRateTextView.setText(String.format("%03d", (int) measurement.getDataset().get(0).getValue()));
             mUnitHeartRateTextView.setText(measurement.getUnit());
 

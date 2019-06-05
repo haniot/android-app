@@ -294,10 +294,10 @@ public class AddMeasurementActivity extends AppCompatActivity {
 
     private void saveMeasurement(Measurement measurement) {
         if (measurement != null) {
-            Log.i("AAA", "saving " + measurement.toJson());
 
             measurement.setUserId(patient.get_id());
             measurement.setTimestamp(DateUtils.convertDateTimeToUTC(myCalendar.getTime()));
+            Log.i("AAA", "saving " + measurement.toJson());
 
             new AlertDialog.Builder(this)
                     .setMessage(getString(R.string.confirm_save_measurement))
@@ -348,9 +348,10 @@ public class AddMeasurementActivity extends AppCompatActivity {
                 saveMeasurement(measurement);
         } else if (myFragment == null || myFragment instanceof FragmentGlucose) {
             Measurement measurement;
-            if (myFragment instanceof FragmentGlucose)
+            if (myFragment instanceof FragmentGlucose) {
                 measurement = ((MeasurementCommunicator) myFragment).getMeasurement();
-            else {
+                measurement.setValue(Double.valueOf(textMeasurement.getText().toString()));
+            } else {
                 measurement = new Measurement();
                 if (textMeasurement.getText().toString().isEmpty()) {
                     showMessage(R.string.empty_measurement);

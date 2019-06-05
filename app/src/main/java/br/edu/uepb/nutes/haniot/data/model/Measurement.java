@@ -265,8 +265,9 @@ public class Measurement implements Parcelable {
         return datasetDB;
     }
 
-    public void setDatasetDB(ToMany<HeartRateItem> datasetDB) {
-        this.datasetDB = datasetDB;
+    public void setDatasetDB(List<HeartRateItem> datasetDB) {
+        this.getDatasetDB().clear();
+        this.getDatasetDB().addAll(datasetDB);
     }
 
     public ToOne<BodyFat> getBodyFatDB() {

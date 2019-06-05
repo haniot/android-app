@@ -310,7 +310,7 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
      */
     private void loadDataLocal() {
         mAdapter.addItems(measurementDAO.list(MeasurementType.BLOOD_GLUCOSE,
-                patient.getId(), 0, 100));
+                patient.get_id(), 0, 100));
 
         if (!mAdapter.itemsIsEmpty()) {
             updateUILastMeasurement(mAdapter.getFirstItem(), false);

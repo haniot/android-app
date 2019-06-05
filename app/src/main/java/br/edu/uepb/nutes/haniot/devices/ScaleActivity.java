@@ -344,7 +344,7 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
      */
     private void loadDataLocal() {
         page = INITIAL_PAGE; // returns to initial page
-        mAdapter.addItems(measurementDAO.list(MeasurementType.BODY_MASS, patient.getId(), 0, 100));
+        mAdapter.addItems(measurementDAO.list(MeasurementType.BODY_MASS, patient.get_id(), 0, 100));
 
         if (!mAdapter.itemsIsEmpty()) {
             updateUILastMeasurement(mAdapter.getFirstItem(), false);

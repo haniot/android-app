@@ -167,6 +167,7 @@ public class FragmentGlucose extends Fragment implements AddMeasurementActivity.
         Measurement measurement = new Measurement();
         measurement.setMeal(period);
         measurement.setType("blood_glucose");
+        measurement.setUnit(getString(R.string.unit_glucose_mg_dL));
         return measurement;
     }
 

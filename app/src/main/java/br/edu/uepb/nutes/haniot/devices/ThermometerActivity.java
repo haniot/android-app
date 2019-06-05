@@ -303,7 +303,7 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
      */
     private void loadDataLocal() {
         page = INITIAL_PAGE; // returns to initial page
-        mAdapter.replace(measurementDAO.list(MeasurementType.BODY_TEMPERATURE, patient.getId(), 0, 100));
+        mAdapter.replace(measurementDAO.list(MeasurementType.BODY_TEMPERATURE, patient.get_id(), 0, 100));
 
         if (!mAdapter.itemsIsEmpty()) {
             updateUILastMeasurement(mAdapter.getFirstItem(), false);

@@ -2,7 +2,6 @@ package br.edu.uepb.nutes.haniot.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -11,7 +10,7 @@ import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.adapter.base.BaseAdapter;
-import br.edu.uepb.nutes.haniot.data.BloodGlucoseMealType;
+import br.edu.uepb.nutes.haniot.data.model.BloodGlucoseMealType;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;

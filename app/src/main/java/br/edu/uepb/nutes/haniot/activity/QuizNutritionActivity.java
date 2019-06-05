@@ -503,6 +503,7 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
         addQuestion(new Infor.Config()
                 .title(R.string.category_2, Color.WHITE)
                 .titleTextSize(28)
+                .buttonClose(R.drawable.ic_action_close_dark)
                 .description(R.string.category_2_desc, Color.WHITE)
                 .descriptionTextSize(14)
                 .image(R.drawable.x_sneaker)
@@ -555,6 +556,7 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
                 .description(R.string.category_5_desc,
                         Color.WHITE)
                 .image(R.drawable.x_bed)
+                .buttonClose(R.drawable.ic_action_close_dark)
                 .colorBackground(getResources().getColor(R.color.colorAccent))
                 .inputText(R.string.bt_next)
                 .buttonBackground(R.drawable.button_stylezed)

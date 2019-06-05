@@ -31,6 +31,7 @@ import br.edu.uepb.nutes.haniot.data.model.MedicalRecord;
 import br.edu.uepb.nutes.haniot.data.model.NutritionalEvaluation;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.PhysicalActivityHabit;
+import br.edu.uepb.nutes.haniot.data.model.PilotStudy;
 import br.edu.uepb.nutes.haniot.data.model.SleepHabit;
 import br.edu.uepb.nutes.haniot.data.model.TypeEvaluation;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
@@ -84,6 +85,7 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
     private HaniotNetRepository haniotNetRepository;
     private AppPreferencesHelper appPreferencesHelper;
     private NutritionalEvaluation nutritionalEvaluation;
+    private PilotStudy pilotStudy;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,6 +142,7 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
         haniotNetRepository = HaniotNetRepository.getInstance(this);
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
         patient = helper.getLastPatient();
+        pilotStudy = helper.getLastPilotStudy();
     }
 
     private void showToast(final String menssage) {
@@ -360,7 +363,10 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
                         , 1, 20, "created_at")
                 .subscribe(medicalRecords ->
                                 prepareData(medicalRecords, MEDICAL_RECORDS),
-                        type -> onDownloadError(MEDICAL_RECORDS)));
+                        error -> {
+                            Log.i("AAA", error.getMessage());
+                            onDownloadError(MEDICAL_RECORDS);
+                        }));
 
         DisposableManager.add(haniotNetRepository
                 .getAllPhysicalActivity(helper.getLastPatient().get_id()
@@ -385,7 +391,7 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
 
         DisposableManager.add(haniotNetRepository
                 .getAllMeasurements(helper.getLastPatient().get_id()
-                        , 1, 1000, "created_at")
+                        , "created_at", pilotStudy.getStart(), pilotStudy.getEnd(), 1, 1000)
                 .subscribe(this::prepareMeasurements,
                         type -> onDownloadError(ALL_MEASUREMENT)));
     }
@@ -403,8 +409,10 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
         List<Measurement> waistCircumference = new ArrayList<>();
         List<Measurement> weight = new ArrayList<>();
 
+        int countHeartRate = 0;
         for (Measurement measurement : measurements) {
             Log.i("AAA", measurement.getValue() + " - " + measurement.getType());
+            countHeartRate++;
             switch (measurement.getType()) {
                 case "blood_glucose":
                     glucose.add(measurement);
@@ -413,6 +421,7 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
                     bloodPressure.add(measurement);
                     break;
                 case "heart_rate":
+                    if (countHeartRate >= 5) break;
                     heartRate.add(measurement);
                     break;
                 case "height":

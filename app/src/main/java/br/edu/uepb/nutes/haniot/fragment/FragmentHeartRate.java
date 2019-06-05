@@ -92,9 +92,11 @@ public class FragmentHeartRate extends Fragment implements AddMeasurementActivit
     public Measurement getMeasurement() {
         Measurement measurement = new Measurement();
         HeartRateItem heartRateItem = new HeartRateItem();
+
         heartRateItem.setValue(heartValue);
         List<HeartRateItem> heartRateItems = new ArrayList<>();
         heartRateItems.add(heartRateItem);
+
         measurement.setDataset(heartRateItems);
         measurement.setType("heart_rate");
         measurement.setUnit(getContext().getResources().getString(R.string.unit_heart_rate));

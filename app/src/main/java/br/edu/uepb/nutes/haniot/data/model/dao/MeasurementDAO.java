@@ -142,7 +142,7 @@ public class MeasurementDAO {
      * @param limit  int
      * @return List<Measurement>
      */
-    public List<Measurement> list(@NonNull String type, @NonNull long userId, @NonNull int offset, @NonNull int limit) {
+    public List<Measurement> list(@NonNull String type, @NonNull String userId, @NonNull int offset, @NonNull int limit) {
         return measurementBox.query()
                 .equal(Measurement_.type, type)
                 .equal(Measurement_.userId, userId)

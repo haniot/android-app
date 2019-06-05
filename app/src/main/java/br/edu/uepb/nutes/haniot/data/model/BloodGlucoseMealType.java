@@ -1,4 +1,4 @@
-package br.edu.uepb.nutes.haniot.data;
+package br.edu.uepb.nutes.haniot.data.model;
 
 import android.content.Context;
 import android.content.res.Resources;
