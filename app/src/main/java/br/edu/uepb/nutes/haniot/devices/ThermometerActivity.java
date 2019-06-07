@@ -420,6 +420,7 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
     protected void onDestroy() {
         super.onDestroy();
         DisposableManager.dispose();
+        thermometerManager.close();
     }
 
     @Override

@@ -52,6 +52,7 @@
     <string name="active_title">Ativo</string>
     <string name="inactive_title">Inativo</string>
     <string name="empty_measurement">Nenhuma medição</string>
+    <string name="measurement_invalid">Insira uma medição válida</string>
     <string name="last_measurement">Última medição:</string>
 
     <!--FORMATS-->
@@ -211,6 +212,7 @@
 
     <!-- STRINGS FOR TABLET VERSION-->
     <string name="bluetooth_disabled">Nós precisamos do bluetooth para funcionar.\nClique aqui para iniciar</string>
+    <string name="wifi_disabled">Você está sem conexão com a internet. \nPrecisamos para sincronizar os seus dados!</string>
     <string name="dash_item_description">Botão de Medição</string>
     <string name="manage_patient">Gerenciar Pacientes</string>
     <string name="search">Pesquisar</string>
@@ -687,9 +689,10 @@
     </string-array>
 
     <string-array name="scholarity_answers">
-        <item>Analfabet/Fundamental I Incompleto</item>
+        <item>Analfabeto/Fundamental I Incompleto</item>
         <item>Fundamental I Completo/Fundamental II Incompleto</item>
         <item>Fundamental Completo/Médio Incompleto</item>
+        <item>Superior Incompleto</item>
         <item>Superior Completo</item>
     </string-array>
 
@@ -733,4 +736,7 @@
     <string name="measurement_save">Medição salva com sucesso!</string>
     <string name="confirm_save_evaluation">Deseja salvar essa avaliação?</string>
     <string name="evaluation_saved">Avaliação salva com sucesso!</string>
+    <string name="no_internet_conection">Sem conexão com a internet!</string>
+    <string name="title_saving_heart_rate">Frequência cardíaca</string>
+    <string name="loading_saving_heart_rate">Aguarde enquanto salvamos a coleta de frequência cardíaca...</string>
 </resources>

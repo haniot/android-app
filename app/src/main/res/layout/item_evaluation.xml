@@ -98,7 +98,7 @@
                 android:layout_height="match_parent"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
-                android:layout_marginStart="45dp"
+                android:layout_marginStart="25dp"
                 android:gravity="center_vertical"
                 android:text="97"
                 android:textSize="24sp"
@@ -171,12 +171,45 @@
                 android:textSize="16sp"
                 android:visibility="gone" />
 
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/quiz_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textDescription"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="34dp"
+            android:layout_marginTop="8dp"
+            android:layout_toStartOf="@+id/check_item"
+            android:text="Respostas:"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/warning"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="18dp"
+            android:visibility="gone"
+            app:srcCompat="@drawable/ic_warning" />
+
+        <LinearLayout
+            android:id="@+id/box_other_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/box_measurement"
+            android:layout_marginTop="2dp"
+            android:orientation="horizontal"
+            android:visibility="visible">
+
             <ImageView
                 android:id="@+id/time_measuerement"
                 android:layout_width="13dp"
-                android:layout_height="match_parent"
+                android:layout_height="20dp"
                 android:layout_alignParentTop="true"
-                android:layout_marginLeft="10dp"
+                android:layout_marginLeft="25dp"
                 android:layout_toEndOf="@+id/textMeasurementType"
                 android:src="@drawable/zclock"
                 android:tint="@color/cardview_dark_background" />
@@ -216,28 +249,6 @@
                 android:visibility="visible" />
 
         </LinearLayout>
-
-        <TextView
-            android:id="@+id/quiz_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/textDescription"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="34dp"
-            android:layout_marginTop="8dp"
-            android:layout_toStartOf="@+id/check_item"
-            android:text="Respostas:"
-            android:visibility="gone" />
-
-        <ImageView
-            android:id="@+id/warning"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="18dp"
-            android:visibility="gone"
-            app:srcCompat="@drawable/ic_warning" />
 
         <br.edu.uepb.nutes.haniot.adapter.ItemQuizView
             android:id="@+id/item_quiz"

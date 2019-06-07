@@ -474,10 +474,11 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     protected void onDestroy() {
+        super.onDestroy();
         DisposableManager.dispose();
         unregisterReceiver(mReceiver);
+        scaleManager.close();
         Log.w(TAG, "onDestroy");
-        super.onDestroy();
     }
 
     @Override

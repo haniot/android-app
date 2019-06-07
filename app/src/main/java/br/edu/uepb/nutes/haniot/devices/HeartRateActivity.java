@@ -465,6 +465,8 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
         super.onDestroy();
         DisposableManager.dispose();
         unregisterReceiver(mReceiver);
+        heartRateManager.close();
+
     }
 
     @Override

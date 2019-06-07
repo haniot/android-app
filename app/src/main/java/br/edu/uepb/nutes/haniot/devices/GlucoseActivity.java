@@ -213,6 +213,7 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
         }
     };
 
+
     /**
      * Initialize components
      */
@@ -451,6 +452,7 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
         super.onDestroy();
         DisposableManager.dispose();
         unregisterReceiver(mReceiver);
+        glucoseManager.close();
 
     }
 

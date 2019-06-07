@@ -140,7 +140,8 @@ public class EvaluationAdapter extends ExpandableRecyclerViewAdapter<EvaluationA
         h.texTime.setVisibility(View.VISIBLE);
         h.timeIcon.setVisibility(View.VISIBLE);
         h.itemQuizView.setVisibility(GONE);
-        h.box.setVisibility(View.VISIBLE);
+        h.boxOthersInfo.setVisibility(View.VISIBLE);
+        h.boxMeasurement.setVisibility(View.VISIBLE);
         h.textMeasurement.setVisibility(View.VISIBLE);
         h.textMeasurementType.setVisibility(View.VISIBLE);
         h.checkItem.setVisibility(View.VISIBLE);
@@ -153,7 +154,6 @@ public class EvaluationAdapter extends ExpandableRecyclerViewAdapter<EvaluationA
         h.textMaxType.setVisibility(GONE);
         h.textMin.setVisibility(GONE);
         h.textMinType.setVisibility(GONE);
-        h.textDate.setTextSize(16);
         h.textMinType.setTextSize(16);
         h.textMaxType.setTextSize(16);
         h.textMeasurementType.setTextSize(16);
@@ -169,7 +169,8 @@ public class EvaluationAdapter extends ExpandableRecyclerViewAdapter<EvaluationA
         h.warning.setVisibility(View.VISIBLE);
         h.messageText.setVisibility(View.VISIBLE);
         h.messageText.setText(context.getResources().getString(R.string.evaluation_error_message));
-        h.box.setVisibility(GONE);
+        h.boxOthersInfo.setVisibility(GONE);
+        h.boxMeasurement.setVisibility(GONE);
         h.checkItem.setVisibility(View.INVISIBLE);
 //        h.mView.setOnClickListener(v -> {
 //            if (mListener != null) {
@@ -186,7 +187,8 @@ public class EvaluationAdapter extends ExpandableRecyclerViewAdapter<EvaluationA
         });
         h.messageText.setVisibility(View.VISIBLE);
         h.messageText.setText(context.getResources().getString(R.string.evaluation_empty_message));
-        h.box.setVisibility(GONE);
+        h.boxOthersInfo.setVisibility(GONE);
+        h.boxMeasurement.setVisibility(GONE);
         h.checkItem.setVisibility(View.INVISIBLE);
     }
 
@@ -217,10 +219,8 @@ public class EvaluationAdapter extends ExpandableRecyclerViewAdapter<EvaluationA
             h.textMaxType.setVisibility(View.VISIBLE);
             h.textMin.setVisibility(View.VISIBLE);
             h.textMinType.setVisibility(View.VISIBLE);
-            h.textMinType.setTextSize(12);
-            h.textMaxType.setTextSize(12);
-            h.textDate.setTextSize(12);
-            h.texTime.setTextSize(12);
+            h.textMinType.setTextSize(11);
+            h.textMaxType.setTextSize(11);
             h.textMeasurementType.setTextSize(12);
 
             double average = 0.0;
@@ -281,7 +281,8 @@ public class EvaluationAdapter extends ExpandableRecyclerViewAdapter<EvaluationA
         h.textMeasurement.setVisibility(View.GONE);
         h.textMeasurementType.setVisibility(View.GONE);
         h.messageText.setVisibility(View.VISIBLE);
-        h.box.setVisibility(GONE);
+        h.boxOthersInfo.setVisibility(GONE);
+        h.boxMeasurement.setVisibility(GONE);
         h.checkItem.setChecked(ig.isChecked());
 
         h.mView.setOnClickListener(v -> {
@@ -373,7 +374,8 @@ public class EvaluationAdapter extends ExpandableRecyclerViewAdapter<EvaluationA
      */
     private void createLoadingView(ViewHolder h, ItemEvaluation ig) {
         h.loading.setVisibility(View.VISIBLE);
-        h.box.setVisibility(GONE);
+        h.boxOthersInfo.setVisibility(GONE);
+        h.boxMeasurement.setVisibility(GONE);
         h.messageText.setVisibility(GONE);
         h.checkItem.setVisibility(GONE);
     }
@@ -411,8 +413,10 @@ public class EvaluationAdapter extends ExpandableRecyclerViewAdapter<EvaluationA
         TextView textDate;
         @BindView(R.id.check_item)
         CheckBox checkItem;
+        @BindView(R.id.box_other_info)
+        LinearLayout boxOthersInfo;
         @BindView(R.id.box_measurement)
-        LinearLayout box;
+        LinearLayout boxMeasurement;
         @BindView(R.id.warning)
         ImageView warning;
         @BindView(R.id.loading)

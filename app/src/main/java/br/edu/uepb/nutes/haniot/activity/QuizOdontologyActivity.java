@@ -620,7 +620,7 @@ public class QuizOdontologyActivity extends SimpleSurvey implements Infor.OnInfo
                 sociodemographicRecord.setColorRace(SociodemographicType.ColorRace.getString(indexValue));
                 break;
             case 12:
-                sociodemographicRecord.setMotherSchoolarity(SociodemographicType.MotherScholarity.getString(indexValue));
+                sociodemographicRecord.setMotherScholarity(SociodemographicType.MotherScholarity.getString(indexValue));
                 break;
             case 14:
                 oralHealthRecord.setTeethBrushingFreq(ToothLesionType.TeethBrushingFreq.getString(indexValue));

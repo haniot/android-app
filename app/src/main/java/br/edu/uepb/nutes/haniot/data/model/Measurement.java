@@ -70,6 +70,11 @@ public class Measurement implements Parcelable {
     @Transient()
     private List<HeartRateItem> dataset; // not persisted in ObjectBox
 
+    @SerializedName("bodyfat")
+    @Expose()
+    @Transient()
+    private List<BodyFat> bodyFat; // not persisted in ObjectBox
+
     @SerializedName("systolic")
     @Expose()
     private int systolic;
@@ -268,6 +273,14 @@ public class Measurement implements Parcelable {
     public void setDatasetDB(List<HeartRateItem> datasetDB) {
         this.getDatasetDB().clear();
         this.getDatasetDB().addAll(datasetDB);
+    }
+
+    public List<BodyFat> getBodyFat() {
+        return bodyFat;
+    }
+
+    public void setBodyFat(List<BodyFat> bodyFat) {
+        this.bodyFat = bodyFat;
     }
 
     public ToOne<BodyFat> getBodyFatDB() {

@@ -30,9 +30,9 @@ public class SociodemographicRecord {
     @Expose()
     private String colorRace;
 
-    @SerializedName("mother_schoolarity")
+    @SerializedName("mother_scholarity")
     @Expose()
-    private String motherSchoolarity;
+    private String motherScholarity;
 
     @SerializedName("people_in_home")
     @Expose()
@@ -73,12 +73,12 @@ public class SociodemographicRecord {
         this.colorRace = colorRace;
     }
 
-    public String getMotherSchoolarity() {
-        return motherSchoolarity;
+    public String getMotherScholarity() {
+        return motherScholarity;
     }
 
-    public void setMotherSchoolarity(String motherSchoolarity) {
-        this.motherSchoolarity = motherSchoolarity;
+    public void setMotherScholarity(String motherScholarity) {
+        this.motherScholarity = motherScholarity;
     }
 
     public int getPeopleInHome() {

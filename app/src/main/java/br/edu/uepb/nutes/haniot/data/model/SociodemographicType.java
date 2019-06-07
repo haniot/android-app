@@ -1,10 +1,5 @@
 package br.edu.uepb.nutes.haniot.data.model;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
-import io.objectbox.annotation.Id;
-
 public class SociodemographicType {
 
     public static class ColorRace {
@@ -33,31 +28,25 @@ public class SociodemographicType {
 
     public static class MotherScholarity {
 
-        public static final String UNLETTERED = "unlettered";
-        public static final String ONE_TO_TRHEE = "elementary_1_to_3";
-        public static final String FOUR_TO_SEVEN = "elementary_4_to_7";
-        public static final String ELEMENTARY_COMPLETE = "elementary_complete";
-        public static final String HIGH_SCHOOL_INCOMPLETE = "high_school_incomplete";
-        public static final String HIGH_SCHOOL_COMPLETE = "high_school_complete";
-        public static final String UNDEFINED = "undefined ";
+        public static final String UNLETTERED_ELEMENTARY_ONE_INCOMPLETE = "unlettered_elementary_one_incomplete";
+        public static final String ELEMENTARY_ONE_ELEMENTARY_TWO_INCOMPLETE = "elementary_one_elementary_two_incomplete";
+        public static final String ELEMENTARY_TWO_HIGH_SCHOOL_INCOMPLETE = "elementary_two_high_school_incomplete";
+        public static final String MEDIUM_GRADUATION_INCOMPLETE = "medium_graduation_incomplete";
+        public static final String GRADUATION_COMPLETE = "graduation_complete";
 
 
         public static String getString(int type) {
             switch (type) {
                 case 0:
-                    return UNLETTERED;
+                    return UNLETTERED_ELEMENTARY_ONE_INCOMPLETE;
                 case 1:
-                    return ONE_TO_TRHEE;
+                    return ELEMENTARY_ONE_ELEMENTARY_TWO_INCOMPLETE;
                 case 2:
-                    return FOUR_TO_SEVEN;
+                    return ELEMENTARY_TWO_HIGH_SCHOOL_INCOMPLETE;
                 case 3:
-                    return ELEMENTARY_COMPLETE;
+                    return MEDIUM_GRADUATION_INCOMPLETE;
                 case 4:
-                    return HIGH_SCHOOL_INCOMPLETE;
-                case 5:
-                    return HIGH_SCHOOL_COMPLETE;
-                case 6:
-                    return UNDEFINED;
+                    return GRADUATION_COMPLETE;
                 default:
                     return "";
             }

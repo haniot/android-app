@@ -1,8 +1,5 @@
 package br.edu.uepb.nutes.haniot.data.model;
 
-import android.content.Context;
-import android.content.res.Resources;
-
 public class FrequencyAnswersType {
 
     public static class Frequency {
@@ -11,7 +8,7 @@ public class FrequencyAnswersType {
         public static final String RARELY = "rarely";
         public static final String SOMETIMES = "sometimes";
         public static final String OFTEN = "often";
-        public static final String ALMOST_EVERYDAY = "almost_everyday";
+        public static final String ALMOST_ALWAYS = "almost_always";
 
         public static final String ALMOST_NEVER_PTBR = "Quase nunca";
         public static final String RARELY_PTBR = "Raramente";
@@ -30,7 +27,7 @@ public class FrequencyAnswersType {
                 case 3:
                     return OFTEN;
                 case 4:
-                    return ALMOST_EVERYDAY;
+                    return ALMOST_ALWAYS;
                 default:
                     return "";
             }
@@ -46,7 +43,7 @@ public class FrequencyAnswersType {
                     return SOMETIMES_PTBR;
                 case OFTEN:
                     return OFTEN_PTBR;
-                case ALMOST_EVERYDAY:
+                case ALMOST_ALWAYS:
                     return ALMOST_EVERYDAY_PTBR;
                 default:
                     return "";

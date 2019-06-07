@@ -147,7 +147,21 @@ public class ManagerPatientsActivity extends AppCompatActivity {
 
     private void initRecyclerView() {
         adapter = new ManagerPatientAdapter(this);
-        adapter.setListener(new OnRecyclerViewListener<Patient>() {
+        adapter.setPatientActionListener(new ManagerPatientAdapter.ActionsPatientListener() {
+            @Override
+            public void onMenuClick(String action, Patient patient) {
+                if (action.equals("quiz_dentistry")){
+                    appPreferencesHelper.saveLastPatient(patient);
+                    startActivity(new Intent(ManagerPatientsActivity.this, QuizOdontologyActivity.class));
+                } else if (action.equals("quiz_nutrition")){
+                    appPreferencesHelper.saveLastPatient(patient);
+                    startActivity(new Intent(ManagerPatientsActivity.this, QuizNutritionActivity.class));
+                } else if (action.equals("nutrition_evaluation")) {
+                    appPreferencesHelper.saveLastPatient(patient);
+                    startActivity(new Intent(ManagerPatientsActivity.this, NutritionalEvaluationActivity.class));
+                }
+            }
+
             @Override
             public void onItemClick(Patient item) {
                 appPreferencesHelper.saveLastPatient(item);
@@ -174,7 +188,6 @@ public class ManagerPatientsActivity extends AppCompatActivity {
                     intent.putExtra("action", "edit");
                     appPreferencesHelper.saveLastPatient(item);
                     startActivity(intent);
-                    finish();
                 }
             }
         });

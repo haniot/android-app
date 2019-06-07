@@ -40,6 +40,7 @@ import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepositor
 import br.edu.uepb.nutes.haniot.devices.GlucoseActivity;
 import br.edu.uepb.nutes.haniot.devices.HeartRateActivity;
 import br.edu.uepb.nutes.haniot.devices.ScaleActivity;
+import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.HttpException;
@@ -391,9 +392,14 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
 
         DisposableManager.add(haniotNetRepository
                 .getAllMeasurements(helper.getLastPatient().get_id()
-                        , "created_at", pilotStudy.getStart(), pilotStudy.getEnd(), 1, 1000)
+                        , 1, 100000, "created_at")
                 .subscribe(this::prepareMeasurements,
                         type -> onDownloadError(ALL_MEASUREMENT)));
+//        DisposableManager.add(haniotNetRepository
+//                .getAllMeasurements(helper.getLastPatient().get_id()
+//                        , "created_at", pilotStudy.getStart(), pilotStudy.getEnd(), 1, 1000)
+//                .subscribe(this::prepareMeasurements,
+//                        type -> onDownloadError(ALL_MEASUREMENT)));
     }
 
     /**
@@ -412,7 +418,6 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
         int countHeartRate = 0;
         for (Measurement measurement : measurements) {
             Log.i("AAA", measurement.getValue() + " - " + measurement.getType());
-            countHeartRate++;
             switch (measurement.getType()) {
                 case "blood_glucose":
                     glucose.add(measurement);
@@ -421,8 +426,9 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
                     bloodPressure.add(measurement);
                     break;
                 case "heart_rate":
-                    if (countHeartRate >= 5) break;
                     heartRate.add(measurement);
+                    countHeartRate++;
+                    if (countHeartRate >= 5) break;
                     break;
                 case "height":
                     height.add(measurement);
@@ -442,21 +448,6 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
         prepareData(glucose, GLUCOSE);
         prepareData(waistCircumference, WAIST_CIRCUMFERENCE);
         prepareData(height, HEIGHT);
-    }
-
-    /**
-     * Manipulates the error and displays message
-     * according to the type of error.
-     *
-     * @param e {@link Throwable}
-     */
-    private void errorHandler(Throwable e) {
-        showMessage(R.string.error_500);
-        if (e instanceof HttpException) {
-            HttpException httpEx = ((HttpException) e);
-            Log.i("AAA", httpEx.getMessage());
-        }
-        // message 500
     }
 
     /**
@@ -527,6 +518,32 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
                 }
             }
         return contains;
+    }
+
+    /**
+     * Manipulates the error and displays message
+     * according to the type of error.
+     *
+     * @param e {@link Throwable}
+     */
+    private void errorHandler(Throwable e) {
+        if (!checkConnectivity())
+            showMessage(R.string.no_internet_conection);
+        else
+            showMessage(R.string.error_500);
+    }
+
+    /**
+     * Check if you have connectivity.
+     * If it does not, the elements in the view mounted to notify the user.
+     *
+     * @return boolean
+     */
+    private boolean checkConnectivity() {
+        if (!ConnectionUtils.internetIsEnabled(this)) {
+            return false;
+        }
+        return true;
     }
 
     /**

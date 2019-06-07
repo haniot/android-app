@@ -38,6 +38,7 @@ import br.edu.uepb.nutes.haniot.fragment.FragmentAnthropometrics;
 import br.edu.uepb.nutes.haniot.fragment.FragmentBloodPressure;
 import br.edu.uepb.nutes.haniot.fragment.FragmentGlucose;
 import br.edu.uepb.nutes.haniot.fragment.FragmentHeartRate;
+import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -201,9 +202,24 @@ public class AddMeasurementActivity extends AppCompatActivity {
      * @param e {@link Throwable}
      */
     private void errorHandler(Throwable e) {
-        showMessage(R.string.error_500);
+        if (!checkConnectivity())
+            showMessage(R.string.no_internet_conection);
+        else
+            showMessage(R.string.error_500);
     }
 
+    /**
+     * Check if you have connectivity.
+     * If it does not, the elements in the view mounted to notify the user.
+     *
+     * @return boolean
+     */
+    private boolean checkConnectivity() {
+        if (!ConnectionUtils.internetIsEnabled(this)) {
+            return false;
+        }
+        return true;
+    }
 
     /**
      * Setup date picker.
@@ -354,7 +370,7 @@ public class AddMeasurementActivity extends AppCompatActivity {
             } else {
                 measurement = new Measurement();
                 if (textMeasurement.getText().toString().isEmpty()) {
-                    showMessage(R.string.empty_measurement);
+                    showMessage(R.string.measurement_invalid);
                     return;
                 }
                 measurement.setValue(Double.valueOf(textMeasurement.getText().toString()));

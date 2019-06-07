@@ -65,6 +65,8 @@ public class FragmentHeartRate extends Fragment implements AddMeasurementActivit
 
     public void init() {
         seekBar.setProgress(MIN_HEART_RATE + 28);
+        value.setText(String.valueOf(heartValue+28));
+
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
             @Override

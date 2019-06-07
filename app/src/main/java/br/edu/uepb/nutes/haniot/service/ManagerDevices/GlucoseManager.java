@@ -87,6 +87,7 @@ public class GlucoseManager extends BluetoothManager {
     private ManagerCallback bleManagerCallbacks = new ManagerCallback() {
         @Override
         public void measurementReceiver(@NonNull BluetoothDevice device, @NonNull Data data) {
+            if (glucoseDataCallback == null) return;
             int offset = 0;
             final int flags = data.getIntValue(Data.FORMAT_UINT8, offset);
             offset += 1;

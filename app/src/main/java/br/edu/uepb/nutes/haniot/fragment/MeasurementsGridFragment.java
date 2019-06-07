@@ -1,5 +1,6 @@
 package br.edu.uepb.nutes.haniot.fragment;
 
+import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
@@ -41,14 +42,18 @@ import java.util.Objects;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.AddMeasurementActivity;
 import br.edu.uepb.nutes.haniot.activity.MainActivity;
+import br.edu.uepb.nutes.haniot.activity.NutritionalEvaluationActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.SettingsActivity;
 import br.edu.uepb.nutes.haniot.adapter.MeasurementMonitorAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
+import br.edu.uepb.nutes.haniot.data.model.BodyFat;
 import br.edu.uepb.nutes.haniot.data.model.Device;
 import br.edu.uepb.nutes.haniot.data.model.DeviceType;
+import br.edu.uepb.nutes.haniot.data.model.HeartRateItem;
 import br.edu.uepb.nutes.haniot.data.model.ItemGridType;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.MeasurementMonitor;
+import br.edu.uepb.nutes.haniot.data.model.PilotStudy;
 import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.model.dao.DeviceDAO;
 import br.edu.uepb.nutes.haniot.data.model.dao.MeasurementDAO;
@@ -103,6 +108,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
     private DecimalFormat decimalFormat;
     private HaniotNetRepository haniotRepository;
     private MeasurementDAO measurementDAO;
+    private PilotStudy pilotStudy;
 
     @BindView(R.id.gridMeasurement)
     RecyclerView gridMeasurement;
@@ -143,7 +149,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        refreshManagerBLE();
+//        refreshManagerBLE();
     }
 
     @Override
@@ -197,7 +203,6 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
         @Override
         public void onScanResult(int i, ScanResult scanResult) {
             String address = scanResult.getDevice().getAddress();
-            //TODO TEMP
             Device device = getDeviceRegisteredFromAddress(address);
             BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
             if (device != null) {
@@ -276,12 +281,15 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
             Log.i(LOG_TAG, "Receiver measurement of Thermometer");
             String result = decimalFormat.format(temp);
             updateMeasurement(result, unit, timestamp, ItemGridType.TEMPERATURE);
+            if (temp == 0) return;
             Measurement measurement = new Measurement();
             measurement.setValue(temp);
             measurement.setTimestamp(timestamp);
             measurement.setUserId(user.get_id());
             measurement.setUnit(unit);
-            sendMeasurement(measurement);
+            Device device1 = getDeviceRegistered(DeviceType.THERMOMETER);
+            if (device1 != null) measurement.setDeviceId(device1.get_id());
+            sendMeasurementToServer(measurement);
         }
     };
 
@@ -310,13 +318,17 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
             Log.i(LOG_TAG, "Receiver measurement of Blood Pressure");
             String result = String.valueOf(systolic).concat("/").concat(String.valueOf(diastolic));
             updateMeasurement(result, unit, timestamp, ItemGridType.BLOOD_PRESSURE);
+            if (systolic == 0 || diastolic == 0) return;
             Measurement measurement = new Measurement();
             measurement.setDiastolic(diastolic);
             measurement.setSystolic(systolic);
             measurement.setTimestamp(timestamp);
+            if (pulse > 0) measurement.setPulse(pulse);
             measurement.setUserId(user.get_id());
             measurement.setUnit(getString(R.string.unit_glucose_mg_dL));
-            sendMeasurement(measurement);
+            Device device1 = getDeviceRegistered(DeviceType.BLOOD_PRESSURE);
+            if (device1 != null) measurement.setDeviceId(device1.get_id());
+            sendMeasurementToServer(measurement);
         }
     };
 
@@ -361,12 +373,23 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
             result = result.equals(".0") ? "00.0" : result;
             updateMeasurement(result, bodyMassUnit, timestamp, ItemGridType.WEIGHT);
             communicator.notifyNewMeasurement(result);
+            if (bodyMass == 0) return;
+
             Measurement measurement = new Measurement();
             measurement.setValue(bodyMass);
+            if (bodyFat > 0) {
+                List<BodyFat> bodyFats = new ArrayList<>();
+                BodyFat bodyFat1 = new BodyFat();
+                bodyFat1.setValue(bodyFat);
+                bodyFat1.setTimestamp(timestamp);
+                measurement.setBodyFat(bodyFats);
+            }
             measurement.setTimestamp(timestamp);
             measurement.setUserId(user.get_id());
             measurement.setUnit(bodyMassUnit);
-            sendMeasurement(measurement);
+            Device device1 = getDeviceRegistered(DeviceType.BODY_COMPOSITION);
+            if (device1 != null) measurement.setDeviceId(device1.get_id());
+            sendMeasurementToServer(measurement);
         }
     };
 
@@ -393,13 +416,16 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
                                           String meal, String timestamp) {
             Log.i(LOG_TAG, "Receiver measurement of Glucose");
             updateMeasurement(String.valueOf(glucose), meal, timestamp, ItemGridType.BLOOD_GLUCOSE);
+            if (glucose == 0) return;
             Measurement measurement = new Measurement();
             measurement.setValue(glucose);
             measurement.setMeal(meal);
             measurement.setTimestamp(timestamp);
             measurement.setUserId(user.get_id());
             measurement.setUnit(getString(R.string.unit_glucose_mg_dL));
-            sendMeasurement(measurement);
+            Device device1 = getDeviceRegistered(DeviceType.GLUCOMETER);
+            if (device1 != null) measurement.setDeviceId(device1.get_id());
+            sendMeasurementToServer(measurement);
         }
     };
 
@@ -426,18 +452,52 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
             Log.i(LOG_TAG, "Receiver measurement of Heart Rate");
             getMeasurementMonitor(ItemGridType.HEART_RATE).setStatus(MeasurementMonitor.CONNECTED);
             updateMeasurement(String.valueOf(heartRate), "bpm", timestamp, ItemGridType.HEART_RATE);
-
+            if (heartRate == 0) return;
+            HeartRateItem heartRateItem = new HeartRateItem();
+            heartRateItem.setValue(heartRate);
+            heartRateItem.setTimestamp(timestamp);
+            heartRateItems.add(heartRateItem);
         }
     };
 
-    private void sendMeasurement(Measurement measurement) {
+    //TODO TEMP Onde salvar esses HeartRate acumulados
+    List<HeartRateItem> heartRateItems = new ArrayList<>();
+
+    private void sendMeasurementToServer(Measurement measurement) {
         DisposableManager.add(haniotRepository
                 .saveMeasurement(measurement)
                 .doAfterSuccess(measurement1 -> {
-                    showToast(getString(R.string.measurement_save));
                 })
                 .subscribe(measurement1 -> {
+                    showToast(getString(R.string.measurement_save));
                 }, this::errorHandler));
+    }
+
+    public void saveHeartRateCollection() {
+        if (!prefSettings.getBoolean(getResources().getString(R.string.key_heart_rate), false)) {
+            Intent intent = new Intent(getContext(), NutritionalEvaluationActivity.class);
+            intent.putExtra("type", "nutrition");
+            startActivity(intent);
+        }
+
+        ProgressDialog dialog = ProgressDialog.show(getContext(), getString(R.string.title_saving_heart_rate),
+                getString(R.string.loading_saving_heart_rate), true);
+        dialog.show();
+        Measurement measurement = new Measurement();
+        measurement.setUserId(user.get_id());
+        measurement.setUnit("bpm");
+        measurement.setType("heart_rate");
+        Device device1 = getDeviceRegistered(DeviceType.HEART_RATE);
+        if (device1 != null) measurement.setDeviceId(device1.get_id());
+        DisposableManager.add(haniotRepository
+                .saveMeasurement(measurement)
+                .doAfterTerminate(() -> {
+                    dialog.cancel();
+                    Intent intent = new Intent(getContext(), NutritionalEvaluationActivity.class);
+                    intent.putExtra("type", "nutrition");
+                    startActivity(intent);
+                })
+                .subscribe(measurement1 -> showToast(getString(R.string.measurement_save)), this::errorHandler));
     }
 
     /**
@@ -504,12 +564,40 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
         return null;
     }
 
+    private void downloadLastRegister(int itemKey, String type) {
+        DisposableManager.add(haniotRepository
+                .getAllMeasurements(user.get_id(), 1, 100, "created_at")
+                .subscribe(measurements -> {
+                    Log.i(LOG_TAG, "Medição " + measurements.get(0));
+                    if (!measurements.isEmpty()) {
+//                        setupMonitorItem(itemKey, measurements.get(0));
+                        setupMonitorItem(itemKey, measurements, type);
+                    } else {
+//                        setupMonitorItem(itemKey, null);
+                        setupMonitorItem(itemKey, null, type);
+                    }
+                }, throwable -> {
+//                    setupMonitorItem(itemKey, null);
+                    setupMonitorItem(itemKey, null, type);
+                    Log.i(LOG_TAG, "Errorr" + throwable.getMessage());
+                }));
+    }
+
     /**
      * Setup monitor item.
      *
      * @param type
      */
-    private void setupMonitorItem(int type) {
+    private void setupMonitorItem(int type, List<Measurement> measurements, String typeServer) {
+        Measurement lastMeasurement = null;
+        //TODO TEMP
+        if (measurements != null)
+            for (Measurement measurement : measurements) {
+                if (measurement.getType().equals(typeServer)) lastMeasurement = measurement;
+            }
+
+
+        Log.i(LOG_TAG, "setupMonitorItem " + getContext().getString(type));
         String deviceType = "";
         MeasurementMonitor measurementMonitor = null;
         if (type == R.string.key_temperature) {
@@ -519,6 +607,12 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
                     getResources().getString(R.string.temperature),
                     "", ItemGridType.TEMPERATURE,
                     getString(R.string.unit_celsius));
+            if (lastMeasurement != null) {
+                measurementMonitor.setMeasurementValue(String.valueOf(lastMeasurement.getValue()));
+                measurementMonitor.setMeasurementInitials(String.valueOf(lastMeasurement.getUnit()));
+                //TODO mostrar direito
+                measurementMonitor.setTime(lastMeasurement.getTimestamp());
+            }
         } else if (type == R.string.key_weight) {
             deviceType = DeviceType.BODY_COMPOSITION;
             measurementMonitor = new MeasurementMonitor(
@@ -526,6 +620,12 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
                     getResources().getString(R.string.weight),
                     "", ItemGridType.WEIGHT,
                     getString(R.string.unit_kg));
+            if (lastMeasurement != null) {
+                measurementMonitor.setMeasurementValue(String.valueOf(lastMeasurement.getValue()));
+                measurementMonitor.setMeasurementInitials(String.valueOf(lastMeasurement.getUnit()));
+                //TODO mostrar direito
+                measurementMonitor.setTime(lastMeasurement.getTimestamp());
+            }
         } else if (type == R.string.key_heart_rate) {
             deviceType = DeviceType.HEART_RATE;
             measurementMonitor = new MeasurementMonitor(
@@ -533,6 +633,14 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
                     getResources().getString(R.string.heart_rate),
                     "", ItemGridType.HEART_RATE,
                     getString(R.string.unit_heart_rate));
+            if (lastMeasurement != null) {
+                measurementMonitor.setMeasurementValue(String.valueOf(lastMeasurement
+                        .getDataset().get(lastMeasurement.getDataset().size() - 1).getValue()));
+                measurementMonitor.setMeasurementInitials(String.valueOf(lastMeasurement.getUnit()));
+                //TODO mostrar direito
+                measurementMonitor.setTime(String.valueOf(lastMeasurement
+                        .getDataset().get(lastMeasurement.getDataset().size() - 1).getTimestamp()));
+            }
         } else if (type == R.string.key_blood_glucose) {
             deviceType = DeviceType.GLUCOMETER;
             measurementMonitor = new MeasurementMonitor(
@@ -540,6 +648,12 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
                     getResources().getString(R.string.blood_glucose),
                     "", ItemGridType.BLOOD_GLUCOSE,
                     getString(R.string.unit_glucose_mg_dL));
+            if (lastMeasurement != null) {
+                measurementMonitor.setMeasurementValue(String.valueOf(lastMeasurement.getValue()));
+                measurementMonitor.setMeasurementInitials(String.valueOf(lastMeasurement.getUnit()));
+                //TODO mostrar direito
+                measurementMonitor.setTime(lastMeasurement.getTimestamp());
+            }
         } else if (type == R.string.key_blood_pressure) {
             deviceType = DeviceType.BLOOD_PRESSURE;
             measurementMonitor = new MeasurementMonitor(
@@ -547,6 +661,13 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
                     getResources().getString(R.string.blood_pressure),
                     "", ItemGridType.BLOOD_PRESSURE,
                     getString(R.string.unit_pressure));
+            if (lastMeasurement != null) {
+                measurementMonitor.setMeasurementValue(String.valueOf(lastMeasurement
+                        .getSystolic() + "/" + lastMeasurement.getDiastolic()));
+                measurementMonitor.setMeasurementInitials(String.valueOf(lastMeasurement.getUnit()));
+                //TODO mostrar direito
+                measurementMonitor.setTime(lastMeasurement.getTimestamp());
+            }
         } else if (type == R.string.key_anthropometric) {
             measurementMonitor = new MeasurementMonitor(
                     mContext, R.drawable.xshape,
@@ -559,6 +680,9 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
                 measurementMonitor.setStatus(MeasurementMonitor.DISCONNECTED);
             else measurementMonitor.setStatus(MeasurementMonitor.NO_REGISTERED);
             measurementMonitors.add(measurementMonitor);
+            refreshListMonitor();
+
+            mAdapter.notifyDataSetChanged();
         }
     }
 
@@ -596,13 +720,15 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
     public void refreshManagerBLE() {
         measurementMonitors.clear();
         if (prefSettings.getBoolean(getResources().getString(R.string.key_temperature), false)) {
+
             if (thermometerManager == null) {
                 thermometerManager = new ThermometerManager(mContext);
                 thermometerManager.setSimpleCallback(temperatureDataCallback);
                 Device device = getDeviceRegistered(DeviceType.THERMOMETER);
                 if (device != null) builder.addFilterAddress(device.getAddress());
             }
-            setupMonitorItem(R.string.key_temperature);
+
+            downloadLastRegister(R.string.key_temperature, "body_temperature");
         }
         if (prefSettings.getBoolean(getResources().getString(R.string.key_weight), false)) {
             if (scaleManager == null) {
@@ -611,7 +737,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
                 Device device = getDeviceRegistered(DeviceType.BODY_COMPOSITION);
                 if (device != null) builder.addFilterAddress(device.getAddress());
             }
-            setupMonitorItem(R.string.key_weight);
+            downloadLastRegister(R.string.key_weight, "weight");
         }
         if (prefSettings.getBoolean(getResources().getString(R.string.key_heart_rate), false)) {
             if (heartRateManager == null) {
@@ -620,7 +746,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
                 Device device = getDeviceRegistered(DeviceType.HEART_RATE);
                 if (device != null) builder.addFilterAddress(device.getAddress());
             }
-            setupMonitorItem(R.string.key_heart_rate);
+            downloadLastRegister(R.string.key_heart_rate, "heart_rate");
         }
         if (prefSettings.getBoolean(getResources().getString(R.string.key_blood_glucose), false)) {
             if (glucoseManager == null) {
@@ -629,7 +755,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
                 Device device = getDeviceRegistered(DeviceType.GLUCOMETER);
                 if (device != null) builder.addFilterAddress(device.getAddress());
             }
-            setupMonitorItem(R.string.key_blood_glucose);
+            downloadLastRegister(R.string.key_blood_glucose, "blood_glucose");
         }
         if (prefSettings.getBoolean(getResources().getString(R.string.key_blood_pressure), false)) {
             if (bloodPressureManager == null) {
@@ -638,13 +764,13 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
                 Device device = getDeviceRegistered(DeviceType.BLOOD_PRESSURE);
                 if (device != null) builder.addFilterAddress(device.getAddress());
             }
-            setupMonitorItem(R.string.key_blood_pressure);
+            downloadLastRegister(R.string.key_blood_pressure, "blood_pressure");
         }
         if (prefSettings.getBoolean(getResources().getString(R.string.key_anthropometric), false))
-            setupMonitorItem(R.string.key_anthropometric);
+            //TODO mudar pegar pra mostrar altura e cintura
+            downloadLastRegister(R.string.key_anthropometric, "");
 
         builder.addScanPeriod(Integer.MAX_VALUE);
-        refreshListMonitor();
         simpleBleScanner = builder.build();
         startScan();
     }
@@ -688,6 +814,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
         deviceDAO = DeviceDAO.getInstance(mContext);
         devices = deviceDAO.list(user.get_id());
         builder = new SimpleBleScanner.Builder();
+        pilotStudy = appPreferencesHelper.getLastPilotStudy();
 
         editMonitor.setOnClickListener(editMonitorClick);
         addMonitor.setOnClickListener(editMonitorClick);
@@ -851,18 +978,5 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
             default:
                 break;
         }
-    }
-
-    private void saveMeasurement(Measurement measurement) {
-        DisposableManager.add(
-                haniotRepository
-                        .saveMeasurement(measurement)
-                        .subscribe(m -> {
-                            Log.w(LOG_TAG, "prepareMeasurement() Success: " + m);
-                        }, err -> {
-                            measurementDAO.save(measurement);
-                            Log.w(LOG_TAG, "prepareMeasurement() Error: " + err.getMessage());
-                        })
-        );
     }
 }

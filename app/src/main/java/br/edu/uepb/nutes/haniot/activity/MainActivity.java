@@ -14,6 +14,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,9 +27,11 @@ import com.github.clans.fab.FloatingActionButton;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.SettingsActivity;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
+import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.fragment.DashboardChartsFragment;
 import br.edu.uepb.nutes.haniot.fragment.MeasurementsGridFragment;
+import br.edu.uepb.nutes.haniot.utils.NetworkUtil;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -78,9 +81,10 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
         dashboardChartsFragment = DashboardChartsFragment.newInstance();
         measurementsGridFragment = MeasurementsGridFragment.newInstance();
 
-        IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
-        registerReceiver(mReceiver, filter);
-
+        IntentFilter filterBluetooth = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
+        registerReceiver(mReceiver, filterBluetooth);
+        IntentFilter filterInternet = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
+        registerReceiver(mReceiver, filterInternet);
         setupPatientActions();
     }
 
@@ -139,10 +143,7 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
                 finish();
             });
             nutritioEvaluation.setOnClickListener(v -> {
-                Intent intent = new Intent(MainActivity.this, NutritionalEvaluationActivity.class);
-                intent.putExtra("type", "nutrition");
-                startActivity(intent);
-                finish();
+                measurementsGridFragment.saveHeartRateCollection();
             });
 
 
@@ -291,7 +292,14 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
         @Override
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
-
+            int status = NetworkUtil.getConnectivityStatusString(context);
+            if ("android.net.conn.CONNECTIVITY_CHANGE".equals(intent.getAction())) {
+                if (status == NetworkUtil.NETWORK_STATUS_NOT_CONNECTED) {
+                    dashboardChartsFragment.showMessage(R.string.wifi_disabled);
+                } else {
+                    dashboardChartsFragment.showMessage(-1);
+                }
+            }
             if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
                 final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE,
                         BluetoothAdapter.ERROR);
@@ -300,7 +308,6 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
 
                 } else if (state == BluetoothAdapter.STATE_ON) {
                     dashboardChartsFragment.showMessage(-1);
-
                 }
             }
         }

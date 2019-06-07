@@ -1,5 +1,6 @@
 package br.edu.uepb.nutes.haniot.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
@@ -16,9 +17,9 @@ import java.util.Date;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.activity.QuizNutritionActivity;
 import br.edu.uepb.nutes.haniot.activity.QuizOdontologyActivity;
 import br.edu.uepb.nutes.haniot.adapter.base.BaseAdapter;
+import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.PatientsType;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
@@ -30,6 +31,11 @@ public class ManagerPatientAdapter extends BaseAdapter<Patient> {
     private final String LOG = "ManagerPatientAdapter";
     private final Context context;
     private AppPreferencesHelper appPreferencesHelper;
+    private ActionsPatientListener actionsPatientListener;
+
+    public void setPatientActionListener(ActionsPatientListener mListener) {
+        actionsPatientListener = mListener;
+    }
 
     /**
      * Constructor.
@@ -91,9 +97,7 @@ public class ManagerPatientAdapter extends BaseAdapter<Patient> {
             else h.profile.setImageResource(R.drawable.x_boy);
 
             h.mView.setOnClickListener(v -> {
-                if (ManagerPatientAdapter.super.mListener != null) {
-                    ManagerPatientAdapter.super.mListener.onItemClick(patient);
-                }
+                actionsPatientListener.onItemClick(patient);
             });
 
             h.btnMore.setOnClickListener(v -> {
@@ -101,22 +105,23 @@ public class ManagerPatientAdapter extends BaseAdapter<Patient> {
                 popup.inflate(R.menu.menu_patient_actions);
                 if (appPreferencesHelper.getUserLogged().getHealthArea().equals("nutrition"))
                     popup.getMenu().getItem(2).setVisible(false);
-                else if (appPreferencesHelper.getUserLogged().getHealthArea().equals("dentistry"))
+                else if (appPreferencesHelper.getUserLogged().getHealthArea().equals("dentistry")) {
+                    popup.getMenu().getItem(1).setVisible(false);
                     popup.getMenu().getItem(3).setVisible(false);
+                }
                 popup.setOnMenuItemClickListener(item -> {
                     switch (item.getItemId()) {
                         case R.id.remove:
-                            if (ManagerPatientAdapter.super.mListener != null) {
-                                ManagerPatientAdapter.super.mListener.onMenuContextClick(h.btnMore, patient);
-                            }
+                            actionsPatientListener.onMenuContextClick(h.btnMore, patient);
                             break;
                         case R.id.nutrition_quiz:
-                            appPreferencesHelper.saveLastPatient(patient);
-                            context.startActivity(new Intent(context, QuizNutritionActivity.class));
+                            actionsPatientListener.onMenuClick("quiz_nutrition", patient);
                             break;
                         case R.id.odontotoly_quiz:
-                            appPreferencesHelper.saveLastPatient(patient);
-                            context.startActivity(new Intent(context, QuizOdontologyActivity.class));
+                            actionsPatientListener.onMenuClick("quiz_dentistry", patient);
+                            break;
+                        case R.id.nutrition_evaluation:
+                            actionsPatientListener.onMenuClick("nutrition_evaluation", patient);
                             break;
                         default:
                             break;
@@ -128,9 +133,7 @@ public class ManagerPatientAdapter extends BaseAdapter<Patient> {
             });
 
             h.btnEdit.setOnClickListener(v -> {
-                if (ManagerPatientAdapter.super.mListener != null) {
-                    ManagerPatientAdapter.super.mListener.onMenuContextClick(h.btnEdit, patient);
-                }
+                actionsPatientListener.onMenuContextClick(h.btnEdit, patient);
             });
             // call Animation function
             setAnimation(h.mView, position);
@@ -166,5 +169,10 @@ public class ManagerPatientAdapter extends BaseAdapter<Patient> {
         public void clearAnimation() {
             mView.clearAnimation();
         }
+    }
+
+    public interface ActionsPatientListener extends OnRecyclerViewListener<Patient> {
+
+        void onMenuClick(String action, Patient patient);
     }
 }

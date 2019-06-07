@@ -63,6 +63,7 @@ public class FragmentBloodPressure extends Fragment implements AddMeasurementAct
      */
     public void initView() {
         seekBar.setProgress(MIN_HEART_RATE + 28);
+        value.setText(String.valueOf(MIN_HEART_RATE + 28));
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
             @Override
