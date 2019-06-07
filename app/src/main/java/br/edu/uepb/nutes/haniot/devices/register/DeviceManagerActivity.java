@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -153,6 +154,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
                         .doOnSubscribe(disposable -> displayLoading(true))
                         .doAfterTerminate(() -> displayLoading(false))
                         .subscribe(devices -> {
+                            Log.w("AAA", Arrays.toString(devices.toArray()));
                             populateDevicesRegistered(populateImagesDevices(devices));
                             populateDevicesAvailable(mDeviceDAO.list(user.get_id()));
                         }, err -> {

@@ -798,7 +798,9 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
         user = appPreferencesHelper.getUserLogged();
         patient = appPreferencesHelper.getLastPatient();
         deviceDAO = DeviceDAO.getInstance(mContext);
-        devices = deviceDAO.list(patient.get_id());
+        Log.w("AAA", Arrays.toString(deviceDAO.list(user.get_id()).toArray()));
+
+        devices = deviceDAO.list(user.get_id());
         builder = new SimpleBleScanner.Builder();
         pilotStudy = appPreferencesHelper.getLastPilotStudy();
         if (heartRateItems == null) heartRateItems = new ArrayList<>();
