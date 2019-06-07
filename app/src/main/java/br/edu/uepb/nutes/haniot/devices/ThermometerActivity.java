@@ -180,7 +180,7 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
             measurement.setTimestamp(DateUtils.getCurrentDateTimeUTC());
             measurement.setValue(temp);
             measurement.setUnit(unit);
-            if (mDevice != null) measurement.setDeviceId(mDevice.get_id());
+//            if (mDevice != null) measurement.setDeviceId(mDevice.get_id());
             measurement.setUserId(patient.get_id());
             measurement.setType(MeasurementType.BODY_TEMPERATURE);
 

@@ -97,7 +97,7 @@ public class MeasurementDAO {
      * @param userId long
      * @return boolean
      */
-    public boolean removeAll(@NonNull long userId) {
+    public boolean removeAll(@NonNull String userId) {
         return measurementBox.query()
                 .equal(Measurement_.userId, userId)
                 .build()

@@ -204,8 +204,8 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
             measurement.setDataset(heartRateItems);
             measurement.setDatasetDB(heartRateItems);
 
-            if (mDevice != null)
-                measurement.setDeviceId(mDevice.get_id());
+//            if (mDevice != null)
+//                measurement.setDeviceId(mDevice.get_id());
 
             /**
              * Save in local

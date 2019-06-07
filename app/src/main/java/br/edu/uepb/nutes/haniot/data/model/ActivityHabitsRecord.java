@@ -24,7 +24,7 @@ public abstract class ActivityHabitsRecord {
     private String _id;
 
     @SerializedName("created_at")
-    @Expose(serialize = false)
+    @Expose()
     private String createdAt;
 
     @Expose(serialize = false, deserialize = false)

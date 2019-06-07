@@ -308,6 +308,35 @@ public class AddMeasurementActivity extends AppCompatActivity {
         boxMessage.setVisibility(View.GONE);
     }
 
+    private void saveMeasurements(List<Measurement> measurements) {
+        if (measurements == null || measurements.isEmpty()) {
+            showToast(getString(R.string.value_empty));
+            return;
+        }
+        for (Measurement measurement : measurements) {
+            measurement.setUserId(patient.get_id());
+            measurement.setTimestamp(DateUtils.convertDateTimeToUTC(myCalendar.getTime()));
+            Log.i("AAA", "saving " + measurement.toJson());
+
+        }
+
+        new AlertDialog.Builder(this)
+                .setMessage(getString(R.string.confirm_save_measurement))
+                .setCancelable(false)
+                .setPositiveButton(getString(R.string.yes_text), (dialog, id) -> {
+                    DisposableManager.add(haniotNetRepository
+                            .saveMeasurement(measurements)
+                            .doAfterSuccess(measurement1 -> {
+                                showToast(getString(R.string.measurement_save));
+                                finish();
+                            })
+                            .subscribe(measurement1 -> {
+                            }, this::errorHandler));
+                })
+                .setNegativeButton(getString(R.string.no_text), null)
+                .show();
+    }
+
     private void saveMeasurement(Measurement measurement) {
         if (measurement != null) {
 
@@ -360,8 +389,7 @@ public class AddMeasurementActivity extends AppCompatActivity {
      */
     public void prepareMeasurement() {
         if (myFragment instanceof FragmentAnthropometrics) {
-            for (Measurement measurement : ((MeasurementCommunicator) myFragment).getMeasurements())
-                saveMeasurement(measurement);
+            saveMeasurements(((MeasurementCommunicator) myFragment).getMeasurements());
         } else if (myFragment == null || myFragment instanceof FragmentGlucose) {
             Measurement measurement;
             if (myFragment instanceof FragmentGlucose) {

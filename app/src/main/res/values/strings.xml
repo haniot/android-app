@@ -737,6 +737,6 @@
     <string name="confirm_save_evaluation">Deseja salvar essa avaliação?</string>
     <string name="evaluation_saved">Avaliação salva com sucesso!</string>
     <string name="no_internet_conection">Sem conexão com a internet!</string>
-    <string name="title_saving_heart_rate">Frequência cardíaca</string>
-    <string name="loading_saving_heart_rate">Aguarde enquanto salvamos a coleta de frequência cardíaca...</string>
+    <string name="title_synchronize">Sincronizando dados</string>
+    <string name="loading_synchronize">Aguarde enquanto os dados estão sendo sincronizados...</string>
 </resources>

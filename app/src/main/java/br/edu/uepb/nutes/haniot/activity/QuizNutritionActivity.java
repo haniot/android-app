@@ -593,7 +593,6 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
                 .nextQuestionAuto()
                 .pageNumber(23)
                 .build());
-
     }
 
     /**

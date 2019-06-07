@@ -77,7 +77,8 @@
         android:layout_marginRight="20dp"
         android:ems="10"
         android:hint="@string/email"
-        android:inputType="textCapSentences"        android:textColor="@color/colorAccent"
+        android:inputType="textEmailAddress"
+        android:textColor="@color/colorAccent"
         android:textColorHint="@android:color/tertiary_text_light" />
 
     <EditText

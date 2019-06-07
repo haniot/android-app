@@ -448,6 +448,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
      * @param device {@link Device}
      */
     public void saveDeviceRegister(final Device device) {
+        Log.i("AAA", device.toJson());
         device.setModelNumber(null); // TODO Remover quando a API der suporte
         DisposableManager.add(haniotRepository
                 .saveDevice(device)

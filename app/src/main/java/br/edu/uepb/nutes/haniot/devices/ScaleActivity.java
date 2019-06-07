@@ -161,6 +161,7 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_body_composition);
         ButterKnife.bind(this);
         checkPermissions();
+        scaleManager = new ScaleManager(this);
 
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
         measurementDAO = MeasurementDAO.getInstance(this);
@@ -232,8 +233,8 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
             if (bodyFat != 0)
                 measurement.setFat(new BodyFat(bodyFat, "%"));
 
-            if (mDevice != null)
-                measurement.setDeviceId(mDevice.get_id());
+//            if (mDevice != null)
+//                measurement.setDeviceId(mDevice.get_id());
 
             /**
              * Save in local
@@ -458,7 +459,6 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     protected void onResume() {
-        scaleManager = new ScaleManager(this);
         scaleManager.setSimpleCallback(scaleDataCallback);
         loadData(true);
 
@@ -484,7 +484,6 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onPause() {
         scaleManager.setSimpleCallback(null);
-        scaleManager = null;
         Log.w(TAG, "onPause");
         super.onPause();
     }

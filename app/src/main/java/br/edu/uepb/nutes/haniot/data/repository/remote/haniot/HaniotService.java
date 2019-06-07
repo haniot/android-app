@@ -73,11 +73,15 @@ public interface HaniotService {
     Single<Measurement> addMeasurement(@Path("user_id") String userId,
                                        @Body Measurement measurement);
 
+    @POST("users/{user_id}/measurements")
+    Single<Object> addMeasurement(@Path("user_id") String userId,
+                                       @Body List<Measurement> measurement);
+
     @GET("users/{user_id}/measurements")
     Single<List<Measurement>> getAllMeasurements(@Path("user_id") String userId,
                                                  @Query("sort") String sort,
-                                                 @Query("timestamp") String dateStart,
-                                                 @Query("timestamp") String dateEnd,
+                                                 @Query("start_at") String dateStart,
+                                                 @Query("end_at") String dateEnd,
                                                  @Query("page") int page,
                                                  @Query("limit") int limit);
 
@@ -85,8 +89,8 @@ public interface HaniotService {
     Single<List<Measurement>> getAllMeasurements(@Path("user_id") String userId,
                                                  @Query("type") String type,
                                                  @Query("sort") String sort,
-                                                 @Query("timestamp") String dateStart,
-                                                 @Query("timestamp") String dateEnd,
+                                                 @Query("start_at") String dateStart,
+                                                 @Query("end_at") String dateEnd,
                                                  @Query("page") int page,
                                                  @Query("limit") int limit);
 

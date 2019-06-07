@@ -4,6 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -192,6 +194,16 @@ public class Device implements Parcelable {
 
         Device other = (Device) o;
         return this.address.equals(other.address) || this.name.equals(other.name);
+    }
+
+    /**
+     * Convert object to json format.
+     *
+     * @return String
+     */
+    public String toJson() {
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        return gson.toJson(this);
     }
 
     @NonNull

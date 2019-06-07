@@ -206,7 +206,7 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
             measurement.setValue(glucose);
             measurement.setMeal(meal);
             measurement.setTimestamp(timestamp);
-            measurement.setDeviceId(mDevice.get_id());
+//            if (mDevice != null) measurement.setDeviceId(mDevice.get_id());
             measurement.setUserId(patient.get_id());
 
             updateUILastMeasurement(measurement, true);

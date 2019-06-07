@@ -171,6 +171,12 @@ public class HaniotNetRepository extends BaseNetRepository {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
+    public Single<Object> saveMeasurement(List<Measurement> measurement) {
+        return haniotService.addMeasurement(measurement.get(0).getUserId(), measurement)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
     public Single<List<Measurement>> getAllMeasurementsByType(String userId, String type,
                                                               String sort, String dateStart,
                                                               String dateEnd, int page, int limit) {
@@ -251,6 +257,7 @@ public class HaniotNetRepository extends BaseNetRepository {
     }
 
     public Single<Patient> updatePatient(Patient patient) {
+        patient.setPilotId(null);
         return haniotService.updatePatient(patient.get_id(), patient)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
