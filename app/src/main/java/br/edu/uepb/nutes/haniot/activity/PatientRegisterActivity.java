@@ -65,6 +65,9 @@ public class PatientRegisterActivity extends AppCompatActivity {
     @BindView(R.id.birth_edittext)
     EditText birthEdittext;
 
+    @BindView(R.id.phone_edittext)
+    EditText phoneEdittext;
+
     @BindView(R.id.box_message_error)
     LinearLayout boxMessage;
 
@@ -133,6 +136,7 @@ public class PatientRegisterActivity extends AppCompatActivity {
         if (!isEdit) patient = new Patient();
         patient.setName(nameEditTExt.getText().toString());
         patient.setEmail(emailEditTExt.getText().toString());
+        patient.setPhoneNumber(phoneEdittext.getText().toString());
         patient.setBirthDate(DateUtils.formatDate(myCalendar.getTimeInMillis(), "yyyy-MM-dd"));
         if (genderGroup.getCheckedRadioButtonId() == R.id.male)
             patient.setGender(PatientsType.GenderType.MALE);
@@ -229,6 +233,7 @@ public class PatientRegisterActivity extends AppCompatActivity {
         patient = appPreferencesHelper.getLastPatient();
         nameEditTExt.setText(patient.getName());
         emailEditTExt.setText(patient.getEmail());
+        phoneEdittext.setText(patient.getPhoneNumber());
         birthEdittext.setText(DateUtils.formatDate(patient.getBirthDate(), getString(R.string.date_format)));
         myCalendar = DateUtils.convertStringDateToCalendar(patient.getBirthDate(), getResources().getString(R.string.date_format));
         if (patient.getGender().equals(PatientsType.GenderType.MALE))

@@ -71,6 +71,7 @@
     <string name="gender_male">Masculino</string>
     <string name="gender_female">Feminino</string>
     <string name="date_of_birth">Data de Nascimento</string>
+    <string name="phone_number">Número de Telefone</string>
     <string name="update_account">Atualizar Informações</string>
     <string name="update_success">Dados atualizados com sucesso!</string>
     <string name="change_password">Mudar senha</string>

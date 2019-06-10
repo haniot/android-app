@@ -52,6 +52,10 @@ public class User {
     @Expose()
     private String healthArea; // provide by the server
 
+    @SerializedName("phone_number")
+    @Expose()
+    private String phoneNumber; // provide by the server
+
     @Expose()
     private String pilotStudyIDSelected;
     /**
@@ -157,6 +161,14 @@ public class User {
 
     public void setPilotStudyIDSelected(String pilotStudyIDSelected) {
         this.pilotStudyIDSelected = pilotStudyIDSelected;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     /**

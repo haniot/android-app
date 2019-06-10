@@ -1,7 +1,5 @@
 package br.edu.uepb.nutes.haniot.data.model;
 
-import android.util.Log;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
@@ -45,6 +43,10 @@ public class Patient {
     @SerializedName("birth_date")
     @Expose()
     private String birthDate;
+
+    @SerializedName("phone_number")
+    @Expose()
+    private String phoneNumber;
 
     @Expose(serialize = false, deserialize = false)
     private String healthProfessionalId;
@@ -117,6 +119,14 @@ public class Patient {
         this.healthProfessionalId = healthProfessionalId;
     }
 
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
     /**
      * Convert object to json format.
      *
@@ -125,7 +135,6 @@ public class Patient {
     public String toJson() {
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         String a = gson.toJson(this);
-        Log.i("AAAAAAAAAA", a);
         return a;
     }
 
@@ -138,7 +147,7 @@ public class Patient {
     public static Patient jsonDeserialize(String json) {
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         Type typePatient = new TypeToken<Patient>() {
-        }.getType( );
+        }.getType();
         return gson.fromJson(json, typePatient);
     }
 
@@ -152,6 +161,8 @@ public class Patient {
                 ", email='" + email + '\'' +
                 ", gender='" + gender + '\'' +
                 ", birthDate='" + birthDate + '\'' +
+                ", healthProfessionalId='" + healthProfessionalId + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
                 '}';
     }
 
