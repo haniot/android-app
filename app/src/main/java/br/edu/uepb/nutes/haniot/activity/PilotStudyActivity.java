@@ -1,7 +1,6 @@
 package br.edu.uepb.nutes.haniot.activity;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
@@ -10,13 +9,13 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.List;
 import java.util.Objects;
 
 import br.edu.uepb.nutes.haniot.R;
@@ -24,7 +23,6 @@ import br.edu.uepb.nutes.haniot.adapter.PilotStudyAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
 import br.edu.uepb.nutes.haniot.data.model.PilotStudy;
 import br.edu.uepb.nutes.haniot.data.model.User;
-import br.edu.uepb.nutes.haniot.data.model.dao.PilotStudyDAO;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
@@ -67,7 +65,6 @@ public class PilotStudyActivity extends AppCompatActivity {
     private boolean itShouldLoadMore = true;
 
     private PilotStudyAdapter mPilotStudyAdapter;
-    private PilotStudyDAO pilotStudyDAO;
     private AppPreferencesHelper appPreferences;
     private HaniotNetRepository haniotNetRepository;
     private User user; // Health Professional
@@ -78,7 +75,6 @@ public class PilotStudyActivity extends AppCompatActivity {
         setContentView(R.layout.activity_pilot_study);
         ButterKnife.bind(this);
 
-        pilotStudyDAO = PilotStudyDAO.getInstance(this);
         appPreferences = AppPreferencesHelper.getInstance(this);
         haniotNetRepository = HaniotNetRepository.getInstance(this);
 
@@ -193,12 +189,11 @@ public class PilotStudyActivity extends AppCompatActivity {
      * @param pilot {@link PilotStudy}
      */
     private void savePilotSelected(PilotStudy pilot) {
-        pilotStudyDAO.clearSelected(user.get_id());
-
         pilot.setSelected(true);
-        pilotStudyDAO.update(pilot);
+        pilot.setUserId(user.get_id());
         appPreferences.saveLastPilotStudy(pilot);
         appPreferences.removeLastPatient();
+
         // Back activity
         setResult(Activity.RESULT_OK);
         finish();
@@ -218,7 +213,7 @@ public class PilotStudyActivity extends AppCompatActivity {
      */
     private void loadData() {
         if (!ConnectionUtils.internetIsEnabled(this)) {
-            loadDataLocal();
+            populatePilotStudiesView(null);
             return;
         }
 
@@ -227,24 +222,17 @@ public class PilotStudyActivity extends AppCompatActivity {
                 .doOnSubscribe(disposable -> showLoading(true))
                 .doAfterTerminate(() -> showLoading(false))
                 .subscribe(pilotStudies -> {
-                    // Updates locally saved pilots
-                    if (pilotStudies.isEmpty()) pilotStudyDAO.removeAll(user.get_id());
+                    if (pilotStudies.isEmpty()) return;
+
+                    PilotStudy pilotLast = appPreferences.getLastPilotStudy();
                     for (PilotStudy pilot : pilotStudies) {
-                        PilotStudy pilotCurrent = pilotStudyDAO.get(pilot.get_id());
-                        if (pilotCurrent != null) {
-                            pilot.setId(pilotCurrent.getId());
-                            pilot.setUserId(user.get_id());
-                            pilot.setSelected(pilotCurrent.isSelected());
-                            pilotStudyDAO.update(pilot); // update or create
-                        } else {
-                            pilot.setUserId(user.get_id());
-                            pilotStudyDAO.save(pilot);
+                        if (pilotLast != null && pilot.get_id().equals(pilotLast.get_id())) {
+                            pilot.setSelected(true);
                         }
                     }
-                    loadDataLocal();
+                    populatePilotStudiesView(pilotStudies);
                 }, error -> {
-                    Log.w(LOG_TAG, "loadData() error: " + error.getMessage());
-                    loadDataLocal();
+                    populatePilotStudiesView(null);
                 })
         );
     }
@@ -254,9 +242,9 @@ public class PilotStudyActivity extends AppCompatActivity {
      * It should only be called when there is no internet connection or
      * when an error occurs on the first request with the server.
      */
-    private void loadDataLocal() {
+    private void populatePilotStudiesView(List<PilotStudy> pilotStudies) {
         mPilotStudyAdapter.clearItems();
-        mPilotStudyAdapter.addItems(pilotStudyDAO.list(user.get_id()));
+        mPilotStudyAdapter.addItems(pilotStudies);
 
         if (mPilotStudyAdapter.itemsIsEmpty()) {
             showNoDataMessage(true);

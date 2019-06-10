@@ -1,22 +1,15 @@
 package br.edu.uepb.nutes.haniot.devices;
 
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothGattCharacteristic;
-import android.bluetooth.BluetoothGattDescriptor;
-import android.bluetooth.BluetoothGattService;
+import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothProfile;
-import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.IBinder;
+import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -33,21 +26,15 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.clans.fab.FloatingActionButton;
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.util.List;
 import java.util.Locale;
-import java.util.UUID;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.AddMeasurementActivity;
-import br.edu.uepb.nutes.haniot.activity.charts.TemperatureChartActivity;
-import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.TemperatureAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
 import br.edu.uepb.nutes.haniot.data.model.Device;
@@ -55,21 +42,16 @@ import br.edu.uepb.nutes.haniot.data.model.DeviceType;
 import br.edu.uepb.nutes.haniot.data.model.ItemGridType;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.MeasurementType;
+import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.dao.DeviceDAO;
 import br.edu.uepb.nutes.haniot.data.model.dao.MeasurementDAO;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
-import br.edu.uepb.nutes.haniot.parse.JsonToMeasurementParser;
-import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
-import br.edu.uepb.nutes.haniot.server.historical.CallbackHistorical;
-import br.edu.uepb.nutes.haniot.server.historical.Historical;
-import br.edu.uepb.nutes.haniot.server.historical.HistoricalType;
-import br.edu.uepb.nutes.haniot.server.historical.Params;
-import br.edu.uepb.nutes.haniot.service.BluetoothLeService;
+import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
+import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.ThermometerManager;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.TemperatureDataCallback;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
-import br.edu.uepb.nutes.haniot.utils.GattAttributes;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -83,10 +65,10 @@ import butterknife.ButterKnife;
 public class ThermometerActivity extends AppCompatActivity implements View.OnClickListener {
     private final String TAG = "ThermometerActivity";
     private final int LIMIT_PER_PAGE = 20;
+    private final int INITIAL_PAGE = 1;
 
     private boolean mConnected = false;
 
-    private String mDeviceAddress;
     private Animation animation;
     private Device mDevice;
     private AppPreferencesHelper appPreferencesHelper;
@@ -94,8 +76,11 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
     private DeviceDAO deviceDAO;
     private DecimalFormat decimalFormat;
     private TemperatureAdapter mAdapter;
-    private Params params;
     private ThermometerManager thermometerManager;
+
+    private HaniotNetRepository haniotNetRepository;
+    private Patient patient;
+    public int page = INITIAL_PAGE;
 
     /**
      * We need this variable to lock and unlock loading more.
@@ -149,37 +134,36 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
         setContentView(R.layout.activity_thermometer);
         ButterKnife.bind(this);
 
-        // synchronization with server
-        synchronizeWithServer();
-
-        mDeviceAddress = "1C:87:74:01:73:10";
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
         measurementDAO = MeasurementDAO.getInstance(this);
         deviceDAO = DeviceDAO.getInstance(this);
         decimalFormat = new DecimalFormat(getString(R.string.format_number1), new DecimalFormatSymbols(Locale.US));
-        params = new Params(appPreferencesHelper.getUserLogged().get_id(), MeasurementType.TEMPERATURE);
         thermometerManager = new ThermometerManager(this);
         thermometerManager.setSimpleCallback(temperatureDataCallback);
 
-        mDevice = deviceDAO.getByType(appPreferencesHelper.getUserLogged().get_id(), DeviceType.THERMOMETER);
+        haniotNetRepository = HaniotNetRepository.getInstance(this);
+        patient = appPreferencesHelper.getLastPatient();
 
+
+        //TODO TEMP - Há problemas no cadastro dos dispositivos
+        mDevice = deviceDAO.getByType(appPreferencesHelper.getUserLogged().get_id(), DeviceType.THERMOMETER);
         animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
         mChartButton.setOnClickListener(this);
         mAddButton.setOnClickListener(this);
 
-        if (isTablet(this)){
+        if (isTablet(this)) {
             Log.i(TAG, "is tablet");
-            boxMeasurement.getLayoutParams().height= 600;
-            mCollapsingToolbarLayout.getLayoutParams().height= 630;
+            boxMeasurement.getLayoutParams().height = 600;
+            mCollapsingToolbarLayout.getLayoutParams().height = 630;
             boxMeasurement.requestLayout();
             mCollapsingToolbarLayout.requestLayout();
         }
-
         initComponents();
     }
 
     /**
      * Check if is tablet.
+     *
      * @param context
      * @return
      */
@@ -191,30 +175,32 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
 
     private TemperatureDataCallback temperatureDataCallback = new TemperatureDataCallback() {
         @Override
-        public void onConnected() {
+        public void onMeasurementReceived(@NonNull BluetoothDevice device, double temp, String unit, String timestamp) {
+            Measurement measurement = new Measurement();
+            measurement.setTimestamp(DateUtils.getCurrentDateTimeUTC());
+            measurement.setValue(temp);
+            measurement.setUnit(unit);
+//            if (mDevice != null) measurement.setDeviceId(mDevice.get_id());
+            measurement.setUserId(patient.get_id());
+            measurement.setType(MeasurementType.BODY_TEMPERATURE);
+
+            // Save in local
+            // Send to server saved successfully
+            if (measurementDAO.save(measurement)) {
+                saveMeasurementInServer(measurement);
+            }
+        }
+
+        @Override
+        public void onConnected(@androidx.annotation.NonNull BluetoothDevice device) {
             mConnected = true;
             updateConnectionState(true);
         }
 
         @Override
-        public void onDisconnected() {
+        public void onDisconnected(@androidx.annotation.NonNull BluetoothDevice device) {
             mConnected = false;
             updateConnectionState(false);
-        }
-
-        @Override
-        public void onMeasurementReceived(Measurement measurementTemperature) {
-            if (mDevice != null)
-                measurementTemperature.setDevice(mDevice);
-
-            /**
-             * Save in local
-             * Send to server saved successfully
-             */
-            if (measurementDAO.save(measurementTemperature)) {
-                synchronizeWithServer();
-                loadData();
-            }
         }
     };
 
@@ -225,7 +211,6 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
         initToolBar();
         initRecyclerView();
         initDataSwipeRefresh();
-        loadData();
     }
 
     /**
@@ -276,12 +261,10 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
 
             @Override
             public void onLongItemClick(View v, Measurement item) {
-
             }
 
             @Override
             public void onMenuContextClick(View v, Measurement item) {
-
             }
         });
 
@@ -289,21 +272,18 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
+
                 if (dy > 0) {
-                    mAddButton.hide();
                     // Recycle view scrolling downwards...
                     // this if statement detects when user reaches the end of recyclerView, this is only time we should load more
                     if (!recyclerView.canScrollVertically(RecyclerView.FOCUS_DOWN)) {
                         // here we are now allowed to load more, but we need to be careful
                         // we must check if itShouldLoadMore variable is true [unlocked]
-                        if (itShouldLoadMore) loadMoreData();
+                        if (itShouldLoadMore) loadData(false);
                     }
-                } else {
-                    mAddButton.show();
                 }
             }
         });
-
         mRecyclerView.setAdapter(mAdapter);
     }
 
@@ -312,7 +292,7 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
      */
     private void initDataSwipeRefresh() {
         mDataSwipeRefresh.setOnRefreshListener(() -> {
-            if (itShouldLoadMore) loadData();
+            loadData(true);
         });
     }
 
@@ -322,7 +302,8 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
      * when an error occurs on the first request with the server.
      */
     private void loadDataLocal() {
-        mAdapter.addItems(measurementDAO.list(MeasurementType.TEMPERATURE, appPreferencesHelper.getUserLogged().getId(), 0, 100));
+        page = INITIAL_PAGE; // returns to initial page
+        mAdapter.replace(measurementDAO.list(MeasurementType.BODY_TEMPERATURE, patient.get_id(), 0, 100));
 
         if (!mAdapter.itemsIsEmpty()) {
             updateUILastMeasurement(mAdapter.getFirstItem(), false);
@@ -336,94 +317,55 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
      * Load data.
      * If there is no internet connection, we can display the local database.
      * Otherwise it displays from the remote server.
+     *
+     * @param clearList True if clearList
      */
-    private void loadData() {
-        mAdapter.clearItems(); // clear list
+    private void loadData(boolean clearList) {
+        if (clearList) {
+            mAdapter.clearItems();
+            page = INITIAL_PAGE;
+        }
 
         if (!ConnectionUtils.internetIsEnabled(this)) {
             loadDataLocal();
         } else {
-            Historical historical = new Historical.Query()
-                    .type(HistoricalType.MEASUREMENTS_TYPE_USER)
-                    .params(params) // Measurements of the temperature type, associated to the user
-                    .pagination(0, LIMIT_PER_PAGE)
-                    .build();
-
-            historical.request(this, new CallbackHistorical<Measurement>() {
-                @Override
-                public void onBeforeSend() {
-                    Log.w(TAG, "loadData - onBeforeSend()");
-                    toggleLoading(true); // Enable loading
-                    toggleNoDataMessage(false); // Disable message no data
-                }
-
-                @Override
-                public void onError(JSONObject result) {
-                    Log.w(TAG, "loadData - onError()");
-                    if (mAdapter.itemsIsEmpty()) printMessage(getString(R.string.error_500));
-                    else loadDataLocal();
-                }
-
-                @Override
-                public void onResult(List<Measurement> result) {
-                    Log.w(TAG, "loadData - onResult()");
-                    if (result != null && result.size() > 0) {
-                        mAdapter.addItems(result);
-                        updateUILastMeasurement(mAdapter.getFirstItem(), false);
-                    } else {
-                        toggleNoDataMessage(true); // Enable message no data
-                    }
-                }
-
-                @Override
-                public void onAfterSend() {
-                    Log.w(TAG, "loadData - onAfterSend()");
-                    toggleLoading(false); // Disable loading
-                }
-            });
+            DisposableManager.add(haniotNetRepository
+                    .getAllMeasurementsByType(patient.get_id(),
+                            MeasurementType.BODY_TEMPERATURE, "-timestamp", null,
+                            null, page, LIMIT_PER_PAGE)
+                    .doOnSubscribe(disposable -> {
+                        Log.w(TAG, "loadData - doOnSubscribe");
+                        toggleLoading(true);
+                        toggleNoDataMessage(false);
+                    })
+                    .doAfterTerminate(() -> {
+                        Log.w(TAG, "loadData - doAfterTerminate");
+                        toggleLoading(false); // Disable loading
+                    })
+                    .subscribe(measurements -> {
+                                Log.w(TAG, "loadData - onResult()");
+                                if (measurements != null && measurements.size() > 0) {
+                                    mAdapter.addItems(measurements);
+                                    page++;
+                                    itShouldLoadMore = true;
+                                    updateUILastMeasurement(mAdapter.getFirstItem(), false);
+                                } else {
+                                    toggleLoading(false);
+                                    if (mAdapter.itemsIsEmpty())
+                                        toggleNoDataMessage(true); // Enable message no data
+                                    itShouldLoadMore = false;
+                                }
+                            }, error -> {
+                                Log.w(TAG, "loadData - onError()");
+                                if (mAdapter.itemsIsEmpty()) {
+                                    printMessage(getString(R.string.error_500));
+                                } else loadDataLocal();
+                            }
+                    )
+            );
         }
     }
 
-    /**
-     * List more itemsList from the remote server.
-     */
-    private void loadMoreData() {
-        if (!ConnectionUtils.internetIsEnabled(this))
-            return;
-
-        Historical historical = new Historical.Query()
-                .type(HistoricalType.MEASUREMENTS_TYPE_USER)
-                .params(params) // Measurements of the temperature type, associated to the user
-                .pagination(mAdapter.getItemCount(), LIMIT_PER_PAGE)
-                .build();
-
-        historical.request(this, new CallbackHistorical<Measurement>() {
-            @Override
-            public void onBeforeSend() {
-                Log.w(TAG, "loadMoreData - onBeforeSend()");
-                toggleLoading(true); // Enable loading
-            }
-
-            @Override
-            public void onError(JSONObject result) {
-                Log.w(TAG, "loadMoreData - onError()");
-                printMessage(getString(R.string.error_500));
-            }
-
-            @Override
-            public void onResult(List<Measurement> result) {
-                Log.w(TAG, "loadMoreData - onResult()");
-                if (result != null && result.size() > 0) mAdapter.addItems(result);
-                else printMessage(getString(R.string.no_more_data));
-            }
-
-            @Override
-            public void onAfterSend() {
-                Log.w(TAG, "loadMoreData - onAfterSend()");
-                toggleLoading(false); // Disable loading
-            }
-        });
-    }
 
     /**
      * Enable/Disable display loading data.
@@ -432,13 +374,7 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
      */
     private void toggleLoading(boolean enabled) {
         runOnUiThread(() -> {
-            if (!enabled) {
-                mDataSwipeRefresh.setRefreshing(false);
-                itShouldLoadMore = true;
-            } else {
-                mDataSwipeRefresh.setRefreshing(true);
-                itShouldLoadMore = false;
-            }
+            mDataSwipeRefresh.setRefreshing(enabled);
         });
     }
 
@@ -472,26 +408,19 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
+        loadData(true);
 
         if (thermometerManager.getConnectionState() == BluetoothProfile.STATE_DISCONNECTED && mDevice != null)
             thermometerManager.connectDevice(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(mDevice.getAddress()));
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
+        DisposableManager.dispose();
+        thermometerManager.close();
     }
 
     @Override
@@ -531,33 +460,49 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
         runOnUiThread(() -> {
             mTemperatureTextView.setText(decimalFormat.format(m.getValue()));
             mUnitTemperatureTextView.setText(m.getUnit());
-            mDateLastMeasurement.setText(DateUtils.abbreviatedDate(
-                    getApplicationContext(), m.getRegistrationDate()));
 
+            String timeStamp = m.getTimestamp();
+
+            if (DateUtils.isToday(DateUtils.convertDateTime(timeStamp).getTime())) {
+                mDateLastMeasurement.setText(R.string.today_text);
+            } else {
+                mDateLastMeasurement.setText(DateUtils.convertDateTimeUTCToLocale(
+                        timeStamp, "MMMM dd, EEE"
+                ));
+            }
             if (applyAnimation) mTemperatureTextView.startAnimation(animation);
         });
     }
 
     /**
      * Performs routine for data synchronization with server.
+     *
+     * @param measurement Measurement to save in server
      */
-    private void synchronizeWithServer() {
-        SynchronizationServer.getInstance(this).run();
+    private void saveMeasurementInServer(Measurement measurement) {
+        DisposableManager.add(haniotNetRepository
+                .saveMeasurement(measurement)
+                .doAfterSuccess(measurement1 -> {
+                    printMessage(getString(R.string.measurement_save));
+                    loadData(true);
+                })
+                .subscribe(measurement1 -> {
+                }, error -> {
+                    Log.w(TAG, error.getMessage());
+                    printMessage(getString(R.string.error_500));
+                }));
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.chart_floating_button:
-                startActivity(new Intent(getApplicationContext(), TemperatureChartActivity.class));
+//                startActivity(new Intent(getApplicationContext(), TemperatureChartActivity.class));
                 break;
             case R.id.add_floating_button:
                 Intent it = new Intent(getApplicationContext(), AddMeasurementActivity.class);
-                it.putExtra(getResources().getString(R.string.measurementType),
-                        ItemGridType.TEMPERATURE);
+                appPreferencesHelper.saveInt(getResources().getString(R.string.measurementType), ItemGridType.TEMPERATURE);
                 startActivity(it);
-                break;
-            default:
                 break;
         }
     }

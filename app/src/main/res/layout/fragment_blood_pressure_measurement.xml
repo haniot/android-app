@@ -3,27 +3,109 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
+        android:paddingBottom="70dp"
         android:fillViewport="true">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <RelativeLayout
+                android:id="@+id/box_measurement"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp">
+
+                <EditText
+                    android:id="@+id/text_systolic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/text_value"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="30dp"
+                    android:layout_toStartOf="@+id/text_diastolic"
+                    android:background="@android:color/transparent"
+                    android:ellipsize="start"
+                    android:gravity="end"
+                    android:hint="0"
+                    android:inputType="number|numberDecimal"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="80sp" />
+
+                <EditText
+                    android:id="@+id/text_diastolic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/text_value"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_toEndOf="@+id/divider"
+                    android:background="@android:color/transparent"
+                    android:ellipsize="start"
+                    android:gravity="start"
+                    android:hint="0"
+                    android:inputType="number|numberDecimal"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="80sp" />
+
+                <TextView
+                    android:id="@+id/text_unit"
+                    android:layout_width="56dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/text_systolic"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginStart="270dp"
+                    android:layout_marginTop="-11dp"
+                    android:text="mg/dl"
+                    android:textColor="@color/colorSubmenu"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/divider"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_below="@+id/text_systolic"
+                    android:layout_alignBottom="@+id/text_systolic"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="-90dp"
+                    android:layout_marginBottom="7dp"
+                    android:text="/"
+                    android:gravity="center"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="70sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/text_value"
+                    android:layout_width="122dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerHorizontal="true"
+                    android:text="Valor"
+                    android:textAlignment="center"
+                    android:textColor="@color/colorSubmenu"
+                    android:textSize="18sp" />
+            </RelativeLayout>
+
             <TextView
                 android:id="@+id/text_title2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/box_measurement"
                 android:layout_alignParentStart="false"
                 android:layout_centerHorizontal="true"
                 android:layout_marginStart="0dp"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginEnd="0dp"
                 android:layout_marginBottom="15dp"
                 android:text="@string/heart_rate"
@@ -38,10 +120,11 @@
                 android:layout_below="@+id/text_title2"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"
+                android:layout_margin="20dp"
                 android:layout_marginTop="6dp"
                 android:max="150"
-                android:padding="0dp"
-                android:progress="90"
+                android:padding="20dp"
+                android:progress="0"
                 android:soundEffectsEnabled="true"
                 android:thumb="@drawable/ic_heart_128" />
 
@@ -60,7 +143,7 @@
                 android:textSize="50sp" />
 
             <TextView
-                android:id="@+id/unit"
+                android:id="@+id/waistUnit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/value"

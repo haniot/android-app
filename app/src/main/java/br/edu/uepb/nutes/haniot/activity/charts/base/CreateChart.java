@@ -144,14 +144,10 @@ public final class CreateChart<T> {
 
         for (int i = 0; i < data.size(); i++) {
             String date = DateUtils.formatDate(
-                    data.get(i).getRegistrationDate(),
-                    params.formatDate);
-
+                    data.get(i).getTimestamp(), params.formatDate);
             entriesBar.add(new BarEntry((float) i, (float) data.get(i).getValue()));
-
             quarters[i] = date;
         }
-
 
         IAxisValueFormatter formatter = ((value, axis) -> {
             if (value >= quarters.length || value < 0) return "";
@@ -172,22 +168,32 @@ public final class CreateChart<T> {
         entries2 = new ArrayList<>();
         final String[] quarters = new String[dataList.size()];
 
-        List<Measurement> data = (List<Measurement>) dataList;
+        List<Measurement> measurements = (List<Measurement>) dataList;
 
-        for (int i = 0; i < data.size(); i++) {
-
+        for (int i = 0; i < measurements.size(); i++) {
             String date = DateUtils.formatDate(
-                    data.get(i).getRegistrationDate(),
-                    params.formatDate);
+                    measurements.get(i).getTimestamp(), params.formatDate);
+            entries.add(new Entry((float) i, (int) measurements.get(i).getValue()));
 
-                entries.add(new Entry((float) i, (int) data.get(i).getValue()));
+//            if (!measurements.get(i).getDataset().isEmpty())
+//                if (measurements.get(i).getDataset().get(0).getTypeId() == MeasurementType.BLOOD_PRESSURE_DIASTOLIC)
+//                    entries2.add(new Entry(i, (float) measurements.get(i).getMeasurements().get(0).getValue()));
 
-                if (!data.get(i).getMeasurements().isEmpty())
-                    if (data.get(i).getMeasurements().get(0).getTypeId() == MeasurementType.BLOOD_PRESSURE_DIASTOLIC)
-                        entries2.add(new Entry(i, (float) data.get(i).getMeasurements().get(0).getValue()));
             quarters[i] = date;
         }
-
+//        for (int i = 0; i < data.size(); i++) {
+//
+//            String date = DateUtils.formatDate(
+//                    data.get(i).getRegistrationDate(),
+//                    params.formatDate);
+//
+//                entries.add(new Entry((float) i, (int) data.get(i).getValue()));
+//
+//                if (!data.get(i).getMeasurements().isEmpty())
+//                    if (data.get(i).getMeasurements().get(0).getTypeId() == MeasurementType.BLOOD_PRESSURE_DIASTOLIC)
+//                        entries2.add(new Entry(i, (float) data.get(i).getMeasurements().get(0).getValue()));
+//            quarters[i] = date;
+//        }
 
         //Format date
         IAxisValueFormatter formatter = ((value, axis) -> {
@@ -195,7 +201,6 @@ public final class CreateChart<T> {
             return quarters[(int) value];
 
         });
-
         return formatter;
     }
 
@@ -209,7 +214,6 @@ public final class CreateChart<T> {
             mChart.setVisibility(View.VISIBLE);
             return;
         }
-
         if (params.context instanceof SmartBandChartActivity) {
 
             mChart.getXAxis().setValueFormatter(prepareVariablesBarData());
@@ -223,8 +227,7 @@ public final class CreateChart<T> {
             dataBar = new BarData(dataSetsBar);
             mChart.setData(dataBar);
         } else {
-
-           mChart.getXAxis().setValueFormatter(prepareVariablesLineData());
+            mChart.getXAxis().setValueFormatter(prepareVariablesLineData());
 
             ArrayList<ILineDataSet> dataSets = new ArrayList<>();
             set = new LineDataSet(entries, params.legend[0]);
@@ -241,9 +244,6 @@ public final class CreateChart<T> {
 
             ((LineChart) mChart).moveViewToX(set.getXMax());
         }
-
-
-
     }
 
     /**
@@ -294,7 +294,7 @@ public final class CreateChart<T> {
         mChart.setDescription(description);
         mChart.getDescription().setEnabled(true);
 
-        if (mChart instanceof BarChart){
+        if (mChart instanceof BarChart) {
             BarChart barChart = (BarChart) mChart;
 
             barChart.setBackgroundColor(Color.RED);

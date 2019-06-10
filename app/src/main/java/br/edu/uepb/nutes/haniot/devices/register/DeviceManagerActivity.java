@@ -1,6 +1,5 @@
 package br.edu.uepb.nutes.haniot.devices.register;
 
-import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
@@ -21,20 +20,13 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.DeviceAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
 import br.edu.uepb.nutes.haniot.data.model.Device;
@@ -42,7 +34,8 @@ import br.edu.uepb.nutes.haniot.data.model.DeviceType;
 import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.model.dao.DeviceDAO;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
-import br.edu.uepb.nutes.haniot.server.Server;
+import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
+import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -91,30 +84,26 @@ public class DeviceManagerActivity extends AppCompatActivity {
     @BindView(R.id.devices_registered_available)
     LinearLayout boxRegisteredAvailable;
 
-    private Server server;
-    private AppPreferencesHelper appPreferences;
+    private User user;
     private DeviceAdapter mAdapterDeviceAvailable;
     private DeviceAdapter mAdapterDeviceRegistered;
-    private User user;
-
+    private AppPreferencesHelper appPreferences;
     private DeviceDAO mDeviceDAO;
+    private HaniotNetRepository haniotRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manager_devices);
         ButterKnife.bind(this);
-        server = Server.getInstance(this);
+        haniotRepository = HaniotNetRepository.getInstance(this);
         appPreferences = AppPreferencesHelper.getInstance(this);
         mDeviceDAO = DeviceDAO.getInstance(this);
 
         user = appPreferences.getUserLogged();
-        if (user == null) {
-            finish();
-        }
+        if (user == null || user.get_id().isEmpty()) finish();
 
         initComponents();
-        populateView();
     }
 
     @Override
@@ -125,10 +114,10 @@ public class DeviceManagerActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onResume() {
+        super.onResume();
+        populateView();
     }
 
     /**
@@ -146,7 +135,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
     private void initToolBar() {
         setSupportActionBar(mToolbar);
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle(getString(R.string.devices));
+        Objects.requireNonNull(actionBar).setTitle(getString(R.string.devices));
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
     }
@@ -159,58 +148,51 @@ public class DeviceManagerActivity extends AppCompatActivity {
             return;
         }
 
-        displayLoading(true);
-        String path = "devices/users/".concat(user.get_id());
-        server.get(path, new Server.Callback() {
-            @Override
-            public void onError(JSONObject result) {
-                Log.d(LOG_TAG, "onError: ");
-
-                runOnUiThread(() -> {
-                    messageErrorServer.setVisibility(View.VISIBLE);
-                    boxRegisteredAvailable.setVisibility(View.INVISIBLE);
-                });
-                displayLoading(false);
-            }
-
-            @Override
-            public void onSuccess(JSONObject result) {
-                List<Device> devicesRegistered = jsonToListDevice(result);
-                populateDevicesRegistered(newList(devicesRegistered));
-                populateDevicesAvailable(mDeviceDAO.list(user.get_id()));
-                displayLoading(false);
-            }
-        });
+        DisposableManager.add(
+                haniotRepository
+                        .getAllDevices(user.get_id())
+                        .doOnSubscribe(disposable -> displayLoading(true))
+                        .doAfterTerminate(() -> displayLoading(false))
+                        .subscribe(devices -> {
+                            Log.w("AAA", Arrays.toString(devices.toArray()));
+                            populateDevicesRegistered(populateImagesDevices(devices));
+                            populateDevicesAvailable(mDeviceDAO.list(user.get_id()));
+                        }, err -> {
+                            messageErrorServer.setVisibility(View.VISIBLE);
+                            boxRegisteredAvailable.setVisibility(View.INVISIBLE);
+                        })
+        );
     }
 
     /**
      * Returns a device with your image.
      *
-     * @param list {@link List<Device>}
+     * @param devices {@link List<Device>}
      * @return {@link List<Device>}
      */
-    public List<Device> newList(List<Device> list) {
-        List<Device> listDevices = new ArrayList<>();
-
-        for (Device devices : list) {
-            if (devices.getName().equalsIgnoreCase("Ear Thermometer ".concat(NUMBER_MODEL_THERM_DL8740))) {
-                devices.setImg(R.drawable.device_thermometer_philips_dl8740);
-                listDevices.add(devices);
-            } else if (devices.getName().equalsIgnoreCase("Accu-Chek ".concat(NUMBER_MODEL_GLUCOMETER_PERFORMA))) {
-                devices.setImg(R.drawable.device_glucose_accuchek);
-                listDevices.add(devices);
-            } else if (devices.getName().equalsIgnoreCase("Scale YUNMAI Mini ".concat(NUMBER_MODEL_SCALE_1501))) {
-                devices.setImg(R.drawable.device_scale_yunmai_mini_color);
-                listDevices.add(devices);
-            } else if (devices.getName().equalsIgnoreCase("Heart Rate Sensor")) {
-                devices.setImg(R.drawable.device_heart_rate_h10);
-                listDevices.add(devices);
-            } else if (devices.getName().equalsIgnoreCase("Smartband ".concat(NUMBER_MODEL_SMARTBAND_MI2))) {
-                devices.setImg(R.drawable.device_smartband_miband2);
-                listDevices.add(devices);
+    public List<Device> populateImagesDevices(List<Device> devices) {
+        for (Device d : devices) {
+            switch (d.getType()) {
+                case DeviceType.THERMOMETER:
+                    d.setImg(R.drawable.device_thermometer_philips_dl8740);
+                    break;
+                case DeviceType.GLUCOMETER:
+                    d.setImg(R.drawable.device_glucose_accuchek);
+                    break;
+                case DeviceType.BODY_COMPOSITION:
+                    d.setImg(R.drawable.device_scale_yunmai_mini_color);
+                    break;
+                case DeviceType.HEART_RATE:
+                    d.setImg(R.drawable.device_heart_rate_h10);
+                    break;
+                case DeviceType.SMARTBAND:
+                    d.setImg(R.drawable.device_smartband_miband2);
+                    break;
+                default:
+                    break;
             }
         }
-        return listDevices;
+        return devices;
     }
 
     /**
@@ -231,28 +213,6 @@ public class DeviceManagerActivity extends AppCompatActivity {
                 mProgressBar.setVisibility(View.GONE);
             }
         });
-    }
-
-    /**
-     * Deserialize json in a list of devices.
-     * If any error occurs it will be returned List empty.
-     *
-     * @param json {@link JSONObject}
-     * @return {@link List<Device>}
-     */
-    private List<Device> jsonToListDevice(JSONObject json) {
-        if (json == null || !json.has("devices")) return new ArrayList<>();
-
-        Type typeUserAccess = new TypeToken<List<Device>>() {
-        }.getType();
-
-        try {
-            JSONArray jsonArray = json.getJSONArray("devices");
-            return new Gson().fromJson(jsonArray.toString(), typeUserAccess);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return new ArrayList<>();
     }
 
     /**
@@ -380,7 +340,8 @@ public class DeviceManagerActivity extends AppCompatActivity {
      * @param availableList  {@link List<Device>}
      * @return {@link List<Device>}
      */
-    private List<Device> mergeDevicesAvailableRegistered(List<Device> registeredList, List<Device> availableList) {
+    private List<Device> mergeDevicesAvailableRegistered(List<Device> registeredList,
+                                                         List<Device> availableList) {
         // Add only devices that have not been registered
         for (Device d : registeredList) {
             if (availableList.contains(d)) {
@@ -396,17 +357,16 @@ public class DeviceManagerActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    @SuppressLint("ResourceType")
+    /**
+     * Dialog to confirm removal of associated device.
+     *
+     * @param device {@link Device}
+     */
     private void confirmRemoveDeviceRegister(Device device) {
-        AlertDialog alert;
-        //Create the AlertDialog generator
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-        // sets image title
         builder.setIcon(R.drawable.ic_action_warning);
-        //sets the title
         builder.setTitle(R.string.attention);
-        //sets the message
         builder.setMessage(getString(R.string.remove_device, device.getName()));
         //define a button how to remove
         builder.setPositiveButton(R.string.remove, (arg0, arg1) -> {
@@ -416,28 +376,22 @@ public class DeviceManagerActivity extends AppCompatActivity {
         //define a button how to cancel.
         builder.setNegativeButton(R.string.cancel, (arg0, arg1) -> {
         });
-        //create the AlertDialog
-        alert = builder.create();
-        alert.show();
+        builder.create().show();
     }
 
-
     private void removeDeviceRegister(Device device) {
-        displayLoading(true);
-        String path = "devices/".concat(device.get_id()).concat("/users/").concat(user.get_id());
-        server.delete(path, new Server.Callback() {
-            @Override
-            public void onError(JSONObject result) {
-                displayLoading(false);
-            }
-
-            @Override
-            public void onSuccess(JSONObject result) {
-                mDeviceDAO.remove(device.getAddress());
-                unpairDevice(device);
-                populateView();
-            }
-        });
+        DisposableManager.add(
+                haniotRepository.deleteDevice(user.get_id(), device.get_id())
+                        .doOnSubscribe(disposable -> displayLoading(true))
+                        .doAfterTerminate(() -> displayLoading(false))
+                        .subscribe(() -> {
+                            mDeviceDAO.remove(device.getAddress());
+                            unpairDevice(device);
+                            populateView();
+                        }, err -> {
+                            Log.w(LOG_TAG, "ERROR DELETE DEVICE: " + err.getMessage());
+                        })
+        );
     }
 
     private void unpairDevice(Device device) {

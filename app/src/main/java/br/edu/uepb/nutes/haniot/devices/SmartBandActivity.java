@@ -35,33 +35,21 @@ import android.widget.Toast;
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
 import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.util.List;
 import java.util.UUID;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.charts.SmartBandChartActivity;
-import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.SmartBandAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
 import br.edu.uepb.nutes.haniot.data.model.Device;
-import br.edu.uepb.nutes.haniot.data.model.DeviceType;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
-import br.edu.uepb.nutes.haniot.data.model.MeasurementType;
-import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.model.dao.DeviceDAO;
 import br.edu.uepb.nutes.haniot.data.model.dao.MeasurementDAO;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
-import br.edu.uepb.nutes.haniot.parse.JsonToMeasurementParser;
 import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
-import br.edu.uepb.nutes.haniot.server.historical.CallbackHistorical;
-import br.edu.uepb.nutes.haniot.server.historical.Historical;
-import br.edu.uepb.nutes.haniot.server.historical.HistoricalType;
-import br.edu.uepb.nutes.haniot.server.historical.Params;
 import br.edu.uepb.nutes.haniot.service.BluetoothLeService;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
-import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import br.edu.uepb.nutes.haniot.utils.GattAttributes;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -90,7 +78,6 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
     private MeasurementDAO measurementDAO;
     private DeviceDAO deviceDAO;
     private SmartBandAdapter mAdapter;
-    private Params params;
     private boolean gattServiceDiscovered = false;
 
     /**
@@ -158,7 +145,6 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
         measurementDAO = MeasurementDAO.getInstance(this);
         deviceDAO = DeviceDAO.getInstance(this);
-        params = new Params(appPreferencesHelper.getUserLogged().get_id(), MeasurementType.STEPS);
 
         animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
         mChartButton.setOnClickListener(this);
@@ -291,14 +277,14 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
      * when an error occurs on the first request with the server.
      */
     private void loadDataLocal() {
-        mAdapter.addItems(measurementDAO.list(MeasurementType.STEPS, appPreferencesHelper.getUserLogged().getId(), 0, 100));
-
-        if (!mAdapter.itemsIsEmpty()) {
-            updateUILastMeasurement(mAdapter.getFirstItem(), false);
-        } else {
-            toggleNoDataMessage(true); // Enable message no data
-        }
-        toggleLoading(false);
+//        mAdapter.addItems(measurementDAO.list(MeasurementType.STEPS, appPreferencesHelper.getUserLogged().getId(), 0, 100));
+//
+//        if (!mAdapter.itemsIsEmpty()) {
+//            updateUILastMeasurement(mAdapter.getFirstItem(), false);
+//        } else {
+//            toggleNoDataMessage(true); // Enable message no data
+//        }
+//        toggleLoading(false);
     }
 
     /**
@@ -307,91 +293,91 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
      * Otherwise it displays from the remote server.
      */
     private void loadData() {
-        mAdapter.clearItems(); // clear list
-
-        if (!ConnectionUtils.internetIsEnabled(this)) {
-            loadDataLocal();
-        } else {
-            Historical historical = new Historical.Query()
-                    .type(HistoricalType.MEASUREMENTS_TYPE_USER)
-                    .params(params) // Measurements of the steps type, associated to the user
-                    .pagination(0, LIMIT_PER_PAGE)
-                    .build();
-
-            historical.request(this, new CallbackHistorical<Measurement>() {
-                @Override
-                public void onBeforeSend() {
-                    Log.w(TAG, "loadData - onBeforeSend()");
-                    toggleLoading(true); // Enable loading
-                    toggleNoDataMessage(false); // Disable message no data
-                }
-
-                @Override
-                public void onError(JSONObject result) {
-                    Log.w(TAG, "loadData - onError()");
-                    if (mAdapter.itemsIsEmpty()) printMessage(getString(R.string.error_500));
-                    else loadDataLocal();
-                }
-
-                @Override
-                public void onResult(List<Measurement> result) {
-                    Log.w(TAG, "loadData - onResult()");
-                    if (result != null && result.size() > 0) {
-                        mAdapter.addItems(result);
-                        updateUILastMeasurement(mAdapter.getFirstItem(), false);
-                    } else {
-                        toggleNoDataMessage(true); // Enable message no data
-                    }
-                }
-
-                @Override
-                public void onAfterSend() {
-                    Log.w(TAG, "loadData - onAfterSend()");
-                    toggleLoading(false); // Disable loading
-                }
-            });
-        }
+//        mAdapter.clearItems(); // clear list
+//
+//        if (!ConnectionUtils.internetIsEnabled(this)) {
+//            loadDataLocal();
+//        } else {
+//            Historical historical = new Historical.Query()
+//                    .type(HistoricalType.MEASUREMENTS_TYPE_USER)
+//                    .params(params) // Measurements of the steps type, associated to the user
+//                    .pagination(0, LIMIT_PER_PAGE)
+//                    .build();
+//
+//            historical.request(this, new CallbackHistorical<Measurement>() {
+//                @Override
+//                public void onBeforeSend() {
+//                    Log.w(TAG, "loadData - onBeforeSend()");
+//                    toggleLoading(true); // Enable loading
+//                    toggleNoDataMessage(false); // Disable message no data
+//                }
+//
+//                @Override
+//                public void onError(JSONObject result) {
+//                    Log.w(TAG, "loadData - onError()");
+//                    if (mAdapter.itemsIsEmpty()) printMessage(getString(R.string.error_500));
+//                    else loadDataLocal();
+//                }
+//
+//                @Override
+//                public void onResult(List<Measurement> result) {
+//                    Log.w(TAG, "loadData - onResult()");
+//                    if (result != null && result.size() > 0) {
+//                        mAdapter.addItems(result);
+//                        updateUILastMeasurement(mAdapter.getFirstItem(), false);
+//                    } else {
+//                        toggleNoDataMessage(true); // Enable message no data
+//                    }
+//                }
+//
+//                @Override
+//                public void onAfterSend() {
+//                    Log.w(TAG, "loadData - onAfterSend()");
+//                    toggleLoading(false); // Disable loading
+//                }
+//            });
+//        }
     }
 
     /**
      * List more itemsList from the remote server.
      */
     private void loadMoreData() {
-        if (!ConnectionUtils.internetIsEnabled(this))
-            return;
-
-        Historical historical = new Historical.Query()
-                .type(HistoricalType.MEASUREMENTS_TYPE_USER)
-                .params(params) // Measurements of the steps type, associated to the user
-                .pagination(mAdapter.getItemCount(), LIMIT_PER_PAGE)
-                .build();
-
-        historical.request(this, new CallbackHistorical<Measurement>() {
-            @Override
-            public void onBeforeSend() {
-                Log.w(TAG, "loadMoreData - onBeforeSend()");
-                toggleLoading(true); // Enable loading
-            }
-
-            @Override
-            public void onError(JSONObject result) {
-                Log.w(TAG, "loadMoreData - onError()");
-                printMessage(getString(R.string.error_500));
-            }
-
-            @Override
-            public void onResult(List<Measurement> result) {
-                Log.w(TAG, "loadMoreData - onResult()");
-                if (result != null && result.size() > 0) mAdapter.addItems(result);
-                else printMessage(getString(R.string.no_more_data));
-            }
-
-            @Override
-            public void onAfterSend() {
-                Log.w(TAG, "loadMoreData - onAfterSend()");
-                toggleLoading(false); // Disable loading
-            }
-        });
+//        if (!ConnectionUtils.internetIsEnabled(this))
+//            return;
+//
+//        Historical historical = new Historical.Query()
+//                .type(HistoricalType.MEASUREMENTS_TYPE_USER)
+//                .params(params) // Measurements of the steps type, associated to the user
+//                .pagination(mAdapter.getItemCount(), LIMIT_PER_PAGE)
+//                .build();
+//
+//        historical.request(this, new CallbackHistorical<Measurement>() {
+//            @Override
+//            public void onBeforeSend() {
+//                Log.w(TAG, "loadMoreData - onBeforeSend()");
+//                toggleLoading(true); // Enable loading
+//            }
+//
+//            @Override
+//            public void onError(JSONObject result) {
+//                Log.w(TAG, "loadMoreData - onError()");
+//                printMessage(getString(R.string.error_500));
+//            }
+//
+//            @Override
+//            public void onResult(List<Measurement> result) {
+//                Log.w(TAG, "loadMoreData - onResult()");
+//                if (result != null && result.size() > 0) mAdapter.addItems(result);
+//                else printMessage(getString(R.string.no_more_data));
+//            }
+//
+//            @Override
+//            public void onAfterSend() {
+//                Log.w(TAG, "loadMoreData - onAfterSend()");
+//                toggleLoading(false); // Disable loading
+//            }
+//        });
     }
 
     /**
@@ -611,51 +597,51 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
             } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
                 String jsonData = intent.getStringExtra(BluetoothLeService.EXTRA_DATA);
 
-                try {
-                    Measurement heartRate = JsonToMeasurementParser.heartRate(jsonData);
-                    Measurement steps = JsonToMeasurementParser.steps(jsonData);
-                    Measurement distance = JsonToMeasurementParser.distance(jsonData);
-                    Measurement calories = JsonToMeasurementParser.calories(jsonData);
-                    User user = appPreferencesHelper.getUserLogged();
-
-                    /**
-                     * Update UI
-                     * Save in local
-                     * Send to server saved successfully
-                     */
-                    if (heartRate != null) {
-                        heartAnimation.pause();
-                        heartRate.setDevice(mDevice);
-                        heartRate.setUser(user);
-
-                        updateUILastMeasurement(heartRate, true);
-                        if (heartRate.getValue() > 0d && measurementDAO.save(heartRate))
-                            synchronizeWithServer();
-                    } else if (steps != null) {
-                        steps.setDevice(mDevice);
-                        steps.setUser(user);
-
-                        if (distance != null) {
-                            distance.setDevice(mDevice);
-                            distance.setUser(user);
-                            steps.addMeasurement(distance);
-                        }
-
-                        if (calories != null) {
-                            calories.setDevice(mDevice);
-                            calories.setUser(user);
-                            steps.addMeasurement(calories);
-                        }
-
-                        updateUILastMeasurement(steps, true);
-                        if (measurementDAO.save(steps)) {
-                            synchronizeWithServer();
-                            loadData();
-                        }
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+//                try {
+//                    Measurement heartRate = JsonToMeasurementParser.heartRate(jsonData);
+//                    Measurement steps = JsonToMeasurementParser.steps(jsonData);
+//                    Measurement distance = JsonToMeasurementParser.distance(jsonData);
+//                    Measurement calories = JsonToMeasurementParser.calories(jsonData);
+//                    User user = appPreferencesHelper.getUserLogged();
+//
+//                    /**
+//                     * Update UI
+//                     * Save in local
+//                     * Send to server saved successfully
+//                     */
+//                    if (heartRate != null) {
+//                        heartAnimation.pause();
+//                        heartRate.setDevice(mDevice);
+//                        heartRate.setUser(user);
+//
+//                        updateUILastMeasurement(heartRate, true);
+//                        if (heartRate.getValue() > 0d && measurementDAO.save(heartRate))
+//                            synchronizeWithServer();
+//                    } else if (steps != null) {
+//                        steps.setDevice(mDevice);
+//                        steps.setUser(user);
+//
+//                        if (distance != null) {
+//                            distance.setDevice(mDevice);
+//                            distance.setUser(user);
+//                            steps.addMeasurement(distance);
+//                        }
+//
+//                        if (calories != null) {
+//                            calories.setDevice(mDevice);
+//                            calories.setUser(user);
+//                            steps.addMeasurement(calories);
+//                        }
+//
+//                        updateUILastMeasurement(steps, true);
+//                        if (measurementDAO.save(steps)) {
+//                            synchronizeWithServer();
+//                            loadData();
+//                        }
+//                    }
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
             }
         }
     };
@@ -713,37 +699,37 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
     private void updateUILastMeasurement(Measurement m, boolean applyAnimation) {
         if (m == null) return;
 
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Log.w(TAG, "updateUILastMeasurement() - " + m.toString());
-                if (m.getTypeId() == MeasurementType.HEART_RATE) {
-                    String heartRate = m.getValue() <= 0d ? "X" : String.valueOf((int) m.getValue());
-                    mHeartRateTextView.setText(heartRate);
-                    if (applyAnimation) mHeartRateTextView.startAnimation(animation);
-                } else if (m.getTypeId() == MeasurementType.STEPS) {
-                    mDateLastMeasurement.setText(DateUtils.abbreviatedDate(
-                            getApplicationContext(), m.getRegistrationDate()));
-                    mStepsTextView.setText(String.valueOf((int) m.getValue()));
-
-                    /**
-                     * Ralations
-                     */
-                    for (Measurement parent : m.getMeasurements()) {
-                        if (parent.getTypeId() == MeasurementType.DISTANCE) {
-                            mDistanceTextView.setText(String.valueOf((int) parent.getValue())
-                                    .concat(parent.getUnit()));
-                        }
-
-                        if (parent.getTypeId() == MeasurementType.CALORIES_BURNED) {
-                            mCaloriesTextView.setText(String.valueOf((int) parent.getValue())
-                                    .concat(parent.getUnit()));
-                        }
-                    }
-                    if (applyAnimation) mStepsTextView.startAnimation(animation);
-                }
-            }
-        });
+//        runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                Log.w(TAG, "updateUILastMeasurement() - " + m.toString());
+//                if (m.getTypeId() == MeasurementType.HEART_RATE) {
+//                    String heartRate = m.getValue() <= 0d ? "X" : String.valueOf((int) m.getValue());
+//                    mHeartRateTextView.setText(heartRate);
+//                    if (applyAnimation) mHeartRateTextView.startAnimation(animation);
+//                } else if (m.getTypeId() == MeasurementType.STEPS) {
+//                    mDateLastMeasurement.setText(DateUtils.abbreviatedDate(
+//                            getApplicationContext(), m.getRegistrationDate()));
+//                    mStepsTextView.setText(String.valueOf((int) m.getValue()));
+//
+//                    /**
+//                     * Ralations
+//                     */
+//                    for (Measurement parent : m.getMeasurements()) {
+//                        if (parent.getTypeId() == MeasurementType.DISTANCE) {
+//                            mDistanceTextView.setText(String.valueOf((int) parent.getValue())
+//                                    .concat(parent.getUnit()));
+//                        }
+//
+//                        if (parent.getTypeId() == MeasurementType.CALORIES_BURNED) {
+//                            mCaloriesTextView.setText(String.valueOf((int) parent.getValue())
+//                                    .concat(parent.getUnit()));
+//                        }
+//                    }
+//                    if (applyAnimation) mStepsTextView.startAnimation(animation);
+//                }
+//            }
+//        });
     }
 
     /**
@@ -771,7 +757,7 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.chart_floating_button:
-                startActivity(new Intent(getApplicationContext(), SmartBandChartActivity.class));
+//                startActivity(new Intent(getApplicationContext(), SmartBandChartActivity.class));
                 break;
             case R.id.heart_rate_floating_button:
                 startScanHeartRate();

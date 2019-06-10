@@ -54,8 +54,15 @@ public class HeartRateChartActivity extends BaseChartActivity {
         return R.layout.activity_line_chart;
     }
 
+//    @Override
+//    public int getTypeMeasurement() {
+//        return 0;
+////        return MeasurementType.HEART_RATE;
+//    }
+
+
     @Override
-    public int getTypeMeasurement() {
+    public String getTypeMeasurement() {
         return MeasurementType.HEART_RATE;
     }
 

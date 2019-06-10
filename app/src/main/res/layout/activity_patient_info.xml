@@ -67,7 +67,7 @@
         android:textColorHint="@android:color/tertiary_text_light" />
 
     <EditText
-        android:id="@+id/last_name_edittext"
+        android:id="@+id/email_edittext"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/name_edittext"
@@ -76,15 +76,16 @@
         android:layout_marginTop="44dp"
         android:layout_marginRight="20dp"
         android:ems="10"
-        android:hint="@string/last_name"
-        android:inputType="textCapSentences"        android:textColor="@color/colorAccent"
+        android:hint="@string/email"
+        android:inputType="textEmailAddress"
+        android:textColor="@color/colorAccent"
         android:textColorHint="@android:color/tertiary_text_light" />
 
     <EditText
         android:id="@+id/birth_edittext"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/last_name_edittext"
+        android:layout_below="@+id/email_edittext"
         android:layout_centerHorizontal="true"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="44dp"

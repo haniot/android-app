@@ -74,8 +74,8 @@ public final class Params {
      * @return Query
      */
     public void typeId(int typeId) {
-        if (MeasurementType.isSupportedType(typeId))
-            throw new IllegalArgumentException("measurement type indeterminate!");
+//        if (MeasurementType.isSupportedType(typeId))
+//            throw new IllegalArgumentException("measurement type indeterminate!");
 
         this.typeId = typeId;
     }

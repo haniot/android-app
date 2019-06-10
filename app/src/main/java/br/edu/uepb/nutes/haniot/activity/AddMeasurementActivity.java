@@ -1,12 +1,15 @@
 package br.edu.uepb.nutes.haniot.activity;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
+import android.support.annotation.StringRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AnimationUtils;
@@ -19,29 +22,26 @@ import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.data.model.ContextMeasurement;
-import br.edu.uepb.nutes.haniot.data.model.ContextMeasurementType;
+import br.edu.uepb.nutes.haniot.data.model.ItemGridType;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
-import br.edu.uepb.nutes.haniot.data.model.MeasurementType;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.PatientsType;
 import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
+import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.haniot.fragment.FragmentAnthropometrics;
-import br.edu.uepb.nutes.haniot.fragment.FragmentHeartRate;
-import br.edu.uepb.nutes.haniot.data.model.ItemGridType;
 import br.edu.uepb.nutes.haniot.fragment.FragmentBloodPressure;
 import br.edu.uepb.nutes.haniot.fragment.FragmentGlucose;
-import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
+import br.edu.uepb.nutes.haniot.fragment.FragmentHeartRate;
+import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.SingleObserver;
-import io.reactivex.disposables.Disposable;
 
 public class AddMeasurementActivity extends AppCompatActivity {
 
@@ -60,7 +60,7 @@ public class AddMeasurementActivity extends AppCompatActivity {
     @BindView(R.id.text_time)
     TextView textTime;
 
-    @BindView(R.id.text_measurement)
+    @BindView(R.id.text_systolic)
     EditText textMeasurement;
 
     @BindView(R.id.text_unit)
@@ -93,6 +93,7 @@ public class AddMeasurementActivity extends AppCompatActivity {
     private Patient patient;
     private int type;
     private String patientName;
+    private String typeMeasurement;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,7 +109,7 @@ public class AddMeasurementActivity extends AppCompatActivity {
         user = appPreferencesHelper.getUserLogged();
         patient = appPreferencesHelper.getLastPatient();
         type = appPreferencesHelper.getInt(getResources().getString(R.string.measurementType));
-        patientName = patient.getFirstName() + " " + patient.getLastName();
+        patientName = patient.getName();
         if (patient.getGender().equals(PatientsType.GenderType.MALE))
             genderIcon.setImageResource(R.drawable.x_boy);
         else genderIcon.setImageResource(R.drawable.x_girl);
@@ -118,7 +119,7 @@ public class AddMeasurementActivity extends AppCompatActivity {
             finish();
         }
 
-        saveMeasurement.setOnClickListener(v -> saveMeasurement());
+        saveMeasurement.setOnClickListener(v -> prepareMeasurement());
     }
 
     /**
@@ -131,13 +132,22 @@ public class AddMeasurementActivity extends AppCompatActivity {
         switch (measurementType) {
             case ItemGridType.WEIGHT:
                 measurementText = getResources().getString(R.string.weight);
+                typeMeasurement = "weight";
                 messageInfo.setText(String.format(getResources().getString(R.string.add_measurement_message), measurementText, patientName));
                 getSupportActionBar().setTitle("Inserir Peso");
                 textUnit.setText(getString(R.string.unit_kg));
                 break;
+            case ItemGridType.TEMPERATURE:
+                measurementText = getResources().getString(R.string.temperature);
+                typeMeasurement = "body_temperature";
+                messageInfo.setText(String.format(getResources().getString(R.string.add_measurement_message), measurementText, patientName));
+                getSupportActionBar().setTitle("Inserir Temperatura");
+                textUnit.setText(getString(R.string.unit_celsius));
+                break;
 
             case ItemGridType.BLOOD_GLUCOSE:
                 measurementText = getResources().getString(R.string.blood_glucose);
+                typeMeasurement = "blood_glucose";
                 messageInfo.setText(String.format(getResources().getString(R.string.add_measurement_message), measurementText, patientName));
                 getSupportActionBar().setTitle("Inserir Glicose");
                 textUnit.setText(getString(R.string.unit_glucose_mg_dL));
@@ -149,9 +159,12 @@ public class AddMeasurementActivity extends AppCompatActivity {
 
             case ItemGridType.HEART_RATE:
                 measurementText = getResources().getString(R.string.heart_rate);
+                typeMeasurement = "heart_rate";
                 messageInfo.setText(String.format(getResources().getString(R.string.add_measurement_message), measurementText, patientName));
                 getSupportActionBar().setTitle("Inserir Batimentos Cardíacos");
                 textUnit.setText(getString(R.string.unit_heart_rate));
+                textMeasurement.setClickable(false);
+                textMeasurement.setFocusable(false);
                 myFragment = new FragmentHeartRate();
                 getSupportFragmentManager().beginTransaction().replace(R.id.extra,
                         myFragment)
@@ -160,9 +173,11 @@ public class AddMeasurementActivity extends AppCompatActivity {
 
             case ItemGridType.BLOOD_PRESSURE:
                 measurementText = getResources().getString(R.string.blood_pressure);
+                typeMeasurement = "blood_pressure";
                 messageInfo.setText(String.format(getResources().getString(R.string.add_measurement_message), measurementText, patientName));
                 getSupportActionBar().setTitle("Inserir Pressão Arterial");
                 textUnit.setText(getString(R.string.unit_pressure));
+                boxMeasurement.setVisibility(View.GONE);
                 myFragment = new FragmentBloodPressure();
                 getSupportFragmentManager().beginTransaction().replace(R.id.extra,
                         myFragment).commit();
@@ -181,63 +196,29 @@ public class AddMeasurementActivity extends AppCompatActivity {
     }
 
     /**
-     * Save measurement in server.
+     * Manipulates the error and displays message
+     * according to the type of error.
+     *
+     * @param e {@link Throwable}
      */
-    public void saveMeasurement() {
-        if (textMeasurement.getText().toString().isEmpty()) {
-            messageError.setText("Insira o valor da medição para continuar!");
-            boxMessage.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_in));
-            boxMessage.setVisibility(View.VISIBLE);
+    private void errorHandler(Throwable e) {
+        if (!checkConnectivity())
+            showMessage(R.string.no_internet_conection);
+        else
+            showMessage(R.string.error_500);
+    }
+
+    /**
+     * Check if you have connectivity.
+     * If it does not, the elements in the view mounted to notify the user.
+     *
+     * @return boolean
+     */
+    private boolean checkConnectivity() {
+        if (!ConnectionUtils.internetIsEnabled(this)) {
+            return false;
         }
-//        Measurement measurement = new Measurement();
-//        measurement.setUser(user);
-//        measurement.setValue(Double.valueOf(textMeasurement.getText().toString()));
-//        measurement.setUnit(textUnit.getText().toString());
-//        measurement.setRegistrationDate(myCalendar.getTimeInMillis());
-//        switch (type) {
-//            case ItemGridType.WEIGHT:
-//                measurement.setTypeId(MeasurementType.BODY_MASS);
-//                break;
-//
-//            case ItemGridType.BLOOD_GLUCOSE:
-//                measurement.setTypeId(MeasurementType.BLOOD_GLUCOSE);
-//                ContextMeasurement contextMeasurement = new ContextMeasurement();
-//                contextMeasurement.setTypeId(ContextMeasurementType.GLUCOSE_MEAL);
-//                contextMeasurement.setValueId(((FragmentGlucose) myFragment).getPeriod());
-//                break;
-//
-//            case ItemGridType.HEART_RATE:
-//                measurement.setTypeId(MeasurementType.HEART_RATE);
-//                break;
-//
-//            case ItemGridType.BLOOD_PRESSURE:
-//                measurement.setTypeId(MeasurementType.BLOOD_PRESSURE_SYSTOLIC);
-//                ContextMeasurement contextMeasurement1 = new ContextMeasurement();
-//                //contextMeasurement1.setTypeId(MeasurementType.HEART_RATE);
-//                //contextMeasurement1.setValueId(ContextMeasurementType.);
-//                break;
-//
-//            case ItemGridType.ANTHROPOMETRIC:
-//                break;
-//
-//        }
-//        haniotNetRepository.saveMeasurement(measurement)
-//                .subscribe(new SingleObserver<Measurement>() {
-//                    @Override
-//                    public void onSubscribe(Disposable d) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onSuccess(Measurement measurement) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//
-//                    }
-//                });
+        return true;
     }
 
     /**
@@ -251,19 +232,28 @@ public class AddMeasurementActivity extends AppCompatActivity {
 
         View.OnClickListener timeClick = v -> {
             TimePickerDialog timePickerDialog = new TimePickerDialog(AddMeasurementActivity.this,
-                    (view, hourOfDay, minute) ->
-                            textTime.setText(new StringBuilder().append(hourOfDay)
-                                    .append(":")
-                                    .append(minute).toString()), mHour, mMinute, false);
+                    (view, hourOfDay, minute) -> {
+                        textTime.setText(new StringBuilder().append(hourOfDay)
+                                .append(":")
+                                .append(minute).toString());
+                        myCalendar.getTime().setHours(hourOfDay);
+                        myCalendar.getTime().setMinutes(minute);
+                    }, mHour, mMinute, false);
             timePickerDialog.show();
         };
         // Launch Time Picker Dialog
         iconTime.setOnClickListener(timeClick);
         textTime.setOnClickListener(timeClick);
 
-        View.OnClickListener dateClick = v -> new DatePickerDialog(AddMeasurementActivity.this, date, myCalendar
-                .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+        View.OnClickListener dateClick = (v -> {
+            DatePickerDialog datePickerDialog = new DatePickerDialog(
+                    AddMeasurementActivity.this, date,
+                    myCalendar.get(Calendar.YEAR),
+                    myCalendar.get(Calendar.MONTH),
+                    myCalendar.get(Calendar.DAY_OF_MONTH));
+            datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+            datePickerDialog.show();
+        });
         icon_calendar.setOnClickListener(dateClick);
         textDate.setOnClickListener(dateClick);
     }
@@ -311,13 +301,124 @@ public class AddMeasurementActivity extends AppCompatActivity {
         });
     }
 
-    private void synchronizeWithServer() {
-        SynchronizationServer.getInstance(this).run();
-    }
 
     @Override
     protected void onResume() {
         super.onResume();
         boxMessage.setVisibility(View.GONE);
+    }
+
+    private void saveMeasurements(List<Measurement> measurements) {
+        if (measurements == null || measurements.isEmpty()) {
+            showToast(getString(R.string.value_empty));
+            return;
+        }
+        for (Measurement measurement : measurements) {
+            measurement.setUserId(patient.get_id());
+            measurement.setTimestamp(DateUtils.convertDateTimeToUTC(myCalendar.getTime()));
+            Log.i("AAA", "saving " + measurement.toJson());
+
+        }
+
+        new AlertDialog.Builder(this)
+                .setMessage(getString(R.string.confirm_save_measurement))
+                .setCancelable(false)
+                .setPositiveButton(getString(R.string.yes_text), (dialog, id) -> {
+                    DisposableManager.add(haniotNetRepository
+                            .saveMeasurement(measurements)
+                            .doAfterSuccess(measurement1 -> {
+                                showToast(getString(R.string.measurement_save));
+                                finish();
+                            })
+                            .subscribe(measurement1 -> {
+                            }, this::errorHandler));
+                })
+                .setNegativeButton(getString(R.string.no_text), null)
+                .show();
+    }
+
+    private void saveMeasurement(Measurement measurement) {
+        if (measurement != null) {
+
+            measurement.setUserId(patient.get_id());
+            measurement.setTimestamp(DateUtils.convertDateTimeToUTC(myCalendar.getTime()));
+            Log.i("AAA", "saving " + measurement.toJson());
+
+            new AlertDialog.Builder(this)
+                    .setMessage(getString(R.string.confirm_save_measurement))
+                    .setCancelable(false)
+                    .setPositiveButton(getString(R.string.yes_text), (dialog, id) -> {
+                        DisposableManager.add(haniotNetRepository
+                                .saveMeasurement(measurement)
+                                .doAfterSuccess(measurement1 -> {
+                                    showToast(getString(R.string.measurement_save));
+                                    finish();
+                                })
+                                .subscribe(measurement1 -> {
+                                }, this::errorHandler));
+                    })
+                    .setNegativeButton(getString(R.string.no_text), null)
+                    .show();
+
+
+        } else showToast(getString(R.string.value_empty));
+    }
+
+
+    /**
+     * Displays message.
+     *
+     * @param str @StringRes message.
+     */
+    public void showMessage(@StringRes int str) {
+        if (str == -1) {
+            boxMessage.setVisibility(View.GONE);
+            return;
+        }
+
+        String message = getResources().getString(str);
+        messageError.setText(message);
+        runOnUiThread(() -> {
+            boxMessage.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_in));
+            boxMessage.setVisibility(View.VISIBLE);
+        });
+    }
+
+    /**
+     * Get measurement from Fragment.
+     */
+    public void prepareMeasurement() {
+        if (myFragment instanceof FragmentAnthropometrics) {
+            saveMeasurements(((MeasurementCommunicator) myFragment).getMeasurements());
+        } else if (myFragment == null || myFragment instanceof FragmentGlucose) {
+            Measurement measurement;
+            if (myFragment instanceof FragmentGlucose) {
+                measurement = ((MeasurementCommunicator) myFragment).getMeasurement();
+                measurement.setValue(Double.valueOf(textMeasurement.getText().toString()));
+            } else {
+                measurement = new Measurement();
+                if (textMeasurement.getText().toString().isEmpty()) {
+                    showMessage(R.string.measurement_invalid);
+                    return;
+                }
+                measurement.setValue(Double.valueOf(textMeasurement.getText().toString()));
+                measurement.setUnit(textUnit.getText().toString());
+            }
+            measurement.setType(typeMeasurement);
+            saveMeasurement(measurement);
+        } else {
+            Measurement measurement = ((MeasurementCommunicator) myFragment).getMeasurement();
+            if (myFragment instanceof FragmentHeartRate) {
+                measurement.getDataset().get(0)
+                        .setTimestamp(DateUtils.convertDateTimeToUTC(myCalendar.getTime()));
+            }
+            saveMeasurement(measurement);
+        }
+    }
+
+    public interface MeasurementCommunicator {
+        Measurement getMeasurement();
+
+        List<Measurement> getMeasurements();
     }
 }

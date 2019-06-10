@@ -3,6 +3,7 @@ package br.edu.uepb.nutes.haniot.adapter.base;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -10,8 +11,6 @@ import android.view.animation.ScaleAnimation;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import br.edu.uepb.nutes.haniot.utils.Log;
 
 /**
  * Class BaseAdapter for RecyclerView.Adapter.
@@ -133,7 +132,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
      */
     public void replace(List<T> items) {
         if (items != null && !items.isEmpty()) {
-            items.clear();
+            this.itemsList.clear();
             addItems(items);
         }
     }

@@ -55,9 +55,15 @@ public class BloodPresssureChartActivity extends BaseChartActivity {
         return R.layout.activity_line_chart;
     }
 
+//    @Override
+//    public int getTypeMeasurement() {
+//        return 0;
+////        return MeasurementType.BLOOD_PRESSURE_SYSTOLIC;
+//    }
+
     @Override
-    public int getTypeMeasurement() {
-        return MeasurementType.BLOOD_PRESSURE_SYSTOLIC;
+    public String getTypeMeasurement() {
+        return MeasurementType.BLOOD_PRESSURE;
     }
 
     @Override

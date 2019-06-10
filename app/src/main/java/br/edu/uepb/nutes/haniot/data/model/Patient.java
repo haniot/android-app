@@ -30,13 +30,13 @@ public class Patient {
     @Expose()
     private String pilotId;
 
-    @SerializedName("first_name")
+    @SerializedName("name")
     @Expose()
-    private String firstName;
+    private String name;
 
-    @SerializedName("last_name")
+    @SerializedName("email")
     @Expose()
-    private String lastName;
+    private String email;
 
     @SerializedName("gender")
     @Expose()
@@ -47,7 +47,7 @@ public class Patient {
     private String birthDate;
 
     @Expose(serialize = false, deserialize = false)
-    private String userId;
+    private String healthProfessionalId;
 
     public Patient() {
 
@@ -77,20 +77,12 @@ public class Patient {
         this.pilotId = pilotId;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getName() {
+        return name;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getGender() {
@@ -105,16 +97,24 @@ public class Patient {
         return birthDate;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public void setBirthDate(String birthDate) {
         this.birthDate = birthDate;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getHealthProfessionalId() {
+        return healthProfessionalId;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setHealthProfessionalId(String healthProfessionalId) {
+        this.healthProfessionalId = healthProfessionalId;
     }
 
     /**
@@ -138,7 +138,7 @@ public class Patient {
     public static Patient jsonDeserialize(String json) {
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         Type typePatient = new TypeToken<Patient>() {
-        }.getType();
+        }.getType( );
         return gson.fromJson(json, typePatient);
     }
 
@@ -148,8 +148,8 @@ public class Patient {
                 "id=" + id +
                 ", _id='" + _id + '\'' +
                 ", pilotId='" + pilotId + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
                 ", gender='" + gender + '\'' +
                 ", birthDate='" + birthDate + '\'' +
                 '}';

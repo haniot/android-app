@@ -37,24 +37,7 @@ com_crashlytics_export_strings.xml
 
 # IntelliJ
 *.iml
-.idea/.name
-.idea/compiler.xml
-.idea/encodings.xml
-.idea/misc.xml
-.idea/modules.xml
-.idea/scopes/scope_settings.xml
-.idea/vcs.xml
-.idea/workspace.xml
-.idea/tasks.xml
-.idea/gradle.xml
-.idea/assetWizardSettings.xml
-.idea/copyright/profiles_settings.xml
-.idea/codeStyles/codeStyleConfig.xml
-.idea/dictionaries/
-.idea/libraries/
-.idea/caches/
-.idea/sonarlint/
-.idea/caches/**
+.idea
 
 # External native build folder generated in Android Studio 2.2 and later
 .externalNativeBuild

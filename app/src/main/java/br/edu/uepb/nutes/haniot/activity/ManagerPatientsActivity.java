@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.activity.settings.SettingsActivity;
 import br.edu.uepb.nutes.haniot.adapter.ManagerPatientAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
@@ -33,7 +34,6 @@ import br.edu.uepb.nutes.haniot.data.model.PilotStudy;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
-import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.HttpException;
@@ -75,6 +75,7 @@ public class ManagerPatientsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_manage_patient);
         ButterKnife.bind(this);
         toolbar.setTitle(getResources().getString(R.string.manage_patient));
+
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         initResources();
@@ -110,10 +111,13 @@ public class ManagerPatientsActivity extends AppCompatActivity {
         initDataSwipeRefresh();
     }
 
+    /**
+     * Load patients in server.
+     */
     private void loadData() {
+        mDataSwipeRefresh.setRefreshing(true);
         DisposableManager.add(haniotNetRepository
                 .getAllPatients(pilotStudy.get_id(), "created_at", 1, 100)
-                .doOnSubscribe(disposable -> mDataSwipeRefresh.setRefreshing(true))
                 .doAfterTerminate(() -> mDataSwipeRefresh.setRefreshing(false))
                 .subscribe(patients -> {
                     patientList = patients;
@@ -125,9 +129,7 @@ public class ManagerPatientsActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if (appPreferencesHelper.getLastPatient() != null) super.onBackPressed();
-        else Toast.makeText(this,
-                getResources().getString(R.string.no_patient_registered),
-                Toast.LENGTH_LONG).show();
+        else startActivity(new Intent(this, SettingsActivity.class));
     }
 
     /**
@@ -147,7 +149,25 @@ public class ManagerPatientsActivity extends AppCompatActivity {
 
     private void initRecyclerView() {
         adapter = new ManagerPatientAdapter(this);
-        adapter.setListener(new OnRecyclerViewListener<Patient>() {
+        adapter.setPatientActionListener(new ManagerPatientAdapter.ActionsPatientListener() {
+            @Override
+            public void onMenuClick(String action, Patient patient) {
+                switch (action) {
+                    case "quiz_dentistry":
+                        appPreferencesHelper.saveLastPatient(patient);
+                        startActivity(new Intent(ManagerPatientsActivity.this, QuizOdontologyActivity.class));
+                        break;
+                    case "quiz_nutrition":
+                        appPreferencesHelper.saveLastPatient(patient);
+                        startActivity(new Intent(ManagerPatientsActivity.this, QuizNutritionActivity.class));
+                        break;
+                    case "nutrition_evaluation":
+                        appPreferencesHelper.saveLastPatient(patient);
+                        startActivity(new Intent(ManagerPatientsActivity.this, NutritionalEvaluationActivity.class));
+                        break;
+                }
+            }
+
             @Override
             public void onItemClick(Patient item) {
                 appPreferencesHelper.saveLastPatient(item);
@@ -161,7 +181,7 @@ public class ManagerPatientsActivity extends AppCompatActivity {
 
             @Override
             public void onMenuContextClick(View v, Patient item) {
-                if (v.getId() == R.id.btnDeleteChild) {
+                if (v.getId() == R.id.btnMore) {
                     new AlertDialog
                             .Builder(ManagerPatientsActivity.this)
                             .setMessage(getResources().getString(R.string.remove_patient))
@@ -174,7 +194,6 @@ public class ManagerPatientsActivity extends AppCompatActivity {
                     intent.putExtra("action", "edit");
                     appPreferencesHelper.saveLastPatient(item);
                     startActivity(intent);
-                    finish();
                 }
             }
         });
@@ -190,15 +209,18 @@ public class ManagerPatientsActivity extends AppCompatActivity {
     }
 
     private void removePatient(Patient patient) {
+
         DisposableManager.add(haniotNetRepository
-                .deletePatient(pilotStudy.get_id(), patient.get_id())
+                .deletePatient(patient.get_id())
                 .doAfterTerminate(this::loadData)
                 .subscribe(() -> {
                             adapter.removeItem(patient);
                             adapter.notifyDataSetChanged();
                             showMessage(getResources().getString(R.string.patient_removed));
-                            if (patient.get_id().equals(appPreferencesHelper.getLastPatient().get_id()))
+                            if (patient.get_id().equals(appPreferencesHelper.getLastPatient().get_id())) {
+                                Log.i("AAA", "Removendo atual paciente");
                                 appPreferencesHelper.removeLastPatient();
+                            }
                         },
                         error -> showMessage(getResources().getString(R.string.error_500))));
     }

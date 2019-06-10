@@ -53,8 +53,8 @@ public class PatientRegisterActivity extends AppCompatActivity {
     @BindView(R.id.name_edittext)
     EditText nameEditTExt;
 
-    @BindView(R.id.last_name_edittext)
-    EditText lastNameEditTExt;
+    @BindView(R.id.email_edittext)
+    EditText emailEditTExt;
 
     @BindView(R.id.gender_icon)
     ImageView genderIcon;
@@ -112,10 +112,7 @@ public class PatientRegisterActivity extends AppCompatActivity {
             nameEditTExt.setError(getResources().getString(R.string.required_field));
             validated = false;
         }
-        if (lastNameEditTExt.getText().toString().isEmpty()) {
-            lastNameEditTExt.setError(getResources().getString(R.string.required_field));
-            validated = false;
-        }
+
         if (birthEdittext.getText().toString().isEmpty()) {
             birthEdittext.setError(getResources().getString(R.string.required_field));
             validated = false;
@@ -134,8 +131,8 @@ public class PatientRegisterActivity extends AppCompatActivity {
      */
     private void savePatient() {
         if (!isEdit) patient = new Patient();
-        patient.setFirstName(nameEditTExt.getText().toString());
-        patient.setLastName(lastNameEditTExt.getText().toString());
+        patient.setName(nameEditTExt.getText().toString());
+        patient.setEmail(emailEditTExt.getText().toString());
         patient.setBirthDate(DateUtils.formatDate(myCalendar.getTimeInMillis(), "yyyy-MM-dd"));
         if (genderGroup.getCheckedRadioButtonId() == R.id.male)
             patient.setGender(PatientsType.GenderType.MALE);
@@ -171,7 +168,7 @@ public class PatientRegisterActivity extends AppCompatActivity {
                         }
                         patientDAO.save(patient);
                         appPreferencesHelper.saveLastPatient(patient);
-                        startActivity(new Intent(PatientRegisterActivity.this, PatientQuizActivity.class));
+                        startActivity(new Intent(PatientRegisterActivity.this, QuizNutritionActivity.class));
                         finish();
                     }, this::errorHandler));
     }
@@ -230,12 +227,10 @@ public class PatientRegisterActivity extends AppCompatActivity {
 
     private void prepareView() {
         patient = appPreferencesHelper.getLastPatient();
-        nameEditTExt.setText(patient.getFirstName());
-        lastNameEditTExt.setText(patient.getLastName());
-        birthEdittext.setText(patient.getBirthDate());
-        myCalendar.setTimeInMillis(DateUtils
-                .getDateStringInMillis(patient.getBirthDate(),
-                        getResources().getString(R.string.date_format)));
+        nameEditTExt.setText(patient.getName());
+        emailEditTExt.setText(patient.getEmail());
+        birthEdittext.setText(DateUtils.formatDate(patient.getBirthDate(), getString(R.string.date_format)));
+        myCalendar = DateUtils.convertStringDateToCalendar(patient.getBirthDate(), getResources().getString(R.string.date_format));
         if (patient.getGender().equals(PatientsType.GenderType.MALE))
             genderGroup.check(R.id.male);
         else genderGroup.check(R.id.female);
@@ -286,7 +281,8 @@ public class PatientRegisterActivity extends AppCompatActivity {
                         myCalendar.set(Calendar.YEAR, year);
                         myCalendar.set(Calendar.MONTH, month);
                         myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                        birthEdittext.setText(DateUtils.formatDate(myCalendar.getTimeInMillis(), getResources().getString(R.string.date_format)));
+                        birthEdittext.setText(DateUtils.formatDate(myCalendar.getTimeInMillis(),
+                                getResources().getString(R.string.date_format)));
                     }, 2010, 1, 1);
             dialog.show();
         });
