@@ -7,9 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
-import android.widget.CheckBox;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.thoughtbot.expandablerecyclerview.ExpandableRecyclerViewAdapter;
@@ -20,28 +18,25 @@ import com.thoughtbot.expandablerecyclerview.viewholders.GroupViewHolder;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
 import br.edu.uepb.nutes.haniot.data.model.ItemEvaluation;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static android.view.View.GONE;
-
-public class QuizItemExpandableAdapter extends ExpandableRecyclerViewAdapter<QuizItemExpandableAdapter.HeaderViewHolder, QuizItemExpandableAdapter.ViewHolder> {
+public class QuizItemExpandableAdapter extends ExpandableRecyclerViewAdapter<QuizItemExpandableAdapter.HeaderViewHolder,
+        QuizItemExpandableAdapter.ViewHolder> {
     private Context context;
-    protected int lastPosition = -1;
+    private int lastPosition = -1;
 
     public QuizItemExpandableAdapter(List<? extends ExpandableGroup> groups, Context context) {
         super(groups);
         this.context = context;
     }
 
-
     /**
      * Apply animation to list itemsList.
      *
-     * @param view
-     * @param position
+     * @param view     int
+     * @param position {@link View}
      */
     public void setAnimation(View view, int position) {
         // If the bound view wasn't previously displayed on screen, it's animated
@@ -73,17 +68,12 @@ public class QuizItemExpandableAdapter extends ExpandableRecyclerViewAdapter<Qui
 
     @Override
     public void onBindChildViewHolder(ViewHolder holder, int flatPosition, ExpandableGroup group, int childIndex) {
-        ItemEvaluation ig = (ItemEvaluation) group.getItems().get(childIndex);
-        ViewHolder h = (ViewHolder) holder;
-
-        setAnimation(h.mView, childIndex);
+        setAnimation(holder.mView, childIndex);
     }
 
     @Override
     public void onBindGroupViewHolder(HeaderViewHolder holder, int flatPosition, ExpandableGroup group) {
-
-        HeaderViewHolder holder2 = (HeaderViewHolder) holder;
-        holder2.categoryTitle.setText(group.getTitle());
+        holder.categoryTitle.setText(group.getTitle());
     }
 
     public class ViewHolder extends ChildViewHolder {
@@ -115,7 +105,7 @@ public class QuizItemExpandableAdapter extends ExpandableRecyclerViewAdapter<Qui
         @BindView(R.id.expand)
         ImageView expand;
 
-        public HeaderViewHolder(View itemView) {
+        HeaderViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
 

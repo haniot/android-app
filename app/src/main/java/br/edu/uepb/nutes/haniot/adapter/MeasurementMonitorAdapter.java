@@ -63,15 +63,18 @@ public class MeasurementMonitorAdapter extends BaseAdapter<MeasurementMonitor> {
             }
 
             if (ig.getStatus() == 0) {
-                h.status.setColorFilter(ContextCompat.getColor(context, R.color.connected), PorterDuff.Mode.SRC_IN);
+                h.status.setColorFilter(ContextCompat.getColor(context, R.color.connected),
+                        PorterDuff.Mode.SRC_IN);
                 h.status.setVisibility(View.VISIBLE);
 
             } else if (ig.getStatus() == 1) {
-                h.status.setColorFilter(ContextCompat.getColor(context, R.color.disconnected), PorterDuff.Mode.SRC_IN);
+                h.status.setColorFilter(ContextCompat.getColor(context, R.color.disconnected),
+                        PorterDuff.Mode.SRC_IN);
                 h.status.setVisibility(View.VISIBLE);
 
             } else if (ig.getStatus() == 2) {
-                h.status.setColorFilter(ContextCompat.getColor(context, R.color.noRegister), PorterDuff.Mode.SRC_IN);
+                h.status.setColorFilter(ContextCompat.getColor(context, R.color.noRegister),
+                        PorterDuff.Mode.SRC_IN);
                 h.status.setVisibility(View.VISIBLE);
 
             } else if (ig.getStatus() == 3) {

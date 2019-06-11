@@ -1,6 +1,5 @@
 package br.edu.uepb.nutes.haniot.adapter;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -19,7 +18,10 @@ import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup;
 import com.thoughtbot.expandablerecyclerview.viewholders.ChildViewHolder;
 import com.thoughtbot.expandablerecyclerview.viewholders.GroupViewHolder;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.List;
+import java.util.Locale;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.data.model.ChronicDisease;
@@ -47,14 +49,18 @@ import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.MEDICAL_RECORDS
 import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.PHYSICAL_ACTIVITY;
 import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.SLEEP_HABITS;
 
-public class EvaluationAdapter extends ExpandableRecyclerViewAdapter<EvaluationAdapter.HeaderViewHolder, EvaluationAdapter.ViewHolder> {
+public class EvaluationAdapter extends ExpandableRecyclerViewAdapter<EvaluationAdapter.HeaderViewHolder,
+        EvaluationAdapter.ViewHolder> {
     private Context context;
-    protected int lastPosition = -1;
+    private int lastPosition = -1;
+    private DecimalFormat decimalFormat;
     public OnClick mListener;
 
     public EvaluationAdapter(List<? extends ExpandableGroup> groups, Context context) {
         super(groups);
         this.context = context;
+        decimalFormat = new DecimalFormat(context.getString(R.string.format_number2),
+                new DecimalFormatSymbols(Locale.US));
     }
 
     public void setListener(OnClick mListener) {
@@ -198,7 +204,6 @@ public class EvaluationAdapter extends ExpandableRecyclerViewAdapter<EvaluationA
      * @param h
      * @param ig
      */
-    @SuppressLint("DefaultLocale")
     private void createMeasurementView(ViewHolder h, ItemEvaluation ig) {
         h.checkItem.setChecked(ig.isChecked());
         h.mView.setOnClickListener(v -> {
@@ -255,15 +260,15 @@ public class EvaluationAdapter extends ExpandableRecyclerViewAdapter<EvaluationA
                     .convertDateTimeUTCToLocale(measurement.getTimestamp(),
                             context.getString(R.string.time_format_simple)));
             if (type == TypeEvaluation.TEMPERATURE
-                    || type == TypeEvaluation.WAIST_CIRCUMFERENCE
                     || type == TypeEvaluation.WEIGHT
-                    || type == TypeEvaluation.FAT
+                    || type == TypeEvaluation.FAT) {
+                h.textMeasurement.setText(decimalFormat.format(measurement.getValue()));
+            } else if (type == TypeEvaluation.WAIST_CIRCUMFERENCE
                     || type == TypeEvaluation.HEIGHT) {
-                h.textMeasurement.setText(String.valueOf(measurement.getValue()));
-
+                h.textMeasurement.setText(String.valueOf((int) measurement.getValue()));
             } else if (type == TypeEvaluation.BLOOD_PRESSURE) {
-                h.textMeasurement.setText(String
-                        .format("%d/%d", measurement.getSystolic(), measurement.getDiastolic()));
+                h.textMeasurement.setText(String.format(Locale.getDefault(), "%d/%d",
+                        measurement.getSystolic(), measurement.getDiastolic()));
             }
         }
         h.messageText.setVisibility(View.GONE);
