@@ -175,7 +175,7 @@ public class FragmentTemperature extends Fragment implements View.OnClickListene
     }
 
     @Override
-    public List<Measurement> getMeasurements() {
+    public List<Measurement> getMeasurementList() {
         return null;
     }
 }

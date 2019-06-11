@@ -715,7 +715,7 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
 //                    /**
 //                     * Ralations
 //                     */
-//                    for (Measurement parent : m.getMeasurements()) {
+//                    for (Measurement parent : m.getMeasurementList()) {
 //                        if (parent.getTypeId() == MeasurementType.DISTANCE) {
 //                            mDistanceTextView.setText(String.valueOf((int) parent.getValue())
 //                                    .concat(parent.getUnit()));

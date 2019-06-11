@@ -45,6 +45,7 @@ import butterknife.ButterKnife;
 
 public class AddMeasurementActivity extends AppCompatActivity {
 
+    private final String TAG = "AddMeasurementActivity";
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
@@ -184,6 +185,7 @@ public class AddMeasurementActivity extends AppCompatActivity {
                 break;
 
             case ItemGridType.ANTHROPOMETRIC:
+                typeMeasurement = "anthropometric";
                 measurementText = getResources().getString(R.string.anthropometric);
                 messageInfo.setText(String.format(getResources().getString(R.string.add_measurement_message), measurementText, patientName));
                 getSupportActionBar().setTitle("Inserir Medidas Antropométricas");
@@ -229,16 +231,19 @@ public class AddMeasurementActivity extends AppCompatActivity {
         final Calendar c = Calendar.getInstance();
         int mHour = c.get(Calendar.HOUR_OF_DAY);
         int mMinute = c.get(Calendar.MINUTE);
+        myCalendar.getTime().setHours(mHour);
+        myCalendar.getTime().setMinutes(mMinute);
+        updateLabel();
 
         View.OnClickListener timeClick = v -> {
             TimePickerDialog timePickerDialog = new TimePickerDialog(AddMeasurementActivity.this,
                     (view, hourOfDay, minute) -> {
                         textTime.setText(new StringBuilder().append(hourOfDay)
                                 .append(":")
-                                .append(minute).toString());
+                                .append(String.format("%02d", minute)).toString());
                         myCalendar.getTime().setHours(hourOfDay);
                         myCalendar.getTime().setMinutes(minute);
-                    }, mHour, mMinute, false);
+                    }, mHour, mMinute, true);
             timePickerDialog.show();
         };
         // Launch Time Picker Dialog
@@ -280,6 +285,10 @@ public class AddMeasurementActivity extends AppCompatActivity {
             SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
             textDate.setText(sdf.format(myCalendar.getTime()));
         }
+
+        textTime.setText(new StringBuilder().append(myCalendar.getTime().getHours())
+                .append(":")
+                .append(String.format("%02d", myCalendar.getTime().getMinutes())));
     }
 
     @Override
@@ -339,10 +348,10 @@ public class AddMeasurementActivity extends AppCompatActivity {
 
     private void saveMeasurement(Measurement measurement) {
         if (measurement != null) {
-
+            Log.w(TAG, measurement.getType() + ": salvando");
             measurement.setUserId(patient.get_id());
             measurement.setTimestamp(DateUtils.convertDateTimeToUTC(myCalendar.getTime()));
-            Log.i("AAA", "saving " + measurement.toJson());
+            Log.w(TAG, "JSON: " + measurement.toJson());
 
             new AlertDialog.Builder(this)
                     .setMessage(getString(R.string.confirm_save_measurement))
@@ -388,29 +397,44 @@ public class AddMeasurementActivity extends AppCompatActivity {
      * Get measurement from Fragment.
      */
     public void prepareMeasurement() {
-        if (myFragment instanceof FragmentAnthropometrics) {
-            saveMeasurements(((MeasurementCommunicator) myFragment).getMeasurements());
-        } else if (myFragment == null || myFragment instanceof FragmentGlucose) {
-            Measurement measurement;
-            if (myFragment instanceof FragmentGlucose) {
-                measurement = ((MeasurementCommunicator) myFragment).getMeasurement();
-                measurement.setValue(Double.valueOf(textMeasurement.getText().toString()));
-            } else {
-                measurement = new Measurement();
-                if (textMeasurement.getText().toString().isEmpty()) {
-                    showMessage(R.string.measurement_invalid);
-                    return;
-                }
-                measurement.setValue(Double.valueOf(textMeasurement.getText().toString()));
-                measurement.setUnit(textUnit.getText().toString());
-            }
-            measurement.setType(typeMeasurement);
-            saveMeasurement(measurement);
+        Log.w(TAG, typeMeasurement + ": setando valores");
+
+        Measurement measurement = new Measurement();
+        MeasurementCommunicator communicator = null;
+        if (myFragment != null) communicator = ((MeasurementCommunicator) myFragment);
+
+        measurement.setType(typeMeasurement);
+
+        if (typeMeasurement.equals("anthropometric")) {
+            saveMeasurements(communicator.getMeasurementList());
+
         } else {
-            Measurement measurement = ((MeasurementCommunicator) myFragment).getMeasurement();
-            if (myFragment instanceof FragmentHeartRate) {
-                measurement.getDataset().get(0)
-                        .setTimestamp(DateUtils.convertDateTimeToUTC(myCalendar.getTime()));
+            switch (typeMeasurement) {
+                case "blood_glucose":
+                    if (textMeasurement.getText().toString().isEmpty()) {
+                        showMessage(R.string.measurement_invalid);
+                        return;
+                    }
+                    measurement = communicator.getMeasurement();
+                    measurement.setValue(Double.valueOf(textMeasurement.getText().toString()));
+                    break;
+                case "weight":
+                case "body_temperature":
+                    if (textMeasurement.getText().toString().isEmpty()) {
+                        showMessage(R.string.measurement_invalid);
+                        return;
+                    }
+                    measurement.setValue(Double.valueOf(textMeasurement.getText().toString()));
+                    measurement.setUnit(textUnit.getText().toString());
+                    break;
+                case "heart_rate":
+                    measurement = communicator.getMeasurement();
+                    measurement.getDataset().get(0)
+                            .setTimestamp(DateUtils.convertDateTimeToUTC(myCalendar.getTime()));
+                    break;
+                case "blood_pressure":
+                    measurement = communicator.getMeasurement();
+                    break;
             }
             saveMeasurement(measurement);
         }
@@ -419,6 +443,6 @@ public class AddMeasurementActivity extends AppCompatActivity {
     public interface MeasurementCommunicator {
         Measurement getMeasurement();
 
-        List<Measurement> getMeasurements();
+        List<Measurement> getMeasurementList();
     }
 }

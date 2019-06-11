@@ -116,7 +116,7 @@ public class FragmentAnthropometrics extends Fragment implements AddMeasurementA
     }
 
     @Override
-    public List<Measurement> getMeasurements() {
+    public List<Measurement> getMeasurementList() {
         List<Measurement> measurements = new ArrayList<>();
         Measurement measurement = new Measurement();
         measurement.setValue(waist);

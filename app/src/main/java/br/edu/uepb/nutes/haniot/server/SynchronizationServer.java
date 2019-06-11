@@ -91,9 +91,9 @@ public class SynchronizationServer {
 //         * Separates the measurements that have self-relation from those that do not have.
 //         */
 //        for (Measurement m : measurements) {
-//            if (m.getMeasurements().size() > 0) {
+//            if (m.getMeasurementList().size() > 0) {
 //                boolean noAdd = false;
-//                for (Measurement mr : m.getMeasurements()) {
+//                for (Measurement mr : m.getMeasurementList()) {
 //                    if (measurementsWithRelations.contains(mr)) noAdd = true;
 //                    break;
 //                }
@@ -109,7 +109,7 @@ public class SynchronizationServer {
 //         */
 //        for (Measurement m : measurementsWithRelations) {
 //            JsonArray jsonRelationsArray = new JsonArray();
-//            for (Measurement mRelation : m.getMeasurements()) {
+//            for (Measurement mRelation : m.getMeasurementList()) {
 //                jsonRelationsArray.add(processMeasurement(mRelation));
 //                measurementsNoRelations.remove(mRelation);
 //            }

@@ -147,6 +147,11 @@ public class ManagerPatientsActivity extends AppCompatActivity {
         // message 500
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
     private void initRecyclerView() {
         adapter = new ManagerPatientAdapter(this);
         adapter.setPatientActionListener(new ManagerPatientAdapter.ActionsPatientListener() {

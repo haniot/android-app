@@ -172,7 +172,7 @@ public class FragmentGlucose extends Fragment implements AddMeasurementActivity.
     }
 
     @Override
-    public List<Measurement> getMeasurements() {
+    public List<Measurement> getMeasurementList() {
         return null;
     }
 }

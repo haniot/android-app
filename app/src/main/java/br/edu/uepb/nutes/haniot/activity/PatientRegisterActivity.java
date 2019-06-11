@@ -29,6 +29,7 @@ import br.edu.uepb.nutes.haniot.data.model.dao.PatientDAO;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
+import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -172,7 +173,10 @@ public class PatientRegisterActivity extends AppCompatActivity {
                         }
                         patientDAO.save(patient);
                         appPreferencesHelper.saveLastPatient(patient);
-                        startActivity(new Intent(PatientRegisterActivity.this, QuizNutritionActivity.class));
+                        if (appPreferencesHelper.getUserLogged().getHealthArea().equals(getString(R.string.type_nutrition)))
+                            startActivity(new Intent(PatientRegisterActivity.this, QuizNutritionActivity.class));
+                        else if (appPreferencesHelper.getUserLogged().getHealthArea().equals(getString(R.string.type_dentistry)))
+                            startActivity(new Intent(PatientRegisterActivity.this, QuizOdontologyActivity.class));
                         finish();
                     }, this::errorHandler));
     }
@@ -196,6 +200,12 @@ public class PatientRegisterActivity extends AppCompatActivity {
                     break;
             }
         } else showMessage(R.string.error_500);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        checkConnectivity();
     }
 
     /**
@@ -229,8 +239,64 @@ public class PatientRegisterActivity extends AppCompatActivity {
         }
     };
 
+    /**
+     * Prepare the view for editing the data
+     */
+    private void prepareEditing() {
+        DisposableManager.add(haniotNetRepository
+                .getPatient(appPreferencesHelper.getLastPatient().get_id())
+                .doOnSubscribe(disposable -> {
+                    prepareView(); // Populate view with local data
+                    enabledView(false);
+                    showLoading(true);
+                })
+                .doAfterTerminate(() -> showLoading(false))
+                .subscribe(patient1 -> {
+                    if (patient1.getEmail() != null) patient.setEmail(patient1.getEmail());
+                    if (patient1.getName() != null) patient.setName(patient1.getName());
+
+                    prepareView();
+                    enabledView(true);
+                }, this::errorHandler)
+
+        );
+    }
+
+    /**
+     * Check if you have connectivity.
+     * If it does not, the elements in the view mounted to notify the user
+     *
+     * @return boolean
+     */
+    private boolean checkConnectivity() {
+        if (!ConnectionUtils.internetIsEnabled(this)) {
+            boxMessage.setVisibility(View.VISIBLE);
+            messageError.setText(getString(R.string.error_connectivity));
+            return false;
+        }
+        boxMessage.setVisibility(View.GONE);
+
+        return true;
+    }
+
+    /**
+     * Enable or disable view
+     *
+     * @param enabled boolean
+     */
+    private void enabledView(final boolean enabled) {
+        runOnUiThread(() -> {
+            nameEditTExt.setEnabled(enabled);
+            emailEditTExt.setEnabled(enabled);
+            phoneEdittext.setEnabled(enabled);
+            birthEdittext.setEnabled(enabled);
+            genderGroup.setEnabled(enabled);
+        });
+    }
+
     private void prepareView() {
         patient = appPreferencesHelper.getLastPatient();
+        if (patient == null) return;
         nameEditTExt.setText(patient.getName());
         emailEditTExt.setText(patient.getEmail());
         phoneEdittext.setText(patient.getPhoneNumber());
@@ -269,7 +335,7 @@ public class PatientRegisterActivity extends AppCompatActivity {
         fab.setOnClickListener(fabClick);
 
         if (isEdit) {
-            prepareView();
+            prepareEditing();
         }
         genderGroup.setOnCheckedChangeListener((group, checkedId) -> {
             if (checkedId == R.id.male)

@@ -15,6 +15,7 @@ import java.util.List;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.AddMeasurementActivity;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
+import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -87,11 +88,11 @@ public class FragmentBloodPressure extends Fragment implements AddMeasurementAct
     private boolean validate() {
         boolean validated = false;
 
-        if (systolic.getText() != null) {
+        if (systolic.getText() != null && !systolic.getText().toString().isEmpty()) {
             validated = true;
         }
 
-        if (diastolic.getText() != null) {
+        if (diastolic.getText() != null && !diastolic.getText().toString().isEmpty()) {
             validated = true;
         }
 
@@ -115,7 +116,7 @@ public class FragmentBloodPressure extends Fragment implements AddMeasurementAct
     }
 
     @Override
-    public List<Measurement> getMeasurements() {
+    public List<Measurement> getMeasurementList() {
         return null;
     }
 }

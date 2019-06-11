@@ -707,6 +707,7 @@
     </string-array>
 
     <string-array name="number3_answers">
+        <item>Nenhuma</item>
         <item>Uma</item>
         <item>Duas</item>
         <item>Três ou Mais</item>
@@ -740,4 +741,6 @@
     <string name="no_internet_conection">Sem conexão com a internet!</string>
     <string name="title_synchronize">Sincronizando dados</string>
     <string name="loading_synchronize">Aguarde enquanto os dados estão sendo sincronizados...</string>
+    <string name="type_nutrition">nutrition</string>
+    <string name="type_dentistry">dentistry</string>
 </resources>

@@ -177,7 +177,7 @@ public final class CreateChart<T> {
 
 //            if (!measurements.get(i).getDataset().isEmpty())
 //                if (measurements.get(i).getDataset().get(0).getTypeId() == MeasurementType.BLOOD_PRESSURE_DIASTOLIC)
-//                    entries2.add(new Entry(i, (float) measurements.get(i).getMeasurements().get(0).getValue()));
+//                    entries2.add(new Entry(i, (float) measurements.get(i).getMeasurementList().get(0).getValue()));
 
             quarters[i] = date;
         }
@@ -189,9 +189,9 @@ public final class CreateChart<T> {
 //
 //                entries.add(new Entry((float) i, (int) data.get(i).getValue()));
 //
-//                if (!data.get(i).getMeasurements().isEmpty())
-//                    if (data.get(i).getMeasurements().get(0).getTypeId() == MeasurementType.BLOOD_PRESSURE_DIASTOLIC)
-//                        entries2.add(new Entry(i, (float) data.get(i).getMeasurements().get(0).getValue()));
+//                if (!data.get(i).getMeasurementList().isEmpty())
+//                    if (data.get(i).getMeasurementList().get(0).getTypeId() == MeasurementType.BLOOD_PRESSURE_DIASTOLIC)
+//                        entries2.add(new Entry(i, (float) data.get(i).getMeasurementList().get(0).getValue()));
 //            quarters[i] = date;
 //        }
 

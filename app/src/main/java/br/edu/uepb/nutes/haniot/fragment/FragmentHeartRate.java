@@ -106,7 +106,7 @@ public class FragmentHeartRate extends Fragment implements AddMeasurementActivit
     }
 
     @Override
-    public List<Measurement> getMeasurements() {
+    public List<Measurement> getMeasurementList() {
         return null;
     }
 }
