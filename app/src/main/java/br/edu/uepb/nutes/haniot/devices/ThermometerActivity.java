@@ -144,8 +144,6 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
         haniotNetRepository = HaniotNetRepository.getInstance(this);
         patient = appPreferencesHelper.getLastPatient();
 
-
-        //TODO TEMP - Há problemas no cadastro dos dispositivos
         mDevice = deviceDAO.getByType(appPreferencesHelper.getUserLogged().get_id(), DeviceType.THERMOMETER);
         animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
         mChartButton.setOnClickListener(this);

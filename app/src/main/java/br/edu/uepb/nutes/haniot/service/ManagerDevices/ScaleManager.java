@@ -172,7 +172,6 @@ public class ScaleManager extends BluetoothManager {
      * @return double
      */
     private double calcBMI(double bodyMass) {
-        //TODO pegar altura do paciente selecionado
         //double height = (session.getUserLogged().getHeight()) / 100D;
         double height = 1.0;
         return bodyMass / (Math.pow(height, 2));

@@ -33,7 +33,7 @@ import retrofit2.http.Query;
  * @author Copyright (c) 2018, NUTES/UEPB
  */
 public interface HaniotService {
-//    String BASE_URL_HANIOT = "http://192.168.0.119:8080/"; // API GATEWAY LOCAL
+    //    String BASE_URL_HANIOT = "http://192.168.0.119:8080/"; // API GATEWAY LOCAL
     String BASE_URL_HANIOT = "https://200.129.82.8:8081";
 
     // auth
@@ -75,7 +75,7 @@ public interface HaniotService {
 
     @POST("users/{user_id}/measurements")
     Single<Object> addMeasurement(@Path("user_id") String userId,
-                                       @Body List<Measurement> measurement);
+                                  @Body List<Measurement> measurement);
 
     @GET("users/{user_id}/measurements")
     Single<List<Measurement>> getAllMeasurements(@Path("user_id") String userId,
@@ -91,6 +91,13 @@ public interface HaniotService {
                                                  @Query("sort") String sort,
                                                  @Query("start_at") String dateStart,
                                                  @Query("end_at") String dateEnd,
+                                                 @Query("page") int page,
+                                                 @Query("limit") int limit);
+
+    @GET("users/{user_id}/measurements")
+    Single<List<Measurement>> getAllMeasurements(@Path("user_id") String userId,
+                                                 @Query("type") String type,
+                                                 @Query("sort") String sort,
                                                  @Query("page") int page,
                                                  @Query("limit") int limit);
 

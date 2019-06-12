@@ -440,16 +440,6 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
     @Override
     protected void onStart() {
         super.onStart();
-
-        // TODO REMOVER!!! Pois o cadastro do device deverá ser no processo de emparelhamento
-//        mDevice = deviceDAO.get(mDeviceAddress, session.getUserLogged().get_id());
-//
-//        if (mDevice == null) {
-//            mDevice = new Device(mDeviceAddress, "MI BAND 2", "XIAOMI", "", DeviceType.SMARTBAND, session.getUserLogged());
-//            mDevice.set_id("5a713bce7c210900147a4eda");
-//            if (!deviceDAO.save(mDevice)) finish();
-//            mDevice = deviceDAO.get(mDeviceAddress, session.getIdLogged());
-//        }
     }
 
     @Override

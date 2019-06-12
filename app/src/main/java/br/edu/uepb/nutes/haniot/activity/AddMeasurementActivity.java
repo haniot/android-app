@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -223,6 +224,7 @@ public class AddMeasurementActivity extends AppCompatActivity {
         return true;
     }
 
+
     /**
      * Setup date picker.
      */
@@ -231,8 +233,9 @@ public class AddMeasurementActivity extends AppCompatActivity {
         final Calendar c = Calendar.getInstance();
         int mHour = c.get(Calendar.HOUR_OF_DAY);
         int mMinute = c.get(Calendar.MINUTE);
-        myCalendar.getTime().setHours(mHour);
-        myCalendar.getTime().setMinutes(mMinute);
+        myCalendar.set(Calendar.HOUR_OF_DAY, mHour);
+        myCalendar.set(Calendar.MINUTE, mMinute);
+
         updateLabel();
 
         View.OnClickListener timeClick = v -> {
@@ -241,8 +244,8 @@ public class AddMeasurementActivity extends AppCompatActivity {
                         textTime.setText(new StringBuilder().append(hourOfDay)
                                 .append(":")
                                 .append(String.format("%02d", minute)).toString());
-                        myCalendar.getTime().setHours(hourOfDay);
-                        myCalendar.getTime().setMinutes(minute);
+                        myCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                        myCalendar.set(Calendar.MINUTE, minute);
                     }, mHour, mMinute, true);
             timePickerDialog.show();
         };
@@ -286,6 +289,7 @@ public class AddMeasurementActivity extends AppCompatActivity {
             textDate.setText(sdf.format(myCalendar.getTime()));
         }
 
+        Log.w(TAG, "Tempo selecionado do myCalendar (Update label): " + myCalendar.getTime());
         textTime.setText(new StringBuilder().append(myCalendar.getTime().getHours())
                 .append(":")
                 .append(String.format("%02d", myCalendar.getTime().getMinutes())));
@@ -324,6 +328,7 @@ public class AddMeasurementActivity extends AppCompatActivity {
         }
         for (Measurement measurement : measurements) {
             measurement.setUserId(patient.get_id());
+            Log.w(TAG, "Tempo selecionado do myCalendar: " + myCalendar.getTime());
             measurement.setTimestamp(DateUtils.convertDateTimeToUTC(myCalendar.getTime()));
             Log.i("AAA", "saving " + measurement.toJson());
 
@@ -351,6 +356,7 @@ public class AddMeasurementActivity extends AppCompatActivity {
             Log.w(TAG, measurement.getType() + ": salvando");
             measurement.setUserId(patient.get_id());
             measurement.setTimestamp(DateUtils.convertDateTimeToUTC(myCalendar.getTime()));
+            Log.w(TAG, "Tempo selecionado do myCalendar: " + myCalendar.getTime());
             Log.w(TAG, "JSON: " + measurement.toJson());
 
             new AlertDialog.Builder(this)

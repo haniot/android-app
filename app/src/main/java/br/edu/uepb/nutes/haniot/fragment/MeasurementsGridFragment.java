@@ -149,8 +149,23 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
         initComponents();
         initRecyclerView();
         refreshManagerBLE();
-
         return view;
+    }
+
+    //TODO Próxima sprint
+    private void downloadLastMeasurements() {
+        DisposableManager.add(haniotRepository
+                .getAllMeasurementsByType(patient.get_id(), "blood_glucose", "-timestamp", null, null, 1, 1)
+                .subscribe(measurements -> {
+                    if (!measurements.isEmpty()) {
+                        Log.w(LOG_TAG, Arrays.toString(measurements.toArray()));
+                        Measurement measurement = measurements.get(0);
+                        updateMeasurement(String.valueOf(measurement.getValue()), measurement.getUnit(), measurement.getTimestamp(), ItemGridType.BLOOD_GLUCOSE);
+                    }
+                }, throwable -> {
+                    Log.w(LOG_TAG, throwable.getMessage());
+                }));
+
     }
 
     @Override
@@ -176,6 +191,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
         super.onResume();
         refreshRegisteredDevices();
         refreshManagerBLE();
+        //downloadLastMeasurements();
     }
 
     @Override

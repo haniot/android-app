@@ -116,8 +116,6 @@ public class HaniotNetRepository extends BaseNetRepository {
                         userAccess.setSubject(jwt.getSubject());
                         userAccess.setExpirationDate(jwt.getExpiresAt().getTime());
                         userAccess.setScopes(jwt.getClaim(UserAccess.KEY_SCOPES).asString());
-                        //TODO TEMP
-                        Log.i("AAA", userAccess.toString());
                     }
                     return userAccess;
                 })
@@ -181,6 +179,13 @@ public class HaniotNetRepository extends BaseNetRepository {
                                                               String sort, String dateStart,
                                                               String dateEnd, int page, int limit) {
         return haniotService.getAllMeasurements(userId, type, sort, dateStart, dateEnd, page, limit)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Single<List<Measurement>> getAllMeasurementsByType(String userId, String type,
+                                                              String sort, int page, int limit) {
+        return haniotService.getAllMeasurements(userId, type, sort, page, limit)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
