@@ -14,18 +14,24 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
+
+import com.github.clans.fab.FloatingActionButton;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.SettingsActivity;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
+import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.fragment.DashboardChartsFragment;
 import br.edu.uepb.nutes.haniot.fragment.MeasurementsGridFragment;
+import br.edu.uepb.nutes.haniot.utils.NetworkUtil;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -34,7 +40,7 @@ import butterknife.ButterKnife;
  *
  * @author Copyright (c) 2018, NUTES/UEPB
  */
-public class MainActivity extends AppCompatActivity implements DashboardChartsFragment.Communicator {
+public class MainActivity extends AppCompatActivity implements DashboardChartsFragment.Communicator, View.OnClickListener {
     private final String LOG_TAG = "MainActivity";
     private final int REQUEST_ENABLE_BLUETOOTH = 1;
     private final int REQUEST_ENABLE_LOCATION = 2;
@@ -46,10 +52,21 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
     @BindView(R.id.frameMeasurements)
     FrameLayout frameMeasurements;
 
+    @BindView(R.id.evaluation_nutrition)
+    FloatingActionButton nutritioEvaluation;
+
+    @BindView(R.id.quiz_odonto)
+    FloatingActionButton quizOdonto;
+
+    @BindView(R.id.quiz_nutrition)
+    FloatingActionButton quizNutrition;
+
     private MeasurementsGridFragment measurementsGridFragment;
     private DashboardChartsFragment dashboardChartsFragment;
     private AppPreferencesHelper appPreferences;
     private Patient patient;
+    private long backPressed;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,8 +81,11 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
         dashboardChartsFragment = DashboardChartsFragment.newInstance();
         measurementsGridFragment = MeasurementsGridFragment.newInstance();
 
-        IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
-        registerReceiver(mReceiver, filter);
+        IntentFilter filterBluetooth = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
+        registerReceiver(mReceiver, filterBluetooth);
+        IntentFilter filterInternet = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
+        registerReceiver(mReceiver, filterInternet);
+        setupPatientActions();
     }
 
     private void loadDashboard() {
@@ -88,7 +108,6 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
     @Override
     protected void onResume() {
         super.onResume();
-
         // Verify the pilot is selected
         if (appPreferences.getLastPilotStudy() == null) {
             startActivity(new Intent(this, WelcomeActivity.class));
@@ -104,6 +123,34 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
     }
 
     /**
+     * Init click listener of patient action buttons.
+     */
+    private void setupPatientActions() {
+
+        if (appPreferences.getUserLogged().getHealthArea().equals("dentistry")) {
+            quizNutrition.setVisibility(View.GONE);
+            nutritioEvaluation.setVisibility(View.GONE);
+
+            quizOdonto.setOnClickListener(v -> {
+                startActivity(new Intent(this, QuizOdontologyActivity.class));
+                finish();
+            });
+
+        } else {
+            quizOdonto.setVisibility(View.GONE);
+            quizNutrition.setOnClickListener(v -> {
+                startActivity(new Intent(this, QuizNutritionActivity.class));
+                finish();
+            });
+            nutritioEvaluation.setOnClickListener(v -> {
+                measurementsGridFragment.saveHeartRateCollection();
+            });
+
+
+        }
+    }
+
+    /**
      * Set patient selected.
      */
     public void checkPatient() {
@@ -114,7 +161,7 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
 
             checkPermissions();
         } else {
-            startActivity(new Intent(this, ManagePatientsActivity.class));
+            startActivity(new Intent(this, ManagerPatientsActivity.class));
         }
     }
 
@@ -195,7 +242,7 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.btnManagePatient:
-                startActivity(new Intent(getApplicationContext(), ManagePatientsActivity.class));
+                startActivity(new Intent(getApplicationContext(), ManagerPatientsActivity.class));
                 break;
             case R.id.btnMenuMainSettings:
                 Intent it = new Intent(this, SettingsActivity.class);
@@ -218,9 +265,12 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        this.finishAffinity();
-        System.exit(0);
+        if (backPressed + 2000 > System.currentTimeMillis()) {
+            super.onBackPressed();
+            this.finishAffinity();
+        } else
+            Toast.makeText(getBaseContext(), getString(R.string.back_confirm), Toast.LENGTH_SHORT).show();
+        backPressed = System.currentTimeMillis();
     }
 
     /**
@@ -242,7 +292,14 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
         @Override
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
-
+            int status = NetworkUtil.getConnectivityStatusString(context);
+            if ("android.net.conn.CONNECTIVITY_CHANGE".equals(intent.getAction())) {
+                if (status == NetworkUtil.NETWORK_STATUS_NOT_CONNECTED) {
+                    dashboardChartsFragment.showMessage(R.string.wifi_disabled);
+                } else {
+                    dashboardChartsFragment.showMessage(-1);
+                }
+            }
             if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
                 final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE,
                         BluetoothAdapter.ERROR);
@@ -251,13 +308,30 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
 
                 } else if (state == BluetoothAdapter.STATE_ON) {
                     dashboardChartsFragment.showMessage(-1);
-
                 }
             }
         }
     };
 
     public Patient getPatientSelected() {
+        patient = appPreferences.getLastPatient();
         return patient;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.evaluation_nutrition:
+                appPreferences.saveString("typeEvaluation", "nutrition");
+                startActivity(new Intent(this, NutritionalEvaluationActivity.class));
+                break;
+            case R.id.quiz_nutrition:
+                startActivity(new Intent(this, QuizNutritionActivity.class));
+                break;
+            case R.id.quiz_odonto:
+                startActivity(new Intent(this, QuizOdontologyActivity.class));
+                break;
+            default:
+        }
     }
 }

@@ -294,6 +294,7 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
             nameEditText.setEnabled(enabled);
             emailEditText.setEnabled(enabled);
             buttonChangePassword.setEnabled(enabled);
+
         });
     }
 

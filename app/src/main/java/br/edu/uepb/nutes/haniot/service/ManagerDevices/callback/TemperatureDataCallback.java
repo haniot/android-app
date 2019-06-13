@@ -1,22 +1,21 @@
 package br.edu.uepb.nutes.haniot.service.ManagerDevices.callback;
 
 import android.bluetooth.BluetoothDevice;
+import android.support.annotation.NonNull;
 
-import br.edu.uepb.nutes.haniot.data.model.Measurement;
-
-public interface TemperatureDataCallback {
+public interface TemperatureDataCallback extends DeviceStatusCallback {
     /**
-     * On Connected to Temperature Device.
+     * Temperature measurement receiver.
+     *
+     * @param device    {@link BluetoothDevice} Device that collected the measurement.
+     * @param temp      Measurement value.
+     * @param unit      Measurement unit.
+     * @param timestamp Datetime of collection.
      */
-    void onConnected();
-
-    /**
-     * On Disconnected to Temperature Device.
-     */
-    void onDisconnected();
-
-    /**
-     * On receiver data of measurement from Temperature Device.
-     */
-    void onMeasurementReceived(Measurement measurementTemperature);
+    void onMeasurementReceived(
+            @NonNull final BluetoothDevice device,
+            final double temp,
+            final String unit,
+            final String timestamp
+    );
 }

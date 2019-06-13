@@ -15,9 +15,7 @@ import io.objectbox.annotation.Index;
 /**
  * Represents User object.
  *
- * @author Douglas Rafael <douglas.rafael@nutes.uepb.edu.br>
- * @version 2.0
- * @copyright Copyright (c) 2017, NUTES UEPB
+ * @author Copyright (c) 2019, NUTES/UEPB
  */
 @Entity
 public class User {
@@ -54,6 +52,12 @@ public class User {
     @Expose()
     private String healthArea; // provide by the server
 
+    @SerializedName("phone_number")
+    @Expose()
+    private String phoneNumber; // provide by the server
+
+    @Expose()
+    private String pilotStudyIDSelected;
     /**
      * {@link UserType ()}
      */
@@ -151,6 +155,22 @@ public class User {
         this.healthArea = healthArea;
     }
 
+    public String getPilotStudyIDSelected() {
+        return pilotStudyIDSelected;
+    }
+
+    public void setPilotStudyIDSelected(String pilotStudyIDSelected) {
+        this.pilotStudyIDSelected = pilotStudyIDSelected;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
     /**
      * Convert object to json format.
      *
@@ -195,6 +215,7 @@ public class User {
                 ", oldPassword='" + oldPassword + '\'' +
                 ", newPassword='" + newPassword + '\'' +
                 ", healthArea='" + healthArea + '\'' +
+                ", pilotStudyIDSelected='" + pilotStudyIDSelected + '\'' +
                 ", userType=" + userType +
                 '}';
     }

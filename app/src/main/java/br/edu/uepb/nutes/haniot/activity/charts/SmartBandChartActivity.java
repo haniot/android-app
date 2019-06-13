@@ -1,6 +1,7 @@
 package br.edu.uepb.nutes.haniot.activity.charts;
 
 import android.graphics.Color;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.GridView;
@@ -24,8 +25,6 @@ import br.edu.uepb.nutes.haniot.activity.charts.base.InfoAdapter;
 import br.edu.uepb.nutes.haniot.activity.charts.base.InfoMeasurement;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.MeasurementType;
-import br.edu.uepb.nutes.haniot.utils.DateUtils;
-import br.edu.uepb.nutes.haniot.utils.Log;
 
 /**
  * BloodPresssureChartActivity implementation.
@@ -60,27 +59,24 @@ public class SmartBandChartActivity extends BaseChartActivity {
 
         requestData(CHART_TYPE_MONTH);
 
-        barChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener()
-        {
+        barChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
             @Override
-            public void onValueSelected(Entry e, Highlight h)
-            {
-  //              Measurement m = (Measurement) e.getData();
-              //  Log.d("TESTE", String.valueOf(points.get(3).getValue()));
-                Log.d("TESTE", String.valueOf(e.getX())+ " - " + String.valueOf(e.getY()));
+            public void onValueSelected(Entry e, Highlight h) {
+                //              Measurement m = (Measurement) e.getData();
+                //  Log.d("TESTE", String.valueOf(points.get(3).getValue()));
+                Log.d("TESTE", String.valueOf(e.getX()) + " - " + String.valueOf(e.getY()));
 
                 ArrayList<Measurement> a = new ArrayList<>();
                 a.add(points.get((int) e.getX()));
                 createMoreInfo(a);
-                float x=e.getX();
-                float y=e.getY();
+                float x = e.getX();
+                float y = e.getY();
             }
 
             @Override
-            public void onNothingSelected()
-            {
+            public void onNothingSelected() {
 
-               createMoreInfo(new ArrayList<>());
+                createMoreInfo(new ArrayList<>());
             }
         });
     }
@@ -91,8 +87,9 @@ public class SmartBandChartActivity extends BaseChartActivity {
     }
 
     @Override
-    public int getTypeMeasurement() {
-        return MeasurementType.STEPS;
+    public String getTypeMeasurement() {
+        return null;
+        // steps
     }
 
     @Override
@@ -147,10 +144,10 @@ public class SmartBandChartActivity extends BaseChartActivity {
         barChart.setVisibility(View.VISIBLE);
 
         //Teste
-        for (Measurement measurement : data)
-            Log.d("A", DateUtils.formatDate(measurement.getRegistrationDate(), getString(R.string.date_format)) + " - " + measurement.getValue());
-        for (Measurement measurement : points)
-            Log.d("B", DateUtils.formatDate(measurement.getRegistrationDate(), getString(R.string.date_format)) + " - " + measurement.getValue());
+//        for (Measurement measurement : data)
+//            Log.d("A", DateUtils.formatDate(measurement.getRegistrationDate(), getString(R.string.date_format)) + " - " + measurement.getValue());
+//        for (Measurement measurement : points)
+//            Log.d("B", DateUtils.formatDate(measurement.getRegistrationDate(), getString(R.string.date_format)) + " - " + measurement.getValue());
 
     }
 
@@ -159,15 +156,15 @@ public class SmartBandChartActivity extends BaseChartActivity {
         Calendar c = Calendar.getInstance();
 
         points.add(data.get(data.size() - 1));
-        for (int i = data.size() - 1; i >= 0; i--) {
-            c.setTimeInMillis(data.get(i).getRegistrationDate());
-            int current = c.get(Calendar.DATE);
-
-            c.setTimeInMillis(points.get(points.size() - 1).getRegistrationDate());
-            int compare = c.get(Calendar.DATE);
-
-            if (current != compare) points.add(data.get(i));
-        }
+//        for (int i = data.size() - 1; i >= 0; i--) {
+//            c.setTimeInMillis(data.get(i).getRegistrationDate());
+//            int current = c.get(Calendar.DATE);
+//
+//            c.setTimeInMillis(points.get(points.size() - 1).getRegistrationDate());
+//            int compare = c.get(Calendar.DATE);
+//
+//            if (current != compare) points.add(data.get(i));
+//        }
 
         return points;
     }
@@ -178,62 +175,62 @@ public class SmartBandChartActivity extends BaseChartActivity {
         int total = 0;
         int totalDist = 0;
         int totalCal = 0;
-        if (type == Calendar.YEAR){
-            for (int i = 0; i <= data.size() - 1; i++) {
-                total += data.get(i).getValue();
-                if (data.get(i).getMeasurements().get(0).getTypeId() == MeasurementType.DISTANCE) {
-                    totalCal += data.get(i).getMeasurements().get(0).getValue();
-                    totalDist += data.get(i).getMeasurements().get(1).getValue();
-                } else {
-                    totalCal += data.get(i).getMeasurements().get(1).getValue();
-                    totalDist += data.get(i).getMeasurements().get(0).getValue();
-                }
-            }
-
-            Measurement measurement = data.get(0);
-            measurement.setValue(total);
-            measurement.addMeasurement(
-                    new Measurement(totalDist, getString(R.string.unit_meters), MeasurementType.DISTANCE),
-                    new Measurement(totalCal, getString(R.string.unit_kcal), MeasurementType.CALORIES_BURNED)
-            );
-
-            points.add(measurement);
-        } else {
-            c = Calendar.getInstance();
-            points.add(data.get(data.size() - 1));
-
-            for (int i = data.size() - 1; i >= 0; i--) {
-                c.setTimeInMillis(data.get(i).getRegistrationDate());
-                int current = c.get(type);
-
-                c.setTimeInMillis(points.get(points.size() - 1).getRegistrationDate());
-                int compare = c.get(type);
-
-                total += data.get(i).getValue();
-                if (data.get(i).getMeasurements().get(0).getTypeId() == MeasurementType.DISTANCE) {
-                    totalCal += data.get(i).getMeasurements().get(0).getValue();
-                    totalDist += data.get(i).getMeasurements().get(1).getValue();
-                } else {
-                    totalCal += data.get(i).getMeasurements().get(1).getValue();
-                    totalDist += data.get(i).getMeasurements().get(0).getValue();
-                }
-
-                if (current != compare) {
-                    Measurement measurement = data.get(i);
-                    measurement.setValue(total);
-                    measurement.addMeasurement(
-                            new Measurement(totalDist, "m", MeasurementType.DISTANCE),
-                            new Measurement(totalCal, "kcal", MeasurementType.CALORIES_BURNED)
-                    );
-
-                    points.add(measurement);
-                    total = 0;
-                    totalDist = 0;
-                    totalCal = 0;
-                }
-
-            }
-        }
+//        if (type == Calendar.YEAR) {
+//            for (int i = 0; i <= data.size() - 1; i++) {
+//                total += data.get(i).getValue();
+//                if (data.get(i).getMeasurementList().get(0).getTypeId() == MeasurementType.DISTANCE) {
+//                    totalCal += data.get(i).getMeasurementList().get(0).getValue();
+//                    totalDist += data.get(i).getMeasurementList().get(1).getValue();
+//                } else {
+//                    totalCal += data.get(i).getMeasurementList().get(1).getValue();
+//                    totalDist += data.get(i).getMeasurementList().get(0).getValue();
+//                }
+//            }
+//
+//            Measurement measurement = data.get(0);
+//            measurement.setValue(total);
+//            measurement.addMeasurement(
+//                    new Measurement(totalDist, getString(R.string.unit_meters), MeasurementType.DISTANCE),
+//                    new Measurement(totalCal, getString(R.string.unit_kcal), MeasurementType.CALORIES_BURNED)
+//            );
+//
+//            points.add(measurement);
+//        } else {
+//            c = Calendar.getInstance();
+//            points.add(data.get(data.size() - 1));
+//
+//            for (int i = data.size() - 1; i >= 0; i--) {
+//                c.setTimeInMillis(data.get(i).getRegistrationDate());
+//                int current = c.get(type);
+//
+//                c.setTimeInMillis(points.get(points.size() - 1).getRegistrationDate());
+//                int compare = c.get(type);
+//
+//                total += data.get(i).getValue();
+//                if (data.get(i).getMeasurementList().get(0).getTypeId() == MeasurementType.DISTANCE) {
+//                    totalCal += data.get(i).getMeasurementList().get(0).getValue();
+//                    totalDist += data.get(i).getMeasurementList().get(1).getValue();
+//                } else {
+//                    totalCal += data.get(i).getMeasurementList().get(1).getValue();
+//                    totalDist += data.get(i).getMeasurementList().get(0).getValue();
+//                }
+//
+//                if (current != compare) {
+//                    Measurement measurement = data.get(i);
+//                    measurement.setValue(total);
+//                    measurement.addMeasurement(
+//                            new Measurement(totalDist, "m", MeasurementType.DISTANCE),
+//                            new Measurement(totalCal, "kcal", MeasurementType.CALORIES_BURNED)
+//                    );
+//
+//                    points.add(measurement);
+//                    total = 0;
+//                    totalDist = 0;
+//                    totalCal = 0;
+//                }
+//
+//            }
+//        }
         return points;
     }
 
@@ -266,16 +263,16 @@ public class SmartBandChartActivity extends BaseChartActivity {
     protected ArrayList<InfoMeasurement> getInfosBase(List<Measurement> measurements) {
         ArrayList<InfoMeasurement> infos = new ArrayList<>();
 
-        if(measurements.isEmpty()){
+        if (measurements.isEmpty()) {
             infos.add(new InfoMeasurement(getString(R.string.info_steps), " - "));
             infos.add(new InfoMeasurement(getString(R.string.info_distance), " - "));
             infos.add(new InfoMeasurement(getString(R.string.info_calories), " - "));
             infos.add(new InfoMeasurement(getString(R.string.info_period), " - "));
         } else {
             infos.add(new InfoMeasurement(getString(R.string.info_steps), String.valueOf((int) measurements.get(0).getValue())));
-            infos.add(new InfoMeasurement(getString(R.string.info_distance), String.valueOf((int) (measurements.get(0).getMeasurements().get(0).getValue())) + " m"));
-            infos.add(new InfoMeasurement(getString(R.string.info_calories), String.valueOf((int) (measurements.get(0).getMeasurements().get(1).getValue())) + " kcal"));
-            infos.add(new InfoMeasurement(getString(R.string.info_period), DateUtils.formatDate(measurements.get(0).getRegistrationDate(), getString(R.string.date_format))));
+//            infos.add(new InfoMeasurement(getString(R.string.info_distance), String.valueOf((int) (measurements.get(0).getMeasurementList().get(0).getValue())) + " m"));
+//            infos.add(new InfoMeasurement(getString(R.string.info_calories), String.valueOf((int) (measurements.get(0).getMeasurementList().get(1).getValue())) + " kcal"));
+//            infos.add(new InfoMeasurement(getString(R.string.info_period), DateUtils.formatDate(measurements.get(0).getRegistrationDate(), getString(R.string.date_format))));
         }
         return infos;
     }

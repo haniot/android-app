@@ -34,7 +34,7 @@ public class YunmaiParser {
             /**
              * Timestamp current
              */
-            result.put("timestamp", DateUtils.getCurrentDatetime());
+            result.put("timestamp", DateUtils.getCurrentDateTimeUTC());
 
             /**
              * 03: response type

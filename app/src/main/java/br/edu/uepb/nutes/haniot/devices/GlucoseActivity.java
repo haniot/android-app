@@ -4,26 +4,19 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothGattCharacteristic;
-import android.bluetooth.BluetoothGattDescriptor;
-import android.bluetooth.BluetoothGattService;
+import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothProfile;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.IBinder;
 import android.support.annotation.NonNull;
-import android.support.annotation.StringRes;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -32,54 +25,38 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.clans.fab.FloatingActionButton;
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.List;
-import java.util.UUID;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.AddMeasurementActivity;
-import br.edu.uepb.nutes.haniot.activity.charts.GlucoseChartActivity;
-import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.adapter.GlucoseAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
-import br.edu.uepb.nutes.haniot.data.model.ContextMeasurement;
-import br.edu.uepb.nutes.haniot.data.model.ContextMeasurementType;
-import br.edu.uepb.nutes.haniot.data.model.ContextMeasurementValueType;
 import br.edu.uepb.nutes.haniot.data.model.Device;
 import br.edu.uepb.nutes.haniot.data.model.DeviceType;
 import br.edu.uepb.nutes.haniot.data.model.ItemGridType;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.MeasurementType;
+import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.dao.DeviceDAO;
 import br.edu.uepb.nutes.haniot.data.model.dao.MeasurementDAO;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
-import br.edu.uepb.nutes.haniot.parse.JsonToContextParser;
-import br.edu.uepb.nutes.haniot.parse.JsonToMeasurementParser;
-import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
-import br.edu.uepb.nutes.haniot.server.historical.CallbackHistorical;
-import br.edu.uepb.nutes.haniot.server.historical.Historical;
-import br.edu.uepb.nutes.haniot.server.historical.HistoricalType;
-import br.edu.uepb.nutes.haniot.server.historical.Params;
-import br.edu.uepb.nutes.haniot.service.BluetoothLeService;
+import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
+import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.GlucoseManager;
-import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.GlucoseDataCallback;
+import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.BloodGlucoseDataCallback;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
-import br.edu.uepb.nutes.haniot.utils.GattAttributes;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -95,6 +72,7 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
     private final int REQUEST_ENABLE_BLUETOOTH = 1;
     private final int REQUEST_ENABLE_LOCATION = 2;
     private final int LIMIT_PER_PAGE = 20;
+    private final int INITIAL_PAGE = 1;
 
     private boolean mConnected = false;
 
@@ -104,8 +82,11 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
     private MeasurementDAO measurementDAO;
     private DeviceDAO deviceDAO;
     private GlucoseAdapter mAdapter;
-    private Params params;
     private GlucoseManager glucoseManager;
+
+    private Patient patient;
+    private HaniotNetRepository haniotNetRepository;
+    private int page = INITIAL_PAGE;
 
     /**
      * We need this variable to lock and unlock loading more.
@@ -150,14 +131,11 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
     @BindView(R.id.add_floating_button)
     FloatingActionButton mAddButton;
 
-    @BindView(R.id.box_message_error)
-    LinearLayout boxMessage;
-
-    @BindView(R.id.message_error)
-    TextView messageError;
-
     private ProgressDialog progressDialog;
     private boolean isGetAllMonitor;
+
+    @BindView(R.id.box_measurement)
+    RelativeLayout boxMeasurement;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -165,47 +143,76 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
         setContentView(R.layout.activity_glucose);
         ButterKnife.bind(this);
         checkPermissions();
-        // synchronization with server
-        synchronizeWithServer();
 
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
 
         measurementDAO = MeasurementDAO.getInstance(this);
         deviceDAO = DeviceDAO.getInstance(this);
-        params = new Params(appPreferencesHelper.getUserLogged().get_id(), MeasurementType.BLOOD_GLUCOSE);
         glucoseManager = new GlucoseManager(this);
         glucoseManager.setSimpleCallback(glucoseDataCallback);
 
         animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
         mChartButton.setOnClickListener(this);
         mAddButton.setOnClickListener(this);
-        messageError.setOnClickListener(v -> checkPermissions());
+
+        patient = appPreferencesHelper.getLastPatient();
+        haniotNetRepository = HaniotNetRepository.getInstance(this);
+
+        if (isTablet(this)) {
+            Log.i(TAG, "is tablet");
+            boxMeasurement.getLayoutParams().height = 600;
+            mCollapsingToolbarLayout.getLayoutParams().height = 630;
+            boxMeasurement.requestLayout();
+            mCollapsingToolbarLayout.requestLayout();
+        }
 
         mDevice = deviceDAO.getByType(appPreferencesHelper.getUserLogged().get_id(), DeviceType.GLUCOMETER);
+
         initComponents();
 
         IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
         registerReceiver(mReceiver, filter);
     }
 
-    private GlucoseDataCallback glucoseDataCallback = new GlucoseDataCallback() {
+    /**
+     * Check if is tablet.
+     *
+     * @param context
+     * @return
+     */
+    public static boolean isTablet(Context context) {
+        return (context.getResources().getConfiguration().screenLayout
+                & Configuration.SCREENLAYOUT_SIZE_MASK)
+                >= Configuration.SCREENLAYOUT_SIZE_LARGE;
+    }
+
+    private BloodGlucoseDataCallback glucoseDataCallback = new BloodGlucoseDataCallback() {
         @Override
-        public void onConnected() {
+        public void onConnected(@androidx.annotation.NonNull BluetoothDevice device) {
             mConnected = true;
             updateConnectionState(true);
         }
 
         @Override
-        public void onDisconnected() {
+        public void onDisconnected(@androidx.annotation.NonNull BluetoothDevice device) {
             mConnected = false;
             updateConnectionState(false);
         }
 
         @Override
-        public void onMeasurementReceived(Measurement measurementGlucose) {
-            updateUILastMeasurement(measurementGlucose, true);
+        public void onMeasurementReceived(@NonNull BluetoothDevice device, int glucose, String meal, String timestamp) {
+            Measurement measurement = new Measurement();
+            measurement.setType(MeasurementType.BLOOD_GLUCOSE);
+            measurement.setValue(glucose);
+            measurement.setMeal(meal);
+            measurement.setTimestamp(timestamp);
+//            if (mDevice != null) measurement.setDeviceId(mDevice.get_id());
+            measurement.setUserId(patient.get_id());
+
+            updateUILastMeasurement(measurement, true);
         }
     };
+
 
     /**
      * Initialize components
@@ -214,7 +221,6 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
         initToolBar();
         initRecyclerView();
         initDataSwipeRefresh();
-        loadData();
     }
 
     /**
@@ -264,12 +270,10 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
 
             @Override
             public void onLongItemClick(View v, Measurement item) {
-
             }
 
             @Override
             public void onMenuContextClick(View v, Measurement item) {
-
             }
         });
 
@@ -278,20 +282,16 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 if (dy > 0) {
-                    mAddButton.hide();
                     // Recycle view scrolling downwards...
                     // this if statement detects when user reaches the end of recyclerView, this is only time we should load more
                     if (!recyclerView.canScrollVertically(RecyclerView.FOCUS_DOWN)) {
                         // here we are now allowed to load more, but we need to be careful
                         // we must check if itShouldLoadMore variable is true [unlocked]
-                        if (itShouldLoadMore) loadMoreData();
+                        if (itShouldLoadMore) loadData(false);
                     }
-                } else {
-                    mAddButton.show();
                 }
             }
         });
-
         mRecyclerView.setAdapter(mAdapter);
     }
 
@@ -300,7 +300,7 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
      */
     private void initDataSwipeRefresh() {
         mDataSwipeRefresh.setOnRefreshListener(() -> {
-            if (itShouldLoadMore) loadData();
+            if (itShouldLoadMore) loadData(true);
         });
     }
 
@@ -311,7 +311,7 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
      */
     private void loadDataLocal() {
         mAdapter.addItems(measurementDAO.list(MeasurementType.BLOOD_GLUCOSE,
-                appPreferencesHelper.getUserLogged().getId(), 0, 100));
+                patient.get_id(), 0, 100));
 
         if (!mAdapter.itemsIsEmpty()) {
             updateUILastMeasurement(mAdapter.getFirstItem(), false);
@@ -325,88 +325,53 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
      * Load data.
      * If there is no internet connection, we can display the local database.
      * Otherwise it displays from the remote server.
+     *
+     * @param clearList True if clearList
      */
-    private void loadData() {
-        mAdapter.clearItems(); // clear list
+    private void loadData(boolean clearList) {
+        if (clearList) {
+            mAdapter.clearItems(); // clear list
+            page = INITIAL_PAGE;
+        }
 
         if (!ConnectionUtils.internetIsEnabled(this)) {
             loadDataLocal();
         } else {
-            Historical historical = new Historical.Query()
-                    .type(HistoricalType.MEASUREMENTS_TYPE_USER)
-                    .params(params) // Measurements of the blood glucose type, associated to the user
-                    .pagination(0, LIMIT_PER_PAGE)
-                    .build();
-
-            historical.request(this, new CallbackHistorical<Measurement>() {
-                @Override
-                public void onBeforeSend() {
-                    toggleLoading(true); // Enable loading
-                    toggleNoDataMessage(false); // Disable message no data
-                }
-
-                @Override
-                public void onError(JSONObject result) {
-                    if (mAdapter.itemsIsEmpty()) {
-                        printMessage(getString(R.string.error_500));
-                        showMessage(R.string.error_500);
-                    } else loadDataLocal();
-                }
-
-                @Override
-                public void onResult(List<Measurement> result) {
-                    if (result != null && result.size() > 0) {
-                        mAdapter.addItems(result);
-                        updateUILastMeasurement(mAdapter.getFirstItem(), false);
-                    } else {
-                        toggleNoDataMessage(true); // Enable message no data
-                    }
-                }
-
-                @Override
-                public void onAfterSend() {
-                    toggleLoading(false); // Disable loading
-                }
-            });
+            DisposableManager.add(haniotNetRepository
+                    .getAllMeasurementsByType(patient.get_id(),
+                            MeasurementType.BLOOD_GLUCOSE, "-timestamp", null,
+                            null, page, LIMIT_PER_PAGE)
+                    .doOnSubscribe(disposable -> {
+                        Log.w(TAG, "loadData - doOnSubscribe");
+                        toggleLoading(true);
+                        toggleNoDataMessage(false);
+                    })
+                    .doAfterTerminate(() -> {
+                        Log.w(TAG, "loadData - doAfterTerminate");
+                        toggleLoading(false); // Disable loading
+                    })
+                    .subscribe(measurements -> {
+                                Log.w(TAG, "loadData - onResult()");
+                                if (measurements != null && measurements.size() > 0) {
+                                    mAdapter.addItems(measurements);
+                                    page++;
+                                    itShouldLoadMore = true;
+                                    updateUILastMeasurement(mAdapter.getFirstItem(), false);
+                                } else {
+                                    toggleLoading(false);
+                                    if (mAdapter.itemsIsEmpty())
+                                        toggleNoDataMessage(true); // Enable message no data
+                                    itShouldLoadMore = false;
+                                }
+                            }, error -> {
+                                Log.w(TAG, "loadData - onError()");
+                                if (mAdapter.itemsIsEmpty()) {
+                                    printMessage(getString(R.string.error_500));
+                                } else loadDataLocal();
+                            }
+                    )
+            );
         }
-    }
-
-    /**
-     * List more itemsList from the remote server.
-     */
-    private void loadMoreData() {
-        if (!ConnectionUtils.internetIsEnabled(this))
-            return;
-
-        Historical historical = new Historical.Query()
-                .type(HistoricalType.MEASUREMENTS_TYPE_USER)
-                .params(params) // Measurements of the blood glucose type, associated to the user
-                .pagination(mAdapter.getItemCount(), LIMIT_PER_PAGE)
-                .build();
-
-        historical.request(this, new CallbackHistorical<Measurement>() {
-            @Override
-            public void onBeforeSend() {
-                toggleLoading(true); // Enable loading
-            }
-
-            @Override
-            public void onError(JSONObject result) {
-                printMessage(getString(R.string.error_500));
-                showMessage(R.string.error_500);
-            }
-
-            @Override
-            public void onResult(List<Measurement> result) {
-                if (result != null && result.size() > 0) mAdapter.addItems(result);
-                else printMessage(getString(R.string.no_more_data));
-            }
-
-            @Override
-            public void onAfterSend() {
-                toggleLoading(false); // Disable loading
-            }
-        });
     }
 
     /**
@@ -416,13 +381,7 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
      */
     private void toggleLoading(boolean enabled) {
         runOnUiThread(() -> {
-            if (!enabled) {
-                mDataSwipeRefresh.setRefreshing(false);
-                itShouldLoadMore = true;
-            } else {
-                mDataSwipeRefresh.setRefreshing(true);
-                itShouldLoadMore = false;
-            }
+            mDataSwipeRefresh.setRefreshing(enabled);
         });
     }
 
@@ -463,8 +422,8 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
             if (progressDialog != null && !isConnected && isGetAllMonitor) {
                 isGetAllMonitor = false;
                 progressDialog.dismiss();
-                synchronizeWithServer();
-                loadData();
+                loadData(true);
+//                synchronizeWithServer();
             }
             mCircularProgressBar.setProgress(0);
             mCircularProgressBar.setProgressWithAnimation(100); // Default animate duration = 1500ms
@@ -479,51 +438,21 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
         });
     }
 
-    /**
-     * Displays message.
-     *
-     * @param str @StringRes message.
-     */
-    private void showMessage(@StringRes int str) {
-        if (str != -1) {
-            String message = getString(str);
-
-            messageError.setText(message);
-            runOnUiThread(() -> {
-                boxMessage.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_in));
-                boxMessage.setVisibility(View.VISIBLE);
-            });
-        } else {
-            runOnUiThread(() -> {
-                boxMessage.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_out));
-                boxMessage.setVisibility(View.INVISIBLE);
-            });
-        }
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
-        boxMessage.setVisibility(View.GONE);
+        loadData(true);
 
         if (glucoseManager.getConnectionState() == BluetoothProfile.STATE_DISCONNECTED && mDevice != null)
             glucoseManager.connectDevice(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(mDevice.getAddress()));
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
+        DisposableManager.dispose();
         unregisterReceiver(mReceiver);
+        glucoseManager.close();
 
     }
 
@@ -541,23 +470,22 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-
         return true;
     }
 
-    /**
-     * Recover text from context value meal.
-     *
-     * @param contextMeasurements
-     * @return String
-     */
-    public String mealToString(List<ContextMeasurement> contextMeasurements) {
-        for (ContextMeasurement c : contextMeasurements) {
-            if (c.getTypeId() == ContextMeasurementType.GLUCOSE_MEAL)
-                return ContextMeasurementValueType.getString(this, c.getValueId());
-        }
-        return "";
-    }
+//    /**
+//     * Recover text from context value meal.
+//     *
+//     * @param contextMeasurements
+//     * @return String
+//     */
+//    public String mealToString(List<ContextMeasurement> contextMeasurements) {
+//        for (ContextMeasurement c : contextMeasurements) {
+//            if (c.getTypeId() == ContextMeasurementType.GLUCOSE_MEAL)
+//                return ContextMeasurementValueType.getString(this, c.getValueId());
+//        }
+//        return "";
+//    }
 
     /**
      * Convert value glucose for String.
@@ -581,7 +509,6 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
         } else {
             value_formated = String.format("%02d", (int) value);
         }
-
         return value_formated;
     }
 
@@ -596,18 +523,37 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
         runOnUiThread(() -> {
             mBloodGlucoseTextView.setText(valueToString(measurement));
             mUnitBloodGlucoseTextView.setText(measurement.getUnit());
-            mDateLastMeasurement.setText(DateUtils.abbreviatedDate(
-                    getApplicationContext(), measurement.getRegistrationDate()));
 
+            String timeStamp = measurement.getTimestamp();
+
+            if (DateUtils.isToday(DateUtils.convertDateTime(timeStamp).getTime())) {
+                mDateLastMeasurement.setText(R.string.today_text);
+            } else {
+                mDateLastMeasurement.setText(DateUtils.convertDateTimeUTCToLocale(
+                        timeStamp, "MMMM dd, EEE"
+                ));
+            }
             if (applyAnimation) mBloodGlucoseTextView.startAnimation(animation);
         });
     }
 
     /**
      * Performs routine for data synchronization with server.
+     *
+     * @param measurement Measurement to save in server
      */
-    private void synchronizeWithServer() {
-        SynchronizationServer.getInstance(this).run();
+    private void synchronizeWithServer(Measurement measurement) {
+        DisposableManager.add(haniotNetRepository
+                .saveMeasurement(measurement)
+                .doAfterSuccess(measurement1 -> {
+                    printMessage(getString(R.string.measurement_save));
+                    loadData(true);
+                })
+                .subscribe(measurement1 -> {
+                }, error -> {
+                    Log.w(TAG, error.getMessage());
+                    printMessage(getString(R.string.error_500));
+                }));
     }
 
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -619,10 +565,9 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
                 final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE,
                         BluetoothAdapter.ERROR);
                 if (state == BluetoothAdapter.STATE_OFF) {
-                    showMessage(R.string.bluetooth_disabled);
-
+                    printMessage(getString(R.string.bluetooth_disabled));
                 } else if (state == BluetoothAdapter.STATE_ON) {
-                    showMessage(-1);
+//                    showMessage(-1);
                 }
             }
         }
@@ -632,15 +577,12 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.chart_floating_button:
-                startActivity(new Intent(getApplicationContext(), GlucoseChartActivity.class));
+//                startActivity(new Intent(getApplicationContext(), GlucoseChartActivity.class));
                 break;
             case R.id.add_floating_button:
                 Intent it = new Intent(getApplicationContext(), AddMeasurementActivity.class);
-                it.putExtra(getResources().getString(R.string.measurementType),
-                        ItemGridType.BLOOD_GLUCOSE);
+                appPreferencesHelper.saveInt(getResources().getString(R.string.measurementType), ItemGridType.BLOOD_GLUCOSE);
                 startActivity(it);
-                break;
-            default:
                 break;
         }
     }

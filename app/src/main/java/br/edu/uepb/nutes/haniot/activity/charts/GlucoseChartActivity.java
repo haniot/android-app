@@ -54,8 +54,15 @@ public class GlucoseChartActivity extends BaseChartActivity {
         return R.layout.activity_line_chart;
     }
 
+//    @Override
+//    public int getTypeMeasurement() {
+//        return 0;
+////        return MeasurementType.BLOOD_GLUCOSE;
+//    }
+
+
     @Override
-    public int getTypeMeasurement() {
+    public String getTypeMeasurement() {
         return MeasurementType.BLOOD_GLUCOSE;
     }
 

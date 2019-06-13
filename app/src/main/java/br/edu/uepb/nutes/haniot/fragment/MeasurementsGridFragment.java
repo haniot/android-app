@@ -1,6 +1,8 @@
 package br.edu.uepb.nutes.haniot.fragment;
 
+import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.le.ScanResult;
 import android.content.Context;
@@ -8,6 +10,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -26,38 +29,54 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
+
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
-import androidx.annotation.RequiresApi;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.AddMeasurementActivity;
 import br.edu.uepb.nutes.haniot.activity.MainActivity;
+import br.edu.uepb.nutes.haniot.activity.NutritionalEvaluationActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.SettingsActivity;
 import br.edu.uepb.nutes.haniot.adapter.MeasurementMonitorAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
+import br.edu.uepb.nutes.haniot.data.model.BodyFat;
 import br.edu.uepb.nutes.haniot.data.model.Device;
 import br.edu.uepb.nutes.haniot.data.model.DeviceType;
+import br.edu.uepb.nutes.haniot.data.model.HeartRateItem;
 import br.edu.uepb.nutes.haniot.data.model.ItemGridType;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.MeasurementMonitor;
+import br.edu.uepb.nutes.haniot.data.model.MeasurementType;
+import br.edu.uepb.nutes.haniot.data.model.Patient;
+import br.edu.uepb.nutes.haniot.data.model.PilotStudy;
 import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.model.dao.DeviceDAO;
+import br.edu.uepb.nutes.haniot.data.model.dao.MeasurementDAO;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
+import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
+import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.haniot.devices.GlucoseActivity;
 import br.edu.uepb.nutes.haniot.devices.HeartRateActivity;
 import br.edu.uepb.nutes.haniot.devices.ScaleActivity;
-import br.edu.uepb.nutes.haniot.devices.hdp.BloodPressureHDPActivity;
+import br.edu.uepb.nutes.haniot.devices.ThermometerActivity;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.BloodPressureManager;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.GlucoseManager;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.HeartRateManager;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.ScaleManager;
+import br.edu.uepb.nutes.haniot.service.ManagerDevices.ThermometerManager;
+import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.BloodGlucoseDataCallback;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.BloodPressureDataCallback;
-import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.GlucoseDataCallback;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.HeartRateDataCallback;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.ScaleDataCallback;
+import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.TemperatureDataCallback;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import br.edu.uepb.nutes.simpleblescanner.SimpleBleScanner;
 import br.edu.uepb.nutes.simpleblescanner.SimpleScannerCallback;
@@ -70,8 +89,9 @@ import butterknife.ButterKnife;
  * @author Copyright (c) 2018, NUTES/UEPB
  */
 public class MeasurementsGridFragment extends Fragment implements OnRecyclerViewListener<MeasurementMonitor> {
-    private final String TAG = "ManagerDevices";
+    private final String LOG_TAG = "ManagerDevices";
 
+    private ThermometerManager thermometerManager;
     private ScaleManager scaleManager;
     private HeartRateManager heartRateManager;
     private GlucoseManager glucoseManager;
@@ -88,6 +108,13 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
     private List<Device> devices;
     private SimpleBleScanner.Builder builder;
     private SharedPreferences prefSettings;
+    private DecimalFormat decimalFormat;
+    private HaniotNetRepository haniotRepository;
+    private MeasurementDAO measurementDAO;
+    private PilotStudy pilotStudy;
+    private static List<HeartRateItem> heartRateItems;
+    private Patient patient;
+
 
     @BindView(R.id.gridMeasurement)
     RecyclerView gridMeasurement;
@@ -107,6 +134,14 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        haniotRepository = HaniotNetRepository.getInstance(mContext);
+        measurementDAO = MeasurementDAO.getInstance(mContext);
+
+    }
+
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_measurements_dashboard, container, false);
@@ -117,10 +152,26 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
         return view;
     }
 
+    //TODO Próxima sprint
+    private void downloadLastMeasurements() {
+        DisposableManager.add(haniotRepository
+                .getAllMeasurementsByType(patient.get_id(), "blood_glucose", "-timestamp", null, null, 1, 1)
+                .subscribe(measurements -> {
+                    if (!measurements.isEmpty()) {
+                        Log.w(LOG_TAG, Arrays.toString(measurements.toArray()));
+                        Measurement measurement = measurements.get(0);
+                        updateMeasurement(String.valueOf(measurement.getValue()), measurement.getUnit(), measurement.getTimestamp(), ItemGridType.BLOOD_GLUCOSE);
+                    }
+                }, throwable -> {
+                    Log.w(LOG_TAG, throwable.getMessage());
+                }));
+
+    }
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        refreshManagerBLE();
+//        refreshManagerBLE();
     }
 
     @Override
@@ -138,12 +189,15 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
     @Override
     public void onResume() {
         super.onResume();
+        refreshRegisteredDevices();
         refreshManagerBLE();
+        //downloadLastMeasurements();
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        thermometerManager = null;
         scaleManager = null;
         bloodPressureManager = null;
         glucoseManager = null;
@@ -159,9 +213,8 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
                 && BluetoothAdapter.getDefaultAdapter().isEnabled()
                 && ((MainActivity) getActivity()).hasLocationPermissions()) {
             simpleBleScanner.startScan(simpleScannerCallback);
-        } else {
-            if (isAdded() && getActivity() != null)
-                communicator.showMessage(R.string.bluetooth_disabled);
+        } else if (isAdded() && getActivity() != null) {
+            communicator.showMessage(R.string.bluetooth_disabled);
         }
     }
 
@@ -173,34 +226,40 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
         @Override
         public void onScanResult(int i, ScanResult scanResult) {
             String address = scanResult.getDevice().getAddress();
-            Device device = deviceDAO.get(scanResult.getDevice().getAddress(), user.get_id());
+            Device device = getDeviceRegisteredFromAddress(address);
             BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
             if (device != null) {
-                switch (device.getTypeId()) {
+                switch (device.getType()) {
+                    case DeviceType.THERMOMETER:
+                        if (thermometerManager != null &&
+                                thermometerManager.getConnectionState() != BluetoothGatt.STATE_CONNECTED)
+                            thermometerManager.connectDevice(bluetoothAdapter.getRemoteDevice(address));
+                        Log.i(LOG_TAG, "Connecting Thermometer...");
+                        break;
                     case DeviceType.BLOOD_PRESSURE:
                         if (bloodPressureManager != null &&
                                 bloodPressureManager.getConnectionState() != BluetoothGatt.STATE_CONNECTED)
                             bloodPressureManager.connectDevice(bluetoothAdapter.getRemoteDevice(address));
-                        Log.i(TAG, "Connecting Blood Pressure...");
+                        Log.i(LOG_TAG, "Connecting Blood Pressure...");
                         break;
                     case DeviceType.GLUCOMETER:
                         if (glucoseManager != null &&
                                 glucoseManager.getConnectionState() != BluetoothGatt.STATE_CONNECTED)
                             glucoseManager.connectDevice(bluetoothAdapter.getRemoteDevice(address));
-                        Log.i(TAG, "Connecting Glucometer...");
+                        Log.i(LOG_TAG, "Connecting Glucometer...");
                         break;
                     case DeviceType.BODY_COMPOSITION:
                         if (scaleManager != null &&
                                 scaleManager.getConnectionState() != BluetoothGatt.STATE_CONNECTED) {
                             scaleManager.connectDevice(bluetoothAdapter.getRemoteDevice(address));
-                            Log.i(TAG, "Connecting Scale...");
+                            Log.i(LOG_TAG, "Connecting Scale...");
                         }
                         break;
                     case DeviceType.HEART_RATE:
                         if (heartRateManager != null &&
                                 heartRateManager.getConnectionState() != BluetoothGatt.STATE_CONNECTED)
                             heartRateManager.connectDevice(bluetoothAdapter.getRemoteDevice(address));
-                        Log.i(TAG, "Connecting Heart Rate...");
+                        Log.i(LOG_TAG, "Connecting Heart Rate...");
                         break;
                     default:
                         break;
@@ -224,29 +283,82 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
         }
     };
 
+    TemperatureDataCallback temperatureDataCallback = new TemperatureDataCallback() {
+        @Override
+        public void onConnected(@androidx.annotation.NonNull BluetoothDevice device) {
+            Log.i(LOG_TAG, "Connected on Thermometer");
+            getMeasurementMonitor(ItemGridType.TEMPERATURE).setStatus(MeasurementMonitor.CONNECTED);
+            mAdapter.notifyDataSetChanged();
+        }
+
+        @Override
+        public void onDisconnected(@androidx.annotation.NonNull BluetoothDevice device) {
+            Log.i(LOG_TAG, "Disconnected on Thermometer");
+            getMeasurementMonitor(ItemGridType.TEMPERATURE).setStatus(MeasurementMonitor.DISCONNECTED);
+            mAdapter.notifyDataSetChanged();
+        }
+
+        @Override
+        public void onMeasurementReceived(@NonNull BluetoothDevice device, double temp,
+                                          String unit, String timestamp) {
+            Log.i(LOG_TAG, "Receiver measurement of Thermometer");
+            String result = decimalFormat.format(temp);
+            updateMeasurement(result, unit, timestamp, ItemGridType.TEMPERATURE);
+            if (temp == 0) return;
+            Measurement measurement = new Measurement();
+            measurement.setValue(temp);
+            measurement.setTimestamp(DateUtils.getCurrentDateTimeUTC());
+            measurement.setUserId(patient.get_id());
+            measurement.setUnit(unit);
+            measurement.setType(MeasurementType.BODY_TEMPERATURE);
+//            Device device1 = getDeviceRegistered(DeviceType.THERMOMETER);
+//            if (device1 != null) measurement.setDeviceId(device1.get_id());
+            sendMeasurementToServer(measurement);
+        }
+    };
+
     /**
      * Data callback of Blood Pressure.
      */
     BloodPressureDataCallback bloodPressureDataCallback = new BloodPressureDataCallback() {
         @Override
-        public void onConnected() {
-            Log.i(TAG, "Connected on BloodPressure");
+        public void onConnected(@androidx.annotation.NonNull BluetoothDevice device) {
+            Log.i(LOG_TAG, "Connected on BloodPressure");
             getMeasurementMonitor(ItemGridType.BLOOD_PRESSURE).setStatus(MeasurementMonitor.CONNECTED);
             mAdapter.notifyDataSetChanged();
         }
 
         @Override
-        public void onDisconnected() {
-            Log.i(TAG, "Disconnected on Blood Pressure");
+        public void onDisconnected(@androidx.annotation.NonNull BluetoothDevice device) {
+            Log.i(LOG_TAG, "Disconnected on Blood Pressure");
             getMeasurementMonitor(ItemGridType.BLOOD_PRESSURE).setStatus(MeasurementMonitor.DISCONNECTED);
             mAdapter.notifyDataSetChanged();
         }
 
         @Override
-        public void onMeasurementReceived(Measurement measurementBloodPressure) {
-            Log.i(TAG, "Receiver measurement of Blood Pressure");
-            updateMeasurement(measurementBloodPressure, ItemGridType.BLOOD_PRESSURE);
-            mAdapter.notifyDataSetChanged();
+        public void onMeasurementReceived(@NonNull BluetoothDevice device,
+                                          int systolic, int diastolic, int pulse,
+                                          String unit, String timestamp) {
+            Log.i(LOG_TAG, "Receiver measurement of Blood Pressure");
+            String result = String.valueOf(systolic).concat("/").concat(String.valueOf(diastolic));
+            updateMeasurement(result, unit, timestamp, ItemGridType.BLOOD_PRESSURE);
+
+            if (systolic == 0 || diastolic == 0) return;
+
+            Measurement measurement = new Measurement();
+            measurement.setDiastolic(diastolic);
+            measurement.setSystolic(systolic);
+            measurement.setTimestamp(timestamp);
+
+            if (pulse > 0) measurement.setPulse(pulse);
+
+            measurement.setUserId(patient.get_id());
+            measurement.setUnit(getString(R.string.unit_glucose_mg_dL));
+
+//            Device device1 = getDeviceRegistered(DeviceType.BLOOD_PRESSURE);
+//            if (device1 != null) measurement.setDeviceId(device1.get_id());
+
+            sendMeasurementToServer(measurement);
         }
     };
 
@@ -255,59 +367,107 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
      */
     ScaleDataCallback scaleDataCallback = new ScaleDataCallback() {
         @Override
-        public void onConnected() {
-            Log.i(TAG, "Connected on Scale");
-            getMeasurementMonitor(ItemGridType.WEIGHT).setStatus(MeasurementMonitor.CONNECTED);
+        public void onConnected(@androidx.annotation.NonNull BluetoothDevice device) {
+            Log.i(LOG_TAG, "Connected on Scale");
+            Objects.requireNonNull(getMeasurementMonitor(ItemGridType.WEIGHT))
+                    .setStatus(MeasurementMonitor.CONNECTED);
             mAdapter.notifyDataSetChanged();
         }
 
         @Override
-        public void onDisconnected() {
-            Log.i(TAG, "Disconnected on Scale");
-            getMeasurementMonitor(ItemGridType.WEIGHT).setStatus(MeasurementMonitor.DISCONNECTED);
+        public void onDisconnected(@androidx.annotation.NonNull BluetoothDevice device) {
+            Log.i(LOG_TAG, "Disconnected on Scale");
+            Objects.requireNonNull(getMeasurementMonitor(ItemGridType.WEIGHT))
+                    .setStatus(MeasurementMonitor.DISCONNECTED);
             mAdapter.notifyDataSetChanged();
         }
 
         @Override
-        public void onMeasurementReceived(Measurement measurementScale) {
-            Log.i(TAG, "Receiver measurement of Scale");
-            updateMeasurement(measurementScale, ItemGridType.WEIGHT);
-            communicator.notifyNewMeasurement(String.format("%.2f", measurementScale.getValue()));
+        public void onMeasurementReceiving(double bodyMass, String bodyMassUnit) {
+            Log.i(LOG_TAG, "Receiving measurement of Scale");
+            String result = decimalFormat.format(bodyMass);
+            result = result.equals(".0") ? "00.0" : result;
+            Objects.requireNonNull(getMeasurementMonitor(ItemGridType.WEIGHT))
+                    .setStatus(MeasurementMonitor.RECEIVING);
+            updateMeasurement(result, bodyMassUnit, DateUtils.getCurrentDateTimeUTC(),
+                    ItemGridType.WEIGHT);
+            communicator.notifyNewMeasurement(result);
         }
 
         @Override
-        public void onMeasurementReceiving(String bodyMassMeasurement, long timeStamp, String bodyMassUnit) {
-            Log.i(TAG, "Receiving measurement of Scale");
-            getMeasurementMonitor(ItemGridType.WEIGHT).setStatus(MeasurementMonitor.RECEIVING);
-            mAdapter.notifyDataSetChanged();
-            communicator.notifyNewMeasurement(bodyMassMeasurement);
-            updateMeasurement(bodyMassMeasurement, timeStamp, ItemGridType.WEIGHT);
+        public void onMeasurementReceived(@NonNull BluetoothDevice device,
+                                          double bodyMass, String bodyMassUnit,
+                                          double bodyFat, String timestamp) {
+            Log.i(LOG_TAG, "Receiver measurement of Scale");
+
+            String result = decimalFormat.format(bodyMass);
+            result = result.equals(".0") ? "00.0" : result;
+            updateMeasurement(result, bodyMassUnit, timestamp, ItemGridType.WEIGHT);
+            communicator.notifyNewMeasurement(result);
+
+            if (bodyMass == 0) return;
+
+            Log.i(LOG_TAG, "bodyMass > 0");
+            Measurement measurement = new Measurement();
+            measurement.setValue(bodyMass);
+
+            if (bodyFat > 0) {
+                List<BodyFat> bodyFats = new ArrayList<>();
+                BodyFat bodyFat1 = new BodyFat();
+                bodyFat1.setValue(bodyFat);
+                bodyFat1.setTimestamp(timestamp);
+                measurement.setBodyFat(bodyFats);
+            }
+            measurement.setType(MeasurementType.BODY_MASS);
+            measurement.setTimestamp(timestamp);
+            measurement.setUserId(patient.get_id());
+            measurement.setUnit((bodyMassUnit != null && bodyMassUnit.equals("")) ? "kg" : bodyMassUnit);
+
+//            Device device1 = getDeviceRegistered(DeviceType.BODY_COMPOSITION);
+//            if (device1 != null) measurement.setDeviceId(device1.get_id());
+
+            sendMeasurementToServer(measurement);
         }
     };
 
     /**
      * Data callback of Glucose.
      */
-    GlucoseDataCallback glucoseDataCallback = new GlucoseDataCallback() {
+    BloodGlucoseDataCallback glucoseDataCallback = new BloodGlucoseDataCallback() {
         @Override
-        public void onConnected() {
-            Log.i(TAG, "Connected on Glucose");
+        public void onConnected(@androidx.annotation.NonNull BluetoothDevice device) {
+            Log.i(LOG_TAG, "Connected on Glucose");
             getMeasurementMonitor(ItemGridType.BLOOD_GLUCOSE).setStatus(MeasurementMonitor.CONNECTED);
             mAdapter.notifyDataSetChanged();
         }
 
         @Override
-        public void onDisconnected() {
-            Log.i(TAG, "Disconnected on Glucose");
+        public void onDisconnected(@androidx.annotation.NonNull BluetoothDevice device) {
+            Log.i(LOG_TAG, "Disconnected on Glucose");
             getMeasurementMonitor(ItemGridType.BLOOD_GLUCOSE).setStatus(MeasurementMonitor.DISCONNECTED);
             mAdapter.notifyDataSetChanged();
         }
 
         @Override
-        public void onMeasurementReceived(Measurement measurementGlucose) {
-            Log.i(TAG, "Receiver measurement of Glucose");
-            updateMeasurement(measurementGlucose, ItemGridType.BLOOD_GLUCOSE);
-            mAdapter.notifyDataSetChanged();
+        public void onMeasurementReceived(@NonNull BluetoothDevice device, int glucose,
+                                          String meal, String timestamp) {
+            Log.i(LOG_TAG, "Receiver measurement of Glucose");
+            updateMeasurement(String.valueOf(glucose), meal, timestamp, ItemGridType.BLOOD_GLUCOSE);
+
+            if (glucose == 0) return;
+
+            Measurement measurement = new Measurement();
+            measurement.setValue(glucose);
+            measurement.setMeal(meal);
+            measurement.setTimestamp(timestamp);
+            measurement.setType(MeasurementType.BLOOD_GLUCOSE);
+            measurement.setUserId(patient.get_id());
+            measurement.setUnit(getString(R.string.unit_glucose_mg_dL));
+
+//            Device device1 = getDeviceRegistered(DeviceType.GLUCOMETER);
+//            if (device1 != null) measurement.setDeviceId(device1.get_id());
+
+            sendMeasurementToServer(measurement);
         }
     };
 
@@ -316,72 +476,158 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
      */
     HeartRateDataCallback heartRateDataCallback = new HeartRateDataCallback() {
         @Override
-        public void onConnected() {
-            Log.i(TAG, "Connected on Heart Rate");
+        public void onConnected(@androidx.annotation.NonNull BluetoothDevice device) {
+            Log.i(LOG_TAG, "Connected on Heart Rate");
             getMeasurementMonitor(ItemGridType.HEART_RATE).setStatus(MeasurementMonitor.CONNECTED);
             mAdapter.notifyDataSetChanged();
         }
 
         @Override
-        public void onDisconnected() {
-            Log.i(TAG, "Disconnected on Heart Rate");
+        public void onDisconnected(@androidx.annotation.NonNull BluetoothDevice device) {
+            Log.i(LOG_TAG, "Disconnected on Heart Rate");
             getMeasurementMonitor(ItemGridType.HEART_RATE).setStatus(MeasurementMonitor.DISCONNECTED);
             mAdapter.notifyDataSetChanged();
         }
 
         @Override
-        public void onMeasurementReceived(Measurement measurementHeartRate) {
-            Log.i(TAG, "Receiver measurement of Heart Rate");
+        public void onMeasurementReceived(@NonNull BluetoothDevice device, int heartRate, String timestamp) {
+            Log.i(LOG_TAG, "Receiver measurement of Heart Rate");
             getMeasurementMonitor(ItemGridType.HEART_RATE).setStatus(MeasurementMonitor.CONNECTED);
-            updateMeasurement(measurementHeartRate, ItemGridType.HEART_RATE);
-            mAdapter.notifyDataSetChanged();
+            updateMeasurement(String.valueOf(heartRate), "bpm", timestamp, ItemGridType.HEART_RATE);
+
+            if (heartRate == 0) return;
+
+            HeartRateItem heartRateItem = new HeartRateItem();
+            heartRateItem.setValue(heartRate);
+            heartRateItem.setTimestamp(timestamp);
+            heartRateItems.add(heartRateItem);
         }
     };
 
-    /**
-     * Update measurement not finalized.
-     *
-     * @param value     {@link String}
-     * @param timeStamp long
-     * @param type      int
-     */
-    private void updateMeasurement(String value, long timeStamp, int type) {
-        for (MeasurementMonitor measurementMonitor : measurementMonitors) {
-            if (measurementMonitor.getType() == type) {
-                measurementMonitor.setMeasurementValue(value);
-                measurementMonitor.setTime(DateUtils.formatDate(timeStamp, getString(R.string.time_format_simple)));
-                mAdapter.notifyDataSetChanged();
-                break;
-            }
-        }
+    private void sendMeasurementToServer(Measurement measurement) {
+        Log.i(LOG_TAG, "Saving " + measurement.toJson());
+        DisposableManager.add(haniotRepository
+                .saveMeasurement(measurement)
+                .doAfterSuccess(measurement1 -> {
+                    Log.i(LOG_TAG, "Saved " + measurement1.toJson());
+                })
+                .subscribe(measurement1 -> {
+                    showToast(getString(R.string.measurement_save));
+                }, this::errorHandler));
     }
 
     /**
-     * Update measurement finalized.
-     *
-     * @param measurement {@link Measurement}
-     * @param type        int
+     * Save collected list of HeartRate measurements.
      */
-    private void updateMeasurement(Measurement measurement, int type) {
-        for (MeasurementMonitor measurementMonitor : measurementMonitors) {
-            if (measurementMonitor.getType() == type) {
-                measurementMonitor.setMeasurementValue(String.format("%.2f", measurement.getValue()));
-                Log.i(TAG, "Value measurement: " + String.format("%.2f", measurement.getValue()));
-                measurementMonitor.setTime(DateUtils.formatDate(measurement.getRegistrationDate(), getString(R.string.time_format_simple)));
-                mAdapter.notifyDataSetChanged();
-                break;
-            }
+    public void saveHeartRateCollection() {
+
+        if (!prefSettings.getBoolean(getResources().getString(R.string.key_heart_rate), false)) {
+            Intent intent = new Intent(getContext(), NutritionalEvaluationActivity.class);
+            intent.putExtra("type", "nutrition");
+            startActivity(intent);
+        }
+
+        ProgressDialog dialog = ProgressDialog.show(getContext(), getString(R.string.title_synchronize),
+                getString(R.string.loading_synchronize), true);
+        dialog.show();
+
+        Measurement measurement = new Measurement();
+        measurement.setUserId(patient.get_id());
+        measurement.setUnit("bpm");
+        measurement.setType(MeasurementType.HEART_RATE);
+        measurement.setDataset(heartRateItems);
+
+//        Device device1 = getDeviceRegistered(DeviceType.HEART_RATE);
+//        if (device1 != null) measurement.setDeviceId(device1.get_id());
+
+        List<Measurement> measurements = measurementDAO.list(MeasurementType.HEART_RATE, patient.get_id(), 100, 1000);
+        if (measurements == null) measurements = new ArrayList<>();
+        measurements.add(measurement);
+
+        DisposableManager.add(haniotRepository
+                .saveMeasurement(measurements)
+                .doAfterTerminate(() -> {
+                    dialog.cancel();
+                    Intent intent = new Intent(getContext(), NutritionalEvaluationActivity.class);
+                    intent.putExtra("type", "nutrition");
+                    startActivity(intent);
+                })
+                .subscribe(measurement1 -> {
+                    Log.w(LOG_TAG, measurement1.toString());
+                    heartRateItems.clear();
+                    measurementDAO.removeAll(patient.get_id());
+                }, throwable -> {
+                    Log.w(LOG_TAG, throwable.getMessage());
+                    measurementDAO.save(measurement);
+                }));
+    }
+
+    /**
+     * Manipulates the error and displays message
+     * according to the type of error.
+     *
+     * @param e {@link Throwable}
+     */
+    private void errorHandler(Throwable e) {
+        showToast(getContext()
+                .getResources()
+                .getString(R.string.error_500));
+    }
+
+    /**
+     * Show message in Toast.
+     *
+     * @param menssage
+     */
+    private void showToast(final String menssage) {
+        if (getActivity() == null) return;
+        getActivity().runOnUiThread(() -> {
+            Toast toast = Toast.makeText(getContext(), menssage, Toast.LENGTH_LONG);
+            toast.show();
+        });
+    }
+
+
+    /**
+     * Update measurement in grid.
+     *
+     * @param value     Measurement value
+     * @param unit      Measurement unit
+     * @param timestamp Datetime of collection.
+     * @param type      Type measurement in grid
+     */
+    private void updateMeasurement(String value, String unit, String timestamp, int type) {
+        if (isAdded()) {
+            new Handler().post(() -> {
+                for (MeasurementMonitor measurementMonitor : measurementMonitors) {
+                    if (measurementMonitor.getType() == type) {
+                        measurementMonitor.setMeasurementValue(value);
+                        measurementMonitor.setTime(DateUtils.convertDateTimeUTCToLocale(timestamp, getString(R.string.time_format_simple)));
+                        mAdapter.notifyDataSetChanged();
+                        return;
+                    }
+                }
+            });
         }
     }
 
     /**
      * Get device registered from type.
      *
-     * @param deviceType int
+     * @param type {@link DeviceType}
      * @return Device
      */
-    private Device getDeviceRegistered(int deviceType) {
-        for (Device device : devices) if (device.getTypeId() == deviceType) return device;
+    private Device getDeviceRegistered(String type) {
+
+        for (Device device1 : deviceDAO.list(user.get_id()))
+            if (device1.getType().equals(type)) return device1;
+        return null;
+    }
+
+    private Device getDeviceRegisteredFromAddress(String address) {
+
+        for (Device device1 : deviceDAO.list(user.get_id()))
+            if (device1.getAddress().equals(address)) return device1;
         return null;
     }
 
@@ -391,9 +637,16 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
      * @param type
      */
     private void setupMonitorItem(int type) {
-        int deviceType = -1;
+        String deviceType = "";
         MeasurementMonitor measurementMonitor = null;
-        if (type == R.string.key_weight) {
+        if (type == R.string.key_temperature) {
+            deviceType = DeviceType.THERMOMETER;
+            measurementMonitor = new MeasurementMonitor(
+                    mContext, R.drawable.ic_action_thermometer,
+                    getResources().getString(R.string.temperature),
+                    "", ItemGridType.TEMPERATURE,
+                    getString(R.string.unit_celsius));
+        } else if (type == R.string.key_weight) {
             deviceType = DeviceType.BODY_COMPOSITION;
             measurementMonitor = new MeasurementMonitor(
                     mContext, R.drawable.xweight,
@@ -436,11 +689,48 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
         }
     }
 
+    private void refreshRegisteredDevices() {
+        for (MeasurementMonitor measurementMonitor : measurementMonitors) {
+            String deviceType = "";
+            switch (measurementMonitor.getType()) {
+                case ItemGridType.TEMPERATURE:
+                    deviceType = DeviceType.THERMOMETER;
+                    break;
+                case ItemGridType.BLOOD_GLUCOSE:
+                    deviceType = DeviceType.GLUCOMETER;
+                    break;
+                case ItemGridType.BLOOD_PRESSURE:
+                    deviceType = DeviceType.BLOOD_PRESSURE;
+                    break;
+                case ItemGridType.HEART_RATE:
+                    deviceType = DeviceType.HEART_RATE;
+                    break;
+                case ItemGridType.WEIGHT:
+                    deviceType = DeviceType.BODY_COMPOSITION;
+                    break;
+            }
+            if (getDeviceRegistered(deviceType) != null)
+                measurementMonitor.setStatus(MeasurementMonitor.DISCONNECTED);
+            else measurementMonitor.setStatus(MeasurementMonitor.NO_REGISTERED);
+        }
+
+        mAdapter.notifyDataSetChanged();
+    }
+
     /**
      * Refresh BLE Manager of devices for monitoring.
      */
     public void refreshManagerBLE() {
         measurementMonitors.clear();
+        if (prefSettings.getBoolean(getResources().getString(R.string.key_temperature), false)) {
+            if (thermometerManager == null) {
+                thermometerManager = new ThermometerManager(mContext);
+                thermometerManager.setSimpleCallback(temperatureDataCallback);
+                Device device = getDeviceRegistered(DeviceType.THERMOMETER);
+                if (device != null) builder.addFilterAddress(device.getAddress());
+            }
+            setupMonitorItem(R.string.key_temperature);
+        }
         if (prefSettings.getBoolean(getResources().getString(R.string.key_weight), false)) {
             if (scaleManager == null) {
                 scaleManager = new ScaleManager(mContext);
@@ -479,6 +769,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
         }
         if (prefSettings.getBoolean(getResources().getString(R.string.key_anthropometric), false))
             setupMonitorItem(R.string.key_anthropometric);
+
         builder.addScanPeriod(Integer.MAX_VALUE);
         refreshListMonitor();
         simpleBleScanner = builder.build();
@@ -514,14 +805,22 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
      * Init basics components.
      */
     private void initComponents() {
+        decimalFormat = new DecimalFormat(getString(R.string.format_number2),
+                new DecimalFormatSymbols(Locale.US));
         prefSettings = PreferenceManager.getDefaultSharedPreferences(mContext);
         mAdapter = new MeasurementMonitorAdapter(mContext);
         measurementMonitors = new ArrayList<>();
         appPreferencesHelper = AppPreferencesHelper.getInstance(mContext);
         user = appPreferencesHelper.getUserLogged();
+        patient = appPreferencesHelper.getLastPatient();
         deviceDAO = DeviceDAO.getInstance(mContext);
+        Log.w("AAA", Arrays.toString(deviceDAO.list(user.get_id()).toArray()));
+
         devices = deviceDAO.list(user.get_id());
         builder = new SimpleBleScanner.Builder();
+        pilotStudy = appPreferencesHelper.getLastPilotStudy();
+        if (heartRateItems == null) heartRateItems = new ArrayList<>();
+
         editMonitor.setOnClickListener(editMonitorClick);
         addMonitor.setOnClickListener(editMonitorClick);
     }
@@ -561,10 +860,12 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
             }
 
             @Override
-            public int getMovementFlags(@NonNull RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+            public int getMovementFlags(@NonNull RecyclerView recyclerView,
+                                        RecyclerView.ViewHolder viewHolder) {
                 if (deviceTypeTag.equals("tablet")) {
                     return makeFlag(ItemTouchHelper.ACTION_STATE_DRAG,
-                            ItemTouchHelper.DOWN | ItemTouchHelper.UP | ItemTouchHelper.START | ItemTouchHelper.END);
+                            ItemTouchHelper.DOWN | ItemTouchHelper.UP |
+                                    ItemTouchHelper.START | ItemTouchHelper.END);
                 } else {
                     return makeFlag(ItemTouchHelper.ACTION_STATE_DRAG,
                             ItemTouchHelper.UP | ItemTouchHelper.DOWN);
@@ -599,8 +900,8 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
     /**
      * Get Measurement Monitor item.
      *
-     * @param type
-     * @return
+     * @param type int
+     * @return MeasurementMonitor
      */
     private MeasurementMonitor getMeasurementMonitor(int type) {
         for (MeasurementMonitor measurementMonitor : measurementMonitors) {
@@ -614,11 +915,14 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
     /**
      * On click item of measurement monitor list.
      *
-     * @param item
+     * @param item {@link MeasurementMonitor}
      */
     @Override
     public void onItemClick(MeasurementMonitor item) {
         switch (item.getType()) {
+            case ItemGridType.TEMPERATURE:
+                startActivity(new Intent(mContext, ThermometerActivity.class));
+                break;
             case ItemGridType.BLOOD_GLUCOSE:
                 startActivity(new Intent(mContext, GlucoseActivity.class));
                 break;
@@ -629,7 +933,6 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
                 startActivity(new Intent(mContext, ScaleActivity.class));
                 break;
             case ItemGridType.BLOOD_PRESSURE:
-                startActivity(new Intent(mContext, BloodPressureHDPActivity.class));
                 break;
             default:
                 break;
@@ -638,7 +941,6 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
 
     @Override
     public void onLongItemClick(View v, MeasurementMonitor item) {
-        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -647,6 +949,12 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
         Intent it = new Intent(mContext, AddMeasurementActivity.class);
 
         switch (type) {
+            case ItemGridType.TEMPERATURE:
+                appPreferencesHelper
+                        .saveInt(getResources().getString(R.string.measurementType),
+                                ItemGridType.TEMPERATURE);
+                startActivity(it);
+                break;
             case ItemGridType.BLOOD_GLUCOSE:
                 appPreferencesHelper
                         .saveInt(getResources().getString(R.string.measurementType), ItemGridType.BLOOD_GLUCOSE);

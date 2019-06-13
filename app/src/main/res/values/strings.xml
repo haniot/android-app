@@ -28,10 +28,7 @@
     <string name="temperature">Temperatura</string>
     <string name="weight">Peso</string>
     <string name="body_weight_scale">Escala de peso corporal</string>
-    <string name="heart_rate">Frequência Cardíaca</string>
     <string name="glucose">Glicose</string>
-    <string name="blood_pressure">Pressão Arterial</string>
-    <string name="body_composition">Composição Corporal</string>
     <string name="smart_band">Pulseira Inteligente</string>
     <string name="most_recent_entries">Entradas mais recentes</string>
     <string name="body_fat_title">Gordura Corporal</string>
@@ -43,7 +40,7 @@
     <string name="welcome_app_functionalities_title">Aqui você pode:</string>
     <string name="welcome_app_functionalities">• Cadastrar/gerenciar seus pacientes;\n• Submeter questionários para seus pacientes responderem;\n• Realizar medições;\n• Consultar históricos e muito mais.</string>
     <string name="welcome_hp">Seja bem-vindo(a), %s</string>
-    <string name="welcome_hp_instructions">Para continuarmos você precisa selecionar o piloto que deseja relizar o estudo.</string>
+    <string name="welcome_hp_instructions">Para continuarmos você precisa selecionar o piloto que deseja realizar o estudo.</string>
     <string name="piloty_study_title">Estudo Piloto</string>
     <string name="piloty_study_sumary">Selecione o estudo piloto que você estar alocado.</string>
     <string name="piloty_study_desc">Selecione o piloto que deseja realizar o estudo. Você poderá a qualquer momento voltar aqui e mudar sua escolha.</string>
@@ -55,6 +52,7 @@
     <string name="active_title">Ativo</string>
     <string name="inactive_title">Inativo</string>
     <string name="empty_measurement">Nenhuma medição</string>
+    <string name="measurement_invalid">Insira uma medição válida</string>
     <string name="last_measurement">Última medição:</string>
 
     <!--FORMATS-->
@@ -73,6 +71,7 @@
     <string name="gender_male">Masculino</string>
     <string name="gender_female">Feminino</string>
     <string name="date_of_birth">Data de Nascimento</string>
+    <string name="phone_number">Número de Telefone</string>
     <string name="update_account">Atualizar Informações</string>
     <string name="update_success">Dados atualizados com sucesso!</string>
     <string name="change_password">Mudar senha</string>
@@ -214,10 +213,12 @@
 
     <!-- STRINGS FOR TABLET VERSION-->
     <string name="bluetooth_disabled">Nós precisamos do bluetooth para funcionar.\nClique aqui para iniciar</string>
+    <string name="wifi_disabled">Você está sem conexão com a internet. \nPrecisamos para sincronizar os seus dados!</string>
     <string name="dash_item_description">Botão de Medição</string>
     <string name="manage_patient">Gerenciar Pacientes</string>
     <string name="search">Pesquisar</string>
     <string name="unit_kilometer">KM</string>
+    <string name="key_temperature">key_temperature</string>
     <string name="key_weight">key_weight</string>
     <string name="key_blood_glucose">key_blood_glucose</string>
     <string name="key_blood_pressure">key_blood_pressure</string>
@@ -268,12 +269,14 @@
     <string name="remove_device">Tem certeza que deseja remover %s?\nUma vez removido, não será possível recuperar os dados desse dispositivo.</string>
     <string name="remove">Remover</string>
     <string name="start_scanner">Iniciar scanner</string>
+    <string name="start_search_device">Procurar dispositivo</string>
+    <string name="start_scanner_try">Tentar novamente</string>
     <string name="stop_scanner">Parar scanner</string>
-    <string name="device_not_found_try_again">Dispositivo não encontrado tente novamente</string>
+    <string name="device_not_found_try_again">Dispositivo não encontrado. Por favor, tente novamente!</string>
     <string name="no_devices_registered">Não há dispositivos cadastrados&#8230;</string>
     <string name="no_devices_available">Nenhum dispositivo disponível. Em breve a lista será atualizada&#8230;</string>
     <string name="device_registered_success">Dispositivo %s cadastrado com sucesso!</string>
-    <string name="connection">Conectando, segure o telefone perto do dispositivo</string>
+    <string name="connection">Matenha o dispositivo de saúde próximo ao telefone/tablet.</string>
     <string name="come_back">Voltar</string>
     <string name="attention">Atenção</string>
     s
@@ -339,14 +342,6 @@
     <string name="glucose_carbohydrate_brunch">Brunch</string>
 
     <string name="title_activity_manage_children">ManageChildrenActivity</string>
-
-    <!-- Strings related to Settings -->
-
-    <!-- Example General settings -->
-
-    <!-- Example settings for Data & Sync -->
-
-    <!-- Example settings for Notifications -->
 
     <string-array name="measurement_context_types_array">
         <item>Glucose Carbohydrate</item>
@@ -417,10 +412,19 @@
         <item>Smart Band</item>
     </string-array>
 
-    <!-- TokenExpirationService -->
+    <!-- MEASUREMENTS TYPES -->
+    <string name="thermometer">Termômetro</string>
+    <string name="glucometer">Glicosímetro</string>
+    <string name="body_composition">Balança</string>
+    <string name="blood_pressure">Pressão Sanguínea</string>
+    <string name="heart_rate">Frequência Cardíaca</string>
+    <string name="smartwatch">Smartwatch</string>
+    <string name="smartband">Smartband</string>
+    <!-- END MEASUREMENTS TYPES -->
 
-    <!-- Patient Quiz -->
+    <!-- Patient Quiz Nutrition -->
     <string name="message_info_patient">Informe os dados básicos do paciente:</string>
+    <string name="message_welcome_nutrition">Este questionário que você irá responder agora faz parte de uma pesquisa que tem como objetivo de conhecer alguns aspectos importantes da saúde dos(as) crianças e adolescentes que frequentam a clínica de odontologia da UEPB.</string>
     <string name="q1" translatable="false">Na semana passada você praticou:</string>
     <string name="q2" translatable="false">Você faz educação física da escola?</string>
     <string name="q3" translatable="false">Você toma café da manhã?</string>
@@ -451,7 +455,7 @@
     <string name="category_4_desc">Agora você responderá questões sobre sua saúde de um modo geral.</string>
     <string name="category_5">Hábitos de Sono</string>
     <string name="category_5_desc">Agora você responderá a perguntas sobre sono.</string>
-    <string name="final_instructions">Você deve permanecer no seu lugar e informar o pesquisador que terminou de responder o questionario no tablet e ele o encaminhará para fazer as medições de peso, estatura, perimetro da cintura e pressão arterial.</string>
+    <string name="nutrition_final_instructions">Você deve permanecer no seu lugar e informar o pesquisador que terminou de responder o questionario no tablet e ele o encaminhará para fazer as medições de peso, estatura, perimetro da cintura e pressão arterial.</string>
     <string name="error_409_patient">Já possui um paciente cadastrado com esses dados!</string>
     <string name="remove_patient">Tem certeza que deseja remover o paciente?</string>
     <string name="add_measurement_message">Medição referente a %s para\n%s:</string>
@@ -640,4 +644,103 @@
         <item>11:00 da noite</item>
         <item>Meia noite</item>
     </string-array>
+
+    <!-- Patient Odonto Quiz -->
+    <string name="message_welcome_odontology">"Este questionário que você irá responder agora faz parte de uma pesquisa que tem como objetivo de conhecer alguns aspectos importantes da saúde dos(as) crianças e adolescentes que frequentam a clínica de odontologia da UEPB."</string>
+    <string name="question_1">Os membros da família pedem ajuda uns aos outros?</string>
+    <string name="question_2">Aprovamos os amigos que cada um tem:</string>
+    <string name="question_3">Gostamos de fazer coisas apenas com nossa família:</string>
+    <string name="question_4">Os membros da família sentem-se mais próximos entre si que com pessoas estranhas à família:</string>
+    <string name="question_5">Os membros da família gostam de passar o tempo livre juntos:</string>
+    <string name="question_6">Os membros da família se sentem muito próximos uns aos outros:</string>
+    <string name="question_7">Estamos todos presentes quando compartilhamos atividades em nossa família:</string>
+    <string name="question_8">Facilmente nos ocorrem coisas que podemos fazer juntos, em família:</string>
+    <string name="question_9">Os membros da família consultam outras pessoas da família para tomarem suas decisões:</string>
+    <string name="question_10">A união familiar é muito importante:</string>
+    <string name="question_11">Soma total coesão familiar:</string>
+    <string name="question_12">Cor ou raça:</string>
+    <string name="question_13">Escolaridade da mãe:</string>
+    <string name="question_14">Número de pessoas morando em casa:</string>
+    <string name="question_15">Quantas vezes seu filho escova os dentes ao dia?</string>
+    <string name="question_16">Apresenta cárie dentária cavitada em dentes decíduos?</string>
+    <string name="question_17">Apresenta cárie dentária cavitada em dentes permanentes?</string>
+    <string name="question_18">Apresenta lesões de cárie do tipo mancha branca ativa em dentes decíduos?</string>
+    <string name="question_19">Apresenta lesões de cárie do tipo mancha branca ativa em dentes permanentes?</string>
+    <string name="category_sociodemographic">Sociodemográfico</string>
+    <string name="category_sociodemographic_desc">As próximas perguntas referem-se a informações sociodemográicas.</string>
+    <string name="category_oralhealth">Saúde Bucal</string>
+    <string name="category_oralhealth_desc">As próximas perguntas referem-se a sua saúde bocal.</string>
+    <string name="category_family_cohesion">Coesão Familiar</string>
+    <string name="category_family_cohesion_desc">As próximas perguntas referem-se a informações sobre a sua família.</string>
+    <string name="odontology_final_instructions">Você deve permanecer no seu lugar e informar o pesquisador que terminou de responder o questionario no tablet!</string>
+
+    <string-array name="default_answers">
+        <item>Quase nunca</item>
+        <item>Raramente</item>
+        <item>Às vezes</item>
+        <item>Frequentemente</item>
+        <item>Quase sempre</item>
+    </string-array>
+
+    <string-array name="race_answers">
+        <item>Branca</item>
+        <item>Preta/Negra</item>
+        <item>Parda</item>
+        <item>Amarela</item>
+    </string-array>
+
+    <string-array name="scholarity_answers">
+        <item>Analfabeto/Fundamental I Incompleto</item>
+        <item>Fundamental I Completo/Fundamental II Incompleto</item>
+        <item>Fundamental Completo/Médio Incompleto</item>
+        <item>Superior Incompleto</item>
+        <item>Superior Completo</item>
+    </string-array>
+
+    <string-array name="number6_answers">
+        <item>Uma</item>
+        <item>Duas</item>
+        <item>Três</item>
+        <item>Quatro</item>
+        <item>Cinco</item>
+        <item>Seis ou Mais</item>
+    </string-array>
+
+    <string-array name="number3_answers">
+        <item>Nenhuma</item>
+        <item>Uma</item>
+        <item>Duas</item>
+        <item>Três ou Mais</item>
+    </string-array>
+
+    <string-array name="yes_not_answers">
+        <item>Sim</item>
+        <item>Não</item>
+    </string-array>
+
+    <!--- OTHERS -->
+    <string name="chart">Gráficos</string>
+    <string name="add_manually">Adicionar Manualmente</string>
+
+    <!-- EVALUATION -->
+    <string name="evaluation_message">Escolha os dados referentes a %s para a Avaliação \n%s:</string>
+    <string name="evaluation_empty_message">Sem resgistros! É necessário pelo menos uma medição\nClique aqui para inserir</string>
+    <string name="evaluation_error_message">Opss! Não foi possível fazer a sincronização dos seus dados...\n Atualize a página para tentar novamente!</string>
+    <string name="evaluation_required_fields">Selecione pelo menos um item de cada campo para finalizar a avaliação!</string>
+    <string name="fat">Gordura Corporal</string>
+    <string name="height">Altura</string>
+    <string name="waits_circumference">Circunferência da Cintura</string>
+    <string name="evaluation_sucessfull">Avaliação Nutricional gerada com sucesso!</string>
+    <string name="cm">cm</string>
+    <string name="back_confirm">Clique novamente para sair!</string>
+    <string name="value_empty">Digite um valor para continuar!</string>
+    <string name="confirm_save_measurement">Deseja salvar essa medição?</string>
+    <string name="measurement_save">Medição salva com sucesso!</string>
+    <string name="confirm_save_evaluation">Deseja salvar essa avaliação?</string>
+    <string name="evaluation_saved">Avaliação salva com sucesso!</string>
+    <string name="no_internet_conection">Sem conexão com a internet!</string>
+    <string name="title_synchronize">Sincronizando dados</string>
+    <string name="loading_synchronize">Aguarde enquanto os dados estão sendo sincronizados...</string>
+    <string name="type_nutrition">nutrition</string>
+    <string name="type_dentistry">dentistry</string>
 </resources>

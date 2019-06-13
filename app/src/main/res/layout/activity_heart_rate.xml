@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -13,24 +14,6 @@
         android:fitsSystemWindows="true"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-        <LinearLayout
-            android:id="@+id/box_message_error"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/appBarLayout2"
-            android:background="@color/colorPrimaryDark"
-            android:gravity="center"
-            android:visibility="visible">
-
-            <TextView
-                android:id="@+id/message_error"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:padding="16sp"
-                android:text="@null" />
-        </LinearLayout>
-
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/collapsi_toolbar"
             android:layout_width="match_parent"
@@ -38,6 +21,24 @@
             android:fitsSystemWindows="true"
             app:contentScrim="?attr/colorPrimary"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+            <!--<LinearLayout-->
+            <!--android:id="@+id/box_message_error"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_below="@+id/appBarLayout2"-->
+            <!--android:background="@color/colorPrimaryDark"-->
+            <!--android:gravity="center"-->
+            <!--android:visibility="visible">-->
+
+            <!--<TextView-->
+            <!--android:id="@+id/message_error"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:gravity="center"-->
+            <!--android:padding="16sp"-->
+            <!--android:text="@null" />-->
+            <!--</LinearLayout>-->
 
             <RelativeLayout
                 android:id="@+id/box_measurement"
@@ -122,37 +123,6 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/record_floating_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/fab_margin"
-        android:clickable="true"
-        android:src="@drawable/ic_action_play_arrow"
-        app:elevation="6dp"
-        app:layout_anchor="@id/box_bar_layout"
-        app:layout_anchorGravity="bottom|right|end" />
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/chart_floating_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="90dp"
-        android:clickable="true"
-        android:src="@drawable/ic_action_show_chart"
-        app:elevation="6dp"
-        app:layout_anchor="@id/box_bar_layout"
-        app:layout_anchorGravity="bottom|right|end" />
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/add_floating_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
-        android:src="@drawable/ic_add"
-        app:backgroundTint="@color/colorAccent"/>
-
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
@@ -196,4 +166,45 @@
 
         </android.support.v4.widget.SwipeRefreshLayout>
     </LinearLayout>
+
+    <com.github.clans.fab.FloatingActionMenu
+        android:id="@+id/btn_actions"
+        fab:menu_colorNormal="@color/colorAccent"
+        fab:menu_colorPressed="@color/colorPrimaryDark"
+        fab:menu_icon="@drawable/ic_add"
+        fab:menu_labels_colorNormal="@color/cardview_light_background"
+        fab:menu_labels_ellipsize="end"
+        fab:menu_labels_singleLine="true"
+        fab:menu_labels_textColor="@color/cardview_dark_background"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="@dimen/fab_margin"
+        android:layout_gravity="bottom|end"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/chart_floating_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_action_show_chart"
+            fab:fab_colorNormal="@color/colorAccent"
+            fab:fab_colorPressed="@color/colorPrimary"
+            fab:fab_label="@string/chart"
+            fab:fab_size="mini"/>
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/add_floating_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_add"
+            fab:fab_colorNormal="@color/colorAccent"
+            fab:fab_colorPressed="@color/colorPrimary"
+            fab:fab_label="@string/add_manually"
+            fab:fab_size="mini" />
+
+    </com.github.clans.fab.FloatingActionMenu>
+
 </android.support.design.widget.CoordinatorLayout>

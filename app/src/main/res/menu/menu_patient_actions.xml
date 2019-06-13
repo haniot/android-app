@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/remove"
+        android:title="Remover Paciente" />
+    <item
+        android:id="@+id/nutrition_quiz"
+        android:title="Responder questionário de Nutrição" />
+    <item
+        android:id="@+id/odontotoly_quiz"
+        android:title="Responder questionário de Odontologia"/>
+    <item
+        android:id="@+id/nutrition_evaluation"
+        android:title="Gerar avaliação nutricional"/>
+</menu>

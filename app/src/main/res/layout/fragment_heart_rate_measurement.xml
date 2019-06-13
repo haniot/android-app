@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -26,16 +25,12 @@
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="30dp"
                 android:max="150"
-                android:padding="0dp"
+                android:layout_margin="20dp"
+                android:padding="15dp"
                 android:progress="90"
                 android:soundEffectsEnabled="true"
                 android:thumb="@drawable/ic_heart_128" />
 
-            />
-
-
         </RelativeLayout>
-
     </android.support.v4.widget.NestedScrollView>
-
 </RelativeLayout>

@@ -25,11 +25,11 @@ import java.util.Calendar;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.PatientsType;
-import br.edu.uepb.nutes.haniot.data.model.UserAccess;
 import br.edu.uepb.nutes.haniot.data.model.dao.PatientDAO;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
+import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -54,8 +54,8 @@ public class PatientRegisterActivity extends AppCompatActivity {
     @BindView(R.id.name_edittext)
     EditText nameEditTExt;
 
-    @BindView(R.id.last_name_edittext)
-    EditText lastNameEditTExt;
+    @BindView(R.id.email_edittext)
+    EditText emailEditTExt;
 
     @BindView(R.id.gender_icon)
     ImageView genderIcon;
@@ -65,6 +65,9 @@ public class PatientRegisterActivity extends AppCompatActivity {
 
     @BindView(R.id.birth_edittext)
     EditText birthEdittext;
+
+    @BindView(R.id.phone_edittext)
+    EditText phoneEdittext;
 
     @BindView(R.id.box_message_error)
     LinearLayout boxMessage;
@@ -113,10 +116,7 @@ public class PatientRegisterActivity extends AppCompatActivity {
             nameEditTExt.setError(getResources().getString(R.string.required_field));
             validated = false;
         }
-        if (lastNameEditTExt.getText().toString().isEmpty()) {
-            lastNameEditTExt.setError(getResources().getString(R.string.required_field));
-            validated = false;
-        }
+
         if (birthEdittext.getText().toString().isEmpty()) {
             birthEdittext.setError(getResources().getString(R.string.required_field));
             validated = false;
@@ -135,8 +135,9 @@ public class PatientRegisterActivity extends AppCompatActivity {
      */
     private void savePatient() {
         if (!isEdit) patient = new Patient();
-        patient.setFirstName(nameEditTExt.getText().toString());
-        patient.setLastName(lastNameEditTExt.getText().toString());
+        patient.setName(nameEditTExt.getText().toString());
+        patient.setEmail(emailEditTExt.getText().toString());
+        patient.setPhoneNumber(phoneEdittext.getText().toString());
         patient.setBirthDate(DateUtils.formatDate(myCalendar.getTimeInMillis(), "yyyy-MM-dd"));
         if (genderGroup.getCheckedRadioButtonId() == R.id.male)
             patient.setGender(PatientsType.GenderType.MALE);
@@ -151,7 +152,8 @@ public class PatientRegisterActivity extends AppCompatActivity {
                     .subscribe(patient1 -> {
                         patientDAO.save(patient);
                         showMessage(R.string.update_success);
-                        startActivity(new Intent(PatientRegisterActivity.this, ManagePatientsActivity.class));
+                        startActivity(new Intent(PatientRegisterActivity.this, ManagerPatientsActivity.class));
+                        finish();
                     }, this::errorHandler));
         else
             DisposableManager.add(haniotNetRepository
@@ -171,7 +173,11 @@ public class PatientRegisterActivity extends AppCompatActivity {
                         }
                         patientDAO.save(patient);
                         appPreferencesHelper.saveLastPatient(patient);
-                        startActivity(new Intent(PatientRegisterActivity.this, PatientQuizActivity.class));
+                        if (appPreferencesHelper.getUserLogged().getHealthArea().equals(getString(R.string.type_nutrition)))
+                            startActivity(new Intent(PatientRegisterActivity.this, QuizNutritionActivity.class));
+                        else if (appPreferencesHelper.getUserLogged().getHealthArea().equals(getString(R.string.type_dentistry)))
+                            startActivity(new Intent(PatientRegisterActivity.this, QuizOdontologyActivity.class));
+                        finish();
                     }, this::errorHandler));
     }
 
@@ -194,6 +200,12 @@ public class PatientRegisterActivity extends AppCompatActivity {
                     break;
             }
         } else showMessage(R.string.error_500);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        checkConnectivity();
     }
 
     /**
@@ -227,11 +239,69 @@ public class PatientRegisterActivity extends AppCompatActivity {
         }
     };
 
+    /**
+     * Prepare the view for editing the data
+     */
+    private void prepareEditing() {
+        DisposableManager.add(haniotNetRepository
+                .getPatient(appPreferencesHelper.getLastPatient().get_id())
+                .doOnSubscribe(disposable -> {
+                    prepareView(); // Populate view with local data
+                    enabledView(false);
+                    showLoading(true);
+                })
+                .doAfterTerminate(() -> showLoading(false))
+                .subscribe(patient1 -> {
+                    if (patient1.getEmail() != null) patient.setEmail(patient1.getEmail());
+                    if (patient1.getName() != null) patient.setName(patient1.getName());
+
+                    prepareView();
+                    enabledView(true);
+                }, this::errorHandler)
+
+        );
+    }
+
+    /**
+     * Check if you have connectivity.
+     * If it does not, the elements in the view mounted to notify the user
+     *
+     * @return boolean
+     */
+    private boolean checkConnectivity() {
+        if (!ConnectionUtils.internetIsEnabled(this)) {
+            boxMessage.setVisibility(View.VISIBLE);
+            messageError.setText(getString(R.string.error_connectivity));
+            return false;
+        }
+        boxMessage.setVisibility(View.GONE);
+
+        return true;
+    }
+
+    /**
+     * Enable or disable view
+     *
+     * @param enabled boolean
+     */
+    private void enabledView(final boolean enabled) {
+        runOnUiThread(() -> {
+            nameEditTExt.setEnabled(enabled);
+            emailEditTExt.setEnabled(enabled);
+            phoneEdittext.setEnabled(enabled);
+            birthEdittext.setEnabled(enabled);
+            genderGroup.setEnabled(enabled);
+        });
+    }
+
     private void prepareView() {
         patient = appPreferencesHelper.getLastPatient();
-        nameEditTExt.setText(patient.getFirstName());
-        lastNameEditTExt.setText(patient.getLastName());
-        birthEdittext.setText(patient.getBirthDate());
+        if (patient == null) return;
+        nameEditTExt.setText(patient.getName());
+        emailEditTExt.setText(patient.getEmail());
+        phoneEdittext.setText(patient.getPhoneNumber());
+        birthEdittext.setText(DateUtils.formatDate(patient.getBirthDate(), getString(R.string.date_format)));
+        myCalendar = DateUtils.convertStringDateToCalendar(patient.getBirthDate(), getResources().getString(R.string.date_format));
         if (patient.getGender().equals(PatientsType.GenderType.MALE))
             genderGroup.check(R.id.male);
         else genderGroup.check(R.id.female);
@@ -265,7 +335,7 @@ public class PatientRegisterActivity extends AppCompatActivity {
         fab.setOnClickListener(fabClick);
 
         if (isEdit) {
-            prepareView();
+            prepareEditing();
         }
         genderGroup.setOnCheckedChangeListener((group, checkedId) -> {
             if (checkedId == R.id.male)
@@ -282,7 +352,8 @@ public class PatientRegisterActivity extends AppCompatActivity {
                         myCalendar.set(Calendar.YEAR, year);
                         myCalendar.set(Calendar.MONTH, month);
                         myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                        birthEdittext.setText(DateUtils.formatDate(myCalendar.getTimeInMillis(), getResources().getString(R.string.date_format)));
+                        birthEdittext.setText(DateUtils.formatDate(myCalendar.getTimeInMillis(),
+                                getResources().getString(R.string.date_format)));
                     }, 2010, 1, 1);
             dialog.show();
         });

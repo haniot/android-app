@@ -8,7 +8,6 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -16,12 +15,14 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:screenOrientation="portrait"
-        android:usesCleartextTraffic="true"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
+        <activity android:name=".activity.NutritionalEvaluationActivity"
+            android:parentActivityName=".activity.MainActivity"
+            ></activity>
         <!-- RECEIVER ACCOUNT SERVICE -->
-        <receiver android:name=".service.TokenExpirationService$TokenAlarmReceiver" />
-        <!-- ACTIVITIES -->
+        <receiver android:name=".service.TokenExpirationService$TokenAlarmReceiver" /> <!-- ACTIVITIES -->
         <activity android:name=".activity.WelcomeActivity" />
         <activity android:name=".activity.PilotStudyActivity" />
         <activity android:name=".activity.SplashScreenActivity">
@@ -45,23 +46,11 @@
         </activity>
         <activity android:name=".activity.MainActivity" />
         <activity
-            android:name=".activity.DeviceInforActivity"
-            android:parentActivityName=".activity.MainActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".devices.ThermometerActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".devices.GlucoseActivity"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".devices.hdp.BloodPressureHDPActivity"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="com.signove.health.service.HealthService" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".devices.hdp.BodyCompositionHDPActivity" />
         <activity
             android:name=".devices.ScaleActivity"
             android:screenOrientation="portrait" />
@@ -87,7 +76,7 @@
         <activity android:name=".activity.charts.BloodPresssureChartActivity" />
         <activity android:name=".activity.charts.SmartBandChartActivity" /> <!-- ACTIVITIES ELDERLY -->
         <activity
-            android:name=".activity.ManagePatientsActivity"
+            android:name=".activity.ManagerPatientsActivity"
             android:label="@string/title_activity_manage_children"
             android:theme="@style/AppTheme" />
         <activity android:name=".activity.AddMeasurementActivity" />
@@ -95,7 +84,12 @@
             android:name=".activity.PatientRegisterActivity"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".activity.PatientQuizActivity"
+            android:name=".activity.QuizNutritionActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar" />
+        <activity
+            android:name=".activity.QuizOdontologyActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar" /> <!-- ACTIVITIES REGISTER DEVICES -->
         <activity android:name=".devices.register.DeviceRegisterActivity" />
         <activity android:name=".devices.register.DeviceManagerActivity" /> <!-- END ACTIVITIES REGISTER DEVICES -->

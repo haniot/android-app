@@ -1,21 +1,25 @@
 package br.edu.uepb.nutes.haniot.service.ManagerDevices.callback;
 
-import br.edu.uepb.nutes.haniot.data.model.Measurement;
+import android.bluetooth.BluetoothDevice;
+import android.support.annotation.NonNull;
 
-public interface BloodPressureDataCallback {
-
+public interface BloodPressureDataCallback extends DeviceStatusCallback {
     /**
-     * On Connected to Blood Pressure Device.
+     * Blood Pressure measurement receiver.
+     *
+     * @param device    {@link BluetoothDevice} Device that collected the measurement.
+     * @param systolic  Systolic value.
+     * @param diastolic Diastolic value.
+     * @param pulse     Pulse value in bpm.
+     * @param unit      Unit of systolic to diastolic pressure.
+     * @param timestamp Datetime of collection.
      */
-    void onConnected();
-
-    /**
-     * On Disconnected to Blood Pressure Device.
-     */
-    void onDisconnected();
-
-    /**
-     * On receiver data of measurement from Blood Pressure Device.
-     */
-    void onMeasurementReceived(Measurement measurementBloodPressure);
+    void onMeasurementReceived(
+            @NonNull final BluetoothDevice device,
+            final int systolic,
+            final int diastolic,
+            final int pulse,
+            final String unit,
+            final String timestamp
+    );
 }

@@ -19,7 +19,6 @@ import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
@@ -36,30 +35,24 @@ import android.view.animation.AnimationUtils;
 import android.widget.Chronometer;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
-
-import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.activity.settings.Session;
-import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
-import br.edu.uepb.nutes.haniot.fragment.GenericDialogFragment;
-import br.edu.uepb.nutes.haniot.fragment.RealTimeFragment;
 import br.edu.uepb.nutes.haniot.data.model.Device;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.dao.DeviceDAO;
 import br.edu.uepb.nutes.haniot.data.model.dao.MeasurementDAO;
-import br.edu.uepb.nutes.haniot.parse.JsonToMeasurementParser;
+import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
+import br.edu.uepb.nutes.haniot.fragment.GenericDialogFragment;
+import br.edu.uepb.nutes.haniot.fragment.RealTimeFragment;
 import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
 import br.edu.uepb.nutes.haniot.service.BluetoothLeService;
-import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import br.edu.uepb.nutes.haniot.utils.GattAttributes;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -141,7 +134,6 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
         deviceDAO = DeviceDAO.getInstance(this);
         MeasurementDAO = MeasurementDAO.getInstance(this);
-        registrationTimeStart = DateUtils.getCurrentDatetime();
         lastPause = 0;
         fcMinimum = Integer.MAX_VALUE;
         fcMaximum = Integer.MIN_VALUE;
@@ -385,24 +377,24 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
                     mConnected = true;
                     updateConnectionState(mConnected);
                 }
-
-                new Handler().postDelayed(() -> {
-                    try {
-                        Measurement measurement = JsonToMeasurementParser.heartRate(intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
-                        Log.i("MeasurementTO", measurement.toString());
-
-                        sendMeasurements(measurement);
-                        int bpm = (int) measurement.getValue();
-                        mHeartRateTextView.setText(String.format("%03d", (int) measurement.getValue()));
-
-                        fcAccumulate += bpm;
-                        fcMinimum = (bpm > 0 && bpm < fcMinimum) ? bpm : fcMinimum;
-                        fcMaximum = (bpm > fcMaximum) ? bpm : fcMaximum;
-                        fcTotal++;
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }, 100);
+//
+//                new Handler().postDelayed(() -> {
+//                    try {
+//                        Measurement measurement = JsonToMeasurementParser.heartRate(intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
+//                        Log.i("MeasurementTO", measurement.toString());
+//
+//                        sendMeasurements(measurement);
+//                        int bpm = (int) measurement.getValue();
+//                        mHeartRateTextView.setText(String.format("%03d", (int) measurement.getValue()));
+//
+//                        fcAccumulate += bpm;
+//                        fcMinimum = (bpm > 0 && bpm < fcMinimum) ? bpm : fcMinimum;
+//                        fcMaximum = (bpm > fcMaximum) ? bpm : fcMaximum;
+//                        fcTotal++;
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
+//                }, 100);
             }
         }
     };
@@ -410,7 +402,7 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
     @Override
     public void onClickDialog(int id, int button) {
         if (button == DialogInterface.BUTTON_POSITIVE) {
-            //TODO CONCERTAR!!! Deverá ser salvo como um treino
+            //TODO CONSERTAR!!! Deverá ser salvo como um treino
         }
         // close activity
         finish();

@@ -2,6 +2,7 @@ package br.edu.uepb.nutes.haniot.data.repository.local.pref;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.securepreferences.SecurePreferences;
 
@@ -72,8 +73,7 @@ public class AppPreferencesHelper implements PreferencesHelper {
         if (pilot == null) {
             throw new LocalPreferenceException("attribute pilot can not be null or empty!");
         }
-
-        return mPrefs.edit()
+        return saveUserLogged(getUserLogged()) && mPrefs.edit()
                 .putString(PREF_KEY_PILOT_STUDY, String.valueOf(pilot.toJson()))
                 .commit();
     }
@@ -129,7 +129,15 @@ public class AppPreferencesHelper implements PreferencesHelper {
     @Override
     public PilotStudy getLastPilotStudy() {
         String pilot = mPrefs.getString(PREF_KEY_PILOT_STUDY, null);
-        return PilotStudy.jsonDeserialize(pilot);
+        PilotStudy pilotStudy = PilotStudy.jsonDeserialize(pilot);
+        Log.i("AAAA", getUserLogged().toJson());
+        Log.i("AAAA", "" + pilotStudy);
+        if ( (pilotStudy != null && pilotStudy.getUserId() != null) && pilotStudy.getUserId()
+                .equals(getUserLogged().get_id())) {
+            Log.i("AAAA", pilotStudy.toJson());
+            return pilotStudy;
+        }
+        return null;
     }
 
     @Override

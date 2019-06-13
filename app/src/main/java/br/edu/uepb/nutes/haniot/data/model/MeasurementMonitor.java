@@ -2,6 +2,8 @@ package br.edu.uepb.nutes.haniot.data.model;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+
 import br.edu.uepb.nutes.haniot.R;
 
 public class MeasurementMonitor {
@@ -23,7 +25,7 @@ public class MeasurementMonitor {
     public MeasurementMonitor() {
     }
 
-    public MeasurementMonitor(Context context, int icon, String description, String measurementValue, int type, String measurementInitials ) {
+    public MeasurementMonitor(Context context, int icon, String description, String measurementValue, int type, String measurementInitials) {
         this.context = context;
         this.icon = icon;
         this.description = description;
@@ -155,12 +157,18 @@ public class MeasurementMonitor {
         this.status = status;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "MeasurementMonitor{" +
                 "icon=" + icon +
                 ", description='" + description + '\'' +
                 ", name='" + name + '\'' +
+                ", measurementValue='" + measurementValue + '\'' +
+                ", measurementInitials='" + measurementInitials + '\'' +
+                ", time='" + time + '\'' +
+                ", type=" + type +
+                ", status=" + status +
                 '}';
     }
 

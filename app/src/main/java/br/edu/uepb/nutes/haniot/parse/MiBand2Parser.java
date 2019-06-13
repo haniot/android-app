@@ -1,6 +1,5 @@
 package br.edu.uepb.nutes.haniot.parse;
 
-import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.support.annotation.NonNull;
 
@@ -44,7 +43,7 @@ public class MiBand2Parser {
         result.put("distanceUnit", "m");
         result.put("calories", caloriesValue);
         result.put("caloriesUnit", "kcal");
-        result.put("timestamp", DateUtils.getCurrentDatetime());
+        result.put("timestamp", DateUtils.getCurrentDateTimeUTC());
 
         return result;
     }

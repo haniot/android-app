@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
+import java.util.Locale;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.adapter.base.BaseAdapter;
@@ -19,16 +20,13 @@ import butterknife.ButterKnife;
 /**
  * Adapter from the RecyclerView to list the heart rate.
  *
- * @author Douglas Rafael <douglasrafaelcg@gmail.com>
- * @version 1.0
- * @copyright Copyright (c) 2017, NUTES UEPB
+ * @author Copyright (c) 2019, NUTES/UEPB
  */
 public class HeartRateAdapter extends BaseAdapter<Measurement> {
-    private final String LOG = "HeartRateAdapter";
     private final Context context;
 
     /**
-     * Contructor.
+     * Constructor.
      *
      * @param context {@link Context}
      */
@@ -52,23 +50,19 @@ public class HeartRateAdapter extends BaseAdapter<Measurement> {
             final Measurement m = itemsList.get(position);
             ViewHolder h = (ViewHolder) holder;
 
-            h.value.setText(String.format("%03d", (int) m.getValue()));
-            h.unit.setText(m.getUnit());
-            h.dayWeek.setText(DateUtils.formatDate(m.getRegistrationDate(), "EEEE"));
-            h.date.setText(DateUtils.formatDate(
-                    m.getRegistrationDate(), context.getString(R.string.datetime_format))
+            h.value.setText(String.format(Locale.getDefault(), "%03d",
+                    (int) m.getDataset().get(0).getValue())
             );
+            h.unit.setText(m.getUnit());
+            h.dayWeek.setText(DateUtils.convertDateTimeUTCToLocale(m.getDataset().get(0).getTimestamp(),
+                    "EEEE"));
+            h.date.setText(DateUtils.convertDateTimeUTCToLocale(m.getDataset().get(0).getTimestamp(),
+                    context.getString(R.string.datetime_format)));
             h.imageHeart.setVisibility(View.VISIBLE);
 
-            /**
-             * OnClick Item
-             */
-            h.mView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (HeartRateAdapter.super.mListener != null)
-                        HeartRateAdapter.super.mListener.onItemClick(m);
-                }
+            // onClick Item
+            h.mView.setOnClickListener(v -> {
+                if (super.mListener != null) super.mListener.onItemClick(m);
             });
 
             // call Animation function

@@ -2,7 +2,6 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:fab="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -62,12 +61,57 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@android:color/transparent">
-
             </FrameLayout>
-
         </LinearLayout>
-
     </android.support.v4.widget.NestedScrollView>
 
+    <com.github.clans.fab.FloatingActionMenu
+        android:id="@+id/patient_actions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="@dimen/fab_margin"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        fab:menu_colorNormal="@color/colorAccent"
+        fab:menu_colorPressed="@color/colorPrimaryDark"
+        fab:menu_icon="@drawable/ic_add"
+        fab:menu_labels_colorNormal="@color/cardview_light_background"
+        fab:menu_labels_ellipsize="end"
+        fab:menu_labels_singleLine="true"
+        fab:menu_labels_textColor="@color/cardview_dark_background">
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/quiz_odonto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/action_quiz"
+            fab:fab_colorNormal="@color/colorAccent"
+            fab:fab_colorPressed="@color/colorPrimary"
+            fab:fab_label="Responder questionário de Odontologia"
+            fab:fab_size="mini" />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/quiz_nutrition"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/action_quiz"
+            fab:fab_colorNormal="@color/colorAccent"
+            fab:fab_colorPressed="@color/colorPrimary"
+            fab:fab_label="Responder questionário de Nutrição"
+            fab:fab_size="mini" />
+
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/evaluation_nutrition"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/action_nutrition"
+            fab:fab_colorNormal="@color/colorAccent"
+            fab:fab_colorPressed="@color/colorPrimary"
+            fab:fab_label="Fazer avaliação Nutricional"
+            fab:fab_size="mini" />
+    </com.github.clans.fab.FloatingActionMenu>
 
 </android.support.constraint.ConstraintLayout>
