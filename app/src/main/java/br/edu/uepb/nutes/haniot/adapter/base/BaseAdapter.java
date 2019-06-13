@@ -66,12 +66,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
         if (item != null) {
             itemsList.add(item);
 
-            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                @Override
-                public void run() {
-                    notifyItemInserted(itemsList.size() - 1);
-                }
-            });
+            new Handler(Looper.getMainLooper()).post(() -> notifyItemInserted(itemsList.size() - 1));
         }
     }
 
@@ -84,12 +79,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
         if (items != null) {
             this.itemsList.addAll(items);
 
-            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                @Override
-                public void run() {
-                    notifyDataSetChanged();
-                }
-            });
+            new Handler(Looper.getMainLooper()).post(this::notifyDataSetChanged);
         }
     }
 
@@ -102,13 +92,13 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
         if (item != null) {
             itemsList.remove(item);
 
-            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                @Override
-                public void run() {
-                    notifyDataSetChanged();
-                }
-            });
+            new Handler(Looper.getMainLooper()).post(this::notifyDataSetChanged);
         }
+    }
+
+    public void restoreItem(T item, int position) {
+        itemsList.add(position, item);
+        notifyItemInserted(position);
     }
 
     /**
@@ -117,12 +107,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
     public void clearItems() {
         itemsList.clear();
 
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
-            @Override
-            public void run() {
-                notifyDataSetChanged();
-            }
-        });
+        new Handler(Looper.getMainLooper()).post(this::notifyDataSetChanged);
     }
 
     /**

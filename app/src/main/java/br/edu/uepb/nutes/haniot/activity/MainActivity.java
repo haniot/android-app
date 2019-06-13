@@ -27,7 +27,6 @@ import com.github.clans.fab.FloatingActionButton;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.SettingsActivity;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
-import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.fragment.DashboardChartsFragment;
 import br.edu.uepb.nutes.haniot.fragment.MeasurementsGridFragment;
@@ -44,7 +43,6 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
     private final String LOG_TAG = "MainActivity";
     private final int REQUEST_ENABLE_BLUETOOTH = 1;
     private final int REQUEST_ENABLE_LOCATION = 2;
-
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.frameCharts)
@@ -145,8 +143,6 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
             nutritioEvaluation.setOnClickListener(v -> {
                 measurementsGridFragment.saveHeartRateCollection();
             });
-
-
         }
     }
 
@@ -158,7 +154,6 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
 
         if (patient != null) {
             loadDashboard();
-
             checkPermissions();
         } else {
             startActivity(new Intent(this, ManagerPatientsActivity.class));
@@ -172,7 +167,9 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
     public void checkPermissions() {
         if (BluetoothAdapter.getDefaultAdapter() != null &&
                 !BluetoothAdapter.getDefaultAdapter().isEnabled()) {
-            requestBluetoothEnable();
+            Log.w(LOG_TAG, "checkPermissions(): Bluetooth desligado");
+            dashboardChartsFragment.showMessageConnection("bluetooth", true);
+            if (appPreferences.getBluetoothMode()) requestBluetoothEnable();
         } else if (!hasLocationPermissions()) {
             requestLocationPermission();
         }
@@ -182,6 +179,7 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
      * Request Bluetooth permission
      */
     private void requestBluetoothEnable() {
+        Log.w(LOG_TAG, "requestBluetoothEnable(): Criando intent");
         startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE),
                 REQUEST_ENABLE_BLUETOOTH);
     }
@@ -224,8 +222,12 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_ENABLE_BLUETOOTH) {
             if (resultCode != Activity.RESULT_OK) {
-                requestBluetoothEnable();
+                Log.w(LOG_TAG, "onActivityResult(): Bluetooth negado");
+                appPreferences.saveBluetoothMode(false);
+                dashboardChartsFragment.showMessageConnection("bluetooth", true);
             } else {
+                Log.w(LOG_TAG, "onActivityResult(): Bluetooth aceito");
+                appPreferences.saveBluetoothMode(true);
                 requestLocationPermission();
             }
         }
@@ -285,7 +287,7 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
 
     @Override
     public void showMessage(int message) {
-        dashboardChartsFragment.showMessage(message);
+//        dashboardChartsFragment.showMessageConnection(message);
     }
 
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -295,19 +297,23 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
             int status = NetworkUtil.getConnectivityStatusString(context);
             if ("android.net.conn.CONNECTIVITY_CHANGE".equals(intent.getAction())) {
                 if (status == NetworkUtil.NETWORK_STATUS_NOT_CONNECTED) {
-                    dashboardChartsFragment.showMessage(R.string.wifi_disabled);
+                    Log.w(LOG_TAG, "mReceiver: wifi desligado");
+                    dashboardChartsFragment.showMessageConnection("wifi", true);
                 } else {
-                    dashboardChartsFragment.showMessage(-1);
+                    Log.w(LOG_TAG, "mReceiver: wifi ligado");
+                    dashboardChartsFragment.showMessageConnection("wifi", false);
                 }
             }
             if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
                 final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE,
                         BluetoothAdapter.ERROR);
                 if (state == BluetoothAdapter.STATE_OFF) {
-                    dashboardChartsFragment.showMessage(R.string.bluetooth_disabled);
-
+                    Log.w(LOG_TAG, "mReceiver: Bluetooth desligado");
+                    dashboardChartsFragment.showMessageConnection("bluetooth", true);
                 } else if (state == BluetoothAdapter.STATE_ON) {
-                    dashboardChartsFragment.showMessage(-1);
+                    Log.w(LOG_TAG, "mReceiver: Bluetooth ligado");
+                    appPreferences.saveBluetoothMode(true);
+                    dashboardChartsFragment.showMessageConnection("bluetooth", false);
                 }
             }
         }

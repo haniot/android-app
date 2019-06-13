@@ -553,7 +553,7 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
                 if (state == BluetoothAdapter.STATE_OFF) {
                     printMessage(getString(R.string.bluetooth_disabled));
                 } else if (state == BluetoothAdapter.STATE_ON) {
-//                    showMessage(-1);
+//                    showMessageConnection(-1);
                 }
             }
         }

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -91,6 +92,7 @@ public class ManagerPatientAdapter extends BaseAdapter<Patient> {
             ManagerPatientViewHolder h = (ManagerPatientViewHolder) holder;
 
             h.textName.setText(patient.getName());
+            h.textName.setEllipsize(TextUtils.TruncateAt.END);
             h.textAge.setText(calculateAge(patient.getBirthDate()));
             if (patient.getGender().equals(PatientsType.GenderType.FEMALE))
                 h.profile.setImageResource(R.drawable.x_girl);

@@ -214,7 +214,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
                 && ((MainActivity) getActivity()).hasLocationPermissions()) {
             simpleBleScanner.startScan(simpleScannerCallback);
         } else if (isAdded() && getActivity() != null) {
-            communicator.showMessage(R.string.bluetooth_disabled);
+//            communicator.showMessageConnection(R.string.bluetooth_disabled);
         }
     }
 

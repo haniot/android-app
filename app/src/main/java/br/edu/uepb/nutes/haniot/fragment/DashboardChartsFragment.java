@@ -1,9 +1,11 @@
 package br.edu.uepb.nutes.haniot.fragment;
 
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,6 +49,9 @@ public class DashboardChartsFragment extends Fragment {
     LinearLayout boxMessage;
     @BindView(R.id.message_error)
     TextView messageError;
+    String typeMessageError;
+    boolean wifiRequest;
+    boolean bluetoothRequest;
 
     public DashboardChartsFragment() {
         // Required empty public constructor
@@ -77,8 +82,7 @@ public class DashboardChartsFragment extends Fragment {
         updateNamePatient(preferencesHelper.getLastPatient());
         textPilotStudy.setText(preferencesHelper.getLastPilotStudy().getName());
         textProfessional.setText(preferencesHelper.getUserLogged().getName());
-        messageError.setOnClickListener(v -> ((MainActivity) Objects.requireNonNull(getActivity()))
-                .checkPermissions());
+
         return view;
     }
 
@@ -93,19 +97,12 @@ public class DashboardChartsFragment extends Fragment {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         boxMessage.setVisibility(View.GONE);
+        if (BluetoothAdapter.getDefaultAdapter() != null &&
+                !BluetoothAdapter.getDefaultAdapter().isEnabled())
+            showMessageConnection("bluetooth", true);
     }
 
     /**
@@ -119,10 +116,53 @@ public class DashboardChartsFragment extends Fragment {
 
     /**
      * Displays message.
+     */
+    public void showMessageConnection(String typeMessageError, boolean show) {
+        Log.w("MainActivity", "show message: " + typeMessageError);
+        if (getContext() != null) {
+            if (typeMessageError.equals("wifi")) {
+                if (show) {
+                    wifiRequest = true;
+                    messageError.setOnClickListener(null);
+                    messageError.setText(getString(R.string.wifi_disabled));
+                    Objects.requireNonNull(getActivity()).runOnUiThread(() -> {
+                        boxMessage.startAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_in));
+                        boxMessage.setVisibility(View.VISIBLE);
+                    });
+                } else {
+                    wifiRequest = false;
+                    if (!bluetoothRequest) boxMessage.setVisibility(View.GONE);
+                    else showMessageConnection("bluetooth", true);
+                }
+
+            } else if (typeMessageError.equals("bluetooth")) {
+                if (show) {
+                    bluetoothRequest = true;
+                    messageError.setText(getString(R.string.bluetooth_disabled));
+                    messageError.setOnClickListener(v -> {
+                        AppPreferencesHelper.getInstance(getContext()).saveBluetoothMode(true);
+                        ((MainActivity) Objects.requireNonNull(getActivity())).checkPermissions();
+                    });
+                    Objects.requireNonNull(getActivity()).runOnUiThread(() -> {
+                        boxMessage.startAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_in));
+                        boxMessage.setVisibility(View.VISIBLE);
+                    });
+                } else {
+                    bluetoothRequest = false;
+                    if (!wifiRequest) boxMessage.setVisibility(View.GONE);
+                    else showMessageConnection("wifi", true);
+                }
+            }
+        }
+    }
+
+    /**
+     * Displays message.
      *
      * @param str @StringRes message.
      */
     public void showMessage(@StringRes int str) {
+        Log.w("MainActivity", "show message: " + str);
         if (getContext() != null) {
             if (str == -1) {
                 boxMessage.setVisibility(View.GONE);
@@ -145,7 +185,8 @@ public class DashboardChartsFragment extends Fragment {
      */
     public void updateNamePatient(Patient patient) {
         if (patient != null) {
-            patientName.setText(patient.getName());
+            String namePatient = patient.getName().split("\\s+")[0];
+            patientName.setText(namePatient);
             if (patient.getGender().equals("male"))
                 patientSex.setImageResource(R.drawable.x_boy);
             else

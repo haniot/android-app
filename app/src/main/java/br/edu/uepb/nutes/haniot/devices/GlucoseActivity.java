@@ -567,7 +567,7 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
                 if (state == BluetoothAdapter.STATE_OFF) {
                     printMessage(getString(R.string.bluetooth_disabled));
                 } else if (state == BluetoothAdapter.STATE_ON) {
-//                    showMessage(-1);
+//                    showMessageConnection(-1);
                 }
             }
         }

@@ -11,12 +11,15 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.nfc.Tag;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -25,6 +28,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -45,6 +49,7 @@ import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.AddMeasurementActivity;
 import br.edu.uepb.nutes.haniot.adapter.BodyCompositionAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
+import br.edu.uepb.nutes.haniot.adapter.base.SwipeToDeleteCallback;
 import br.edu.uepb.nutes.haniot.data.model.BodyFat;
 import br.edu.uepb.nutes.haniot.data.model.Device;
 import br.edu.uepb.nutes.haniot.data.model.DeviceType;
@@ -319,6 +324,7 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void onMenuContextClick(View v, Measurement item) {
             }
+
         });
 
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -337,6 +343,7 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
             }
         });
         mRecyclerView.setAdapter(mAdapter);
+        enableSwipeToDeleteAndUndo();
     }
 
     /**
@@ -618,7 +625,7 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
                 if (state == BluetoothAdapter.STATE_OFF) {
                     printMessage(getString(R.string.bluetooth_disabled));
                 } else if (state == BluetoothAdapter.STATE_ON) {
-//                    showMessage(-1);
+//                    showMessageConnection(-1);
                 }
             }
         }
@@ -705,5 +712,42 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void enableSwipeToDeleteAndUndo() {
+        SwipeToDeleteCallback swipeToDeleteCallback = new SwipeToDeleteCallback(this) {
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
+
+
+                final int position = viewHolder.getAdapterPosition();
+                final Measurement item = mAdapter.getItems().get(position);
+
+                mAdapter.removeItem(item);
+                final Handler handler = new Handler();
+                Runnable runnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        DisposableManager.add(haniotNetRepository
+                                .deleteMeasurement(patient.get_id(), item.get_id()).subscribe(() -> {
+                                }));
+                    }
+                };
+                handler.postDelayed(runnable, 4000);
+
+                Snackbar snackbar = Snackbar
+                        .make(getWindow().getDecorView(), "Você removeu essa medição, deseja desfazer?", Snackbar.LENGTH_LONG);
+                snackbar.setAction("DESFAZER", view -> {
+                    mAdapter.restoreItem(item, position);
+                    mRecyclerView.scrollToPosition(position);
+                    handler.removeCallbacks(runnable);
+                });
+                snackbar.show();
+
+            }
+        };
+
+        ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipeToDeleteCallback);
+        itemTouchhelper.attachToRecyclerView(mRecyclerView);
     }
 }
