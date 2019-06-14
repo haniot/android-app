@@ -79,8 +79,8 @@ public class ManagerPatientsActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         initResources();
-        loadData();
     }
+
 
     /**
      * Initialize SwipeRefresh
@@ -96,7 +96,6 @@ public class ManagerPatientsActivity extends AppCompatActivity {
         message.setVisibility(View.INVISIBLE);
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
         haniotNetRepository = HaniotNetRepository.getInstance(this);
-        pilotStudy = appPreferencesHelper.getLastPilotStudy();
         patientList = new ArrayList<>();
         disableBack();
 
@@ -115,6 +114,7 @@ public class ManagerPatientsActivity extends AppCompatActivity {
      * Load patients in server.
      */
     private void loadData() {
+        pilotStudy = appPreferencesHelper.getLastPilotStudy();
         mDataSwipeRefresh.setRefreshing(true);
         DisposableManager.add(haniotNetRepository
                 .getAllPatients(pilotStudy.get_id(), "created_at", 1, 100)
@@ -200,6 +200,11 @@ public class ManagerPatientsActivity extends AppCompatActivity {
                     appPreferencesHelper.saveLastPatient(item);
                     startActivity(intent);
                 }
+            }
+
+            @Override
+            public void onItemSwiped(Patient item, int position) {
+
             }
         });
 

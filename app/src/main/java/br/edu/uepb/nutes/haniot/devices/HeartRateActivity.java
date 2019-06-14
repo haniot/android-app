@@ -15,9 +15,11 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -307,6 +309,27 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
             @Override
             public void onMenuContextClick(View v, Measurement item) {
             }
+
+            @Override
+            public void onItemSwiped(Measurement item, int position) {
+                mAdapter.removeItem(item);
+                final Handler handler = new Handler();
+                Runnable runnable = () -> DisposableManager.add(haniotNetRepository
+                        .deleteMeasurement(patient.get_id(), item.get_id()).subscribe(() -> {
+                        }));
+                handler.postDelayed(runnable, 4000);
+
+                Snackbar snackbar = Snackbar
+                        .make(findViewById(R.id.root),
+                                getString(R.string.confirm_remove_measurement),
+                                Snackbar.LENGTH_LONG);
+                snackbar.setAction(getString(R.string.undo), view -> {
+                    mAdapter.restoreItem(item, position);
+                    mRecyclerView.scrollToPosition(position);
+                    handler.removeCallbacks(runnable);
+                });
+                snackbar.show();
+            }
         });
 
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -326,6 +349,7 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
         });
 
         mRecyclerView.setAdapter(mAdapter);
+        mAdapter.enableSwipe(this);
     }
 
     /**

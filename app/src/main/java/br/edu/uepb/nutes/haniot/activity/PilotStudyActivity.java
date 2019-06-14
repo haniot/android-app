@@ -145,6 +145,11 @@ public class PilotStudyActivity extends AppCompatActivity {
             public void onMenuContextClick(View v, PilotStudy pilot) {
 
             }
+
+            @Override
+            public void onItemSwiped(PilotStudy item, int position) {
+
+            }
         });
 
         mRecyclerView.setAdapter(mPilotStudyAdapter);

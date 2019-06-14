@@ -984,4 +984,9 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
                 break;
         }
     }
+
+    @Override
+    public void onItemSwiped(MeasurementMonitor item, int position) {
+
+    }
 }

@@ -241,6 +241,11 @@ public class DeviceManagerActivity extends AppCompatActivity {
             @Override
             public void onMenuContextClick(View v, Device item) {
             }
+
+            @Override
+            public void onItemSwiped(Device item, int position) {
+
+            }
         });
         mRegisteredRecyclerView.setAdapter(mAdapterDeviceRegistered);
     }
@@ -271,6 +276,11 @@ public class DeviceManagerActivity extends AppCompatActivity {
 
             @Override
             public void onMenuContextClick(View v, Device item) {
+
+            }
+
+            @Override
+            public void onItemSwiped(Device item, int position) {
 
             }
         });

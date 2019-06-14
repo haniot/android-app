@@ -1,8 +1,11 @@
 package br.edu.uepb.nutes.haniot.adapter.base;
 
+import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,9 +27,29 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
     protected List<T> itemsList;
     protected int lastPosition = -1;
     public OnRecyclerViewListener mListener;
+    public SwipeItemRecyclerViewCallback swipeItemRecyclerViewCallback;
+    public ItemTouchHelper itemTouchhelper;
+    public RecyclerView recyclerView;
 
     protected BaseAdapter() {
         this.itemsList = new ArrayList<>();
+    }
+
+    /**
+     * Enable swipe item recyclerview.
+     * @param context
+     */
+    public void enableSwipe(Context context) {
+        swipeItemRecyclerViewCallback = new SwipeItemRecyclerViewCallback(context, this) {
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
+                int position = viewHolder.getAdapterPosition();
+                mListener.onItemSwiped(itemsList.get(position), position);
+            }
+        };
+        itemTouchhelper = new ItemTouchHelper(swipeItemRecyclerViewCallback);
+        if (recyclerView != null)
+            itemTouchhelper.attachToRecyclerView(recyclerView);
     }
 
     /**
@@ -161,6 +184,12 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         showData(holder, position, itemsList);
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        this.recyclerView = recyclerView;
     }
 
     @Override

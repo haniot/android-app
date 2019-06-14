@@ -743,4 +743,6 @@
     <string name="loading_synchronize">Aguarde enquanto os dados estão sendo sincronizados...</string>
     <string name="type_nutrition">nutrition</string>
     <string name="type_dentistry">dentistry</string>
+    <string name="confirm_remove_measurement">Você removeu essa medição, deseja desfazer?</string>
+    <string name="undo">Desfazer</string>
 </resources>
