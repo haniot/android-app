@@ -63,6 +63,7 @@ import br.edu.uepb.nutes.haniot.data.model.dao.MeasurementDAO;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
+import br.edu.uepb.nutes.haniot.devices.BloodPressureActivity;
 import br.edu.uepb.nutes.haniot.devices.GlucoseActivity;
 import br.edu.uepb.nutes.haniot.devices.HeartRateActivity;
 import br.edu.uepb.nutes.haniot.devices.ScaleActivity;
@@ -933,6 +934,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
                 startActivity(new Intent(mContext, ScaleActivity.class));
                 break;
             case ItemGridType.BLOOD_PRESSURE:
+                startActivity(new Intent(mContext, BloodPressureActivity.class));
                 break;
             default:
                 break;
