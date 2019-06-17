@@ -1,7 +1,6 @@
 package br.edu.uepb.nutes.haniot.activity.charts;
 
 import android.graphics.Color;
-import android.support.v4.content.ContextCompat;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -16,8 +15,6 @@ import br.edu.uepb.nutes.haniot.activity.charts.base.BaseChartActivity;
 import br.edu.uepb.nutes.haniot.activity.charts.base.CreateChart;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.MeasurementType;
-
-import static br.edu.uepb.nutes.haniot.server.SynchronizationServer.context;
 
 /**
  * BloodPresssureChartActivity implementation.
@@ -41,8 +38,8 @@ public class BloodPresssureChartActivity extends BaseChartActivity {
                 .xAxisStyle(Color.WHITE, XAxis.XAxisPosition.BOTTOM)
                 .yAxisStyle(Color.WHITE)
                 .setTextValuesColor(Color.WHITE)
-                .drawCircleStyle(ContextCompat.getColor(context, R.color.colorIndigo), ContextCompat.getColor(context, R.color.colorPrimary))
-                .lineStyle(2.5f, ContextCompat.getColor(context, R.color.colorIndigo))
+                .drawCircleStyle(getResources().getColor(R.color.colorIndigo), getResources().getColor(R.color.colorPrimary))
+                .lineStyle(2.5f, getResources().getColor(R.color.colorIndigo))
                 .highlightStyle(Color.TRANSPARENT, 0.7f)
                 .addLegend(getString(R.string.systolic), getString(R.string.diastolic))
                 .build();
@@ -55,12 +52,6 @@ public class BloodPresssureChartActivity extends BaseChartActivity {
         return R.layout.activity_line_chart;
     }
 
-//    @Override
-//    public int getTypeMeasurement() {
-//        return 0;
-////        return MeasurementType.BLOOD_PRESSURE_SYSTOLIC;
-//    }
-
     @Override
     public String getTypeMeasurement() {
         return MeasurementType.BLOOD_PRESSURE;
@@ -69,12 +60,6 @@ public class BloodPresssureChartActivity extends BaseChartActivity {
     @Override
     public Chart getChart() {
         return lineChart;
-    }
-
-
-    @Override
-    protected void onResume() {
-        super.onResume();
     }
 
     @Override

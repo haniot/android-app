@@ -43,7 +43,7 @@ public class BodyCompositionChartActivity extends BaseChartActivity {
                 .setTextValuesColor(Color.WHITE)
                 .colorFontDescription(Color.WHITE)
                 .highlightStyle(Color.TRANSPARENT, 0.7f)
-                //.createLimit("Obesity", getLimitObesity(OBESITY_OVERWEIGHT), Color.RED)
+//                .createLimit("Obesity", getLimitObesity(OBESITY_OVERWEIGHT), Color.RED)
                 .build();
 
         requestData(CHART_TYPE_MONTH);
@@ -62,11 +62,6 @@ public class BodyCompositionChartActivity extends BaseChartActivity {
     @Override
     public String getTypeMeasurement() {
         return MeasurementType.BODY_MASS;
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
     }
 
     @Override

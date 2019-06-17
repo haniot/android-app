@@ -11,7 +11,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.nfc.Tag;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -43,6 +42,7 @@ import java.util.Locale;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.AddMeasurementActivity;
+import br.edu.uepb.nutes.haniot.activity.charts.BodyCompositionChartActivity;
 import br.edu.uepb.nutes.haniot.adapter.BodyCompositionAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
 import br.edu.uepb.nutes.haniot.data.model.BodyFat;
@@ -57,7 +57,6 @@ import br.edu.uepb.nutes.haniot.data.model.dao.MeasurementDAO;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
-import br.edu.uepb.nutes.haniot.fragment.MeasurementsGridFragment;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.ScaleManager;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.ScaleDataCallback;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
@@ -628,7 +627,7 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.chart_floating_button:
-//                startActivity(new Intent(getApplicationContext(), BodyCompositionChartActivity.class));
+                startActivity(new Intent(getApplicationContext(), BodyCompositionChartActivity.class));
                 break;
             case R.id.add_floating_button:
                 Intent it = new Intent(getApplicationContext(), AddMeasurementActivity.class);

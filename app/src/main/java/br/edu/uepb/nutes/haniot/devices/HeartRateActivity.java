@@ -42,6 +42,7 @@ import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.AddMeasurementActivity;
+import br.edu.uepb.nutes.haniot.activity.charts.HeartRateChartActivity;
 import br.edu.uepb.nutes.haniot.adapter.HeartRateAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
 import br.edu.uepb.nutes.haniot.data.model.Device;
@@ -506,7 +507,7 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
         if (measurement == null) return;
 
         runOnUiThread(() -> {
-            if(measurement.getDataset() != null && measurement.getDataset().isEmpty()) return;
+            if (measurement.getDataset() != null && measurement.getDataset().isEmpty()) return;
             mHeartRateTextView.setText(String.format("%03d", (int) measurement.getDataset().get(0).getValue()));
             mUnitHeartRateTextView.setText(measurement.getUnit());
 
@@ -563,7 +564,7 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.chart_floating_button:
-//                startActivity(new Intent(getApplicationContext(), HeartRateChartActivity.class));
+                startActivity(new Intent(getApplicationContext(), HeartRateChartActivity.class));
                 break;
             case R.id.add_floating_button:
                 Intent it = new Intent(getApplicationContext(), AddMeasurementActivity.class);

@@ -208,8 +208,8 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
      * @param period The period of time: 1d, 1w, 1m or 1y
      */
     protected void requestDataInServer(int period) {
-        String dateEnd = "lte:" + DateUtils.getCurrentDateTimeUTC(); // data atual
-        String dateStart = "gte:" + calcStartDate(dateEnd, period);
+        String dateEnd = DateUtils.getCurrentDateTimeUTC(); // data atual
+        String dateStart = calcStartDate(dateEnd, period);
         Log.w(TAG, "Data inicio: " + dateStart);
         Log.w(TAG, "Data fim: " + dateEnd);
 

@@ -40,6 +40,7 @@ import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.AddMeasurementActivity;
+import br.edu.uepb.nutes.haniot.activity.charts.GlucoseChartActivity;
 import br.edu.uepb.nutes.haniot.adapter.GlucoseAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
 import br.edu.uepb.nutes.haniot.data.model.Device;
@@ -577,7 +578,7 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.chart_floating_button:
-//                startActivity(new Intent(getApplicationContext(), GlucoseChartActivity.class));
+                startActivity(new Intent(getApplicationContext(), GlucoseChartActivity.class));
                 break;
             case R.id.add_floating_button:
                 Intent it = new Intent(getApplicationContext(), AddMeasurementActivity.class);

@@ -169,37 +169,38 @@ public final class CreateChart<T> {
         final String[] quarters = new String[dataList.size()];
 
         List<Measurement> measurements = (List<Measurement>) dataList;
+        String timestamp = null;
 
-        for (int i = 0; i < measurements.size(); i++) {
-            String date = DateUtils.formatDate(
-                    measurements.get(i).getTimestamp(), params.formatDate);
-            entries.add(new Entry((float) i, (int) measurements.get(i).getValue()));
+        if (MeasurementType.HEART_RATE.equals(measurements.get(0).getType())) {
 
-//            if (!measurements.get(i).getDataset().isEmpty())
-//                if (measurements.get(i).getDataset().get(0).getTypeId() == MeasurementType.BLOOD_PRESSURE_DIASTOLIC)
-//                    entries2.add(new Entry(i, (float) measurements.get(i).getMeasurementList().get(0).getValue()));
+            for (int i = 0; i < measurements.size(); i++) {
+                timestamp = measurements.get(i).getDataset().get(0).getTimestamp();
+                String date = DateUtils.formatDate(timestamp, params.formatDate);
+                entries.add(new Entry(i, measurements.get(i).getDataset().get(0).getValue()));
+                quarters[i] = date;
+            }
+        } else if (MeasurementType.BLOOD_PRESSURE.equals(measurements.get(0).getType())) {
 
-            quarters[i] = date;
+            for (int i = 0; i < measurements.size(); i++) {
+                timestamp = measurements.get(i).getTimestamp();
+                String date = DateUtils.formatDate(timestamp, params.formatDate);
+                entries.add(new Entry(i, measurements.get(i).getSystolic()));
+                entries2.add(new Entry(i, measurements.get(i).getDiastolic()));
+                quarters[i] = date;
+            }
+        } else {
+
+            for (int i = 0; i < measurements.size(); i++) {
+                timestamp = measurements.get(i).getTimestamp();
+                String date = DateUtils.formatDate(timestamp, params.formatDate);
+                entries.add(new Entry(i, (int) measurements.get(i).getValue()));
+                quarters[i] = date;
+            }
         }
-//        for (int i = 0; i < data.size(); i++) {
-//
-//            String date = DateUtils.formatDate(
-//                    data.get(i).getRegistrationDate(),
-//                    params.formatDate);
-//
-//                entries.add(new Entry((float) i, (int) data.get(i).getValue()));
-//
-//                if (!data.get(i).getMeasurementList().isEmpty())
-//                    if (data.get(i).getMeasurementList().get(0).getTypeId() == MeasurementType.BLOOD_PRESSURE_DIASTOLIC)
-//                        entries2.add(new Entry(i, (float) data.get(i).getMeasurementList().get(0).getValue()));
-//            quarters[i] = date;
-//        }
-
         //Format date
         IAxisValueFormatter formatter = ((value, axis) -> {
             if (value >= quarters.length || value < 0) return "";
             return quarters[(int) value];
-
         });
         return formatter;
     }
@@ -330,8 +331,8 @@ public final class CreateChart<T> {
                 set2.setDrawCircleHole(params.drawCirclesHoleEnabled);
                 set2.setHighlightEnabled(params.highlightEnabled);
                 set2.setHighLightColor(params.colorHighLight);
-                set2.setCircleColor(ContextCompat.getColor(context, R.color.colorOrange));
-                set2.setCircleColorHole(ContextCompat.getColor(context, R.color.colorPrimary));
+                set2.setCircleColor(ContextCompat.getColor(params.context, R.color.colorOrange));
+                set2.setCircleColorHole(ContextCompat.getColor(params.context, R.color.colorPrimary));
                 set2.setValueTextColor(params.colorValuesText);
                 set2.setCircleRadius(params.circleValueRadius);
                 set2.setCircleHoleRadius(params.circleHoleValueRadius);
@@ -340,7 +341,7 @@ public final class CreateChart<T> {
                 set2.setMode(params.typeLine);
                 set2.setDrawFilled(params.filledLine);
                 set2.setFillColor(params.lineFilledColor);
-                set2.setColor(ContextCompat.getColor(context, R.color.colorOrange));
+                set2.setColor(ContextCompat.getColor(params.context, R.color.colorOrange));
             }
 
             LineChart mLineChart = (LineChart) mChart;
