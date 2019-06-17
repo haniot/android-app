@@ -19,25 +19,19 @@ import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.github.mikephil.charting.charts.Chart;
 
-import org.json.JSONObject;
-
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.activity.settings.Session;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.MeasurementType;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
-import br.edu.uepb.nutes.haniot.server.historical.CallbackHistorical;
-import br.edu.uepb.nutes.haniot.server.historical.Historical;
-import br.edu.uepb.nutes.haniot.server.historical.HistoricalType;
-import br.edu.uepb.nutes.haniot.server.historical.Params;
+import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
-import br.edu.uepb.nutes.haniot.utils.NameColumnsDB;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -57,8 +51,6 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
     public final int CHART_TYPE_YEAR = 4;
 
     protected int currentChartType;
-    //    public Params params;
-    public int typeId;
     private AppPreferencesHelper appPreferencesHelper;
     private HaniotNetRepository haniotNetRepository;
     private Patient patient;
@@ -115,17 +107,23 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
             boxMeasurement.requestLayout();
             boxToolbar.requestLayout();
         }
-
         fabDay.setOnClickListener(this);
         fabWeek.setOnClickListener(this);
         fabMonth.setOnClickListener(this);
         fabYear.setOnClickListener(this);
+        fabActionMenu.getMenuIconView().setImageDrawable(getResources().getDrawable(R.drawable.ic_month));
     }
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         DisposableManager.dispose();
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        requestData(currentChartType);
     }
 
     public abstract void initView();
@@ -135,6 +133,8 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
     public abstract String getTypeMeasurement();
 
     public abstract Chart getChart();
+
+    abstract public void onUpdateData(List<Measurement> data, int currentChartType);
 
     /**
      * Check if is tablet.
@@ -152,146 +152,94 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.fab_day:
-                requestData(CHART_TYPE_DAY);
+                currentChartType = CHART_TYPE_DAY;
                 fabActionMenu.getMenuIconView().setImageDrawable(getResources().getDrawable(R.drawable.ic_day));
-                fabActionMenu.close(true);
                 break;
-
             case R.id.fab_month:
-                requestData(CHART_TYPE_MONTH);
+                currentChartType = CHART_TYPE_MONTH;
                 fabActionMenu.getMenuIconView().setImageDrawable(getResources().getDrawable(R.drawable.ic_month));
-                fabActionMenu.close(true);
                 break;
-
             case R.id.fab_week:
-                requestData(CHART_TYPE_SEVEN);
+                currentChartType = CHART_TYPE_SEVEN;
                 fabActionMenu.getMenuIconView().setImageDrawable(getResources().getDrawable(R.drawable.ic_week));
-                fabActionMenu.close(true);
                 break;
             case R.id.fab_year:
+                currentChartType = CHART_TYPE_YEAR;
                 fabActionMenu.getMenuIconView().setImageDrawable(getResources().getDrawable(R.drawable.ic_year));
-                requestData(CHART_TYPE_YEAR);
-                fabActionMenu.close(true);
                 break;
         }
+        requestData(currentChartType);
+        fabActionMenu.close(true);
     }
 
-    protected void requestDataInServer(String period) {
-        String dateStart = null;
-        String dateEnd = null;
-
-        DisposableManager.add(haniotNetRepository.
-                getAllMeasurementsByType(patient.get_id(), getTypeMeasurement(), "timestamp",
-                        dateStart, dateEnd, 0, 0)
-                .doOnSubscribe(disposable -> {
-                    Log.w(TAG, "onBeforeSend()");
-                    mProgressBar.setVisibility(View.VISIBLE);
-                    getChart().setVisibility(View.INVISIBLE);
-                })
-                .doAfterTerminate(() -> {
-                    Log.w(TAG, "onAfterSend()");
-                })
-                .subscribe(measurements -> {
-                    Log.w(TAG, "onSuccess()");
-                    if (measurements != null && measurements.isEmpty()) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                onUpdateData(new ArrayList<>(), currentChartType);
-                                createMoreInfo(new ArrayList<>());
-                            }
-                        });
-                    }
-                    if (measurements != null && measurements.size() > 0) {
-                        Log.w(TAG, "Size = " + measurements.size());
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                onUpdateData(measurements, currentChartType);
-                                createMoreInfo(measurements);
-                            }
-                        });
-                    }
-                }, error -> {
-                    Log.w(TAG, "onError()");
-                    printMessage(getString(R.string.error_500));
-                }));
-
-
-//        Historical.Query query = new Historical.Query()
-//                .type(HistoricalType.MEASUREMENTS_TYPE_USER)
-//                .params(params)
-//                .ordination(NameColumnsDB.MEASUREMENT_REGISTRATION_DATE, "asc");
-////
-//        if (!period.isEmpty()) query.filterDate(period);
-////
-////
-//        Historical hist = query.build();
-//
-//        hist.request(this, new CallbackHistorical<Measurement>() {
-//            @Override
-//            public void onBeforeSend() {
-//                Log.w(TAG, "onBeforeSend()");
-//                mProgressBar.setVisibility(View.VISIBLE);
-//                getChart().setVisibility(View.INVISIBLE);
-//
-//            }
-//
-//            @Override
-//            public void onError(JSONObject result) {
-//                Log.w(TAG, "onError()");
-//                printMessage(getString(R.string.error_500));
-//
-//            }
-//
-//            @Override
-//            public void onResult(List<Measurement> result) {
-//                Log.w(TAG, "onSuccess()");
-//                if (result.isEmpty() && result != null) {
-//                    runOnUiThread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            onUpdateData(new ArrayList<>(), currentChartType);
-//                            createMoreInfo(new ArrayList<>());
-//                        }
-//                    });
-//                }
-//                if (result != null && result.size() > 0) {
-//                    runOnUiThread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            onUpdateData(result, currentChartType);
-//                            createMoreInfo(result);
-//                        }
-//                    });
-//                }
-//            }
-//
-//            @Override
-//            public void onAfterSend() {
-//                Log.w(TAG, "onAfterSend()");
-//            }
-//        });
+    protected void requestData(int type) {
+        requestDataInServer(type);
     }
 
     /**
-     * Request data in server.
+     * Calculates the end date of according initial date and a period of time
      *
-     * @param type
+     * @param date   Initial date
+     * @param period Period of time
+     * @return
      */
-    protected void requestData(int type) {
-        if (type == CHART_TYPE_DAY) {
-            currentChartType = CHART_TYPE_DAY;
-            requestDataInServer("1d");
-        } else if (type == CHART_TYPE_SEVEN) {
-            currentChartType = CHART_TYPE_SEVEN;
-            requestDataInServer("1w");
-        } else if (type == CHART_TYPE_MONTH) {
-            currentChartType = CHART_TYPE_MONTH;
-            requestDataInServer("1m");
-        } else if (type == CHART_TYPE_YEAR) {
-            currentChartType = CHART_TYPE_YEAR;
-            requestDataInServer("1y");
+    private String calcStartDate(String date, int period) {
+        Calendar c = DateUtils.convertStringDateToCalendar(date, DateUtils.DATE_FORMAT_DATE_TIME);
+        switch (period) {
+            case CHART_TYPE_DAY:
+                c.add(Calendar.DAY_OF_YEAR, -1);
+                break;
+            case CHART_TYPE_SEVEN:
+                c.add(Calendar.DAY_OF_YEAR, -7);
+                break;
+            case CHART_TYPE_YEAR:
+                c.add(Calendar.DAY_OF_YEAR, -365);
+                break;
+            default:
+                c.add(Calendar.DAY_OF_YEAR, -30);
+                break;
+        }
+        return DateUtils.formatDate(c.getTimeInMillis(), DateUtils.DATE_FORMAT_DATE_TIME);
+    }
+
+    /**
+     * Request data in server of according with a period of time
+     *
+     * @param period The period of time: 1d, 1w, 1m or 1y
+     */
+    protected void requestDataInServer(int period) {
+        String dateEnd = "lte:" + DateUtils.getCurrentDateTimeUTC(); // data atual
+        String dateStart = "gte:" + calcStartDate(dateEnd, period);
+        Log.w(TAG, "Data inicio: " + dateStart);
+        Log.w(TAG, "Data fim: " + dateEnd);
+
+        if (ConnectionUtils.internetIsEnabled(this)) {
+            DisposableManager.add(haniotNetRepository.
+                    getAllMeasurementsByType(patient.get_id(), getTypeMeasurement(), "timestamp",
+                            dateStart, dateEnd, 1, 100)
+                    .doOnSubscribe(disposable -> {
+                        Log.w(TAG, "onBeforeSend()");
+                        mProgressBar.setVisibility(View.VISIBLE);
+                        getChart().setVisibility(View.INVISIBLE);
+                    })
+                    .subscribe(measurements -> {
+                        Log.w(TAG, "onSuccess()");
+                        if (measurements != null) {
+                            runOnUiThread(() -> {
+                                onUpdateData(measurements, currentChartType);
+                                createMoreInfo(measurements);
+                            });
+                        }
+                    }, error -> {
+                        Log.w(TAG, "onError()");
+                        printMessage(getString(R.string.error_500));
+                    }));
+        } else {
+            runOnUiThread(() -> {
+                onUpdateData(new ArrayList<>(), currentChartType);
+                createMoreInfo(new ArrayList<>());
+                printMessage(getString(R.string.connect_network_try_again));
+            });
         }
     }
 
@@ -301,72 +249,115 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
      * @param message
      */
     private void printMessage(String message) {
-        runOnUiThread(() -> {
-            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
-        });
+        runOnUiThread(() -> Toast.makeText(this, message, Toast.LENGTH_LONG).show());
     }
 
     public void createMoreInfo(List<Measurement> measurements) {
-        Log.d(TAG, "createMoreInfoOriginal");
         ArrayList<InfoMeasurement> infoMeasurements = new ArrayList<>();
         infoMeasurements.addAll(getInfosBase(measurements));
 
-        GridView gridView = (GridView) findViewById(R.id.moreinfo_grid);
+        GridView gridView = findViewById(R.id.moreinfo_grid);
         InfoAdapter infoAdapter = new InfoAdapter(this, infoMeasurements);
         gridView.setAdapter(infoAdapter);
     }
 
     protected ArrayList<InfoMeasurement> getInfosBase(List<Measurement> measurements) {
+        InfoMeasurement max = new InfoMeasurement(getString(R.string.info_max), "-");
+        InfoMeasurement min = new InfoMeasurement(getString(R.string.info_min), "-");
+        InfoMeasurement avg = new InfoMeasurement(getString(R.string.info_avarage), "-");
+        InfoMeasurement per = new InfoMeasurement(getString(R.string.info_period), " - ");
 
-        ArrayList<InfoMeasurement> infos = new ArrayList<>();
+        if (measurements != null && !measurements.isEmpty()) {
+            String firstMeasurementDate, lastMeasurementDate, unit = " ";
+            double mMax = 0, mMin = 0, mAvg = 0.0;
 
-        if (measurements.isEmpty()) {
-            infos.add(new InfoMeasurement(getString(R.string.info_max), "-"));
-            infos.add(new InfoMeasurement(getString(R.string.info_min), "-"));
-            infos.add(new InfoMeasurement(getString(R.string.info_avarage), "-"));
-            infos.add(new InfoMeasurement(getString(R.string.info_period), " - "));
-        } else {
-            double measurementValueMax = measurements.get(0).getValue();
-            double measurementValueMin = measurements.get(0).getValue();
-            double measurementValueAverage = 0.0;
+            int systolicMax = 0, systolicMin = 0, diastolicMax = 0, diastolicMin = 0;
 
-            for (Measurement measurement : measurements) {
-                measurementValueAverage += measurement.getValue();
-                if (measurementValueMax < measurement.getValue()) {
-                    measurementValueMax = measurement.getValue();
+            String type = getTypeMeasurement();
+
+            if (MeasurementType.HEART_RATE.equals(type)) {
+                mMax = measurements.get(0).getDataset().get(0).getValue();
+                mMin = measurements.get(0).getDataset().get(0).getValue();
+
+                for (Measurement measurement : measurements) {
+                    double value = measurement.getDataset().get(0).getValue();
+                    mAvg += value;
+
+                    if (mMax < value) mMax = value;
+                    if (mMin > value) mMin = value;
                 }
-                if (measurementValueMin > measurement.getValue()) {
-                    measurementValueMin = measurement.getValue();
-                }
+                firstMeasurementDate = DateUtils.formatDate(measurements.get(0).getDataset().get(0).getTimestamp(), getString(R.string.date_format));
+                lastMeasurementDate = DateUtils.formatDate(measurements.get(measurements.size() - 1).getDataset().get(0).getTimestamp(), getString(R.string.date_format));
+            } else if (MeasurementType.BLOOD_PRESSURE.equals(type)) {
+                int mediaMax, mediaMin;
 
-            }
-            measurementValueAverage /= measurements.size();
-            String unit = " " + measurements.get(0).getUnit();
-            String firstMeasurement = DateUtils.formatDate(measurements.get(0).getTimestamp(), getString(R.string.date_format));
-            String lastMeasurement = DateUtils.formatDate(measurements.get(measurements.size() - 1).getTimestamp(), getString(R.string.date_format));
-//
-            if (getTypeMeasurement() == MeasurementType.HEART_RATE
-//        || getTypeMeasurement() == MeasurementType.BLOOD_PRESSURE_DIASTOLIC
-//        || getTypeMeasurement() == MeasurementType.BLOOD_PRESSURE_SYSTOLIC
-                    || getTypeMeasurement() == MeasurementType.BLOOD_GLUCOSE) {
-                infos.add(new InfoMeasurement(getString(R.string.info_max), (int) measurementValueMax + unit));
-                infos.add(new InfoMeasurement(getString(R.string.info_min), (int) measurementValueMin + unit));
-                infos.add(new InfoMeasurement(getString(R.string.info_avarage), (int) measurementValueAverage + unit));
+                systolicMax = measurements.get(0).getSystolic();
+                systolicMin = measurements.get(0).getSystolic();
+                diastolicMax = measurements.get(0).getDiastolic();
+                diastolicMin = measurements.get(0).getDiastolic();
+
+                mediaMax = calcularMediaPressao(measurements.get(0).getSystolic(), measurements.get(0).getDiastolic());
+                mediaMin = calcularMediaPressao(measurements.get(0).getSystolic(), measurements.get(0).getDiastolic());
+
+                for (Measurement m : measurements) {
+                    int valor = calcularMediaPressao(m.getSystolic(), m.getDiastolic());
+                    mAvg += valor;
+
+                    if (mediaMax < valor) {
+                        mediaMax = valor;
+                        systolicMax = m.getSystolic();
+                        diastolicMax = m.getDiastolic();
+                    }
+                    if (mediaMin > valor) {
+                        mediaMin = valor;
+                        systolicMin = m.getSystolic();
+                        diastolicMin = m.getDiastolic();
+                    }
+                }
+                firstMeasurementDate = DateUtils.formatDate(measurements.get(0).getTimestamp(), getString(R.string.date_format));
+                lastMeasurementDate = DateUtils.formatDate(measurements.get(measurements.size() - 1).getTimestamp(), getString(R.string.date_format));
             } else {
-                infos.add(new InfoMeasurement(getString(R.string.info_max), (String.format("%.1f", measurementValueMax)) + unit));
-                infos.add(new InfoMeasurement(getString(R.string.info_min), (String.format("%.1f", measurementValueMin)) + unit));
-                infos.add(new InfoMeasurement(getString(R.string.info_avarage), (String.format("%.1f", measurementValueAverage)) + unit));
+                mMax = measurements.get(0).getValue();
+                mMin = measurements.get(0).getValue();
+
+                for (Measurement measurement : measurements) {
+                    double value = measurement.getValue();
+                    mAvg += value;
+
+                    if (mMax < value) mMax = value;
+                    if (mMin > value) mMin = value;
+                }
+                firstMeasurementDate = DateUtils.formatDate(measurements.get(0).getTimestamp(), getString(R.string.date_format));
+                lastMeasurementDate = DateUtils.formatDate(measurements.get(measurements.size() - 1).getTimestamp(), getString(R.string.date_format));
             }
-            if (firstMeasurement.equals(lastMeasurement))
-                infos.add(new InfoMeasurement(getString(R.string.info_period), firstMeasurement));
-            else
-                infos.add(new InfoMeasurement(getString(R.string.info_period), firstMeasurement + "\n-\n" + lastMeasurement));
+            mAvg /= measurements.size();
+            unit += measurements.get(0).getUnit();
+
+            if (type.equals(MeasurementType.HEART_RATE) || type.equals(MeasurementType.BLOOD_GLUCOSE)) {
+                max.setValue(mMax + unit);
+                min.setValue(mMin + unit);
+            } else if (type.equals(MeasurementType.BLOOD_PRESSURE)) {
+                max.setValue(systolicMax + "/" + diastolicMax + unit);
+                min.setValue(systolicMin + "/" + diastolicMin + unit);
+            } else {
+                max.setValue(String.format("%.1f", mMax) + unit);
+                min.setValue(String.format("%.1f", mMin) + unit);
+            }
+            avg.setValue(String.format("%.1f", mAvg));
+            per.setValue(firstMeasurementDate.equals(lastMeasurementDate) ?
+                    firstMeasurementDate : firstMeasurementDate + "\n-\n" + lastMeasurementDate);
         }
+        ArrayList<InfoMeasurement> infos = new ArrayList<>();
+        infos.add(max);
+        infos.add(min);
+        infos.add(avg);
+        infos.add(per);
         return infos;
     }
 
-
-    abstract public void onUpdateData(List<Measurement> data, int currentChartType);
+    private int calcularMediaPressao(int sis, int dia) {
+        return (sis + (dia * 2)) / 3;
+    }
 
     public class SpacesItemDecoration extends RecyclerView.ItemDecoration {
         private int space;
@@ -391,5 +382,3 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
         }
     }
 }
-
-
