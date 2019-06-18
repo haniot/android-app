@@ -25,7 +25,7 @@ import br.edu.uepb.nutes.haniot.data.model.MeasurementType;
  */
 public class GlucoseChartActivity extends BaseChartActivity {
 
-    private final float PRE_DIABETES = 100;
+    private final float PRE_DIABETES = 200;
     private CreateChart mChart;
     Chart lineChart;
 
@@ -43,7 +43,7 @@ public class GlucoseChartActivity extends BaseChartActivity {
                 .setTextValuesColor(Color.WHITE)
                 .colorFontDescription(Color.WHITE)
                 .highlightStyle(Color.TRANSPARENT, 0.7f)
-                .createLimit(getString(R.string.limit_glucose), PRE_DIABETES, Color.RED)
+                .createLimit("Indício de diabetes", PRE_DIABETES, Color.RED)
                 .build();
 
         requestData(CHART_TYPE_MONTH);

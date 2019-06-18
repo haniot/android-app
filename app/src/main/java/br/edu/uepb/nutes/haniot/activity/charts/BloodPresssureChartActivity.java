@@ -41,11 +41,8 @@ public class BloodPresssureChartActivity extends BaseChartActivity {
                 .drawCircleStyle(getResources().getColor(R.color.colorIndigo), getResources().getColor(R.color.colorPrimary))
                 .lineStyle(2.5f, getResources().getColor(R.color.colorIndigo))
                 .highlightStyle(Color.TRANSPARENT, 0.7f)
-                .createLimit("Perigo (Sistólica)", 140, getResources().getColor(R.color.colorRed))
-                .createLimit("Atenção (Sistólica)", 130, getResources().getColor(R.color.colorOrange))
-
-                .createLimit("Perigo (Diastólica)", 90, getResources().getColor(R.color.colorRed))
-                .createLimit("Atenção (Diastólica)", 85, getResources().getColor(R.color.colorOrange))
+                .createLimit("Sistólica elevada", 140, getResources().getColor(R.color.colorRed))
+                .createLimit("Diastólica elevada", 90, getResources().getColor(R.color.colorRed))
                 .addLegend(getString(R.string.systolic), getString(R.string.diastolic))
                 .build();
 

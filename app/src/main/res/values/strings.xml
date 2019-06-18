@@ -191,7 +191,7 @@
     <string name="diastolic">Diastólica</string>
     <string name="systolic">Sistólica</string>
     <string name="limit_heart_rate">Limit 1</string>
-    <string name="limit_glucose">Pre Diabetes</string>
+    <string name="limit_glucose">Pré-diabetes</string>
     <string name="limit_temperature">Febre</string>
 
     <!--FLOATING-->

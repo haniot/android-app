@@ -441,6 +441,14 @@ public class ScaleActivity extends AppCompatActivity implements View.OnClickList
                     noDataMessage.setText(getString(R.string.no_data_available));
                 }
                 noDataMessage.setVisibility(View.VISIBLE);
+                mDateLastMeasurement.setText("");
+                bodyMassTextView.setText("");
+                bodyMassUnitTextView.setText("");
+                bodyFatTextView.setText("");
+                unitBodyFatTextView.setText("");
+                titleBmiTextView.setVisibility(View.GONE);
+                titleBodyFatTextView.setVisibility(View.GONE);
+                bmiTextView.setText("");
             } else {
                 noDataMessage.setVisibility(View.GONE);
             }

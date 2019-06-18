@@ -296,11 +296,11 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
                 diastolicMax = measurements.get(0).getDiastolic();
                 diastolicMin = measurements.get(0).getDiastolic();
 
-                mediaMax = calcularMediaPressao(measurements.get(0).getSystolic(), measurements.get(0).getDiastolic());
-                mediaMin = calcularMediaPressao(measurements.get(0).getSystolic(), measurements.get(0).getDiastolic());
+                mediaMax = calcPressureAverage(measurements.get(0).getSystolic(), measurements.get(0).getDiastolic());
+                mediaMin = calcPressureAverage(measurements.get(0).getSystolic(), measurements.get(0).getDiastolic());
 
                 for (Measurement m : measurements) {
-                    int valor = calcularMediaPressao(m.getSystolic(), m.getDiastolic());
+                    int valor = calcPressureAverage(m.getSystolic(), m.getDiastolic());
                     mAvg += valor;
 
                     if (mediaMax < valor) {
@@ -334,11 +334,11 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
             unit += measurements.get(0).getUnit();
 
             if (type.equals(MeasurementType.HEART_RATE) || type.equals(MeasurementType.BLOOD_GLUCOSE)) {
-                max.setValue(mMax + unit);
-                min.setValue(mMin + unit);
+                max.setValue(((int) mMax) + unit);
+                min.setValue(((int) mMin) + unit);
             } else if (type.equals(MeasurementType.BLOOD_PRESSURE)) {
-                max.setValue(systolicMax + "/" + diastolicMax + unit);
-                min.setValue(systolicMin + "/" + diastolicMin + unit);
+                max.setValue(systolicMax + "/" + diastolicMax + "\n" + unit);
+                min.setValue(systolicMin + "/" + diastolicMin + "\n" + unit);
             } else {
                 max.setValue(String.format("%.1f", mMax) + unit);
                 min.setValue(String.format("%.1f", mMin) + unit);
@@ -355,7 +355,7 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
         return infos;
     }
 
-    private int calcularMediaPressao(int sis, int dia) {
+    private int calcPressureAverage(int sis, int dia) {
         return (sis + (dia * 2)) / 3;
     }
 

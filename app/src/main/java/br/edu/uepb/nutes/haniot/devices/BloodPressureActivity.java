@@ -342,8 +342,14 @@ public class BloodPressureActivity extends AppCompatActivity implements View.OnC
                 }
                 noDataMessage.setVisibility(View.VISIBLE);
                 mDateLastMeasurement.setText("");
+                mUnitBloodPressureTextView.setText("");
+                mBloodPressureDiaTextView.setText("");
+                mBloodPressureSysTextView.setText("");
+                mBloodPressurePulseTextView.setText("");
+                mUnitPulseTextView.setVisibility(View.GONE);
             } else {
                 noDataMessage.setVisibility(View.GONE);
+                mUnitPulseTextView.setVisibility(View.VISIBLE);
             }
         });
     }

@@ -430,8 +430,13 @@ public class HeartRateActivity extends AppCompatActivity implements View.OnClick
                     noDataMessage.setText(getString(R.string.no_data_available));
                 }
                 noDataMessage.setVisibility(View.VISIBLE);
+                mDateLastMeasurement.setText("");
+                mHeartRateTextView.setText("");
+                mUnitHeartRateTextView.setText("");
+                mHeartImageView.setVisibility(View.GONE);
             } else {
                 noDataMessage.setVisibility(View.GONE);
+                mHeartImageView.setVisibility(View.VISIBLE);
             }
         });
     }

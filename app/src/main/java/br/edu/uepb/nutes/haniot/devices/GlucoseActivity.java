@@ -400,6 +400,9 @@ public class GlucoseActivity extends AppCompatActivity implements View.OnClickLi
                     noDataMessage.setText(getString(R.string.no_data_available));
                 }
                 noDataMessage.setVisibility(View.VISIBLE);
+                mDateLastMeasurement.setText("");
+                mBloodGlucoseTextView.setText("");
+                mUnitBloodGlucoseTextView.setText("");
             } else {
                 noDataMessage.setVisibility(View.GONE);
             }

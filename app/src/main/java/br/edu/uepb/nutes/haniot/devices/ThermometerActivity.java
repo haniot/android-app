@@ -391,6 +391,9 @@ public class ThermometerActivity extends AppCompatActivity implements View.OnCli
                     noDataMessage.setText(getString(R.string.no_data_available));
                 }
                 noDataMessage.setVisibility(View.VISIBLE);
+                mTemperatureTextView.setText("");
+                mUnitTemperatureTextView.setText("");
+                mDateLastMeasurement.setText("");
             } else {
                 noDataMessage.setVisibility(View.GONE);
             }

@@ -43,7 +43,7 @@ public class HeartRateChartActivity extends BaseChartActivity {
                 .setTextValuesColor(Color.WHITE)
                 .colorFontDescription(Color.WHITE)
                 .highlightStyle(Color.TRANSPARENT, 0.7f)
-                .createLimit(getString(R.string.limit_heart_rate), TACHYCARDIA, Color.RED)
+//                .createLimit(getString(R.string.limit_heart_rate), TACHYCARDIA, Color.RED)
                 .build();
 
         requestData(CHART_TYPE_MONTH);
