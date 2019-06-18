@@ -52,8 +52,8 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
 
     protected int currentChartType;
     private AppPreferencesHelper appPreferencesHelper;
-    private HaniotNetRepository haniotNetRepository;
-    private Patient patient;
+    protected HaniotNetRepository haniotNetRepository;
+    protected Patient patient;
 
     @BindView(R.id.toolbar)
     public Toolbar mToolbar;

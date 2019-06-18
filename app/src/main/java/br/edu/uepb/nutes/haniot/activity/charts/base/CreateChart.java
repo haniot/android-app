@@ -70,6 +70,10 @@ public final class CreateChart<T> {
         this.mChart = mChart;
     }
 
+    public Params getParams() {
+        return params;
+    }
+
     /**
      * Configure and draw chart with List.
      *
