@@ -157,19 +157,18 @@ public class ManagerPatientsActivity extends AppCompatActivity {
         adapter.setPatientActionListener(new ManagerPatientAdapter.ActionsPatientListener() {
             @Override
             public void onMenuClick(String action, Patient patient) {
-                switch (action) {
-                    case "quiz_dentistry":
-                        appPreferencesHelper.saveLastPatient(patient);
-                        startActivity(new Intent(ManagerPatientsActivity.this, QuizOdontologyActivity.class));
-                        break;
-                    case "quiz_nutrition":
-                        appPreferencesHelper.saveLastPatient(patient);
-                        startActivity(new Intent(ManagerPatientsActivity.this, QuizNutritionActivity.class));
-                        break;
-                    case "nutrition_evaluation":
-                        appPreferencesHelper.saveLastPatient(patient);
-                        startActivity(new Intent(ManagerPatientsActivity.this, NutritionalEvaluationActivity.class));
-                        break;
+                if ("quiz_dentistry".equals(action)) {
+                    appPreferencesHelper.saveLastPatient(patient);
+                    startActivity(new Intent(ManagerPatientsActivity.this, QuizOdontologyActivity.class));
+                } else if ("quiz_nutrition".equals(action)) {
+                    appPreferencesHelper.saveLastPatient(patient);
+                    startActivity(new Intent(ManagerPatientsActivity.this, QuizNutritionActivity.class));
+                } else if ("nutrition_evaluation".equals(action)) {
+                    appPreferencesHelper.saveLastPatient(patient);
+                    startActivity(new Intent(ManagerPatientsActivity.this, NutritionalEvaluationActivity.class));
+                } else if ("historic_quiz".equals(action)) {
+                    appPreferencesHelper.saveLastPatient(patient);
+                    startActivity(new Intent(ManagerPatientsActivity.this, HistoricQuizActivity.class));
                 }
             }
 

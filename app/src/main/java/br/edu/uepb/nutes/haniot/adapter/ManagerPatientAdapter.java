@@ -125,6 +125,9 @@ public class ManagerPatientAdapter extends BaseAdapter<Patient> {
                         case R.id.nutrition_evaluation:
                             actionsPatientListener.onMenuClick("nutrition_evaluation", patient);
                             break;
+                        case R.id.historic_quiz:
+                            actionsPatientListener.onMenuClick("historic_quiz", patient);
+                            break;
                         default:
                             break;
                     }

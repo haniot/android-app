@@ -173,7 +173,7 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
     }
 
     /**
-     * Get get evaluation group object by type.
+     * Get get quizList group object by type.
      *
      * @param type
      * @return
@@ -257,7 +257,7 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
     }
 
     /**
-     * Prepare evaluation data from the server.
+     * Prepare quizList data from the server.
      *
      * @param data
      * @param type
@@ -354,7 +354,7 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
     }
 
     /**
-     * Download data evaluation from the server.
+     * Download data quizList from the server.
      */
     private void downloadData() {
 
@@ -454,7 +454,7 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
      */
     private void sendEvaluation() {
 
-        Log.i("AAA", "Preparing evaluation...");
+        Log.i("AAA", "Preparing quizList...");
         nutritionalEvaluation.setPatient(patient);
         nutritionalEvaluation.setHealthProfessionalId(appPreferencesHelper.getUserLogged().get_id());
         nutritionalEvaluation.setPilotStudy(appPreferencesHelper.getLastPilotStudy().get_id());
