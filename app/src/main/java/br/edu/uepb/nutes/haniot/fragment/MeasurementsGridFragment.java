@@ -936,8 +936,6 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
             case ItemGridType.BLOOD_PRESSURE:
                 startActivity(new Intent(mContext, BloodPressureActivity.class));
                 break;
-            default:
-                break;
         }
     }
 

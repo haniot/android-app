@@ -210,7 +210,7 @@
             android:paddingTop="10dp">
 
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/blood_pressure_recyclerview"
+                android:id="@+id/blood_pressure_recyclerviewt"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scrollbarSize="3sp"
