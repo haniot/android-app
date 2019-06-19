@@ -1,6 +1,7 @@
 package br.edu.uepb.nutes.haniot.activity.charts;
 
 import android.graphics.Color;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -15,6 +16,7 @@ import br.edu.uepb.nutes.haniot.activity.charts.base.BaseChartActivity;
 import br.edu.uepb.nutes.haniot.activity.charts.base.CreateChart;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.MeasurementType;
+import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 
 /**
  * BodyCompositionChartActivity implementation.
@@ -43,8 +45,8 @@ public class BodyCompositionChartActivity extends BaseChartActivity {
                 .setTextValuesColor(Color.WHITE)
                 .colorFontDescription(Color.WHITE)
                 .highlightStyle(Color.TRANSPARENT, 0.7f)
-                //.createLimit("Obesity", getLimitObesity(OBESITY_OVERWEIGHT), Color.RED)
                 .build();
+        setLimitObesity();
 
         requestData(CHART_TYPE_MONTH);
     }
@@ -65,11 +67,6 @@ public class BodyCompositionChartActivity extends BaseChartActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
@@ -86,7 +83,27 @@ public class BodyCompositionChartActivity extends BaseChartActivity {
         lineChart.setVisibility(View.VISIBLE);
     }
 
-//    public float getLimitObesity(float IMC){
-//        return (float) (IMC*Math.pow(session.getUserLogged().getHeight(), 2));
-//    }
+    /**
+     * Configure the obesity limit in the chart
+     */
+    public void setLimitObesity() {
+        runOnUiThread(() -> {
+            DisposableManager.add(haniotNetRepository.
+                    getAllMeasurementsByType(patient.get_id(), MeasurementType.HEIGHT,
+                            "-timestamp", null, null, 1, 1)
+                    .doAfterSuccess(measurements -> {
+                        if (measurements != null && measurements.size() > 0) {
+                            double height = measurements.get(0).getValue();
+
+                            if (measurements.get(0).getUnit().equals("cm")) height /= 100;
+                            float limit = (float) (OBESITY_OVERWEIGHT * Math.pow(height, 2));
+                            mChart.getParams().createLimit(getString(R.string.limit_obesity), limit, Color.RED);
+                            mChart.getmChart().invalidate();
+                        }
+                    })
+                    .subscribe(measurements -> {
+                    }, error -> Log.w("ChartBodyComposition", "onError()")));
+        });
+
+    }
 }

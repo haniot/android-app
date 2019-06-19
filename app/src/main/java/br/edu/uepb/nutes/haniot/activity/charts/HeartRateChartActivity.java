@@ -43,7 +43,6 @@ public class HeartRateChartActivity extends BaseChartActivity {
                 .setTextValuesColor(Color.WHITE)
                 .colorFontDescription(Color.WHITE)
                 .highlightStyle(Color.TRANSPARENT, 0.7f)
-                .createLimit(getString(R.string.limit_heart_rate), TACHYCARDIA, Color.RED)
                 .build();
 
         requestData(CHART_TYPE_MONTH);
@@ -54,13 +53,6 @@ public class HeartRateChartActivity extends BaseChartActivity {
         return R.layout.activity_line_chart;
     }
 
-//    @Override
-//    public int getTypeMeasurement() {
-//        return 0;
-////        return MeasurementType.HEART_RATE;
-//    }
-
-
     @Override
     public String getTypeMeasurement() {
         return MeasurementType.HEART_RATE;
@@ -69,13 +61,6 @@ public class HeartRateChartActivity extends BaseChartActivity {
     @Override
     public Chart getChart() {
         return lineChart;
-    }
-
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        requestData(CHART_TYPE_DAY);
     }
 
     @Override
