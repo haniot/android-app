@@ -189,18 +189,12 @@ public class HistoricQuizAdapter extends ExpandableRecyclerViewAdapter<HistoricQ
         });
 
         StringBuilder stringBuilder = new StringBuilder();
-        String date = "";
-        String time = "";
 
         Log.w("AAAAAA", "Type Evaluation: " + ig.getTypeEvaluation());
 
         switch (ig.getTypeEvaluation()) {
             case SLEEP_HABITS:
                 SleepHabit sleepHabit = ig.getSleepHabit();
-                date = DateUtils.convertDateTimeUTCToLocale(sleepHabit.getCreatedAt(),
-                        context.getString(R.string.date_format));
-                time = DateUtils.convertDateTimeUTCToLocale(sleepHabit.getCreatedAt(),
-                        context.getString(R.string.time_format_simple));
                 stringBuilder.append("\nDorme às ").append(sleepHabit.getWeekDaySleep())
                         .append(" horas");
                 stringBuilder.append("\nAcorda às ").append(sleepHabit.getWeekDayWakeUp())
@@ -209,10 +203,6 @@ public class HistoricQuizAdapter extends ExpandableRecyclerViewAdapter<HistoricQ
             case MEDICAL_RECORDS:
                 MedicalRecord medicalRecord = ig.getMedicalRecord();
                 if (medicalRecord == null) return;
-                date = DateUtils.convertDateTimeUTCToLocale(medicalRecord.getCreatedAt(),
-                        context.getString(R.string.date_format));
-                time = DateUtils.convertDateTimeUTCToLocale(medicalRecord.getCreatedAt(),
-                        context.getString(R.string.time_format_simple));
                 if (medicalRecord.getChronicDiseases() != null) {
                     for (ChronicDisease chronicDisease : medicalRecord.getChronicDiseases())
                         stringBuilder
@@ -226,10 +216,6 @@ public class HistoricQuizAdapter extends ExpandableRecyclerViewAdapter<HistoricQ
                 break;
             case FEEDING_HABITS:
                 FeedingHabitsRecord feedingHabitsRecord = ig.getFeedingHabitsRecord();
-                date = DateUtils.convertDateTimeUTCToLocale(feedingHabitsRecord.getCreatedAt(),
-                        context.getString(R.string.date_format));
-                time = DateUtils.convertDateTimeUTCToLocale(feedingHabitsRecord.getCreatedAt(),
-                        context.getString(R.string.time_format_simple));
                 stringBuilder.append("\nCopos de água por dia: ").append(FrequencyAnswersType.Frequency
                         .getStringPTBR(feedingHabitsRecord.getDailyWaterGlasses()));
                 stringBuilder.append("\nCafé da manhã: ").append(FrequencyAnswersType.Frequency
@@ -244,10 +230,6 @@ public class HistoricQuizAdapter extends ExpandableRecyclerViewAdapter<HistoricQ
                 break;
             case PHYSICAL_ACTIVITY:
                 PhysicalActivityHabit physicalActivityHabit = ig.getPhysicalActivityHabit();
-                date = DateUtils.convertDateTimeUTCToLocale(physicalActivityHabit.getCreatedAt(),
-                        context.getString(R.string.date_format));
-                time = DateUtils.convertDateTimeUTCToLocale(physicalActivityHabit.getCreatedAt(),
-                        context.getString(R.string.time_format_simple));
                 stringBuilder.append("\nEsportes praticados durante a semana: \n");
                 for (String sport : physicalActivityHabit.getWeeklyActivities()) {
                     stringBuilder.append(sport).append("\n");
@@ -257,7 +239,7 @@ public class HistoricQuizAdapter extends ExpandableRecyclerViewAdapter<HistoricQ
                                 .getStringPTBR(physicalActivityHabit.getSchoolActivityFreq()));
                 break;
         }
-        h.messageText.setText(stringBuilder.append(String.format("\n\nRespondido em %s às %s", date, time)));
+        h.messageText.setText(stringBuilder);
     }
 
     /**

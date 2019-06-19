@@ -64,9 +64,6 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
     @BindView(R.id.message_patient)
     TextView messagePatient;
 
-    @BindView(R.id.gender_icon)
-    ImageView gender;
-
     private HaniotNetRepository haniotNetRepository;
     private AppPreferencesHelper appPreferencesHelper;
     private Patient patient;
@@ -98,10 +95,6 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
         setSupportActionBar(toolbar);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        messagePatient.setText(String.format(getResources().getString(R.string.quiz_historic_message),
-                patient.getName()));
-        if (patient.getGender().equals("female")) gender.setImageResource(R.drawable.x_girl);
-        else gender.setImageResource(R.drawable.x_boy);
     }
 
     @Override
@@ -114,58 +107,59 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
      * Download data quizList from the server.
      */
     private void downloadData() {
+//        DisposableManager.add(haniotNetRepository
+//                .getAllMedicalRecord(appPreferencesHelper.getLastPatient().get_id()
+//                        , 1, 20, "created_at")
+//                .subscribe(medicalRecords ->
+//                                prepareData(medicalRecords, MEDICAL_RECORDS),
+//                        error -> {
+//                            Log.i("AAA", error.getMessage());
+//                            onDownloadError(MEDICAL_RECORDS);
+//                        }));
+//
+//        DisposableManager.add(haniotNetRepository
+//                .getAllPhysicalActivity(appPreferencesHelper.getLastPatient().get_id()
+//                        , 1, 20, "created_at")
+//                .subscribe(physicalActivityHabits ->
+//                                prepareData(physicalActivityHabits, PHYSICAL_ACTIVITY),
+//                        type -> onDownloadError(PHYSICAL_ACTIVITY)));
+//
+//        DisposableManager.add(haniotNetRepository
+//                .getAllFeedingHabits(appPreferencesHelper.getLastPatient().get_id()
+//                        , 1, 20, "created_at")
+//                .subscribe(feedingHabitsRecords ->
+//                                prepareData(feedingHabitsRecords, FEEDING_HABITS),
+//                        type -> onDownloadError(FEEDING_HABITS)));
+//
+//        DisposableManager.add(haniotNetRepository
+//                .getAllSleepHabits(appPreferencesHelper.getLastPatient().get_id()
+//                        , 1, 20, "created_at")
+//                .subscribe(sleepHabits ->
+//                                prepareData(sleepHabits, SLEEP_HABITS),
+//                        type -> onDownloadError(SLEEP_HABITS)));
+//
+//        DisposableManager.add(haniotNetRepository
+//                .getAllOralHealth(appPreferencesHelper.getLastPatient().get_id()
+//                        , 1, 20, "created_at")
+//                .subscribe(oralHealthRecords ->
+//                                prepareData(oralHealthRecords, ORAL_HEALTH),
+//                        type -> onDownloadError(ORAL_HEALTH)));
+//
+//        DisposableManager.add(haniotNetRepository
+//                .getAllFamilyCohesion(appPreferencesHelper.getLastPatient().get_id()
+//                        , 1, 20, "created_at")
+//                .subscribe(familyCohesionRecords ->
+//                                prepareData(familyCohesionRecords, FAMILY_COHESION),
+//                        type -> onDownloadError(FAMILY_COHESION)));
+//
+//        DisposableManager.add(haniotNetRepository
+//                .getAllSociodemographic(appPreferencesHelper.getLastPatient().get_id()
+//                        , 1, 20, "created_at")
+//                .subscribe(sociodemographicRecords ->
+//                                prepareData(sociodemographicRecords, SOCIODEMOGRAPHICS),
+//                        type -> onDownloadError(SOCIODEMOGRAPHICS)));
 
-        DisposableManager.add(haniotNetRepository
-                .getAllMedicalRecord(appPreferencesHelper.getLastPatient().get_id()
-                        , 1, 20, "created_at")
-                .subscribe(medicalRecords ->
-                                prepareData(medicalRecords, MEDICAL_RECORDS),
-                        error -> {
-                            Log.i("AAA", error.getMessage());
-                            onDownloadError(MEDICAL_RECORDS);
-                        }));
 
-        DisposableManager.add(haniotNetRepository
-                .getAllPhysicalActivity(appPreferencesHelper.getLastPatient().get_id()
-                        , 1, 20, "created_at")
-                .subscribe(physicalActivityHabits ->
-                                prepareData(physicalActivityHabits, PHYSICAL_ACTIVITY),
-                        type -> onDownloadError(PHYSICAL_ACTIVITY)));
-
-        DisposableManager.add(haniotNetRepository
-                .getAllFeedingHabits(appPreferencesHelper.getLastPatient().get_id()
-                        , 1, 20, "created_at")
-                .subscribe(feedingHabitsRecords ->
-                                prepareData(feedingHabitsRecords, FEEDING_HABITS),
-                        type -> onDownloadError(FEEDING_HABITS)));
-
-        DisposableManager.add(haniotNetRepository
-                .getAllSleepHabits(appPreferencesHelper.getLastPatient().get_id()
-                        , 1, 20, "created_at")
-                .subscribe(sleepHabits ->
-                                prepareData(sleepHabits, SLEEP_HABITS),
-                        type -> onDownloadError(SLEEP_HABITS)));
-
-        DisposableManager.add(haniotNetRepository
-                .getAllOralHealth(appPreferencesHelper.getLastPatient().get_id()
-                        , 1, 20, "created_at")
-                .subscribe(oralHealthRecords ->
-                                prepareData(oralHealthRecords, ORAL_HEALTH),
-                        type -> onDownloadError(ORAL_HEALTH)));
-
-        DisposableManager.add(haniotNetRepository
-                .getAllFamilyCohesion(appPreferencesHelper.getLastPatient().get_id()
-                        , 1, 20, "created_at")
-                .subscribe(familyCohesionRecords ->
-                                prepareData(familyCohesionRecords, FAMILY_COHESION),
-                        type -> onDownloadError(FAMILY_COHESION)));
-
-        DisposableManager.add(haniotNetRepository
-                .getAllSociodemographic(appPreferencesHelper.getLastPatient().get_id()
-                        , 1, 20, "created_at")
-                .subscribe(sociodemographicRecords ->
-                                prepareData(sociodemographicRecords, SOCIODEMOGRAPHICS),
-                        type -> onDownloadError(SOCIODEMOGRAPHICS)));
     }
 
     /**
@@ -274,43 +268,43 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
         itemsLoading = new ArrayList<>();
         itemsLoading.add(new ItemEvaluation(R.drawable.action_quiz, TYPE_LOADING,
                 "Histórico de Saúde", TypeEvaluation.MEDICAL_RECORDS));
-        groupItemEvaluations.add(new GroupItemEvaluation("Questionário Nutricional - Histórico de Saúde",
+        groupItemEvaluations.add(new GroupItemEvaluation("19/06/2019 - 13:00",
                 itemsLoading, MEDICAL_RECORDS));
 
         itemsLoading = new ArrayList<>();
         itemsLoading.add(new ItemEvaluation(R.drawable.action_quiz, TYPE_LOADING,
                 "Hábitos Físicos", TypeEvaluation.PHYSICAL_ACTIVITY));
-        groupItemEvaluations.add(new GroupItemEvaluation("Questionário Nutricional - Hábitos Físicos",
+        groupItemEvaluations.add(new GroupItemEvaluation("18/06/2019 - 13:00",
                 itemsLoading, PHYSICAL_ACTIVITY));
 
         itemsLoading = new ArrayList<>();
         itemsLoading.add(new ItemEvaluation(R.drawable.action_quiz, TYPE_LOADING,
                 "Hábitos Alimentares", TypeEvaluation.FEEDING_HABITS));
-        groupItemEvaluations.add(new GroupItemEvaluation("Questionário Nutricional - Hábitos Alimentares",
+        groupItemEvaluations.add(new GroupItemEvaluation("17/06/2019 - 13:00",
                 itemsLoading, FEEDING_HABITS));
 
         itemsLoading = new ArrayList<>();
         itemsLoading.add(new ItemEvaluation(R.drawable.action_quiz, TYPE_LOADING,
                 "Hábitos do Sono", TypeEvaluation.SLEEP_HABITS));
-        groupItemEvaluations.add(new GroupItemEvaluation("Questionário Nutricional - Hábitos do Sono",
+        groupItemEvaluations.add(new GroupItemEvaluation("16/06/2019 - 13:00",
                 itemsLoading, SLEEP_HABITS));
 
         itemsLoading = new ArrayList<>();
         itemsLoading.add(new ItemEvaluation(R.drawable.action_quiz, TYPE_LOADING,
                 "Sociodemográfico", SOCIODEMOGRAPHICS));
-        groupItemEvaluations.add(new GroupItemEvaluation("Questionário Nutricional - Sociodemográfico",
+        groupItemEvaluations.add(new GroupItemEvaluation("15/06/2019 - 13:00",
                 itemsLoading, SOCIODEMOGRAPHICS));
 
         itemsLoading = new ArrayList<>();
         itemsLoading.add(new ItemEvaluation(R.drawable.action_quiz, TYPE_LOADING,
                 "Coesão Familiar", TypeEvaluation.FAMILY_COHESION));
-        groupItemEvaluations.add(new GroupItemEvaluation("Questionário Nutricional - Coesão Familiar",
+        groupItemEvaluations.add(new GroupItemEvaluation("14/06/2019 - 13:00",
                 itemsLoading, FAMILY_COHESION));
 
         itemsLoading = new ArrayList<>();
         itemsLoading.add(new ItemEvaluation(R.drawable.action_quiz, TYPE_LOADING,
                 "Saúde Bucal", ORAL_HEALTH));
-        groupItemEvaluations.add(new GroupItemEvaluation("Questionário Nutricional - Saúde Bucal",
+        groupItemEvaluations.add(new GroupItemEvaluation("13/06/2019 - 13:00",
                 itemsLoading, ORAL_HEALTH));
 
         initRecyclerView();
