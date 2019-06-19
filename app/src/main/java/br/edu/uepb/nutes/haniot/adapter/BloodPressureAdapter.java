@@ -51,7 +51,7 @@ public class BloodPressureAdapter extends BaseAdapter<Measurement> {
 
             h.systolic.setText(String.valueOf(m.getSystolic()).concat("/"));
             h.diastolic.setText(String.valueOf(m.getDiastolic()));
-            h.pulse.setText(String.valueOf((int) m.getPulse()));
+            h.pulse.setText(String.valueOf(m.getPulse()));
             h.unit.setText(m.getUnit());
             h.dayWeek.setText(DateUtils.convertDateTimeUTCToLocale(m.getTimestamp(), "EEEE"));
             h.date.setText(DateUtils.convertDateTimeUTCToLocale(m.getTimestamp(), context.getString(R.string.datetime_format)));

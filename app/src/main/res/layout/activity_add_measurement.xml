@@ -28,7 +28,6 @@
         app:elevation="0dp">
         <!--Esses temas são importantes-->
 
-
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
@@ -52,12 +51,15 @@
 
             <LinearLayout
                 android:id="@+id/box_message_error"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/appBarLayout2"
-                android:background="@color/colorWarningLight"
+                android:background="@color/colorButtonDanger"
                 android:gravity="center"
-                android:visibility="visible">
+                android:visibility="visible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
                     android:id="@+id/message_error"
@@ -65,15 +67,16 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:padding="16sp"
-                    android:text="@null" />
+                    android:text="@null"
+                    android:textColor="@color/colorTextDark" />
             </LinearLayout>
 
             <RelativeLayout
                 android:id="@+id/info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:layout_below="@+id/box_message_error">
+                android:layout_below="@+id/box_message_error"
+                android:layout_marginTop="15dp">
 
                 <TextView
                     android:id="@+id/message_add"
@@ -202,6 +205,7 @@
                         android:textSize="22sp" />
                 </RelativeLayout>
             </RelativeLayout>
+
             <FrameLayout
                 android:id="@+id/extra"
                 android:layout_width="wrap_content"
