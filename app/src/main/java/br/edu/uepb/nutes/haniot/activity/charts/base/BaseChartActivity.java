@@ -336,14 +336,16 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
             if (type.equals(MeasurementType.HEART_RATE) || type.equals(MeasurementType.BLOOD_GLUCOSE)) {
                 max.setValue(((int) mMax) + unit);
                 min.setValue(((int) mMin) + unit);
+                avg.setValue(String.format("%.1f", mAvg) + unit);
             } else if (type.equals(MeasurementType.BLOOD_PRESSURE)) {
                 max.setValue(systolicMax + "/" + diastolicMax + "\n" + unit);
                 min.setValue(systolicMin + "/" + diastolicMin + "\n" + unit);
+                avg.setValue(String.format("%.1f", mAvg));
             } else {
                 max.setValue(String.format("%.1f", mMax) + unit);
                 min.setValue(String.format("%.1f", mMin) + unit);
+                avg.setValue(String.format("%.1f", mAvg) + unit);
             }
-            avg.setValue(String.format("%.1f", mAvg));
             per.setValue(firstMeasurementDate.equals(lastMeasurementDate) ?
                     firstMeasurementDate : firstMeasurementDate + "\n-\n" + lastMeasurementDate);
         }

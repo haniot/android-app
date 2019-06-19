@@ -74,6 +74,10 @@ public final class CreateChart<T> {
         return params;
     }
 
+    public Chart getmChart() {
+        return mChart;
+    }
+
     /**
      * Configure and draw chart with List.
      *
@@ -320,7 +324,6 @@ public final class CreateChart<T> {
             barChart.getAxisRight().setEnabled(false);
             barChart.getAxisLeft().setEnabled(false);
             barChart.setDrawValueAboveBar(false);
-
         }
 
         //LineChart
@@ -372,7 +375,6 @@ public final class CreateChart<T> {
             mLineChart.getAxisRight().setAxisMinimum(4f);
             mLineChart.getAxisRight().setAxisMaximum(3f);
 
-
             //Set Proprietes
             set.setColor(params.lineColor);
             set.setValueTextColor(params.colorValuesText);
@@ -399,8 +401,8 @@ public final class CreateChart<T> {
             leftAxis.removeAllLimitLines();
             for (Limit limit : params.limits) {
                 LimitLine ll1 = new LimitLine(limit.getValue(), limit.getName());
-                ll1.setLineWidth(1.4f);
-                ll1.enableDashedLine(3f, 10f, 1f);
+                ll1.setLineWidth(1.5f);
+                ll1.enableDashedLine(15f, 5f, 0f);
                 ll1.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_TOP);
                 ll1.setTextSize(10f);
                 ll1.setTextColor(Color.WHITE);
@@ -408,15 +410,12 @@ public final class CreateChart<T> {
 
                 leftAxis.addLimitLine(ll1);
             }
-
             //RangeY
             if (params.YMin > -1 && params.YMax > params.YMin) {
                 leftAxis.setAxisMinValue(params.YMin);
                 leftAxis.setAxisMaxValue(params.YMax);
             }
         }
-
-
         //General
         mChart.setNoDataTextColor(Color.WHITE);
         mChart.setBackgroundColor(params.colorBackground);

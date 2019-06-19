@@ -190,9 +190,11 @@
     <!--Limit and Lines of Chart-->
     <string name="diastolic">Diastólica</string>
     <string name="systolic">Sistólica</string>
-    <string name="limit_heart_rate">Limit 1</string>
-    <string name="limit_glucose">Pré-diabetes</string>
+    <string name="limit_glucose">Indício de diabetes</string>
     <string name="limit_temperature">Febre</string>
+    <string name="limit_obesity">Obesidade</string>
+    <string name="limit_high_systolic">Sistólica elevada</string>
+    <string name="limit_high_diastolic">Diastólica elevada</string>
 
     <!--FLOATING-->
     <string name="day">Dia</string>
