@@ -3,6 +3,11 @@ package br.edu.uepb.nutes.haniot.activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.bluetooth.BluetoothAdapter;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.support.design.widget.FloatingActionButton;
@@ -29,6 +34,7 @@ import java.util.Locale;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.data.model.ItemGridType;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
+import br.edu.uepb.nutes.haniot.data.model.MeasurementType;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.PatientsType;
 import br.edu.uepb.nutes.haniot.data.model.User;
@@ -41,12 +47,17 @@ import br.edu.uepb.nutes.haniot.fragment.FragmentGlucose;
 import br.edu.uepb.nutes.haniot.fragment.FragmentHeartRate;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
+import br.edu.uepb.nutes.haniot.utils.NetworkUtil;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class AddMeasurementActivity extends AppCompatActivity {
 
     private final String TAG = "AddMeasurementActivity";
+    private final String WIRELESS = "wifi";
+    private final String CONNECTIVITY_CHANGE = "android.net.conn.CONNECTIVITY_CHANGE";
+    private boolean wifiRequest;
+
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
@@ -86,7 +97,6 @@ public class AddMeasurementActivity extends AppCompatActivity {
     @BindView(R.id.message_error)
     TextView messageError;
 
-
     private final Calendar myCalendar = Calendar.getInstance();
     private HaniotNetRepository haniotNetRepository;
     private AppPreferencesHelper appPreferencesHelper;
@@ -112,16 +122,65 @@ public class AddMeasurementActivity extends AppCompatActivity {
         patient = appPreferencesHelper.getLastPatient();
         type = appPreferencesHelper.getInt(getResources().getString(R.string.measurementType));
         patientName = patient.getName();
-        if (patient.getGender().equals(PatientsType.GenderType.MALE))
+
+        if (patient.getGender().equals(PatientsType.GenderType.MALE)) {
             genderIcon.setImageResource(R.drawable.x_boy);
-        else genderIcon.setImageResource(R.drawable.x_girl);
+        } else {
+            genderIcon.setImageResource(R.drawable.x_girl);
+        }
+
         if (ItemGridType.typeSupported(type)) {
             replaceFragment(type);
         } else {
             finish();
         }
-
+        IntentFilter filterInternet = new IntentFilter(CONNECTIVITY_CHANGE);
+        registerReceiver(mReceiver, filterInternet);
         saveMeasurement.setOnClickListener(v -> prepareMeasurement());
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mReceiver);
+    }
+
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
+            int status = NetworkUtil.getConnectivityStatusString(context);
+
+            if (CONNECTIVITY_CHANGE.equals(action)) {
+                if (status == NetworkUtil.NETWORK_STATUS_NOT_CONNECTED) {
+                    showMessageConnection(WIRELESS, true);
+                } else {
+                    showMessageConnection(WIRELESS, false);
+                }
+            }
+        }
+    };
+
+    /**
+     * Displays message.
+     */
+    public void showMessageConnection(String typeMessageError, boolean show) {
+        Log.w("MainActivity", "show message: " + typeMessageError);
+
+        if (typeMessageError.equals(WIRELESS)) {
+            if (show) {
+                wifiRequest = true;
+                messageError.setOnClickListener(null);
+                messageError.setText(getString(R.string.wifi_disabled));
+                runOnUiThread(() -> {
+                    boxMessage.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_in));
+                    boxMessage.setVisibility(View.VISIBLE);
+                });
+            } else {
+                wifiRequest = false;
+                boxMessage.setVisibility(View.GONE);
+            }
+        }
     }
 
     /**
@@ -175,7 +234,7 @@ public class AddMeasurementActivity extends AppCompatActivity {
 
             case ItemGridType.BLOOD_PRESSURE:
                 measurementText = getResources().getString(R.string.blood_pressure);
-                typeMeasurement = "blood_pressure";
+                typeMeasurement = MeasurementType.BLOOD_PRESSURE;
                 messageInfo.setText(String.format(getResources().getString(R.string.add_measurement_message), measurementText, patientName));
                 getSupportActionBar().setTitle("Inserir Pressão Arterial");
                 textUnit.setText(getString(R.string.unit_pressure));

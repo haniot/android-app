@@ -2,12 +2,8 @@ package br.edu.uepb.nutes.haniot.devices;
 
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
-import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -65,15 +61,11 @@ public class HeartRateActivity extends BaseDeviceActivity implements GenericDial
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        checkPermissions();
 
         manager = new HeartRateManager(this);
         ((HeartRateManager) manager).setSimpleCallback(heartRateDataCallback);
 
         mDevice = deviceDAO.getByType(appPreferencesHelper.getUserLogged().get_id(), DeviceType.HEART_RATE);
-
-        IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
-        registerReceiver(mReceiver, filter);
     }
 
     HeartRateDataCallback heartRateDataCallback = new HeartRateDataCallback() {
@@ -131,71 +123,6 @@ public class HeartRateActivity extends BaseDeviceActivity implements GenericDial
         heartAnimation.setRepeatMode(ObjectAnimator.REVERSE);
     }
 
-//    /**
-//     * Init RecyclerView
-//     */
-//    private void initRecyclerView() {
-//        mAdapter = new HeartRateAdapter(this);
-//        mRecyclerView.setHasFixedSize(true);
-//        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-//        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-//
-//        mAdapter.setListener(new OnRecyclerViewListener<Measurement>() {
-//            @Override
-//            public void onItemClick(Measurement item) {
-//                Log.w(TAG, "onItemClick()");
-//            }
-//
-//            @Override
-//            public void onLongItemClick(View v, Measurement item) {
-//            }
-//
-//            @Override
-//            public void onMenuContextClick(View v, Measurement item) {
-//            }
-//
-//            @Override
-//            public void onItemSwiped(Measurement item, int position) {
-//                mAdapter.removeItem(item);
-//                final Handler handler = new Handler();
-//                Runnable runnable = () -> DisposableManager.add(haniotNetRepository
-//                        .deleteMeasurement(patient.get_id(), item.get_id()).subscribe(() -> {
-//                        }));
-//                handler.postDelayed(runnable, 4000);
-//
-//                Snackbar snackbar = Snackbar
-//                        .make(findViewById(R.id.root),
-//                                getString(R.string.confirm_remove_measurement),
-//                                Snackbar.LENGTH_LONG);
-//                snackbar.setAction(getString(R.string.undo), view -> {
-//                    mAdapter.restoreItem(item, position);
-//                    mRecyclerView.scrollToPosition(position);
-//                    handler.removeCallbacks(runnable);
-//                });
-//                snackbar.show();
-//            }
-//        });
-//
-//        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-//            @Override
-//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-//                super.onScrolled(recyclerView, dx, dy);
-//                if (dy > 0) {
-//                    // Recycle view scrolling downwards...
-//                    // this if statement detects when user reaches the end of recyclerView, this is only time we should load more
-//                    if (!recyclerView.canScrollVertically(RecyclerView.FOCUS_DOWN)) {
-//                        // here we are now allowed to load more, but we need to be careful
-//                        // we must check if itShouldLoadMore variable is true [unlocked]
-//                        if (itShouldLoadMore) loadData(false);
-//                    }
-//                }
-//            }
-//        });
-//
-//        mRecyclerView.setAdapter(mAdapter);
-//        mAdapter.enableSwipe(this);
-//    }
-
     /**
      * Enable/Disable display messgae no data.
      *
@@ -211,23 +138,6 @@ public class HeartRateActivity extends BaseDeviceActivity implements GenericDial
             mHeartImageView.setVisibility(View.VISIBLE);
         }
     }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unregisterReceiver(mReceiver);
-    }
-
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        switch (item.getItemId()) {
-//            case android.R.id.home:
-//                manager.disconnect();
-//                super.onBackPressed();
-//                break;
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
 
     /**
      * updateOrSave the UI with the last measurement.
@@ -285,23 +195,6 @@ public class HeartRateActivity extends BaseDeviceActivity implements GenericDial
     protected String getTag() {
         return TAG;
     }
-
-    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            final String action = intent.getAction();
-
-            if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
-                final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE,
-                        BluetoothAdapter.ERROR);
-                if (state == BluetoothAdapter.STATE_OFF) {
-                    printMessage(getString(R.string.bluetooth_disabled));
-                } else if (state == BluetoothAdapter.STATE_ON) {
-//                    showMessage(-1);
-                }
-            }
-        }
-    };
 
     @Override
     public void onClick(View view) {

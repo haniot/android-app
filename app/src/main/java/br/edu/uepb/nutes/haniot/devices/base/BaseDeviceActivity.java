@@ -4,14 +4,17 @@ import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothProfile;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.Snackbar;
@@ -28,6 +31,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,8 +42,10 @@ import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
+import java.util.Objects;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.activity.MainActivity;
 import br.edu.uepb.nutes.haniot.adapter.base.BaseAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
 import br.edu.uepb.nutes.haniot.data.model.Device;
@@ -52,12 +58,17 @@ import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.BluetoothManager;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
+import br.edu.uepb.nutes.haniot.utils.NetworkUtil;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public abstract class BaseDeviceActivity extends AppCompatActivity implements View.OnClickListener {
     protected final int REQUEST_ENABLE_BLUETOOTH = 1;
     protected final int REQUEST_ENABLE_LOCATION = 2;
+    private final String BLUETOOTH = "bluetooth";
+    private final String WIRELESS = "wifi";
+    private final String CONNECTIVITY_CHANGE = "android.net.conn.CONNECTIVITY_CHANGE";
+
     private final int LIMIT_PER_PAGE = 20;
     private final int INITIAL_PAGE = 1;
     private int page = INITIAL_PAGE;
@@ -76,13 +87,15 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
     protected HaniotNetRepository haniotNetRepository;
     protected Patient patient;
 
+    private boolean wifiRequest;
+    private boolean bluetoothRequest;
+
     /**
      * We need this variable to lock and unlock loading more.
      * We should not charge more when a request has already been made.
      * The load will be activated when the requisition is completed.
      */
     private boolean itShouldLoadMore = true;
-
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -115,6 +128,12 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
     @BindView(R.id.box_measurement)
     RelativeLayout boxMeasurement;
 
+    @BindView(R.id.box_message_error)
+    LinearLayout boxMessage;
+
+    @BindView(R.id.message_error)
+    TextView messageError;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -141,7 +160,43 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
             mCollapsingToolbarLayout.requestLayout();
         }
         initComponents();
+
+        IntentFilter filterBluetooth = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
+        registerReceiver(mReceiver, filterBluetooth);
+        IntentFilter filterInternet = new IntentFilter(CONNECTIVITY_CHANGE);
+        registerReceiver(mReceiver, filterInternet);
     }
+
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
+            int status = NetworkUtil.getConnectivityStatusString(context);
+
+            if (CONNECTIVITY_CHANGE.equals(action)) {
+                if (status == NetworkUtil.NETWORK_STATUS_NOT_CONNECTED) {
+                    Log.w(getTag(), "mReceiver: wifi desligado");
+                    showMessageConnection(WIRELESS, true);
+                } else {
+                    Log.w(getTag(), "mReceiver: wifi ligado");
+                    showMessageConnection(WIRELESS, false);
+                    loadData(true);
+                }
+            }
+            if (BluetoothAdapter.ACTION_STATE_CHANGED.equals(action)) {
+                final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE,
+                        BluetoothAdapter.ERROR);
+                if (state == BluetoothAdapter.STATE_OFF) {
+                    Log.w(getTag(), "mReceiver: Bluetooth desligado");
+                    showMessageConnection(BLUETOOTH, true);
+                } else if (state == BluetoothAdapter.STATE_ON) {
+                    Log.w(getTag(), "mReceiver: Bluetooth ligado");
+                    appPreferencesHelper.saveBluetoothMode(true);
+                    showMessageConnection(BLUETOOTH, false);
+                }
+            }
+        }
+    };
 
     /**
      * Enable/Disable display messgae no data.
@@ -167,8 +222,8 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
     /**
      * Check if is tablet.
      *
-     * @param context
-     * @return
+     * @param context Context
+     * @return True if is tablet, False otherwise
      */
     public static boolean isTablet(Context context) {
         return (context.getResources().getConfiguration().screenLayout
@@ -184,7 +239,6 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
         initRecyclerView();
         initDataSwipeRefresh();
     }
-
 
     private void initToolBar() {
         setSupportActionBar(mToolbar);
@@ -261,7 +315,7 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
 
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 if (dy > 0) {
                     // Recycle view scrolling downwards...
@@ -370,14 +424,63 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
     /**
      * Print Toast Messages.
      *
-     * @param message
+     * @param message Message
      */
     protected void printMessage(String message) {
         runOnUiThread(() -> Toast.makeText(this, message, Toast.LENGTH_LONG).show());
     }
 
+    /**
+     * Displays message.
+     */
+    public void showMessageConnection(String typeMessageError, boolean show) {
+        Log.w("MainActivity", "show message: " + typeMessageError);
+
+        if (typeMessageError.equals(WIRELESS)) {
+            if (show) {
+                wifiRequest = true;
+                messageError.setOnClickListener(null);
+                messageError.setText(getString(R.string.wifi_disabled));
+                runOnUiThread(() -> {
+                    boxMessage.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_in));
+                    boxMessage.setVisibility(View.VISIBLE);
+                });
+            } else {
+                wifiRequest = false;
+                if (!bluetoothRequest) {
+                    boxMessage.setVisibility(View.GONE);
+                } else {
+                    showMessageConnection(BLUETOOTH, true);
+                }
+            }
+        } else if (typeMessageError.equals(BLUETOOTH)) {
+            if (show) {
+                bluetoothRequest = true;
+                messageError.setText(getString(R.string.bluetooth_disabled));
+                messageError.setOnClickListener(v -> {
+                    appPreferencesHelper.saveBluetoothMode(true);
+                    checkPermissions();
+                });
+                runOnUiThread(() -> {
+                    boxMessage.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_in));
+                    boxMessage.setVisibility(View.VISIBLE);
+                });
+            } else {
+                bluetoothRequest = false;
+                if (!wifiRequest) {
+                    boxMessage.setVisibility(View.GONE);
+                } else {
+                    showMessageConnection(WIRELESS, true);
+                }
+            }
+        }
+    }
+
     @Override
     protected void onResume() {
+        boxMessage.setVisibility(View.GONE);
+        checkPermissions();
+
         loadData(true);
 
         if (mDevice != null && manager != null)
@@ -396,6 +499,7 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
         super.onDestroy();
         DisposableManager.dispose();
         if (manager != null) manager.close();
+        unregisterReceiver(mReceiver);
     }
 
     protected void updateConnectionState(final boolean isConnected) {
@@ -449,13 +553,9 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                if (manager != null) manager.disconnect();
-                super.onBackPressed();
-                break;
-            default:
-                break;
+        if (item.getItemId() == android.R.id.home) {
+            if (manager != null) manager.disconnect();
+            super.onBackPressed();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -467,7 +567,9 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
     public void checkPermissions() {
         if (BluetoothAdapter.getDefaultAdapter() != null &&
                 !BluetoothAdapter.getDefaultAdapter().isEnabled()) {
-            requestBluetoothEnable();
+            showMessageConnection(BLUETOOTH, true);
+            if (appPreferencesHelper.getBluetoothMode())
+                requestBluetoothEnable();
         } else if (!hasLocationPermissions()) {
             requestLocationPermission();
         }
@@ -518,8 +620,10 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_ENABLE_BLUETOOTH) {
             if (resultCode != Activity.RESULT_OK) {
-                requestBluetoothEnable();
+                appPreferencesHelper.saveBluetoothMode(false);
+                showMessageConnection(BLUETOOTH, true);
             } else {
+                appPreferencesHelper.saveBluetoothMode(true);
                 requestLocationPermission();
             }
         }

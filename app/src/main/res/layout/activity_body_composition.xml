@@ -32,7 +32,7 @@
 
                 <LinearLayout
                     android:id="@+id/box_message_error"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/colorButtonDanger"
                     android:gravity="center"
