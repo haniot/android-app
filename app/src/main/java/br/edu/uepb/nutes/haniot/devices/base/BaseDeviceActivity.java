@@ -41,6 +41,8 @@ import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -90,6 +92,10 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
     private boolean wifiRequest;
     private boolean bluetoothRequest;
 
+    private List<String> measurementIdToDelete;
+    private Handler handler;
+    private Runnable runnable;
+    private Snackbar snackbar;
     /**
      * We need this variable to lock and unlock loading more.
      * We should not charge more when a request has already been made.
@@ -144,7 +150,7 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
         measurementDAO = MeasurementDAO.getInstance(this);
         deviceDAO = DeviceDAO.getInstance(this);
         decimalFormat = new DecimalFormat(getString(R.string.format_number2), new DecimalFormatSymbols(Locale.US));
-
+        measurementIdToDelete = new ArrayList<>();
         animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
         mChartButton.setOnClickListener(this);
         mAddButton.setOnClickListener(this);
@@ -296,18 +302,20 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
             @Override
             public void onItemSwiped(Measurement item, int position) {
                 mAdapter.removeItem(item);
-                final Handler handler = new Handler();
-                Runnable runnable = () -> DisposableManager.add(haniotNetRepository
-                        .deleteMeasurement(patient.get_id(), item.get_id()).subscribe(() -> {
-                        }));
+                measurementIdToDelete.add(item.get_id());
+                handler = new Handler();
+                runnable = () -> {
+                    removePendingMeasurements();
+                };
                 handler.postDelayed(runnable, 4000);
 
-                Snackbar snackbar = Snackbar
+                snackbar = Snackbar
                         .make(findViewById(R.id.root), getString(R.string.confirm_remove_measurement), Snackbar.LENGTH_LONG);
                 snackbar.setAction(getString(R.string.undo), view -> {
                     mAdapter.restoreItem(item, position);
                     mRecyclerView.scrollToPosition(position);
-                    handler.removeCallbacks(runnable);
+                    measurementIdToDelete.remove(item.get_id());
+//                    handler.removeCallbacks(runnable);
                 });
                 snackbar.show();
             }
@@ -339,6 +347,33 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
         mDataSwipeRefresh.setOnRefreshListener(() -> {
             loadData(true);
         });
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        new Thread() {
+            @Override
+            public void run() {
+                Log.w("XXX", "onPause() - run()");
+                if (snackbar != null && snackbar.isShown()) snackbar.dismiss();
+                if (handler != null) {
+                    removePendingMeasurements();
+                    handler.removeCallbacks(runnable);
+                }
+            }
+        }.start();
+    }
+
+
+    private void removePendingMeasurements() {
+        Log.w("XXX", "removePendingMeasurements()");
+        if (measurementIdToDelete == null || measurementIdToDelete.isEmpty()) return;
+        for (String id : measurementIdToDelete)
+            DisposableManager.add(haniotNetRepository
+                    .deleteMeasurement(patient.get_id(), id).subscribe(() -> {
+                        measurementIdToDelete.remove(id);
+                    }));
     }
 
     /**
@@ -374,6 +409,7 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
         if (!ConnectionUtils.internetIsEnabled(this)) {
             loadDataLocal();
         } else {
+            removePendingMeasurements();
             DisposableManager.add(haniotNetRepository
                     .getAllMeasurementsByType(patient.get_id(),
                             getMeasurementType(), "-timestamp",
