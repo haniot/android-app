@@ -50,9 +50,9 @@ public class BloodPressureActivity extends BaseDeviceActivity {
             mBloodPressureDiaTextView.setText("");
             mBloodPressureSysTextView.setText("");
             mBloodPressurePulseTextView.setText("");
-            mUnitPulseTextView.setVisibility(View.GONE);
+            mUnitPulseTextView.setText("");
         } else {
-            mUnitPulseTextView.setVisibility(View.VISIBLE);
+            mUnitPulseTextView.setText(getString(R.string.unit_per_minutes));
         }
     }
 

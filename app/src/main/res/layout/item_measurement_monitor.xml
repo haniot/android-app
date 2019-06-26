@@ -81,28 +81,26 @@
                 android:textAlignment="textStart"
                 android:textSize="16sp" />
 
-            <Button
-                android:id="@+id/botAddMeasurement"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_alignTop="@+id/textDescription"
-                android:layout_alignParentEnd="true"
-                android:layout_marginTop="46dp"
-                android:layout_marginEnd="113dp"
-                android:visibility="invisible" />
+            <!--<Button-->
+                <!--android:id="@+id/botAddMeasurement"-->
+                <!--android:layout_width="20dp"-->
+                <!--android:layout_height="20dp"-->
+                <!--android:layout_alignTop="@+id/textDescription"-->
+                <!--android:layout_alignParentEnd="true"-->
+                <!--android:layout_marginTop="46dp"-->
+                <!--android:layout_marginEnd="113dp"-->
+                <!--android:visibility="invisible" />-->
 
             <TextView
                 android:id="@+id/btn_add_measurement"
-                android:layout_width="69dp"
+                android:layout_width="wrap_content"
                 android:layout_height="50dp"
-                android:layout_alignParentStart="false"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
-                android:layout_marginStart="280dp"
                 android:layout_marginTop="35dp"
+                android:layout_marginEnd="0dp"
                 android:gravity="bottom"
                 android:paddingBottom="10dp"
-                android:layout_marginEnd="0dp"
                 android:text="Adicionar"
                 android:textSize="12sp"
                 android:visibility="visible" />

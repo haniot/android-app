@@ -166,6 +166,7 @@
     <string name="unit_percentage">%</string>
     <string name="unit_celsius">°C</string>
     <string name="unit_pressure">mmHg</string>
+    <string name="unit_per_minutes">/min</string>
     <string name="unit_pulse">bpm</string>
     <string name="unit_glucose_mg_dL">mg/dL</string>
 

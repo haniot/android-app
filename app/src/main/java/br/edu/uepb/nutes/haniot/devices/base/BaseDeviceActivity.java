@@ -14,7 +14,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.annotation.StringRes;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.Snackbar;
@@ -44,10 +43,8 @@ import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.activity.MainActivity;
 import br.edu.uepb.nutes.haniot.adapter.base.BaseAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
 import br.edu.uepb.nutes.haniot.data.model.Device;
@@ -260,22 +257,12 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
         mCollapsingToolbarLayout.setExpandedTitleColor(ContextCompat.getColor(getApplicationContext(), android.R.color.transparent));
         mCollapsingToolbarLayout.setCollapsedTitleTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorTextDark));
 
-        mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            boolean isShow = false;
-            int scrollRange = -1;
+        mAppBarLayout.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
 
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if (scrollRange == -1) {
-                    scrollRange = appBarLayout.getTotalScrollRange();
-                }
-                if (scrollRange + verticalOffset == 0) {
-                    mCollapsingToolbarLayout.setTitle(getTitleActivity());
-                    isShow = true;
-                } else if (isShow) {
-                    mCollapsingToolbarLayout.setTitle("");
-                    isShow = false;
-                }
+            if (Math.abs(verticalOffset) == appBarLayout.getTotalScrollRange()) {
+                mCollapsingToolbarLayout.setTitle(getTitleActivity());
+            } else {
+                mCollapsingToolbarLayout.setTitle("");
             }
         });
     }
@@ -490,6 +477,7 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
             } else {
                 wifiRequest = false;
                 if (!bluetoothRequest) {
+                    boxMessage.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_out));
                     boxMessage.setVisibility(View.GONE);
                 } else {
                     showMessageConnection(BLUETOOTH, true);
@@ -510,6 +498,7 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
             } else {
                 bluetoothRequest = false;
                 if (!wifiRequest) {
+                    boxMessage.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_out));
                     boxMessage.setVisibility(View.GONE);
                 } else {
                     showMessageConnection(WIRELESS, true);
