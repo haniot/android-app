@@ -76,7 +76,7 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
     private int page = INITIAL_PAGE;
 
     protected boolean mConnected = false;
-    private boolean showAnimation = true;
+//    private boolean showAnimation = true;
     protected Animation animation;
     protected Device mDevice;
     protected AppPreferencesHelper appPreferencesHelper;
@@ -91,6 +91,7 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
 
     private boolean wifiRequest;
     private boolean bluetoothRequest;
+    private boolean isFirst;
 
     private List<String> measurementIdToDelete;
     private Handler handler;
@@ -166,6 +167,7 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
             mCollapsingToolbarLayout.requestLayout();
         }
         initComponents();
+        isFirst = true;
 
         IntentFilter filterBluetooth = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
         registerReceiver(mReceiver, filterBluetooth);
@@ -186,7 +188,11 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
                 } else {
                     Log.w(getTag(), "mReceiver: wifi ligado");
                     showMessageConnection(WIRELESS, false);
-                    loadData(true);
+
+                    if (!isFirst) {
+                        loadData(true);
+                    }
+                    isFirst = false;
                 }
             }
             if (BluetoothAdapter.ACTION_STATE_CHANGED.equals(action)) {
@@ -563,6 +569,7 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
                 .saveMeasurement(measurement)
                 .doAfterSuccess(measurement1 -> {
                     printMessage(getString(R.string.measurement_save));
+                    Log.w(getTag(), "SINCRONIZAR...");
                     loadData(true);
                 })
                 .subscribe(measurement1 -> {
