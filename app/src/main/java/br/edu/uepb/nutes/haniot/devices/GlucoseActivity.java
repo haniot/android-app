@@ -45,6 +45,7 @@ public class GlucoseActivity extends BaseDeviceActivity {
     RecyclerView mRecyclerView;
 
     private ProgressDialog progressDialog;
+
     private boolean isGetAllMonitor;
 
     @Override

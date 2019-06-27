@@ -7,29 +7,18 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.adapter.EvaluationAdapter;
 import br.edu.uepb.nutes.haniot.adapter.HistoricQuizAdapter;
-import br.edu.uepb.nutes.haniot.data.model.FamilyCohesionRecord;
-import br.edu.uepb.nutes.haniot.data.model.FeedingHabitsRecord;
 import br.edu.uepb.nutes.haniot.data.model.GroupItemEvaluation;
 import br.edu.uepb.nutes.haniot.data.model.ItemEvaluation;
-import br.edu.uepb.nutes.haniot.data.model.Measurement;
-import br.edu.uepb.nutes.haniot.data.model.MedicalRecord;
 import br.edu.uepb.nutes.haniot.data.model.NutritionalQuestionnaire;
 import br.edu.uepb.nutes.haniot.data.model.OdontologicalQuestionnaire;
-import br.edu.uepb.nutes.haniot.data.model.OralHealthRecord;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
-import br.edu.uepb.nutes.haniot.data.model.PhysicalActivityHabit;
-import br.edu.uepb.nutes.haniot.data.model.SleepHabit;
-import br.edu.uepb.nutes.haniot.data.model.SociodemographicRecord;
 import br.edu.uepb.nutes.haniot.data.model.TypeEvaluation;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
@@ -37,25 +26,13 @@ import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepositor
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static br.edu.uepb.nutes.haniot.data.model.ItemEvaluation.TYPE_EMPTY_REQUIRED;
 import static br.edu.uepb.nutes.haniot.data.model.ItemEvaluation.TYPE_ERROR;
 import static br.edu.uepb.nutes.haniot.data.model.ItemEvaluation.TYPE_LOADING;
-import static br.edu.uepb.nutes.haniot.data.model.ItemEvaluation.TYPE_MEASUREMENT;
 import static br.edu.uepb.nutes.haniot.data.model.ItemEvaluation.TYPE_QUIZ;
-import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.ALL_MEASUREMENT;
-import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.BLOOD_PRESSURE;
-import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.FAMILY_COHESION;
 import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.FEEDING_HABITS;
-import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.GLUCOSE;
-import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.HEARTRATE;
-import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.HEIGHT;
 import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.MEDICAL_RECORDS;
-import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.ORAL_HEALTH;
 import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.PHYSICAL_ACTIVITY;
 import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.SLEEP_HABITS;
-import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.SOCIODEMOGRAPHICS;
-import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.WAIST_CIRCUMFERENCE;
-import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.WEIGHT;
 
 public class HistoricQuizActivity extends AppCompatActivity implements HistoricQuizAdapter.OnClick {
 
@@ -113,7 +90,19 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
      * Download data quizList from the server.
      */
     private void downloadData() {
-        //TODO TEMP
+        DisposableManager.add(haniotNetRepository
+                .getAllNutritionalQuestionnaires(patient.get_id(), 1, 100, "created_at")
+                .subscribe(nutritionalQuestionnaires -> {
+                    prepareData(nutritionalQuestionnaire);
+                }, throwable -> {
+                }));
+    }
+
+    /**
+     * Download data quizList from the server.
+     */
+    private void downloadDataTemp() {
+        //TODO TEMP Teste
         nutritionalQuestionnaire = new NutritionalQuestionnaire();
 
         DisposableManager.add(haniotNetRepository
@@ -339,7 +328,7 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
 //        groupItemEvaluations.add(new GroupItemEvaluation("13/06/2019 - 13:00",
 //                itemsLoading, ORAL_HEALTH));
 
-        downloadData();
+        downloadDataTemp();
 
     }
 

@@ -1,11 +1,14 @@
 package br.edu.uepb.nutes.haniot.activity;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.text.InputType;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,6 +18,7 @@ import java.util.List;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.data.model.FamilyCohesionRecord;
 import br.edu.uepb.nutes.haniot.data.model.FrequencyAnswersType;
+import br.edu.uepb.nutes.haniot.data.model.OdontologicalQuestionnaire;
 import br.edu.uepb.nutes.haniot.data.model.OralHealthRecord;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.SociodemographicRecord;
@@ -60,6 +64,7 @@ public class QuizOdontologyActivity extends SimpleSurvey implements Infor.OnInfo
     private SociodemographicRecord sociodemographicRecord;
     private List<ToothLesion> toothLesions;
     private List<Integer> points;
+    private OdontologicalQuestionnaire odontologicalQuestionnaire;
 
     /**
      * Init view.
@@ -82,6 +87,7 @@ public class QuizOdontologyActivity extends SimpleSurvey implements Infor.OnInfo
         sociodemographicRecord = new SociodemographicRecord();
         toothLesions = new ArrayList<>();
         points = new ArrayList<>();
+        odontologicalQuestionnaire = new OdontologicalQuestionnaire();
     }
 
     /**
@@ -106,7 +112,9 @@ public class QuizOdontologyActivity extends SimpleSurvey implements Infor.OnInfo
         }
         familyCohesionRecord.setFamilyCohesionResult(totalPoints);
         familyCohesionRecord.toJson();
+        odontologicalQuestionnaire.setFamilyCohesionRecord(familyCohesionRecord);
 
+        //TODO TEMP Para funcionar na versão antiga do ehr
         DisposableManager.add(haniotNetRepository
                 .saveFamilyCohesionRecord(familyCohesionRecord)
                 .doOnSubscribe(disposable -> Log.i(LOG_TAG, "Salvando familyCohesionRecord no servidor!"))
@@ -120,7 +128,9 @@ public class QuizOdontologyActivity extends SimpleSurvey implements Infor.OnInfo
         oralHealthRecord.setPatientId(patient.get_id());
         oralHealthRecord.setToothLesions(toothLesions);
         oralHealthRecord.toJson();
+        odontologicalQuestionnaire.setOralHealthRecord(oralHealthRecord);
 
+        //TODO TEMP Para funcionar na versão antiga do ehr
         DisposableManager.add(haniotNetRepository
                 .saveOralHealthRecord(oralHealthRecord)
                 .doOnSubscribe(disposable -> Log.i(LOG_TAG, "Saving oralHealthRecord in server!"))
@@ -133,7 +143,9 @@ public class QuizOdontologyActivity extends SimpleSurvey implements Infor.OnInfo
     private void saveSociodemographic() {
         sociodemographicRecord.setPatientId(patient.get_id());
         sociodemographicRecord.toJson();
+        odontologicalQuestionnaire.setSociodemographicRecord(sociodemographicRecord);
 
+        //TODO TEMP Para funcionar na versão antiga do ehr
         DisposableManager.add(haniotNetRepository
                 .saveSociodemographicRecord(sociodemographicRecord)
                 .doOnSubscribe(disposable -> Log.i(LOG_TAG, "Salvando sociodemographicRecord no servidor!"))
@@ -545,10 +557,49 @@ public class QuizOdontologyActivity extends SimpleSurvey implements Infor.OnInfo
                 break;
             case END_PAGE:
                 saveOralHealth();
-                startActivity(new Intent(this, MainActivity.class));
-                finish();
+                sendQuestionnaireToServer();
                 break;
         }
+    }
+
+    private void sendQuestionnaireToServer() {
+
+        ProgressDialog dialog = ProgressDialog.show(this, "Sincronização",
+                "Aguarde alguns instantes...", true);
+        dialog.show();
+
+        if (odontologicalQuestionnaire.getFamilyCohesionRecord() != null
+                && odontologicalQuestionnaire.getOralHealthRecord() != null
+                && odontologicalQuestionnaire.getSociodemographicRecord() != null)
+            DisposableManager.add(haniotNetRepository
+                    .saveOdontologicalQuestionnaire(patient.get_id(), odontologicalQuestionnaire)
+                    .doAfterTerminate(() -> {
+                    })
+                    .subscribe(odontologicalQuestionnaire1 -> {
+                        dialog.cancel();
+                        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                        builder.setMessage("Salvo com sucesso!");
+                        builder.setCancelable(true);
+                        builder.setNeutralButton("Ok", (dialog1, which) -> {
+                            startActivity(new Intent(this, MainActivity.class));
+                            finish();
+                        });
+                        builder.show();
+                    }, throwable -> {
+                        dialog.cancel();
+                        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                        builder.setTitle("Não foi possível concluir a operação...");
+                        builder.setMessage("Tente novamente mais tarde!");
+                        builder.setCancelable(false);
+                        builder.setPositiveButton("Ok", (dialog12, which) -> {
+                            startActivity(new Intent(this, MainActivity.class));
+                            finish();
+                            dialog12.cancel();
+                        });
+                        builder.show();
+                    }));
+        else
+            Log.w(LOG_TAG, "Alguns campos não foram preenchidos");
     }
 
     /**

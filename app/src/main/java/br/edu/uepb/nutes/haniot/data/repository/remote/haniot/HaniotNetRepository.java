@@ -16,6 +16,8 @@ import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.MedicalRecord;
 import br.edu.uepb.nutes.haniot.data.model.NutritionalEvaluation;
 import br.edu.uepb.nutes.haniot.data.model.NutritionalEvaluationResult;
+import br.edu.uepb.nutes.haniot.data.model.NutritionalQuestionnaire;
+import br.edu.uepb.nutes.haniot.data.model.OdontologicalQuestionnaire;
 import br.edu.uepb.nutes.haniot.data.model.OralHealthRecord;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.PhysicalActivityHabit;
@@ -424,6 +426,58 @@ public class HaniotNetRepository extends BaseNetRepository {
 
     public Single<List<OralHealthRecord>> getAllOralHealth(String patientId, int page, int limit, String sort) {
         return haniotService.getAllOralHealth(patientId, page, limit, sort)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Single<List<NutritionalQuestionnaire>> getAllNutritionalQuestionnaires(String patientId, int page, int limit, String sort) {
+        return haniotService.getAllNutritionalQuestionnaires(patientId, page, limit, sort)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Single<List<OdontologicalQuestionnaire>> getAllOdontologicalQuestionnaires(String patientId, int page, int limit, String sort) {
+        return haniotService.getAllOdontologicalQuestionnaires(patientId, page, limit, sort)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Single<List<NutritionalQuestionnaire>> getLastNutritionalQuestionnaire(String patientId) {
+        return haniotService.getLastNutritionalQuestionnaire(patientId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Single<List<OdontologicalQuestionnaire>> getLastOdontologicalQuestionnaires(String patientId) {
+        return haniotService.getLastOdontologicalQuestionnaires(patientId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Single<Object> updateNutritionalQuestionnaire(String patientId, String questionnaireId, String resourceName, Object object) {
+        return haniotService.updateNutritionalQuestionnaire(patientId, questionnaireId, resourceName, object)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Single<Object> updateOdontologicalQuestionnaire(String patientId, String questionnaireId, String resourceName, Object object) {
+        return haniotService.updateOdontologicalQuestionnaire(patientId, questionnaireId, resourceName, object)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Single<NutritionalQuestionnaire> saveNutritionalQuestionnaire(String patientId, NutritionalQuestionnaire nutritionalQuestionnaire) {
+        return haniotService.saveNutritionalQuestionnaire(
+                        patientId,
+                        nutritionalQuestionnaire)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Single<OdontologicalQuestionnaire> saveOdontologicalQuestionnaire(String patientId, OdontologicalQuestionnaire odontologicalQuestionnaire) {
+        return haniotService.saveOdontologicalQuestionnaire(
+                patientId,
+                odontologicalQuestionnaire)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

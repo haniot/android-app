@@ -9,6 +9,8 @@ import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.MedicalRecord;
 import br.edu.uepb.nutes.haniot.data.model.NutritionalEvaluation;
 import br.edu.uepb.nutes.haniot.data.model.NutritionalEvaluationResult;
+import br.edu.uepb.nutes.haniot.data.model.NutritionalQuestionnaire;
+import br.edu.uepb.nutes.haniot.data.model.OdontologicalQuestionnaire;
 import br.edu.uepb.nutes.haniot.data.model.OralHealthRecord;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.PhysicalActivityHabit;
@@ -283,5 +285,53 @@ public interface HaniotService {
     @POST("patients/{patient_id}/nutritional/evaluations")
     Single<NutritionalEvaluationResult> saveNutritionalEvaluation(@Path("patient_id") String patientId,
                                                                   @Body NutritionalEvaluation nutritionalEvaluation);
+
+
+    @GET("patients/{patient_id}/odontological/questionnaires")
+    Single<List<NutritionalQuestionnaire>> getAllNutritionalQuestionnaires(@Path("patient_id") String patientId,
+                                                                           @Query("page") int page,
+                                                                           @Query("limit") int limit,
+                                                                           @Query("sort") String sort);
+
+    @GET("patients/{patient_id}/nutritional/questionnaires")
+    Single<List<OdontologicalQuestionnaire>> getAllOdontologicalQuestionnaires(@Path("patient_id") String patientId,
+                                                                               @Query("page") int page,
+                                                                               @Query("limit") int limit,
+                                                                               @Query("sort") String sort);
+
+    @GET("patients/{patient_id}/nutritional/questionnaires/last")
+    Single<List<OdontologicalQuestionnaire>> getLastOdontologicalQuestionnaires(@Path("patient_id") String patientId);
+
+    @GET("patients/{patient_id}/odontological/questionnaires/last")
+    Single<List<NutritionalQuestionnaire>> getLastNutritionalQuestionnaire(@Path("patient_id") String patientId);
+
+
+    @PATCH("patients/{patient_id}/nutritional/questionnaires/{questionnaire_id}/{resource_name}")
+    Single<Object> updateNutritionalQuestionnaire(
+            @Path("patient_id") String patientId,
+            @Path("questionnaire_id") String questionnaireId,
+            @Path("resource_name") String resourceName,
+            @Body Object object
+    );
+
+    @PATCH("patients/{patient_id}/odontological/questionnaires/{questionnaire_id}/{resource_name}")
+    Single<Object> updateOdontologicalQuestionnaire(
+            @Path("patient_id") String patientId,
+            @Path("questionnaire_id") String questionnaireId,
+            @Path("resource_name") String resourceName,
+            @Body Object object
+    );
+
+    @POST("patients/{patient_id}/odontological/questionnaires")
+    Single<OdontologicalQuestionnaire> saveOdontologicalQuestionnaire(
+            @Path("patient_id") String patientId,
+            @Body OdontologicalQuestionnaire odontologicalQuestionnaire
+    );
+
+    @POST("patients/{patient_id}/nutritional/questionnaires")
+    Single<NutritionalQuestionnaire> saveNutritionalQuestionnaire(
+            @Path("patient_id") String patientId,
+            @Body NutritionalQuestionnaire nutritionalQuestionnaire
+    );
 
 }
