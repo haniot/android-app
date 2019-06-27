@@ -313,7 +313,7 @@
     <string name="glucose_type_interstitial">Interstitial Fluid (ISF)</string>
     <string name="glucose_type_control_solution">Control Solution</string>
 
-    <string name="no_data_available">No data to display&#8230;</string>
+    <string name="no_data_available">Nenhum dado para exibir</string>
 
     <!-- SYNCHRONIZATION -->
     <string name="synchronization_no_data_to_send">There is no data to send&#8230;</string>

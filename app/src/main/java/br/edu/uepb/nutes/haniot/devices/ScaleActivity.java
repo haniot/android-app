@@ -114,10 +114,6 @@ public class ScaleActivity extends BaseDeviceActivity {
 //            if (mDevice != null)
 //                measurement.setDeviceId(mDevice.get_id());
 
-            /**
-             * Save in local
-             * Send to server saved successfully
-             */
             if (bodyMass > 0) {
                 synchronizeWithServer(measurement);
                 updateUILastMeasurement(measurement, true);
@@ -127,13 +123,13 @@ public class ScaleActivity extends BaseDeviceActivity {
         @Override
         public void onConnected(@androidx.annotation.NonNull BluetoothDevice device) {
             mConnected = true;
-            updateConnectionState(true);
+            updateConnectionState();
         }
 
         @Override
         public void onDisconnected(@androidx.annotation.NonNull BluetoothDevice device) {
             mConnected = false;
-            updateConnectionState(false);
+            updateConnectionState();
         }
     };
 

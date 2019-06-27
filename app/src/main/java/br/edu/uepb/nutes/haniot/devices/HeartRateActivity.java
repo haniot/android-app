@@ -91,13 +91,13 @@ public class HeartRateActivity extends BaseDeviceActivity implements GenericDial
         @Override
         public void onConnected(@androidx.annotation.NonNull BluetoothDevice device) {
             mConnected = true;
-            updateConnectionState(true);
+            updateConnectionState();
         }
 
         @Override
         public void onDisconnected(@androidx.annotation.NonNull BluetoothDevice device) {
             mConnected = false;
-            updateConnectionState(false);
+            updateConnectionState();
         }
     };
 

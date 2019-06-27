@@ -238,7 +238,7 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
             runOnUiThread(() -> {
                 onUpdateData(new ArrayList<>(), currentChartType);
                 createMoreInfo(new ArrayList<>());
-                printMessage(getString(R.string.connect_network_try_again));
+//                printMessage(getString(R.string.connect_network_try_again));
             });
         }
     }

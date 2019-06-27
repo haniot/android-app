@@ -513,6 +513,7 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
         checkPermissions();
 
         loadData(true);
+        updateConnectionState();
 
         if (mDevice != null && manager != null)
             manager.connect(BluetoothAdapter.getDefaultAdapter()
@@ -533,16 +534,18 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
         unregisterReceiver(mReceiver);
     }
 
-    protected void updateConnectionState(final boolean isConnected) {
+    protected void updateConnectionState() {
+        Log.w(getTag(), "updateConnectionState: " + mConnected);
+
         runOnUiThread(() -> {
             mCircularProgressBar.setProgress(0);
             mCircularProgressBar.setProgressWithAnimation(100); // Default animate duration = 1500ms
 
-            if (isConnected) {
+            if (mConnected) {
                 mCircularProgressBar.setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
-                mCircularProgressBar.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAlertDanger));
+                mCircularProgressBar.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorButtonDanger));
             } else {
-                mCircularProgressBar.setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAlertDanger));
+                mCircularProgressBar.setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorButtonDanger));
                 mCircularProgressBar.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
             }
         });
