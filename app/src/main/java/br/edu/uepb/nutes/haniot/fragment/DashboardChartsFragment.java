@@ -99,7 +99,9 @@ public class DashboardChartsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        boxMessage.setVisibility(View.GONE);
+        if (!wifiRequest && !bluetoothRequest)
+            boxMessage.setVisibility(View.GONE);
+
         if (BluetoothAdapter.getDefaultAdapter() != null &&
                 !BluetoothAdapter.getDefaultAdapter().isEnabled())
             showMessageConnection("bluetooth", true);
@@ -125,16 +127,12 @@ public class DashboardChartsFragment extends Fragment {
                     wifiRequest = true;
                     messageError.setOnClickListener(null);
                     messageError.setText(getString(R.string.wifi_disabled));
-                    Objects.requireNonNull(getActivity()).runOnUiThread(() -> {
-                        boxMessage.startAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_in));
-                        boxMessage.setVisibility(View.VISIBLE);
-                    });
                 } else {
                     wifiRequest = false;
-                    if (!bluetoothRequest) boxMessage.setVisibility(View.GONE);
-                    else showMessageConnection("bluetooth", true);
+                    if (bluetoothRequest) {
+                        showMessageConnection("bluetooth", true);
+                    }
                 }
-
             } else if (typeMessageError.equals("bluetooth")) {
                 if (show) {
                     bluetoothRequest = true;
@@ -143,15 +141,22 @@ public class DashboardChartsFragment extends Fragment {
                         AppPreferencesHelper.getInstance(getContext()).saveBluetoothMode(true);
                         ((MainActivity) Objects.requireNonNull(getActivity())).checkPermissions();
                     });
-                    Objects.requireNonNull(getActivity()).runOnUiThread(() -> {
-                        boxMessage.startAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_in));
-                        boxMessage.setVisibility(View.VISIBLE);
-                    });
                 } else {
                     bluetoothRequest = false;
-                    if (!wifiRequest) boxMessage.setVisibility(View.GONE);
-                    else showMessageConnection("wifi", true);
+                    if (wifiRequest) {
+                        showMessageConnection("wifi", true);
+                    }
                 }
+            }
+
+            if (wifiRequest || bluetoothRequest) {
+                Objects.requireNonNull(getActivity()).runOnUiThread(() -> {
+                    boxMessage.startAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_in));
+                    boxMessage.setVisibility(View.VISIBLE);
+                });
+            } else {
+                boxMessage.startAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_out));
+                boxMessage.setVisibility(View.GONE);
             }
         }
     }

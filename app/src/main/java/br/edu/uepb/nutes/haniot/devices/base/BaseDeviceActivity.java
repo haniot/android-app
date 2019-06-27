@@ -73,7 +73,7 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
     private int page = INITIAL_PAGE;
 
     protected boolean mConnected = false;
-//    private boolean showAnimation = true;
+    //    private boolean showAnimation = true;
     protected Animation animation;
     protected Device mDevice;
     protected AppPreferencesHelper appPreferencesHelper;
@@ -358,7 +358,6 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
         }.start();
     }
 
-
     private void removePendingMeasurements() {
         Log.w("XXX", "removePendingMeasurements()");
         if (measurementIdToDelete == null || measurementIdToDelete.isEmpty()) return;
@@ -463,23 +462,15 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
      * Displays message.
      */
     public void showMessageConnection(String typeMessageError, boolean show) {
-        Log.w("MainActivity", "show message: " + typeMessageError);
 
         if (typeMessageError.equals(WIRELESS)) {
             if (show) {
                 wifiRequest = true;
                 messageError.setOnClickListener(null);
                 messageError.setText(getString(R.string.wifi_disabled));
-                runOnUiThread(() -> {
-                    boxMessage.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_in));
-                    boxMessage.setVisibility(View.VISIBLE);
-                });
             } else {
                 wifiRequest = false;
-                if (!bluetoothRequest) {
-                    boxMessage.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_out));
-                    boxMessage.setVisibility(View.GONE);
-                } else {
+                if (bluetoothRequest) {
                     showMessageConnection(BLUETOOTH, true);
                 }
             }
@@ -491,27 +482,31 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
                     appPreferencesHelper.saveBluetoothMode(true);
                     checkPermissions();
                 });
-                runOnUiThread(() -> {
-                    boxMessage.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_in));
-                    boxMessage.setVisibility(View.VISIBLE);
-                });
             } else {
                 bluetoothRequest = false;
-                if (!wifiRequest) {
-                    boxMessage.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_out));
-                    boxMessage.setVisibility(View.GONE);
-                } else {
+                if (wifiRequest) {
                     showMessageConnection(WIRELESS, true);
                 }
             }
+        }
+
+        if (wifiRequest || bluetoothRequest) {
+            runOnUiThread(() -> {
+                boxMessage.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_in));
+                boxMessage.setVisibility(View.VISIBLE);
+            });
+        } else {
+            boxMessage.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_out));
+            boxMessage.setVisibility(View.GONE);
         }
     }
 
     @Override
     protected void onResume() {
-        boxMessage.setVisibility(View.GONE);
+        if (!wifiRequest && !bluetoothRequest) {
+            boxMessage.setVisibility(View.GONE);
+        }
         checkPermissions();
-
         loadData(true);
         updateConnectionState();
 
