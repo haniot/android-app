@@ -203,7 +203,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
         bloodPressureManager = null;
         glucoseManager = null;
         heartRateManager = null;
-        if (simpleBleScanner != null) simpleBleScanner.stopScan();
+//        if (simpleBleScanner != null) simpleBleScanner.stopScan();
     }
 
     /**

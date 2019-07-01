@@ -3,6 +3,7 @@ package br.edu.uepb.nutes.haniot.activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.StringRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -29,6 +30,7 @@ import br.edu.uepb.nutes.haniot.data.model.ItemGridType;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.MedicalRecord;
 import br.edu.uepb.nutes.haniot.data.model.NutritionalEvaluation;
+import br.edu.uepb.nutes.haniot.data.model.NutritionalQuestionnaire;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.PhysicalActivityHabit;
 import br.edu.uepb.nutes.haniot.data.model.PilotStudy;
@@ -43,7 +45,6 @@ import br.edu.uepb.nutes.haniot.devices.ScaleActivity;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import retrofit2.HttpException;
 
 import static br.edu.uepb.nutes.haniot.data.model.ItemEvaluation.TYPE_EMPTY_REQUIRED;
 import static br.edu.uepb.nutes.haniot.data.model.ItemEvaluation.TYPE_ERROR;
@@ -51,6 +52,7 @@ import static br.edu.uepb.nutes.haniot.data.model.ItemEvaluation.TYPE_LOADING;
 import static br.edu.uepb.nutes.haniot.data.model.ItemEvaluation.TYPE_MEASUREMENT;
 import static br.edu.uepb.nutes.haniot.data.model.ItemEvaluation.TYPE_QUIZ;
 import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.ALL_MEASUREMENT;
+import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.ALL_QUIZ;
 import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.BLOOD_PRESSURE;
 import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.FEEDING_HABITS;
 import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.GLUCOSE;
@@ -87,6 +89,9 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
     private AppPreferencesHelper appPreferencesHelper;
     private NutritionalEvaluation nutritionalEvaluation;
     private PilotStudy pilotStudy;
+    private NutritionalQuestionnaire lastNutritionalQuestionnaire;
+    private List<Measurement> measurementList;
+    private boolean evaluationValidated;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -230,25 +235,25 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
         itemsLoading = new ArrayList<>();
         itemsLoading.add(new ItemEvaluation(R.drawable.action_quiz, TYPE_LOADING,
                 "Histórico de Saúde", TypeEvaluation.MEDICAL_RECORDS));
-        groupItemEvaluations.add(new GroupItemEvaluation("Questionário Nutricional - Histórico de Saúde",
+        groupItemEvaluations.add(new GroupItemEvaluation("Histórico de Saúde",
                 itemsLoading, MEDICAL_RECORDS));
 
         itemsLoading = new ArrayList<>();
         itemsLoading.add(new ItemEvaluation(R.drawable.action_quiz, TYPE_LOADING,
                 "Hábitos Físicos", TypeEvaluation.PHYSICAL_ACTIVITY));
-        groupItemEvaluations.add(new GroupItemEvaluation("Questionário Nutricional - Hábitos Físicos",
+        groupItemEvaluations.add(new GroupItemEvaluation("Hábitos Físicos",
                 itemsLoading, PHYSICAL_ACTIVITY));
 
         itemsLoading = new ArrayList<>();
         itemsLoading.add(new ItemEvaluation(R.drawable.action_quiz, TYPE_LOADING,
                 "Hábitos Alimentares", TypeEvaluation.FEEDING_HABITS));
-        groupItemEvaluations.add(new GroupItemEvaluation("Questionário Nutricional - Hábitos Alimentares",
+        groupItemEvaluations.add(new GroupItemEvaluation("Hábitos Alimentares",
                 itemsLoading, FEEDING_HABITS));
 
         itemsLoading = new ArrayList<>();
         itemsLoading.add(new ItemEvaluation(R.drawable.action_quiz, TYPE_LOADING,
                 "Hábitos do Sono", TypeEvaluation.SLEEP_HABITS));
-        groupItemEvaluations.add(new GroupItemEvaluation("Questionário Nutricional - Hábitos do Sono",
+        groupItemEvaluations.add(new GroupItemEvaluation("Hábitos do Sono",
                 itemsLoading, SLEEP_HABITS));
 
         initRecyclerView();
@@ -258,17 +263,79 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
 
     /**
      * Prepare quizList data from the server.
+     */
+    private void prepareQuiz(NutritionalQuestionnaire nutritionalQuestionnaire) {
+
+        GroupItemEvaluation groupItemEvaluation;
+        ItemEvaluation itemEvaluation;
+
+        //Sleep Habits
+        groupItemEvaluation = getEvaluationGroupByType(SLEEP_HABITS);
+
+        if (groupItemEvaluation != null) {
+            itemEvaluation = groupItemEvaluation.getItems().get(0);
+            if (nutritionalQuestionnaire.getSleepHabit() == null) {
+                itemEvaluation.setTypeHeader(TYPE_EMPTY_REQUIRED);
+            } else {
+                itemEvaluation.setTypeHeader(TYPE_QUIZ);
+                itemEvaluation.setSleepHabit(lastNutritionalQuestionnaire.getSleepHabit());
+            }
+        }
+
+        //Medical Records
+        groupItemEvaluation = getEvaluationGroupByType(MEDICAL_RECORDS);
+
+        if (groupItemEvaluation != null) {
+            itemEvaluation = groupItemEvaluation.getItems().get(0);
+            if (nutritionalQuestionnaire.getMedicalRecord() == null) {
+                itemEvaluation.setTypeHeader(TYPE_EMPTY_REQUIRED);
+            } else {
+                itemEvaluation.setTypeHeader(TYPE_QUIZ);
+                itemEvaluation.setMedicalRecord(lastNutritionalQuestionnaire.getMedicalRecord());
+            }
+        }
+
+        //Feeding habits
+        groupItemEvaluation = getEvaluationGroupByType(FEEDING_HABITS);
+
+        if (groupItemEvaluation != null) {
+            itemEvaluation = groupItemEvaluation.getItems().get(0);
+            if (nutritionalQuestionnaire.getFeedingHabitsRecord() == null) {
+                itemEvaluation.setTypeHeader(TYPE_EMPTY_REQUIRED);
+            } else {
+                itemEvaluation.setTypeHeader(TYPE_QUIZ);
+                itemEvaluation.setFeedingHabitsRecord(lastNutritionalQuestionnaire.getFeedingHabitsRecord());
+            }
+        }
+
+        //Physical Activity
+        groupItemEvaluation = getEvaluationGroupByType(PHYSICAL_ACTIVITY);
+
+        if (groupItemEvaluation != null) {
+            itemEvaluation = groupItemEvaluation.getItems().get(0);
+            if (nutritionalQuestionnaire.getPhysicalActivityHabit() == null) {
+                itemEvaluation.setTypeHeader(TYPE_EMPTY_REQUIRED);
+            } else {
+                itemEvaluation.setTypeHeader(TYPE_QUIZ);
+                itemEvaluation.setPhysicalActivityHabit(lastNutritionalQuestionnaire.getPhysicalActivityHabit());
+            }
+        }
+        evaluationAdapter.notifyDataSetChanged();
+    }
+
+    /**
+     * Prepare quizList data from the server.
      *
      * @param data
      * @param type
      */
-    private void prepareData(List data, int type) {
+    private void prepareMeasurement(List data, int type) {
         GroupItemEvaluation groupItemEvaluation = getEvaluationGroupByType(type);
         int reminderFirst5 = 0;
-        int reminderFirst1 = 0;
-        int reminderFirst2 = 0;
-        int reminderFirst3 = 0;
-        int reminderFirst4 = 0;
+//        int reminderFirst1 = 0;
+//        int reminderFirst2 = 0;
+//        int reminderFirst3 = 0;
+//        int reminderFirst4 = 0;
 
         if (groupItemEvaluation == null) return;
 
@@ -277,58 +344,90 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
         else {
             ItemEvaluation itemEvaluation = (ItemEvaluation) groupItemEvaluation.getItems().get(0).clone();
             groupItemEvaluation.getItems().clear();
-            switch (type) {
-                case SLEEP_HABITS:
-                    for (SleepHabit sleepHabit : (List<SleepHabit>) data) {
-                        if (reminderFirst1 == 0) itemEvaluation.setChecked(true);
-                        itemEvaluation.setTypeHeader(TYPE_QUIZ);
-                        itemEvaluation.setSleepHabit(sleepHabit);
-                        groupItemEvaluation.getItems().add(itemEvaluation);
-                        itemEvaluation = (ItemEvaluation) groupItemEvaluation.getItems().get(0).clone();
-                        reminderFirst1++;
-                    }
-                    break;
-                case MEDICAL_RECORDS:
-                    for (MedicalRecord medicalRecord : (List<MedicalRecord>) data) {
-                        if (reminderFirst2 == 0) itemEvaluation.setChecked(true);
-                        itemEvaluation.setTypeHeader(TYPE_QUIZ);
-                        itemEvaluation.setMedicalRecord(medicalRecord);
-                        groupItemEvaluation.getItems().add(itemEvaluation);
-                        itemEvaluation = (ItemEvaluation) groupItemEvaluation.getItems().get(0).clone();
-                        reminderFirst2++;
-                    }
-                    break;
-                case FEEDING_HABITS:
-                    for (FeedingHabitsRecord feedingHabitsRecord : (List<FeedingHabitsRecord>) data) {
-                        if (reminderFirst3 == 0) itemEvaluation.setChecked(true);
-                        itemEvaluation.setTypeHeader(TYPE_QUIZ);
-                        itemEvaluation.setFeedingHabitsRecord(feedingHabitsRecord);
-                        groupItemEvaluation.getItems().add(itemEvaluation);
-                        itemEvaluation = (ItemEvaluation) groupItemEvaluation.getItems().get(0).clone();
-                        reminderFirst3++;
-                    }
-                    break;
-                case PHYSICAL_ACTIVITY:
-                    for (PhysicalActivityHabit physicalActivityHabit : (List<PhysicalActivityHabit>) data) {
-                        if (reminderFirst4 == 0) itemEvaluation.setChecked(true);
-                        itemEvaluation.setChecked(true);
-                        itemEvaluation.setTypeHeader(TYPE_QUIZ);
-                        itemEvaluation.setPhysicalActivityHabit(physicalActivityHabit);
-                        groupItemEvaluation.getItems().add(itemEvaluation);
-                        itemEvaluation = (ItemEvaluation) groupItemEvaluation.getItems().get(0).clone();
-                        reminderFirst4++;
-                    }
-                    break;
-                default:
-                    for (Measurement measurement : (List<Measurement>) data) {
-                        if (reminderFirst5 == 0) itemEvaluation.setChecked(true);
-                        itemEvaluation.setTypeHeader(TYPE_MEASUREMENT);
-                        itemEvaluation.setMeasurement(measurement);
-                        groupItemEvaluation.getItems().add(itemEvaluation);
-                        itemEvaluation = (ItemEvaluation) groupItemEvaluation.getItems().get(0).clone();
-                        reminderFirst5++;
-                    }
+            for (Measurement measurement : (List<Measurement>) data) {
+                if (reminderFirst5 == 0) itemEvaluation.setChecked(true);
+                itemEvaluation.setTypeHeader(TYPE_MEASUREMENT);
+                itemEvaluation.setMeasurement(measurement);
+                groupItemEvaluation.getItems().add(itemEvaluation);
+                itemEvaluation = (ItemEvaluation) groupItemEvaluation.getItems().get(0).clone();
+                reminderFirst5++;
             }
+            //TODO Caso precise
+//            switch (type) {
+//                case SLEEP_HABITS:
+//                    for (SleepHabit sleepHabit : (List<SleepHabit>) data) {
+//                        if (reminderFirst1 == 0) itemEvaluation.setChecked(true);
+//                        itemEvaluation.setTypeHeader(TYPE_QUIZ);
+//                        itemEvaluation.setSleepHabit(sleepHabit);
+//                        groupItemEvaluation.getItems().add(itemEvaluation);
+//                        itemEvaluation = (ItemEvaluation) groupItemEvaluation.getItems().get(0).clone();
+//                        reminderFirst1++;
+//                    }
+//                    break;
+//                case MEDICAL_RECORDS:
+//                    for (MedicalRecord medicalRecord : (List<MedicalRecord>) data) {
+//                        if (reminderFirst2 == 0) itemEvaluation.setChecked(true);
+//                        itemEvaluation.setTypeHeader(TYPE_QUIZ);
+//                        itemEvaluation.setMedicalRecord(medicalRecord);
+//                        groupItemEvaluation.getItems().add(itemEvaluation);
+//                        itemEvaluation = (ItemEvaluation) groupItemEvaluation.getItems().get(0).clone();
+//                        reminderFirst2++;
+//                    }
+//                    break;
+//                case FEEDING_HABITS:
+//                    for (FeedingHabitsRecord feedingHabitsRecord : (List<FeedingHabitsRecord>) data) {
+//                        if (reminderFirst3 == 0) itemEvaluation.setChecked(true);
+//                        itemEvaluation.setTypeHeader(TYPE_QUIZ);
+//                        itemEvaluation.setFeedingHabitsRecord(feedingHabitsRecord);
+//                        groupItemEvaluation.getItems().add(itemEvaluation);
+//                        itemEvaluation = (ItemEvaluation) groupItemEvaluation.getItems().get(0).clone();
+//                        reminderFirst3++;
+//                    }
+//                    break;
+//                case PHYSICAL_ACTIVITY:
+//                    for (PhysicalActivityHabit physicalActivityHabit : (List<PhysicalActivityHabit>) data) {
+//                        if (reminderFirst4 == 0) itemEvaluation.setChecked(true);
+//                        itemEvaluation.setChecked(true);
+//                        itemEvaluation.setTypeHeader(TYPE_QUIZ);
+//                        itemEvaluation.setPhysicalActivityHabit(physicalActivityHabit);
+//                        groupItemEvaluation.getItems().add(itemEvaluation);
+//                        itemEvaluation = (ItemEvaluation) groupItemEvaluation.getItems().get(0).clone();
+//                        reminderFirst4++;
+//                    }
+//                    break;
+//                default:
+//                    for (Measurement measurement : (List<Measurement>) data) {
+//                        if (reminderFirst5 == 0) itemEvaluation.setChecked(true);
+//                        itemEvaluation.setTypeHeader(TYPE_MEASUREMENT);
+//                        itemEvaluation.setMeasurement(measurement);
+//                        groupItemEvaluation.getItems().add(itemEvaluation);
+//                        itemEvaluation = (ItemEvaluation) groupItemEvaluation.getItems().get(0).clone();
+//                        reminderFirst5++;
+//                    }
+//            }
+        }
+        evaluationAdapter.notifyDataSetChanged();
+    }
+
+
+    /**
+     * Prepare item measurement from the server.
+     *
+     * @param type
+     */
+    private void prepareMeasurement(Measurement measurement, int type) {
+        GroupItemEvaluation groupItemEvaluation = getEvaluationGroupByType(type);
+
+        if (groupItemEvaluation == null) return;
+
+        if (measurement == null && !groupItemEvaluation.getItems().isEmpty())
+            groupItemEvaluation.getItems().get(0).setTypeHeader(TYPE_EMPTY_REQUIRED);
+        else {
+            ItemEvaluation itemEvaluation = (ItemEvaluation) groupItemEvaluation.getItems().get(0).clone();
+            groupItemEvaluation.getItems().clear();
+            itemEvaluation.setTypeHeader(TYPE_MEASUREMENT);
+            itemEvaluation.setMeasurement(measurement);
+            groupItemEvaluation.getItems().add(itemEvaluation);
         }
         evaluationAdapter.notifyDataSetChanged();
     }
@@ -346,6 +445,11 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
             getEvaluationGroupByType(HEIGHT).getItems().get(0).setTypeHeader(TYPE_ERROR);
             getEvaluationGroupByType(HEARTRATE).getItems().get(0).setTypeHeader(TYPE_ERROR);
             getEvaluationGroupByType(BLOOD_PRESSURE).getItems().get(0).setTypeHeader(TYPE_ERROR);
+        } else if (type == ALL_QUIZ) {
+            getEvaluationGroupByType(MEDICAL_RECORDS).getItems().get(0).setTypeHeader(TYPE_ERROR);
+            getEvaluationGroupByType(PHYSICAL_ACTIVITY).getItems().get(0).setTypeHeader(TYPE_ERROR);
+            getEvaluationGroupByType(SLEEP_HABITS).getItems().get(0).setTypeHeader(TYPE_ERROR);
+            getEvaluationGroupByType(FEEDING_HABITS).getItems().get(0).setTypeHeader(TYPE_ERROR);
         } else {
             GroupItemEvaluation groupItemEvaluation = getEvaluationGroupByType(type);
             if (groupItemEvaluation == null) return;
@@ -358,47 +462,78 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
      */
     private void downloadData() {
 
+        //TODO Correto
+//        DisposableManager.add(haniotNetRepository
+//                .getLastNutritionalQuestionnaire(patient.get_id())
+//                .subscribe(nutritionalQuestionnaires -> {
+//                    lastNutritionalQuestionnaire = nutritionalQuestionnaires;
+//                    prepareQuiz(nutritionalQuestionnaires);
+//                }, throwable -> {
+//                    Log.i("AAA", throwable.getMessage());
+//                    onDownloadError(ALL_QUIZ);
+//                }));
+//
+//        DisposableManager.add(haniotNetRepository
+//                .getLastMeasurements(patient.get_id())
+//                .subscribe(measurents -> {
+//                    measurementList = measurents;
+//                    prepareQuiz(prepareMeasurements(measurementList));
+//                }, throwable -> {
+//                    Log.i("AAA", throwable.getMessage());
+//                    onDownloadError(ALL_MEASUREMENT);
+//                }));
+
+
+        //TODO Para funcionar na versão antiga do EHR
+        lastNutritionalQuestionnaire = new NutritionalQuestionnaire();
+
         DisposableManager.add(haniotNetRepository
                 .getAllMedicalRecord(helper.getLastPatient().get_id()
                         , 1, 20, "created_at")
-                .subscribe(medicalRecords ->
-                                prepareData(medicalRecords, MEDICAL_RECORDS),
-                        error -> {
-                            Log.i("AAA", error.getMessage());
-                            onDownloadError(MEDICAL_RECORDS);
-                        }));
+                .subscribe(medicalRecords -> {
+                    if (!medicalRecords.isEmpty())
+                        lastNutritionalQuestionnaire.setMedicalRecord(medicalRecords.get(0));
+                    //prepareMeasurement(medicalRecords, MEDICAL_RECORDS);
+                }, error -> {
+                    Log.i("AAA", error.getMessage());
+                    onDownloadError(MEDICAL_RECORDS);
+                }));
 
         DisposableManager.add(haniotNetRepository
                 .getAllPhysicalActivity(helper.getLastPatient().get_id()
                         , 1, 20, "created_at")
-                .subscribe(physicalActivityHabits ->
-                                prepareData(physicalActivityHabits, PHYSICAL_ACTIVITY),
-                        type -> onDownloadError(PHYSICAL_ACTIVITY)));
+                .subscribe(physicalActivityHabits -> {
+                    if (!physicalActivityHabits.isEmpty())
+                        lastNutritionalQuestionnaire.setPhysicalActivityHabit(physicalActivityHabits.get(0));
+                    //prepareMeasurement(physicalActivityHabits, PHYSICAL_ACTIVITY);
+                }, error -> onDownloadError(PHYSICAL_ACTIVITY)));
 
         DisposableManager.add(haniotNetRepository
                 .getAllFeedingHabits(helper.getLastPatient().get_id()
                         , 1, 20, "created_at")
-                .subscribe(feedingHabitsRecords ->
-                                prepareData(feedingHabitsRecords, FEEDING_HABITS),
-                        type -> onDownloadError(FEEDING_HABITS)));
+                .subscribe(feedingHabitsRecords -> {
+                    if (!feedingHabitsRecords.isEmpty())
+                        lastNutritionalQuestionnaire.setFeedingHabitsRecord(feedingHabitsRecords.get(0));
+//                                prepareMeasurement(feedingHabitsRecords, FEEDING_HABITS),
+                }, error -> onDownloadError(FEEDING_HABITS)));
 
         DisposableManager.add(haniotNetRepository
                 .getAllSleepHabits(helper.getLastPatient().get_id()
                         , 1, 20, "created_at")
-                .subscribe(sleepHabits ->
-                                prepareData(sleepHabits, SLEEP_HABITS),
-                        type -> onDownloadError(SLEEP_HABITS)));
+                .subscribe(sleepHabits -> {
+                    if (!sleepHabits.isEmpty())
+                        lastNutritionalQuestionnaire.setSleepHabit(sleepHabits.get(0));
+//                                prepareMeasurement(sleepHabits, SLEEP_HABITS),
+                }, error -> onDownloadError(SLEEP_HABITS)));
 
         DisposableManager.add(haniotNetRepository
                 .getAllMeasurements(helper.getLastPatient().get_id()
                         , 1, 100000, "-timestamp")
                 .subscribe(this::prepareMeasurements,
                         type -> onDownloadError(ALL_MEASUREMENT)));
-//        DisposableManager.add(haniotNetRepository
-//                .getAllMeasurements(helper.getLastPatient().get_id()
-//                        , "created_at", pilotStudy.getStart(), pilotStudy.getEnd(), 1, 1000)
-//                .subscribe(this::prepareMeasurements,
-//                        type -> onDownloadError(ALL_MEASUREMENT)));
+        new Handler().postDelayed(() -> {
+            prepareQuiz(lastNutritionalQuestionnaire);
+        }, 5000);
     }
 
     /**
@@ -441,12 +576,12 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
             }
         }
 
-        prepareData(heartRate, HEARTRATE);
-        prepareData(bloodPressure, BLOOD_PRESSURE);
-        prepareData(weight, WEIGHT);
-        prepareData(glucose, GLUCOSE);
-        prepareData(waistCircumference, WAIST_CIRCUMFERENCE);
-        prepareData(height, HEIGHT);
+        prepareMeasurement(heartRate, HEARTRATE);
+        prepareMeasurement(bloodPressure, BLOOD_PRESSURE);
+        prepareMeasurement(weight, WEIGHT);
+        prepareMeasurement(glucose, GLUCOSE);
+        prepareMeasurement(waistCircumference, WAIST_CIRCUMFERENCE);
+        prepareMeasurement(height, HEIGHT);
     }
 
     /**
@@ -461,16 +596,7 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
         if (nutritionalEvaluation.getMeasurements() != null)
             nutritionalEvaluation.getMeasurements().clear();
 
-        if (getCheckedMeasurement(HEARTRATE)
-                && getCheckedMeasurement(GLUCOSE)
-                && getCheckedMeasurement(BLOOD_PRESSURE)
-                && getCheckedMeasurement(WEIGHT)
-                && getCheckedMeasurement(WAIST_CIRCUMFERENCE)
-                && getCheckedMeasurement(HEIGHT)
-                && getCheckedQuiz(PHYSICAL_ACTIVITY)
-                && getCheckedQuiz(MEDICAL_RECORDS)
-                && getCheckedQuiz(SLEEP_HABITS)
-                && getCheckedQuiz(FEEDING_HABITS)) {
+        if (evaluationValidated) {
 
             Log.i("AAA", "Saida: " + nutritionalEvaluation.toJson());
 
@@ -545,27 +671,6 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
         return true;
     }
 
-    /**
-     * Verify if exists measurement by type selected.
-     *
-     * @param type
-     * @return
-     */
-    private boolean getCheckedMeasurement(int type) {
-        int count = 0;
-        GroupItemEvaluation groupItemEvaluation = getEvaluationGroupByType(type);
-        if (groupItemEvaluation == null) return false;
-
-        for (ItemEvaluation itemEvaluation1 : groupItemEvaluation.getItems()) {
-            if (itemEvaluation1.isChecked()) {
-                nutritionalEvaluation.addMeasuerement(itemEvaluation1.getMeasurement());
-                count++;
-            }
-        }
-
-        return count > 0;
-    }
-
     @Override
     public void onAddItemClick(String name, int type) {
         Intent intent;
@@ -587,56 +692,23 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
                 break;
             case MEDICAL_RECORDS:
                 intent = new Intent(this, QuizNutritionActivity.class);
-                intent.putExtra("checkpoint", MEDICAL_RECORDS);
+//                intent.putExtra("checkpoint", MEDICAL_RECORDS);
                 break;
             case PHYSICAL_ACTIVITY:
                 intent = new Intent(this, QuizNutritionActivity.class);
-                intent.putExtra("checkpoint", PHYSICAL_ACTIVITY);
+//                intent.putExtra("checkpoint", PHYSICAL_ACTIVITY);
                 break;
             case FEEDING_HABITS:
                 intent = new Intent(this, QuizNutritionActivity.class);
-                intent.putExtra("checkpoint", FEEDING_HABITS);
+//                intent.putExtra("checkpoint", FEEDING_HABITS);
                 break;
             case SLEEP_HABITS:
                 intent = new Intent(this, QuizNutritionActivity.class);
-                intent.putExtra("checkpoint", SLEEP_HABITS);
+//                intent.putExtra("checkpoint", SLEEP_HABITS);
                 break;
             default:
                 return;
         }
         startActivity(intent);
-    }
-
-    @Override
-    public void onSelectClick(ItemEvaluation itemEvaluation, boolean selected) {
-        Log.i("AAA", "Antes:" + nutritionalEvaluation.toString());
-        if (itemEvaluation.getTypeHeader() == TYPE_MEASUREMENT) {
-            if (selected) nutritionalEvaluation.addMeasuerement(itemEvaluation.getMeasurement());
-            else nutritionalEvaluation.removeMeasuerement(itemEvaluation.getMeasurement());
-        }
-        switch (itemEvaluation.getTypeEvaluation()) {
-            case SLEEP_HABITS:
-                if (selected) nutritionalEvaluation.setSleepHabits(itemEvaluation.getSleepHabit());
-                else nutritionalEvaluation.setSleepHabits(null);
-                break;
-            case MEDICAL_RECORDS:
-                if (selected)
-                    nutritionalEvaluation.setMedicalRecord(itemEvaluation.getMedicalRecord());
-                else nutritionalEvaluation.setMedicalRecord(null);
-                break;
-            case PHYSICAL_ACTIVITY:
-                if (selected)
-                    nutritionalEvaluation.setPhysicalActivityHabits(itemEvaluation.getPhysicalActivityHabit());
-                else nutritionalEvaluation.setPhysicalActivityHabits(null);
-                break;
-            case FEEDING_HABITS:
-                if (selected)
-                    nutritionalEvaluation.setFeedingHabits(itemEvaluation.getFeedingHabitsRecord());
-                else nutritionalEvaluation.setFeedingHabits(null);
-                break;
-            default:
-                break;
-        }
-        Log.i("AAA", "Depois:" + nutritionalEvaluation.toString());
     }
 }

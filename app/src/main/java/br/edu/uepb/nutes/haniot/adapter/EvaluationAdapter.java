@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -142,7 +141,6 @@ public class EvaluationAdapter extends ExpandableRecyclerViewAdapter<EvaluationA
      * @param ig
      */
     private void resetView(ViewHolder h, ItemEvaluation ig) {
-        h.checkItem.setChecked(ig.isChecked());
         h.texTime.setVisibility(View.VISIBLE);
         h.timeIcon.setVisibility(View.VISIBLE);
         h.itemQuizView.setVisibility(GONE);
@@ -150,7 +148,6 @@ public class EvaluationAdapter extends ExpandableRecyclerViewAdapter<EvaluationA
         h.boxMeasurement.setVisibility(View.VISIBLE);
         h.textMeasurement.setVisibility(View.VISIBLE);
         h.textMeasurementType.setVisibility(View.VISIBLE);
-        h.checkItem.setVisibility(View.VISIBLE);
         h.messageText.setVisibility(View.VISIBLE);
         h.warning.setVisibility(View.INVISIBLE);
         h.loading.setVisibility(View.GONE);
@@ -177,12 +174,6 @@ public class EvaluationAdapter extends ExpandableRecyclerViewAdapter<EvaluationA
         h.messageText.setText(context.getResources().getString(R.string.evaluation_error_message));
         h.boxOthersInfo.setVisibility(GONE);
         h.boxMeasurement.setVisibility(GONE);
-        h.checkItem.setVisibility(View.INVISIBLE);
-//        h.mView.setOnClickListener(v -> {
-//            if (mListener != null) {
-//                mListener.onRefreshClick(ig.getTitle(), ig.getTypeEvaluation());
-//            }
-//        });
     }
 
     private void createEmptyView(ViewHolder h, ItemEvaluation ig) {
@@ -195,7 +186,6 @@ public class EvaluationAdapter extends ExpandableRecyclerViewAdapter<EvaluationA
         h.messageText.setText(context.getResources().getString(R.string.evaluation_empty_message));
         h.boxOthersInfo.setVisibility(GONE);
         h.boxMeasurement.setVisibility(GONE);
-        h.checkItem.setVisibility(View.INVISIBLE);
     }
 
     /**
@@ -205,12 +195,10 @@ public class EvaluationAdapter extends ExpandableRecyclerViewAdapter<EvaluationA
      * @param ig
      */
     private void createMeasurementView(ViewHolder h, ItemEvaluation ig) {
-        h.checkItem.setChecked(ig.isChecked());
         h.mView.setOnClickListener(v -> {
-            ig.setChecked(!ig.isChecked());
-            h.checkItem.setChecked(!h.checkItem.isChecked());
-            mListener.onSelectClick(ig, ig.isChecked());
-        });
+            if (mListener != null) {
+                mListener.onAddItemClick(ig.getTitle(), ig.getTypeEvaluation());
+            }        });
 
         h.textMeasurement.setVisibility(View.VISIBLE);
         h.textMeasurementType.setVisibility(View.VISIBLE);
@@ -288,18 +276,6 @@ public class EvaluationAdapter extends ExpandableRecyclerViewAdapter<EvaluationA
         h.messageText.setVisibility(View.VISIBLE);
         h.boxOthersInfo.setVisibility(GONE);
         h.boxMeasurement.setVisibility(GONE);
-        h.checkItem.setChecked(ig.isChecked());
-
-        h.mView.setOnClickListener(v -> {
-            for (ItemEvaluation itemEvaluation : (List<ItemEvaluation>) group.getItems()) {
-                itemEvaluation.setChecked(false);
-            }
-            notifyDataSetChanged();
-
-            ig.setChecked(!ig.isChecked());
-            h.checkItem.setChecked(!h.checkItem.isChecked());
-            mListener.onSelectClick(ig, ig.isChecked());
-        });
 
         StringBuilder stringBuilder = new StringBuilder();
         String date = "";
@@ -382,7 +358,6 @@ public class EvaluationAdapter extends ExpandableRecyclerViewAdapter<EvaluationA
         h.boxOthersInfo.setVisibility(GONE);
         h.boxMeasurement.setVisibility(GONE);
         h.messageText.setVisibility(GONE);
-        h.checkItem.setVisibility(GONE);
     }
 
     @Override
@@ -416,8 +391,6 @@ public class EvaluationAdapter extends ExpandableRecyclerViewAdapter<EvaluationA
         TextView messageText;
         @BindView(R.id.text_date_measurement)
         TextView textDate;
-        @BindView(R.id.check_item)
-        CheckBox checkItem;
         @BindView(R.id.box_other_info)
         LinearLayout boxOthersInfo;
         @BindView(R.id.box_measurement)
@@ -479,10 +452,6 @@ public class EvaluationAdapter extends ExpandableRecyclerViewAdapter<EvaluationA
     }
 
     public interface OnClick {
-
         void onAddItemClick(String name, int type);
-
-        void onSelectClick(ItemEvaluation itemEvaluation, boolean selected);
-
     }
 }

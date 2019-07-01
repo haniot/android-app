@@ -303,7 +303,7 @@ public interface HaniotService {
     Single<List<OdontologicalQuestionnaire>> getLastOdontologicalQuestionnaires(@Path("patient_id") String patientId);
 
     @GET("patients/{patient_id}/odontological/questionnaires/last")
-    Single<List<NutritionalQuestionnaire>> getLastNutritionalQuestionnaire(@Path("patient_id") String patientId);
+    Single<NutritionalQuestionnaire> getLastNutritionalQuestionnaire(@Path("patient_id") String patientId);
 
 
     @PATCH("patients/{patient_id}/nutritional/questionnaires/{questionnaire_id}/{resource_name}")

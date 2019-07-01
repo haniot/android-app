@@ -442,7 +442,7 @@ public class HaniotNetRepository extends BaseNetRepository {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Single<List<NutritionalQuestionnaire>> getLastNutritionalQuestionnaire(String patientId) {
+    public Single<NutritionalQuestionnaire> getLastNutritionalQuestionnaire(String patientId) {
         return haniotService.getLastNutritionalQuestionnaire(patientId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
