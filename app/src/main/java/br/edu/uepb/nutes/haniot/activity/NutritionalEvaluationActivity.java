@@ -28,6 +28,7 @@ import br.edu.uepb.nutes.haniot.data.model.GroupItemEvaluation;
 import br.edu.uepb.nutes.haniot.data.model.ItemEvaluation;
 import br.edu.uepb.nutes.haniot.data.model.ItemGridType;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
+import br.edu.uepb.nutes.haniot.data.model.MeasurementLastResponse;
 import br.edu.uepb.nutes.haniot.data.model.MedicalRecord;
 import br.edu.uepb.nutes.haniot.data.model.NutritionalEvaluation;
 import br.edu.uepb.nutes.haniot.data.model.NutritionalQuestionnaire;
@@ -92,6 +93,7 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
     private NutritionalQuestionnaire lastNutritionalQuestionnaire;
     private List<Measurement> measurementList;
     private boolean evaluationValidated;
+    private MeasurementLastResponse measurementLastResponse;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,6 +151,8 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
         patient = helper.getLastPatient();
         pilotStudy = helper.getLastPilotStudy();
+        //TODO TEMP
+        measurementLastResponse = new MeasurementLastResponse();
     }
 
     private void showToast(final String menssage) {
@@ -178,7 +182,7 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
     }
 
     /**
-     * Get get quizList group object by type.
+     * Get get listNutritional group object by type.
      *
      * @param type
      * @return
@@ -262,7 +266,7 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
     }
 
     /**
-     * Prepare quizList data from the server.
+     * Prepare listNutritional data from the server.
      */
     private void prepareQuiz(NutritionalQuestionnaire nutritionalQuestionnaire) {
 
@@ -271,7 +275,6 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
 
         //Sleep Habits
         groupItemEvaluation = getEvaluationGroupByType(SLEEP_HABITS);
-
         if (groupItemEvaluation != null) {
             itemEvaluation = groupItemEvaluation.getItems().get(0);
             if (nutritionalQuestionnaire.getSleepHabit() == null) {
@@ -284,7 +287,6 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
 
         //Medical Records
         groupItemEvaluation = getEvaluationGroupByType(MEDICAL_RECORDS);
-
         if (groupItemEvaluation != null) {
             itemEvaluation = groupItemEvaluation.getItems().get(0);
             if (nutritionalQuestionnaire.getMedicalRecord() == null) {
@@ -297,7 +299,6 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
 
         //Feeding habits
         groupItemEvaluation = getEvaluationGroupByType(FEEDING_HABITS);
-
         if (groupItemEvaluation != null) {
             itemEvaluation = groupItemEvaluation.getItems().get(0);
             if (nutritionalQuestionnaire.getFeedingHabitsRecord() == null) {
@@ -310,7 +311,6 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
 
         //Physical Activity
         groupItemEvaluation = getEvaluationGroupByType(PHYSICAL_ACTIVITY);
-
         if (groupItemEvaluation != null) {
             itemEvaluation = groupItemEvaluation.getItems().get(0);
             if (nutritionalQuestionnaire.getPhysicalActivityHabit() == null) {
@@ -324,7 +324,7 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
     }
 
     /**
-     * Prepare quizList data from the server.
+     * Prepare listNutritional data from the server.
      *
      * @param data
      * @param type
@@ -458,11 +458,11 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
     }
 
     /**
-     * Download data quizList from the server.
+     * Download data listNutritional from the server.
      */
     private void downloadData() {
-
-        //TODO Correto
+//
+//        //TODO Correto
 //        DisposableManager.add(haniotNetRepository
 //                .getLastNutritionalQuestionnaire(patient.get_id())
 //                .subscribe(nutritionalQuestionnaires -> {
@@ -476,8 +476,9 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
 //        DisposableManager.add(haniotNetRepository
 //                .getLastMeasurements(patient.get_id())
 //                .subscribe(measurents -> {
-//                    measurementList = measurents;
-//                    prepareQuiz(prepareMeasurements(measurementList));
+//                    measurementLastResponse = measurents;
+//                    //  measurementList = measurents;
+//                    prepareMeasurements(measurents);
 //                }, throwable -> {
 //                    Log.i("AAA", throwable.getMessage());
 //                    onDownloadError(ALL_MEASUREMENT);
@@ -531,6 +532,7 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
                         , 1, 100000, "-timestamp")
                 .subscribe(this::prepareMeasurements,
                         type -> onDownloadError(ALL_MEASUREMENT)));
+
         new Handler().postDelayed(() -> {
             prepareQuiz(lastNutritionalQuestionnaire);
         }, 5000);
@@ -538,6 +540,7 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
 
     /**
      * Prepare measurements list from server.
+     * //TODO Para funcionar versão antiga
      *
      * @param measurements
      */
@@ -549,55 +552,113 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
         List<Measurement> waistCircumference = new ArrayList<>();
         List<Measurement> weight = new ArrayList<>();
 
-        int countHeartRate = 0;
         for (Measurement measurement : measurements) {
             Log.i("AAA", measurement.getValue() + " - " + measurement.getType());
             switch (measurement.getType()) {
                 case "blood_glucose":
-                    glucose.add(measurement);
+                    if (glucose.isEmpty())
+                        glucose.add(measurement);
                     break;
                 case "blood_pressure":
-                    bloodPressure.add(measurement);
+                    if (bloodPressure.isEmpty())
+                        bloodPressure.add(measurement);
                     break;
                 case "heart_rate":
-                    if (countHeartRate >= 5) break;
-                    heartRate.add(measurement);
-                    countHeartRate++;
+                    if (heartRate.isEmpty())
+                        heartRate.add(measurement);
                     break;
                 case "height":
-                    height.add(measurement);
+                    if (height.isEmpty())
+                        height.add(measurement);
                     break;
                 case "waist_circumference":
-                    waistCircumference.add(measurement);
+                    if (waistCircumference.isEmpty())
+                        waistCircumference.add(measurement);
                     break;
                 case "weight":
-                    weight.add(measurement);
+                    if (weight.isEmpty())
+                        weight.add(measurement);
                     break;
             }
         }
 
-        prepareMeasurement(heartRate, HEARTRATE);
-        prepareMeasurement(bloodPressure, BLOOD_PRESSURE);
-        prepareMeasurement(weight, WEIGHT);
-        prepareMeasurement(glucose, GLUCOSE);
-        prepareMeasurement(waistCircumference, WAIST_CIRCUMFERENCE);
-        prepareMeasurement(height, HEIGHT);
+        if (!glucose.isEmpty())
+            measurementLastResponse.setBloodGlucose(glucose.get(0));
+
+        if (!bloodPressure.isEmpty())
+            measurementLastResponse.setBloodPressure(bloodPressure.get(0));
+
+        if (!heartRate.isEmpty())
+            measurementLastResponse.setHeartRate(heartRate.get(0));
+
+        if (!height.isEmpty())
+            measurementLastResponse.setHeight(height.get(0));
+
+        if (!waistCircumference.isEmpty())
+            measurementLastResponse.setWaistCircumference(waistCircumference.get(0));
+
+        if (!weight.isEmpty())
+            measurementLastResponse.setWeight(weight.get(0));
+
+        prepareMeasurements(measurementLastResponse);
     }
+
+    /**
+     * Prepare measurements from Measurement Last Response from server.
+     *
+     * @param measurementLastResponse
+     */
+    private void prepareMeasurements(MeasurementLastResponse measurementLastResponse) {
+        if (measurementLastResponse.getHeartRate() != null)
+            prepareMeasurement(measurementLastResponse.getHeartRate(), HEARTRATE);
+        if (measurementLastResponse.getBloodPressure() != null)
+            prepareMeasurement(measurementLastResponse.getBloodPressure(), BLOOD_PRESSURE);
+        if (measurementLastResponse.getWeight() != null)
+            prepareMeasurement(measurementLastResponse.getWeight(), WEIGHT);
+        if (measurementLastResponse.getBloodGlucose() != null)
+            prepareMeasurement(measurementLastResponse.getBloodGlucose(), GLUCOSE);
+        if (measurementLastResponse.getWaistCircumference() != null)
+            prepareMeasurement(measurementLastResponse.getWaistCircumference(), WAIST_CIRCUMFERENCE);
+        if (measurementLastResponse.getHeight() != null)
+            prepareMeasurement(measurementLastResponse.getHeight(), HEIGHT);
+    }
+
 
     /**
      * Send nutritionalEvaluation for server.
      */
     private void sendEvaluation() {
 
-        Log.i("AAA", "Preparing quizList...");
+        Log.i("AAA", "Preparing listNutritional...");
         nutritionalEvaluation.setPatient(patient);
         nutritionalEvaluation.setHealthProfessionalId(appPreferencesHelper.getUserLogged().get_id());
         nutritionalEvaluation.setPilotStudy(appPreferencesHelper.getLastPilotStudy().get_id());
-        if (nutritionalEvaluation.getMeasurements() != null)
-            nutritionalEvaluation.getMeasurements().clear();
+
+        evaluationValidated = measurementLastResponse.getBloodGlucose() != null
+                && measurementLastResponse.getBloodPressure() != null
+                && measurementLastResponse.getHeartRate() != null
+                && measurementLastResponse.getWaistCircumference() != null
+                && measurementLastResponse.getTemperature() != null
+                && measurementLastResponse.getWeight() != null
+                && lastNutritionalQuestionnaire.getSleepHabit() != null
+                && lastNutritionalQuestionnaire.getPhysicalActivityHabit() != null
+                && lastNutritionalQuestionnaire.getMedicalRecord() != null
+                && lastNutritionalQuestionnaire.getFeedingHabitsRecord() != null;
 
         if (evaluationValidated) {
+            nutritionalEvaluation.setFeedingHabits(lastNutritionalQuestionnaire.getFeedingHabitsRecord());
+            nutritionalEvaluation.setPhysicalActivityHabits(lastNutritionalQuestionnaire.getPhysicalActivityHabit());
+            nutritionalEvaluation.setMedicalRecord(lastNutritionalQuestionnaire.getMedicalRecord());
+            nutritionalEvaluation.setSleepHabits(lastNutritionalQuestionnaire.getSleepHabit());
 
+            List<Measurement> measurements = new ArrayList<>();
+            measurements.add(measurementLastResponse.getBloodPressure());
+            measurements.add(measurementLastResponse.getHeartRate());
+            measurements.add(measurementLastResponse.getWaistCircumference());
+            measurements.add(measurementLastResponse.getTemperature());
+            measurements.add(measurementLastResponse.getWeight());
+
+            nutritionalEvaluation.setMeasurements(measurements);
             Log.i("AAA", "Saida: " + nutritionalEvaluation.toJson());
 
             new AlertDialog.Builder(this)
@@ -617,33 +678,33 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
             showMessage(R.string.evaluation_required_fields);
         }
     }
-
-    private boolean getCheckedQuiz(int type) {
-        boolean contains = false;
-        if (getEvaluationGroupByType(type) == null) return false;
-        for (ItemEvaluation itemEvaluation : getEvaluationGroupByType(type).getItems())
-            if (itemEvaluation.isChecked()) {
-                switch (itemEvaluation.getTypeEvaluation()) {
-                    case PHYSICAL_ACTIVITY:
-                        nutritionalEvaluation.setPhysicalActivityHabits(itemEvaluation.getPhysicalActivityHabit());
-                        contains = true;
-                        break;
-                    case SLEEP_HABITS:
-                        nutritionalEvaluation.setSleepHabits(itemEvaluation.getSleepHabit());
-                        contains = true;
-                        break;
-                    case MEDICAL_RECORDS:
-                        nutritionalEvaluation.setMedicalRecord(itemEvaluation.getMedicalRecord());
-                        contains = true;
-                        break;
-                    case FEEDING_HABITS:
-                        nutritionalEvaluation.setFeedingHabits(itemEvaluation.getFeedingHabitsRecord());
-                        contains = true;
-                        break;
-                }
-            }
-        return contains;
-    }
+//
+//    private boolean getCheckedQuiz(int type) {
+//        boolean contains = false;
+//        if (getEvaluationGroupByType(type) == null) return false;
+//        for (ItemEvaluation itemEvaluation : getEvaluationGroupByType(type).getItems())
+//            if (itemEvaluation.isChecked()) {
+//                switch (itemEvaluation.getTypeEvaluation()) {
+//                    case PHYSICAL_ACTIVITY:
+//                        nutritionalEvaluation.setPhysicalActivityHabits(itemEvaluation.getPhysicalActivityHabit());
+//                        contains = true;
+//                        break;
+//                    case SLEEP_HABITS:
+//                        nutritionalEvaluation.setSleepHabits(itemEvaluation.getSleepHabit());
+//                        contains = true;
+//                        break;
+//                    case MEDICAL_RECORDS:
+//                        nutritionalEvaluation.setMedicalRecord(itemEvaluation.getMedicalRecord());
+//                        contains = true;
+//                        break;
+//                    case FEEDING_HABITS:
+//                        nutritionalEvaluation.setFeedingHabits(itemEvaluation.getFeedingHabitsRecord());
+//                        contains = true;
+//                        break;
+//                }
+//            }
+//        return contains;
+//    }
 
     /**
      * Manipulates the error and displays message
@@ -691,20 +752,16 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
                         .saveInt(getResources().getString(R.string.measurementType), ItemGridType.ANTHROPOMETRIC);
                 break;
             case MEDICAL_RECORDS:
-                intent = new Intent(this, QuizNutritionActivity.class);
-//                intent.putExtra("checkpoint", MEDICAL_RECORDS);
+                intent = new Intent(this, HistoricQuizActivity.class);
                 break;
             case PHYSICAL_ACTIVITY:
-                intent = new Intent(this, QuizNutritionActivity.class);
-//                intent.putExtra("checkpoint", PHYSICAL_ACTIVITY);
+                intent = new Intent(this, HistoricQuizActivity.class);
                 break;
             case FEEDING_HABITS:
-                intent = new Intent(this, QuizNutritionActivity.class);
-//                intent.putExtra("checkpoint", FEEDING_HABITS);
+                intent = new Intent(this, HistoricQuizActivity.class);
                 break;
             case SLEEP_HABITS:
-                intent = new Intent(this, QuizNutritionActivity.class);
-//                intent.putExtra("checkpoint", SLEEP_HABITS);
+                intent = new Intent(this, HistoricQuizActivity.class);
                 break;
             default:
                 return;

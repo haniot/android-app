@@ -179,13 +179,7 @@ public class HistoricQuizAdapter extends ExpandableRecyclerViewAdapter<HistoricQ
         h.messageText.setVisibility(View.VISIBLE);
 
         h.mView.setOnClickListener(v -> {
-            for (ItemEvaluation itemEvaluation : (List<ItemEvaluation>) group.getItems()) {
-                itemEvaluation.setChecked(false);
-            }
-            notifyDataSetChanged();
-
-            ig.setChecked(!ig.isChecked());
-            mListener.onSelectClick(ig, ig.isChecked());
+            mListener.onAddItemClick(ig.getTitle(), ig.getTypeEvaluation());
         });
 
         StringBuilder stringBuilder = new StringBuilder();
@@ -325,7 +319,7 @@ public class HistoricQuizAdapter extends ExpandableRecyclerViewAdapter<HistoricQ
 
         void onAddItemClick(String name, int type);
 
-        void onSelectClick(ItemEvaluation itemEvaluation, boolean selected);
+        void onSelectClick(ItemEvaluation itemEvaluation);
 
     }
 }

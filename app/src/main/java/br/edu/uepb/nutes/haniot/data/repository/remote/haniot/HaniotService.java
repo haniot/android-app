@@ -6,6 +6,7 @@ import br.edu.uepb.nutes.haniot.data.model.Device;
 import br.edu.uepb.nutes.haniot.data.model.FamilyCohesionRecord;
 import br.edu.uepb.nutes.haniot.data.model.FeedingHabitsRecord;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
+import br.edu.uepb.nutes.haniot.data.model.MeasurementLastResponse;
 import br.edu.uepb.nutes.haniot.data.model.MedicalRecord;
 import br.edu.uepb.nutes.haniot.data.model.NutritionalEvaluation;
 import br.edu.uepb.nutes.haniot.data.model.NutritionalEvaluationResult;
@@ -304,6 +305,9 @@ public interface HaniotService {
 
     @GET("patients/{patient_id}/odontological/questionnaires/last")
     Single<NutritionalQuestionnaire> getLastNutritionalQuestionnaire(@Path("patient_id") String patientId);
+
+    @GET("patients/{patient_id}/measurements/last")
+    Single<MeasurementLastResponse> getLastMeasurements(@Path("patient_id") String patientId);
 
 
     @PATCH("patients/{patient_id}/nutritional/questionnaires/{questionnaire_id}/{resource_name}")

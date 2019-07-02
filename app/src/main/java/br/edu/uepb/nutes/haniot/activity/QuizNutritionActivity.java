@@ -670,7 +670,6 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
                 .Builder(this)
                 .setMessage(getResources().getString(R.string.cancel))
                 .setPositiveButton(getResources().getText(R.string.yes_text), (dialog, which) -> {
-                    startActivity(new Intent(this, ManagerPatientsActivity.class));
                     finish();
                 })
                 .setNegativeButton(getResources().getText(R.string.no_text), null)
@@ -708,7 +707,6 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
                 default:
                     saveSleepHabits();
                     sendQuestionnaireToServer();
-                    startActivity(new Intent(this, MainActivity.class));
             }
             finish();
         } else {
