@@ -61,6 +61,7 @@ public class User {
     /**
      * {@link UserType ()}
      */
+    @Expose()
     private int userType; // 1 admin, 2 health_profissional
 
     public User() {

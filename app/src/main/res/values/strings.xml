@@ -400,8 +400,10 @@
     </string-array>
 
     <string-array name="user_group_array">
-        <item>Super</item>
-        <item>Common</item>
+        <item>Admin</item>
+        <item>Nutrition</item>
+        <item>Dentistry</item>
+        <item>Patient</item>
     </string-array>
 
     <!--TYPES AND GROUPS-->

@@ -23,16 +23,24 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.SettingsActivity;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
+import br.edu.uepb.nutes.haniot.data.model.User;
+import br.edu.uepb.nutes.haniot.data.model.UserType;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.fragment.DashboardChartsFragment;
 import br.edu.uepb.nutes.haniot.fragment.MeasurementsGridFragment;
 import br.edu.uepb.nutes.haniot.utils.NetworkUtil;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static br.edu.uepb.nutes.haniot.data.model.UserType.ADMIN;
+import static br.edu.uepb.nutes.haniot.data.model.UserType.DENTISTRY;
+import static br.edu.uepb.nutes.haniot.data.model.UserType.NUTRITION;
+import static br.edu.uepb.nutes.haniot.data.model.UserType.PATIENT;
 
 /**
  * Main activity, application start.
@@ -49,6 +57,9 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
     FrameLayout frameChart;
     @BindView(R.id.frameMeasurements)
     FrameLayout frameMeasurements;
+
+    @BindView(R.id.patient_actions)
+    FloatingActionMenu patientActionsMenu;
 
     @BindView(R.id.evaluation_nutrition)
     FloatingActionButton nutritioEvaluation;
@@ -75,6 +86,8 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
         toolbar.setTitle(getResources().getString(R.string.app_name));
         setSupportActionBar(toolbar);
         appPreferences = AppPreferencesHelper.getInstance(this);
+        // TODO for test
+        appPreferences.getUserLogged().setUserType(NUTRITION);
 
         dashboardChartsFragment = DashboardChartsFragment.newInstance();
         measurementsGridFragment = MeasurementsGridFragment.newInstance();
@@ -107,7 +120,9 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
     protected void onResume() {
         super.onResume();
         // Verify the pilot is selected
-        if (appPreferences.getLastPilotStudy() == null) {
+
+        if (appPreferences.getLastPilotStudy() == null
+                && appPreferences.getUserLogged().getUserType() != PATIENT) {
             startActivity(new Intent(this, WelcomeActivity.class));
         } else {
             checkPatient();
@@ -124,25 +139,30 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
      * Init click listener of patient action buttons.
      */
     private void setupPatientActions() {
+        int userType = appPreferences.getUserLogged().getUserType();
 
-        if (appPreferences.getUserLogged().getHealthArea().equals("dentistry")) {
-            quizNutrition.setVisibility(View.GONE);
-            nutritioEvaluation.setVisibility(View.GONE);
+        if (userType != ADMIN) {
+            if (userType == DENTISTRY) {
+                quizNutrition.setVisibility(View.GONE);
+                nutritioEvaluation.setVisibility(View.GONE);
 
-            quizOdonto.setOnClickListener(v -> {
-                startActivity(new Intent(this, QuizOdontologyActivity.class));
-                finish();
-            });
+                quizOdonto.setOnClickListener(v -> {
+                    startActivity(new Intent(this, QuizOdontologyActivity.class));
+                    finish();
+                });
 
-        } else {
-            quizOdonto.setVisibility(View.GONE);
-            quizNutrition.setOnClickListener(v -> {
-                startActivity(new Intent(this, QuizNutritionActivity.class));
-                finish();
-            });
-            nutritioEvaluation.setOnClickListener(v -> {
-                measurementsGridFragment.saveHeartRateCollection();
-            });
+            } else if (userType == NUTRITION) {
+                quizOdonto.setVisibility(View.GONE);
+                quizNutrition.setOnClickListener(v -> {
+                    startActivity(new Intent(this, QuizNutritionActivity.class));
+                    finish();
+                });
+                nutritioEvaluation.setOnClickListener(v -> {
+                    measurementsGridFragment.saveHeartRateCollection();
+                });
+            } else if (userType == PATIENT) {
+                patientActionsMenu.setVisibility(View.INVISIBLE);
+            }
         }
     }
 
@@ -156,7 +176,10 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
             loadDashboard();
             checkPermissions();
         } else {
-            startActivity(new Intent(this, ManagerPatientsActivity.class));
+            if (appPreferences.getUserLogged().getUserType() == PATIENT){
+
+            }
+                startActivity(new Intent(this, ManagerPatientsActivity.class));
         }
     }
 
@@ -237,6 +260,8 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
+        if (appPreferences.getUserLogged().getUserType() == PATIENT)
+            menu.getItem(0).setVisible(false);
         return super.onCreateOptionsMenu(menu);
     }
 

@@ -27,6 +27,11 @@ import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static br.edu.uepb.nutes.haniot.data.model.UserType.ADMIN;
+import static br.edu.uepb.nutes.haniot.data.model.UserType.DENTISTRY;
+import static br.edu.uepb.nutes.haniot.data.model.UserType.NUTRITION;
+import static br.edu.uepb.nutes.haniot.data.model.UserType.PATIENT;
+
 public class ManagerPatientAdapter extends BaseAdapter<Patient> {
 
     private final String LOG = "ManagerPatientAdapter";
@@ -105,11 +110,19 @@ public class ManagerPatientAdapter extends BaseAdapter<Patient> {
             h.btnMore.setOnClickListener(v -> {
                 PopupMenu popup = new PopupMenu(context, ((ManagerPatientViewHolder) holder).btnMore);
                 popup.inflate(R.menu.menu_patient_actions);
-                if (appPreferencesHelper.getUserLogged().getHealthArea().equals("nutrition"))
-                    popup.getMenu().getItem(2).setVisible(false);
-                else if (appPreferencesHelper.getUserLogged().getHealthArea().equals("dentistry")) {
-                    popup.getMenu().getItem(1).setVisible(false);
-                    popup.getMenu().getItem(3).setVisible(false);
+                int userType = appPreferencesHelper.getUserLogged().getUserType();
+                if (userType != ADMIN) {
+                    if (userType == NUTRITION) {
+                        popup.getMenu().getItem(2).setVisible(false);
+                    } else if (userType == DENTISTRY) {
+                        popup.getMenu().getItem(1).setVisible(false);
+                        popup.getMenu().getItem(3).setVisible(false);
+                    } else if (userType == PATIENT) {
+                        popup.getMenu().getItem(1).setVisible(false);
+                        popup.getMenu().getItem(2).setVisible(false);
+                        popup.getMenu().getItem(0).setVisible(false);
+                        popup.getMenu().getItem(3).setVisible(false);
+                    }
                 }
                 popup.setOnMenuItemClickListener(item -> {
                     switch (item.getItemId()) {

@@ -183,6 +183,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     syncDevices(userId);
                 }, this::errorHandler)
         );
+
+        //TODO Mudar caso seja Patient ou ADMIN
     }
 
     /**

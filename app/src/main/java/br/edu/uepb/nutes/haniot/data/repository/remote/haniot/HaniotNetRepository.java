@@ -119,6 +119,7 @@ public class HaniotNetRepository extends BaseNetRepository {
                         userAccess.setSubject(jwt.getSubject());
                         userAccess.setExpirationDate(jwt.getExpiresAt().getTime());
                         userAccess.setScopes(jwt.getClaim(UserAccess.KEY_SCOPES).asString());
+                        userAccess.setTokenType(jwt.getClaim(UserAccess.SUB_TYPE).asString());
                     }
                     return userAccess;
                 })

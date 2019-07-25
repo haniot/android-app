@@ -13,7 +13,9 @@ import br.edu.uepb.nutes.haniot.R;
  */
 public class UserType {
     public static final int ADMIN = 1;
-    public static final int HEALTH_PROFISSIONAL = 2;
+    public static final int NUTRITION = 2;
+    public static final int DENTISTRY = 3;
+    public static final int PATIENT = 4;
 
     /**
      * Retrieve the mapped group name in resources.

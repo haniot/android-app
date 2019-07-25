@@ -480,8 +480,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
                                 mDeviceDAO.remove(registered.getAddress());
                                 unpairDevice(mDevice);
                                 btDevice.createBond();
-                            }, err -> Log.w(LOG_TAG, "ERROR DELETE:" + err.getMessage()))
-            );
+                            }, err -> Log.w(LOG_TAG, "ERROR DELETE:" + err.getMessage())));
         } else {
             unpairDevice(mDevice);
             btDevice.createBond();
