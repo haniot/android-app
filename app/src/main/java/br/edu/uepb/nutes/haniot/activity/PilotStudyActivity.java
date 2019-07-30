@@ -30,6 +30,8 @@ import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static br.edu.uepb.nutes.haniot.data.model.UserType.ADMIN;
+
 /**
  * Implementation of the pilot study selection list.
  *
@@ -222,24 +224,45 @@ public class PilotStudyActivity extends AppCompatActivity {
             return;
         }
 
-        DisposableManager.add(haniotNetRepository
-                .getAllPilotStudies(appPreferences.getUserLogged().get_id())
-                .doOnSubscribe(disposable -> showLoading(true))
-                .doAfterTerminate(() -> showLoading(false))
-                .subscribe(pilotStudies -> {
-                    if (pilotStudies.isEmpty()) return;
+        if (appPreferences.getUserLogged().getUserType().equals(ADMIN)) {
+            DisposableManager.add(haniotNetRepository
+                    .getAllPilotStudies()
+                    .doOnSubscribe(disposable -> showLoading(true))
+                    .doAfterTerminate(() -> showLoading(false))
+                    .subscribe(pilotStudies -> {
+                        if (pilotStudies.isEmpty()) return;
 
-                    PilotStudy pilotLast = appPreferences.getLastPilotStudy();
-                    for (PilotStudy pilot : pilotStudies) {
-                        if (pilotLast != null && pilot.get_id().equals(pilotLast.get_id())) {
-                            pilot.setSelected(true);
+                        PilotStudy pilotLast = appPreferences.getLastPilotStudy();
+                        for (PilotStudy pilot : pilotStudies) {
+                            if (pilotLast != null && pilot.get_id().equals(pilotLast.get_id())) {
+                                pilot.setSelected(true);
+                            }
                         }
-                    }
-                    populatePilotStudiesView(pilotStudies);
-                }, error -> {
-                    populatePilotStudiesView(null);
-                })
-        );
+                        populatePilotStudiesView(pilotStudies);
+                    }, error -> {
+                        populatePilotStudiesView(null);
+                    })
+            );
+        } else {
+            DisposableManager.add(haniotNetRepository
+                    .getAllUserPilotStudies(appPreferences.getUserLogged().get_id())
+                    .doOnSubscribe(disposable -> showLoading(true))
+                    .doAfterTerminate(() -> showLoading(false))
+                    .subscribe(pilotStudies -> {
+                        if (pilotStudies.isEmpty()) return;
+
+                        PilotStudy pilotLast = appPreferences.getLastPilotStudy();
+                        for (PilotStudy pilot : pilotStudies) {
+                            if (pilotLast != null && pilot.get_id().equals(pilotLast.get_id())) {
+                                pilot.setSelected(true);
+                            }
+                        }
+                        populatePilotStudiesView(pilotStudies);
+                    }, error -> {
+                        populatePilotStudiesView(null);
+                    })
+            );
+        }
     }
 
     /**

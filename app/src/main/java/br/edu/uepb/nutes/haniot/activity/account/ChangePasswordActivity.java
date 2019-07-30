@@ -72,7 +72,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent.hasExtra("user_id")) { // From redirect link
             user = new User();
-            user.set_id(intent.getStringExtra("user_id"));
+            user.set_id(appPreferences.getString("user_id"));
         } else {
             user = appPreferences.getUserLogged();
         }

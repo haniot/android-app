@@ -22,9 +22,13 @@ import java.util.Objects;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.MainActivity;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
+import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static br.edu.uepb.nutes.haniot.data.model.UserType.ADMIN;
+import static br.edu.uepb.nutes.haniot.data.model.UserType.PATIENT;
 
 /**
  * DashboardChartsFragment implementation.
@@ -44,6 +48,10 @@ public class DashboardChartsFragment extends Fragment {
     TextView textPilotStudy;
     @BindView(R.id.text_professional)
     TextView textProfessional;
+    @BindView(R.id.title_pilot_study)
+    TextView titlePilotStudy;
+    @BindView(R.id.title_professional)
+    TextView titleProfessional;
     Communicator communicator;
     @BindView(R.id.box_message_error)
     LinearLayout boxMessage;
@@ -52,6 +60,7 @@ public class DashboardChartsFragment extends Fragment {
     String typeMessageError;
     boolean wifiRequest;
     boolean bluetoothRequest;
+    User user;
 
     public DashboardChartsFragment() {
         // Required empty public constructor
@@ -80,8 +89,19 @@ public class DashboardChartsFragment extends Fragment {
 
         textDate.setText(simpleDateFormat.format(calendar.getTime()));
         updateNamePatient(preferencesHelper.getLastPatient());
-        textPilotStudy.setText(preferencesHelper.getLastPilotStudy().getName());
-        textProfessional.setText(preferencesHelper.getUserLogged().getName());
+        if (preferencesHelper.getUserLogged().getUserType().equals(PATIENT)) {
+            textPilotStudy.setVisibility(View.INVISIBLE);
+            textProfessional.setVisibility(View.INVISIBLE);
+            titlePilotStudy.setVisibility(View.INVISIBLE);
+            titleProfessional.setVisibility(View.INVISIBLE);
+        } else if (preferencesHelper.getUserLogged().getUserType().equals(ADMIN)) {
+            titleProfessional.setVisibility(View.INVISIBLE);
+            textProfessional.setVisibility(View.INVISIBLE);
+        }
+        if (preferencesHelper.getLastPilotStudy() != null)
+            textPilotStudy.setText(preferencesHelper.getLastPilotStudy().getName());
+        if (preferencesHelper.getUserLogged().getName() != null)
+            textProfessional.setText(preferencesHelper.getUserLogged().getName());
 
         return view;
     }

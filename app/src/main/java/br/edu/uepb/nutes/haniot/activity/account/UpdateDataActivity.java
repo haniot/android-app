@@ -14,6 +14,9 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.data.model.Admin;
+import br.edu.uepb.nutes.haniot.data.model.HealthProfessional;
+import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
@@ -22,6 +25,10 @@ import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.HttpException;
+
+import static br.edu.uepb.nutes.haniot.data.model.UserType.ADMIN;
+import static br.edu.uepb.nutes.haniot.data.model.UserType.HEALTH_PROFESSIONAL;
+import static br.edu.uepb.nutes.haniot.data.model.UserType.PATIENT;
 
 /**
  * UpdateDataActivity implementation.
@@ -128,23 +135,59 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
      * Prepare the view for editing the data
      */
     private void prepareEditing() {
-        DisposableManager.add(haniotNetRepository
-                .getHealthProfissional(user.get_id())
-                .doOnSubscribe(disposable -> {
-                    populateView(); // Populate view with local data
-                    enabledView(false);
-                    loading(true);
-                })
-                .doAfterTerminate(() -> loading(false))
-                .subscribe(healthP -> {
-                    if (healthP.getEmail() != null) user.setEmail(healthP.getEmail());
-                    if (healthP.getName() != null) user.setName(healthP.getName());
+        switch (appPreferences.getUserLogged().getUserType()) {
+            case ADMIN:
+                DisposableManager.add(haniotNetRepository
+                        .getAdmin(user.get_id())
+                        .doOnSubscribe(disposable -> {
+                            populateView(); // Populate view with local data
+                            enabledView(false);
+                            loading(true);
+                        })
+                        .doAfterTerminate(() -> loading(false))
+                        .subscribe(admin -> {
+                            if (admin.getEmail() != null) user.setEmail(admin.getEmail());
+                            if (admin.getName() != null) user.setName(admin.getName());
 
-                    populateView();
-                    enabledView(true);
-                }, this::errorHandler)
+                            populateView();
+                            enabledView(true);
+                        }, this::errorHandler));
+                break;
+            case HEALTH_PROFESSIONAL:
+                DisposableManager.add(haniotNetRepository
+                        .getHealthProfissional(user.get_id())
+                        .doOnSubscribe(disposable -> {
+                            populateView(); // Populate view with local data
+                            enabledView(false);
+                            loading(true);
+                        })
+                        .doAfterTerminate(() -> loading(false))
+                        .subscribe(healthP -> {
+                            if (healthP.getEmail() != null) user.setEmail(healthP.getEmail());
+                            if (healthP.getName() != null) user.setName(healthP.getName());
 
-        );
+                            populateView();
+                            enabledView(true);
+                        }, this::errorHandler));
+                break;
+            case PATIENT:
+                DisposableManager.add(haniotNetRepository
+                        .getPatient(user.get_id())
+                        .doOnSubscribe(disposable -> {
+                            populateView(); // Populate view with local data
+                            enabledView(false);
+                            loading(true);
+                        })
+                        .doAfterTerminate(() -> loading(false))
+                        .subscribe(patient -> {
+                            if (patient.getEmail() != null) user.setEmail(patient.getEmail());
+                            if (patient.getName() != null) user.setName(patient.getName());
+
+                            populateView();
+                            enabledView(true);
+                        }, this::errorHandler));
+                break;
+        }
     }
 
     /**
@@ -163,19 +206,53 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
     private void updateInServer() {
         if (user == null) return;
 
-        DisposableManager.add(haniotNetRepository
-                .updateHealthProfissional(getUserView())
-                .doOnSubscribe(disposable -> loading(true))
-                .doAfterTerminate(() -> loading(false))
-                .subscribe(healthP -> {
-                    if (healthP.getEmail() != null) user.setEmail(healthP.getEmail());
-                    if (healthP.getName() != null) user.setName(healthP.getName());
+        switch (appPreferences.getUserLogged().getUserType()) {
+            case ADMIN:
+                DisposableManager.add(haniotNetRepository
+                        .updateAdmin((Admin) getUserView())
+                        .doOnSubscribe(disposable -> loading(true))
+                        .doAfterTerminate(() -> loading(false))
+                        .subscribe(healthP -> {
+                            if (healthP.getEmail() != null) user.setEmail(healthP.getEmail());
+                            if (healthP.getName() != null) user.setName(healthP.getName());
 
-                    appPreferences.saveUserLogged(user);
-                    enabledView(true);
-                    showMessage(200);
-                }, this::errorHandler)
-        );
+                            appPreferences.saveUserLogged(user);
+                            enabledView(true);
+                            showMessage(200);
+                        }, this::errorHandler)
+                );
+                break;
+            case HEALTH_PROFESSIONAL:
+                DisposableManager.add(haniotNetRepository
+                        .updateHealthProfissional((HealthProfessional) getUserView())
+                        .doOnSubscribe(disposable -> loading(true))
+                        .doAfterTerminate(() -> loading(false))
+                        .subscribe(admin -> {
+                            if (admin.getEmail() != null) user.setEmail(admin.getEmail());
+                            if (admin.getName() != null) user.setName(admin.getName());
+
+                            appPreferences.saveUserLogged(user);
+                            enabledView(true);
+                            showMessage(200);
+                        }, this::errorHandler)
+                );
+                break;
+            case PATIENT:
+                DisposableManager.add(haniotNetRepository
+                        .updatePatient((Patient) getUserView())
+                        .doOnSubscribe(disposable -> loading(true))
+                        .doAfterTerminate(() -> loading(false))
+                        .subscribe(patient -> {
+                            if (patient.getEmail() != null) user.setEmail(patient.getEmail());
+                            if (patient.getName() != null) user.setName(patient.getName());
+
+                            appPreferences.saveUserLogged(user);
+                            enabledView(true);
+                            showMessage(200);
+                        }, this::errorHandler)
+                );
+                break;
+        }
     }
 
     /**

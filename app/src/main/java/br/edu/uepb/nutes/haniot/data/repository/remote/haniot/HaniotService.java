@@ -2,9 +2,11 @@ package br.edu.uepb.nutes.haniot.data.repository.remote.haniot;
 
 import java.util.List;
 
+import br.edu.uepb.nutes.haniot.data.model.Admin;
 import br.edu.uepb.nutes.haniot.data.model.Device;
 import br.edu.uepb.nutes.haniot.data.model.FamilyCohesionRecord;
 import br.edu.uepb.nutes.haniot.data.model.FeedingHabitsRecord;
+import br.edu.uepb.nutes.haniot.data.model.HealthProfessional;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.MeasurementLastResponse;
 import br.edu.uepb.nutes.haniot.data.model.MedicalRecord;
@@ -52,21 +54,36 @@ public interface HaniotService {
 
     // users.healthprofessionals
     @GET("users/healthprofessionals/{healthprofessional_id}")
-    Single<User> getHealthProfessional(
+    Single<HealthProfessional> getHealthProfessional(
             @Path("healthprofessional_id") String healthProfessionalId
     );
 
+    // users.admin
+    @GET("users/admins/{admin_id}")
+    Single<Admin> getAdmin(
+            @Path("admin_id") String adminId
+    );
+
     @PATCH("users/healthprofessionals/{healthprofessional_id}")
-    Single<User> updateHealthProfissional(
+    Single<HealthProfessional> updateHealthProfissional(
+            @Path("healthprofessional_id") String healthProfessionalId,
+            @Body User healthProfissional
+    );
+
+    @PATCH("users/admins/{admin_id}")
+    Single<Admin> updateAdmin(
             @Path("healthprofessional_id") String healthProfessionalId,
             @Body User healthProfissional
     );
 
     // pilotstudies
     @GET("users/healthprofessionals/{healthprofessional_id}/pilotstudies")
-    Single<List<PilotStudy>> getAllPilotStudies(
+    Single<List<PilotStudy>> getAllUserPilotStudies(
             @Path("healthprofessional_id") String healthProfessionalId
     );
+
+    @GET("pilotstudies")
+    Single<List<PilotStudy>> getAllPilotStudies();
 
     @GET("pilotstudies/{pilotstudy_id}")
     Single<PilotStudy> getPilotStudy(@Path("pilotstudy_id") String pilotId);

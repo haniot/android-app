@@ -45,6 +45,11 @@
             android:title="@string/settings_send_bug" />
 
         <Preference
+            android:key="@string/key_delete_account"
+            android:summary="@string/confirm_delete_account"
+            android:title="@string/settings_delete_account" />
+
+        <Preference
             android:key="@string/key_signout"
             android:summary="@string/settings_summary_signout"
             android:title="@string/settings_signout" />

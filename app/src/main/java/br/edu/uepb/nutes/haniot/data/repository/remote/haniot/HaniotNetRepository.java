@@ -9,9 +9,11 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
+import br.edu.uepb.nutes.haniot.data.model.Admin;
 import br.edu.uepb.nutes.haniot.data.model.Device;
 import br.edu.uepb.nutes.haniot.data.model.FamilyCohesionRecord;
 import br.edu.uepb.nutes.haniot.data.model.FeedingHabitsRecord;
+import br.edu.uepb.nutes.haniot.data.model.HealthProfessional;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.MeasurementLastResponse;
 import br.edu.uepb.nutes.haniot.data.model.MedicalRecord;
@@ -141,21 +143,40 @@ public class HaniotNetRepository extends BaseNetRepository {
     }
 
     // users.healthprofessionals
-    public Single<User> getHealthProfissional(String healthProfessionalId) {
+    public Single<HealthProfessional> getHealthProfissional(String healthProfessionalId) {
         return haniotService.getHealthProfessional(healthProfessionalId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Single<User> updateHealthProfissional(User healthProfissional) {
+    // users.healthprofessionals
+    public Single<Admin> getAdmin(String adminId) {
+        return haniotService.getAdmin(adminId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Single<HealthProfessional> updateHealthProfissional(HealthProfessional healthProfissional) {
         return haniotService.updateHealthProfissional(healthProfissional.get_id(), healthProfissional)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
+    public Single<Admin> updateAdmin(Admin admin) {
+        return haniotService.updateAdmin(admin.get_id(), admin)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
     // pilotstudies
-    public Single<List<PilotStudy>> getAllPilotStudies(String healthProfessionalId) {
-        return haniotService.getAllPilotStudies(healthProfessionalId)
+    public Single<List<PilotStudy>> getAllUserPilotStudies(String healthProfessionalId) {
+        return haniotService.getAllUserPilotStudies(healthProfessionalId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Single<List<PilotStudy>> getAllPilotStudies() {
+        return haniotService.getAllPilotStudies()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

@@ -23,8 +23,10 @@ import android.widget.TextView;
 import java.util.Calendar;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.data.model.HealthProfessional;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.PatientsType;
+import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.model.dao.PatientDAO;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
@@ -34,6 +36,8 @@ import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.HttpException;
+
+import static br.edu.uepb.nutes.haniot.data.model.UserType.HEALTH_PROFESSIONAL;
 
 /**
  * PatientRegisterActivity implementation.
@@ -173,10 +177,13 @@ public class PatientRegisterActivity extends AppCompatActivity {
                         }
                         patientDAO.save(patient);
                         appPreferencesHelper.saveLastPatient(patient);
-                        if (appPreferencesHelper.getUserLogged().getHealthArea().equals(getString(R.string.type_nutrition)))
-                            startActivity(new Intent(PatientRegisterActivity.this, QuizNutritionActivity.class));
-                        else if (appPreferencesHelper.getUserLogged().getHealthArea().equals(getString(R.string.type_dentistry)))
-                            startActivity(new Intent(PatientRegisterActivity.this, QuizOdontologyActivity.class));
+                        if (appPreferencesHelper.getUserLogged().getUserType().equals(HEALTH_PROFESSIONAL)) {
+                            User user = appPreferencesHelper.getUserLogged();
+                            if (user.getHealthArea().equals(getString(R.string.type_nutrition)))
+                                startActivity(new Intent(PatientRegisterActivity.this, QuizNutritionActivity.class));
+                            else if (user.getHealthArea().equals(getString(R.string.type_dentistry)))
+                                startActivity(new Intent(PatientRegisterActivity.this, QuizOdontologyActivity.class));
+                        }
                         finish();
                     }, this::errorHandler));
     }

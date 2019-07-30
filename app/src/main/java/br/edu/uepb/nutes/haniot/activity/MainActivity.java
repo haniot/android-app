@@ -27,6 +27,7 @@ import com.github.clans.fab.FloatingActionMenu;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.SettingsActivity;
+import br.edu.uepb.nutes.haniot.data.model.HealthProfessional;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.model.UserType;
@@ -39,6 +40,7 @@ import butterknife.ButterKnife;
 
 import static br.edu.uepb.nutes.haniot.data.model.UserType.ADMIN;
 import static br.edu.uepb.nutes.haniot.data.model.UserType.DENTISTRY;
+import static br.edu.uepb.nutes.haniot.data.model.UserType.HEALTH_PROFESSIONAL;
 import static br.edu.uepb.nutes.haniot.data.model.UserType.NUTRITION;
 import static br.edu.uepb.nutes.haniot.data.model.UserType.PATIENT;
 
@@ -86,9 +88,6 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
         toolbar.setTitle(getResources().getString(R.string.app_name));
         setSupportActionBar(toolbar);
         appPreferences = AppPreferencesHelper.getInstance(this);
-        // TODO for test
-        appPreferences.getUserLogged().setUserType(NUTRITION);
-
         dashboardChartsFragment = DashboardChartsFragment.newInstance();
         measurementsGridFragment = MeasurementsGridFragment.newInstance();
 
@@ -97,6 +96,9 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
         IntentFilter filterInternet = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
         registerReceiver(mReceiver, filterInternet);
         setupPatientActions();
+        Log.w("AAA", "User type: " + appPreferences.getUserAccessHaniot());
+        Log.w("AAA", "User: " + appPreferences.getUserLogged());
+
     }
 
     private void loadDashboard() {
@@ -122,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
         // Verify the pilot is selected
 
         if (appPreferences.getLastPilotStudy() == null
-                && appPreferences.getUserLogged().getUserType() != PATIENT) {
+                && !appPreferences.getUserLogged().getUserType().equals(PATIENT)) {
             startActivity(new Intent(this, WelcomeActivity.class));
         } else {
             checkPatient();
@@ -139,30 +141,33 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
      * Init click listener of patient action buttons.
      */
     private void setupPatientActions() {
-        int userType = appPreferences.getUserLogged().getUserType();
 
-        if (userType != ADMIN) {
-            if (userType == DENTISTRY) {
+        quizOdonto.setOnClickListener(v -> {
+            startActivity(new Intent(this, QuizOdontologyActivity.class));
+            finish();
+        });
+        quizNutrition.setOnClickListener(v -> {
+            startActivity(new Intent(this, QuizNutritionActivity.class));
+            finish();
+        });
+        nutritioEvaluation.setOnClickListener(v -> measurementsGridFragment.saveHeartRateCollection());
+
+        if (appPreferences.getUserLogged().getUserType().equals(HEALTH_PROFESSIONAL)) {
+
+            String healthArea = appPreferences.getUserLogged().getHealthArea();
+
+            if (healthArea.equals(DENTISTRY)) {
                 quizNutrition.setVisibility(View.GONE);
                 nutritioEvaluation.setVisibility(View.GONE);
 
-                quizOdonto.setOnClickListener(v -> {
-                    startActivity(new Intent(this, QuizOdontologyActivity.class));
-                    finish();
-                });
-
-            } else if (userType == NUTRITION) {
+            } else if (healthArea.equals(NUTRITION)) {
                 quizOdonto.setVisibility(View.GONE);
-                quizNutrition.setOnClickListener(v -> {
-                    startActivity(new Intent(this, QuizNutritionActivity.class));
-                    finish();
-                });
-                nutritioEvaluation.setOnClickListener(v -> {
-                    measurementsGridFragment.saveHeartRateCollection();
-                });
-            } else if (userType == PATIENT) {
+
+            } else if (healthArea.equals(PATIENT)) {
                 patientActionsMenu.setVisibility(View.INVISIBLE);
             }
+        } else if (appPreferences.getUserLogged().getUserType().equals(PATIENT)){
+            patientActionsMenu.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -176,10 +181,9 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
             loadDashboard();
             checkPermissions();
         } else {
-            if (appPreferences.getUserLogged().getUserType() == PATIENT){
-
-            }
+            if (!appPreferences.getUserLogged().getUserType().equals(PATIENT)) {
                 startActivity(new Intent(this, ManagerPatientsActivity.class));
+            }
         }
     }
 
@@ -260,7 +264,7 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
-        if (appPreferences.getUserLogged().getUserType() == PATIENT)
+        if (appPreferences.getUserLogged().getUserType().equals(PATIENT))
             menu.getItem(0).setVisible(false);
         return super.onCreateOptionsMenu(menu);
     }

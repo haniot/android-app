@@ -16,6 +16,8 @@ import br.edu.uepb.nutes.haniot.activity.account.LoginActivity;
 import br.edu.uepb.nutes.haniot.activity.account.UpdateDataActivity;
 import br.edu.uepb.nutes.haniot.data.model.dao.PilotStudyDAO;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
+import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
+import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.haniot.devices.register.DeviceManagerActivity;
 
 /**
@@ -27,6 +29,7 @@ public class MainPreferenceFragment extends PreferenceFragment {
     public static final String FORM_UPDATE = "form_update";
 
     private AppPreferencesHelper appPreferences;
+    private HaniotNetRepository haniotNetRepository;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -35,7 +38,7 @@ public class MainPreferenceFragment extends PreferenceFragment {
         addPreferencesFromResource(R.xml.preferences);
 
         appPreferences = AppPreferencesHelper.getInstance(getActivity().getApplicationContext());
-
+        haniotNetRepository = HaniotNetRepository.getInstance(getActivity().getApplicationContext());
         // Send feedback
         Preference prefSendFeedback = findPreference(getString(R.string.key_send_bug));
         prefSendFeedback.setOnPreferenceClickListener(preference -> {
@@ -92,8 +95,37 @@ public class MainPreferenceFragment extends PreferenceFragment {
         });
 
         // Manager Pilot Study
+        Preference prefDeleteAccount = findPreference(getString(R.string.key_delete_account));
+        prefDeleteAccount.setOnPreferenceClickListener(preference -> {
+            // Dialog - confirm delete account.
+            new AlertDialog
+                    .Builder(getActivity())
+                    .setMessage(R.string.confirm_delete_account)
+                    .setPositiveButton(R.string.bt_ok, (dialog, which) -> {
+                                // Remove user from server and redirect to login screen
+                                DisposableManager.add(haniotNetRepository
+                                        .deleteUserById(appPreferences.getUserLogged().get_id()).subscribe(() -> {
+                                                    if (appPreferences.removeUserLogged()) {
+                                                        Intent intent = new Intent(getActivity(), LoginActivity.class);
+                                                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                        getActivity().startActivity(intent);
+                                                        getActivity().finish();
+                                                    }
+                                                }, throwable -> {
+                                                    Toast.makeText(getActivity(), R.string.error_sign_out, Toast.LENGTH_SHORT).show();
+                                                }));
+                            }
+                    )
+                    .setNegativeButton(R.string.bt_cancel, null)
+                    .show();
+            return true;
+        });
+
+        // Manager Pilot Study
         Preference prefMeasurements = findPreference(getString(R.string.key_monitor_measurements));
-        prefMeasurements.setOnPreferenceClickListener(preference -> {
+        prefMeasurements.setOnPreferenceClickListener(preference ->
+
+        {
             Intent intent = new Intent(getActivity(), SettingsActivity.class);
             intent.putExtra(SettingsActivity.SETTINGS_TYPE, SettingsActivity.SETTINGS_MEASUREMENTS);
             getActivity().startActivity(intent);
