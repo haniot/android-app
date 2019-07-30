@@ -12,6 +12,7 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.ParcelUuid;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -30,6 +31,7 @@ import android.widget.TextView;
 import androidx.annotation.RequiresApi;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
@@ -44,6 +46,10 @@ import br.edu.uepb.nutes.simpleblescanner.SimpleBleScanner;
 import br.edu.uepb.nutes.simpleblescanner.SimpleScannerCallback;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import no.nordicsemi.android.support.v18.scanner.BluetoothLeScannerCompat;
+import no.nordicsemi.android.support.v18.scanner.ScanCallback;
+import no.nordicsemi.android.support.v18.scanner.ScanFilter;
+import no.nordicsemi.android.support.v18.scanner.ScanSettings;
 import pl.bclogic.pulsator4droid.library.PulsatorLayout;
 
 public class DeviceRegisterActivity extends AppCompatActivity implements View.OnClickListener {
@@ -61,13 +67,14 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     private static final int REQUEST_ENABLE_BLUETOOTH = 1;
     private static final int REQUEST_ENABLE_LOCATION = 2;
 
-    private SimpleBleScanner mScanner;
+    //    private SimpleBleScanner mScanner;
     private Device mDevice;
     private DeviceDAO mDeviceDAO;
     private AppPreferencesHelper appPreferences;
     private HaniotNetRepository haniotRepository;
     private BluetoothDevice btDevice;
     private User user;
+    private BluetoothLeScannerCompat mScanner;
 
     @BindView(R.id.box_scanner)
     FrameLayout boxScanner;
@@ -134,15 +141,27 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
 
         mDevice = getIntent().getParcelableExtra(DeviceManagerActivity.EXTRA_DEVICE);
 
-        //Initialize scanner settings
-        mScanner = new SimpleBleScanner.Builder()
-                .addScanPeriod(15000) // 15s
-                .addFilterServiceUuid(getServiceUuidDevice(mDevice.getName()))
+//        //Initialize scanner settings
+//        mScanner = new SimpleBleScanner.Builder()
+//                .addScanPeriod(15000) // 15s
+//                .addFilterServiceUuid(getServiceUuidDevice(mDevice.getName()))
+//                .build();
+        mScanner = BluetoothLeScannerCompat.getScanner();
+        ScanSettings settings = new ScanSettings.Builder()
+                .setLegacy(false)
+                .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
+                .setReportDelay(1000)
+                .setUseHardwareBatchingIfSupported(true)
                 .build();
+        List<ScanFilter> filters = new ArrayList<>();
+        filters.add(new ScanFilter.Builder().setServiceUuid(ParcelUuid.fromString(getServiceUuidDevice(mDevice.getName()))).build());
+        mScanner.startScan(filters, settings, callback);
 
         //Broadcasts when bond state changes (ie:pairing)
-        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
-        registerReceiver(mBroadcastReceiver, filter);
+//        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
+//        registerReceiver(mBroadcastReceiver, filter);
+        IntentFilter intent = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
+        registerReceiver(mPairReceiver, intent);
 
         user = appPreferences.getUserLogged();
         if (user == null) {
@@ -152,6 +171,77 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
 
         initComponents();
     }
+
+    private void pairDevice(BluetoothDevice device) {
+        try {
+            Method method = device.getClass().getMethod("createBond", (Class[]) null);
+            method.invoke(device, (Object[]) null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void unpairDevice(BluetoothDevice device) {
+        try {
+            Method method = device.getClass().getMethod("removeBond", (Class[]) null);
+            method.invoke(device, (Object[]) null);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private final BroadcastReceiver mPairReceiver = new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+
+            if (BluetoothDevice.ACTION_BOND_STATE_CHANGED.equals(action)) {
+                final int state = intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE, BluetoothDevice.ERROR);
+                final int prevState = intent.getIntExtra(BluetoothDevice.EXTRA_PREVIOUS_BOND_STATE, BluetoothDevice.ERROR);
+
+                if (state == BluetoothDevice.BOND_BONDED && prevState == BluetoothDevice.BOND_BONDING) {
+                    Log.w("AA", "Paired");
+                } else if (state == BluetoothDevice.BOND_NONE && prevState == BluetoothDevice.BOND_BONDED) {
+                    Log.w("AA", "Unpaired");
+                }
+
+            }
+        }
+    };
+    ScanCallback callback = new ScanCallback() {
+        @Override
+        public void onScanResult(int callbackType, @androidx.annotation.NonNull no.nordicsemi.android.support.v18.scanner.ScanResult result) {
+            super.onScanResult(callbackType, result);
+//            mScanner.stopScan(callback);
+            btDevice = result.getDevice();
+            Log.w("AAAA", result.toString());
+            Log.w("AAAA", "" + result.getDevice().getName());
+            if (btDevice != null) {
+                mScanner.stopScan(callback);
+                pairDevice(btDevice);
+            }
+////
+//            Log.d(LOG_TAG, "onScanResult: " + btDevice.getName());
+//            mDevice.setAddress(btDevice.getAddress());
+//            mDevice.setUserId(user.get_id());
+//
+//            // removes a device from the local database and server
+//            removeDeviceForType(mDevice);
+//            Log.d(LOG_TAG, "Scanner onFinish()");
+//            deviceAvailable(null);
+        }
+
+        @Override
+        public void onBatchScanResults(@androidx.annotation.NonNull List<no.nordicsemi.android.support.v18.scanner.ScanResult> results) {
+            super.onBatchScanResults(results);
+        }
+
+        @Override
+        public void onScanFailed(int errorCode) {
+            super.onScanFailed(errorCode);
+            Log.d("DeviceRegisterActivity", "onScanFailed() " + errorCode);
+        }
+    };
 
     @Override
     protected void onResume() {
@@ -229,43 +319,6 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         }
     }
 
-    public final SimpleScannerCallback mScanCallback = new SimpleScannerCallback() {
-        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-        @Override
-        public void onScanResult(int callbackType, @NonNull ScanResult scanResult) {
-            mScanner.stopScan();
-            btDevice = scanResult.getDevice();
-
-            if (btDevice == null) {
-                mScanner.stopScan();
-                return;
-            }
-
-            Log.d(LOG_TAG, "onScanResult: " + btDevice.getName());
-            mDevice.setAddress(btDevice.getAddress());
-            mDevice.setUserId(user.get_id());
-
-            // removes a device from the local database and server
-            removeDeviceForType(mDevice);
-        }
-
-        @Override
-        public void onBatchScanResults(@NonNull List<ScanResult> scanResults) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void onFinish() {
-            Log.d(LOG_TAG, "Scanner onFinish()");
-            deviceAvailable(null);
-        }
-
-        @Override
-        public void onScanFailed(int errorCode) {
-            Log.d("MainActivity", "onScanFailed() " + errorCode);
-        }
-    };
-
     /**
      * Broadcast Receiver that detects bond state changes (Pairing status changes)
      */
@@ -306,7 +359,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
                     Log.d(LOG_TAG, "BroadcastReceiver: BOND_NONE.");
 
                     if (mBluetoothDevice.getName().equals(NAME_DEVICE_YUNMAI) && broadCastReceiver != null) {
-                        Log.i("AAA", mBluetoothDevice.getName() + " - " +broadCastReceiver.getResultCode());
+                        Log.i("AAA", mBluetoothDevice.getName() + " - " + broadCastReceiver.getResultCode());
                         unregisterReceiver(broadCastReceiver);
                     }
                     deviceConnectionStatus.setText(R.string.failed_pairing_device);
@@ -426,15 +479,15 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         if (id == R.id.btn_device_register_scanner) {
             Log.d(LOG_TAG, "onClick: start scanner");
             if (mScanner != null) {
-                mScanner.stopScan();
+                mScanner.stopScan(callback);
                 animationScanner(true);
-                mScanner.startScan(mScanCallback);
+                mScanner.startScan(callback);
             }
 
         } else if (id == R.id.btn_device_register_stop) {
             Log.d(LOG_TAG, "onClick: stop scanner");
             animationScanner(false);
-            mScanner.stopScan();
+            mScanner.stopScan(callback);
         } else if (id == R.id.btn_close_register) {
             finish();
         } else if (id == R.id.btn_close_response) {
