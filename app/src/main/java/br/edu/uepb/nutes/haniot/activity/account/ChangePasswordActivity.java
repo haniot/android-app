@@ -69,10 +69,10 @@ public class ChangePasswordActivity extends AppCompatActivity {
         haniotNetRepository = HaniotNetRepository.getInstance(this);
         appPreferences = AppPreferencesHelper.getInstance(this);
 
-        Intent intent = getIntent();
-        if (intent.hasExtra("user_id")) { // From redirect link
+        String changePasswordId = appPreferences.getString("user_id");
+        if (changePasswordId != null) { // From redirect link
             user = new User();
-            user.set_id(appPreferences.getString("user_id"));
+            user.set_id(changePasswordId);
         } else {
             user = appPreferences.getUserLogged();
         }

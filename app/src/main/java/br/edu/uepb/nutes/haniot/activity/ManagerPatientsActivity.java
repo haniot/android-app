@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.Preference;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -226,8 +227,8 @@ public class ManagerPatientsActivity extends AppCompatActivity {
                             adapter.removeItem(patient);
                             adapter.notifyDataSetChanged();
                             showMessage(getResources().getString(R.string.patient_removed));
-                            if (patient.get_id().equals(appPreferencesHelper.getLastPatient().get_id())) {
-                                Log.i("AAA", "Removendo atual paciente");
+                            Patient lastPatient = appPreferencesHelper.getLastPatient();
+                            if (lastPatient != null && patient.get_id().equals(lastPatient.get_id())) {
                                 appPreferencesHelper.removeLastPatient();
                             }
                         },
