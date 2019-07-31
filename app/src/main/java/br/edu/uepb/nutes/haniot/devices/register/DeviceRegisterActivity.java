@@ -140,6 +140,9 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         btnCloseResponse.setOnClickListener(this);
 
         mDevice = getIntent().getParcelableExtra(DeviceManagerActivity.EXTRA_DEVICE);
+        for (BluetoothDevice device : BluetoothAdapter.getDefaultAdapter().getBondedDevices()) {
+            Log.w("AAA", device.getName() + " - " + device.getAddress());
+        }
 
 //        //Initialize scanner settings
 //        mScanner = new SimpleBleScanner.Builder()
@@ -158,11 +161,15 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         mScanner.startScan(filters, settings, callback);
 
         //Broadcasts when bond state changes (ie:pairing)
-//        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
-//        registerReceiver(mBroadcastReceiver, filter);
-        IntentFilter intent = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
-        registerReceiver(mPairReceiver, intent);
+        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
+        registerReceiver(mBroadcastReceiver, filter);
+////        IntentFilter intent = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
+//        IntentFilter intent = new IntentFilter(
+//                "android.bluetooth.device.action.PAIRING_REQUEST");
+//        registerReceiver(mBroadcastReceiver, intent);
 
+//        IntentFilter intent = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
+//        registerReceiver(mPairReceiver, intent);
         user = appPreferences.getUserLogged();
         if (user == null) {
             finish();
@@ -172,8 +179,20 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         initComponents();
     }
 
+    public boolean createBond(BluetoothDevice btDevice) throws Exception {
+        Class class1 = Class.forName("android.bluetooth.BluetoothDevice");
+        Method createBondMethod = class1.getMethod("createBond");
+        Boolean returnValue = (Boolean) createBondMethod.invoke(btDevice);
+        return returnValue.booleanValue();
+    }
+
+    /**
+     * @param device
+     */
     private void pairDevice(BluetoothDevice device) {
         try {
+            Log.w("AA", "pairDevice - pairing device " + device.getName());
+
             Method method = device.getClass().getMethod("createBond", (Class[]) null);
             method.invoke(device, (Object[]) null);
         } catch (Exception e) {
@@ -181,6 +200,9 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         }
     }
 
+    /**
+     * @param device
+     */
     private void unpairDevice(BluetoothDevice device) {
         try {
             Method method = device.getClass().getMethod("removeBond", (Class[]) null);
@@ -190,45 +212,130 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
             e.printStackTrace();
         }
     }
+//
+//    private final BroadcastReceiver mPairReceiver = new BroadcastReceiver() {
+//        public void onReceive(Context context, Intent intent) {
+//            String action = intent.getAction();
+//            Log.w("AA", "mPairReceiver: " + action);
+//
+//            if (BluetoothDevice.ACTION_BOND_STATE_CHANGED.equals(action)) {
+//                final int state = intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE, BluetoothDevice.ERROR);
+//                final int prevState = intent.getIntExtra(BluetoothDevice.EXTRA_PREVIOUS_BOND_STATE, BluetoothDevice.ERROR);
+//                BluetoothDevice mBluetoothDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+//                Log.w("AA", "Bond status: " + mBluetoothDevice.getBondState());
+//                if (mBluetoothDevice.getBondState() == BluetoothDevice.BOND_BONDING) {
+//                    IntentFilter intentFilter = new IntentFilter(BluetoothDevice.ACTION_PAIRING_REQUEST);
+//                    intentFilter.setPriority(IntentFilter.SYSTEM_HIGH_PRIORITY);
+//                    registerReceiver(broadCastReceiver, intentFilter);
+//                }
+////                if (state == BluetoothDevice.BOND_BONDED && prevState == BluetoothDevice.BOND_BONDING) {
+////                    Log.w("AA", "Paired");
+////                } else if (state == BluetoothDevice.BOND_NONE && prevState == BluetoothDevice.BOND_BONDED) {
+////                    Log.w("AA", "Unpaired");
+////                }
+//
+//            }
+//        }
+//    };
 
-    private final BroadcastReceiver mPairReceiver = new BroadcastReceiver() {
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
+    /**
+     * Broadcast Receiver that detects bond state changes (Pairing status changes)
+     */
+//
+//    private final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            final String action = intent.getAction();
+//
+//            if (action != null && action.equals(BluetoothDevice.ACTION_BOND_STATE_CHANGED)) {
+//                BluetoothDevice mBluetoothDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+//
+//                //case1: bonded already
+//                if (mBluetoothDevice.getBondState() == BluetoothDevice.BOND_BONDED) {
+//                    Log.d(LOG_TAG, "BroadcastReceiver: BOND_BONDED.");
+//                    deviceAvailable(mBluetoothDevice);
+//
+//                    if (mBluetoothDevice.getName().equals(NAME_DEVICE_YUNMAI)) {
+//                        unregisterReceiver(broadCastReceiver);
+//                    }
+//                }
+//                //case2: creating a bone
+//                if (mBluetoothDevice.getBondState() == BluetoothDevice.BOND_BONDING) {
+//                    Log.d(LOG_TAG, "BroadcastReceiver: BOND_BONDING. " + mBluetoothDevice.getName());
+//                    deviceConnectionStatus.setText(R.string.pairing_device);
+//                    progressBarPairing.setVisibility(View.VISIBLE);
+//                    btnDeviceRegisterScanner.setEnabled(false);
+//
+//                    if (mBluetoothDevice.getName().equals(NAME_DEVICE_YUNMAI)) {
+//                        //Broadcasts for balance pairing yunmai
+//                        IntentFilter intentFilter = new IntentFilter(BluetoothDevice.ACTION_PAIRING_REQUEST);
+//                        intentFilter.setPriority(IntentFilter.SYSTEM_HIGH_PRIORITY);
+//                        registerReceiver(broadCastReceiver, intentFilter);
+//                    }
+//                }
+//                // case3: breaking a bond
+//                if (mBluetoothDevice.getBondState() == BluetoothDevice.BOND_NONE) {
+//                    Log.d(LOG_TAG, "BroadcastReceiver: BOND_NONE.");
+//
+//                    if (mBluetoothDevice.getName().equals(NAME_DEVICE_YUNMAI) && broadCastReceiver != null) {
+//                        Log.i("AAA", mBluetoothDevice.getName() + " - " +broadCastReceiver.getResultCode());
+//                        unregisterReceiver(broadCastReceiver);
+//                    }
+//                    deviceConnectionStatus.setText(R.string.failed_pairing_device);
+//                    btnDeviceRegisterScanner.setEnabled(true);
+//                    btnDeviceRegisterScanner.setText(R.string.start_scanner_try);
+//                    progressBarPairing.setVisibility(View.INVISIBLE);
+//                }
+//            }
+//        }
+//    };
+//
+//    /**
+//     * method for balance pairing yunmai
+//     */
+//    private BroadcastReceiver broadCastReceiver = new BroadcastReceiver() {
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            String action = intent.getAction();
+//            Log.w("AAA", "broadCastReceiver " + action);
+//            if (BluetoothDevice.ACTION_PAIRING_REQUEST.equals(action)) {
+//                BluetoothDevice bluetoothDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+//                bluetoothDevice.setPin(PIN_YUNMAI.getBytes());
+//                //does not display the pairing request for the user
+//                abortBroadcast();
+//                Log.e(LOG_TAG, "Auto-entering pin: " + PIN_YUNMAI);
+//            }
+//        }
+//    };
 
-            if (BluetoothDevice.ACTION_BOND_STATE_CHANGED.equals(action)) {
-                final int state = intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE, BluetoothDevice.ERROR);
-                final int prevState = intent.getIntExtra(BluetoothDevice.EXTRA_PREVIOUS_BOND_STATE, BluetoothDevice.ERROR);
-
-                if (state == BluetoothDevice.BOND_BONDED && prevState == BluetoothDevice.BOND_BONDING) {
-                    Log.w("AA", "Paired");
-                } else if (state == BluetoothDevice.BOND_NONE && prevState == BluetoothDevice.BOND_BONDED) {
-                    Log.w("AA", "Unpaired");
-                }
-
-            }
-        }
-    };
     ScanCallback callback = new ScanCallback() {
         @Override
         public void onScanResult(int callbackType, @androidx.annotation.NonNull no.nordicsemi.android.support.v18.scanner.ScanResult result) {
             super.onScanResult(callbackType, result);
-//            mScanner.stopScan(callback);
+            mScanner.stopScan(callback);
             btDevice = result.getDevice();
             Log.w("AAAA", result.toString());
             Log.w("AAAA", "" + result.getDevice().getName());
-            if (btDevice != null) {
+            if (btDevice == null) {
                 mScanner.stopScan(callback);
-                pairDevice(btDevice);
+//                pairDevice(btDevice);
+                //pairDevice(btDevice);
             }
-////
-//            Log.d(LOG_TAG, "onScanResult: " + btDevice.getName());
-//            mDevice.setAddress(btDevice.getAddress());
-//            mDevice.setUserId(user.get_id());
 //
-//            // removes a device from the local database and server
-//            removeDeviceForType(mDevice);
-//            Log.d(LOG_TAG, "Scanner onFinish()");
-//            deviceAvailable(null);
+            try {
+                Log.w("AA", "onScanResult - device non null");
+                pairDevice(btDevice);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            Log.d(LOG_TAG, "onScanResult: " + btDevice.getName());
+            mDevice.setAddress(btDevice.getAddress());
+            mDevice.setUserId(user.get_id());
+
+            // removes a device from the local database and server
+            removeDeviceForType(mDevice);
+            Log.d(LOG_TAG, "Scanner onFinish()");
+            deviceAvailable(null);
         }
 
         @Override
@@ -255,6 +362,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         Log.d(LOG_TAG, "onDestroy: called.");
         super.onDestroy();
         unregisterReceiver(mBroadcastReceiver);
+//        unregisterReceiver(broadCastReceiver);
         DisposableManager.dispose();
     }
 
@@ -319,6 +427,75 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         }
     }
 
+//
+//    /**
+//     * Broadcast Receiver that detects bond state changes (Pairing status changes)
+//     */
+//
+//    private final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            final String action = intent.getAction();
+//            Log.w("AAA", "Action:" + action);
+//            if (intent.getAction().equals("android.bluetooth.device.action.PAIRING_REQUEST")) {
+//                try {
+//                    BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+//                    int pin = intent.getIntExtra("android.bluetooth.device.extra.PAIRING_KEY", 0);
+//                    //the pin in case you need to accept for an specific pin
+//                    Log.d("PIN", " " + intent.getIntExtra("android.bluetooth.device.extra.PAIRING_KEY", 0));
+//                    //maybe you look for a name or address
+//                    Log.d("Bonded", device.getName());
+//                    byte[] pinBytes;
+//                    pinBytes = ("" + pin).getBytes("UTF-8");
+//                    device.setPin(pinBytes);
+//                    //setPairing confirmation if neeeded
+//                    device.setPairingConfirmation(true);
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//            if (action != null && action.equals(BluetoothDevice.ACTION_BOND_STATE_CHANGED)) {
+//                BluetoothDevice mBluetoothDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+//
+//                //case1: bonded already
+//                if (mBluetoothDevice.getBondState() == BluetoothDevice.BOND_BONDED) {
+//                    Log.d(LOG_TAG, "BroadcastReceiver: BOND_BONDED.");
+//                    deviceAvailable(mBluetoothDevice);
+//
+//                    if (mBluetoothDevice.getName().equals(NAME_DEVICE_YUNMAI)) {
+//                        unregisterReceiver(broadCastReceiver);
+//                    }
+//                }
+//                //case2: creating a bone
+//                if (mBluetoothDevice.getBondState() == BluetoothDevice.BOND_BONDING) {
+//                    Log.d(LOG_TAG, "BroadcastReceiver: BOND_BONDING. " + mBluetoothDevice.getName());
+//                    deviceConnectionStatus.setText(R.string.pairing_device);
+//                    progressBarPairing.setVisibility(View.VISIBLE);
+//                    btnDeviceRegisterScanner.setEnabled(false);
+//
+//                    if (mBluetoothDevice.getName().equals(NAME_DEVICE_YUNMAI)) {
+//                        //Broadcasts for balance pairing yunmai
+//                        IntentFilter intentFilter = new IntentFilter(BluetoothDevice.ACTION_PAIRING_REQUEST);
+//                        intentFilter.setPriority(IntentFilter.SYSTEM_HIGH_PRIORITY);
+//                        registerReceiver(broadCastReceiver, intentFilter);
+//                    }
+//                }
+//                // case3: breaking a bond
+//                if (mBluetoothDevice.getBondState() == BluetoothDevice.BOND_NONE) {
+//                    Log.d(LOG_TAG, "BroadcastReceiver: BOND_NONE.");
+//
+//                    if (mBluetoothDevice.getName().equals(NAME_DEVICE_YUNMAI) && broadCastReceiver != null) {
+//                        Log.i("AAA", mBluetoothDevice.getName() + " - " + broadCastReceiver.getResultCode());
+//                        unregisterReceiver(broadCastReceiver);
+//                    }
+//                    deviceConnectionStatus.setText(R.string.failed_pairing_device);
+//                    btnDeviceRegisterScanner.setEnabled(true);
+//                    btnDeviceRegisterScanner.setText(R.string.start_scanner_try);
+//                    progressBarPairing.setVisibility(View.INVISIBLE);
+//                }
+//            }
+//        }
+//    };
     /**
      * Broadcast Receiver that detects bond state changes (Pairing status changes)
      */
@@ -330,13 +507,12 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
 
             if (action != null && action.equals(BluetoothDevice.ACTION_BOND_STATE_CHANGED)) {
                 BluetoothDevice mBluetoothDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-
                 //case1: bonded already
                 if (mBluetoothDevice.getBondState() == BluetoothDevice.BOND_BONDED) {
                     Log.d(LOG_TAG, "BroadcastReceiver: BOND_BONDED.");
                     deviceAvailable(mBluetoothDevice);
 
-                    if (mBluetoothDevice.getName().equals(NAME_DEVICE_YUNMAI)) {
+                    if (mBluetoothDevice.getName() != null && mBluetoothDevice.getName().equals(NAME_DEVICE_YUNMAI)) {
                         unregisterReceiver(broadCastReceiver);
                     }
                 }
@@ -347,7 +523,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
                     progressBarPairing.setVisibility(View.VISIBLE);
                     btnDeviceRegisterScanner.setEnabled(false);
 
-                    if (mBluetoothDevice.getName().equals(NAME_DEVICE_YUNMAI)) {
+                    if (mBluetoothDevice.getName() != null && mBluetoothDevice.getName().equals(NAME_DEVICE_YUNMAI)) {
                         //Broadcasts for balance pairing yunmai
                         IntentFilter intentFilter = new IntentFilter(BluetoothDevice.ACTION_PAIRING_REQUEST);
                         intentFilter.setPriority(IntentFilter.SYSTEM_HIGH_PRIORITY);
@@ -358,7 +534,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
                 if (mBluetoothDevice.getBondState() == BluetoothDevice.BOND_NONE) {
                     Log.d(LOG_TAG, "BroadcastReceiver: BOND_NONE.");
 
-                    if (mBluetoothDevice.getName().equals(NAME_DEVICE_YUNMAI) && broadCastReceiver != null) {
+                    if (mBluetoothDevice.getName() != null && mBluetoothDevice.getName().equals(NAME_DEVICE_YUNMAI) && broadCastReceiver != null) {
                         Log.i("AAA", mBluetoothDevice.getName() + " - " + broadCastReceiver.getResultCode());
                         unregisterReceiver(broadCastReceiver);
                     }
@@ -387,15 +563,17 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
             }
         }
     };
-    //end scanner library ble
 
-    /**
-     * Initialize the components.
-     */
+    //    //end scanner library ble
+//
+//    /**
+//     * Initialize the components.
+//     */
     private void initComponents() {
         populateView();
     }
 
+    //
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -404,6 +582,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         return super.onOptionsItemSelected(item);
     }
 
+    //
     public void populateView() {
         if (mDevice == null) return;
         nameDeviceScannerRegister.setText(mDevice.getName());
@@ -414,6 +593,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         imgDeviceRegister.setImageResource(mDevice.getImg());
     }
 
+    //
     public String getServiceUuidDevice(String nameDevice) {
         String service = null;
 
@@ -433,7 +613,8 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         return service;
     }
 
-
+    //
+//
     public void deviceAvailable(BluetoothDevice device) {
         if (device != null) {
             mDevice.setAddress(device.getAddress());
@@ -455,6 +636,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         }
     }
 
+    //
     public void animationScanner(boolean show) {
         runOnUiThread(() -> {
             if (show) {
@@ -472,6 +654,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         });
     }
 
+    //
     @Override
     public void onClick(View v) {
         int id = v.getId();
@@ -494,6 +677,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
             finish();
         }
     }
+//
 
     /**
      * Save device in remote server.
