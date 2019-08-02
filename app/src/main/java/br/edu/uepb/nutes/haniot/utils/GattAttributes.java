@@ -13,6 +13,7 @@ public class GattAttributes {
     public static String SERVICE_BLOOD_PRESSURE = "00001810-0000-1000-8000-00805f9b34fb";
     public static String SERVICE_DEVICE_INFOR = "0000180a-0000-1000-8000-00805f9b34fb";
     public static String SERVICE_SCALE = "0000ffe0-0000-1000-8000-00805f9b34fb";
+    public static String SERVICE_SCALE_YUNMAI = "00001310-0000-1000-8000-00805f9b34fb";
     public static String SERVICE_SCALE_USER_DATA = "0000ffe5-0000-1000-8000-00805f9b34fb";
 
     public static String SERVICE_HEART_RATE = "0000180d-0000-1000-8000-00805f9b34fb";
