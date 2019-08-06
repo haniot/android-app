@@ -1,6 +1,8 @@
 package br.edu.uepb.nutes.haniot.devices.register;
 
 import android.Manifest;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -72,14 +74,17 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     @BindView(R.id.box_response)
     FrameLayout boxResponse;
 
+    @BindView(R.id.box_error)
+    FrameLayout boxError;
+
     @BindView(R.id.btn_device_register_scanner)
-    Button btnDeviceRegisterScanner;
+    TextView btnDeviceRegisterScanner;
 
     @BindView(R.id.name_device_scanner)
     TextView nameDeviceScanner;
 
     @BindView(R.id.btn_device_register_stop)
-    Button btnDeviceRegisterStop;
+    TextView btnDeviceRegisterStop;
 
     @BindView(R.id.name_device_scanner_register)
     TextView nameDeviceScannerRegister;
@@ -97,7 +102,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     ImageButton btnCloseRegister;
 
     @BindView(R.id.btn_close_response)
-    Button btnCloseResponse;
+    TextView btnCloseResponse;
 
     @BindView(R.id.pulsator)
     PulsatorLayout mPulsatorLayout;
@@ -147,10 +152,11 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
             boxResponse.setVisibility(View.VISIBLE);
             progressBarPairing.setVisibility(View.INVISIBLE);
         } else {
-            deviceConnectionStatus.setText(R.string.failed_pairing_device);
-            btnDeviceRegisterScanner.setEnabled(true);
-            btnDeviceRegisterScanner.setText(R.string.start_scanner_try);
-            progressBarPairing.setVisibility(View.INVISIBLE);
+            boxError.setVisibility(View.VISIBLE);
+//            deviceConnectionStatus.setText(R.string.failed_pairing_device);
+//            btnDeviceRegisterScanner.setEnabled(true);
+//            btnDeviceRegisterScanner.setText(R.string.start_scanner_try);
+//            progressBarPairing.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -170,8 +176,19 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
             progressBarPairing.setVisibility(View.VISIBLE);
         } else {
             animationScanner(false);
-            nameDeviceScannerRegister.setText(mDevice.getName());
-            deviceConnectionStatus.setText(R.string.device_not_found_try_again);
+            boxError.setVisibility(View.VISIBLE);
+            boxError.animate()
+                    .translationY(0)
+                    .alpha(0.0f)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            boxError.setVisibility(View.VISIBLE);
+                        }
+                    });
+//            nameDeviceScannerRegister.setText(mDevice.getName());
+//            deviceConnectionStatus.setText(R.string.device_not_found_try_again);
         }
     }
 

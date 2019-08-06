@@ -255,6 +255,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
             }
         });
         mRegisteredRecyclerView.setAdapter(mAdapterDeviceRegistered);
+        mAdapterDeviceRegistered.enableSwipe(this);
     }
 
     /**

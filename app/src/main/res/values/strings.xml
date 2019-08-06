@@ -282,7 +282,7 @@
     <string name="device_not_found_try_again">Dispositivo não encontrado. Por favor, tente novamente!</string>
     <string name="no_devices_registered">Não há dispositivos cadastrados&#8230;</string>
     <string name="no_devices_available">Nenhum dispositivo disponível. Em breve a lista será atualizada&#8230;</string>
-    <string name="device_registered_success">Dispositivo %s cadastrado com sucesso!</string>
+    <string name="device_registered_success">%s cadastrado com sucesso!</string>
     <string name="connection">Matenha o dispositivo de saúde próximo ao telefone/tablet.</string>
     <string name="come_back">Voltar</string>
     <string name="attention">Atenção</string>
