@@ -119,6 +119,7 @@ public class HaniotNetRepository extends BaseNetRepository {
                     if (userAccess != null && userAccess.getAccessToken() != null) {
                         JWT jwt = new JWT(userAccess.getAccessToken());
                         userAccess.setSubject(jwt.getSubject());
+                        Log.w("AAA", "Token: " + userAccess.getAccessToken());
                         userAccess.setExpirationDate(jwt.getExpiresAt().getTime());
                         userAccess.setScopes(jwt.getClaim(UserAccess.KEY_SCOPES).asString());
                         userAccess.setTokenType(jwt.getClaim(UserAccess.SUB_TYPE).asString());
@@ -177,6 +178,12 @@ public class HaniotNetRepository extends BaseNetRepository {
 
     public Single<List<PilotStudy>> getAllPilotStudies() {
         return haniotService.getAllPilotStudies()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Single<Object> associatePatientToPilotStudy(String pilotStudyId, String patientId) {
+        return haniotService.associatePatientToPilotStudy(pilotStudyId, patientId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -497,8 +504,8 @@ public class HaniotNetRepository extends BaseNetRepository {
 
     public Single<NutritionalQuestionnaire> saveNutritionalQuestionnaire(String patientId, NutritionalQuestionnaire nutritionalQuestionnaire) {
         return haniotService.saveNutritionalQuestionnaire(
-                        patientId,
-                        nutritionalQuestionnaire)
+                patientId,
+                nutritionalQuestionnaire)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

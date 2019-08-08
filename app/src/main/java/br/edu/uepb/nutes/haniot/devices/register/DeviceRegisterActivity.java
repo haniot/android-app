@@ -77,6 +77,12 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     @BindView(R.id.box_error)
     FrameLayout boxError;
 
+    @BindView(R.id.txt_device_error)
+    TextView scanDeviceError;
+
+    @BindView(R.id.btn_try_again)
+    TextView tryAgain;
+
     @BindView(R.id.btn_device_register_scanner)
     TextView btnDeviceRegisterScanner;
 
@@ -151,8 +157,10 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
             boxScanner.setVisibility(View.GONE);
             boxResponse.setVisibility(View.VISIBLE);
             progressBarPairing.setVisibility(View.INVISIBLE);
+            boxError.setVisibility(View.INVISIBLE);
         } else {
             boxError.setVisibility(View.VISIBLE);
+            scanDeviceError.setText(getString(R.string.device_registered_error, device.getName()));
 //            deviceConnectionStatus.setText(R.string.failed_pairing_device);
 //            btnDeviceRegisterScanner.setEnabled(true);
 //            btnDeviceRegisterScanner.setText(R.string.start_scanner_try);
@@ -177,16 +185,6 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         } else {
             animationScanner(false);
             boxError.setVisibility(View.VISIBLE);
-            boxError.animate()
-                    .translationY(0)
-                    .alpha(0.0f)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            super.onAnimationEnd(animation);
-                            boxError.setVisibility(View.VISIBLE);
-                        }
-                    });
 //            nameDeviceScannerRegister.setText(mDevice.getName());
 //            deviceConnectionStatus.setText(R.string.device_not_found_try_again);
         }
@@ -508,6 +506,8 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
             finish();
         } else if (id == R.id.btn_close_response) {
             finish();
+        } else if (id == R.id.btn_try_again) {
+            boxRegister.setVisibility(View.VISIBLE);
         }
     }
 

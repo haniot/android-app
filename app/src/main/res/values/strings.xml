@@ -283,10 +283,10 @@
     <string name="no_devices_registered">Não há dispositivos cadastrados&#8230;</string>
     <string name="no_devices_available">Nenhum dispositivo disponível. Em breve a lista será atualizada&#8230;</string>
     <string name="device_registered_success">%s cadastrado com sucesso!</string>
+    <string name="device_registered_error">Não foi possível cadastrar %s!</string>
     <string name="connection">Matenha o dispositivo de saúde próximo ao telefone/tablet.</string>
     <string name="come_back">Voltar</string>
     <string name="attention">Atenção</string>
-    s
     <string name="other">Outro</string>
     <string name="model_device">Modelo do dispositivo</string>
     <string name="name_device">Nome do dispositivo</string>
@@ -754,6 +754,7 @@
     <string name="type_nutrition">nutrition</string>
     <string name="type_dentistry">dentistry</string>
     <string name="confirm_remove_measurement">Você removeu essa medição, deseja desfazer?</string>
+    <string name="confirm_remove_devices">Você removeu esse dispositivo, deseja desfazer?</string>
     <string name="undo">Desfazer</string>
     <string name="title_activity_historic_quiz">HistoricQuizActivity</string>
 </resources>

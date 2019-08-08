@@ -18,13 +18,13 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/txt_device_successfully_registered"
+                android:id="@+id/txt_device_error"
                 style="@style/Base.TextAppearance.AppCompat.Large"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="60dp"
                 android:gravity="center"
-                android:text="@string/device_registered_success"
+                android:text="@string/device_registered_error"
                 android:textAlignment="center"
                 android:textAllCaps="false"
                 android:textColor="@color/colorWhite"
@@ -69,7 +69,7 @@
             android:padding="10dp">
 
             <TextView
-                android:id="@+id/btn_close_response"
+                android:id="@+id/btn_try_again"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="20dp"

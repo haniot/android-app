@@ -39,7 +39,7 @@ import retrofit2.http.Query;
  */
 public interface HaniotService {
     //    String BASE_URL_HANIOT = "http://192.168.0.119:8080/"; // API GATEWAY LOCAL
-    String BASE_URL_HANIOT = "https://200.129.82.8:8081/"; // API GATEWAY LOCAL
+    String BASE_URL_HANIOT = "https://192.168.0.121:8081/v1/"; // API GATEWAY LOCAL
 
     // auth
     @POST("auth")
@@ -49,22 +49,22 @@ public interface HaniotService {
     @DELETE("users/{user_id}")
     Completable deleteUser(@Path("user_id") String userId);
 
-    @PATCH("users/{user_id}/password")
+    @PATCH("auth/password")
     Completable changePassword(@Path("user_id") String userId, @Body User user);
 
     // users.healthprofessionals
-    @GET("users/healthprofessionals/{healthprofessional_id}")
+    @GET("healthprofessionals/{healthprofessional_id}")
     Single<HealthProfessional> getHealthProfessional(
             @Path("healthprofessional_id") String healthProfessionalId
     );
 
     // users.admin
-    @GET("users/admins/{admin_id}")
+    @GET("admins/{admin_id}")
     Single<Admin> getAdmin(
             @Path("admin_id") String adminId
     );
 
-    @PATCH("users/healthprofessionals/{healthprofessional_id}")
+    @PATCH("healthprofessionals/{healthprofessional_id}")
     Single<HealthProfessional> updateHealthProfissional(
             @Path("healthprofessional_id") String healthProfessionalId,
             @Body User healthProfissional
@@ -77,13 +77,16 @@ public interface HaniotService {
     );
 
     // pilotstudies
-    @GET("users/healthprofessionals/{healthprofessional_id}/pilotstudies")
+    @GET("healthprofessionals/{healthprofessional_id}/pilotstudies")
     Single<List<PilotStudy>> getAllUserPilotStudies(
             @Path("healthprofessional_id") String healthProfessionalId
     );
 
     @GET("pilotstudies")
     Single<List<PilotStudy>> getAllPilotStudies();
+
+    @POST("pilotstudies/{pilotstudy_id}/patients/{patient_id}")
+    Single<Object> associatePatientToPilotStudy(@Path("pilotstudy_id") String pilotStudyId, @Path("patient_id") String patientId);
 
     @GET("pilotstudies/{pilotstudy_id}")
     Single<PilotStudy> getPilotStudy(@Path("pilotstudy_id") String pilotId);
@@ -136,22 +139,22 @@ public interface HaniotService {
                                   @Path("measurement_id") String measurementId);
 
     // user.devices
-    @POST("users/{user_id}/devices")
-    Single<Device> addDevice(@Path("user_id") String userId, @Body Device device);
+    @POST("patients/{patient_id}/devices")
+    Single<Device> addDevice(@Path("patient_id") String userId, @Body Device device);
 
-    @GET("users/{user_id}/devices")
-    Single<List<Device>> getAllDevices(@Path("user_id") String userId);
+    @GET("patients/{patient_id}/devices")
+    Single<List<Device>> getAllDevices(@Path("patient_id") String userId);
 
-    @GET("users/{user_id}/devices/{device_id}")
-    Single<Device> getDevice(@Path("user_id") String userId,
+    @GET("patients/{patient_id}/devices/{device_id}")
+    Single<Device> getDevice(@Path("patient_id") String userId,
                              @Path("device_id") String deviceId);
 
-    @DELETE("users/{user_id}/devices/{device_id}")
-    Completable deleteDevice(@Path("user_id") String userId,
+    @DELETE("patients/{patient_id}/devices/{device_id}")
+    Completable deleteDevice(@Path("patient_id") String userId,
                              @Path("device_id") String deviceId);
 
     // pilotstudies.patients
-    @POST("users/patients")
+    @POST("patients")
     Single<Patient> addPatient(@Body Patient patient);
 
     @GET("pilotstudies/{pilotstudy_id}/patients")
@@ -160,10 +163,10 @@ public interface HaniotService {
                                                      @Query("page") int page,
                                                      @Query("limit") int limit);
 
-    @GET("users/patients/{patient_id}")
+    @GET("patients/{patient_id}")
     Single<Patient> getPatient(@Path("patient_id") String patientId);
 
-    @PATCH("users/patients/{patient_id}")
+    @PATCH("patients/{patient_id}")
     Single<Patient> updatePatient(@Path("patient_id") String patientId,
                                   @Body Patient patient);
 

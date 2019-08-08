@@ -150,14 +150,6 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
         medicalRecordDAO.save(medicalRecord);
         nutritionalQuestionnaire.setMedicalRecord(medicalRecord);
 
-        //TODO TEMP para funcionar a versão antiga do ehr
-        DisposableManager.add(haniotNetRepository
-                .saveMedicalRecord(medicalRecord)
-                .doOnSubscribe(disposable -> Log.i(LOG_TAG, "Salvando Feending Habits no servidor!"))
-                .doAfterTerminate(() -> Log.i(LOG_TAG, "Feending Habits"))
-                .subscribe(medicalRecord -> {
-                    Log.i(LOG_TAG, "Salvo Feending Habits no servidor!");
-                }, this::errorHandler));
     }
 
     /**
@@ -170,15 +162,6 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
         Log.i(LOG_TAG, feedingHabitsRecord.toJson());
         feedingHabitsDAO.save(feedingHabitsRecord);
         nutritionalQuestionnaire.setFeedingHabitsRecord(feedingHabitsRecord);
-
-        //TODO TEMP para funcionar a versão antiga do ehr
-        DisposableManager.add(haniotNetRepository
-                .saveFeedingHabitsRecord(feedingHabitsRecord)
-                .doOnSubscribe(disposable -> Log.i(LOG_TAG, "Salvando Feending Habits no servidor!"))
-                .doAfterTerminate(() -> Log.i(LOG_TAG, "Feending Habits"))
-                .subscribe(feedingHabitsRecord -> {
-                    Log.i(LOG_TAG, "Salvo Feending Habits no servidor!");
-                }, this::errorHandler));
     }
 
     /**
@@ -189,15 +172,6 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
         Log.i(LOG_TAG, sleepHabit.toJson());
         sleepHabitsDAO.save(sleepHabit);
         nutritionalQuestionnaire.setSleepHabit(sleepHabit);
-
-        //TODO TEMP para funcionar a versão antiga do ehr
-        DisposableManager.add(haniotNetRepository
-                .saveSleepHabit(sleepHabit)
-                .doOnSubscribe(disposable -> Log.i(LOG_TAG, "Salvando Sleep Habits no servidor!"))
-                .doAfterTerminate(() -> Log.i(LOG_TAG, "Sleep Habits"))
-                .subscribe(sleepHabit -> {
-                    Log.i(LOG_TAG, "Salvo Sleep Habits no servidor!");
-                }, this::errorHandler));
     }
 
     /**
@@ -209,15 +183,6 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
         physicalActivityHabitsDAO.save(physicalActivityHabits);
 
         nutritionalQuestionnaire.setPhysicalActivityHabit(physicalActivityHabits);
-
-        //TODO TEMP para funcionar a versão antiga do ehr
-        DisposableManager.add(haniotNetRepository
-                .savePhysicalActivityHabit(physicalActivityHabits)
-                .doOnSubscribe(disposable -> Log.i(LOG_TAG, "Salvando Activity Habits no servidor!"))
-                .doAfterTerminate(() -> Log.i(LOG_TAG, "Activity Habits"))
-                .subscribe(physicalActivityHabits -> {
-                    Log.i(LOG_TAG, "Salvo Activity Habits no servidor!");
-                }, this::errorHandler));
     }
 
     /**

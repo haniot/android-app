@@ -26,6 +26,7 @@ import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.data.model.HealthProfessional;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.PatientsType;
+import br.edu.uepb.nutes.haniot.data.model.PilotStudy;
 import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.model.dao.PatientDAO;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
@@ -88,6 +89,7 @@ public class PatientRegisterActivity extends AppCompatActivity {
     private HaniotNetRepository haniotNetRepository;
     private PatientDAO patientDAO;
     private boolean isEdit = false;
+    private PilotStudy pilotStudy;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -162,29 +164,35 @@ public class PatientRegisterActivity extends AppCompatActivity {
         else
             DisposableManager.add(haniotNetRepository
                     .savePatient(patient)
-                    .doOnSubscribe(disposable -> {
-                        Log.i(TAG, "Salvando paciente no servidor!");
-                        showLoading(true);
-                    })
                     .doAfterTerminate(() -> {
                         showLoading(false);
                         Log.i(TAG, "Salvando paciente no servidor!");
+                    })
+                    .doOnSubscribe(disposable -> {
+                        Log.i(TAG, "Salvando paciente no servidor!");
+                        showLoading(true);
                     })
                     .subscribe(patient -> {
                         if (patient.get_id() == null) {
                             showMessage(R.string.error_recover_data);
                             return;
                         }
-                        patientDAO.save(patient);
-                        appPreferencesHelper.saveLastPatient(patient);
-                        if (appPreferencesHelper.getUserLogged().getUserType().equals(HEALTH_PROFESSIONAL)) {
-                            User user = appPreferencesHelper.getUserLogged();
-                            if (user.getHealthArea().equals(getString(R.string.type_nutrition)))
-                                startActivity(new Intent(PatientRegisterActivity.this, QuizNutritionActivity.class));
-                            else if (user.getHealthArea().equals(getString(R.string.type_dentistry)))
-                                startActivity(new Intent(PatientRegisterActivity.this, QuizOdontologyActivity.class));
-                        }
-                        finish();
+
+                        haniotNetRepository.associatePatientToPilotStudy(pilotStudy.get_id(), patient.get_id())
+                                .doAfterSuccess(o -> {
+                                    Log.w(TAG, "Patient associated to pilotstudy");
+                                    patientDAO.save(patient);
+                                    appPreferencesHelper.saveLastPatient(patient);
+                                    if (appPreferencesHelper.getUserLogged().getUserType().equals(HEALTH_PROFESSIONAL)) {
+                                        User user = appPreferencesHelper.getUserLogged();
+                                        if (user.getHealthArea().equals(getString(R.string.type_nutrition)))
+                                            startActivity(new Intent(PatientRegisterActivity.this, QuizNutritionActivity.class));
+                                        else if (user.getHealthArea().equals(getString(R.string.type_dentistry)))
+                                            startActivity(new Intent(PatientRegisterActivity.this, QuizOdontologyActivity.class));
+                                    }
+                                    finish();
+                                });
+
                     }, this::errorHandler));
     }
 
@@ -339,6 +347,7 @@ public class PatientRegisterActivity extends AppCompatActivity {
         haniotNetRepository = HaniotNetRepository.getInstance(this);
         patientDAO = PatientDAO.getInstance(this);
         myCalendar = Calendar.getInstance();
+        pilotStudy = appPreferencesHelper.getLastPilotStudy();
         fab.setOnClickListener(fabClick);
 
         if (isEdit) {
