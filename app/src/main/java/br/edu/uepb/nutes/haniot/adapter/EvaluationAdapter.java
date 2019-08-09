@@ -296,10 +296,6 @@ public class EvaluationAdapter extends ExpandableRecyclerViewAdapter<EvaluationA
             case MEDICAL_RECORDS:
                 MedicalRecord medicalRecord = ig.getMedicalRecord();
                 if (medicalRecord == null) return;
-                date = DateUtils.convertDateTimeUTCToLocale(medicalRecord.getCreatedAt(),
-                        context.getString(R.string.date_format));
-                time = DateUtils.convertDateTimeUTCToLocale(medicalRecord.getCreatedAt(),
-                        context.getString(R.string.time_format_simple));
                 if (medicalRecord.getChronicDiseases() != null) {
                     for (ChronicDisease chronicDisease : medicalRecord.getChronicDiseases())
                         stringBuilder

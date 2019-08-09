@@ -443,7 +443,7 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
             getEvaluationGroupByType(GLUCOSE).getItems().get(0).setTypeHeader(TYPE_ERROR);
             getEvaluationGroupByType(WAIST_CIRCUMFERENCE).getItems().get(0).setTypeHeader(TYPE_ERROR);
             getEvaluationGroupByType(HEIGHT).getItems().get(0).setTypeHeader(TYPE_ERROR);
-            getEvaluationGroupByType(HEARTRATE).getItems().get(0).setTypeHeader(TYPE_ERROR);
+//            getEvaluationGroupByType(HEARTRATE).getItems().get(0).setTypeHeader(TYPE_ERROR);
             getEvaluationGroupByType(BLOOD_PRESSURE).getItems().get(0).setTypeHeader(TYPE_ERROR);
         } else if (type == ALL_QUIZ) {
             getEvaluationGroupByType(MEDICAL_RECORDS).getItems().get(0).setTypeHeader(TYPE_ERROR);
@@ -461,81 +461,81 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
      * Download data listNutritional from the server.
      */
     private void downloadData() {
-//
-//        //TODO Correto
-//        DisposableManager.add(haniotNetRepository
-//                .getLastNutritionalQuestionnaire(patient.get_id())
-//                .subscribe(nutritionalQuestionnaires -> {
-//                    lastNutritionalQuestionnaire = nutritionalQuestionnaires;
-//                    prepareQuiz(nutritionalQuestionnaires);
-//                }, throwable -> {
-//                    Log.i("AAA", throwable.getMessage());
-//                    onDownloadError(ALL_QUIZ);
-//                }));
-//
-//        DisposableManager.add(haniotNetRepository
-//                .getLastMeasurements(patient.get_id())
-//                .subscribe(measurents -> {
-//                    measurementLastResponse = measurents;
-//                    //  measurementList = measurents;
-//                    prepareMeasurements(measurents);
-//                }, throwable -> {
-//                    Log.i("AAA", throwable.getMessage());
-//                    onDownloadError(ALL_MEASUREMENT);
-//                }));
-
-
-        //TODO Para funcionar na versão antiga do EHR
-        lastNutritionalQuestionnaire = new NutritionalQuestionnaire();
 
         DisposableManager.add(haniotNetRepository
-                .getAllMedicalRecord(helper.getLastPatient().get_id()
-                        , 1, 20, "created_at")
-                .subscribe(medicalRecords -> {
-                    if (!medicalRecords.isEmpty())
-                        lastNutritionalQuestionnaire.setMedicalRecord(medicalRecords.get(0));
-                    //prepareMeasurement(medicalRecords, MEDICAL_RECORDS);
-                }, error -> {
-                    Log.i("AAA", error.getMessage());
-                    onDownloadError(MEDICAL_RECORDS);
+                .getLastNutritionalQuestionnaire(patient.get_id())
+                .subscribe(nutritionalQuestionnaires -> {
+                    Log.w("AAA", nutritionalQuestionnaires.toJson());
+                            lastNutritionalQuestionnaire = nutritionalQuestionnaires;
+                    prepareQuiz(nutritionalQuestionnaires);
+                }, throwable -> {
+                    Log.i("AAA", throwable.getMessage());
+                    onDownloadError(ALL_QUIZ);
                 }));
 
         DisposableManager.add(haniotNetRepository
-                .getAllPhysicalActivity(helper.getLastPatient().get_id()
-                        , 1, 20, "created_at")
-                .subscribe(physicalActivityHabits -> {
-                    if (!physicalActivityHabits.isEmpty())
-                        lastNutritionalQuestionnaire.setPhysicalActivityHabit(physicalActivityHabits.get(0));
-                    //prepareMeasurement(physicalActivityHabits, PHYSICAL_ACTIVITY);
-                }, error -> onDownloadError(PHYSICAL_ACTIVITY)));
+                .getLastMeasurements(patient.get_id())
+                .subscribe(measurents -> {
+                    measurementLastResponse = measurents;
+                    //  measurementList = measurents;
+                    prepareMeasurements(measurents);
+                }, throwable -> {
+                    Log.i("AAA", throwable.getMessage());
+                    onDownloadError(ALL_MEASUREMENT);
+                }));
 
-        DisposableManager.add(haniotNetRepository
-                .getAllFeedingHabits(helper.getLastPatient().get_id()
-                        , 1, 20, "created_at")
-                .subscribe(feedingHabitsRecords -> {
-                    if (!feedingHabitsRecords.isEmpty())
-                        lastNutritionalQuestionnaire.setFeedingHabitsRecord(feedingHabitsRecords.get(0));
-//                                prepareMeasurement(feedingHabitsRecords, FEEDING_HABITS),
-                }, error -> onDownloadError(FEEDING_HABITS)));
-
-        DisposableManager.add(haniotNetRepository
-                .getAllSleepHabits(helper.getLastPatient().get_id()
-                        , 1, 20, "created_at")
-                .subscribe(sleepHabits -> {
-                    if (!sleepHabits.isEmpty())
-                        lastNutritionalQuestionnaire.setSleepHabit(sleepHabits.get(0));
-//                                prepareMeasurement(sleepHabits, SLEEP_HABITS),
-                }, error -> onDownloadError(SLEEP_HABITS)));
-
-        DisposableManager.add(haniotNetRepository
-                .getAllMeasurements(helper.getLastPatient().get_id()
-                        , 1, 100000, "-timestamp")
-                .subscribe(this::prepareMeasurements,
-                        type -> onDownloadError(ALL_MEASUREMENT)));
-
-        new Handler().postDelayed(() -> {
-            prepareQuiz(lastNutritionalQuestionnaire);
-        }, 5000);
+//
+//        //TODO Para funcionar na versão antiga do EHR
+//        lastNutritionalQuestionnaire = new NutritionalQuestionnaire();
+//
+//        DisposableManager.add(haniotNetRepository
+//                .getAllMedicalRecord(helper.getLastPatient().get_id()
+//                        , 1, 20, "created_at")
+//                .subscribe(medicalRecords -> {
+//                    if (!medicalRecords.isEmpty())
+//                        lastNutritionalQuestionnaire.setMedicalRecord(medicalRecords.get(0));
+//                    //prepareMeasurement(medicalRecords, MEDICAL_RECORDS);
+//                }, error -> {
+//                    Log.i("AAA", error.getMessage());
+//                    onDownloadError(MEDICAL_RECORDS);
+//                }));
+//
+//        DisposableManager.add(haniotNetRepository
+//                .getAllPhysicalActivity(helper.getLastPatient().get_id()
+//                        , 1, 20, "created_at")
+//                .subscribe(physicalActivityHabits -> {
+//                    if (!physicalActivityHabits.isEmpty())
+//                        lastNutritionalQuestionnaire.setPhysicalActivityHabit(physicalActivityHabits.get(0));
+//                    //prepareMeasurement(physicalActivityHabits, PHYSICAL_ACTIVITY);
+//                }, error -> onDownloadError(PHYSICAL_ACTIVITY)));
+//
+//        DisposableManager.add(haniotNetRepository
+//                .getAllFeedingHabits(helper.getLastPatient().get_id()
+//                        , 1, 20, "created_at")
+//                .subscribe(feedingHabitsRecords -> {
+//                    if (!feedingHabitsRecords.isEmpty())
+//                        lastNutritionalQuestionnaire.setFeedingHabitsRecord(feedingHabitsRecords.get(0));
+////                                prepareMeasurement(feedingHabitsRecords, FEEDING_HABITS),
+//                }, error -> onDownloadError(FEEDING_HABITS)));
+//
+//        DisposableManager.add(haniotNetRepository
+//                .getAllSleepHabits(helper.getLastPatient().get_id()
+//                        , 1, 20, "created_at")
+//                .subscribe(sleepHabits -> {
+//                    if (!sleepHabits.isEmpty())
+//                        lastNutritionalQuestionnaire.setSleepHabit(sleepHabits.get(0));
+////                                prepareMeasurement(sleepHabits, SLEEP_HABITS),
+//                }, error -> onDownloadError(SLEEP_HABITS)));
+//
+//        DisposableManager.add(haniotNetRepository
+//                .getAllMeasurements(helper.getLastPatient().get_id()
+//                        , 1, 100000, "-timestamp")
+//                .subscribe(this::prepareMeasurements,
+//                        type -> onDownloadError(ALL_MEASUREMENT)));
+//
+//        new Handler().postDelayed(() -> {
+//            prepareQuiz(lastNutritionalQuestionnaire);
+//        }, 5000);
     }
 
     /**

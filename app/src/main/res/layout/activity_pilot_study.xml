@@ -1,77 +1,120 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activity.PilotStudyActivity">
+    <!-- The ActionBar displayed at the top -->
+    <include
+        android:id="@+id/toolbar_layout"
+        layout="@layout/toolbar" />
 
-    <LinearLayout
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/pilots_studies_swiperefresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_layout">
 
-        <!-- The ActionBar displayed at the top -->
-        <include layout="@layout/toolbar" />
-
-        <FrameLayout
-            android:id="@+id/content"
+        <RelativeLayout
+            android:id="@+id/box"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="@dimen/activity_horizontal_margin">
+            android:orientation="vertical">
+
 
             <LinearLayout
+                android:id="@+id/content_error"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
                 android:orientation="vertical"
-                android:paddingBottom="@dimen/activity_horizontal_margin">
+                android:visibility="gone">
 
-                <LinearLayout
-                    android:id="@+id/box_instruction_message"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/colorWarningLight"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:visibility="gone">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:padding="16sp"
-                        android:text="@string/piloty_study_desc" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/box_no_data_message"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/colorAlertDanger"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:visibility="gone">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:padding="16sp"
-                        android:text="@string/piloty_study_no_allocated" />
-                </LinearLayout>
+                <ImageView
+                    android:id="@+id/icon_error"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    app:srcCompat="@drawable/ic_no_pilot_study" />
 
                 <TextView
-                    android:id="@+id/info_inactive_selected"
+                    android:id="@+id/message_error_server_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="12dp"
                     android:gravity="center"
-                    android:text="@string/piloty_study_inactive_alert" />
+                    android:padding="@dimen/activity_horizontal_margin"
+                    android:text="Opss! Você ainda não possui Piloto Estudo."
+                    android:textColor="@color/colorBlackGrey"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:visibility="visible" />
 
-                <android.support.v4.widget.SwipeRefreshLayout
-                    android:id="@+id/pilots_studies_swiperefresh"
+                <TextView
+                    android:id="@+id/message_error_server"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="20dp">
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:padding="20dp"
+                    android:text="@string/piloty_study_no_allocated"
+                    android:visibility="visible" />
+            </LinearLayout>
+
+            <FrameLayout
+                android:id="@+id/content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/toolbar_layout"
+                android:padding="@dimen/activity_horizontal_margin">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingBottom="@dimen/activity_horizontal_margin">
+
+                    <LinearLayout
+                        android:id="@+id/box_instruction_message"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/colorWarningLight"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:padding="16sp"
+                            android:text="@string/piloty_study_desc" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/box_no_data_message"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/colorAlertDanger"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:padding="16sp"
+                            android:text="@string/piloty_study_no_allocated" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/info_inactive_selected"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:gravity="center"
+                        android:text="@string/piloty_study_inactive_alert" />
+
 
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/pilots_studies_recyclerview"
@@ -80,9 +123,9 @@
                         android:scrollbarSize="3sp"
                         android:scrollbarThumbVertical="@color/colorAccent"
                         android:scrollbars="vertical" />
-                </android.support.v4.widget.SwipeRefreshLayout>
-            </LinearLayout>
-        </FrameLayout>
+                </LinearLayout>
+            </FrameLayout>
 
-    </LinearLayout>
+        </RelativeLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>
 </android.support.constraint.ConstraintLayout>

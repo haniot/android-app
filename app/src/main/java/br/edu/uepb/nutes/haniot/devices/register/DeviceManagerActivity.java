@@ -1,14 +1,12 @@
 package br.edu.uepb.nutes.haniot.devices.register;
 
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,9 +17,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -67,8 +66,11 @@ public class DeviceManagerActivity extends AppCompatActivity {
     @BindView(R.id.available_devices_recyclerview)
     RecyclerView mAvailableRecyclerView;
 
-    @BindView(R.id.no_registered_devices_textView)
-    TextView mNoRegisteredDevices;
+    @BindView(R.id.box_not_devices)
+    LinearLayout mNoRegisteredDevices;
+
+    @BindView(R.id.title_registered)
+    TextView mTitleRegistered;
 
     @BindView(R.id.no_available_devices_textView)
     TextView mNoAvailableDevices;
@@ -90,6 +92,18 @@ public class DeviceManagerActivity extends AppCompatActivity {
 
     @BindView(R.id.devices_registered_available)
     LinearLayout boxRegisteredAvailable;
+
+    @BindView(R.id.content_devices)
+    ScrollView contentDevices;
+
+    @BindView(R.id.content_error)
+    LinearLayout contentError;
+
+    @BindView(R.id.manager_devices_swipe_refresh)
+    SwipeRefreshLayout swipeRefreshLayoutDevices;
+
+    @BindView(R.id.box_content)
+    RelativeLayout boxContent;
 
     private User user;
     private DeviceAdapter mAdapterDeviceAvailable;
@@ -116,7 +130,8 @@ public class DeviceManagerActivity extends AppCompatActivity {
         deviceIdToDelete = new ArrayList<>();
         initComponents();
         checkConnectivity();
-
+        initDataSwipeRefresh();
+        showErrorConnection(false);
     }
 
     @Override
@@ -130,6 +145,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        swipeRefreshLayoutDevices.setEnabled(false);
         downloadDevicesData();
     }
 
@@ -150,22 +166,47 @@ public class DeviceManagerActivity extends AppCompatActivity {
     }
 
     /**
+     * @param enabled
+     */
+    private void showErrorConnection(boolean enabled) {
+        if (enabled) {
+            contentError.setVisibility(View.VISIBLE);
+            contentDevices.setVisibility(View.GONE);
+        } else {
+            contentError.setVisibility(View.GONE);
+            contentDevices.setVisibility(View.VISIBLE);
+        }
+    }
+
+    /**
+     * Initialize SwipeRefresh
+     */
+    private void initDataSwipeRefresh() {
+        swipeRefreshLayoutDevices.setOnRefreshListener(this::downloadDevicesData);
+    }
+
+    /**
      * Download list of devices registered.
      */
     public void downloadDevicesData() {
         DisposableManager.add(
                 haniotRepository
                         .getAllDevices(user.get_id())
-                        .doOnSubscribe(disposable -> displayLoading(true))
-                        .doAfterTerminate(() -> displayLoading(false))
+                        .doOnSubscribe(disposable -> {
+                            swipeRefreshLayoutDevices.setRefreshing(true);
+                            contentDevices.setVisibility(View.GONE);
+                        })
+                        .doAfterTerminate(() -> {
+                            swipeRefreshLayoutDevices.setEnabled(true);
+                            swipeRefreshLayoutDevices.setRefreshing(false);
+                        })
                         .subscribe(devices -> {
                             Log.w("AAA", Arrays.toString(devices.toArray()));
+                            contentDevices.setVisibility(View.VISIBLE);
                             populateDevicesRegistered(setImagesDevices(devices));
                             populateDevicesAvailable(mDeviceDAO.list(user.get_id()));
-                        }, err -> {
-                            messageErrorServer.setVisibility(View.VISIBLE);
-                            boxRegisteredAvailable.setVisibility(View.INVISIBLE);
-                        })
+                            showErrorConnection(false);
+                        }, err -> showErrorConnection(true))
         );
     }
 
@@ -191,10 +232,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
 
     private void checkConnectivity() {
         if (!ConnectionUtils.internetIsEnabled(getApplicationContext())) {
-            mMessageAlert.setVisibility(View.VISIBLE);
-            mBoxDevicesRegistered.setVisibility(View.GONE);
-            mBoxDevicesAvailable.setVisibility(View.GONE);
-            return;
+            showErrorConnection(true);
         }
     }
 
@@ -242,6 +280,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
                 mBoxDevicesAvailable.setVisibility(View.GONE);
                 mProgressBar.setVisibility(View.VISIBLE);
             } else {
+                boxContent.setVisibility(View.VISIBLE);
                 mBoxDevicesRegistered.setVisibility(View.VISIBLE);
                 mBoxDevicesAvailable.setVisibility(View.VISIBLE);
                 mProgressBar.setVisibility(View.GONE);
@@ -258,6 +297,13 @@ public class DeviceManagerActivity extends AppCompatActivity {
         mRegisteredRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRegisteredRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mAdapterDeviceRegistered.setListener(new OnRecyclerViewListener<Device>() {
+            private void run() {
+                removePendingDevices();
+            }
+
+            /**
+             * @param item
+             */
             @Override
             public void onItemClick(Device item) {
 
@@ -276,9 +322,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
                 mAdapterDeviceRegistered.removeItem(item);
                 deviceIdToDelete.add(item.get_id());
                 handler = new Handler();
-                runnable = () -> {
-                    removePendingDevices();
-                };
+                runnable = this::run;
                 handler.postDelayed(runnable, 4000);
 
                 snackbar = Snackbar
@@ -287,9 +331,9 @@ public class DeviceManagerActivity extends AppCompatActivity {
                     mAdapterDeviceRegistered.restoreItem(item, position);
                     mRegisteredRecyclerView.scrollToPosition(position);
                     deviceIdToDelete.remove(item.get_id());
-//                    handler.removeCallbacks(runnable);
                 });
                 snackbar.show();
+                showNoDevices(mAdapterDeviceRegistered.itemsIsEmpty());
             }
         });
         mRegisteredRecyclerView.setAdapter(mAdapterDeviceRegistered);
@@ -301,9 +345,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
         if (deviceIdToDelete == null || deviceIdToDelete.isEmpty()) return;
         for (String id : deviceIdToDelete)
             DisposableManager.add(haniotRepository
-                    .deleteDevice(user.get_id(), id).subscribe(() -> {
-                        deviceIdToDelete.remove(id);
-                    }));
+                    .deleteDevice(user.get_id(), id).subscribe(() -> deviceIdToDelete.remove(id)));
     }
 
     /**
@@ -352,12 +394,18 @@ public class DeviceManagerActivity extends AppCompatActivity {
         mAdapterDeviceRegistered.addItems(devicesRegistered);
 
         runOnUiThread(() -> {
-            if (devicesRegistered.isEmpty()) {
-                mNoRegisteredDevices.setVisibility(View.VISIBLE);
-            } else {
-                mNoRegisteredDevices.setVisibility(View.GONE);
-            }
+            showNoDevices(devicesRegistered.isEmpty());
         });
+    }
+
+    private void showNoDevices(boolean enabled) {
+        if (enabled) {
+            mNoRegisteredDevices.setVisibility(View.VISIBLE);
+            mTitleRegistered.setVisibility(View.INVISIBLE);
+        } else {
+            mNoRegisteredDevices.setVisibility(View.GONE);
+            mTitleRegistered.setVisibility(View.VISIBLE);
+        }
     }
 
     /**
@@ -408,71 +456,8 @@ public class DeviceManagerActivity extends AppCompatActivity {
                                                          List<Device> availableList) {
         // Add only devices that have not been registered
         for (Device d : registeredList) {
-            if (availableList.contains(d)) {
-                availableList.remove(d);
-            }
+            availableList.remove(d);
         }
         return availableList;
     }
-
-    /**
-     * Dialog to confirm removal of associated device.
-     *
-     * @param device {@link Device}
-     */
-    private void confirmRemoveDevice(Device device) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-        builder.setIcon(R.drawable.ic_action_warning);
-        builder.setTitle(R.string.attention);
-        builder.setMessage(getString(R.string.remove_device, device.getName()));
-        //define a button how to remove
-        builder.setPositiveButton(R.string.remove, (arg0, arg1) -> {
-            //removes the device from the server database
-            removeDevice(device);
-        });
-        //define a button how to cancel.
-        builder.setNegativeButton(R.string.cancel, (arg0, arg1) -> {
-        });
-        builder.create().show();
-    }
-
-    /**
-     * Remove device from server and cellphone.
-     *
-     * @param device
-     */
-    private void removeDevice(Device device) {
-        DisposableManager.add(
-                haniotRepository.deleteDevice(user.get_id(), device.get_id())
-                        .doOnSubscribe(disposable -> displayLoading(true))
-                        .doAfterTerminate(() -> displayLoading(false))
-                        .subscribe(() -> {
-                            mDeviceDAO.remove(device.getAddress());
-                            unpairDevice(device);
-                            downloadDevicesData();
-                        }, err -> {
-                            Log.w(LOG_TAG, "ERROR DELETE DEVICE: " + err.getMessage());
-                        })
-        );
-    }
-
-    /**
-     * Unpair device from cellphone.
-     *
-     * @param device
-     */
-    private void unpairDevice(Device device) {
-        if (device.getAddress().isEmpty()) return;
-        BluetoothDevice mBluetoothDevice = BluetoothAdapter.getDefaultAdapter().
-                getRemoteDevice(device.getAddress());
-        try {
-            Method m = mBluetoothDevice.getClass()
-                    .getMethod("removeBond", (Class[]) null);
-            m.invoke(mBluetoothDevice, (Object[]) null);
-        } catch (Exception e) {
-            Log.d(LOG_TAG, "error removing pairing " + e.getMessage());
-        }
-    }
-
 }

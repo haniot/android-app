@@ -373,8 +373,8 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
     private void prepareItems() {
         groupItemOdontologicalEvaluations.clear();
         groupItemNutritionEvaluations.clear();
-        downloadDataTemp();
-
+//        downloadDataTemp();
+        downloadData();
     }
 
     /**

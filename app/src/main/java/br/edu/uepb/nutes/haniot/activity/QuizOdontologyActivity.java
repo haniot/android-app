@@ -113,15 +113,6 @@ public class QuizOdontologyActivity extends SimpleSurvey implements Infor.OnInfo
         familyCohesionRecord.setFamilyCohesionResult(totalPoints);
         familyCohesionRecord.toJson();
         odontologicalQuestionnaire.setFamilyCohesionRecord(familyCohesionRecord);
-
-        //TODO TEMP Para funcionar na versão antiga do ehr
-        DisposableManager.add(haniotNetRepository
-                .saveFamilyCohesionRecord(familyCohesionRecord)
-                .doOnSubscribe(disposable -> Log.i(LOG_TAG, "Salvando familyCohesionRecord no servidor!"))
-                .doAfterTerminate(() -> Log.i(LOG_TAG, "familyCohesionRecord"))
-                .subscribe(familyCohesionRecord1 -> {
-                    Log.i(LOG_TAG, "FamilyCohesionRecord saved in server!");
-                }, this::errorHandler));
     }
 
     private void saveOralHealth() {
@@ -129,30 +120,12 @@ public class QuizOdontologyActivity extends SimpleSurvey implements Infor.OnInfo
         oralHealthRecord.setToothLesions(toothLesions);
         oralHealthRecord.toJson();
         odontologicalQuestionnaire.setOralHealthRecord(oralHealthRecord);
-
-        //TODO TEMP Para funcionar na versão antiga do ehr
-        DisposableManager.add(haniotNetRepository
-                .saveOralHealthRecord(oralHealthRecord)
-                .doOnSubscribe(disposable -> Log.i(LOG_TAG, "Saving oralHealthRecord in server!"))
-                .doAfterTerminate(() -> Log.i(LOG_TAG, "oralHealthRecord"))
-                .subscribe(oralHealthRecord1 -> {
-                    Log.i(LOG_TAG, "OralHealthRecord saved in server!");
-                }, this::errorHandler));
     }
 
     private void saveSociodemographic() {
         sociodemographicRecord.setPatientId(patient.get_id());
         sociodemographicRecord.toJson();
         odontologicalQuestionnaire.setSociodemographicRecord(sociodemographicRecord);
-
-        //TODO TEMP Para funcionar na versão antiga do ehr
-        DisposableManager.add(haniotNetRepository
-                .saveSociodemographicRecord(sociodemographicRecord)
-                .doOnSubscribe(disposable -> Log.i(LOG_TAG, "Salvando sociodemographicRecord no servidor!"))
-                .doAfterTerminate(() -> Log.i(LOG_TAG, "sociodemographicRecord"))
-                .subscribe(sociodemographicRecord1 -> {
-                    Log.i(LOG_TAG, "Salvo sociodemographicRecord no servidor!");
-                }, this::errorHandler));
     }
 
     /**
@@ -567,6 +540,7 @@ public class QuizOdontologyActivity extends SimpleSurvey implements Infor.OnInfo
         ProgressDialog dialog = ProgressDialog.show(this, "Sincronização",
                 "Aguarde alguns instantes...", true);
         dialog.show();
+        Log.w("AAA", odontologicalQuestionnaire.toJson());
 
         if (odontologicalQuestionnaire.getFamilyCohesionRecord() != null
                 && odontologicalQuestionnaire.getOralHealthRecord() != null
@@ -586,6 +560,7 @@ public class QuizOdontologyActivity extends SimpleSurvey implements Infor.OnInfo
                         });
                         builder.show();
                     }, throwable -> {
+                        Log.w(LOG_TAG, "Error: " + throwable.getMessage());
                         dialog.cancel();
                         AlertDialog.Builder builder = new AlertDialog.Builder(this);
                         builder.setTitle("Não foi possível concluir a operação...");

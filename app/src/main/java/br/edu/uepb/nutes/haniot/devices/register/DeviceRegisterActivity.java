@@ -1,8 +1,6 @@
 package br.edu.uepb.nutes.haniot.devices.register;
 
 import android.Manifest;
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -22,7 +20,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -81,7 +78,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     TextView scanDeviceError;
 
     @BindView(R.id.btn_try_again)
-    TextView tryAgain;
+    TextView btnTryAgain;
 
     @BindView(R.id.btn_device_register_scanner)
     TextView btnDeviceRegisterScanner;
@@ -160,7 +157,6 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
             boxError.setVisibility(View.INVISIBLE);
         } else {
             boxError.setVisibility(View.VISIBLE);
-            scanDeviceError.setText(getString(R.string.device_registered_error, device.getName()));
 //            deviceConnectionStatus.setText(R.string.failed_pairing_device);
 //            btnDeviceRegisterScanner.setEnabled(true);
 //            btnDeviceRegisterScanner.setText(R.string.start_scanner_try);
@@ -436,6 +432,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         btnDeviceRegisterStop.setOnClickListener(this);
         btnCloseRegister.setOnClickListener(this);
         btnCloseResponse.setOnClickListener(this);
+        btnTryAgain.setOnClickListener(this);
 
     }
 
@@ -452,6 +449,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
      */
     public void populateView() {
         if (mDevice == null) return;
+        scanDeviceError.setText(getString(R.string.device_registered_error, mDevice.getName()));
         nameDeviceScannerRegister.setText(mDevice.getName());
         if (mDevice.getName().equalsIgnoreCase(NAME_DEVICE_THERM_DL8740)) {
             imgDeviceRegister.setImageResource(R.drawable.device_thermometer_philips_dl8740);
@@ -469,6 +467,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
                 boxScanner.setVisibility(View.VISIBLE);
                 mPulsatorLayout.start();
             } else {
+                boxError.setVisibility(View.GONE);
                 boxResponse.setVisibility(View.GONE);
                 boxScanner.setVisibility(View.GONE);
                 boxRegister.setVisibility(View.VISIBLE);
@@ -500,15 +499,15 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
 
         } else if (id == R.id.btn_device_register_stop) {
             Log.d(LOG_TAG, "onClick: stop scanner");
-            animationScanner(false);
             mScanner.stopScan();
+            finish();
         } else if (id == R.id.btn_close_register) {
             finish();
         } else if (id == R.id.btn_close_response) {
             finish();
         } else if (id == R.id.btn_try_again) {
             boxRegister.setVisibility(View.VISIBLE);
+            boxError.setVisibility(View.GONE);
         }
     }
-
 }

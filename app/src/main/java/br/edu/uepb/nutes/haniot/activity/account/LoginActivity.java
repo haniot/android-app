@@ -301,16 +301,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         showMessage(R.string.error_500);
                         return;
                     }
-//                    try {
-//                        Log.i("AAA", "" + httpEx.response().errorBody().string());
-//                    } catch (IOException e1) {
-//                        e1.printStackTrace();
-//                    }
                     openScreenChangePassword(Objects.requireNonNull(httpEx.response().errorBody()));
                     break;
                 }
                 case 404:
                     showMessage(R.string.error_recover_data);
+                    break;
+                case 429:
+                    showMessage(R.string.error_limit_rate);
                     break;
                 default:
                     showMessage(R.string.error_500);

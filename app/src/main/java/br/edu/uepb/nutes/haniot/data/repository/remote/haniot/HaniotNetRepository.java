@@ -104,10 +104,8 @@ public class HaniotNetRepository extends BaseNetRepository {
                     .getInstance(mContext).getUserLogged() != null) {
                 EventBus.getDefault().post("unauthorized");
             }
-//            Log.i("AAA", ":"+chain.proceed(chain.request()).body().string());
-
-//            Log.w("RESPONSEBODY", response.code() + " | " +
-//                    Objects.requireNonNull(response.body()).string());
+//            Log.w("RESPONSEBODY", "" + response.body().contentLength());
+//            Log.w("AAA", ":" + chain.proceed(chain.request()).body().string().length());
             return response;
         };
     }
@@ -119,7 +117,6 @@ public class HaniotNetRepository extends BaseNetRepository {
                     if (userAccess != null && userAccess.getAccessToken() != null) {
                         JWT jwt = new JWT(userAccess.getAccessToken());
                         userAccess.setSubject(jwt.getSubject());
-                        Log.w("AAA", "Token: " + userAccess.getAccessToken());
                         userAccess.setExpirationDate(jwt.getExpiresAt().getTime());
                         userAccess.setScopes(jwt.getClaim(UserAccess.KEY_SCOPES).asString());
                         userAccess.setTokenType(jwt.getClaim(UserAccess.SUB_TYPE).asString());
@@ -182,7 +179,7 @@ public class HaniotNetRepository extends BaseNetRepository {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Single<Object> associatePatientToPilotStudy(String pilotStudyId, String patientId) {
+    public Single<retrofit2.Response<Void>> associatePatientToPilotStudy(String pilotStudyId, String patientId) {
         return haniotService.associatePatientToPilotStudy(pilotStudyId, patientId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -478,7 +475,7 @@ public class HaniotNetRepository extends BaseNetRepository {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Single<List<OdontologicalQuestionnaire>> getLastOdontologicalQuestionnaires(String patientId) {
+    public Single<OdontologicalQuestionnaire> getLastOdontologicalQuestionnaires(String patientId) {
         return haniotService.getLastOdontologicalQuestionnaires(patientId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());

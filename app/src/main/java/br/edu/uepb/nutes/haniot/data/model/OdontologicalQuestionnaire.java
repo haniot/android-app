@@ -23,7 +23,7 @@ public class OdontologicalQuestionnaire {
     @Expose()
     String createdAt;
 
-    @SerializedName("sociodemographic_recod")
+    @SerializedName("sociodemographic_record")
     @Expose()
     SociodemographicRecord sociodemographicRecord;
 

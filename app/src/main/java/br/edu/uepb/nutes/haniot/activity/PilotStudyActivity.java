@@ -12,6 +12,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AnimationUtils;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -59,6 +61,21 @@ public class PilotStudyActivity extends AppCompatActivity {
     @BindView(R.id.info_inactive_selected)
     TextView infoInactiveSelectedMessage;
 
+    @BindView(R.id.content_error)
+    LinearLayout errorPilotStudy;
+
+    @BindView(R.id.content)
+    FrameLayout content;
+
+    @BindView(R.id.icon_error)
+    ImageView iconError;
+
+    @BindView(R.id.message_error_server)
+    TextView messageError;
+
+    @BindView(R.id.message_error_server_title)
+    TextView titleError;
+
     /**
      * We need this variable to lock and unlock loading more.
      * We should not charge more when a request has already been made.
@@ -83,16 +100,13 @@ public class PilotStudyActivity extends AppCompatActivity {
         user = appPreferences.getUserLogged();
 
         initComponents();
+//        showErrorPilot(false);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                super.onBackPressed();
-                break;
-            default:
-                break;
+        if (item.getItemId() == android.R.id.home) {
+            super.onBackPressed();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -117,6 +131,36 @@ public class PilotStudyActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setTitle(getResources().getString(R.string.piloty_study_title));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    /**
+     * @param enabled
+     */
+    private void showErrorPilot(boolean enabled) {
+        if (enabled) {
+            errorPilotStudy.setVisibility(View.VISIBLE);
+            content.setVisibility(View.GONE);
+        } else {
+            errorPilotStudy.setVisibility(View.GONE);
+            content.setVisibility(View.VISIBLE);
+        }
+    }
+
+    /**
+     * @param enabled
+     */
+    private void showErrorConnection(boolean enabled) {
+        if (enabled) {
+            showErrorPilot(true);
+            iconError.setImageResource(R.drawable.ic_error_server);
+            titleError.setText("Opss! Houve algum erro.");
+            messageError.setText(getText(R.string.error_500));
+        } else {
+            showErrorPilot(false);
+            iconError.setImageResource(R.drawable.ic_no_pilot_study);
+            titleError.setText("Opss! Você ainda não possui Piloto Estudo.");
+            messageError.setText(getText(R.string.piloty_study_no_allocated));
+        }
     }
 
     /**
@@ -230,7 +274,6 @@ public class PilotStudyActivity extends AppCompatActivity {
                     .doOnSubscribe(disposable -> showLoading(true))
                     .doAfterTerminate(() -> showLoading(false))
                     .subscribe(pilotStudies -> {
-                        if (pilotStudies.isEmpty()) return;
 
                         PilotStudy pilotLast = appPreferences.getLastPilotStudy();
                         for (PilotStudy pilot : pilotStudies) {
@@ -249,7 +292,6 @@ public class PilotStudyActivity extends AppCompatActivity {
                     .doOnSubscribe(disposable -> showLoading(true))
                     .doAfterTerminate(() -> showLoading(false))
                     .subscribe(pilotStudies -> {
-                        if (pilotStudies.isEmpty()) return;
 
                         PilotStudy pilotLast = appPreferences.getLastPilotStudy();
                         for (PilotStudy pilot : pilotStudies) {
@@ -274,11 +316,17 @@ public class PilotStudyActivity extends AppCompatActivity {
         mPilotStudyAdapter.clearItems();
         mPilotStudyAdapter.addItems(pilotStudies);
 
-        if (mPilotStudyAdapter.itemsIsEmpty()) {
-            showNoDataMessage(true);
+        if (pilotStudies == null) {
+            showErrorConnection(true);
+        } else if (pilotStudies.isEmpty()) {
+//            showNoDataMessage(true);
+            showErrorConnection(false);
+            showErrorPilot(true);
             showInstructionsMessage(false);
         } else {
-            showNoDataMessage(false);
+//            showNoDataMessage(false);
+            showErrorConnection(false);
+            showErrorPilot(false);
             if (appPreferences.getLastPilotStudy() != null) { // Pilot is selected
                 showInstructionsMessage(false);
             } else {

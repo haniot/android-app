@@ -122,6 +122,7 @@ public class ManagerPatientsActivity extends AppCompatActivity {
                 .doAfterTerminate(() -> mDataSwipeRefresh.setRefreshing(false))
                 .subscribe(patients -> {
                     patientList = patients;
+
                     initRecyclerView();
                 }, this::errorHandler));
         disableBack();

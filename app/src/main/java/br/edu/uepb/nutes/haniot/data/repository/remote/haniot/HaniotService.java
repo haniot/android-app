@@ -24,6 +24,7 @@ import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.model.UserAccess;
 import io.reactivex.Completable;
 import io.reactivex.Single;
+import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
@@ -39,7 +40,7 @@ import retrofit2.http.Query;
  */
 public interface HaniotService {
     //    String BASE_URL_HANIOT = "http://192.168.0.119:8080/"; // API GATEWAY LOCAL
-    String BASE_URL_HANIOT = "https://192.168.0.121:8081/v1/"; // API GATEWAY LOCAL
+    String BASE_URL_HANIOT = "https://192.168.0.103:8081/v1/"; // API GATEWAY LOCAL
 
     // auth
     @POST("auth")
@@ -86,30 +87,30 @@ public interface HaniotService {
     Single<List<PilotStudy>> getAllPilotStudies();
 
     @POST("pilotstudies/{pilotstudy_id}/patients/{patient_id}")
-    Single<Object> associatePatientToPilotStudy(@Path("pilotstudy_id") String pilotStudyId, @Path("patient_id") String patientId);
+    Single<Response<Void>> associatePatientToPilotStudy(@Path("pilotstudy_id") String pilotStudyId, @Path("patient_id") String patientId);
 
     @GET("pilotstudies/{pilotstudy_id}")
     Single<PilotStudy> getPilotStudy(@Path("pilotstudy_id") String pilotId);
 
     // users.measurements
-    @POST("users/{user_id}/measurements")
-    Single<Measurement> addMeasurement(@Path("user_id") String userId,
+    @POST("patients/{patient_id}/measurements")
+    Single<Measurement> addMeasurement(@Path("patient_id") String patientId,
                                        @Body Measurement measurement);
 
-    @POST("users/{user_id}/measurements")
-    Single<Object> addMeasurement(@Path("user_id") String userId,
+    @POST("patients/{patient_id}/measurements")
+    Single<Object> addMeasurement(@Path("patient_id") String patientId,
                                   @Body List<Measurement> measurement);
 
-    @GET("users/{user_id}/measurements")
-    Single<List<Measurement>> getAllMeasurements(@Path("user_id") String userId,
+    @GET("patients/{patient_id}/measurements")
+    Single<List<Measurement>> getAllMeasurements(@Path("patient_id") String userId,
                                                  @Query("sort") String sort,
                                                  @Query("start_at") String dateStart,
                                                  @Query("end_at") String dateEnd,
                                                  @Query("page") int page,
                                                  @Query("limit") int limit);
 
-    @GET("users/{user_id}/measurements")
-    Single<List<Measurement>> getAllMeasurements(@Path("user_id") String userId,
+    @GET("patients/{patient_id}/measurements")
+    Single<List<Measurement>> getAllMeasurements(@Path("patient_id") String userId,
                                                  @Query("type") String type,
                                                  @Query("sort") String sort,
                                                  @Query("start_at") String dateStart,
@@ -117,25 +118,25 @@ public interface HaniotService {
                                                  @Query("page") int page,
                                                  @Query("limit") int limit);
 
-    @GET("users/{user_id}/measurements")
-    Single<List<Measurement>> getAllMeasurements(@Path("user_id") String userId,
+    @GET("patients/{patient_id}/measurements")
+    Single<List<Measurement>> getAllMeasurements(@Path("patient_id") String userId,
                                                  @Query("type") String type,
                                                  @Query("sort") String sort,
                                                  @Query("page") int page,
                                                  @Query("limit") int limit);
 
-    @GET("users/{user_id}/measurements")
-    Single<List<Measurement>> getAllMeasurements(@Path("user_id") String userId,
+    @GET("patients/{patient_id}/measurements")
+    Single<List<Measurement>> getAllMeasurements(@Path("patient_id") String userId,
                                                  @Query("page") int page,
                                                  @Query("limit") int limit,
                                                  @Query("sort") String sort);
 
-    @GET("users/{user_id}/measurements/{measurement_id}")
-    Single<Measurement> getMeasurement(@Path("user_id") String userId,
+    @GET("patients/{patient_id}/measurements/{measurement_id}")
+    Single<Measurement> getMeasurement(@Path("patient_id") String userId,
                                        @Path("measurement_id") String measurementId);
 
-    @DELETE("users/{user_id}/measurements/{measurement_id}")
-    Completable deleteMeasurement(@Path("user_id") String userId,
+    @DELETE("patients/{patient_id}/measurements/{measurement_id}")
+    Completable deleteMeasurement(@Path("patient_id") String userId,
                                   @Path("measurement_id") String measurementId);
 
     // user.devices
@@ -308,22 +309,22 @@ public interface HaniotService {
                                                                   @Body NutritionalEvaluation nutritionalEvaluation);
 
 
-    @GET("patients/{patient_id}/odontological/questionnaires")
+    @GET("patients/{patient_id}/nutritional/questionnaires")
     Single<List<NutritionalQuestionnaire>> getAllNutritionalQuestionnaires(@Path("patient_id") String patientId,
                                                                            @Query("page") int page,
                                                                            @Query("limit") int limit,
                                                                            @Query("sort") String sort);
 
-    @GET("patients/{patient_id}/nutritional/questionnaires")
+    @GET("patients/{patient_id}/odontological/questionnaires")
     Single<List<OdontologicalQuestionnaire>> getAllOdontologicalQuestionnaires(@Path("patient_id") String patientId,
                                                                                @Query("page") int page,
                                                                                @Query("limit") int limit,
                                                                                @Query("sort") String sort);
 
-    @GET("patients/{patient_id}/nutritional/questionnaires/last")
-    Single<List<OdontologicalQuestionnaire>> getLastOdontologicalQuestionnaires(@Path("patient_id") String patientId);
-
     @GET("patients/{patient_id}/odontological/questionnaires/last")
+    Single<OdontologicalQuestionnaire> getLastOdontologicalQuestionnaires(@Path("patient_id") String patientId);
+
+    @GET("patients/{patient_id}/nutritional/questionnaires/last")
     Single<NutritionalQuestionnaire> getLastNutritionalQuestionnaire(@Path("patient_id") String patientId);
 
     @GET("patients/{patient_id}/measurements/last")

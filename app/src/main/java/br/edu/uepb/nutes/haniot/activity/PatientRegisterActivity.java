@@ -21,6 +21,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import java.util.Calendar;
+import java.util.Objects;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.data.model.HealthProfessional;
@@ -99,7 +100,7 @@ public class PatientRegisterActivity extends AppCompatActivity {
 
         toolbar.setTitle(getResources().getString(R.string.patient_profile));
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
         if (getIntent().hasExtra("action")) isEdit = true;
         initComponents();
@@ -113,8 +114,6 @@ public class PatientRegisterActivity extends AppCompatActivity {
 
     /**
      * Validate fields.
-     *
-     * @return
      */
     private boolean validate() {
         boolean validated = true;
@@ -140,17 +139,25 @@ public class PatientRegisterActivity extends AppCompatActivity {
      * Save patient in App Preferences.
      */
     private void savePatient() {
+        Log.w("aa", "AAAA");
         if (!isEdit) patient = new Patient();
         patient.setName(nameEditTExt.getText().toString());
-        patient.setEmail(emailEditTExt.getText().toString());
+        if (emailEditTExt.getText().toString().isEmpty()) {
+            patient.setEmail(null);
+        } else {
+            patient.setEmail(emailEditTExt.getText().toString());
+        }
         patient.setPhoneNumber(phoneEdittext.getText().toString());
         patient.setBirthDate(DateUtils.formatDate(myCalendar.getTimeInMillis(), "yyyy-MM-dd"));
-        if (genderGroup.getCheckedRadioButtonId() == R.id.male)
+        if (genderGroup.getCheckedRadioButtonId() == R.id.male) {
             patient.setGender(PatientsType.GenderType.MALE);
-        else patient.setGender(PatientsType.GenderType.FEMALE);
+        } else {
+            patient.setGender(PatientsType.GenderType.FEMALE);
+        }
         patient.setPilotId(appPreferencesHelper.getLastPilotStudy().get_id());
         Log.i(TAG, patient.toJson());
-        if (isEdit)
+
+        if (isEdit) {
             DisposableManager.add(haniotNetRepository
                     .updatePatient(patient)
                     .doOnSubscribe(disposable -> showLoading(true))
@@ -161,7 +168,7 @@ public class PatientRegisterActivity extends AppCompatActivity {
                         startActivity(new Intent(PatientRegisterActivity.this, ManagerPatientsActivity.class));
                         finish();
                     }, this::errorHandler));
-        else
+        } else {
             DisposableManager.add(haniotNetRepository
                     .savePatient(patient)
                     .doAfterTerminate(() -> {
@@ -177,23 +184,31 @@ public class PatientRegisterActivity extends AppCompatActivity {
                             showMessage(R.string.error_recover_data);
                             return;
                         }
-
-                        haniotNetRepository.associatePatientToPilotStudy(pilotStudy.get_id(), patient.get_id())
-                                .doAfterSuccess(o -> {
-                                    Log.w(TAG, "Patient associated to pilotstudy");
-                                    patientDAO.save(patient);
-                                    appPreferencesHelper.saveLastPatient(patient);
-                                    if (appPreferencesHelper.getUserLogged().getUserType().equals(HEALTH_PROFESSIONAL)) {
-                                        User user = appPreferencesHelper.getUserLogged();
-                                        if (user.getHealthArea().equals(getString(R.string.type_nutrition)))
-                                            startActivity(new Intent(PatientRegisterActivity.this, QuizNutritionActivity.class));
-                                        else if (user.getHealthArea().equals(getString(R.string.type_dentistry)))
-                                            startActivity(new Intent(PatientRegisterActivity.this, QuizOdontologyActivity.class));
-                                    }
-                                    finish();
-                                });
-
+                        this.patient.set_id(patient.get_id());
+                        associatePatientToPilotStudy();
                     }, this::errorHandler));
+        }
+    }
+
+    /**
+     * Associate patient to selected pilot study in server.
+     */
+    private void associatePatientToPilotStudy() {
+        DisposableManager.add(haniotNetRepository
+                .associatePatientToPilotStudy(pilotStudy.get_id(), patient.get_id())
+                .subscribe(o -> {
+                    Log.w(TAG, "Patient associated to pilotstudy");
+                    patientDAO.save(patient);
+                    appPreferencesHelper.saveLastPatient(patient);
+                    if (appPreferencesHelper.getUserLogged().getUserType().equals(HEALTH_PROFESSIONAL)) {
+                        User user = appPreferencesHelper.getUserLogged();
+                        if (user.getHealthArea().equals(getString(R.string.type_nutrition)))
+                            startActivity(new Intent(PatientRegisterActivity.this, QuizNutritionActivity.class));
+                        else if (user.getHealthArea().equals(getString(R.string.type_dentistry)))
+                            startActivity(new Intent(PatientRegisterActivity.this, QuizOdontologyActivity.class));
+                    }
+                    finish();
+                }, this::errorHandler));
     }
 
     /**
@@ -203,16 +218,13 @@ public class PatientRegisterActivity extends AppCompatActivity {
      * @param e {@link Throwable}
      */
     private void errorHandler(Throwable e) {
-        Log.i(TAG, e.getMessage());
+        Log.i(TAG, "errorHandler " + e.toString());
         if (e instanceof HttpException) {
             HttpException httpEx = ((HttpException) e);
-            switch (httpEx.code()) {
-                case 409:
-                    showMessage(R.string.error_409_patient);
-                    break;
-                default:
-                    showMessage(R.string.error_500);
-                    break;
+            if (httpEx.code() == 409) {
+                showMessage(R.string.error_409_patient);
+            } else {
+                showMessage(R.string.error_500);
             }
         } else showMessage(R.string.error_500);
     }
@@ -353,11 +365,10 @@ public class PatientRegisterActivity extends AppCompatActivity {
         if (isEdit) {
             prepareEditing();
         }
+
         genderGroup.setOnCheckedChangeListener((group, checkedId) -> {
-            if (checkedId == R.id.male)
-                genderIcon.setImageResource(R.drawable.x_boy);
-            else
-                genderIcon.setImageResource(R.drawable.x_girl);
+            if (checkedId == R.id.male) genderIcon.setImageResource(R.drawable.x_boy);
+            else genderIcon.setImageResource(R.drawable.x_girl);
         });
 
         birthEdittext.setOnClickListener(v -> {

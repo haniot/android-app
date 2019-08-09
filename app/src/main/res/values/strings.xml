@@ -44,7 +44,7 @@
     <string name="piloty_study_title">Estudo Piloto</string>
     <string name="piloty_study_sumary">Selecione o estudo piloto que você estar alocado.</string>
     <string name="piloty_study_desc">Selecione o piloto que deseja realizar o estudo. Você poderá a qualquer momento voltar aqui e mudar sua escolha.</string>
-    <string name="piloty_study_no_allocated">Você não estar alocado em nenhum estudo piloto. Por favor, entre em contato com o administrador.</string>
+    <string name="piloty_study_no_allocated">Você não está alocado em nenhum estudo piloto. Por favor, entre em contato com o administrador.</string>
     <string name="piloty_study_inactive_alert">Para os pilotos inativos, apenas o modo de consulta estará disponível.</string>
     <string name="piloty_study_confirm_selected">O estudo piloto de nome \"%s\" será configurado. Deseja continuar?</string>
     <string name="piloty_study_is_selected">O estudo piloto de nome \"%s\" já estar configurado&#8230;</string>
@@ -283,7 +283,7 @@
     <string name="no_devices_registered">Não há dispositivos cadastrados&#8230;</string>
     <string name="no_devices_available">Nenhum dispositivo disponível. Em breve a lista será atualizada&#8230;</string>
     <string name="device_registered_success">%s cadastrado com sucesso!</string>
-    <string name="device_registered_error">Não foi possível cadastrar %s!</string>
+    <string name="device_registered_error">Não foi possível cadastrar %s</string>
     <string name="connection">Matenha o dispositivo de saúde próximo ao telefone/tablet.</string>
     <string name="come_back">Voltar</string>
     <string name="attention">Atenção</string>
@@ -757,4 +757,5 @@
     <string name="confirm_remove_devices">Você removeu esse dispositivo, deseja desfazer?</string>
     <string name="undo">Desfazer</string>
     <string name="title_activity_historic_quiz">HistoricQuizActivity</string>
+    <string name="error_limit_rate">Limite de tentativas del ogin excedida! Aguarde 1 hora para tentar novamente...</string>
 </resources>
