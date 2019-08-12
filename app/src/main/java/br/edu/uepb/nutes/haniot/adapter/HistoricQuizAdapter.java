@@ -27,17 +27,24 @@ import java.util.Locale;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.data.model.ChronicDisease;
 import br.edu.uepb.nutes.haniot.data.model.ChronicDiseaseType;
+import br.edu.uepb.nutes.haniot.data.model.FamilyCohesionRecord;
 import br.edu.uepb.nutes.haniot.data.model.FeedingHabitsRecord;
 import br.edu.uepb.nutes.haniot.data.model.FeendingHabitsRecordType;
 import br.edu.uepb.nutes.haniot.data.model.FoodType;
 import br.edu.uepb.nutes.haniot.data.model.FrequencyAnswersType;
+import br.edu.uepb.nutes.haniot.data.model.GroupItemEvaluation;
 import br.edu.uepb.nutes.haniot.data.model.HeartRateItem;
 import br.edu.uepb.nutes.haniot.data.model.ItemEvaluation;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.MedicalRecord;
+import br.edu.uepb.nutes.haniot.data.model.OralHealthRecord;
 import br.edu.uepb.nutes.haniot.data.model.PhysicalActivityHabit;
 import br.edu.uepb.nutes.haniot.data.model.SchoolActivityFrequencyType;
 import br.edu.uepb.nutes.haniot.data.model.SleepHabit;
+import br.edu.uepb.nutes.haniot.data.model.SociodemographicRecord;
+import br.edu.uepb.nutes.haniot.data.model.SociodemographicType;
+import br.edu.uepb.nutes.haniot.data.model.ToothLesion;
+import br.edu.uepb.nutes.haniot.data.model.ToothLesionType;
 import br.edu.uepb.nutes.haniot.data.model.TypeEvaluation;
 import br.edu.uepb.nutes.haniot.data.model.WeeklyFoodRecord;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
@@ -45,10 +52,13 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static android.view.View.GONE;
+import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.FAMILY_COHESION;
 import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.FEEDING_HABITS;
 import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.MEDICAL_RECORDS;
+import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.ORAL_HEALTH;
 import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.PHYSICAL_ACTIVITY;
 import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.SLEEP_HABITS;
+import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.SOCIODEMOGRAPHICS;
 
 public class HistoricQuizAdapter extends ExpandableRecyclerViewAdapter<HistoricQuizAdapter.HeaderViewHolder,
         HistoricQuizAdapter.ViewHolder> {
@@ -179,7 +189,7 @@ public class HistoricQuizAdapter extends ExpandableRecyclerViewAdapter<HistoricQ
         h.messageText.setVisibility(View.VISIBLE);
 
         h.mView.setOnClickListener(v -> {
-            mListener.onAddItemClick(ig.getTitle(), ig.getTypeEvaluation());
+            mListener.onAddItemClick(ig.getTitle(), ig.getTypeEvaluation(), ((GroupItemEvaluation) group).getIdGroup());
         });
 
         StringBuilder stringBuilder = new StringBuilder();
@@ -210,9 +220,9 @@ public class HistoricQuizAdapter extends ExpandableRecyclerViewAdapter<HistoricQ
                 break;
             case FEEDING_HABITS:
                 FeedingHabitsRecord feedingHabitsRecord = ig.getFeedingHabitsRecord();
-                stringBuilder.append("\nCopos de água por dia: ").append(FrequencyAnswersType.Frequency
+                stringBuilder.append("\nCopos de água por dia: ").append(FeendingHabitsRecordType.OneDayFeedingAmount
                         .getStringPTBR(feedingHabitsRecord.getDailyWaterGlasses()));
-                stringBuilder.append("\nCafé da manhã: ").append(FrequencyAnswersType.Frequency
+                stringBuilder.append("\nCafé da manhã: ").append(FeendingHabitsRecordType.OneDayFeedingAmount
                         .getStringPTBR(feedingHabitsRecord.getBreakfastDailyFrequency()));
                 for (WeeklyFoodRecord weeklyFoodRecord : feedingHabitsRecord.getWeeklyFeedingHabits())
                     stringBuilder
@@ -231,6 +241,89 @@ public class HistoricQuizAdapter extends ExpandableRecyclerViewAdapter<HistoricQ
                 stringBuilder.append("\nFrequência de atividades físicas na escola: \n")
                         .append(SchoolActivityFrequencyType
                                 .getStringPTBR(physicalActivityHabit.getSchoolActivityFreq()));
+                break;
+            case FAMILY_COHESION:
+                FamilyCohesionRecord familyCohesionRecord = ig.getFamilyCohesionRecord();
+                stringBuilder.append("Os membros da família pedem ajuda uns aos outros?")
+                        .append("\n")
+                        .append(FrequencyAnswersType.Frequency.getStringPTBR(familyCohesionRecord.getFamilyDecisionSupportFreq()))
+                        .append("\n")
+                        .append("\n")
+                        .append("Aprovamos os amigos que cada um tem?")
+                        .append("\n")
+                        .append(FrequencyAnswersType.Frequency.getStringPTBR(familyCohesionRecord.getFriendshipApprovalFreq()))
+                        .append("\n")
+                        .append("\n")
+                        .append("Gostamos de fazer coisas apenas com nossa família?")
+                        .append("\n")
+                        .append(FrequencyAnswersType.Frequency.getStringPTBR(familyCohesionRecord.getFamilyOnlyPreferenceFreq()))
+                        .append("\n")
+                        .append("\n")
+                        .append("Os membros da família sentem-se mais próximos entre si que com pessoas estranhas à família?")
+                        .append("\n")
+                        .append(FrequencyAnswersType.Frequency.getStringPTBR(familyCohesionRecord.getFamilyMutualAidFreq()))
+                        .append("\n")
+                        .append("\n")
+                        .append("Os membros da família gostam de passar o tempo livre juntos?")
+                        .append("\n")
+                        .append(FrequencyAnswersType.Frequency.getStringPTBR(familyCohesionRecord.getFreeTimeTogetherFreq()))
+                        .append("\n")
+                        .append("\n")
+                        .append("Os membros da família se sentem muito próximos uns aos outros?")
+                        .append("\n")
+                        .append(FrequencyAnswersType.Frequency.getStringPTBR(familyCohesionRecord.getFamilyProximityPerceptionFreq()))
+                        .append("\n")
+                        .append("\n")
+                        .append("Estamos todos presentes quando compartilhamos atividades em nossa família?")
+                        .append("\n")
+                        .append(FrequencyAnswersType.Frequency.getStringPTBR(familyCohesionRecord.getAllFamilyTasksFreq()))
+                        .append("\n")
+                        .append("\n")
+                        .append("Facilmente nos ocorrem que podemos fazer juntos, em família?")
+                        .append("\n")
+                        .append(FrequencyAnswersType.Frequency.getStringPTBR(familyCohesionRecord.getFamilyTasksOpportunityFreq()))
+                        .append("\n")
+                        .append("\n")
+                        .append("Os membros da família consultam outras pessoas da família para tomarem suas decisões?")
+                        .append("\n")
+                        .append(FrequencyAnswersType.Frequency.getStringPTBR(familyCohesionRecord.getFamilyDecisionSupportFreq()))
+                        .append("\n")
+                        .append("\n")
+                        .append("União familiar é muito importante?")
+                        .append("\n")
+                        .append(FrequencyAnswersType.Frequency.getStringPTBR(familyCohesionRecord.getFamilyUnionRelevanceFreq()));
+                break;
+            case ORAL_HEALTH:
+                OralHealthRecord oralHealthRecord = ig.getOralHealthRecord();
+                stringBuilder.append("Escovação de dentes ao dia: ")
+                        .append(ToothLesionType.TeethBrushingFreq.getStringPtBr(oralHealthRecord.getTeethBrushingFreq()))
+                        .append("\n")
+                        .append("\n");
+                if (oralHealthRecord.getToothLesions().isEmpty()) {
+                    stringBuilder.append("Não possui algum tipo de cárie dentária");
+                } else
+                    for (ToothLesion toothLesion : oralHealthRecord.getToothLesions()) {
+                        stringBuilder.append(ToothLesionType.LesionType.getStringPtBr(toothLesion.getLesionType()))
+                                .append(" em ")
+                                .append(ToothLesionType.ToothType.getStringPtbr(toothLesion.getToothType()))
+                                .append("\n");
+                    }
+                break;
+            case SOCIODEMOGRAPHICS:
+                SociodemographicRecord sociodemographicRecord = ig.getSociodemographicRecord();
+                stringBuilder.append("Cor/raça: ")
+                        .append("\n")
+                        .append(SociodemographicType.ColorRace.getStringPtBr(sociodemographicRecord.getColorRace()))
+                        .append("\n")
+                        .append("\n")
+                        .append("Escolaridade da mãe: ")
+                        .append("\n")
+                        .append(SociodemographicType.MotherScholarity.getStringPtBr(sociodemographicRecord.getMotherScholarity()))
+                        .append("\n")
+                        .append("\n")
+                        .append("Número de pessoas em casa: ")
+                        .append("\n")
+                        .append(sociodemographicRecord.getPeopleInHome());
                 break;
         }
         h.messageText.setText(stringBuilder);
@@ -319,7 +412,9 @@ public class HistoricQuizAdapter extends ExpandableRecyclerViewAdapter<HistoricQ
 
         void onAddItemClick(String name, int type);
 
-        void onSelectClick(ItemEvaluation itemEvaluation);
+        void onAddItemClick(String name, int type, String idQuiz);
+
+        void onSelectClick(ItemEvaluation itemEvaluation, String idQuiz);
 
     }
 }

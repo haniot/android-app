@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -56,6 +57,12 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
     @BindView(R.id.message_patient)
     TextView messagePatient;
 
+    @BindView(R.id.box_not_nutrition)
+    LinearLayout boxNotNutrition;
+
+    @BindView(R.id.box_not_odontological)
+    LinearLayout boxNotOdontological;
+
     private HaniotNetRepository haniotNetRepository;
     private AppPreferencesHelper appPreferencesHelper;
     private Patient patient;
@@ -63,10 +70,6 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
     private List<GroupItemEvaluation> groupItemOdontologicalEvaluations;
     HistoricQuizAdapter historicNutritionalAdapter;
     HistoricQuizAdapter historicOdontologicalAdapter;
-
-    //TODO TEMP
-    NutritionalQuestionnaire nutritionalQuestionnaire;
-    OdontologicalQuestionnaire odontologicalQuestionnaire;
 
     @BindView(R.id.loading_nutrition)
     ProgressBar loadingNutrition;
@@ -98,8 +101,8 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
     private void initToolbar() {
         toolbar.setTitle("Histórico de Questionário");
         setSupportActionBar(toolbar);
-        getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
     }
 
     @Override
@@ -127,130 +130,6 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
                     loadingOdontological.setVisibility(View.GONE);
                 }, throwable -> {
                 }));
-    }
-
-    /**
-     * TODO TEMP
-     * Download data listNutritional from the server.
-     */
-    private void downloadDataTemp() {
-        DisposableManager.add(haniotNetRepository
-                .getAllNutritionalQuestionnaires(patient.get_id(), 1, 100, "created_at")
-                .subscribe(this::setNutritionalGroups, throwable -> onDownloadError(ALL_QUIZ)));
-
-        DisposableManager.add(haniotNetRepository
-                .getAllOdontologicalQuestionnaires(patient.get_id(), 1, 100, "created_at")
-                .subscribe(this::setOdontologicalGroups, throwable -> onDownloadError(ALL_QUIZ)));
-
-        //TODO TEMP Teste
-        nutritionalQuestionnaire = new NutritionalQuestionnaire();
-        nutritionalQuestionnaire.setCreatedAt(DateUtils.getCurrentDateTimeUTC());
-
-        DisposableManager.add(haniotNetRepository
-                .getAllMedicalRecord(appPreferencesHelper.getLastPatient().get_id()
-                        , 1, 20, "created_at")
-                .subscribe(medicalRecords -> {
-
-//                            setItem(medicalRecords, MEDICAL_RECORDS);
-                            if (!medicalRecords.isEmpty()) {
-                                Log.w("BBB", "Chegou medicalrecords");
-                                nutritionalQuestionnaire.setMedicalRecord(medicalRecords.get(0));
-                                nutritionalQuestionnaire.setCreatedAt(medicalRecords.get(0).getCreatedAt());
-                            }
-                        },
-                        error -> {
-                            Log.i("AAA", error.getMessage());
-                            onDownloadError(MEDICAL_RECORDS);
-                        }));
-
-        DisposableManager.add(haniotNetRepository
-                .getAllPhysicalActivity(appPreferencesHelper.getLastPatient().get_id()
-                        , 1, 20, "created_at")
-                .subscribe(physicalActivityHabits -> {
-                            Log.w("BBB", "Chegou physicalActivityHabits");
-//                            setItem(physicalActivityHabits, PHYSICAL_ACTIVITY);
-                            if (!physicalActivityHabits.isEmpty())
-                                nutritionalQuestionnaire.setPhysicalActivityHabit(physicalActivityHabits.get(0));
-                        },
-                        type -> onDownloadError(PHYSICAL_ACTIVITY)));
-
-        DisposableManager.add(haniotNetRepository
-                .getAllFeedingHabits(appPreferencesHelper.getLastPatient().get_id()
-                        , 1, 20, "created_at")
-                .subscribe(feedingHabitsRecords -> {
-                            Log.w("BBB", "Chegou feedingHabitsRecords");
-//                            setItem(feedingHabitsRecords, FEEDING_HABITS);
-                            if (!feedingHabitsRecords.isEmpty())
-                                nutritionalQuestionnaire.setFeedingHabitsRecord(feedingHabitsRecords.get(0));
-                        },
-                        type -> onDownloadError(FEEDING_HABITS)));
-
-        DisposableManager.add(haniotNetRepository
-                .getAllSleepHabits(appPreferencesHelper.getLastPatient().get_id()
-                        , 1, 20, "created_at")
-                .subscribe(sleepHabits -> {
-                            Log.w("BBB", "Chegou sleepHabits");
-//                            setItem(sleepHabits, SLEEP_HABITS);
-                            if (!sleepHabits.isEmpty())
-                                nutritionalQuestionnaire.setSleepHabit(sleepHabits.get(0));
-                        },
-                        type -> onDownloadError(SLEEP_HABITS)));
-
-        odontologicalQuestionnaire = new OdontologicalQuestionnaire();
-        odontologicalQuestionnaire.setCreatedAt(DateUtils.getCurrentDateTimeUTC());
-
-        DisposableManager.add(haniotNetRepository
-                .getAllOralHealth(appPreferencesHelper.getLastPatient().get_id()
-                        , 1, 20, "created_at")
-                .subscribe(oralHealthRecords -> {
-                            Log.w("BBB", "oralHealthRecords sleepHabits");
-
-//                            setItem(oralHealthRecords, ORAL_HEALTH);
-                            if (!oralHealthRecords.isEmpty()) {
-                                odontologicalQuestionnaire.setOralHealthRecord(oralHealthRecords.get(0));
-                                odontologicalQuestionnaire.setCreatedAt(oralHealthRecords.get(0).getCreatedAt());
-                            }
-                        },
-                        type -> onDownloadError(ORAL_HEALTH)));
-
-        DisposableManager.add(haniotNetRepository
-                .getAllFamilyCohesion(appPreferencesHelper.getLastPatient().get_id()
-                        , 1, 20, "created_at")
-                .subscribe(familyCohesionRecords -> {
-
-//                            setItem(familyCohesionRecords, FAMILY_COHESION);
-                            if (!familyCohesionRecords.isEmpty())
-                                odontologicalQuestionnaire.setFamilyCohesionRecord(familyCohesionRecords.get(0));
-                        },
-                        type -> onDownloadError(FAMILY_COHESION)));
-
-        DisposableManager.add(haniotNetRepository
-                .getAllSociodemographic(appPreferencesHelper.getLastPatient().get_id()
-                        , 1, 20, "created_at")
-                .subscribe(sociodemographicRecords -> {
-
-//                            setItem(sociodemographicRecords, SOCIODEMOGRAPHICS);
-                            if (!sociodemographicRecords.isEmpty())
-                                odontologicalQuestionnaire.setSociodemographicRecord(sociodemographicRecords.get(0));
-                        },
-                        type -> onDownloadError(SOCIODEMOGRAPHICS)));
-
-        final Handler handler = new Handler();
-        handler.postDelayed(() -> {
-            List<NutritionalQuestionnaire> nutritionalQuestionnaires = new ArrayList<>();
-            nutritionalQuestionnaires.add(nutritionalQuestionnaire);
-            nutritionalQuestionnaires.add(nutritionalQuestionnaire);
-            nutritionalQuestionnaires.add(nutritionalQuestionnaire);
-            setNutritionalGroups(nutritionalQuestionnaires);
-            loadingNutrition.setVisibility(View.GONE);
-
-            List<OdontologicalQuestionnaire> odontologicalQuestionnaires = new ArrayList<>();
-            odontologicalQuestionnaires.add(odontologicalQuestionnaire);
-            odontologicalQuestionnaires.add(odontologicalQuestionnaire);
-            odontologicalQuestionnaires.add(odontologicalQuestionnaire);
-            setOdontologicalGroups(odontologicalQuestionnaires);
-            loadingOdontological.setVisibility(View.GONE);
-        }, 3500);
     }
 
     /**
@@ -285,7 +164,7 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
         itemEvaluations.add(itemEvaluation);
 
         GroupItemEvaluation groupItemEvaluation = new GroupItemEvaluation(DateUtils.convertDateTimeUTCToLocale(nutritionalQuestionnaire.getCreatedAt(), getString(R.string.datetime_format)),
-                itemEvaluations, 1000);
+                itemEvaluations, 1000, nutritionalQuestionnaire.get_id());
 
         groupItemNutritionEvaluations.add(groupItemEvaluation);
 
@@ -318,7 +197,7 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
         itemEvaluations.add(itemEvaluation);
 
 
-        GroupItemEvaluation groupItemEvaluation = new GroupItemEvaluation(DateUtils.convertDateTimeUTCToLocale(odontologicalQuestionnaire.getCreatedAt(), getString(R.string.datetime_format)),
+        GroupItemEvaluation groupItemEvaluation = new GroupItemEvaluation("Respondido em " + DateUtils.convertDateTimeUTCToLocale(odontologicalQuestionnaire.getCreatedAt(), getString(R.string.datetime_format)),
                 itemEvaluations, 1000);
 
         groupItemOdontologicalEvaluations.add(groupItemEvaluation);
@@ -328,16 +207,24 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
     private void setNutritionalGroups(List<NutritionalQuestionnaire> nutritionalQuestionnaires) {
 
         for (NutritionalQuestionnaire nutritionalQuestionnaire : nutritionalQuestionnaires) {
+            Log.w("AAA", nutritionalQuestionnaire.toString());
             setNutritionalItem(nutritionalQuestionnaire);
         }
+        if (nutritionalQuestionnaires.isEmpty()) boxNotNutrition.setVisibility(View.VISIBLE);
+        else boxNotNutrition.setVisibility(View.GONE);
+
         initRecyclerView();
     }
 
     private void setOdontologicalGroups(List<OdontologicalQuestionnaire> odontologicalQuestionnaires) {
 
         for (OdontologicalQuestionnaire odontologicalQuestionnaire : odontologicalQuestionnaires) {
+            Log.w("AAA", odontologicalQuestionnaire.toString());
             setOdontologicalItem(odontologicalQuestionnaire);
         }
+        if (odontologicalQuestionnaires.isEmpty()) boxNotOdontological.setVisibility(View.VISIBLE);
+        else boxNotOdontological.setVisibility(View.GONE);
+
         initRecyclerView();
     }
 
@@ -396,6 +283,11 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
 
     @Override
     public void onAddItemClick(String name, int type) {
+
+    }
+
+    @Override
+    public void onAddItemClick(String name, int type, String idQuiz) {
         Intent intent = null;
 
         switch (type) {
@@ -428,11 +320,15 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
                 intent.putExtra("checkpoint", SOCIODEMOGRAPHICS);
                 break;
         }
-        if (intent != null) startActivity(intent);
+        if (intent != null) {
+            intent.putExtra("idUpdate", idQuiz);
+            startActivity(intent);
+        }
     }
 
     @Override
-    public void onSelectClick(ItemEvaluation itemEvaluation) {
+    public void onSelectClick(ItemEvaluation itemEvaluation, String idQuiz) {
 
     }
+
 }

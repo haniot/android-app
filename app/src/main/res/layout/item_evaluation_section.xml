@@ -18,7 +18,7 @@
         android:layout_marginEnd="1dp"
         android:text="@string/heart_rate"
         android:textAlignment="textStart"
-        android:textSize="18sp" />
+        android:textSize="14sp" />
 
     <ImageView
         android:id="@+id/expand"

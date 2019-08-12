@@ -30,6 +30,7 @@ import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -331,7 +332,7 @@ public interface HaniotService {
     Single<MeasurementLastResponse> getLastMeasurements(@Path("patient_id") String patientId);
 
 
-    @PATCH("patients/{patient_id}/nutritional/questionnaires/{questionnaire_id}/{resource_name}")
+    @PUT("patients/{patient_id}/nutritional/questionnaires/{questionnaire_id}/{resource_name}")
     Single<Object> updateNutritionalQuestionnaire(
             @Path("patient_id") String patientId,
             @Path("questionnaire_id") String questionnaireId,
@@ -339,7 +340,7 @@ public interface HaniotService {
             @Body Object object
     );
 
-    @PATCH("patients/{patient_id}/odontological/questionnaires/{questionnaire_id}/{resource_name}")
+    @PUT("patients/{patient_id}/odontological/questionnaires/{questionnaire_id}/{resource_name}")
     Single<Object> updateOdontologicalQuestionnaire(
             @Path("patient_id") String patientId,
             @Path("questionnaire_id") String questionnaireId,

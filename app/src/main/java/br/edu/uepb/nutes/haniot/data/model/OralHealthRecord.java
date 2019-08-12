@@ -111,4 +111,17 @@ public class OralHealthRecord {
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         return gson.toJson(this);
     }
+
+    @Override
+    public String toString() {
+        return "OralHealthRecord{" +
+                "id=" + id +
+                ", _id='" + _id + '\'' +
+                ", patientId='" + patientId + '\'' +
+                ", createdAt='" + createdAt + '\'' +
+                ", teethBrushingFreq='" + teethBrushingFreq + '\'' +
+                ", toothLesions=" + toothLesions +
+                ", toothLesionsDB=" + toothLesionsDB +
+                '}';
+    }
 }

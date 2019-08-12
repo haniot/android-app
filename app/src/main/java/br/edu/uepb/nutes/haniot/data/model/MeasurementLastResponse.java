@@ -1,7 +1,12 @@
 package br.edu.uepb.nutes.haniot.data.model;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
 
 public class MeasurementLastResponse {
 
@@ -87,6 +92,30 @@ public class MeasurementLastResponse {
 
     public void setWaistCircumference(Measurement waistCircumference) {
         this.waistCircumference = waistCircumference;
+    }
+
+    /**
+     * Convert object to json format.
+     *
+     * @return String
+     */
+    public String toJson() {
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        String a = gson.toJson(this);
+        return a;
+    }
+
+    /**
+     * Convert json to Object.
+     *
+     * @param json String
+     * @return Patient
+     */
+    public static Patient jsonDeserialize(String json) {
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        Type typeLastMeasurement = new TypeToken<MeasurementLastResponse>() {
+        }.getType();
+        return gson.fromJson(json, typeLastMeasurement);
     }
 
     @Override

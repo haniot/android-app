@@ -2,6 +2,7 @@ package br.edu.uepb.nutes.haniot.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -198,7 +199,8 @@ public class EvaluationAdapter extends ExpandableRecyclerViewAdapter<EvaluationA
         h.mView.setOnClickListener(v -> {
             if (mListener != null) {
                 mListener.onAddItemClick(ig.getTitle(), ig.getTypeEvaluation());
-            }        });
+            }
+        });
 
         h.textMeasurement.setVisibility(View.VISIBLE);
         h.textMeasurementType.setVisibility(View.VISIBLE);
@@ -241,6 +243,7 @@ public class EvaluationAdapter extends ExpandableRecyclerViewAdapter<EvaluationA
                     .convertDateTimeUTCToLocale(min.getTimestamp(),
                             context.getString(R.string.date_format)));
         } else {
+            Log.w("AAA", "Errorrrrr " + measurement);
             h.textDate.setText(DateUtils
                     .convertDateTimeUTCToLocale(measurement.getTimestamp(),
                             context.getString(R.string.date_format)));
@@ -295,7 +298,10 @@ public class EvaluationAdapter extends ExpandableRecyclerViewAdapter<EvaluationA
                 break;
             case MEDICAL_RECORDS:
                 MedicalRecord medicalRecord = ig.getMedicalRecord();
-                if (medicalRecord == null) return;
+                date = DateUtils.convertDateTimeUTCToLocale(medicalRecord.getCreatedAt(),
+                        context.getString(R.string.date_format));
+                time = DateUtils.convertDateTimeUTCToLocale(medicalRecord.getCreatedAt(),
+                        context.getString(R.string.time_format_simple));
                 if (medicalRecord.getChronicDiseases() != null) {
                     for (ChronicDisease chronicDisease : medicalRecord.getChronicDiseases())
                         stringBuilder
@@ -313,9 +319,9 @@ public class EvaluationAdapter extends ExpandableRecyclerViewAdapter<EvaluationA
                         context.getString(R.string.date_format));
                 time = DateUtils.convertDateTimeUTCToLocale(feedingHabitsRecord.getCreatedAt(),
                         context.getString(R.string.time_format_simple));
-                stringBuilder.append("\nCopos de água por dia: ").append(FrequencyAnswersType.Frequency
+                stringBuilder.append("\nCopos de água por dia: ").append(FeendingHabitsRecordType.OneDayFeedingAmount
                         .getStringPTBR(feedingHabitsRecord.getDailyWaterGlasses()));
-                stringBuilder.append("\nCafé da manhã: ").append(FrequencyAnswersType.Frequency
+                stringBuilder.append("\nCafé da manhã: ").append(FeendingHabitsRecordType.OneDayFeedingAmount
                         .getStringPTBR(feedingHabitsRecord.getBreakfastDailyFrequency()));
                 for (WeeklyFoodRecord weeklyFoodRecord : feedingHabitsRecord.getWeeklyFeedingHabits())
                     stringBuilder

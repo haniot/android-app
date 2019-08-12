@@ -60,4 +60,13 @@ public class ToothLesion {
         Log.i("AAAAAAAAAA", a);
         return a;
     }
+
+    @Override
+    public String toString() {
+        return "ToothLesion{" +
+                "toothType='" + toothType + '\'' +
+                ", lesionType='" + lesionType + '\'' +
+                ", oralHealthRecord=" + oralHealthRecord +
+                '}';
+    }
 }

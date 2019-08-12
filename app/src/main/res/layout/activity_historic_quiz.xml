@@ -83,6 +83,34 @@
                 android:layout_marginStart="30dp"
                 android:indeterminate="true" />
 
+            <LinearLayout
+                android:id="@+id/box_not_nutrition"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="50dp"
+                    app:srcCompat="@drawable/ic_not_form" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:text="Ainda não há questionários nutricionais respondidos.."
+                    android:visibility="visible" />
+            </LinearLayout>
+
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/list_quiz_nutrition"
                 android:layout_width="match_parent"
@@ -111,6 +139,34 @@
                 android:layout_height="30dp"
                 android:layout_marginStart="30dp"
                 android:indeterminate="true" />
+
+            <LinearLayout
+                android:id="@+id/box_not_odontological"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="50dp"
+                    app:srcCompat="@drawable/ic_not_form" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:text="Ainda não há questionários odontológicos respondidos.."
+                    android:visibility="visible" />
+            </LinearLayout>
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/list_quiz_odonto"

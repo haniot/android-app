@@ -3,7 +3,6 @@ package br.edu.uepb.nutes.haniot.activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.StringRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -19,23 +18,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.adapter.EvaluationAdapter;
-import br.edu.uepb.nutes.haniot.data.model.FeedingHabitsRecord;
 import br.edu.uepb.nutes.haniot.data.model.GroupItemEvaluation;
 import br.edu.uepb.nutes.haniot.data.model.ItemEvaluation;
 import br.edu.uepb.nutes.haniot.data.model.ItemGridType;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.MeasurementLastResponse;
-import br.edu.uepb.nutes.haniot.data.model.MedicalRecord;
 import br.edu.uepb.nutes.haniot.data.model.NutritionalEvaluation;
 import br.edu.uepb.nutes.haniot.data.model.NutritionalQuestionnaire;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
-import br.edu.uepb.nutes.haniot.data.model.PhysicalActivityHabit;
 import br.edu.uepb.nutes.haniot.data.model.PilotStudy;
-import br.edu.uepb.nutes.haniot.data.model.SleepHabit;
 import br.edu.uepb.nutes.haniot.data.model.TypeEvaluation;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
@@ -62,6 +58,7 @@ import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.HEIGHT;
 import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.MEDICAL_RECORDS;
 import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.PHYSICAL_ACTIVITY;
 import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.SLEEP_HABITS;
+import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.TEMPERATURE;
 import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.WAIST_CIRCUMFERENCE;
 import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.WEIGHT;
 
@@ -92,8 +89,9 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
     private PilotStudy pilotStudy;
     private NutritionalQuestionnaire lastNutritionalQuestionnaire;
     private List<Measurement> measurementList;
-    private boolean evaluationValidated;
+    private boolean leftFields;
     private MeasurementLastResponse measurementLastResponse;
+    HashMap<Integer, Boolean> validated;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,14 +143,13 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
      * Initialize resources.
      */
     private void initResources() {
+        validated = new HashMap<>();
         groupItemEvaluations = new ArrayList<>();
         helper = AppPreferencesHelper.getInstance(this);
         haniotNetRepository = HaniotNetRepository.getInstance(this);
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
         patient = helper.getLastPatient();
         pilotStudy = helper.getLastPilotStudy();
-        //TODO TEMP
-        measurementLastResponse = new MeasurementLastResponse();
     }
 
     private void showToast(final String menssage) {
@@ -280,6 +277,7 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
             if (nutritionalQuestionnaire.getSleepHabit() == null) {
                 itemEvaluation.setTypeHeader(TYPE_EMPTY_REQUIRED);
             } else {
+                nutritionalQuestionnaire.getSleepHabit().setCreatedAt(nutritionalQuestionnaire.getCreatedAt());
                 itemEvaluation.setTypeHeader(TYPE_QUIZ);
                 itemEvaluation.setSleepHabit(lastNutritionalQuestionnaire.getSleepHabit());
             }
@@ -292,6 +290,7 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
             if (nutritionalQuestionnaire.getMedicalRecord() == null) {
                 itemEvaluation.setTypeHeader(TYPE_EMPTY_REQUIRED);
             } else {
+                nutritionalQuestionnaire.getMedicalRecord().setCreatedAt(nutritionalQuestionnaire.getCreatedAt());
                 itemEvaluation.setTypeHeader(TYPE_QUIZ);
                 itemEvaluation.setMedicalRecord(lastNutritionalQuestionnaire.getMedicalRecord());
             }
@@ -304,6 +303,7 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
             if (nutritionalQuestionnaire.getFeedingHabitsRecord() == null) {
                 itemEvaluation.setTypeHeader(TYPE_EMPTY_REQUIRED);
             } else {
+                nutritionalQuestionnaire.getFeedingHabitsRecord().setCreatedAt(nutritionalQuestionnaire.getCreatedAt());
                 itemEvaluation.setTypeHeader(TYPE_QUIZ);
                 itemEvaluation.setFeedingHabitsRecord(lastNutritionalQuestionnaire.getFeedingHabitsRecord());
             }
@@ -316,99 +316,13 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
             if (nutritionalQuestionnaire.getPhysicalActivityHabit() == null) {
                 itemEvaluation.setTypeHeader(TYPE_EMPTY_REQUIRED);
             } else {
+                nutritionalQuestionnaire.getPhysicalActivityHabit().setCreatedAt(nutritionalQuestionnaire.getCreatedAt());
                 itemEvaluation.setTypeHeader(TYPE_QUIZ);
                 itemEvaluation.setPhysicalActivityHabit(lastNutritionalQuestionnaire.getPhysicalActivityHabit());
             }
         }
         evaluationAdapter.notifyDataSetChanged();
     }
-
-    /**
-     * Prepare listNutritional data from the server.
-     *
-     * @param data
-     * @param type
-     */
-    private void prepareMeasurement(List data, int type) {
-        GroupItemEvaluation groupItemEvaluation = getEvaluationGroupByType(type);
-        int reminderFirst5 = 0;
-//        int reminderFirst1 = 0;
-//        int reminderFirst2 = 0;
-//        int reminderFirst3 = 0;
-//        int reminderFirst4 = 0;
-
-        if (groupItemEvaluation == null) return;
-
-        if (data.isEmpty() && !groupItemEvaluation.getItems().isEmpty())
-            groupItemEvaluation.getItems().get(0).setTypeHeader(TYPE_EMPTY_REQUIRED);
-        else {
-            ItemEvaluation itemEvaluation = (ItemEvaluation) groupItemEvaluation.getItems().get(0).clone();
-            groupItemEvaluation.getItems().clear();
-            for (Measurement measurement : (List<Measurement>) data) {
-                if (reminderFirst5 == 0) itemEvaluation.setChecked(true);
-                itemEvaluation.setTypeHeader(TYPE_MEASUREMENT);
-                itemEvaluation.setMeasurement(measurement);
-                groupItemEvaluation.getItems().add(itemEvaluation);
-                itemEvaluation = (ItemEvaluation) groupItemEvaluation.getItems().get(0).clone();
-                reminderFirst5++;
-            }
-            //TODO Caso precise
-//            switch (type) {
-//                case SLEEP_HABITS:
-//                    for (SleepHabit sleepHabit : (List<SleepHabit>) data) {
-//                        if (reminderFirst1 == 0) itemEvaluation.setChecked(true);
-//                        itemEvaluation.setTypeHeader(TYPE_QUIZ);
-//                        itemEvaluation.setSleepHabit(sleepHabit);
-//                        groupItemEvaluation.getItems().add(itemEvaluation);
-//                        itemEvaluation = (ItemEvaluation) groupItemEvaluation.getItems().get(0).clone();
-//                        reminderFirst1++;
-//                    }
-//                    break;
-//                case MEDICAL_RECORDS:
-//                    for (MedicalRecord medicalRecord : (List<MedicalRecord>) data) {
-//                        if (reminderFirst2 == 0) itemEvaluation.setChecked(true);
-//                        itemEvaluation.setTypeHeader(TYPE_QUIZ);
-//                        itemEvaluation.setMedicalRecord(medicalRecord);
-//                        groupItemEvaluation.getItems().add(itemEvaluation);
-//                        itemEvaluation = (ItemEvaluation) groupItemEvaluation.getItems().get(0).clone();
-//                        reminderFirst2++;
-//                    }
-//                    break;
-//                case FEEDING_HABITS:
-//                    for (FeedingHabitsRecord feedingHabitsRecord : (List<FeedingHabitsRecord>) data) {
-//                        if (reminderFirst3 == 0) itemEvaluation.setChecked(true);
-//                        itemEvaluation.setTypeHeader(TYPE_QUIZ);
-//                        itemEvaluation.setFeedingHabitsRecord(feedingHabitsRecord);
-//                        groupItemEvaluation.getItems().add(itemEvaluation);
-//                        itemEvaluation = (ItemEvaluation) groupItemEvaluation.getItems().get(0).clone();
-//                        reminderFirst3++;
-//                    }
-//                    break;
-//                case PHYSICAL_ACTIVITY:
-//                    for (PhysicalActivityHabit physicalActivityHabit : (List<PhysicalActivityHabit>) data) {
-//                        if (reminderFirst4 == 0) itemEvaluation.setChecked(true);
-//                        itemEvaluation.setChecked(true);
-//                        itemEvaluation.setTypeHeader(TYPE_QUIZ);
-//                        itemEvaluation.setPhysicalActivityHabit(physicalActivityHabit);
-//                        groupItemEvaluation.getItems().add(itemEvaluation);
-//                        itemEvaluation = (ItemEvaluation) groupItemEvaluation.getItems().get(0).clone();
-//                        reminderFirst4++;
-//                    }
-//                    break;
-//                default:
-//                    for (Measurement measurement : (List<Measurement>) data) {
-//                        if (reminderFirst5 == 0) itemEvaluation.setChecked(true);
-//                        itemEvaluation.setTypeHeader(TYPE_MEASUREMENT);
-//                        itemEvaluation.setMeasurement(measurement);
-//                        groupItemEvaluation.getItems().add(itemEvaluation);
-//                        itemEvaluation = (ItemEvaluation) groupItemEvaluation.getItems().get(0).clone();
-//                        reminderFirst5++;
-//                    }
-//            }
-        }
-        evaluationAdapter.notifyDataSetChanged();
-    }
-
 
     /**
      * Prepare item measurement from the server.
@@ -423,6 +337,7 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
         if (measurement == null && !groupItemEvaluation.getItems().isEmpty())
             groupItemEvaluation.getItems().get(0).setTypeHeader(TYPE_EMPTY_REQUIRED);
         else {
+            validated.put(type, true);
             ItemEvaluation itemEvaluation = (ItemEvaluation) groupItemEvaluation.getItems().get(0).clone();
             groupItemEvaluation.getItems().clear();
             itemEvaluation.setTypeHeader(TYPE_MEASUREMENT);
@@ -443,7 +358,7 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
             getEvaluationGroupByType(GLUCOSE).getItems().get(0).setTypeHeader(TYPE_ERROR);
             getEvaluationGroupByType(WAIST_CIRCUMFERENCE).getItems().get(0).setTypeHeader(TYPE_ERROR);
             getEvaluationGroupByType(HEIGHT).getItems().get(0).setTypeHeader(TYPE_ERROR);
-//            getEvaluationGroupByType(HEARTRATE).getItems().get(0).setTypeHeader(TYPE_ERROR);
+            getEvaluationGroupByType(HEARTRATE).getItems().get(0).setTypeHeader(TYPE_ERROR);
             getEvaluationGroupByType(BLOOD_PRESSURE).getItems().get(0).setTypeHeader(TYPE_ERROR);
         } else if (type == ALL_QUIZ) {
             getEvaluationGroupByType(MEDICAL_RECORDS).getItems().get(0).setTypeHeader(TYPE_ERROR);
@@ -466,7 +381,7 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
                 .getLastNutritionalQuestionnaire(patient.get_id())
                 .subscribe(nutritionalQuestionnaires -> {
                     Log.w("AAA", nutritionalQuestionnaires.toJson());
-                            lastNutritionalQuestionnaire = nutritionalQuestionnaires;
+                    lastNutritionalQuestionnaire = nutritionalQuestionnaires;
                     prepareQuiz(nutritionalQuestionnaires);
                 }, throwable -> {
                     Log.i("AAA", throwable.getMessage());
@@ -476,6 +391,7 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
         DisposableManager.add(haniotNetRepository
                 .getLastMeasurements(patient.get_id())
                 .subscribe(measurents -> {
+                    Log.w("AAA", measurents.toString());
                     measurementLastResponse = measurents;
                     //  measurementList = measurents;
                     prepareMeasurements(measurents);
@@ -484,123 +400,6 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
                     onDownloadError(ALL_MEASUREMENT);
                 }));
 
-//
-//        //TODO Para funcionar na versão antiga do EHR
-//        lastNutritionalQuestionnaire = new NutritionalQuestionnaire();
-//
-//        DisposableManager.add(haniotNetRepository
-//                .getAllMedicalRecord(helper.getLastPatient().get_id()
-//                        , 1, 20, "created_at")
-//                .subscribe(medicalRecords -> {
-//                    if (!medicalRecords.isEmpty())
-//                        lastNutritionalQuestionnaire.setMedicalRecord(medicalRecords.get(0));
-//                    //prepareMeasurement(medicalRecords, MEDICAL_RECORDS);
-//                }, error -> {
-//                    Log.i("AAA", error.getMessage());
-//                    onDownloadError(MEDICAL_RECORDS);
-//                }));
-//
-//        DisposableManager.add(haniotNetRepository
-//                .getAllPhysicalActivity(helper.getLastPatient().get_id()
-//                        , 1, 20, "created_at")
-//                .subscribe(physicalActivityHabits -> {
-//                    if (!physicalActivityHabits.isEmpty())
-//                        lastNutritionalQuestionnaire.setPhysicalActivityHabit(physicalActivityHabits.get(0));
-//                    //prepareMeasurement(physicalActivityHabits, PHYSICAL_ACTIVITY);
-//                }, error -> onDownloadError(PHYSICAL_ACTIVITY)));
-//
-//        DisposableManager.add(haniotNetRepository
-//                .getAllFeedingHabits(helper.getLastPatient().get_id()
-//                        , 1, 20, "created_at")
-//                .subscribe(feedingHabitsRecords -> {
-//                    if (!feedingHabitsRecords.isEmpty())
-//                        lastNutritionalQuestionnaire.setFeedingHabitsRecord(feedingHabitsRecords.get(0));
-////                                prepareMeasurement(feedingHabitsRecords, FEEDING_HABITS),
-//                }, error -> onDownloadError(FEEDING_HABITS)));
-//
-//        DisposableManager.add(haniotNetRepository
-//                .getAllSleepHabits(helper.getLastPatient().get_id()
-//                        , 1, 20, "created_at")
-//                .subscribe(sleepHabits -> {
-//                    if (!sleepHabits.isEmpty())
-//                        lastNutritionalQuestionnaire.setSleepHabit(sleepHabits.get(0));
-////                                prepareMeasurement(sleepHabits, SLEEP_HABITS),
-//                }, error -> onDownloadError(SLEEP_HABITS)));
-//
-//        DisposableManager.add(haniotNetRepository
-//                .getAllMeasurements(helper.getLastPatient().get_id()
-//                        , 1, 100000, "-timestamp")
-//                .subscribe(this::prepareMeasurements,
-//                        type -> onDownloadError(ALL_MEASUREMENT)));
-//
-//        new Handler().postDelayed(() -> {
-//            prepareQuiz(lastNutritionalQuestionnaire);
-//        }, 5000);
-    }
-
-    /**
-     * Prepare measurements list from server.
-     * //TODO Para funcionar versão antiga
-     *
-     * @param measurements
-     */
-    private void prepareMeasurements(List<Measurement> measurements) {
-        List<Measurement> glucose = new ArrayList<>();
-        List<Measurement> bloodPressure = new ArrayList<>();
-        List<Measurement> heartRate = new ArrayList<>();
-        List<Measurement> height = new ArrayList<>();
-        List<Measurement> waistCircumference = new ArrayList<>();
-        List<Measurement> weight = new ArrayList<>();
-
-        for (Measurement measurement : measurements) {
-            Log.i("AAA", measurement.getValue() + " - " + measurement.getType());
-            switch (measurement.getType()) {
-                case "blood_glucose":
-                    if (glucose.isEmpty())
-                        glucose.add(measurement);
-                    break;
-                case "blood_pressure":
-                    if (bloodPressure.isEmpty())
-                        bloodPressure.add(measurement);
-                    break;
-                case "heart_rate":
-                    if (heartRate.isEmpty())
-                        heartRate.add(measurement);
-                    break;
-                case "height":
-                    if (height.isEmpty())
-                        height.add(measurement);
-                    break;
-                case "waist_circumference":
-                    if (waistCircumference.isEmpty())
-                        waistCircumference.add(measurement);
-                    break;
-                case "weight":
-                    if (weight.isEmpty())
-                        weight.add(measurement);
-                    break;
-            }
-        }
-
-        if (!glucose.isEmpty())
-            measurementLastResponse.setBloodGlucose(glucose.get(0));
-
-        if (!bloodPressure.isEmpty())
-            measurementLastResponse.setBloodPressure(bloodPressure.get(0));
-
-        if (!heartRate.isEmpty())
-            measurementLastResponse.setHeartRate(heartRate.get(0));
-
-        if (!height.isEmpty())
-            measurementLastResponse.setHeight(height.get(0));
-
-        if (!waistCircumference.isEmpty())
-            measurementLastResponse.setWaistCircumference(waistCircumference.get(0));
-
-        if (!weight.isEmpty())
-            measurementLastResponse.setWeight(weight.get(0));
-
-        prepareMeasurements(measurementLastResponse);
     }
 
     /**
@@ -609,20 +408,26 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
      * @param measurementLastResponse
      */
     private void prepareMeasurements(MeasurementLastResponse measurementLastResponse) {
-        if (measurementLastResponse.getHeartRate() != null)
+        Log.w("AAA", "A " + measurementLastResponse);
+        if (measurementLastResponse.getHeartRate() != null && measurementLastResponse.getHeartRate().get_id() != null)
             prepareMeasurement(measurementLastResponse.getHeartRate(), HEARTRATE);
-        if (measurementLastResponse.getBloodPressure() != null)
+        else prepareMeasurement(null, HEARTRATE);
+        if (measurementLastResponse.getBloodPressure() != null && measurementLastResponse.getBloodPressure().get_id() != null)
             prepareMeasurement(measurementLastResponse.getBloodPressure(), BLOOD_PRESSURE);
-        if (measurementLastResponse.getWeight() != null)
+        else prepareMeasurement(null, BLOOD_PRESSURE);
+        if (measurementLastResponse.getWeight() != null && measurementLastResponse.getWeight().get_id() != null)
             prepareMeasurement(measurementLastResponse.getWeight(), WEIGHT);
-        if (measurementLastResponse.getBloodGlucose() != null)
+        else prepareMeasurement(null, WEIGHT);
+        if (measurementLastResponse.getBloodGlucose() != null && measurementLastResponse.getBloodGlucose().get_id() != null)
             prepareMeasurement(measurementLastResponse.getBloodGlucose(), GLUCOSE);
-        if (measurementLastResponse.getWaistCircumference() != null)
+        else prepareMeasurement(null, GLUCOSE);
+        if (measurementLastResponse.getWaistCircumference() != null && measurementLastResponse.getWaistCircumference().get_id() != null)
             prepareMeasurement(measurementLastResponse.getWaistCircumference(), WAIST_CIRCUMFERENCE);
-        if (measurementLastResponse.getHeight() != null)
+        else prepareMeasurement(null, WAIST_CIRCUMFERENCE);
+        if (measurementLastResponse.getHeight() != null && measurementLastResponse.getHeight().get_id() != null)
             prepareMeasurement(measurementLastResponse.getHeight(), HEIGHT);
+        else prepareMeasurement(null, HEIGHT);
     }
-
 
     /**
      * Send nutritionalEvaluation for server.
@@ -634,18 +439,17 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
         nutritionalEvaluation.setHealthProfessionalId(appPreferencesHelper.getUserLogged().get_id());
         nutritionalEvaluation.setPilotStudy(appPreferencesHelper.getLastPilotStudy().get_id());
 
-        evaluationValidated = measurementLastResponse.getBloodGlucose() != null
-                && measurementLastResponse.getBloodPressure() != null
-                && measurementLastResponse.getHeartRate() != null
-                && measurementLastResponse.getWaistCircumference() != null
-                && measurementLastResponse.getTemperature() != null
-                && measurementLastResponse.getWeight() != null
-                && lastNutritionalQuestionnaire.getSleepHabit() != null
-                && lastNutritionalQuestionnaire.getPhysicalActivityHabit() != null
-                && lastNutritionalQuestionnaire.getMedicalRecord() != null
-                && lastNutritionalQuestionnaire.getFeedingHabitsRecord() != null;
+        leftFields = validated.get(GLUCOSE) != null
+                && validated.get(BLOOD_PRESSURE) != null
+                && validated.get(WAIST_CIRCUMFERENCE) != null
+                && validated.get(TEMPERATURE) != null
+                && validated.get(WEIGHT) != null
+                && validated.get(SLEEP_HABITS) != null
+                && validated.get(PHYSICAL_ACTIVITY) == null
+                && validated.get(MEDICAL_RECORDS) != null
+                && validated.get(FEEDING_HABITS) != null;
 
-        if (evaluationValidated) {
+        if (!leftFields) {
             nutritionalEvaluation.setFeedingHabits(lastNutritionalQuestionnaire.getFeedingHabitsRecord());
             nutritionalEvaluation.setPhysicalActivityHabits(lastNutritionalQuestionnaire.getPhysicalActivityHabit());
             nutritionalEvaluation.setMedicalRecord(lastNutritionalQuestionnaire.getMedicalRecord());
@@ -678,33 +482,6 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
             showMessage(R.string.evaluation_required_fields);
         }
     }
-//
-//    private boolean getCheckedQuiz(int type) {
-//        boolean contains = false;
-//        if (getEvaluationGroupByType(type) == null) return false;
-//        for (ItemEvaluation itemEvaluation : getEvaluationGroupByType(type).getItems())
-//            if (itemEvaluation.isChecked()) {
-//                switch (itemEvaluation.getTypeEvaluation()) {
-//                    case PHYSICAL_ACTIVITY:
-//                        nutritionalEvaluation.setPhysicalActivityHabits(itemEvaluation.getPhysicalActivityHabit());
-//                        contains = true;
-//                        break;
-//                    case SLEEP_HABITS:
-//                        nutritionalEvaluation.setSleepHabits(itemEvaluation.getSleepHabit());
-//                        contains = true;
-//                        break;
-//                    case MEDICAL_RECORDS:
-//                        nutritionalEvaluation.setMedicalRecord(itemEvaluation.getMedicalRecord());
-//                        contains = true;
-//                        break;
-//                    case FEEDING_HABITS:
-//                        nutritionalEvaluation.setFeedingHabits(itemEvaluation.getFeedingHabitsRecord());
-//                        contains = true;
-//                        break;
-//                }
-//            }
-//        return contains;
-//    }
 
     /**
      * Manipulates the error and displays message
@@ -713,6 +490,7 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
      * @param e {@link Throwable}
      */
     private void errorHandler(Throwable e) {
+        Log.w("AAA", e.getMessage());
         if (!checkConnectivity())
             showMessage(R.string.no_internet_conection);
         else

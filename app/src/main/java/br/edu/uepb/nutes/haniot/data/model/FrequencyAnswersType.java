@@ -50,4 +50,35 @@ public class FrequencyAnswersType {
             }
         }
     }
+
+    public static class Afirmation {
+
+        public static final String YES = "yes";
+        public static final String NOT = "not";
+
+        public static final String YES_PTBR = "Sim";
+        public static final String NOT_PTBR = "Não";
+
+        public static String getString(int type) {
+            switch (type) {
+                case 0:
+                    return YES;
+                case 1:
+                    return NOT;
+                default:
+                    return "";
+            }
+        }
+
+        public static String getStringPTBR(String type) {
+            switch (type) {
+                case YES:
+                    return YES_PTBR;
+                case NOT:
+                    return NOT_PTBR;
+                default:
+                    return "";
+            }
+        }
+    }
 }

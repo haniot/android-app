@@ -19,6 +19,7 @@ import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.data.model.FamilyCohesionRecord;
 import br.edu.uepb.nutes.haniot.data.model.FrequencyAnswersType;
 import br.edu.uepb.nutes.haniot.data.model.OdontologicalQuestionnaire;
+import br.edu.uepb.nutes.haniot.data.model.OdontologicalQuestionnaireType;
 import br.edu.uepb.nutes.haniot.data.model.OralHealthRecord;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.SociodemographicRecord;
@@ -35,6 +36,12 @@ import br.edu.uepb.nutes.simplesurvey.question.Multiple;
 import br.edu.uepb.nutes.simplesurvey.question.Open;
 import br.edu.uepb.nutes.simplesurvey.question.Single;
 import retrofit2.HttpException;
+
+import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.FAMILY_COHESION;
+import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.FEEDING_HABITS;
+import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.ORAL_HEALTH;
+import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.SLEEP_HABITS;
+import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.SOCIODEMOGRAPHICS;
 
 /**
  * QuizOdontologyActivity implementation.
@@ -65,6 +72,10 @@ public class QuizOdontologyActivity extends SimpleSurvey implements Infor.OnInfo
     private List<ToothLesion> toothLesions;
     private List<Integer> points;
     private OdontologicalQuestionnaire odontologicalQuestionnaire;
+    int checkpoint;
+    private String updateType;
+    private String idUpdate;
+    private Object resourceToUpdate;
 
     /**
      * Init view.
@@ -72,7 +83,63 @@ public class QuizOdontologyActivity extends SimpleSurvey implements Infor.OnInfo
     @Override
     protected void initView() {
         initResources();
-        addPages();
+
+        checkpoint = getIntent().getIntExtra("checkpoint", -1);
+        idUpdate = getIntent().getStringExtra("idUpdate");
+        setMessageBlocked(getResources().getString(R.string.not_answered));
+
+        // Animation
+        setFadeAnimation();
+        switch (checkpoint) {
+            case FAMILY_COHESION:
+                setFamilyCohesion();
+                updateType = OdontologicalQuestionnaireType.FAMILY_COHESION_RECORD;
+                break;
+            case ORAL_HEALTH:
+                setOralRecord();
+                updateType = OdontologicalQuestionnaireType.ORAL_HEALTH_RECORD;
+                break;
+            case SOCIODEMOGRAPHICS:
+                setSociodemographicRecord();
+                updateType = OdontologicalQuestionnaireType.SOCIODEMOGRAPHIC_RECORD;
+                break;
+            default:
+                addStartPage();
+                setFamilyCohesion();
+                setOralRecord();
+                setSociodemographicRecord();
+        }
+        addEndPage();
+    }
+
+    private void addStartPage() {
+
+        //INTRO PAGE
+        addQuestion(new Infor.Config()
+                .layout(R.layout.welcome_odontology_quiz)
+                .buttonClose(R.drawable.ic_action_close_dark)
+                .colorBackground(getResources().getColor(R.color.colorPrimaryDark))
+                .nextQuestionAuto()
+                .pageNumber(FIRST_PAGE)
+                .build());
+    }
+
+    private void addEndPage() {
+
+        //END PAGE
+        addQuestion(new Infor.Config()
+                .title(R.string.thank_you, Color.WHITE)
+                .titleTextSize(28)
+                .description(R.string.odontology_final_instructions)
+                .descriptionTextSize(14)
+                .descriptionColor(Color.WHITE)
+                .colorBackground(getResources().getColor(R.color.colorPrimaryDark))
+                .image(R.drawable.x_like)
+                .buttonClose(R.drawable.ic_action_close_dark)
+                .buttonColorText(getResources().getColor(R.color.colorPrimaryDark))
+                .buttonBackground(R.drawable.button_stylezed)
+                .pageNumber(END_PAGE)
+                .build());
     }
 
     /**
@@ -128,23 +195,165 @@ public class QuizOdontologyActivity extends SimpleSurvey implements Infor.OnInfo
         odontologicalQuestionnaire.setSociodemographicRecord(sociodemographicRecord);
     }
 
-    /**
-     * Construct quiz.
-     */
-    private void addPages() {
-        setMessageBlocked(getResources().getString(R.string.not_answered));
+    private void setOralRecord() {
 
-        // Animation
-        setFadeAnimation();
-
-        //INTRO PAGE
+        //CATEGORY OralHealthRecord
         addQuestion(new Infor.Config()
-                .layout(R.layout.welcome_odontology_quiz)
+                .title(R.string.category_oralhealth, Color.WHITE)
+                .titleTextSize(28)
+                .description(R.string.category_oralhealth_desc, Color.WHITE)
+                .descriptionTextSize(20)
+                .image(R.drawable.category_tooth)
+                .colorBackground(getResources().getColor(R.color.colorAccent))
+                .inputText(R.string.bt_next)
                 .buttonClose(R.drawable.ic_action_close_dark)
-                .colorBackground(getResources().getColor(R.color.colorPrimaryDark))
+                .buttonBackground(R.drawable.button_stylezed)
                 .nextQuestionAuto()
-                .pageNumber(FIRST_PAGE)
+                .pageNumber(CATEGORY_ORAL_HEALTH)
                 .build());
+
+        addQuestion(new Single.Config()
+                .title(getString(R.string.question_15), Color.WHITE)
+                .titleTextSize(28)
+                .colorBackground(ContextCompat.getColor(this, R.color.colorPink))
+                .description("")
+                .image(R.drawable.z_toothbrush)
+                .buttonClose(R.drawable.ic_action_close_dark)
+                .inputColorBackgroundTint(Color.WHITE)
+                .inputColorSelectedText(Color.WHITE)
+                .inputItems(parseAnswers(R.array.number3_answers))
+                .inputDisableAddNewItem()
+                .nextQuestionAuto()
+                .pageNumber(14)
+                .build());
+
+        addQuestion(new Single.Config()
+                .title(getString(R.string.question_16), Color.WHITE)
+                .titleTextSize(28)
+                .colorBackground(ContextCompat.getColor(this, R.color.colorTeal))
+                .description("")
+                .image(R.drawable.z_caries_mil)
+                .buttonClose(R.drawable.ic_action_close_dark)
+                .inputItems(parseAnswers(R.array.yes_not_answers))
+                .inputColorBackgroundTint(Color.WHITE)
+                .inputColorSelectedText(Color.WHITE)
+                .nextQuestionAuto()
+                .inputDisableAddNewItem()
+                .pageNumber(15)
+                .build());
+
+        addQuestion(new Single.Config()
+                .title(getString(R.string.question_17), Color.WHITE)
+                .titleTextSize(28)
+                .colorBackground(ContextCompat.getColor(this, R.color.colorRed))
+                .description("")
+                .image(R.drawable.z_caries_mil)
+                .buttonClose(R.drawable.ic_action_close_dark)
+                .inputColorBackgroundTint(Color.WHITE)
+                .inputColorSelectedText(Color.WHITE)
+                .inputItems(parseAnswers(R.array.yes_not_answers))
+                .inputDisableAddNewItem()
+                .nextQuestionAuto()
+                .pageNumber(16)
+                .build());
+
+        addQuestion(new Single.Config()
+                .title(getString(R.string.question_18), Color.WHITE)
+                .titleTextSize(28)
+                .colorBackground(ContextCompat.getColor(this, R.color.colorOrange))
+                .description("")
+                .image(R.drawable.z_caries_white)
+                .buttonClose(R.drawable.ic_action_close_dark)
+                .inputColorBackgroundTint(Color.WHITE)
+                .inputColorSelectedText(Color.WHITE)
+                .inputItems(parseAnswers(R.array.yes_not_answers))
+                .inputDisableAddNewItem()
+                .nextQuestionAuto()
+                .pageNumber(17)
+                .build());
+
+        addQuestion(new Single.Config()
+                .title(getString(R.string.question_19), Color.WHITE)
+                .titleTextSize(28)
+                .colorBackground(ContextCompat.getColor(this, R.color.colorDeepPurple))
+                .description("")
+                .image(R.drawable.z_caries_white)
+                .buttonClose(R.drawable.ic_action_close_dark)
+                .inputColorBackgroundTint(Color.WHITE)
+                .inputColorSelectedText(Color.WHITE)
+                .inputItems(parseAnswers(R.array.yes_not_answers))
+                .inputDisableAddNewItem()
+                .nextQuestionAuto()
+                .pageNumber(18)
+                .build());
+
+    }
+
+    private void setSociodemographicRecord() {
+
+        //CATEGORY SociodemographicRecord
+        addQuestion(new Infor.Config()
+                .title(R.string.category_sociodemographic, Color.WHITE)
+                .titleTextSize(28)
+                .description(R.string.category_sociodemographic_desc, Color.WHITE)
+                .descriptionTextSize(20)
+                .image(R.drawable.category_socio)
+                .buttonClose(R.drawable.ic_action_close_dark)
+                .colorBackground(getResources().getColor(R.color.colorAccent))
+                .inputText(R.string.bt_next)
+                .buttonClose(R.drawable.ic_action_close_dark)
+                .buttonBackground(R.drawable.button_stylezed)
+                .nextQuestionAuto()
+                .pageNumber(CATEGORY_SOCIODEMOGRAPHIC)
+                .build());
+
+        addQuestion(new Single.Config()
+                .title(getString(R.string.question_12), Color.WHITE)
+                .titleTextSize(28)
+                .colorBackground(ContextCompat.getColor(this, R.color.colorCyan))
+                .description("")
+                .image(R.drawable.z_color)
+                .buttonClose(R.drawable.ic_action_close_dark)
+                .inputColorBackgroundTint(Color.WHITE)
+                .inputColorSelectedText(Color.WHITE)
+                .inputItems(parseAnswers(R.array.race_answers))
+                .inputDisableAddNewItem()
+                .nextQuestionAuto()
+                .pageNumber(11)
+                .build());
+
+        addQuestion(new Single.Config()
+                .title(getString(R.string.question_13), Color.WHITE)
+                .titleTextSize(28)
+                .colorBackground(ContextCompat.getColor(this, R.color.colorDeepPurple))
+                .description("")
+                .image(R.drawable.z_scholarity)
+                .buttonClose(R.drawable.ic_action_close_dark)
+                .inputColorBackgroundTint(Color.WHITE)
+                .inputColorSelectedText(Color.WHITE)
+                .inputItems(parseAnswers(R.array.scholarity_answers))
+                .inputDisableAddNewItem()
+                .nextQuestionAuto()
+                .pageNumber(12)
+                .build());
+
+        addQuestion(new Open.Config()
+                .title(getString(R.string.question_14), Color.WHITE)
+                .titleTextSize(28)
+                .inputColorText(Color.WHITE)
+                .colorBackground(ContextCompat.getColor(this, R.color.colorBlue))
+                .description("")
+                .image(R.drawable.z_house)
+                .buttonClose(R.drawable.ic_action_close_dark)
+                .inputColorBackgroundTint(Color.WHITE)
+                .inputType(InputType.TYPE_CLASS_NUMBER)
+                .nextQuestionAuto()
+                .pageNumber(13)
+                .build());
+
+    }
+
+    private void setFamilyCohesion() {
 
         //CATEGORY FAMILY_COHESION
         addQuestion(new Infor.Config()
@@ -311,170 +520,6 @@ public class QuizOdontologyActivity extends SimpleSurvey implements Infor.OnInfo
                 .pageNumber(10)
                 .build());
 
-        //CATEGORY SociodemographicRecord
-        addQuestion(new Infor.Config()
-                .title(R.string.category_sociodemographic, Color.WHITE)
-                .titleTextSize(28)
-                .description(R.string.category_sociodemographic_desc, Color.WHITE)
-                .descriptionTextSize(20)
-                .image(R.drawable.category_socio)
-                .buttonClose(R.drawable.ic_action_close_dark)
-                .colorBackground(getResources().getColor(R.color.colorAccent))
-                .inputText(R.string.bt_next)
-                .buttonClose(R.drawable.ic_action_close_dark)
-                .buttonBackground(R.drawable.button_stylezed)
-                .nextQuestionAuto()
-                .pageNumber(CATEGORY_SOCIODEMOGRAPHIC)
-                .build());
-
-        addQuestion(new Single.Config()
-                .title(getString(R.string.question_12), Color.WHITE)
-                .titleTextSize(28)
-                .colorBackground(ContextCompat.getColor(this, R.color.colorCyan))
-                .description("")
-                .image(R.drawable.z_color)
-                .buttonClose(R.drawable.ic_action_close_dark)
-                .inputColorBackgroundTint(Color.WHITE)
-                .inputColorSelectedText(Color.WHITE)
-                .inputItems(parseAnswers(R.array.race_answers))
-                .inputDisableAddNewItem()
-                .nextQuestionAuto()
-                .pageNumber(11)
-                .build());
-
-        addQuestion(new Single.Config()
-                .title(getString(R.string.question_13), Color.WHITE)
-                .titleTextSize(28)
-                .colorBackground(ContextCompat.getColor(this, R.color.colorDeepPurple))
-                .description("")
-                .image(R.drawable.z_scholarity)
-                .buttonClose(R.drawable.ic_action_close_dark)
-                .inputColorBackgroundTint(Color.WHITE)
-                .inputColorSelectedText(Color.WHITE)
-                .inputItems(parseAnswers(R.array.scholarity_answers))
-                .inputDisableAddNewItem()
-                .nextQuestionAuto()
-                .pageNumber(12)
-                .build());
-
-        addQuestion(new Open.Config()
-                .title(getString(R.string.question_14), Color.WHITE)
-                .titleTextSize(28)
-                .inputColorText(Color.WHITE)
-                .colorBackground(ContextCompat.getColor(this, R.color.colorBlue))
-                .description("")
-                .image(R.drawable.z_house)
-                .buttonClose(R.drawable.ic_action_close_dark)
-                .inputColorBackgroundTint(Color.WHITE)
-                .inputType(InputType.TYPE_CLASS_NUMBER)
-                .nextQuestionAuto()
-                .pageNumber(13)
-                .build());
-
-        //CATEGORY OralHealthRecord
-        addQuestion(new Infor.Config()
-                .title(R.string.category_oralhealth, Color.WHITE)
-                .titleTextSize(28)
-                .description(R.string.category_oralhealth_desc, Color.WHITE)
-                .descriptionTextSize(20)
-                .image(R.drawable.category_tooth)
-                .colorBackground(getResources().getColor(R.color.colorAccent))
-                .inputText(R.string.bt_next)
-                .buttonClose(R.drawable.ic_action_close_dark)
-                .buttonBackground(R.drawable.button_stylezed)
-                .nextQuestionAuto()
-                .pageNumber(CATEGORY_ORAL_HEALTH)
-                .build());
-
-        addQuestion(new Single.Config()
-                .title(getString(R.string.question_15), Color.WHITE)
-                .titleTextSize(28)
-                .colorBackground(ContextCompat.getColor(this, R.color.colorPink))
-                .description("")
-                .image(R.drawable.z_toothbrush)
-                .buttonClose(R.drawable.ic_action_close_dark)
-                .inputColorBackgroundTint(Color.WHITE)
-                .inputColorSelectedText(Color.WHITE)
-                .inputItems(parseAnswers(R.array.number3_answers))
-                .inputDisableAddNewItem()
-                .nextQuestionAuto()
-                .pageNumber(14)
-                .build());
-
-        addQuestion(new Single.Config()
-                .title(getString(R.string.question_16), Color.WHITE)
-                .titleTextSize(28)
-                .colorBackground(ContextCompat.getColor(this, R.color.colorTeal))
-                .description("")
-                .image(R.drawable.z_caries_mil)
-                .buttonClose(R.drawable.ic_action_close_dark)
-                .inputItems(parseAnswers(R.array.yes_not_answers))
-                .inputColorBackgroundTint(Color.WHITE)
-                .inputColorSelectedText(Color.WHITE)
-                .nextQuestionAuto()
-                .inputDisableAddNewItem()
-                .pageNumber(15)
-                .build());
-
-        addQuestion(new Single.Config()
-                .title(getString(R.string.question_17), Color.WHITE)
-                .titleTextSize(28)
-                .colorBackground(ContextCompat.getColor(this, R.color.colorRed))
-                .description("")
-                .image(R.drawable.z_caries_mil)
-                .buttonClose(R.drawable.ic_action_close_dark)
-                .inputColorBackgroundTint(Color.WHITE)
-                .inputColorSelectedText(Color.WHITE)
-                .inputItems(parseAnswers(R.array.yes_not_answers))
-                .inputDisableAddNewItem()
-                .nextQuestionAuto()
-                .pageNumber(16)
-                .build());
-
-        addQuestion(new Single.Config()
-                .title(getString(R.string.question_18), Color.WHITE)
-                .titleTextSize(28)
-                .colorBackground(ContextCompat.getColor(this, R.color.colorOrange))
-                .description("")
-                .image(R.drawable.z_caries_white)
-                .buttonClose(R.drawable.ic_action_close_dark)
-                .inputColorBackgroundTint(Color.WHITE)
-                .inputColorSelectedText(Color.WHITE)
-                .inputItems(parseAnswers(R.array.yes_not_answers))
-                .inputDisableAddNewItem()
-                .nextQuestionAuto()
-                .pageNumber(17)
-                .build());
-
-        addQuestion(new Single.Config()
-                .title(getString(R.string.question_19), Color.WHITE)
-                .titleTextSize(28)
-                .colorBackground(ContextCompat.getColor(this, R.color.colorDeepPurple))
-                .description("")
-                .image(R.drawable.z_caries_white)
-                .buttonClose(R.drawable.ic_action_close_dark)
-                .inputColorBackgroundTint(Color.WHITE)
-                .inputColorSelectedText(Color.WHITE)
-                .inputItems(parseAnswers(R.array.yes_not_answers))
-                .inputDisableAddNewItem()
-                .nextQuestionAuto()
-                .pageNumber(18)
-                .build());
-
-        //END PAGE
-        addQuestion(new Infor.Config()
-                .title(R.string.thank_you, Color.WHITE)
-                .titleTextSize(28)
-                .description(R.string.odontology_final_instructions)
-                .descriptionTextSize(14)
-                .descriptionColor(Color.WHITE)
-                .colorBackground(getResources().getColor(R.color.colorPrimaryDark))
-                .image(R.drawable.x_like)
-                .buttonClose(R.drawable.ic_action_close_dark)
-                .buttonColorText(getResources().getColor(R.color.colorPrimaryDark))
-                .buttonBackground(R.drawable.button_stylezed)
-                .pageNumber(END_PAGE)
-                .build());
     }
 
     /**
@@ -533,6 +578,31 @@ public class QuizOdontologyActivity extends SimpleSurvey implements Infor.OnInfo
                 sendQuestionnaireToServer();
                 break;
         }
+
+
+        Log.d(LOG_TAG, "onAnswerInfo() | PAGE: " + page);
+        if (page == GATEGORY_FAMILY_COHESION && checkpoint == -1) {
+            saveFamilyCohesion();
+        } else if (page == CATEGORY_SOCIODEMOGRAPHIC && checkpoint == -1) {
+            saveSociodemographic();
+        } else if (page == CATEGORY_ORAL_HEALTH && checkpoint == -1) {
+            saveOralHealth();
+        } else if (page == END_PAGE) {
+            switch (checkpoint) {
+                case FAMILY_COHESION:
+                    saveFamilyCohesion();
+                    break;
+                case SOCIODEMOGRAPHICS:
+                    saveSociodemographic();
+                    break;
+                case ORAL_HEALTH:
+                    saveOralHealth();
+                    break;
+                default:
+                    saveOralHealth();
+            }
+            sendQuestionnaireToServer();
+        }
     }
 
     private void sendQuestionnaireToServer() {
@@ -542,9 +612,7 @@ public class QuizOdontologyActivity extends SimpleSurvey implements Infor.OnInfo
         dialog.show();
         Log.w("AAA", odontologicalQuestionnaire.toJson());
 
-        if (odontologicalQuestionnaire.getFamilyCohesionRecord() != null
-                && odontologicalQuestionnaire.getOralHealthRecord() != null
-                && odontologicalQuestionnaire.getSociodemographicRecord() != null)
+        if (updateType == null) {
             DisposableManager.add(haniotNetRepository
                     .saveOdontologicalQuestionnaire(patient.get_id(), odontologicalQuestionnaire)
                     .doAfterTerminate(() -> {
@@ -573,8 +641,46 @@ public class QuizOdontologyActivity extends SimpleSurvey implements Infor.OnInfo
                         });
                         builder.show();
                     }));
-        else
-            Log.w(LOG_TAG, "Alguns campos não foram preenchidos");
+        } else {
+            printJson();
+            if (idUpdate != null) {
+                DisposableManager.add(haniotNetRepository
+                        .updateOdontologicalQuestionnaire(patient.get_id(), idUpdate, updateType, resourceToUpdate)
+                        .subscribe(o -> {
+                            dialog.cancel();
+                            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                            builder.setMessage("Atualizado com sucesso!");
+                            builder.setCancelable(true);
+                            builder.setNeutralButton("Ok", (dialog1, which) -> {
+                                finish();
+                            });
+                            builder.show();
+                        }, throwable -> {
+                            Log.w("AAA", throwable.getMessage());
+                            dialog.cancel();
+                            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                            builder.setTitle("Não foi possível concluir a operação...");
+                            builder.setMessage("Tente novamente mais tarde!");
+                            builder.setCancelable(false);
+                            builder.setPositiveButton("Ok", (dialog12, which) -> {
+                                startActivity(new Intent(this, MainActivity.class));
+                                finish();
+                                dialog12.cancel();
+                            });
+                            builder.show();
+                        }));
+            }
+        }
+    }
+
+    private void printJson() {
+        if (resourceToUpdate instanceof FamilyCohesionRecord) {
+            Log.w("AAA", ((FamilyCohesionRecord) resourceToUpdate).toJson());
+        } else if (resourceToUpdate instanceof OralHealthRecord) {
+            Log.w("AAA", ((OralHealthRecord) resourceToUpdate).toJson());
+        } else if (resourceToUpdate instanceof SociodemographicRecord) {
+            Log.w("AAA", ((SociodemographicRecord) resourceToUpdate).toJson());
+        }
     }
 
     /**
