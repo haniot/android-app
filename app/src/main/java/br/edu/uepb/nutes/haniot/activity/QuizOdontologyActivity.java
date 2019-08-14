@@ -180,6 +180,7 @@ public class QuizOdontologyActivity extends SimpleSurvey implements Infor.OnInfo
         familyCohesionRecord.setFamilyCohesionResult(totalPoints);
         familyCohesionRecord.toJson();
         odontologicalQuestionnaire.setFamilyCohesionRecord(familyCohesionRecord);
+        resourceToUpdate = familyCohesionRecord;
     }
 
     private void saveOralHealth() {
@@ -187,12 +188,14 @@ public class QuizOdontologyActivity extends SimpleSurvey implements Infor.OnInfo
         oralHealthRecord.setToothLesions(toothLesions);
         oralHealthRecord.toJson();
         odontologicalQuestionnaire.setOralHealthRecord(oralHealthRecord);
+        resourceToUpdate = oralHealthRecord;
     }
 
     private void saveSociodemographic() {
         sociodemographicRecord.setPatientId(patient.get_id());
         sociodemographicRecord.toJson();
         odontologicalQuestionnaire.setSociodemographicRecord(sociodemographicRecord);
+        resourceToUpdate = sociodemographicRecord;
     }
 
     private void setOralRecord() {
@@ -562,23 +565,6 @@ public class QuizOdontologyActivity extends SimpleSurvey implements Infor.OnInfo
      */
     @Override
     public void onAnswerInfo(int page) {
-        Log.d(LOG_TAG, "onAnswerInfo() | PAGE: " + page);
-        switch (page) {
-            case GATEGORY_FAMILY_COHESION:
-
-                break;
-            case CATEGORY_SOCIODEMOGRAPHIC:
-                saveFamilyCohesion();
-                break;
-            case CATEGORY_ORAL_HEALTH:
-                saveSociodemographic();
-                break;
-            case END_PAGE:
-                saveOralHealth();
-                sendQuestionnaireToServer();
-                break;
-        }
-
 
         Log.d(LOG_TAG, "onAnswerInfo() | PAGE: " + page);
         if (page == GATEGORY_FAMILY_COHESION && checkpoint == -1) {
@@ -606,12 +592,11 @@ public class QuizOdontologyActivity extends SimpleSurvey implements Infor.OnInfo
     }
 
     private void sendQuestionnaireToServer() {
-
+        Log.w("AAA", "sendQuestionnaireToServer");
         ProgressDialog dialog = ProgressDialog.show(this, "Sincronização",
                 "Aguarde alguns instantes...", true);
         dialog.show();
         Log.w("AAA", odontologicalQuestionnaire.toJson());
-
         if (updateType == null) {
             DisposableManager.add(haniotNetRepository
                     .saveOdontologicalQuestionnaire(patient.get_id(), odontologicalQuestionnaire)
@@ -642,7 +627,11 @@ public class QuizOdontologyActivity extends SimpleSurvey implements Infor.OnInfo
                         builder.show();
                     }));
         } else {
+            Log.w("AAA", "updateType != null: " + updateType);
+            Log.w("AAA", "updateType: " + updateType + " idUpdate: " + idUpdate);
             printJson();
+
+            Log.w("AAA", "id: " + idUpdate);
             if (idUpdate != null) {
                 DisposableManager.add(haniotNetRepository
                         .updateOdontologicalQuestionnaire(patient.get_id(), idUpdate, updateType, resourceToUpdate)
@@ -675,11 +664,11 @@ public class QuizOdontologyActivity extends SimpleSurvey implements Infor.OnInfo
 
     private void printJson() {
         if (resourceToUpdate instanceof FamilyCohesionRecord) {
-            Log.w("AAA", ((FamilyCohesionRecord) resourceToUpdate).toJson());
+            Log.w("AAA", "FamilyCohesionRecord " + ((FamilyCohesionRecord) resourceToUpdate).toJson());
         } else if (resourceToUpdate instanceof OralHealthRecord) {
-            Log.w("AAA", ((OralHealthRecord) resourceToUpdate).toJson());
+            Log.w("AAA", "OralHealthRecord " + ((OralHealthRecord) resourceToUpdate).toJson());
         } else if (resourceToUpdate instanceof SociodemographicRecord) {
-            Log.w("AAA", ((SociodemographicRecord) resourceToUpdate).toJson());
+            Log.w("AAA", "SociodemographicRecord " + ((SociodemographicRecord) resourceToUpdate).toJson());
         }
     }
 

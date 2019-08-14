@@ -195,11 +195,12 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         Log.i("AAA", device.toJson());
         device.setModelNumber(null); // TODO Remover quando a API der suporte
         device.setUserId(user.get_id());
+        Log.w("AAA", device.toJson());
         DisposableManager.add(haniotRepository
                 .saveDevice(device)
                 .subscribe(deviceRest -> {
                     deviceRest.setImg(device.getImg());
-                    mDeviceDAO.save(deviceRest);
+                    Log.w("AAA", String.valueOf(mDeviceDAO.save(deviceRest)));
                     onDeviceRegistered(mDevice);
                 }, err -> {
                     onDeviceFounded(null);
@@ -307,7 +308,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
                 // Case 2: Bonding.
                 if (mBluetoothDevice.getBondState() == BluetoothDevice.BOND_BONDING) {
                     Log.d(LOG_TAG, "BroadcastReceiver: BOND_BONDING. " + mBluetoothDevice.getName());
-                    showLoadingPairing();
+                    showLoadingPairing(true);
 
                     if (mDevice.getUuid().equals(SERVICE_SCALE_YUNMAI)) {
                         // Set PIN in Yunmai.
@@ -479,10 +480,14 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     /**
      * Show loading of Pairing.
      */
-    private void showLoadingPairing() {
-        deviceConnectionStatus.setText(R.string.pairing_device);
-        progressBarPairing.setVisibility(View.VISIBLE);
-        btnDeviceRegisterScanner.setEnabled(false);
+    private void showLoadingPairing(boolean enabled) {
+        if (enabled) {
+            deviceConnectionStatus.setText(R.string.pairing_device);
+            progressBarPairing.setVisibility(View.VISIBLE);
+            btnDeviceRegisterScanner.setEnabled(false);
+        } else {
+            progressBarPairing.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -507,6 +512,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
             finish();
         } else if (id == R.id.btn_try_again) {
             boxRegister.setVisibility(View.VISIBLE);
+            showLoadingPairing(false);
             boxError.setVisibility(View.GONE);
         }
     }

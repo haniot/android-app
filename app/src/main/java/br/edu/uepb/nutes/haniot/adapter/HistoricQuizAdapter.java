@@ -2,6 +2,7 @@ package br.edu.uepb.nutes.haniot.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,6 +44,7 @@ import br.edu.uepb.nutes.haniot.data.model.SchoolActivityFrequencyType;
 import br.edu.uepb.nutes.haniot.data.model.SleepHabit;
 import br.edu.uepb.nutes.haniot.data.model.SociodemographicRecord;
 import br.edu.uepb.nutes.haniot.data.model.SociodemographicType;
+import br.edu.uepb.nutes.haniot.data.model.SportsType;
 import br.edu.uepb.nutes.haniot.data.model.ToothLesion;
 import br.edu.uepb.nutes.haniot.data.model.ToothLesionType;
 import br.edu.uepb.nutes.haniot.data.model.TypeEvaluation;
@@ -236,7 +238,7 @@ public class HistoricQuizAdapter extends ExpandableRecyclerViewAdapter<HistoricQ
                 PhysicalActivityHabit physicalActivityHabit = ig.getPhysicalActivityHabit();
                 stringBuilder.append("\nEsportes praticados durante a semana: \n");
                 for (String sport : physicalActivityHabit.getWeeklyActivities()) {
-                    stringBuilder.append(sport).append("\n");
+                    stringBuilder.append(SportsType.getStringPtBr(context, sport)).append("\n");
                 }
                 stringBuilder.append("\nFrequência de atividades físicas na escola: \n")
                         .append(SchoolActivityFrequencyType
@@ -311,22 +313,15 @@ public class HistoricQuizAdapter extends ExpandableRecyclerViewAdapter<HistoricQ
                 break;
             case SOCIODEMOGRAPHICS:
                 SociodemographicRecord sociodemographicRecord = ig.getSociodemographicRecord();
-                stringBuilder.append("Cor/raça: ")
-                        .append("\n")
+                stringBuilder.append("<h4>Cor/raça:</h4><p>")
                         .append(SociodemographicType.ColorRace.getStringPtBr(sociodemographicRecord.getColorRace()))
-                        .append("\n")
-                        .append("\n")
-                        .append("Escolaridade da mãe: ")
-                        .append("\n")
+                        .append("</p><h4>Escolaridade da mãe:</h4><p>")
                         .append(SociodemographicType.MotherScholarity.getStringPtBr(sociodemographicRecord.getMotherScholarity()))
-                        .append("\n")
-                        .append("\n")
-                        .append("Número de pessoas em casa: ")
-                        .append("\n")
+                        .append("</p><h4>Número de pessoas em casa:</h4><p>")
                         .append(sociodemographicRecord.getPeopleInHome());
                 break;
         }
-        h.messageText.setText(stringBuilder);
+        h.messageText.setText(Html.fromHtml(stringBuilder.toString()));
     }
 
     /**

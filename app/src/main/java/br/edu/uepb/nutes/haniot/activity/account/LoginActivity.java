@@ -162,6 +162,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 .subscribe(userAccess -> {
                     if (appPreferencesHelper.saveUserAccessHaniot(userAccess)) {
                         getUserProfile(userAccess);
+                        //TODO Temp
+                        Log.w("AAA", "Token: " + userAccess.getAccessToken());
                     }
                 }, this::errorHandler)
         );
@@ -228,6 +230,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     /**
      * Save user info in AppPreferences.
+     *
      * @param user
      */
     private void saveUserInfo(User user) {

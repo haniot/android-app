@@ -84,6 +84,8 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
         ButterKnife.bind(this);
         initResources();
         initToolbar();
+        initRecyclerView();
+
     }
 
     private void initResources() {
@@ -121,6 +123,8 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
                     setNutritionalGroups(nutritional);
                     loadingNutrition.setVisibility(View.GONE);
                 }, throwable -> {
+                    //TODO Mostrar erro
+
                 }));
 
         DisposableManager.add(haniotNetRepository
@@ -129,6 +133,7 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
                     setOdontologicalGroups(odontological);
                     loadingOdontological.setVisibility(View.GONE);
                 }, throwable -> {
+                    //TODO Mostrar erro
                 }));
     }
 
@@ -198,7 +203,7 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
 
 
         GroupItemEvaluation groupItemEvaluation = new GroupItemEvaluation("Respondido em " + DateUtils.convertDateTimeUTCToLocale(odontologicalQuestionnaire.getCreatedAt(), getString(R.string.datetime_format)),
-                itemEvaluations, 1000);
+                itemEvaluations, 1000, odontologicalQuestionnaire.get_id());
 
         groupItemOdontologicalEvaluations.add(groupItemEvaluation);
 
@@ -206,25 +211,25 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
 
     private void setNutritionalGroups(List<NutritionalQuestionnaire> nutritionalQuestionnaires) {
 
+        groupItemNutritionEvaluations.clear();
         for (NutritionalQuestionnaire nutritionalQuestionnaire : nutritionalQuestionnaires) {
             Log.w("AAA", nutritionalQuestionnaire.toString());
             setNutritionalItem(nutritionalQuestionnaire);
         }
         if (nutritionalQuestionnaires.isEmpty()) boxNotNutrition.setVisibility(View.VISIBLE);
         else boxNotNutrition.setVisibility(View.GONE);
-
         initRecyclerView();
     }
 
     private void setOdontologicalGroups(List<OdontologicalQuestionnaire> odontologicalQuestionnaires) {
 
+        groupItemOdontologicalEvaluations.clear();
         for (OdontologicalQuestionnaire odontologicalQuestionnaire : odontologicalQuestionnaires) {
             Log.w("AAA", odontologicalQuestionnaire.toString());
             setOdontologicalItem(odontologicalQuestionnaire);
         }
         if (odontologicalQuestionnaires.isEmpty()) boxNotOdontological.setVisibility(View.VISIBLE);
         else boxNotOdontological.setVisibility(View.GONE);
-
         initRecyclerView();
     }
 
@@ -277,8 +282,6 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
         historicOdontologicalAdapter.setListener(this);
         listNutritional.setAdapter(historicNutritionalAdapter);
         listOdontological.setAdapter(historicOdontologicalAdapter);
-        historicNutritionalAdapter.expandAll();
-        historicOdontologicalAdapter.expandAll();
     }
 
     @Override

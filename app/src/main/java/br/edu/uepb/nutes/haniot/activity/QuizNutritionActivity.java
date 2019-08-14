@@ -726,6 +726,7 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
             Log.w("AAA", "updateType != null: " + updateType);
             Log.w("AAA", "updateType: " + updateType + " idUpdate: " + idUpdate);
             printJson();
+            Log.w("AAA", "id: " + idUpdate);
             if (idUpdate != null) {
                 DisposableManager.add(haniotNetRepository
                         .updateNutritionalQuestionnaire(patient.get_id(), idUpdate, updateType, resourceToUpdate)

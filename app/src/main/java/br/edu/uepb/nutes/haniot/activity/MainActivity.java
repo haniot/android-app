@@ -150,7 +150,11 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
             startActivity(new Intent(this, QuizNutritionActivity.class));
             finish();
         });
-        nutritioEvaluation.setOnClickListener(v -> measurementsGridFragment.saveHeartRateCollection());
+        nutritioEvaluation.setOnClickListener(v -> {
+            Intent intent = new Intent(this, NutritionalEvaluationActivity.class);
+            intent.putExtra("type", "nutrition");
+            startActivity(intent);
+        });
 
         if (appPreferences.getUserLogged().getUserType().equals(HEALTH_PROFESSIONAL)) {
 
@@ -166,7 +170,7 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
             } else if (healthArea.equals(PATIENT)) {
                 patientActionsMenu.setVisibility(View.INVISIBLE);
             }
-        } else if (appPreferences.getUserLogged().getUserType().equals(PATIENT)){
+        } else if (appPreferences.getUserLogged().getUserType().equals(PATIENT)) {
             patientActionsMenu.setVisibility(View.INVISIBLE);
         }
     }

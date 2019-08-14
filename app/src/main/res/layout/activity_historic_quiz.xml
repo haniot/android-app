@@ -80,7 +80,8 @@
                 android:id="@+id/loading_nutrition"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:layout_marginStart="30dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
                 android:indeterminate="true" />
 
             <LinearLayout
@@ -137,7 +138,8 @@
                 android:id="@+id/loading_odontological"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:layout_marginStart="30dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
                 android:indeterminate="true" />
 
             <LinearLayout

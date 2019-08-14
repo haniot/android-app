@@ -210,7 +210,7 @@ public class Device implements Parcelable {
         if (!(o instanceof Device)) return false;
 
         Device other = (Device) o;
-        return this.address.equals(other.address) || this.name.equals(other.name);
+        return this.type.equals(other.type);
     }
 
     /**

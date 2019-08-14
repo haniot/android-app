@@ -204,7 +204,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
                             Log.w("AAA", Arrays.toString(devices.toArray()));
                             contentDevices.setVisibility(View.VISIBLE);
                             populateDevicesRegistered(setImagesDevices(devices));
-                            populateDevicesAvailable(mDeviceDAO.list(user.get_id()));
+                            populateDevicesAvailable(devices);
                             showErrorConnection(false);
                         }, err -> showErrorConnection(true))
         );
@@ -454,8 +454,16 @@ public class DeviceManagerActivity extends AppCompatActivity {
      */
     private List<Device> mergeDevicesAvailableRegistered(List<Device> registeredList,
                                                          List<Device> availableList) {
+
+        Log.w("AAA", "Available");
+        for (Device device : availableList) {
+            Log.w("AAA", device.toJson());
+        }
         // Add only devices that have not been registered
+        Log.w("AAA", "Registered");
         for (Device d : registeredList) {
+            Log.w("AAA", d.toJson());
+//            Log.w("AAA", "Registered: " + d.toJson() + " - Disponível: " + availableList.indexOf(d));
             availableList.remove(d);
         }
         return availableList;
