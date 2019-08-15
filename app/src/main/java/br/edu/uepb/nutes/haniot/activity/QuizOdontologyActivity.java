@@ -174,8 +174,10 @@ public class QuizOdontologyActivity extends SimpleSurvey implements Infor.OnInfo
     private void saveFamilyCohesion() {
         familyCohesionRecord.setPatientId(patient.get_id());
         int totalPoints = 0;
+        Log.w("AAA", "Size points: " + points.size());
         for (Integer integer : points) {
             totalPoints += integer;
+            Log.w("AAA", "point: " + integer + " - " + totalPoints);
         }
         familyCohesionRecord.setFamilyCohesionResult(totalPoints);
         familyCohesionRecord.toJson();
@@ -555,7 +557,10 @@ public class QuizOdontologyActivity extends SimpleSurvey implements Infor.OnInfo
     }
 
     private void setPoint(int index, int value) {
+        Log.w("AAA", "Salvando " + value + " in index " + (index - 1));
         points.add(index - 1, value + 1);
+        for (Integer integer : points)
+            Log.w("AAA", "Salvo " + integer);
     }
 
     /**
@@ -568,25 +573,26 @@ public class QuizOdontologyActivity extends SimpleSurvey implements Infor.OnInfo
 
         Log.d(LOG_TAG, "onAnswerInfo() | PAGE: " + page);
         if (page == GATEGORY_FAMILY_COHESION && checkpoint == -1) {
-            saveFamilyCohesion();
         } else if (page == CATEGORY_SOCIODEMOGRAPHIC && checkpoint == -1) {
-            saveSociodemographic();
-        } else if (page == CATEGORY_ORAL_HEALTH && checkpoint == -1) {
             saveOralHealth();
+        } else if (page == CATEGORY_ORAL_HEALTH && checkpoint == -1) {
+            saveFamilyCohesion();
         } else if (page == END_PAGE) {
-            switch (checkpoint) {
-                case FAMILY_COHESION:
-                    saveFamilyCohesion();
-                    break;
-                case SOCIODEMOGRAPHICS:
-                    saveSociodemographic();
-                    break;
-                case ORAL_HEALTH:
-                    saveOralHealth();
-                    break;
-                default:
-                    saveOralHealth();
-            }
+            if (checkpoint == -1) saveSociodemographic();
+            else
+                switch (checkpoint) {
+                    case FAMILY_COHESION:
+                        saveFamilyCohesion();
+                        break;
+                    case SOCIODEMOGRAPHICS:
+                        saveSociodemographic();
+                        break;
+                    case ORAL_HEALTH:
+                        saveOralHealth();
+                        break;
+                    default:
+                        saveOralHealth();
+                }
             sendQuestionnaireToServer();
         }
     }

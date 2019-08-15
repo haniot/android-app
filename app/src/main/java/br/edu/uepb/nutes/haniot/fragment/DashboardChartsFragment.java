@@ -60,7 +60,7 @@ public class DashboardChartsFragment extends Fragment {
     String typeMessageError;
     boolean wifiRequest;
     boolean bluetoothRequest;
-    User user;
+    private User user;
 
     public DashboardChartsFragment() {
         // Required empty public constructor
@@ -80,7 +80,7 @@ public class DashboardChartsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_charts_dashboard, container, false);
         ButterKnife.bind(this, view);
         AppPreferencesHelper preferencesHelper = AppPreferencesHelper.getInstance(getContext());
-
+        user = preferencesHelper.getUserLogged();
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
                 getResources().getString(R.string.date_format2),
@@ -95,10 +95,9 @@ public class DashboardChartsFragment extends Fragment {
             titlePilotStudy.setVisibility(View.INVISIBLE);
             titleProfessional.setVisibility(View.INVISIBLE);
         } else if (preferencesHelper.getUserLogged().getUserType().equals(ADMIN)) {
-            titleProfessional.setVisibility(View.INVISIBLE);
-            textProfessional.setVisibility(View.INVISIBLE);
+            textProfessional.setText("Administrador");
         }
-        if (preferencesHelper.getLastPilotStudy() != null)
+        if (user.getPilotStudyIDSelected() != null)
             textPilotStudy.setText(preferencesHelper.getLastPilotStudy().getName());
         if (preferencesHelper.getUserLogged().getName() != null)
             textProfessional.setText(preferencesHelper.getUserLogged().getName());

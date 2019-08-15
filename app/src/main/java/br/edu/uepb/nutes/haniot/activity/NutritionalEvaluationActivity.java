@@ -33,6 +33,7 @@ import br.edu.uepb.nutes.haniot.data.model.NutritionalQuestionnaire;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.PilotStudy;
 import br.edu.uepb.nutes.haniot.data.model.TypeEvaluation;
+import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
@@ -91,7 +92,8 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
     private List<Measurement> measurementList;
     private boolean leftFields;
     private MeasurementLastResponse measurementLastResponse;
-    HashMap<Integer, Boolean> validated;
+    private HashMap<Integer, Boolean> validated;
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,7 +151,7 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
         haniotNetRepository = HaniotNetRepository.getInstance(this);
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
         patient = helper.getLastPatient();
-        pilotStudy = helper.getLastPilotStudy();
+        user = helper.getUserLogged();
     }
 
     private void showToast(final String menssage) {
@@ -433,11 +435,10 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
      * Send nutritionalEvaluation for server.
      */
     private void sendEvaluation() {
-
         Log.i("AAA", "Preparing listNutritional...");
         nutritionalEvaluation.setPatient(patient);
         nutritionalEvaluation.setHealthProfessionalId(appPreferencesHelper.getUserLogged().get_id());
-        nutritionalEvaluation.setPilotStudy(appPreferencesHelper.getLastPilotStudy().get_id());
+        nutritionalEvaluation.setPilotStudy(user.getPilotStudyIDSelected());
 
         leftFields = validated.get(GLUCOSE) != null
                 && validated.get(BLOOD_PRESSURE) != null

@@ -299,14 +299,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 case 401:
                     showMessage(R.string.validate_invalid_email_or_password);
                     break;
-                case 403: {
-                    if (httpEx.response().errorBody() == null) {
-                        showMessage(R.string.error_500);
-                        return;
-                    }
-                    openScreenChangePassword(Objects.requireNonNull(httpEx.response().errorBody()));
-                    break;
-                }
+//                case 403: {
+//                    if (httpEx.response().errorBody() == null) {
+//                        showMessage(R.string.error_500);
+//                        return;
+//                    }
+//                    openScreenChangePassword(Objects.requireNonNull(httpEx.response().errorBody()));
+//                    break;
+//                }
                 case 404:
                     showMessage(R.string.error_recover_data);
                     break;

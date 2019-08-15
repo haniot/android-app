@@ -757,5 +757,5 @@
     <string name="confirm_remove_devices">Você removeu esse dispositivo, deseja desfazer?</string>
     <string name="undo">Desfazer</string>
     <string name="title_activity_historic_quiz">HistoricQuizActivity</string>
-    <string name="error_limit_rate">Limite de tentativas del ogin excedida! Aguarde 1 hora para tentar novamente...</string>
+    <string name="error_limit_rate">Limite de tentativas de login excedida! Aguarde 1 hora para tentar novamente...</string>
 </resources>

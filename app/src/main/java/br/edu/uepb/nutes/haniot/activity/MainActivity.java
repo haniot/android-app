@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
     private AppPreferencesHelper appPreferences;
     private Patient patient;
     private long backPressed;
+    private User userLogged;
 
 
     @Override
@@ -90,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
         appPreferences = AppPreferencesHelper.getInstance(this);
         dashboardChartsFragment = DashboardChartsFragment.newInstance();
         measurementsGridFragment = MeasurementsGridFragment.newInstance();
-
+        userLogged = appPreferences.getUserLogged();
         IntentFilter filterBluetooth = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
         registerReceiver(mReceiver, filterBluetooth);
         IntentFilter filterInternet = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
@@ -122,8 +123,8 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
     protected void onResume() {
         super.onResume();
         // Verify the pilot is selected
-
-        if (appPreferences.getLastPilotStudy() == null
+        Log.w("AAA", "" + userLogged.getPilotStudyIDSelected());
+        if (userLogged.getPilotStudyIDSelected() == null
                 && !appPreferences.getUserLogged().getUserType().equals(PATIENT)) {
             startActivity(new Intent(this, WelcomeActivity.class));
         } else {
@@ -328,7 +329,7 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
             int status = NetworkUtil.getConnectivityStatusString(context);
-            if ("android.net.conn.CONNECTIVITY_CHANGE".equals(intent.getAction())) {
+            if ("android.net.conn.CONNECTIVITY_CHANGE" .equals(intent.getAction())) {
                 if (status == NetworkUtil.NETWORK_STATUS_NOT_CONNECTED) {
                     Log.w(LOG_TAG, "mReceiver: wifi desligado");
                     dashboardChartsFragment.showMessageConnection("wifi", true);

@@ -154,7 +154,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
             boxScanner.setVisibility(View.GONE);
             boxResponse.setVisibility(View.VISIBLE);
             progressBarPairing.setVisibility(View.INVISIBLE);
-            boxError.setVisibility(View.INVISIBLE);
+            boxError.setVisibility(View.GONE);
         } else {
             boxError.setVisibility(View.VISIBLE);
 //            deviceConnectionStatus.setText(R.string.failed_pairing_device);

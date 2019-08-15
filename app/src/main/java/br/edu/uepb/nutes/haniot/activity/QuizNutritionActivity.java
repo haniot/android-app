@@ -695,6 +695,7 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
 
         if (updateType == null) {
             Log.w("AAA", "updateType == null");
+            Log.w("AAA", "Saving: " + nutritionalQuestionnaire.toJson());
             DisposableManager.add(haniotNetRepository
                     .saveNutritionalQuestionnaire(patient.get_id(), nutritionalQuestionnaire)
                     .doAfterTerminate(() -> {
@@ -710,6 +711,7 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
                         });
                         builder.show();
                     }, throwable -> {
+                        Log.w("AAA", throwable.getMessage());
                         dialog.cancel();
                         AlertDialog.Builder builder = new AlertDialog.Builder(this);
                         builder.setTitle("Não foi possível concluir a operação...");

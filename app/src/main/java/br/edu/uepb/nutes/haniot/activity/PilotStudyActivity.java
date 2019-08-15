@@ -242,9 +242,9 @@ public class PilotStudyActivity extends AppCompatActivity {
     private void savePilotSelected(PilotStudy pilot) {
         pilot.setSelected(true);
         pilot.setUserId(user.get_id());
+        user.setPilotStudyIDSelected(pilot.get_id());
         appPreferences.saveLastPilotStudy(pilot);
-        appPreferences.removeLastPatient();
-
+        appPreferences.saveUserLogged(user);
         // Back activity
         setResult(Activity.RESULT_OK);
         finish();
@@ -275,9 +275,8 @@ public class PilotStudyActivity extends AppCompatActivity {
                     .doAfterTerminate(() -> showLoading(false))
                     .subscribe(pilotStudies -> {
 
-                        PilotStudy pilotLast = appPreferences.getLastPilotStudy();
                         for (PilotStudy pilot : pilotStudies) {
-                            if (pilotLast != null && pilot.get_id().equals(pilotLast.get_id())) {
+                            if (user.getPilotStudyIDSelected() != null && pilot.get_id().equals(user.getPilotStudyIDSelected())) {
                                 pilot.setSelected(true);
                             }
                         }
@@ -293,9 +292,8 @@ public class PilotStudyActivity extends AppCompatActivity {
                     .doAfterTerminate(() -> showLoading(false))
                     .subscribe(pilotStudies -> {
 
-                        PilotStudy pilotLast = appPreferences.getLastPilotStudy();
                         for (PilotStudy pilot : pilotStudies) {
-                            if (pilotLast != null && pilot.get_id().equals(pilotLast.get_id())) {
+                            if (user.getPilotStudyIDSelected() != null && pilot.get_id().equals(user.getPilotStudyIDSelected())) {
                                 pilot.setSelected(true);
                             }
                         }
@@ -327,7 +325,7 @@ public class PilotStudyActivity extends AppCompatActivity {
 //            showNoDataMessage(false);
             showErrorConnection(false);
             showErrorPilot(false);
-            if (appPreferences.getLastPilotStudy() != null) { // Pilot is selected
+            if (user.getPilotStudyIDSelected() != null) { // Pilot is selected
                 showInstructionsMessage(false);
             } else {
                 showInstructionsMessage(true);

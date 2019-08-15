@@ -171,7 +171,9 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
         GroupItemEvaluation groupItemEvaluation = new GroupItemEvaluation(DateUtils.convertDateTimeUTCToLocale(nutritionalQuestionnaire.getCreatedAt(), getString(R.string.datetime_format)),
                 itemEvaluations, 1000, nutritionalQuestionnaire.get_id());
 
+        groupItemNutritionEvaluations.clear();
         groupItemNutritionEvaluations.add(groupItemEvaluation);
+        historicNutritionalAdapter.addAll(groupItemNutritionEvaluations);
 
     }
 
@@ -205,7 +207,9 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
         GroupItemEvaluation groupItemEvaluation = new GroupItemEvaluation("Respondido em " + DateUtils.convertDateTimeUTCToLocale(odontologicalQuestionnaire.getCreatedAt(), getString(R.string.datetime_format)),
                 itemEvaluations, 1000, odontologicalQuestionnaire.get_id());
 
+        groupItemOdontologicalEvaluations.clear();
         groupItemOdontologicalEvaluations.add(groupItemEvaluation);
+        historicOdontologicalAdapter.addAll(groupItemOdontologicalEvaluations);
 
     }
 
@@ -218,7 +222,7 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
         }
         if (nutritionalQuestionnaires.isEmpty()) boxNotNutrition.setVisibility(View.VISIBLE);
         else boxNotNutrition.setVisibility(View.GONE);
-        initRecyclerView();
+//        initRecyclerView();
     }
 
     private void setOdontologicalGroups(List<OdontologicalQuestionnaire> odontologicalQuestionnaires) {
@@ -230,7 +234,7 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
         }
         if (odontologicalQuestionnaires.isEmpty()) boxNotOdontological.setVisibility(View.VISIBLE);
         else boxNotOdontological.setVisibility(View.GONE);
-        initRecyclerView();
+//        initRecyclerView();
     }
 
     /**
@@ -277,7 +281,8 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
         historicOdontologicalAdapter = new HistoricQuizAdapter(groupItemOdontologicalEvaluations, this);
         listNutritional.setLayoutManager(new LinearLayoutManager(this));
         listOdontological.setLayoutManager(new LinearLayoutManager(this));
-
+        listNutritional.setNestedScrollingEnabled(false);
+        listOdontological.setNestedScrollingEnabled(false);
         historicNutritionalAdapter.setListener(this);
         historicOdontologicalAdapter.setListener(this);
         listNutritional.setAdapter(historicNutritionalAdapter);

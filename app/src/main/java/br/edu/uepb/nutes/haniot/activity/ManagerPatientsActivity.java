@@ -32,6 +32,7 @@ import br.edu.uepb.nutes.haniot.adapter.ManagerPatientAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.PilotStudy;
+import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
@@ -68,7 +69,7 @@ public class ManagerPatientsActivity extends AppCompatActivity {
     private SearchView searchView;
     private AppPreferencesHelper appPreferencesHelper;
     private HaniotNetRepository haniotNetRepository;
-    private PilotStudy pilotStudy;
+    User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +99,7 @@ public class ManagerPatientsActivity extends AppCompatActivity {
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
         haniotNetRepository = HaniotNetRepository.getInstance(this);
         patientList = new ArrayList<>();
+        user = appPreferencesHelper.getUserLogged();
         disableBack();
 
         addPatient.setOnClickListener(v -> {
@@ -115,10 +117,9 @@ public class ManagerPatientsActivity extends AppCompatActivity {
      * Load patients in server.
      */
     private void loadData() {
-        pilotStudy = appPreferencesHelper.getLastPilotStudy();
         mDataSwipeRefresh.setRefreshing(true);
         DisposableManager.add(haniotNetRepository
-                .getAllPatients(pilotStudy.get_id(), "created_at", 1, 100)
+                .getAllPatients(user.getPilotStudyIDSelected(), "created_at", 1, 100)
                 .doAfterTerminate(() -> mDataSwipeRefresh.setRefreshing(false))
                 .subscribe(patients -> {
                     patientList = patients;
@@ -159,16 +160,16 @@ public class ManagerPatientsActivity extends AppCompatActivity {
         adapter.setPatientActionListener(new ManagerPatientAdapter.ActionsPatientListener() {
             @Override
             public void onMenuClick(String action, Patient patient) {
-                if ("quiz_dentistry".equals(action)) {
+                if ("quiz_dentistry" .equals(action)) {
                     appPreferencesHelper.saveLastPatient(patient);
                     startActivity(new Intent(ManagerPatientsActivity.this, QuizOdontologyActivity.class));
-                } else if ("quiz_nutrition".equals(action)) {
+                } else if ("quiz_nutrition" .equals(action)) {
                     appPreferencesHelper.saveLastPatient(patient);
                     startActivity(new Intent(ManagerPatientsActivity.this, QuizNutritionActivity.class));
-                } else if ("nutrition_evaluation".equals(action)) {
+                } else if ("nutrition_evaluation" .equals(action)) {
                     appPreferencesHelper.saveLastPatient(patient);
                     startActivity(new Intent(ManagerPatientsActivity.this, NutritionalEvaluationActivity.class));
-                } else if ("historic_quiz".equals(action)) {
+                } else if ("historic_quiz" .equals(action)) {
                     appPreferencesHelper.saveLastPatient(patient);
                     startActivity(new Intent(ManagerPatientsActivity.this, HistoricQuizActivity.class));
                 }

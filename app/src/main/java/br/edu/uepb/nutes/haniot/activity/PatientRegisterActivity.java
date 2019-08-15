@@ -90,7 +90,8 @@ public class PatientRegisterActivity extends AppCompatActivity {
     private HaniotNetRepository haniotNetRepository;
     private PatientDAO patientDAO;
     private boolean isEdit = false;
-    private PilotStudy pilotStudy;
+    private User user;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -154,7 +155,7 @@ public class PatientRegisterActivity extends AppCompatActivity {
         } else {
             patient.setGender(PatientsType.GenderType.FEMALE);
         }
-        patient.setPilotId(appPreferencesHelper.getLastPilotStudy().get_id());
+        patient.setPilotId(user.getPilotStudyIDSelected());
         Log.i(TAG, patient.toJson());
 
         if (isEdit) {
@@ -195,7 +196,7 @@ public class PatientRegisterActivity extends AppCompatActivity {
      */
     private void associatePatientToPilotStudy() {
         DisposableManager.add(haniotNetRepository
-                .associatePatientToPilotStudy(pilotStudy.get_id(), patient.get_id())
+                .associatePatientToPilotStudy(user.getPilotStudyIDSelected(), patient.get_id())
                 .subscribe(o -> {
                     Log.w(TAG, "Patient associated to pilotstudy");
                     patientDAO.save(patient);
@@ -359,7 +360,7 @@ public class PatientRegisterActivity extends AppCompatActivity {
         haniotNetRepository = HaniotNetRepository.getInstance(this);
         patientDAO = PatientDAO.getInstance(this);
         myCalendar = Calendar.getInstance();
-        pilotStudy = appPreferencesHelper.getLastPilotStudy();
+        user = appPreferencesHelper.getUserLogged();
         fab.setOnClickListener(fabClick);
 
         if (isEdit) {
