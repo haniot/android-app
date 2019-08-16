@@ -69,7 +69,7 @@ public class ManagerPatientsActivity extends AppCompatActivity {
     private SearchView searchView;
     private AppPreferencesHelper appPreferencesHelper;
     private HaniotNetRepository haniotNetRepository;
-    User user;
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,14 +102,11 @@ public class ManagerPatientsActivity extends AppCompatActivity {
         user = appPreferencesHelper.getUserLogged();
         disableBack();
 
-        addPatient.setOnClickListener(v -> {
-            startActivity(new Intent(getApplicationContext(), PatientRegisterActivity.class));
-            finish();
-        });
-        addPatientShortCut.setOnClickListener(v -> {
-            startActivity(new Intent(getApplicationContext(), PatientRegisterActivity.class));
-            finish();
-        });
+        View.OnClickListener onClickListener = v -> {
+            startActivity(new Intent(this, PatientRegisterActivity.class));
+        };
+        addPatient.setOnClickListener(onClickListener);
+        addPatientShortCut.setOnClickListener(onClickListener);
         initDataSwipeRefresh();
     }
 
@@ -252,26 +249,6 @@ public class ManagerPatientsActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         loadData();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-        //Adiciona o menu a activity
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_manage_patient, menu);
-
-        //Botão search na toolbar
-        MenuItem searchBtn = menu.findItem(R.id.btnSearchPatient);
-        this.searchView = (SearchView) searchBtn.getActionView();
-        searchView.setIconifiedByDefault(true);
-        searchView.setMaxWidth(Integer.MAX_VALUE);
-        searchView.setIconified(false);
-        searchView.setBackgroundColor(getResources().getColor(android.R.color.transparent));
-        EditText searchEditText = searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
-        searchEditText.setTextColor(Color.WHITE);
-
-        return super.onCreateOptionsMenu(menu);
     }
 
     @Override

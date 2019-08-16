@@ -74,7 +74,7 @@ public interface HaniotService {
 
     @PATCH("users/admins/{admin_id}")
     Single<Admin> updateAdmin(
-            @Path("healthprofessional_id") String healthProfessionalId,
+            @Path("admin_id") String healthProfessionalId,
             @Body User healthProfissional
     );
 

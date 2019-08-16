@@ -97,7 +97,7 @@ public class DashboardChartsFragment extends Fragment {
         } else if (preferencesHelper.getUserLogged().getUserType().equals(ADMIN)) {
             textProfessional.setText("Administrador");
         }
-        if (user.getPilotStudyIDSelected() != null)
+        if (user.getPilotStudyIDSelected() != null || user.getPilotStudyIDSelected().isEmpty())
             textPilotStudy.setText(preferencesHelper.getLastPilotStudy().getName());
         if (preferencesHelper.getUserLogged().getName() != null)
             textProfessional.setText(preferencesHelper.getUserLogged().getName());

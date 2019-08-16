@@ -88,6 +88,7 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
 
         toolbar.setTitle(getResources().getString(R.string.app_name));
         setSupportActionBar(toolbar);
+        toolbar.requestFocus();
         appPreferences = AppPreferencesHelper.getInstance(this);
         dashboardChartsFragment = DashboardChartsFragment.newInstance();
         measurementsGridFragment = MeasurementsGridFragment.newInstance();
@@ -124,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
         super.onResume();
         // Verify the pilot is selected
         Log.w("AAA", "" + userLogged.getPilotStudyIDSelected());
-        if (userLogged.getPilotStudyIDSelected() == null
+        if ((userLogged.getPilotStudyIDSelected() == null || userLogged.getPilotStudyIDSelected().isEmpty())
                 && !appPreferences.getUserLogged().getUserType().equals(PATIENT)) {
             startActivity(new Intent(this, WelcomeActivity.class));
         } else {
@@ -329,7 +330,7 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
             int status = NetworkUtil.getConnectivityStatusString(context);
-            if ("android.net.conn.CONNECTIVITY_CHANGE" .equals(intent.getAction())) {
+            if ("android.net.conn.CONNECTIVITY_CHANGE".equals(intent.getAction())) {
                 if (status == NetworkUtil.NETWORK_STATUS_NOT_CONNECTED) {
                     Log.w(LOG_TAG, "mReceiver: wifi desligado");
                     dashboardChartsFragment.showMessageConnection("wifi", true);

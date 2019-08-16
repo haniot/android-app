@@ -91,6 +91,7 @@ public class PatientRegisterActivity extends AppCompatActivity {
     private PatientDAO patientDAO;
     private boolean isEdit = false;
     private User user;
+    private String oldEmail;
 
 
     @Override
@@ -127,6 +128,11 @@ public class PatientRegisterActivity extends AppCompatActivity {
             birthEdittext.setError(getResources().getString(R.string.required_field));
             validated = false;
         }
+
+        if (emailEditTExt.getText().length() > 0 && !android.util.Patterns.EMAIL_ADDRESS.matcher(emailEditTExt.getText()).matches()) {
+            emailEditTExt.setError(getResources().getString(R.string.validate_email));
+            validated = false;
+        }
         return validated;
     }
 
@@ -142,23 +148,33 @@ public class PatientRegisterActivity extends AppCompatActivity {
     private void savePatient() {
         Log.w("aa", "AAAA");
         if (!isEdit) patient = new Patient();
+
         patient.setName(nameEditTExt.getText().toString());
-        if (emailEditTExt.getText().toString().isEmpty()) {
-            patient.setEmail(null);
+
+        if (isEdit) {
+            if ((emailEditTExt.getText().toString().equals(patient.getEmail()))
+                    || emailEditTExt.getText().toString().isEmpty()) {
+                patient.setEmail(null);
+            } else patient.setEmail(emailEditTExt.getText().toString());
         } else {
-            patient.setEmail(emailEditTExt.getText().toString());
+            if (emailEditTExt.getText().toString().isEmpty()) patient.setEmail(null);
+            else patient.setEmail(emailEditTExt.getText().toString());
         }
+
         patient.setPhoneNumber(phoneEdittext.getText().toString());
         patient.setBirthDate(DateUtils.formatDate(myCalendar.getTimeInMillis(), "yyyy-MM-dd"));
+        Log.w("AAA", "patient BirthDate: " + patient.getBirthDate());
         if (genderGroup.getCheckedRadioButtonId() == R.id.male) {
             patient.setGender(PatientsType.GenderType.MALE);
         } else {
             patient.setGender(PatientsType.GenderType.FEMALE);
         }
+
         patient.setPilotId(user.getPilotStudyIDSelected());
         Log.i(TAG, patient.toJson());
 
         if (isEdit) {
+            Log.w("AAA", "patient to edit: " + patient.toJson());
             DisposableManager.add(haniotNetRepository
                     .updatePatient(patient)
                     .doOnSubscribe(disposable -> showLoading(true))
@@ -282,7 +298,7 @@ public class PatientRegisterActivity extends AppCompatActivity {
                 .subscribe(patient1 -> {
                     if (patient1.getEmail() != null) patient.setEmail(patient1.getEmail());
                     if (patient1.getName() != null) patient.setName(patient1.getName());
-
+                    oldEmail = patient1.getEmail();
                     prepareView();
                     enabledView(true);
                 }, this::errorHandler)
@@ -329,7 +345,14 @@ public class PatientRegisterActivity extends AppCompatActivity {
         emailEditTExt.setText(patient.getEmail());
         phoneEdittext.setText(patient.getPhoneNumber());
         birthEdittext.setText(DateUtils.formatDate(patient.getBirthDate(), getString(R.string.date_format)));
-        myCalendar = DateUtils.convertStringDateToCalendar(patient.getBirthDate(), getResources().getString(R.string.date_format));
+
+
+        Log.w("AAA", patient.getBirthDate());
+        Log.w("AAA", DateUtils.convertStringDateToCalendar(patient.getBirthDate(), null).getTime().toString());
+
+        myCalendar = DateUtils.convertStringDateToCalendar(patient.getBirthDate(), null);
+
+
         if (patient.getGender().equals(PatientsType.GenderType.MALE))
             genderGroup.check(R.id.male);
         else genderGroup.check(R.id.female);

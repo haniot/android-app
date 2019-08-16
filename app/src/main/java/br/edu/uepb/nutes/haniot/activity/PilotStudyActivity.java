@@ -1,6 +1,7 @@
 package br.edu.uepb.nutes.haniot.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
@@ -9,6 +10,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AnimationUtils;
@@ -23,6 +25,9 @@ import java.util.Objects;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.adapter.PilotStudyAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
+import br.edu.uepb.nutes.haniot.data.model.Admin;
+import br.edu.uepb.nutes.haniot.data.model.HealthProfessional;
+import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.PilotStudy;
 import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
@@ -33,6 +38,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static br.edu.uepb.nutes.haniot.data.model.UserType.ADMIN;
+import static br.edu.uepb.nutes.haniot.data.model.UserType.HEALTH_PROFESSIONAL;
+import static br.edu.uepb.nutes.haniot.data.model.UserType.NUTRITION;
+import static br.edu.uepb.nutes.haniot.data.model.UserType.PATIENT;
 
 /**
  * Implementation of the pilot study selection list.
@@ -100,7 +108,6 @@ public class PilotStudyActivity extends AppCompatActivity {
         user = appPreferences.getUserLogged();
 
         initComponents();
-//        showErrorPilot(false);
     }
 
     @Override
@@ -243,11 +250,46 @@ public class PilotStudyActivity extends AppCompatActivity {
         pilot.setSelected(true);
         pilot.setUserId(user.get_id());
         user.setPilotStudyIDSelected(pilot.get_id());
+        appPreferences.removeLastPilotStudy();
         appPreferences.saveLastPilotStudy(pilot);
         appPreferences.saveUserLogged(user);
-        // Back activity
-        setResult(Activity.RESULT_OK);
-        finish();
+        if (user.getUserType().equals(PATIENT)) {
+            Patient patient = new Patient();
+            patient.set_id(user.get_id());
+            patient.setPilotStudyIDSelected(pilot.get_id());
+            DisposableManager.add(haniotNetRepository.updatePatient(patient).subscribe(patient1 -> {
+                openDashboard();
+            }, throwable -> {
+                Log.w("AAA", throwable.getMessage());
+            }));
+        } else if (user.getUserType().equals(ADMIN)) {
+            Admin admin = new Admin();
+            admin.set_id(user.get_id());
+            admin.setPilotStudyIDSelected(pilot.get_id());
+
+            DisposableManager.add(haniotNetRepository.updateAdmin(admin).subscribe(admin1 -> {
+                openDashboard();
+            }, throwable -> {
+                Log.w("AAA", throwable.getMessage());
+            }));
+        } else if (user.getUserType().equals(HEALTH_PROFESSIONAL)) {
+            HealthProfessional healthProfessional = new HealthProfessional();
+            healthProfessional.set_id(user.get_id());
+            healthProfessional.setPilotStudyIDSelected(pilot.get_id());
+            DisposableManager.add(haniotNetRepository.updateHealthProfissional(healthProfessional).subscribe(healthProfessional1 -> {
+                openDashboard();
+            }, throwable -> {
+                Log.w("AAA", throwable.getMessage());
+
+            }));
+        }
+
+    }
+
+    private void openDashboard() {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 
     /**
@@ -274,7 +316,6 @@ public class PilotStudyActivity extends AppCompatActivity {
                     .doOnSubscribe(disposable -> showLoading(true))
                     .doAfterTerminate(() -> showLoading(false))
                     .subscribe(pilotStudies -> {
-
                         for (PilotStudy pilot : pilotStudies) {
                             if (user.getPilotStudyIDSelected() != null && pilot.get_id().equals(user.getPilotStudyIDSelected())) {
                                 pilot.setSelected(true);
@@ -291,7 +332,6 @@ public class PilotStudyActivity extends AppCompatActivity {
                     .doOnSubscribe(disposable -> showLoading(true))
                     .doAfterTerminate(() -> showLoading(false))
                     .subscribe(pilotStudies -> {
-
                         for (PilotStudy pilot : pilotStudies) {
                             if (user.getPilotStudyIDSelected() != null && pilot.get_id().equals(user.getPilotStudyIDSelected())) {
                                 pilot.setSelected(true);

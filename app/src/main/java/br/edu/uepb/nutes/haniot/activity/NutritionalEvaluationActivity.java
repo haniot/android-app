@@ -38,7 +38,6 @@ import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.haniot.devices.GlucoseActivity;
-import br.edu.uepb.nutes.haniot.devices.HeartRateActivity;
 import br.edu.uepb.nutes.haniot.devices.ScaleActivity;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
@@ -224,12 +223,6 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
                 itemsLoading, WAIST_CIRCUMFERENCE));
 
         itemsLoading = new ArrayList<>();
-        itemsLoading.add(new ItemEvaluation(R.drawable.xcardiogram, TYPE_LOADING,
-                getString(R.string.heart_rate), HEARTRATE));
-        groupItemEvaluations.add(new GroupItemEvaluation(getString(R.string.heart_rate),
-                itemsLoading, HEARTRATE));
-
-        itemsLoading = new ArrayList<>();
         itemsLoading.add(new ItemEvaluation(R.drawable.xblood_pressure, TYPE_LOADING,
                 getString(R.string.blood_pressure), BLOOD_PRESSURE));
         groupItemEvaluations.add(new GroupItemEvaluation(getString(R.string.blood_pressure),
@@ -411,9 +404,6 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
      */
     private void prepareMeasurements(MeasurementLastResponse measurementLastResponse) {
         Log.w("AAA", "A " + measurementLastResponse);
-        if (measurementLastResponse.getHeartRate() != null && measurementLastResponse.getHeartRate().get_id() != null)
-            prepareMeasurement(measurementLastResponse.getHeartRate(), HEARTRATE);
-        else prepareMeasurement(null, HEARTRATE);
         if (measurementLastResponse.getBloodPressure() != null && measurementLastResponse.getBloodPressure().get_id() != null)
             prepareMeasurement(measurementLastResponse.getBloodPressure(), BLOOD_PRESSURE);
         else prepareMeasurement(null, BLOOD_PRESSURE);
@@ -458,10 +448,11 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
 
             List<Measurement> measurements = new ArrayList<>();
             measurements.add(measurementLastResponse.getBloodPressure());
-            measurements.add(measurementLastResponse.getHeartRate());
             measurements.add(measurementLastResponse.getWaistCircumference());
             measurements.add(measurementLastResponse.getTemperature());
             measurements.add(measurementLastResponse.getWeight());
+            measurements.add(measurementLastResponse.getBloodGlucose());
+            measurements.add(measurementLastResponse.getHeight());
 
             nutritionalEvaluation.setMeasurements(measurements);
             Log.i("AAA", "Saida: " + nutritionalEvaluation.toJson());
@@ -517,9 +508,6 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
         switch (type) {
             case GLUCOSE:
                 intent = new Intent(this, GlucoseActivity.class);
-                break;
-            case HEARTRATE:
-                intent = new Intent(this, HeartRateActivity.class);
                 break;
             case WEIGHT:
                 intent = new Intent(this, ScaleActivity.class);
