@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -19,6 +20,8 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -27,10 +30,8 @@ import com.github.clans.fab.FloatingActionMenu;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.SettingsActivity;
-import br.edu.uepb.nutes.haniot.data.model.HealthProfessional;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.User;
-import br.edu.uepb.nutes.haniot.data.model.UserType;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.fragment.DashboardChartsFragment;
 import br.edu.uepb.nutes.haniot.fragment.MeasurementsGridFragment;
@@ -38,7 +39,6 @@ import br.edu.uepb.nutes.haniot.utils.NetworkUtil;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static br.edu.uepb.nutes.haniot.data.model.UserType.ADMIN;
 import static br.edu.uepb.nutes.haniot.data.model.UserType.DENTISTRY;
 import static br.edu.uepb.nutes.haniot.data.model.UserType.HEALTH_PROFESSIONAL;
 import static br.edu.uepb.nutes.haniot.data.model.UserType.NUTRITION;
@@ -59,9 +59,11 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
     FrameLayout frameChart;
     @BindView(R.id.frameMeasurements)
     FrameLayout frameMeasurements;
+    @BindView(R.id.nestedScrollView)
+    NestedScrollView nestedScrollView;
 
     @BindView(R.id.patient_actions)
-    FloatingActionMenu patientActionsMenu;
+    public FloatingActionMenu patientActionsMenu;
 
     @BindView(R.id.evaluation_nutrition)
     FloatingActionButton nutritioEvaluation;
@@ -100,6 +102,7 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
         setupPatientActions();
         Log.w("AAA", "User type: " + appPreferences.getUserAccessHaniot());
         Log.w("AAA", "User: " + appPreferences.getUserLogged());
+
 
     }
 
@@ -144,6 +147,13 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
      */
     private void setupPatientActions() {
 
+        nestedScrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+            if (scrollY > oldScrollY) {
+                patientActionsMenu.hideMenu(true);
+            } else {
+                patientActionsMenu.showMenu(true);
+            }
+        });
         quizOdonto.setOnClickListener(v -> {
             startActivity(new Intent(this, QuizOdontologyActivity.class));
             finish();

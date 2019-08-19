@@ -177,6 +177,11 @@ public class HistoricQuizAdapter extends CustomExpandableRecyclerViewAdapter<His
         h.checkItem.setVisibility(View.INVISIBLE);
     }
 
+    private String getString(int id) {
+        String string = context.getResources().getString(id);
+        return string;
+    }
+
     /**
      * View responsible for displaying questionnaire data.
      *
@@ -198,10 +203,10 @@ public class HistoricQuizAdapter extends CustomExpandableRecyclerViewAdapter<His
         switch (ig.getTypeEvaluation()) {
             case SLEEP_HABITS:
                 SleepHabit sleepHabit = ig.getSleepHabit();
-                stringBuilder.append("<h4>" + "Dorme às " + "</h4><p>").append(sleepHabit.getWeekDaySleep())
-                        .append(" horas");
-                stringBuilder.append("<h4>" + "Acorda às " + "</h4><p>").append(sleepHabit.getWeekDayWakeUp())
-                        .append(" horas");
+                stringBuilder.append("<h4>" + getString(R.string.sleep_at) + " </h4><p>").append(sleepHabit.getWeekDaySleep())
+                        .append(getString(R.string.hours));
+                stringBuilder.append("<h4>" + getString(R.string.wakeup_at) + " </h4><p>").append(sleepHabit.getWeekDayWakeUp())
+                        .append(getString(R.string.hours));
                 break;
             case MEDICAL_RECORDS:
                 MedicalRecord medicalRecord = ig.getMedicalRecord();
@@ -218,9 +223,9 @@ public class HistoricQuizAdapter extends CustomExpandableRecyclerViewAdapter<His
                 break;
             case FEEDING_HABITS:
                 FeedingHabitsRecord feedingHabitsRecord = ig.getFeedingHabitsRecord();
-                stringBuilder.append("<h4>" + "Copos de água por dia" + "</h4>").append(FeendingHabitsRecordType.OneDayFeedingAmount
+                stringBuilder.append("<h4>" + getString(R.string.water_cup) + "</h4>").append(FeendingHabitsRecordType.OneDayFeedingAmount
                         .getStringPTBR(feedingHabitsRecord.getDailyWaterGlasses()));
-                stringBuilder.append("<h4>" + "Café da manhã" + "</h4>").append(FeendingHabitsRecordType.OneDayFeedingAmount
+                stringBuilder.append("<h4>" + getString(R.string.breakfast) + "</h4>").append(FeendingHabitsRecordType.OneDayFeedingAmount
                         .getStringPTBR(feedingHabitsRecord.getBreakfastDailyFrequency()));
                 for (WeeklyFoodRecord weeklyFoodRecord : feedingHabitsRecord.getWeeklyFeedingHabits())
                     stringBuilder
@@ -231,57 +236,85 @@ public class HistoricQuizAdapter extends CustomExpandableRecyclerViewAdapter<His
                 break;
             case PHYSICAL_ACTIVITY:
                 PhysicalActivityHabit physicalActivityHabit = ig.getPhysicalActivityHabit();
-                stringBuilder.append("<h4>" + "Esportes praticados durante a semana" + "</h4>");
+                stringBuilder.append("<h4>" + getString(R.string.sports_in_week) + "</h4>");
                 for (String sport : physicalActivityHabit.getWeeklyActivities()) {
                     stringBuilder.append("<p>" + SportsType.getStringPtBr(context, sport) + "</p>");
                 }
-                stringBuilder.append("<h4>" + "Frequência de atividades físicas na escola" + "</h4>")
+                stringBuilder.append("<h4>" + getString(R.string.physical_school) + "</h4>")
                         .append(SchoolActivityFrequencyType
                                 .getStringPTBR(physicalActivityHabit.getSchoolActivityFreq()));
                 break;
             case FAMILY_COHESION:
                 FamilyCohesionRecord familyCohesionRecord = ig.getFamilyCohesionRecord();
-                stringBuilder.append("<h4>" + "Os membros da família pedem ajuda uns aos outros?" + "</h4><p>")
+                stringBuilder.append("<h4>" + getString(R.string.help_family) + "</h4><p>")
                         .append(FrequencyAnswersType.Frequency.getStringPTBR(familyCohesionRecord.getFamilyDecisionSupportFreq()))
-                        .append("</p><h4>" + "Aprovamos os amigos que cada um tem ?" + "</h4><p>")
+                        .append("</p><h4>" + getString(R.string.approval_friends) + "</h4><p>")
                         .append(FrequencyAnswersType.Frequency.getStringPTBR(familyCohesionRecord.getFriendshipApprovalFreq()))
-                        .append("</p><h4>" + "Gostamos de fazer coisas apenas com nossa família?" + "</h4><p>")
+                        .append("</p><h4>" + getString(R.string.only_family) + "</h4><p>")
                         .append(FrequencyAnswersType.Frequency.getStringPTBR(familyCohesionRecord.getFamilyOnlyPreferenceFreq()))
-                        .append("</p><h4>" + "Os membros da família sentem-se mais próximos entre si que com pessoas estranhas à família?" + "</h4><p>")
+                        .append("</p><h4>" + getString(R.string.not_strangers) + "</h4><p>")
                         .append(FrequencyAnswersType.Frequency.getStringPTBR(familyCohesionRecord.getFamilyMutualAidFreq()))
-                        .append("</p><h4>" + "Os membros da família gostam de passar o tempo livre juntos?" + "</h4><p>")
+                        .append("</p><h4>" + getString(R.string.family_freetime) + "</h4><p>")
                         .append(FrequencyAnswersType.Frequency.getStringPTBR(familyCohesionRecord.getFreeTimeTogetherFreq()))
-                        .append("</p><h4>" + "Os membros da família se sentem muito próximos uns aos outros?" + "</h4><p>")
+                        .append("</p><h4>" + getString(R.string.family_union) + "</h4><p>")
                         .append(FrequencyAnswersType.Frequency.getStringPTBR(familyCohesionRecord.getFamilyProximityPerceptionFreq()))
-                        .append("</p><h4>" + "Estamos todos presentes quando compartilhamos atividades em nossa família?" + "</h4><p>")
+                        .append("</p><h4>" + getString(R.string.family_share) + "</h4><p>")
                         .append(FrequencyAnswersType.Frequency.getStringPTBR(familyCohesionRecord.getAllFamilyTasksFreq()))
-                        .append("</p><h4>" + "Facilmente nos ocorrem que podemos fazer juntos, em família?" + "</h4><p>")
+                        .append("</p><h4>" + getString(R.string.easy_family) + "</h4><p>")
                         .append(FrequencyAnswersType.Frequency.getStringPTBR(familyCohesionRecord.getFamilyTasksOpportunityFreq()))
-                        .append("</p><h4>" + "Os membros da família consultam outras pessoas da família para tomarem suas decisões?" + "</h4><p>")
+                        .append("</p><h4>" + getString(R.string.family_decision) + "</h4><p>")
                         .append(FrequencyAnswersType.Frequency.getStringPTBR(familyCohesionRecord.getFamilyDecisionSupportFreq()))
-                        .append("</p><h4>" + "União familiar é muito importante?" + "</h4><p>")
+                        .append("</p><h4>" + getString(R.string.familiy_union_important) + "</h4><p>")
                         .append(FrequencyAnswersType.Frequency.getStringPTBR(familyCohesionRecord.getFamilyUnionRelevanceFreq()));
                 break;
             case ORAL_HEALTH:
                 OralHealthRecord oralHealthRecord = ig.getOralHealthRecord();
-                stringBuilder.append("</p><h4>" + "Escovação de dentes ao dia" + "</h4><p>")
+                if (ig.getOralHealthRecord() == null) break;
+                stringBuilder.append("</p><h4>" + getString(R.string.tooth_higien) + "</h4><p>")
                         .append(ToothLesionType.TeethBrushingFreq.getStringPtBr(oralHealthRecord.getTeethBrushingFreq()));
-                if (oralHealthRecord.getToothLesions().isEmpty()) {
-                    stringBuilder.append("<p>" + "Não possui algum tipo de cárie dentária" + "</p>");
-                } else
-                    for (ToothLesion toothLesion : oralHealthRecord.getToothLesions()) {
-                        stringBuilder.append("<h4>" + ToothLesionType.LesionType.getStringPtBr(toothLesion.getLesionType()))
-                                .append(" em ")
-                                .append(ToothLesionType.ToothType.getStringPtbr(toothLesion.getToothType()) + "</h4>");
-                    }
+
+                List<ToothLesion> toothLesions = oralHealthRecord.getToothLesions();
+                ToothLesion whiteSpotLesionDeciduousTooth = new ToothLesion("deciduous_tooth", "white_spot_lesion");
+                ToothLesion whiteSpotLesionPermanentTooth = new ToothLesion("permanent_tooth", "white_spot_lesion");
+                ToothLesion cavitatedLesionDeciduousTooth = new ToothLesion("deciduous_tooth", "cavitated_lesion");
+                ToothLesion cavitatedLesionPermanentTooth = new ToothLesion("permanent_tooth", "cavitated_lesion");
+
+                stringBuilder.append("</p><h4>" + getString(R.string.white_spot_lesion_deciduous_tooth) + "</h4><p>");
+                if (toothLesions.contains(whiteSpotLesionDeciduousTooth))
+                    stringBuilder.append(getString(R.string.yes_text) + "</p>");
+                else stringBuilder.append(getString(R.string.no_text) + "</p>");
+
+                stringBuilder.append("</p><h4>" + getString(R.string.white_spot_lesion_permanent_tooth) + "</h4><p>");
+                if (toothLesions.contains(whiteSpotLesionPermanentTooth))
+                    stringBuilder.append(getString(R.string.yes_text) + "</p>");
+                else stringBuilder.append(getString(R.string.no_text) + "</p>");
+
+                stringBuilder.append("</p><h4>" + getString(R.string.cavitated_lesion_deciduous_tooth) + "</h4><p>");
+                if (toothLesions.contains(cavitatedLesionDeciduousTooth))
+                    stringBuilder.append(getString(R.string.yes_text) + "</p>");
+                else stringBuilder.append(getString(R.string.no_text) + "</p>");
+
+                stringBuilder.append("</p><h4>" + getString(R.string.cavitated_lesion_permanent_tooth) + "</h4><p>");
+                if (toothLesions.contains(cavitatedLesionPermanentTooth))
+                    stringBuilder.append(getString(R.string.yes_text) + "</p>");
+                else stringBuilder.append(getString(R.string.no_text) + "</p>");
+//
+//                if (oralHealthRecord.getToothLesions().isEmpty()) {
+//                    stringBuilder.append("<p>" + "Não possui algum tipo de cárie dentária" + "</p>");
+//                } else
+//                    for (ToothLesion toothLesion : oralHealthRecord.getToothLesions()) {
+//                        stringBuilder.append("<h4>" + ToothLesionType.LesionType.getStringPtBr(toothLesion.getLesionType()))
+//                                .append(" em ")
+//                                .append(ToothLesionType.ToothType.getStringPtbr(toothLesion.getToothType()) + "</h4>");
+//                    }
                 break;
             case SOCIODEMOGRAPHICS:
                 SociodemographicRecord sociodemographicRecord = ig.getSociodemographicRecord();
-                stringBuilder.append("<h4>" + "Cor/raça" + "</h4><p>")
+                stringBuilder.append("<h4>" + getString(R.string.color_race) + "</h4><p>")
                         .append(SociodemographicType.ColorRace.getStringPtBr(sociodemographicRecord.getColorRace()))
-                        .append("</p><h4>" + "Escolaridade da mãe" + "</h4><p>")
+                        .append("</p><h4>" + getString(R.string.schoolarity_mother) + "</h4><p>")
                         .append(SociodemographicType.MotherScholarity.getStringPtBr(sociodemographicRecord.getMotherScholarity()))
-                        .append("</p><h4>" + "Número de pessoas em casa" + "</h4><p>")
+                        .append("</p><h4>" + getString(R.string.people_in_home) + "</h4><p>")
                         .append(sociodemographicRecord.getPeopleInHome());
                 break;
         }

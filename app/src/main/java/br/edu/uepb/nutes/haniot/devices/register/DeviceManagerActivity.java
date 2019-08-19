@@ -204,7 +204,9 @@ public class DeviceManagerActivity extends AppCompatActivity {
                             Log.w("AAA", Arrays.toString(devices.toArray()));
                             contentDevices.setVisibility(View.VISIBLE);
                             populateDevicesRegistered(setImagesDevices(devices));
-                            populateDevicesAvailable(devices);
+
+
+                            populateDevicesAvailable(mDeviceDAO.list(user.get_id()));
                             showErrorConnection(false);
                         }, err -> showErrorConnection(true))
         );
@@ -343,9 +345,13 @@ public class DeviceManagerActivity extends AppCompatActivity {
     private void removePendingDevices() {
         Log.w("XXX", "removePendingDevices()");
         if (deviceIdToDelete == null || deviceIdToDelete.isEmpty()) return;
-        for (String id : deviceIdToDelete)
+        for (String idDevice : deviceIdToDelete)
             DisposableManager.add(haniotRepository
-                    .deleteDevice(user.get_id(), id).subscribe(() -> deviceIdToDelete.remove(id)));
+                    .deleteDevice(user.get_id(), idDevice).subscribe(() -> {
+                        mDeviceDAO.remove(idDevice);
+                        deviceIdToDelete.remove(idDevice);
+
+                    }));
     }
 
     /**
@@ -455,10 +461,12 @@ public class DeviceManagerActivity extends AppCompatActivity {
     private List<Device> mergeDevicesAvailableRegistered(List<Device> registeredList,
                                                          List<Device> availableList) {
 
+        Log.w("AAA", "DAO: " + Arrays.toString(registeredList.toArray()));
         Log.w("AAA", "Available");
         for (Device device : availableList) {
             Log.w("AAA", device.toJson());
         }
+
         // Add only devices that have not been registered
         Log.w("AAA", "Registered");
         for (Device d : registeredList) {

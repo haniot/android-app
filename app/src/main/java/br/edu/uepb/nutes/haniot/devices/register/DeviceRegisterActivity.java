@@ -101,6 +101,9 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     @BindView(R.id.img_device_register)
     ImageView imgDeviceRegister;
 
+    @BindView(R.id.img_device_sucess)
+    ImageView imgDeviceSucess;
+
     @BindView(R.id.btn_close_register)
     ImageButton btnCloseRegister;
 
@@ -174,7 +177,6 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
             mDevice.setAddress(device.getAddress());
             unpairDevice(mDevice);
             mDevice.setUserId(user.get_id());
-            removeDeviceFromList(mDevice);
             device.createBond();
             animationScanner(false);
             progressBarPairing.setVisibility(View.VISIBLE);
@@ -195,37 +197,20 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         Log.i("AAA", device.toJson());
         device.setModelNumber(null); // TODO Remover quando a API der suporte
         device.setUserId(user.get_id());
-        Log.w("AAA", device.toJson());
         DisposableManager.add(haniotRepository
                 .saveDevice(device)
                 .subscribe(deviceRest -> {
                     deviceRest.setImg(device.getImg());
-                    Log.w("AAA", String.valueOf(mDeviceDAO.save(deviceRest)));
+                    deviceRest.setUserId(user.get_id());
+                    Log.w("AAA", "User: " + user.get_id());
+                    Log.w("AAA", "subscribe: " + deviceRest.toJson());
+                    mDeviceDAO.save(deviceRest);
                     onDeviceRegistered(mDevice);
                 }, err -> {
                     onDeviceFounded(null);
                     Log.w(LOG_TAG, "ERROR SAVE:" + err.getMessage() + device);
                 })
         );
-    }
-
-    /**
-     * Remove device according to its type.
-     * This ensures that only one device per type will be registered.
-     *
-     * @param device {@link Device}
-     */
-    public void removeDeviceFromList(Device device) {
-        Device registered = mDeviceDAO.getByType(user.get_id(), mDevice.getType());
-        Log.w(LOG_TAG, "registered:" + registered);
-        if (registered != null) {
-            DisposableManager.add(
-                    haniotRepository
-                            .deleteDevice(user.get_id(), registered.get_id())
-                            .subscribe(() -> {
-                                mDeviceDAO.remove(registered.getAddress());
-                            }, err -> Log.w(LOG_TAG, "ERROR DELETE:" + err.getMessage())));
-        }
     }
 
     /**
@@ -454,9 +439,12 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         nameDeviceScannerRegister.setText(mDevice.getName());
         if (mDevice.getName().equalsIgnoreCase(NAME_DEVICE_THERM_DL8740)) {
             imgDeviceRegister.setImageResource(R.drawable.device_thermometer_philips_dl8740);
+            imgDeviceSucess.setImageResource(R.drawable.device_thermometer_philips_dl8740);
             return;
         }
         imgDeviceRegister.setImageResource(mDevice.getImg());
+        imgDeviceSucess.setImageResource(mDevice.getImg());
+
     }
 
     public void animationScanner(boolean show) {
@@ -511,9 +499,11 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         } else if (id == R.id.btn_close_response) {
             finish();
         } else if (id == R.id.btn_try_again) {
+            boxError.setVisibility(View.GONE);
+            boxResponse.setVisibility(View.GONE);
+            boxScanner.setVisibility(View.GONE);
             boxRegister.setVisibility(View.VISIBLE);
             showLoadingPairing(false);
-            boxError.setVisibility(View.GONE);
         }
     }
 }

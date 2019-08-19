@@ -77,6 +77,8 @@
         app:menu_icon="@drawable/ic_add"
         fab:menu_labels_colorNormal="@color/cardview_light_background"
         fab:menu_labels_ellipsize="end"
+        app:menu_fab_hide_animation="@anim/hide_to_bottom"
+        app:menu_fab_show_animation="@anim/show_from_bottom"
         fab:menu_labels_singleLine="true"
         fab:menu_labels_textColor="@color/cardview_dark_background"
         android:layout_width="match_parent"

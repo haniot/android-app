@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.Preference;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -95,6 +96,24 @@ public class ManagerPatientsActivity extends AppCompatActivity {
      * Init resources.
      */
     private void initResources() {
+        recyclerViewPatient.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0 || dy < 0 && addPatient.isShown()) {
+                    addPatient.hide();
+                }
+            }
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    addPatient.hide();
+                } else if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    addPatient.show();
+                }
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+        });
         message.setVisibility(View.INVISIBLE);
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
         haniotNetRepository = HaniotNetRepository.getInstance(this);
@@ -157,16 +176,16 @@ public class ManagerPatientsActivity extends AppCompatActivity {
         adapter.setPatientActionListener(new ManagerPatientAdapter.ActionsPatientListener() {
             @Override
             public void onMenuClick(String action, Patient patient) {
-                if ("quiz_dentistry" .equals(action)) {
+                if ("quiz_dentistry".equals(action)) {
                     appPreferencesHelper.saveLastPatient(patient);
                     startActivity(new Intent(ManagerPatientsActivity.this, QuizOdontologyActivity.class));
-                } else if ("quiz_nutrition" .equals(action)) {
+                } else if ("quiz_nutrition".equals(action)) {
                     appPreferencesHelper.saveLastPatient(patient);
                     startActivity(new Intent(ManagerPatientsActivity.this, QuizNutritionActivity.class));
-                } else if ("nutrition_evaluation" .equals(action)) {
+                } else if ("nutrition_evaluation".equals(action)) {
                     appPreferencesHelper.saveLastPatient(patient);
                     startActivity(new Intent(ManagerPatientsActivity.this, NutritionalEvaluationActivity.class));
-                } else if ("historic_quiz" .equals(action)) {
+                } else if ("historic_quiz".equals(action)) {
                     appPreferencesHelper.saveLastPatient(patient);
                     startActivity(new Intent(ManagerPatientsActivity.this, HistoricQuizActivity.class));
                 }

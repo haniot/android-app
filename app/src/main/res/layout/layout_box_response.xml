@@ -56,7 +56,7 @@
             android:gravity="center">
 
             <ImageView
-                android:id="@+id/img_device_register"
+                android:id="@+id/img_device_sucess"
                 android:layout_gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

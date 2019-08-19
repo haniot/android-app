@@ -2,6 +2,7 @@ package br.edu.uepb.nutes.haniot.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +27,7 @@ import java.util.Locale;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.data.model.ChronicDisease;
 import br.edu.uepb.nutes.haniot.data.model.ChronicDiseaseType;
+import br.edu.uepb.nutes.haniot.data.model.FamilyCohesionRecord;
 import br.edu.uepb.nutes.haniot.data.model.FeedingHabitsRecord;
 import br.edu.uepb.nutes.haniot.data.model.FeendingHabitsRecordType;
 import br.edu.uepb.nutes.haniot.data.model.FoodType;
@@ -34,9 +36,15 @@ import br.edu.uepb.nutes.haniot.data.model.HeartRateItem;
 import br.edu.uepb.nutes.haniot.data.model.ItemEvaluation;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.MedicalRecord;
+import br.edu.uepb.nutes.haniot.data.model.OralHealthRecord;
 import br.edu.uepb.nutes.haniot.data.model.PhysicalActivityHabit;
 import br.edu.uepb.nutes.haniot.data.model.SchoolActivityFrequencyType;
 import br.edu.uepb.nutes.haniot.data.model.SleepHabit;
+import br.edu.uepb.nutes.haniot.data.model.SociodemographicRecord;
+import br.edu.uepb.nutes.haniot.data.model.SociodemographicType;
+import br.edu.uepb.nutes.haniot.data.model.SportsType;
+import br.edu.uepb.nutes.haniot.data.model.ToothLesion;
+import br.edu.uepb.nutes.haniot.data.model.ToothLesionType;
 import br.edu.uepb.nutes.haniot.data.model.TypeEvaluation;
 import br.edu.uepb.nutes.haniot.data.model.WeeklyFoodRecord;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
@@ -44,10 +52,13 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static android.view.View.GONE;
+import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.FAMILY_COHESION;
 import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.FEEDING_HABITS;
 import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.MEDICAL_RECORDS;
+import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.ORAL_HEALTH;
 import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.PHYSICAL_ACTIVITY;
 import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.SLEEP_HABITS;
+import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.SOCIODEMOGRAPHICS;
 
 public class EvaluationAdapter extends ExpandableRecyclerViewAdapter<EvaluationAdapter.HeaderViewHolder,
         EvaluationAdapter.ViewHolder> {
@@ -265,6 +276,11 @@ public class EvaluationAdapter extends ExpandableRecyclerViewAdapter<EvaluationA
         h.messageText.setVisibility(View.GONE);
     }
 
+    private String getString(int id) {
+        String string = context.getResources().getString(id);
+        return string;
+    }
+
     /**
      * View responsible for displaying questionnaire data.
      *
@@ -287,66 +303,122 @@ public class EvaluationAdapter extends ExpandableRecyclerViewAdapter<EvaluationA
         switch (ig.getTypeEvaluation()) {
             case SLEEP_HABITS:
                 SleepHabit sleepHabit = ig.getSleepHabit();
-                date = DateUtils.convertDateTimeUTCToLocale(sleepHabit.getCreatedAt(),
-                        context.getString(R.string.date_format));
-                time = DateUtils.convertDateTimeUTCToLocale(sleepHabit.getCreatedAt(),
-                        context.getString(R.string.time_format_simple));
-                stringBuilder.append("\nDorme às ").append(sleepHabit.getWeekDaySleep())
-                        .append(" horas");
-                stringBuilder.append("\nAcorda às ").append(sleepHabit.getWeekDayWakeUp())
-                        .append(" horas");
+                stringBuilder.append("<h4>" + getString(R.string.sleep_at) + " </h4><p>").append(sleepHabit.getWeekDaySleep())
+                        .append(getString(R.string.hours));
+                stringBuilder.append("<h4>" + getString(R.string.wakeup_at) + " </h4><p>").append(sleepHabit.getWeekDayWakeUp())
+                        .append(getString(R.string.hours));
                 break;
             case MEDICAL_RECORDS:
                 MedicalRecord medicalRecord = ig.getMedicalRecord();
-                date = DateUtils.convertDateTimeUTCToLocale(medicalRecord.getCreatedAt(),
-                        context.getString(R.string.date_format));
-                time = DateUtils.convertDateTimeUTCToLocale(medicalRecord.getCreatedAt(),
-                        context.getString(R.string.time_format_simple));
+                if (medicalRecord == null) return;
                 if (medicalRecord.getChronicDiseases() != null) {
                     for (ChronicDisease chronicDisease : medicalRecord.getChronicDiseases())
                         stringBuilder
-                                .append(ChronicDiseaseType.ChronicDisease
+                                .append("<h4>" + ChronicDiseaseType.ChronicDisease
                                         .getString_PTBR(chronicDisease.getType()))
-                                .append(": ")
+                                .append("</h4><p>")
                                 .append(ChronicDiseaseType.DisieaseHistory
-                                        .getStringPTBR(chronicDisease.getDiseaseHistory()))
-                                .append("\n");
+                                        .getStringPTBR(chronicDisease.getDiseaseHistory()));
                 }
                 break;
             case FEEDING_HABITS:
                 FeedingHabitsRecord feedingHabitsRecord = ig.getFeedingHabitsRecord();
-                date = DateUtils.convertDateTimeUTCToLocale(feedingHabitsRecord.getCreatedAt(),
-                        context.getString(R.string.date_format));
-                time = DateUtils.convertDateTimeUTCToLocale(feedingHabitsRecord.getCreatedAt(),
-                        context.getString(R.string.time_format_simple));
-                stringBuilder.append("\nCopos de água por dia: ").append(FeendingHabitsRecordType.OneDayFeedingAmount
+                stringBuilder.append("<h4>" + getString(R.string.water_cup) + "</h4>").append(FeendingHabitsRecordType.OneDayFeedingAmount
                         .getStringPTBR(feedingHabitsRecord.getDailyWaterGlasses()));
-                stringBuilder.append("\nCafé da manhã: ").append(FeendingHabitsRecordType.OneDayFeedingAmount
+                stringBuilder.append("<h4>" + getString(R.string.breakfast) + "</h4>").append(FeendingHabitsRecordType.OneDayFeedingAmount
                         .getStringPTBR(feedingHabitsRecord.getBreakfastDailyFrequency()));
                 for (WeeklyFoodRecord weeklyFoodRecord : feedingHabitsRecord.getWeeklyFeedingHabits())
                     stringBuilder
-                            .append("\n")
-                            .append(FoodType.getStringPTBR(weeklyFoodRecord.getFood()))
-                            .append(": ")
+                            .append("<h4>" + FoodType.getStringPTBR(weeklyFoodRecord.getFood()))
+                            .append("</h4><p>")
                             .append(FeendingHabitsRecordType.SevenDaysFeedingFrequency
                                     .getStringPTBR(weeklyFoodRecord.getSevenDaysFreq()));
                 break;
             case PHYSICAL_ACTIVITY:
                 PhysicalActivityHabit physicalActivityHabit = ig.getPhysicalActivityHabit();
-                date = DateUtils.convertDateTimeUTCToLocale(physicalActivityHabit.getCreatedAt(),
-                        context.getString(R.string.date_format));
-                time = DateUtils.convertDateTimeUTCToLocale(physicalActivityHabit.getCreatedAt(),
-                        context.getString(R.string.time_format_simple));
-                stringBuilder.append("\nEsportes praticados durante a semana: \n");
+                stringBuilder.append("<h4>" + getString(R.string.sports_in_week) + "</h4>");
                 for (String sport : physicalActivityHabit.getWeeklyActivities()) {
-                    stringBuilder.append(sport).append("\n");
+                    stringBuilder.append("<p>" + SportsType.getStringPtBr(context, sport) + "</p>");
                 }
-                stringBuilder.append("\nFrequência de atividades físicas na escola: \n")
+                stringBuilder.append("<h4>" + getString(R.string.physical_school) + "</h4>")
                         .append(SchoolActivityFrequencyType
                                 .getStringPTBR(physicalActivityHabit.getSchoolActivityFreq()));
                 break;
+            case FAMILY_COHESION:
+                FamilyCohesionRecord familyCohesionRecord = ig.getFamilyCohesionRecord();
+                stringBuilder.append("<h4>" + getString(R.string.help_family) + "</h4><p>")
+                        .append(FrequencyAnswersType.Frequency.getStringPTBR(familyCohesionRecord.getFamilyDecisionSupportFreq()))
+                        .append("</p><h4>" + getString(R.string.approval_friends) + "</h4><p>")
+                        .append(FrequencyAnswersType.Frequency.getStringPTBR(familyCohesionRecord.getFriendshipApprovalFreq()))
+                        .append("</p><h4>" + getString(R.string.only_family) + "</h4><p>")
+                        .append(FrequencyAnswersType.Frequency.getStringPTBR(familyCohesionRecord.getFamilyOnlyPreferenceFreq()))
+                        .append("</p><h4>" + getString(R.string.not_strangers) + "</h4><p>")
+                        .append(FrequencyAnswersType.Frequency.getStringPTBR(familyCohesionRecord.getFamilyMutualAidFreq()))
+                        .append("</p><h4>" + getString(R.string.family_freetime) + "</h4><p>")
+                        .append(FrequencyAnswersType.Frequency.getStringPTBR(familyCohesionRecord.getFreeTimeTogetherFreq()))
+                        .append("</p><h4>" + getString(R.string.family_union) + "</h4><p>")
+                        .append(FrequencyAnswersType.Frequency.getStringPTBR(familyCohesionRecord.getFamilyProximityPerceptionFreq()))
+                        .append("</p><h4>" + getString(R.string.family_share) + "</h4><p>")
+                        .append(FrequencyAnswersType.Frequency.getStringPTBR(familyCohesionRecord.getAllFamilyTasksFreq()))
+                        .append("</p><h4>" + getString(R.string.easy_family) + "</h4><p>")
+                        .append(FrequencyAnswersType.Frequency.getStringPTBR(familyCohesionRecord.getFamilyTasksOpportunityFreq()))
+                        .append("</p><h4>" + getString(R.string.family_decision) + "</h4><p>")
+                        .append(FrequencyAnswersType.Frequency.getStringPTBR(familyCohesionRecord.getFamilyDecisionSupportFreq()))
+                        .append("</p><h4>" + getString(R.string.familiy_union_important) + "</h4><p>")
+                        .append(FrequencyAnswersType.Frequency.getStringPTBR(familyCohesionRecord.getFamilyUnionRelevanceFreq()));
+                break;
+            case ORAL_HEALTH:
+                OralHealthRecord oralHealthRecord = ig.getOralHealthRecord();
+                stringBuilder.append("</p><h4>" + getString(R.string.tooth_higien) + "</h4><p>")
+                        .append(ToothLesionType.TeethBrushingFreq.getStringPtBr(oralHealthRecord.getTeethBrushingFreq()));
+                if (ig.getOralHealthRecord() == null) break;
+
+                List<ToothLesion> toothLesions = oralHealthRecord.getToothLesions();
+                ToothLesion whiteSpotLesionDeciduousTooth = new ToothLesion("deciduous_tooth", "white_spot_lesion");
+                ToothLesion whiteSpotLesionPermanentTooth = new ToothLesion("permanent_tooth", "white_spot_lesion");
+                ToothLesion cavitatedLesionDeciduousTooth = new ToothLesion("deciduous_tooth", "cavitated_lesion");
+                ToothLesion cavitatedLesionPermanentTooth = new ToothLesion("permanent_tooth", "cavitated_lesion");
+
+                stringBuilder.append("</p><h4>" + getString(R.string.white_spot_lesion_deciduous_tooth) + "</h4><p>");
+                if (toothLesions.contains(whiteSpotLesionDeciduousTooth))
+                    stringBuilder.append(getString(R.string.yes_text) + "</p>");
+                else stringBuilder.append(getString(R.string.no_text) + "</p>");
+
+                stringBuilder.append("</p><h4>" + getString(R.string.white_spot_lesion_permanent_tooth) + "</h4><p>");
+                if (toothLesions.contains(whiteSpotLesionPermanentTooth))
+                    stringBuilder.append(getString(R.string.yes_text) + "</p>");
+                else stringBuilder.append(getString(R.string.no_text) + "</p>");
+
+                stringBuilder.append("</p><h4>" + getString(R.string.cavitated_lesion_deciduous_tooth) + "</h4><p>");
+                if (toothLesions.contains(cavitatedLesionDeciduousTooth))
+                    stringBuilder.append(getString(R.string.yes_text) + "</p>");
+                else stringBuilder.append(getString(R.string.no_text) + "</p>");
+
+                stringBuilder.append("</p><h4>" + getString(R.string.cavitated_lesion_permanent_tooth) + "</h4><p>");
+                if (toothLesions.contains(cavitatedLesionPermanentTooth))
+                    stringBuilder.append(getString(R.string.yes_text) + "</p>");
+                else stringBuilder.append(getString(R.string.no_text) + "</p>");
+//
+//                if (oralHealthRecord.getToothLesions().isEmpty()) {
+//                    stringBuilder.append("<p>" + "Não possui algum tipo de cárie dentária" + "</p>");
+//                } else
+//                    for (ToothLesion toothLesion : oralHealthRecord.getToothLesions()) {
+//                        stringBuilder.append("<h4>" + ToothLesionType.LesionType.getStringPtBr(toothLesion.getLesionType()))
+//                                .append(" em ")
+//                                .append(ToothLesionType.ToothType.getStringPtbr(toothLesion.getToothType()) + "</h4>");
+//                    }
+                break;
+            case SOCIODEMOGRAPHICS:
+                SociodemographicRecord sociodemographicRecord = ig.getSociodemographicRecord();
+                stringBuilder.append("<h4>" + getString(R.string.color_race) + "</h4><p>")
+                        .append(SociodemographicType.ColorRace.getStringPtBr(sociodemographicRecord.getColorRace()))
+                        .append("</p><h4>" + getString(R.string.schoolarity_mother) + "</h4><p>")
+                        .append(SociodemographicType.MotherScholarity.getStringPtBr(sociodemographicRecord.getMotherScholarity()))
+                        .append("</p><h4>" + getString(R.string.people_in_home) + "</h4><p>")
+                        .append(sociodemographicRecord.getPeopleInHome());
+                break;
         }
-        h.messageText.setText(stringBuilder.append(String.format("\n\nRespondido em %s às %s", date, time)));
+        h.messageText.setText(Html.fromHtml(stringBuilder.toString()));
     }
 
     /**

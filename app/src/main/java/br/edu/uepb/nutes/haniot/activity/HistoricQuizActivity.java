@@ -69,8 +69,8 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
     private Patient patient;
     private List<GroupItemEvaluation> groupItemNutritionEvaluations;
     private List<GroupItemEvaluation> groupItemOdontologicalEvaluations;
-    HistoricQuizAdapter historicNutritionalAdapter;
-    HistoricQuizAdapter historicOdontologicalAdapter;
+    private HistoricQuizAdapter historicNutritionalAdapter;
+    private HistoricQuizAdapter historicOdontologicalAdapter;
     private User user;
     @BindView(R.id.loading_nutrition)
     ProgressBar loadingNutrition;
