@@ -1,8 +1,8 @@
 apply plugin: 'com.android.application'
-//dependencies {
-//    debugImplementation "io.objectbox:objectbox-android-objectbrowser:$objectboxVersion"
-//    releaseImplementation "io.objectbox:objectbox-android:$objectboxVersion"
-//}
+dependencies {
+    debugImplementation "io.objectbox:objectbox-android-objectbrowser:$objectboxVersion"
+    releaseImplementation "io.objectbox:objectbox-android:$objectboxVersion"
+}
 apply plugin: 'io.objectbox'
 
 android {
@@ -18,7 +18,8 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -80,12 +81,17 @@ dependencies {
     implementation 'com.scottyab:secure-preferences-lib:0.1.7'
     implementation 'com.auth0.android:jwtdecode:1.2.0'
 
+    // Expandable Recyclerview
+    implementation 'com.thoughtbot:expandablerecyclerview:1.3'
+    implementation 'com.thoughtbot:expandablecheckrecyclerview:1.4'
+
+    // Nordic Scanner
+    implementation 'no.nordicsemi.android.support.v18:scanner:1.4.1'
+
     // TEST
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation 'io.jsonwebtoken:jjwt:0.2'
 
-    implementation 'com.thoughtbot:expandablerecyclerview:1.3'
-    implementation 'com.thoughtbot:expandablecheckrecyclerview:1.4'
 }

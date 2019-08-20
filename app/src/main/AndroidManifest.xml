@@ -20,6 +20,11 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".activity.HistoricQuizActivity"
+            android:label="@string/title_activity_historic_quiz"
+            android:parentActivityName=".activity.ManagerPatientsActivity"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
             android:name=".activity.NutritionalEvaluationActivity"
             android:parentActivityName=".activity.MainActivity" /> <!-- RECEIVER ACCOUNT SERVICE -->
         <receiver android:name=".service.TokenExpirationService$TokenAlarmReceiver" /> <!-- ACTIVITIES -->

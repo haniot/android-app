@@ -1,9 +1,12 @@
 package br.edu.uepb.nutes.haniot.devices;
 
 import android.content.Intent;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
+
+import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.AddMeasurementActivity;
@@ -38,6 +41,9 @@ public class BloodPressureActivity extends BaseDeviceActivity {
     @BindView(R.id.blood_pressure_recyclerviewt)
     RecyclerView mRecyclerView;
 
+    @BindView(R.id.view_pulse)
+    CircularProgressBar mCircularPulseProgressBar;
+
     /**
      * Enable/Disable display messgae no data.
      *
@@ -50,9 +56,9 @@ public class BloodPressureActivity extends BaseDeviceActivity {
             mBloodPressureDiaTextView.setText("");
             mBloodPressureSysTextView.setText("");
             mBloodPressurePulseTextView.setText("");
-            mUnitPulseTextView.setVisibility(View.GONE);
+            mUnitPulseTextView.setText("");
         } else {
-            mUnitPulseTextView.setVisibility(View.VISIBLE);
+            mUnitPulseTextView.setText(getString(R.string.unit_per_minutes));
         }
     }
 
@@ -94,6 +100,23 @@ public class BloodPressureActivity extends BaseDeviceActivity {
 //
 //        }
 //    }
+
+    protected void updateConnectionState() {
+        super.updateConnectionState();
+
+        runOnUiThread(() -> {
+            mCircularPulseProgressBar.setProgress(0);
+            mCircularPulseProgressBar.setProgressWithAnimation(100); // Default animate duration = 1500ms
+
+            if (mConnected) {
+                mCircularPulseProgressBar.setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
+                mCircularPulseProgressBar.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorButtonDanger));
+            } else {
+                mCircularPulseProgressBar.setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorButtonDanger));
+                mCircularPulseProgressBar.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
+            }
+        });
+    }
 
     /**
      * Convert value glucose for String.

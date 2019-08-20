@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+    android:background="@color/colorAccent"
     android:layout_height="match_parent">
 
     <LinearLayout
@@ -23,28 +24,58 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="60dp"
                 android:gravity="center"
+                android:textColor="@color/colorWhite"
                 android:text="@string/device_registered_success"
                 android:textAlignment="center"
                 android:textAllCaps="false"
                 android:textStyle="bold" />
 
+
+            <TextView
+                android:id="@+id/device_connection_status"
+                style="@style/Base.TextAppearance.AppCompat.Medium"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txt_device_successfully_registered"
+                android:layout_marginTop="10dp"
+                android:gravity="center_vertical"
+                android:padding="20dp"
+                android:text="O dispositivo já está pronto para ser usado..."
+                android:textAlignment="center"
+                android:textColor="@color/colorWhite"
+                android:textSize="14sp" />
+
         </RelativeLayout>
         <!-- END BOX TITLE -->
 
         <!-- BOX IMAGE -->
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="2"
             android:gravity="center">
 
             <ImageView
-                android:id="@+id/imageSuccess"
-                android:layout_width="150dp"
+                android:id="@+id/img_device_sucess"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@drawable/bg_device"
+                android:backgroundTint="@color/colorWhite"
+                app:srcCompat="@drawable/thermometer" />
+
+            <ImageView
+                android:id="@+id/imageSuccess"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_below="@+id/img_device_register"
+                android:layout_alignEnd="@+id/img_device_register"
+                android:layout_marginTop="-101dp"
+                android:layout_marginEnd="24dp"
                 android:contentDescription="@string/image"
+                android:tint="@color/colorWhite"
                 app:srcCompat="@drawable/success" />
-        </LinearLayout>
+        </RelativeLayout>
         <!--END BOX IMAGE -->
 
         <!-- BOX BUTTON -->
@@ -52,17 +83,17 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="4"
-            android:gravity="bottom"
-            android:padding="20dp">
+            android:gravity="bottom|end"
+            android:padding="10dp">
 
-            <Button
+            <TextView
                 android:id="@+id/btn_close_response"
-                style="@style/Widget.AppCompat.Button.Colored"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="20dp"
-                android:text="@string/come_back"
-                android:textColor="@color/colorTextDark" />
+                android:textSize="16sp"
+                android:text="Concluir"
+                android:textColor="@color/colorWhite" />
         </LinearLayout>
         <!--END BOX BUTTON -->
 

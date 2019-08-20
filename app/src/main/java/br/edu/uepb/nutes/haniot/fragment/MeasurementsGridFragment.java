@@ -31,6 +31,8 @@ import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 
+import com.github.clans.fab.FloatingActionMenu;
+
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
@@ -172,6 +174,30 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        FloatingActionMenu fab = ((MainActivity) getActivity()).patientActionsMenu;
+        if (fab == null) {
+            Log.w("AAA", "fab null");
+            return;
+        }
+
+//        gridMeasurement.addOnScrollListener(new RecyclerView.OnScrollListener() {
+//
+//            @Override
+//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+//                if (dy > 0 || dy < 0 && fab.isShown())
+////                    fab.hideMenu(true);
+//                    fab.setVisibility(View.GONE);
+//            }
+//
+//            @Override
+//            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+//                Log.w("AAA", "onScrollStateChanged");
+//                if (newState == RecyclerView.SCROLL_STATE_IDLE)
+////                    fab.hideMenu(false);
+//                    fab.setVisibility(View.VISIBLE);
+//                super.onScrollStateChanged(recyclerView, newState);
+//            }
+//        });
 //        refreshManagerBLE();
     }
 
@@ -203,7 +229,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
         bloodPressureManager = null;
         glucoseManager = null;
         heartRateManager = null;
-        if (simpleBleScanner != null) simpleBleScanner.stopScan();
+//        if (simpleBleScanner != null) simpleBleScanner.stopScan();
     }
 
     /**
@@ -215,7 +241,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
                 && ((MainActivity) getActivity()).hasLocationPermissions()) {
             simpleBleScanner.startScan(simpleScannerCallback);
         } else if (isAdded() && getActivity() != null) {
-            communicator.showMessage(R.string.bluetooth_disabled);
+//            communicator.showMessageConnection(R.string.bluetooth_disabled);
         }
     }
 
@@ -226,6 +252,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         @Override
         public void onScanResult(int i, ScanResult scanResult) {
+            Log.w("AAA", "Achado: " + scanResult.getDevice().getAddress());
             String address = scanResult.getDevice().getAddress();
             Device device = getDeviceRegisteredFromAddress(address);
             BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -983,5 +1010,10 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
             default:
                 break;
         }
+    }
+
+    @Override
+    public void onItemSwiped(MeasurementMonitor item, int position) {
+
     }
 }

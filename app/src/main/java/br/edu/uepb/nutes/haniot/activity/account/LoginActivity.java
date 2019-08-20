@@ -28,6 +28,9 @@ import java.util.Objects;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.MainActivity;
 import br.edu.uepb.nutes.haniot.data.model.Device;
+import br.edu.uepb.nutes.haniot.data.model.User;
+import br.edu.uepb.nutes.haniot.data.model.UserAccess;
+import br.edu.uepb.nutes.haniot.data.model.UserType;
 import br.edu.uepb.nutes.haniot.data.model.dao.DeviceDAO;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
@@ -40,6 +43,9 @@ import okhttp3.ResponseBody;
 import retrofit2.HttpException;
 
 import static android.view.inputmethod.InputMethodManager.HIDE_NOT_ALWAYS;
+import static br.edu.uepb.nutes.haniot.data.model.UserType.ADMIN;
+import static br.edu.uepb.nutes.haniot.data.model.UserType.HEALTH_PROFESSIONAL;
+import static br.edu.uepb.nutes.haniot.data.model.UserType.PATIENT;
 
 /**
  * LoginActivity implementation.
@@ -155,7 +161,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 .doAfterTerminate(() -> showLoading(false))
                 .subscribe(userAccess -> {
                     if (appPreferencesHelper.saveUserAccessHaniot(userAccess)) {
-                        getUserProfile(userAccess.getSubject());
+                        getUserProfile(userAccess);
+                        //TODO Temp
+                        Log.w("AAA", "Token: " + userAccess.getAccessToken());
                     }
                 }, this::errorHandler)
         );
@@ -164,25 +172,71 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     /**
      * Get data user from server.
      *
-     * @param userId {@link String}
+     * @param userAccess {@link UserAccess}
      */
-    private void getUserProfile(String userId) {
-        DisposableManager.add(haniotNetRepository
-                .getHealthProfissional(userId)
-                .doOnSubscribe(disposable -> showLoading(true))
-                .doAfterTerminate(() -> showLoading(false))
-                .subscribe(user -> {
-                    if (user.get_id() == null) {
-                        showMessage(R.string.error_recover_data);
-                        showLoading(false);
-                        return;
-                    }
+    private void getUserProfile(UserAccess userAccess) {
+        switch (userAccess.getTokenType()) {
+            case HEALTH_PROFESSIONAL:
+                DisposableManager.add(haniotNetRepository
+                        .getHealthProfissional(userAccess.getSubject())
+                        .doOnSubscribe(disposable -> showLoading(true))
+                        .doAfterTerminate(() -> showLoading(false))
+                        .subscribe(user -> {
+                            if (user.get_id() == null) {
+                                showMessage(R.string.error_recover_data);
+                                showLoading(false);
+                                return;
+                            }
+                            user.setUserType(HEALTH_PROFESSIONAL);
+                            saveUserInfo(user);
+                        }, this::errorHandler)
+                );
+                break;
+            case ADMIN:
+                DisposableManager.add(haniotNetRepository
+                        .getAdmin(userAccess.getSubject())
+                        .doOnSubscribe(disposable -> showLoading(true))
+                        .doAfterTerminate(() -> showLoading(false))
+                        .subscribe(user -> {
+                            if (user.get_id() == null) {
+                                showMessage(R.string.error_recover_data);
+                                showLoading(false);
+                                return;
+                            }
+                            user.setUserType(ADMIN);
+                            saveUserInfo(user);
+                        }, this::errorHandler)
+                );
+                break;
+            case PATIENT:
+                DisposableManager.add(haniotNetRepository
+                        .getPatient(userAccess.getSubject())
+                        .doOnSubscribe(disposable -> showLoading(true))
+                        .doAfterTerminate(() -> showLoading(false))
+                        .subscribe(user -> {
+                            if (user.get_id() == null) {
+                                showMessage(R.string.error_recover_data);
+                                showLoading(false);
+                                return;
+                            }
+                            user.setUserType(PATIENT);
+                            saveUserInfo(user);
+                            appPreferencesHelper.saveLastPatient(user);
+                        }, this::errorHandler)
+                );
+                break;
+        }
+    }
 
-                    appPreferencesHelper.saveUserLogged(user);
-                    tokenExpirationService.initTokenMonitor();
-                    syncDevices(userId);
-                }, this::errorHandler)
-        );
+    /**
+     * Save user info in AppPreferences.
+     *
+     * @param user
+     */
+    private void saveUserInfo(User user) {
+        appPreferencesHelper.saveUserLogged(user);
+        tokenExpirationService.initTokenMonitor();
+        syncDevices(user.get_id());
     }
 
     /**
@@ -224,7 +278,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     ChangePasswordActivity.class
             );
             Log.i("AAA", redirectLink);
-            intent.putExtra("user_id", redirectLink.split("/")[2]);
+            appPreferencesHelper.saveString("user_id", redirectLink.split("/")[2]);
             startActivity(intent);
         } catch (IOException e1) {
             e1.printStackTrace();
@@ -245,17 +299,19 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 case 401:
                     showMessage(R.string.validate_invalid_email_or_password);
                     break;
-                case 403: {
-                    if (httpEx.response().errorBody() == null) {
-                        showMessage(R.string.error_500);
-                        return;
-                    }
-                    Log.i("AAA", "" + httpEx.response().errorBody());
-                    openScreenChangePassword(Objects.requireNonNull(httpEx.response().errorBody()));
-                    break;
-                }
+//                case 403: {
+//                    if (httpEx.response().errorBody() == null) {
+//                        showMessage(R.string.error_500);
+//                        return;
+//                    }
+//                    openScreenChangePassword(Objects.requireNonNull(httpEx.response().errorBody()));
+//                    break;
+//                }
                 case 404:
                     showMessage(R.string.error_recover_data);
+                    break;
+                case 429:
+                    showMessage(R.string.error_limit_rate);
                     break;
                 default:
                     showMessage(R.string.error_500);

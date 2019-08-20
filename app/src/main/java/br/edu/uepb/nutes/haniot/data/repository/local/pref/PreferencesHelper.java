@@ -29,6 +29,8 @@ public interface PreferencesHelper {
 
     boolean saveFloat(String key, float value);
 
+    boolean saveBluetoothMode(boolean activated);
+
     UserAccess getUserAccessHaniot();
 
     User getUserLogged();
@@ -36,6 +38,8 @@ public interface PreferencesHelper {
     Patient getLastPatient();
 
     PilotStudy getLastPilotStudy();
+
+    boolean getBluetoothMode();
 
     String getString(String key);
 

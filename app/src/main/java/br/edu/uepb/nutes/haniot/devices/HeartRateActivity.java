@@ -2,18 +2,11 @@ package br.edu.uepb.nutes.haniot.devices;
 
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
-import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothProfile;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -31,12 +24,10 @@ import br.edu.uepb.nutes.haniot.data.model.HeartRateItem;
 import br.edu.uepb.nutes.haniot.data.model.ItemGridType;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.MeasurementType;
-import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.devices.base.BaseDeviceActivity;
 import br.edu.uepb.nutes.haniot.fragment.GenericDialogFragment;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.HeartRateManager;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.HeartRateDataCallback;
-import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
 
@@ -70,15 +61,11 @@ public class HeartRateActivity extends BaseDeviceActivity implements GenericDial
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        checkPermissions();
 
         manager = new HeartRateManager(this);
         ((HeartRateManager) manager).setSimpleCallback(heartRateDataCallback);
 
         mDevice = deviceDAO.getByType(appPreferencesHelper.getUserLogged().get_id(), DeviceType.HEART_RATE);
-
-        IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
-        registerReceiver(mReceiver, filter);
     }
 
     HeartRateDataCallback heartRateDataCallback = new HeartRateDataCallback() {
@@ -104,13 +91,13 @@ public class HeartRateActivity extends BaseDeviceActivity implements GenericDial
         @Override
         public void onConnected(@androidx.annotation.NonNull BluetoothDevice device) {
             mConnected = true;
-            updateConnectionState(true);
+            updateConnectionState();
         }
 
         @Override
         public void onDisconnected(@androidx.annotation.NonNull BluetoothDevice device) {
             mConnected = false;
-            updateConnectionState(false);
+            updateConnectionState();
         }
     };
 
@@ -151,23 +138,6 @@ public class HeartRateActivity extends BaseDeviceActivity implements GenericDial
             mHeartImageView.setVisibility(View.VISIBLE);
         }
     }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unregisterReceiver(mReceiver);
-    }
-
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        switch (item.getItemId()) {
-//            case android.R.id.home:
-//                manager.disconnect();
-//                super.onBackPressed();
-//                break;
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
 
     /**
      * updateOrSave the UI with the last measurement.
@@ -225,23 +195,6 @@ public class HeartRateActivity extends BaseDeviceActivity implements GenericDial
     protected String getTag() {
         return TAG;
     }
-
-    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            final String action = intent.getAction();
-
-            if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
-                final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE,
-                        BluetoothAdapter.ERROR);
-                if (state == BluetoothAdapter.STATE_OFF) {
-                    printMessage(getString(R.string.bluetooth_disabled));
-                } else if (state == BluetoothAdapter.STATE_ON) {
-//                    showMessage(-1);
-                }
-            }
-        }
-    };
 
     @Override
     public void onClick(View view) {

@@ -14,6 +14,7 @@ import java.util.Objects;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.annotation.Index;
+import io.objectbox.annotation.Transient;
 
 /**
  * Represents Device object.
@@ -56,17 +57,23 @@ public class Device implements Parcelable {
     private String userId;
 
     @Expose(serialize = false, deserialize = false)
+    @Transient // not persisted
+    private String uuid;
+
+    @Expose(serialize = false, deserialize = false)
+    @Transient // not persisted
     private int img;
 
     public Device() {
     }
 
-    public Device(String name, String manufacturer, String modelNumber, int img, String type) {
+    public Device(String name, String manufacturer, String modelNumber, int img, String type, String uuid) {
         this.name = name;
         this.manufacturer = manufacturer;
         this.modelNumber = modelNumber;
         this.img = img;
         this.type = type;
+        this.uuid = uuid;
     }
 
     protected Device(Parcel in) {
@@ -79,6 +86,7 @@ public class Device implements Parcelable {
         manufacturer = in.readString();
         userId = in.readString();
         img = in.readInt();
+        uuid = in.readString();
     }
 
     @Override
@@ -92,6 +100,7 @@ public class Device implements Parcelable {
         dest.writeString(manufacturer);
         dest.writeString(userId);
         dest.writeInt(img);
+        dest.writeString(uuid);
     }
 
     @Override
@@ -183,6 +192,14 @@ public class Device implements Parcelable {
         this.img = img;
     }
 
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(address);
@@ -193,7 +210,7 @@ public class Device implements Parcelable {
         if (!(o instanceof Device)) return false;
 
         Device other = (Device) o;
-        return this.address.equals(other.address) || this.name.equals(other.name);
+        return this.type.equals(other.type);
     }
 
     /**
@@ -219,6 +236,7 @@ public class Device implements Parcelable {
                 ", manufacturer='" + manufacturer + '\'' +
                 ", userId='" + userId + '\'' +
                 ", img=" + img +
+                ", uuid=" + uuid +
                 '}';
     }
 }

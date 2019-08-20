@@ -1,21 +1,11 @@
 package br.edu.uepb.nutes.haniot.devices;
 
-import android.Manifest;
-import android.app.Activity;
-import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -74,12 +64,8 @@ public class ScaleActivity extends BaseDeviceActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         manager = new ScaleManager(this);
-        checkPermissions();
 
         mDevice = deviceDAO.getByType(appPreferencesHelper.getUserLogged().get_id(), DeviceType.BODY_COMPOSITION);
-
-        IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
-        registerReceiver(mReceiver, filter);
     }
 
     @Override
@@ -92,12 +78,6 @@ public class ScaleActivity extends BaseDeviceActivity {
     protected void onPause() {
         ((ScaleManager) manager).setSimpleCallback(null);
         super.onPause();
-    }
-
-    @Override
-    protected void onDestroy() {
-        unregisterReceiver(mReceiver);
-        super.onDestroy();
     }
 
     /**
@@ -134,10 +114,6 @@ public class ScaleActivity extends BaseDeviceActivity {
 //            if (mDevice != null)
 //                measurement.setDeviceId(mDevice.get_id());
 
-            /**
-             * Save in local
-             * Send to server saved successfully
-             */
             if (bodyMass > 0) {
                 synchronizeWithServer(measurement);
                 updateUILastMeasurement(measurement, true);
@@ -147,13 +123,13 @@ public class ScaleActivity extends BaseDeviceActivity {
         @Override
         public void onConnected(@androidx.annotation.NonNull BluetoothDevice device) {
             mConnected = true;
-            updateConnectionState(true);
+            updateConnectionState();
         }
 
         @Override
         public void onDisconnected(@androidx.annotation.NonNull BluetoothDevice device) {
             mConnected = false;
-            updateConnectionState(false);
+            updateConnectionState();
         }
     };
 
@@ -279,23 +255,6 @@ public class ScaleActivity extends BaseDeviceActivity {
         });
     }
 
-    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            final String action = intent.getAction();
-
-            if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
-                final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE,
-                        BluetoothAdapter.ERROR);
-                if (state == BluetoothAdapter.STATE_OFF) {
-                    printMessage(getString(R.string.bluetooth_disabled));
-                } else if (state == BluetoothAdapter.STATE_ON) {
-//                    showMessage(-1);
-                }
-            }
-        }
-    };
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -307,8 +266,6 @@ public class ScaleActivity extends BaseDeviceActivity {
                 appPreferencesHelper.saveInt(
                         getResources().getString(R.string.measurementType), ItemGridType.WEIGHT);
                 startActivity(it);
-                break;
-            default:
                 break;
         }
     }

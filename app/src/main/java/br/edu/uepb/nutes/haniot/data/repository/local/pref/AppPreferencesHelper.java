@@ -23,6 +23,7 @@ public class AppPreferencesHelper implements PreferencesHelper {
     private final String PREF_KEY_USER_PROFILE = "pref_key_user_profile";
     private final String PREF_KEY_PATIENT = "pref_key_patient";
     private final String PREF_KEY_PILOT_STUDY = "pref_key_pilot_study";
+    private final String PREF_KEY_BLUETOOTH_MODE = "pref_key_bluetooth_mode";
 
     private static AppPreferencesHelper instance;
     private SharedPreferences mPrefs;
@@ -109,6 +110,13 @@ public class AppPreferencesHelper implements PreferencesHelper {
     }
 
     @Override
+    public boolean saveBluetoothMode(boolean activated) {
+        return mPrefs.edit()
+                .putBoolean(PREF_KEY_BLUETOOTH_MODE, activated)
+                .commit();
+    }
+
+    @Override
     public UserAccess getUserAccessHaniot() {
         String userAccess = mPrefs.getString(PREF_KEY_AUTH_STATE_HANIOT, null);
         return UserAccess.jsonDeserialize(userAccess);
@@ -132,12 +140,17 @@ public class AppPreferencesHelper implements PreferencesHelper {
         PilotStudy pilotStudy = PilotStudy.jsonDeserialize(pilot);
         Log.i("AAAA", getUserLogged().toJson());
         Log.i("AAAA", "" + pilotStudy);
-        if ( (pilotStudy != null && pilotStudy.getUserId() != null) && pilotStudy.getUserId()
+        if ((pilotStudy != null && pilotStudy.getUserId() != null) && pilotStudy.getUserId()
                 .equals(getUserLogged().get_id())) {
             Log.i("AAAA", pilotStudy.toJson());
             return pilotStudy;
         }
         return null;
+    }
+
+    @Override
+    public boolean getBluetoothMode() {
+        return mPrefs.getBoolean(PREF_KEY_BLUETOOTH_MODE, true);
     }
 
     @Override

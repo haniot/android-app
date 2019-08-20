@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.util.SparseArray;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.UUID;
 
@@ -77,17 +78,15 @@ public class GlucoseManager extends BluetoothManager {
         enableNotifications(characteristicContext).enqueue();
     }
 
-    private DataReceivedCallback contextDataReceivedCallback = new DataReceivedCallback() {
-        @Override
-        public void onDataReceived(@NonNull BluetoothDevice device, @NonNull Data data) {
-            processContext(device, data);
-        }
-    };
+    private DataReceivedCallback contextDataReceivedCallback = (device, data) -> processContext(device, data);
 
     private ManagerCallback bleManagerCallbacks = new ManagerCallback() {
         @Override
         public void measurementReceiver(@NonNull BluetoothDevice device, @NonNull Data data) {
             if (glucoseDataCallback == null) return;
+
+            Log.w(TAG, "DATA: " + data.toString());
+            Log.w(TAG, "VALUE: " + Arrays.toString(data.getValue()));
             int offset = 0;
             final int flags = data.getIntValue(Data.FORMAT_UINT8, offset);
             offset += 1;
@@ -151,6 +150,7 @@ public class GlucoseManager extends BluetoothManager {
                 // if there is no context information following the measurement data,
                 // notify callback about the new record
                 if (!contextInfoFollows) {
+                    Log.w(TAG, "PARSE: " + record.glucoseConcentration);
                     glucoseDataCallback.onMeasurementReceived(
                             device,
                             record.glucoseConcentration,
@@ -256,6 +256,8 @@ public class GlucoseManager extends BluetoothManager {
      * {@link <https://www.bluetooth.com/specifications/gatt/viewer?attributeXmlFile=org.bluetooth.characteristic.glucose_measurement_context.xml>}
      */
     private void processContext(final BluetoothDevice device, final Data data) {
+        Log.w(TAG, "CONTEXT DATA: " + data.toString());
+        Log.w(TAG, "CONTEXT VALUE: " + Arrays.toString(data.getValue()));
         final int UNIT_kg = 0;
         final int UNIT_l = 1;
 

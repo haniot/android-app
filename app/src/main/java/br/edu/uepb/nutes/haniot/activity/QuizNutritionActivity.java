@@ -1,6 +1,7 @@
 package br.edu.uepb.nutes.haniot.activity;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
@@ -18,6 +19,8 @@ import br.edu.uepb.nutes.haniot.data.model.FeedingHabitsRecord;
 import br.edu.uepb.nutes.haniot.data.model.FeendingHabitsRecordType;
 import br.edu.uepb.nutes.haniot.data.model.FoodType;
 import br.edu.uepb.nutes.haniot.data.model.MedicalRecord;
+import br.edu.uepb.nutes.haniot.data.model.NutritionalQuestionnaire;
+import br.edu.uepb.nutes.haniot.data.model.NutritionalQuestionnaireType;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.PhysicalActivityHabit;
 import br.edu.uepb.nutes.haniot.data.model.SchoolActivityFrequencyType;
@@ -80,6 +83,10 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
     private AppPreferencesHelper appPreferencesHelper;
     private HaniotNetRepository haniotNetRepository;
     int checkpoint;
+    private NutritionalQuestionnaire nutritionalQuestionnaire;
+    private String updateType;
+    private String idUpdate;
+    private Object resourceToUpdate;
 
     /**
      * Init view.
@@ -89,25 +96,30 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
         initResources();
 
         checkpoint = getIntent().getIntExtra("checkpoint", -1);
+        idUpdate = getIntent().getStringExtra("idUpdate");
         setMessageBlocked(getResources().getString(R.string.not_answered));
         // Animation
         setFadeAnimation();
-        addStartPage();
 
         switch (checkpoint) {
             case MEDICAL_RECORDS:
                 addMedicalRocordsPages();
+                updateType = NutritionalQuestionnaireType.MEDICAL_RECORDS;
                 break;
             case PHYSICAL_ACTIVITY:
                 addPhysicalHabitsPages();
+                updateType = NutritionalQuestionnaireType.PHYSICAL_ACTIVITY_HABITS;
                 break;
             case FEEDING_HABITS:
                 addFeedingHabitsPages();
+                updateType = NutritionalQuestionnaireType.FEEDING_HABITS_RECORD;
                 break;
             case SLEEP_HABITS:
                 addSleepHabitsPages();
+                updateType = NutritionalQuestionnaireType.SLEEP_HABIT;
                 break;
             default:
+                addStartPage();
                 addPhysicalHabitsPages();
                 addFeedingHabitsPages();
                 addMedicalRocordsPages();
@@ -133,6 +145,7 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
         physicalActivityHabitsDAO = PhysicalActivityHabitsDAO.getInstance(this);
         sleepHabitsDAO = SleepHabitsDAO.getInstance(this);
         medicalRecordDAO = MedicalRecordDAO.getInstance(this);
+        nutritionalQuestionnaire = new NutritionalQuestionnaire();
     }
 
     /**
@@ -144,13 +157,8 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
         medicalRecord.setPatientId(patient.get_id());
         Log.i(LOG_TAG, medicalRecord.toJson());
         medicalRecordDAO.save(medicalRecord);
-        DisposableManager.add(haniotNetRepository
-                .saveMedicalRecord(medicalRecord)
-                .doOnSubscribe(disposable -> Log.i(LOG_TAG, "Salvando Feending Habits no servidor!"))
-                .doAfterTerminate(() -> Log.i(LOG_TAG, "Feending Habits"))
-                .subscribe(medicalRecord -> {
-                    Log.i(LOG_TAG, "Salvo Feending Habits no servidor!");
-                }, this::errorHandler));
+        nutritionalQuestionnaire.setMedicalRecord(medicalRecord);
+        resourceToUpdate = medicalRecord;
     }
 
     /**
@@ -162,13 +170,8 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
         feedingHabitsRecord.setWeeklyFeedingHabits(weeklyFoodRecords);
         Log.i(LOG_TAG, feedingHabitsRecord.toJson());
         feedingHabitsDAO.save(feedingHabitsRecord);
-        DisposableManager.add(haniotNetRepository
-                .saveFeedingHabitsRecord(feedingHabitsRecord)
-                .doOnSubscribe(disposable -> Log.i(LOG_TAG, "Salvando Feending Habits no servidor!"))
-                .doAfterTerminate(() -> Log.i(LOG_TAG, "Feending Habits"))
-                .subscribe(feedingHabitsRecord -> {
-                    Log.i(LOG_TAG, "Salvo Feending Habits no servidor!");
-                }, this::errorHandler));
+        nutritionalQuestionnaire.setFeedingHabitsRecord(feedingHabitsRecord);
+        resourceToUpdate = feedingHabitsRecord;
     }
 
     /**
@@ -178,13 +181,8 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
         sleepHabit.setPatientId(patient.get_id());
         Log.i(LOG_TAG, sleepHabit.toJson());
         sleepHabitsDAO.save(sleepHabit);
-        DisposableManager.add(haniotNetRepository
-                .saveSleepHabit(sleepHabit)
-                .doOnSubscribe(disposable -> Log.i(LOG_TAG, "Salvando Sleep Habits no servidor!"))
-                .doAfterTerminate(() -> Log.i(LOG_TAG, "Sleep Habits"))
-                .subscribe(sleepHabit -> {
-                    Log.i(LOG_TAG, "Salvo Sleep Habits no servidor!");
-                }, this::errorHandler));
+        nutritionalQuestionnaire.setSleepHabit(sleepHabit);
+        resourceToUpdate = sleepHabit;
     }
 
     /**
@@ -194,13 +192,8 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
         physicalActivityHabits.setPatientId(patient.get_id());
         Log.i(LOG_TAG, physicalActivityHabits.toJson());
         physicalActivityHabitsDAO.save(physicalActivityHabits);
-        DisposableManager.add(haniotNetRepository
-                .savePhysicalActivityHabit(physicalActivityHabits)
-                .doOnSubscribe(disposable -> Log.i(LOG_TAG, "Salvando Activity Habits no servidor!"))
-                .doAfterTerminate(() -> Log.i(LOG_TAG, "Activity Habits"))
-                .subscribe(physicalActivityHabits -> {
-                    Log.i(LOG_TAG, "Salvo Activity Habits no servidor!");
-                }, this::errorHandler));
+        nutritionalQuestionnaire.setPhysicalActivityHabit(physicalActivityHabits);
+        resourceToUpdate = physicalActivityHabits;
     }
 
     /**
@@ -653,7 +646,6 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
                 .Builder(this)
                 .setMessage(getResources().getString(R.string.cancel))
                 .setPositiveButton(getResources().getText(R.string.yes_text), (dialog, which) -> {
-                    startActivity(new Intent(this, ManagerPatientsActivity.class));
                     finish();
                 })
                 .setNegativeButton(getResources().getText(R.string.no_text), null)
@@ -690,11 +682,92 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
                     break;
                 default:
                     saveSleepHabits();
-                    startActivity(new Intent(this, MainActivity.class));
             }
-            finish();
-        } else {
+            sendQuestionnaireToServer();
+        }
+    }
 
+    private void sendQuestionnaireToServer() {
+        Log.w("AAA", "sendQuestionnaireToServer");
+        ProgressDialog dialog = ProgressDialog.show(this, "Sincronização",
+                "Aguarde alguns instantes...", true);
+        dialog.show();
+
+        if (updateType == null) {
+            Log.w("AAA", "updateType == null");
+            Log.w("AAA", "Saving: " + nutritionalQuestionnaire.toJson());
+            DisposableManager.add(haniotNetRepository
+                    .saveNutritionalQuestionnaire(patient.get_id(), nutritionalQuestionnaire)
+                    .doAfterTerminate(() -> {
+                    })
+                    .subscribe(nutritionalQuestionnaire -> {
+                        dialog.cancel();
+                        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                        builder.setMessage("Salvo com sucesso!");
+                        builder.setCancelable(true);
+                        builder.setNeutralButton("Ok", (dialog1, which) -> {
+                            startActivity(new Intent(this, MainActivity.class));
+                            finish();
+                        });
+                        builder.show();
+                    }, throwable -> {
+                        Log.w("AAA", throwable.getMessage());
+                        dialog.cancel();
+                        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                        builder.setTitle("Não foi possível concluir a operação...");
+                        builder.setMessage("Tente novamente mais tarde!");
+                        builder.setCancelable(false);
+                        builder.setPositiveButton("Ok", (dialog12, which) -> {
+                            startActivity(new Intent(this, MainActivity.class));
+                            finish();
+                            dialog12.cancel();
+                        });
+                        builder.show();
+                    }));
+        } else {
+            Log.w("AAA", "updateType != null: " + updateType);
+            Log.w("AAA", "updateType: " + updateType + " idUpdate: " + idUpdate);
+            printJson();
+            Log.w("AAA", "id: " + idUpdate);
+            if (idUpdate != null) {
+                DisposableManager.add(haniotNetRepository
+                        .updateNutritionalQuestionnaire(patient.get_id(), idUpdate, updateType, resourceToUpdate)
+                        .subscribe(o -> {
+                            dialog.cancel();
+                            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                            builder.setMessage("Atualizado com sucesso!");
+                            builder.setCancelable(true);
+                            builder.setNeutralButton("Ok", (dialog1, which) -> {
+                                finish();
+                            });
+                            builder.show();
+                        }, throwable -> {
+                            Log.w("AAA", throwable.getMessage());
+                            dialog.cancel();
+                            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                            builder.setTitle("Não foi possível concluir a operação...");
+                            builder.setMessage("Tente novamente mais tarde!");
+                            builder.setCancelable(false);
+                            builder.setPositiveButton("Ok", (dialog12, which) -> {
+                                startActivity(new Intent(this, MainActivity.class));
+                                finish();
+                                dialog12.cancel();
+                            });
+                            builder.show();
+                        }));
+            }
+        }
+    }
+
+    private void printJson() {
+        if (resourceToUpdate instanceof SleepHabit) {
+            Log.w("AAA", ((SleepHabit) resourceToUpdate).toJson());
+        } else if (resourceToUpdate instanceof MedicalRecord) {
+            Log.w("AAA", ((MedicalRecord) resourceToUpdate).toJson());
+        } else if (resourceToUpdate instanceof PhysicalActivityHabit) {
+            Log.w("AAA", ((PhysicalActivityHabit) resourceToUpdate).toJson());
+        } else if (resourceToUpdate instanceof FeedingHabitsRecord) {
+            Log.w("AAA", ((FeedingHabitsRecord) resourceToUpdate).toJson());
         }
     }
 
@@ -845,23 +918,20 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
                 + " | ANSWER (values): " + Arrays.toString(values.toArray())
                 + " | ANSWER (indexes): " + Arrays.toString(indexValues.toArray()));
 
-        switch (page) {
-            case 4:
-                List<String> strings = new ArrayList<>();
+        if (page == 4) {
+            List<String> answers = new ArrayList<>();
 
-                for (Integer integer : indexValues) {
-                    strings.add(SportsType.getString(integer));
-                }
-                physicalActivityHabits.setWeeklyActivities(strings);
-                break;
-            case 18:
-                List<String> strings2 = new ArrayList<>();
+            for (Integer integer : indexValues) {
+                answers.add(SportsType.getString(integer));
+            }
+            physicalActivityHabits.setWeeklyActivities(answers);
+        } else if (page == 18) {
+            List<String> answers2 = new ArrayList<>();
 
-                for (Integer integer : indexValues) {
-                    strings2.add(FeendingHabitsRecordType.FoodAllergyStringolerance.getString(integer));
-                }
-                feedingHabitsRecord.setFoodAllergyIntolerance(strings2);
-                break;
+            for (Integer integer : indexValues) {
+                answers2.add(FeendingHabitsRecordType.FoodAllergyStringolerance.getString(integer));
+            }
+            feedingHabitsRecord.setFoodAllergyIntolerance(answers2);
         }
     }
 

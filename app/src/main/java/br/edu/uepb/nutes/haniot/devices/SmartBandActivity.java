@@ -238,6 +238,11 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
             public void onMenuContextClick(View v, Measurement item) {
 
             }
+
+            @Override
+            public void onItemSwiped(Measurement item, int position) {
+
+            }
         });
 
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {

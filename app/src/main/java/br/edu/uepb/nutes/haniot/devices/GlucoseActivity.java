@@ -1,12 +1,8 @@
 package br.edu.uepb.nutes.haniot.devices;
 
 import android.app.ProgressDialog;
-import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -49,35 +45,30 @@ public class GlucoseActivity extends BaseDeviceActivity {
     RecyclerView mRecyclerView;
 
     private ProgressDialog progressDialog;
+
     private boolean isGetAllMonitor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        checkPermissions();
 
         manager = new GlucoseManager(this);
         ((GlucoseManager) manager).setSimpleCallback(glucoseDataCallback);
 
         mDevice = deviceDAO.getByType(appPreferencesHelper.getUserLogged().get_id(), DeviceType.GLUCOMETER);
-
-        initComponents();
-
-        IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
-        registerReceiver(mReceiver, filter);
     }
 
     private BloodGlucoseDataCallback glucoseDataCallback = new BloodGlucoseDataCallback() {
         @Override
         public void onConnected(@androidx.annotation.NonNull BluetoothDevice device) {
             mConnected = true;
-            updateConnectionState(true);
+            updateConnectionState();
         }
 
         @Override
         public void onDisconnected(@androidx.annotation.NonNull BluetoothDevice device) {
             mConnected = false;
-            updateConnectionState(false);
+            updateConnectionState();
         }
 
         @Override
@@ -108,12 +99,6 @@ public class GlucoseActivity extends BaseDeviceActivity {
         } else {
 
         }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unregisterReceiver(mReceiver);
     }
 
     @Override
@@ -215,23 +200,6 @@ public class GlucoseActivity extends BaseDeviceActivity {
     protected String getTag() {
         return TAG;
     }
-
-    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            final String action = intent.getAction();
-
-            if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
-                final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE,
-                        BluetoothAdapter.ERROR);
-                if (state == BluetoothAdapter.STATE_OFF) {
-                    printMessage(getString(R.string.bluetooth_disabled));
-                } else if (state == BluetoothAdapter.STATE_ON) {
-//                    showMessage(-1);
-                }
-            }
-        }
-    };
 
     @Override
     public void onClick(View v) {

@@ -123,7 +123,7 @@ public class TokenExpirationService extends Service {
     /**
      * Class of Broadcast Receiver of Token Alarm.
      */
-    public class TokenAlarmReceiver extends BroadcastReceiver {
+    public static class TokenAlarmReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             EventBus.getDefault().post("unauthorized");

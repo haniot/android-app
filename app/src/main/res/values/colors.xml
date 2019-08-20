@@ -5,6 +5,7 @@
     <color name="colorAccent">#53cdba</color>
     <color name="colorAccentSecondary">#4fc3f7</color>
     <color name="colorBackRadioGroup">#f0f0f0</color>
+    <color name="colorErrorBind">#C4334E</color>
 
     <color name="colorCard">#EBF6F4</color>
     <color name="colorCardActive">#d3f1ed</color>

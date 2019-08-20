@@ -107,7 +107,7 @@ public class FragmentBloodPressure extends Fragment implements AddMeasurementAct
             measurement.setSystolic(Integer.parseInt(systolic.getText().toString()));
             measurement.setDiastolic(Integer.parseInt(diastolic.getText().toString()));
             measurement.setPulse(pulseValue);
-            measurement.setUnit(getContext().getResources().getString(R.string.unit_glucose_mg_dL));
+            measurement.setUnit(getContext().getResources().getString(R.string.unit_pressure));
             measurement.setType("blood_pressure");
             return measurement;
         } else {

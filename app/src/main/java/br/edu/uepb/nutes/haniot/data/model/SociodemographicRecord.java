@@ -108,4 +108,17 @@ public class SociodemographicRecord {
         Log.i("AAAAAAAAAA", a);
         return a;
     }
+
+    @Override
+    public String toString() {
+        return "SociodemographicRecord{" +
+                "id=" + id +
+                ", _id='" + _id + '\'' +
+                ", patientId='" + patientId + '\'' +
+                ", createdAt='" + createdAt + '\'' +
+                ", colorRace='" + colorRace + '\'' +
+                ", motherScholarity='" + motherScholarity + '\'' +
+                ", peopleInHome=" + peopleInHome +
+                '}';
+    }
 }

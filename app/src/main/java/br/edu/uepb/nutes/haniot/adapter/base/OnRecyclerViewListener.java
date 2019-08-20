@@ -16,4 +16,6 @@ public interface OnRecyclerViewListener<T> {
     void onLongItemClick(View v, T item);
 
     void onMenuContextClick(View v, T item);
+
+    void onItemSwiped(T item, int position);
 }

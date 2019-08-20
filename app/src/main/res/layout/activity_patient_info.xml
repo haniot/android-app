@@ -62,7 +62,7 @@
         android:layout_marginRight="20dp"
         android:ems="10"
         android:hint="@string/name"
-        android:inputType="textCapSentences"
+        android:inputType="textPersonName|textCapWords"
         android:textColor="@color/colorAccent"
         android:textColorHint="@android:color/tertiary_text_light" />
 

@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.Preference;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -31,6 +33,7 @@ import br.edu.uepb.nutes.haniot.adapter.ManagerPatientAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.PilotStudy;
+import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
@@ -67,7 +70,7 @@ public class ManagerPatientsActivity extends AppCompatActivity {
     private SearchView searchView;
     private AppPreferencesHelper appPreferencesHelper;
     private HaniotNetRepository haniotNetRepository;
-    private PilotStudy pilotStudy;
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,8 +82,8 @@ public class ManagerPatientsActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         initResources();
-        loadData();
     }
+
 
     /**
      * Initialize SwipeRefresh
@@ -93,21 +96,36 @@ public class ManagerPatientsActivity extends AppCompatActivity {
      * Init resources.
      */
     private void initResources() {
+        recyclerViewPatient.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0 || dy < 0 && addPatient.isShown()) {
+                    addPatient.hide();
+                }
+            }
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    addPatient.hide();
+                } else if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    addPatient.show();
+                }
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+        });
         message.setVisibility(View.INVISIBLE);
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
         haniotNetRepository = HaniotNetRepository.getInstance(this);
-        pilotStudy = appPreferencesHelper.getLastPilotStudy();
         patientList = new ArrayList<>();
+        user = appPreferencesHelper.getUserLogged();
         disableBack();
 
-        addPatient.setOnClickListener(v -> {
-            startActivity(new Intent(getApplicationContext(), PatientRegisterActivity.class));
-            finish();
-        });
-        addPatientShortCut.setOnClickListener(v -> {
-            startActivity(new Intent(getApplicationContext(), PatientRegisterActivity.class));
-            finish();
-        });
+        View.OnClickListener onClickListener = v -> {
+            startActivity(new Intent(this, PatientRegisterActivity.class));
+        };
+        addPatient.setOnClickListener(onClickListener);
+        addPatientShortCut.setOnClickListener(onClickListener);
         initDataSwipeRefresh();
     }
 
@@ -117,10 +135,11 @@ public class ManagerPatientsActivity extends AppCompatActivity {
     private void loadData() {
         mDataSwipeRefresh.setRefreshing(true);
         DisposableManager.add(haniotNetRepository
-                .getAllPatients(pilotStudy.get_id(), "created_at", 1, 100)
+                .getAllPatients(user.getPilotStudyIDSelected(), "created_at", 1, 100)
                 .doAfterTerminate(() -> mDataSwipeRefresh.setRefreshing(false))
                 .subscribe(patients -> {
                     patientList = patients;
+
                     initRecyclerView();
                 }, this::errorHandler));
         disableBack();
@@ -157,19 +176,18 @@ public class ManagerPatientsActivity extends AppCompatActivity {
         adapter.setPatientActionListener(new ManagerPatientAdapter.ActionsPatientListener() {
             @Override
             public void onMenuClick(String action, Patient patient) {
-                switch (action) {
-                    case "quiz_dentistry":
-                        appPreferencesHelper.saveLastPatient(patient);
-                        startActivity(new Intent(ManagerPatientsActivity.this, QuizOdontologyActivity.class));
-                        break;
-                    case "quiz_nutrition":
-                        appPreferencesHelper.saveLastPatient(patient);
-                        startActivity(new Intent(ManagerPatientsActivity.this, QuizNutritionActivity.class));
-                        break;
-                    case "nutrition_evaluation":
-                        appPreferencesHelper.saveLastPatient(patient);
-                        startActivity(new Intent(ManagerPatientsActivity.this, NutritionalEvaluationActivity.class));
-                        break;
+                if ("quiz_dentistry".equals(action)) {
+                    appPreferencesHelper.saveLastPatient(patient);
+                    startActivity(new Intent(ManagerPatientsActivity.this, QuizOdontologyActivity.class));
+                } else if ("quiz_nutrition".equals(action)) {
+                    appPreferencesHelper.saveLastPatient(patient);
+                    startActivity(new Intent(ManagerPatientsActivity.this, QuizNutritionActivity.class));
+                } else if ("nutrition_evaluation".equals(action)) {
+                    appPreferencesHelper.saveLastPatient(patient);
+                    startActivity(new Intent(ManagerPatientsActivity.this, NutritionalEvaluationActivity.class));
+                } else if ("historic_quiz".equals(action)) {
+                    appPreferencesHelper.saveLastPatient(patient);
+                    startActivity(new Intent(ManagerPatientsActivity.this, HistoricQuizActivity.class));
                 }
             }
 
@@ -201,6 +219,11 @@ public class ManagerPatientsActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
             }
+
+            @Override
+            public void onItemSwiped(Patient item, int position) {
+
+            }
         });
 
         recyclerViewPatient.setHasFixedSize(true);
@@ -222,8 +245,8 @@ public class ManagerPatientsActivity extends AppCompatActivity {
                             adapter.removeItem(patient);
                             adapter.notifyDataSetChanged();
                             showMessage(getResources().getString(R.string.patient_removed));
-                            if (patient.get_id().equals(appPreferencesHelper.getLastPatient().get_id())) {
-                                Log.i("AAA", "Removendo atual paciente");
+                            Patient lastPatient = appPreferencesHelper.getLastPatient();
+                            if (lastPatient != null && patient.get_id().equals(lastPatient.get_id())) {
                                 appPreferencesHelper.removeLastPatient();
                             }
                         },
@@ -245,26 +268,6 @@ public class ManagerPatientsActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         loadData();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-        //Adiciona o menu a activity
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_manage_patient, menu);
-
-        //Botão search na toolbar
-        MenuItem searchBtn = menu.findItem(R.id.btnSearchPatient);
-        this.searchView = (SearchView) searchBtn.getActionView();
-        searchView.setIconifiedByDefault(true);
-        searchView.setMaxWidth(Integer.MAX_VALUE);
-        searchView.setIconified(false);
-        searchView.setBackgroundColor(getResources().getColor(android.R.color.transparent));
-        EditText searchEditText = searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
-        searchEditText.setTextColor(Color.WHITE);
-
-        return super.onCreateOptionsMenu(menu);
     }
 
     @Override

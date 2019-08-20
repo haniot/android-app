@@ -4,15 +4,19 @@ import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothProfile;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -26,6 +30,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,6 +40,8 @@ import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import br.edu.uepb.nutes.haniot.R;
@@ -50,18 +57,23 @@ import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.BluetoothManager;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
+import br.edu.uepb.nutes.haniot.utils.NetworkUtil;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public abstract class BaseDeviceActivity extends AppCompatActivity implements View.OnClickListener {
     protected final int REQUEST_ENABLE_BLUETOOTH = 1;
     protected final int REQUEST_ENABLE_LOCATION = 2;
+    private final String BLUETOOTH = "bluetooth";
+    private final String WIRELESS = "wifi";
+    private final String CONNECTIVITY_CHANGE = "android.net.conn.CONNECTIVITY_CHANGE";
+
     private final int LIMIT_PER_PAGE = 20;
     private final int INITIAL_PAGE = 1;
     private int page = INITIAL_PAGE;
 
     protected boolean mConnected = false;
-    private boolean showAnimation = true;
+    //    private boolean showAnimation = true;
     protected Animation animation;
     protected Device mDevice;
     protected AppPreferencesHelper appPreferencesHelper;
@@ -74,13 +86,20 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
     protected HaniotNetRepository haniotNetRepository;
     protected Patient patient;
 
+    private boolean wifiRequest;
+    private boolean bluetoothRequest;
+    private boolean isFirst;
+
+    private List<String> measurementIdToDelete;
+    private Handler handler;
+    private Runnable runnable;
+    private Snackbar snackbar;
     /**
      * We need this variable to lock and unlock loading more.
      * We should not charge more when a request has already been made.
      * The load will be activated when the requisition is completed.
      */
     private boolean itShouldLoadMore = true;
-
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -113,6 +132,12 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
     @BindView(R.id.box_measurement)
     RelativeLayout boxMeasurement;
 
+    @BindView(R.id.box_message_error)
+    LinearLayout boxMessage;
+
+    @BindView(R.id.message_error)
+    TextView messageError;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -123,7 +148,7 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
         measurementDAO = MeasurementDAO.getInstance(this);
         deviceDAO = DeviceDAO.getInstance(this);
         decimalFormat = new DecimalFormat(getString(R.string.format_number2), new DecimalFormatSymbols(Locale.US));
-
+        measurementIdToDelete = new ArrayList<>();
         animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
         mChartButton.setOnClickListener(this);
         mAddButton.setOnClickListener(this);
@@ -139,7 +164,48 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
             mCollapsingToolbarLayout.requestLayout();
         }
         initComponents();
+        isFirst = true;
+
+        IntentFilter filterBluetooth = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
+        registerReceiver(mReceiver, filterBluetooth);
+        IntentFilter filterInternet = new IntentFilter(CONNECTIVITY_CHANGE);
+        registerReceiver(mReceiver, filterInternet);
     }
+
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
+            int status = NetworkUtil.getConnectivityStatusString(context);
+
+            if (CONNECTIVITY_CHANGE.equals(action)) {
+                if (status == NetworkUtil.NETWORK_STATUS_NOT_CONNECTED) {
+                    Log.w(getTag(), "mReceiver: wifi desligado");
+                    showMessageConnection(WIRELESS, true);
+                } else {
+                    Log.w(getTag(), "mReceiver: wifi ligado");
+                    showMessageConnection(WIRELESS, false);
+
+                    if (!isFirst) {
+                        loadData(true);
+                    }
+                    isFirst = false;
+                }
+            }
+            if (BluetoothAdapter.ACTION_STATE_CHANGED.equals(action)) {
+                final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE,
+                        BluetoothAdapter.ERROR);
+                if (state == BluetoothAdapter.STATE_OFF) {
+                    Log.w(getTag(), "mReceiver: Bluetooth desligado");
+                    showMessageConnection(BLUETOOTH, true);
+                } else if (state == BluetoothAdapter.STATE_ON) {
+                    Log.w(getTag(), "mReceiver: Bluetooth ligado");
+                    appPreferencesHelper.saveBluetoothMode(true);
+                    showMessageConnection(BLUETOOTH, false);
+                }
+            }
+        }
+    };
 
     /**
      * Enable/Disable display messgae no data.
@@ -165,8 +231,8 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
     /**
      * Check if is tablet.
      *
-     * @param context
-     * @return
+     * @param context Context
+     * @return True if is tablet, False otherwise
      */
     public static boolean isTablet(Context context) {
         return (context.getResources().getConfiguration().screenLayout
@@ -183,7 +249,6 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
         initDataSwipeRefresh();
     }
 
-
     private void initToolBar() {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -192,22 +257,12 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
         mCollapsingToolbarLayout.setExpandedTitleColor(ContextCompat.getColor(getApplicationContext(), android.R.color.transparent));
         mCollapsingToolbarLayout.setCollapsedTitleTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorTextDark));
 
-        mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            boolean isShow = false;
-            int scrollRange = -1;
+        mAppBarLayout.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
 
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if (scrollRange == -1) {
-                    scrollRange = appBarLayout.getTotalScrollRange();
-                }
-                if (scrollRange + verticalOffset == 0) {
-                    mCollapsingToolbarLayout.setTitle(getTitleActivity());
-                    isShow = true;
-                } else if (isShow) {
-                    mCollapsingToolbarLayout.setTitle("");
-                    isShow = false;
-                }
+            if (Math.abs(verticalOffset) == appBarLayout.getTotalScrollRange()) {
+                mCollapsingToolbarLayout.setTitle(getTitleActivity());
+            } else {
+                mCollapsingToolbarLayout.setTitle("");
             }
         });
     }
@@ -236,11 +291,32 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
             @Override
             public void onMenuContextClick(View v, Measurement item) {
             }
+
+            @Override
+            public void onItemSwiped(Measurement item, int position) {
+                mAdapter.removeItem(item);
+                measurementIdToDelete.add(item.get_id());
+                handler = new Handler();
+                runnable = () -> {
+                    removePendingMeasurements();
+                };
+                handler.postDelayed(runnable, 4000);
+
+                snackbar = Snackbar
+                        .make(findViewById(R.id.root), getString(R.string.confirm_remove_measurement), Snackbar.LENGTH_LONG);
+                snackbar.setAction(getString(R.string.undo), view -> {
+                    mAdapter.restoreItem(item, position);
+                    mRecyclerView.scrollToPosition(position);
+                    measurementIdToDelete.remove(item.get_id());
+//                    handler.removeCallbacks(runnable);
+                });
+                snackbar.show();
+            }
         });
 
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 if (dy > 0) {
                     // Recycle view scrolling downwards...
@@ -254,6 +330,7 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
             }
         });
         mRecyclerView.setAdapter(mAdapter);
+        mAdapter.enableSwipe(this);
     }
 
     /**
@@ -263,6 +340,32 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
         mDataSwipeRefresh.setOnRefreshListener(() -> {
             loadData(true);
         });
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        new Thread() {
+            @Override
+            public void run() {
+                Log.w("XXX", "onPause() - run()");
+                if (snackbar != null && snackbar.isShown()) snackbar.dismiss();
+                if (handler != null) {
+                    removePendingMeasurements();
+                    handler.removeCallbacks(runnable);
+                }
+            }
+        }.start();
+    }
+
+    private void removePendingMeasurements() {
+        Log.w("XXX", "removePendingMeasurements()");
+        if (measurementIdToDelete == null || measurementIdToDelete.isEmpty()) return;
+        for (String id : measurementIdToDelete)
+            DisposableManager.add(haniotNetRepository
+                    .deleteMeasurement(patient.get_id(), id).subscribe(() -> {
+                        measurementIdToDelete.remove(id);
+                    }));
     }
 
     /**
@@ -298,6 +401,7 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
         if (!ConnectionUtils.internetIsEnabled(this)) {
             loadDataLocal();
         } else {
+            removePendingMeasurements();
             DisposableManager.add(haniotNetRepository
                     .getAllMeasurementsByType(patient.get_id(),
                             getMeasurementType(), "-timestamp",
@@ -348,15 +452,63 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
     /**
      * Print Toast Messages.
      *
-     * @param message
+     * @param message Message
      */
     protected void printMessage(String message) {
         runOnUiThread(() -> Toast.makeText(this, message, Toast.LENGTH_LONG).show());
     }
 
+    /**
+     * Displays message.
+     */
+    public void showMessageConnection(String typeMessageError, boolean show) {
+
+        if (typeMessageError.equals(WIRELESS)) {
+            if (show) {
+                wifiRequest = true;
+                messageError.setOnClickListener(null);
+                messageError.setText(getString(R.string.wifi_disabled));
+            } else {
+                wifiRequest = false;
+                if (bluetoothRequest) {
+                    showMessageConnection(BLUETOOTH, true);
+                }
+            }
+        } else if (typeMessageError.equals(BLUETOOTH)) {
+            if (show) {
+                bluetoothRequest = true;
+                messageError.setText(getString(R.string.bluetooth_disabled));
+                messageError.setOnClickListener(v -> {
+                    appPreferencesHelper.saveBluetoothMode(true);
+                    checkPermissions();
+                });
+            } else {
+                bluetoothRequest = false;
+                if (wifiRequest) {
+                    showMessageConnection(WIRELESS, true);
+                }
+            }
+        }
+
+        if (wifiRequest || bluetoothRequest) {
+            runOnUiThread(() -> {
+                boxMessage.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_in));
+                boxMessage.setVisibility(View.VISIBLE);
+            });
+        } else {
+            boxMessage.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_out));
+            boxMessage.setVisibility(View.GONE);
+        }
+    }
+
     @Override
     protected void onResume() {
+        if (!wifiRequest && !bluetoothRequest) {
+            boxMessage.setVisibility(View.GONE);
+        }
+        checkPermissions();
         loadData(true);
+        updateConnectionState();
 
         if (mDevice != null && manager != null)
             manager.connect(BluetoothAdapter.getDefaultAdapter()
@@ -374,18 +526,21 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
         super.onDestroy();
         DisposableManager.dispose();
         if (manager != null) manager.close();
+        unregisterReceiver(mReceiver);
     }
 
-    protected void updateConnectionState(final boolean isConnected) {
+    protected void updateConnectionState() {
+        Log.w(getTag(), "updateConnectionState: " + mConnected);
+
         runOnUiThread(() -> {
             mCircularProgressBar.setProgress(0);
             mCircularProgressBar.setProgressWithAnimation(100); // Default animate duration = 1500ms
 
-            if (isConnected) {
+            if (mConnected) {
                 mCircularProgressBar.setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
-                mCircularProgressBar.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAlertDanger));
+                mCircularProgressBar.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorButtonDanger));
             } else {
-                mCircularProgressBar.setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAlertDanger));
+                mCircularProgressBar.setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorButtonDanger));
                 mCircularProgressBar.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
             }
         });
@@ -401,6 +556,7 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
                 .saveMeasurement(measurement)
                 .doAfterSuccess(measurement1 -> {
                     printMessage(getString(R.string.measurement_save));
+                    Log.w(getTag(), "SINCRONIZAR...");
                     loadData(true);
                 })
                 .subscribe(measurement1 -> {
@@ -427,13 +583,9 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                if (manager != null) manager.disconnect();
-                super.onBackPressed();
-                break;
-            default:
-                break;
+        if (item.getItemId() == android.R.id.home) {
+            if (manager != null) manager.disconnect();
+            super.onBackPressed();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -445,7 +597,9 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
     public void checkPermissions() {
         if (BluetoothAdapter.getDefaultAdapter() != null &&
                 !BluetoothAdapter.getDefaultAdapter().isEnabled()) {
-            requestBluetoothEnable();
+            showMessageConnection(BLUETOOTH, true);
+            if (appPreferencesHelper.getBluetoothMode())
+                requestBluetoothEnable();
         } else if (!hasLocationPermissions()) {
             requestLocationPermission();
         }
@@ -496,8 +650,10 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_ENABLE_BLUETOOTH) {
             if (resultCode != Activity.RESULT_OK) {
-                requestBluetoothEnable();
+                appPreferencesHelper.saveBluetoothMode(false);
+                showMessageConnection(BLUETOOTH, true);
             } else {
+                appPreferencesHelper.saveBluetoothMode(true);
                 requestLocationPermission();
             }
         }
