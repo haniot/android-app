@@ -176,7 +176,7 @@
                 android:textSize="12sp" />
 
             <TextView
-                android:id="@+id/text_professional"
+                android:id="@+id/text_name_professional"
                 android:layout_width="123dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/title_professional"

@@ -89,7 +89,7 @@
             android:theme="@style/AppTheme" />
         <activity android:name=".activity.AddMeasurementActivity" />
         <activity
-            android:name=".activity.PatientRegisterActivity"
+            android:name=".activity.UserRegisterActivity"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".activity.QuizNutritionActivity"

@@ -52,7 +52,7 @@ public interface HaniotService {
     Completable deleteUser(@Path("user_id") String userId);
 
     @PATCH("auth/password")
-    Completable changePassword(@Path("user_id") String userId, @Body User user);
+    Completable changePassword(@Body User user);
 
     // users.healthprofessionals
     @GET("healthprofessionals/{healthprofessional_id}")
@@ -72,7 +72,7 @@ public interface HaniotService {
             @Body User healthProfissional
     );
 
-    @PATCH("users/admins/{admin_id}")
+    @PATCH("admins/{admin_id}")
     Single<Admin> updateAdmin(
             @Path("admin_id") String healthProfessionalId,
             @Body User healthProfissional

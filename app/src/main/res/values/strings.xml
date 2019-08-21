@@ -116,7 +116,7 @@
     <string name="settings_about">Sobre</string>
     <string name="settings_general">Geral</string>
     <string name="settings_send_bug">Reportar um problema</string>
-    <string name="settings_summary_your_data">Atualize seu nome, endereço de email e password.</string>
+    <string name="settings_summary_your_data">Atualize seu nome, endereço de email e outras informações.</string>
     <string name="settings_summary_signout">Você será desconectado do aplicativo e redirecionado para a tela de login.</string>
     <string name="settings_summary_bug">Encontrou um problema? Conte-nos e vamos nos esforçar para concertar :)</string>
     <string name="settings_summary_about">O NUTES é um centro de referência para o desenvolvimento de tecnologias a serem aplicadas no domínio da saúde, composto por professores, pesquisadores e estudantes de nível de graduação e pós-graduação das áreas de Ciência da Computação, Odontologia e Fisioterapia.</string>
@@ -783,4 +783,10 @@
     <string name="color_race">Cor/Raça</string>
     <string name="schoolarity_mother">Escolaridade da mãe</string>
     <string name="people_in_home">Número de pessoas em casa</string>
+    <string name="admin">Administrador</string>
+    <string name="key_your_password">key_password</string>
+    <string name="settings_summary_your_password">Atualize sua senha.</string>
+    <string name="settings_your_password">Mudar senha</string>
+    <string name="nutrition_quiz_empty">Ainda não há questionários nutricionais respondidos...</string>
+    <string name="dentistry_quiz_empty">Ainda não há questionários odontológicos respondidos...</string>
 </resources>

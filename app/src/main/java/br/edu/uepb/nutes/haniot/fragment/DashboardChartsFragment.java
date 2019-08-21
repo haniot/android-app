@@ -46,7 +46,7 @@ public class DashboardChartsFragment extends Fragment {
     TextView textValueMeasurement;
     @BindView(R.id.text_pilot_study)
     TextView textPilotStudy;
-    @BindView(R.id.text_professional)
+    @BindView(R.id.text_name_professional)
     TextView textProfessional;
     @BindView(R.id.title_pilot_study)
     TextView titlePilotStudy;
@@ -89,13 +89,14 @@ public class DashboardChartsFragment extends Fragment {
 
         textDate.setText(simpleDateFormat.format(calendar.getTime()));
         updateNamePatient(preferencesHelper.getLastPatient());
+        Log.w("AAA", "TIPO: " + preferencesHelper.getUserLogged().getUserType());
         if (preferencesHelper.getUserLogged().getUserType().equals(PATIENT)) {
             textPilotStudy.setVisibility(View.INVISIBLE);
             textProfessional.setVisibility(View.INVISIBLE);
             titlePilotStudy.setVisibility(View.INVISIBLE);
             titleProfessional.setVisibility(View.INVISIBLE);
         } else if (preferencesHelper.getUserLogged().getUserType().equals(ADMIN)) {
-            textProfessional.setText("Administrador");
+            titleProfessional.setText(getString(R.string.admin));
         }
         if (user.getPilotStudyIDSelected() != null && preferencesHelper.getLastPilotStudy() != null)
             textPilotStudy.setText(preferencesHelper.getLastPilotStudy().getName());

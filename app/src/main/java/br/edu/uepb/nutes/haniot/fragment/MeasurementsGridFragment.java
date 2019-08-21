@@ -252,7 +252,6 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         @Override
         public void onScanResult(int i, ScanResult scanResult) {
-            Log.w("AAA", "Achado: " + scanResult.getDevice().getAddress());
             String address = scanResult.getDevice().getAddress();
             Device device = getDeviceRegisteredFromAddress(address);
             BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();

@@ -2,10 +2,7 @@ package br.edu.uepb.nutes.haniot.activity;
 
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.preference.Preference;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -15,11 +12,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,9 +24,7 @@ import java.util.List;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.SettingsActivity;
 import br.edu.uepb.nutes.haniot.adapter.ManagerPatientAdapter;
-import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
-import br.edu.uepb.nutes.haniot.data.model.PilotStudy;
 import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
@@ -122,7 +114,7 @@ public class ManagerPatientsActivity extends AppCompatActivity {
         disableBack();
 
         View.OnClickListener onClickListener = v -> {
-            startActivity(new Intent(this, PatientRegisterActivity.class));
+            startActivity(new Intent(this, UserRegisterActivity.class));
         };
         addPatient.setOnClickListener(onClickListener);
         addPatientShortCut.setOnClickListener(onClickListener);
@@ -213,7 +205,7 @@ public class ManagerPatientsActivity extends AppCompatActivity {
                             .show();
 
                 } else if (v.getId() == R.id.btnEditChildren) {
-                    Intent intent = new Intent(ManagerPatientsActivity.this, PatientRegisterActivity.class);
+                    Intent intent = new Intent(ManagerPatientsActivity.this, UserRegisterActivity.class);
                     intent.putExtra("action", "edit");
                     appPreferencesHelper.saveLastPatient(item);
                     startActivity(intent);
