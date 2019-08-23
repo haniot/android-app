@@ -1,5 +1,7 @@
 package br.edu.uepb.nutes.haniot.data.repository.remote.haniot;
 
+import com.google.gson.JsonObject;
+
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.data.model.Admin;
@@ -24,10 +26,13 @@ import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.model.UserAccess;
 import io.reactivex.Completable;
 import io.reactivex.Single;
+import okhttp3.RequestBody;
 import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
+import retrofit2.http.Field;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
@@ -46,6 +51,10 @@ public interface HaniotService {
     // auth
     @POST("auth")
     Single<UserAccess> auth(@Body User user);
+
+    // auth
+    @POST("auth/forgot")
+    Single<Object> forgotPassword(@Body JsonObject email);
 
     // user
     @DELETE("users/{user_id}")

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.auth0.android.jwt.JWT;
+import com.google.gson.JsonObject;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -37,6 +38,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.Interceptor;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 /**
@@ -123,6 +125,13 @@ public class HaniotNetRepository extends BaseNetRepository {
                     }
                     return userAccess;
                 })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    // forgot password
+    public Single<Object> forgotPassword(JsonObject email) {
+        return haniotService.forgotPassword(email)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

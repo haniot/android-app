@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent"
+    android:paddingBottom="10dp">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appBarLayout2"
@@ -10,7 +12,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
@@ -22,12 +25,16 @@
     </android.support.design.widget.AppBarLayout>
 
     <ScrollView
+        android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/appBarLayout2"
-        android:parentActivityName=".ManagePatientsActivity">
+        android:parentActivityName=".ManagePatientsActivity"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout2"
+        app:layout_constraintVertical_bias="0.0"
+        tools:layout_editor_absoluteX="0dp">
 
-        <RelativeLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -158,21 +165,6 @@
                     android:textColor="@android:color/tertiary_text_light" />
             </RadioGroup>
 
-            <android.support.v7.widget.AppCompatButton
-                android:id="@+id/btn_change_passsword"
-                style="@style/Widget.AppCompat.Button.Colored"
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/radio_group"
-                android:layout_centerHorizontal="true"
-                android:layout_gravity="center"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="60dp"
-                android:padding="20dp"
-                android:text="@string/change_password"
-                android:textColor="@color/colorTextDark"
-                android:visibility="gone" />
-
             <TextView
                 android:id="@+id/message_add"
                 android:layout_width="wrap_content"
@@ -194,7 +186,6 @@
                 android:visibility="invisible" />
 
         </RelativeLayout>
-
     </ScrollView>
 
     <android.support.design.widget.FloatingActionButton
@@ -203,12 +194,13 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="@dimen/fab_margin"
-        android:paddingBottom="20dp"
-        android:layout_marginEnd="@dimen/fab_margin"
-        android:layout_marginStart="@dimen/fab_margin"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         android:clickable="true"
         android:focusable="true"
+        android:paddingBottom="@dimen/button_padding"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_next" />
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>
 

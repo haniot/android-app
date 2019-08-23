@@ -32,6 +32,7 @@ import br.edu.uepb.nutes.haniot.data.model.PilotStudy;
 import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
+import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.ErrorHandler;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
@@ -261,6 +262,7 @@ public class PilotStudyActivity extends AppCompatActivity {
                 openDashboard();
             }, throwable -> {
                 Log.w("AAA", throwable.getMessage());
+                ErrorHandler.showMessage(this, throwable);
             }));
         } else if (user.getUserType().equals(ADMIN)) {
             Admin admin = new Admin();
@@ -271,6 +273,7 @@ public class PilotStudyActivity extends AppCompatActivity {
                 openDashboard();
             }, throwable -> {
                 Log.w("AAA", throwable.getMessage());
+                ErrorHandler.showMessage(this, throwable);
             }));
         } else if (user.getUserType().equals(HEALTH_PROFESSIONAL)) {
             HealthProfessional healthProfessional = new HealthProfessional();
@@ -280,7 +283,7 @@ public class PilotStudyActivity extends AppCompatActivity {
                 openDashboard();
             }, throwable -> {
                 Log.w("AAA", throwable.getMessage());
-
+                ErrorHandler.showMessage(this, throwable);
             }));
         }
 

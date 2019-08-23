@@ -28,6 +28,7 @@ import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
+import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.ErrorHandler;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -150,12 +151,7 @@ public class ManagerPatientsActivity extends AppCompatActivity {
      * @param e {@link Throwable}
      */
     private void errorHandler(Throwable e) {
-        if (e instanceof HttpException) {
-            HttpException httpEx = ((HttpException) e);
-            Log.i(LOG_TAG, httpEx.getMessage());
-            showMessage(getResources().getString(R.string.error_500));
-        }
-        // message 500
+        ErrorHandler.showMessage(this, e);
     }
 
     @Override

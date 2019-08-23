@@ -88,9 +88,6 @@ public class UserRegisterActivity extends AppCompatActivity {
     @BindView(R.id.loading)
     ProgressBar progressBar;
 
-    @BindView(R.id.btn_change_passsword)
-    Button changePassword;
-
     private Calendar myCalendar;
     private Patient patient;
     private AppPreferencesHelper appPreferencesHelper;
@@ -471,10 +468,6 @@ public class UserRegisterActivity extends AppCompatActivity {
         birthEdittext.setText(DateUtils.formatDate(birthday, getString(R.string.date_format)));
         if (editUserLogged) {
             genderGroup.setVisibility(View.GONE);
-            changePassword.setVisibility(View.VISIBLE);
-            changePassword.setOnClickListener(v -> {
-                startActivity(new Intent(this, ChangePasswordActivity.class));
-            });
         }
 
         Log.w("AAA", birthday);

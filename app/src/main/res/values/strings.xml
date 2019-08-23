@@ -18,7 +18,7 @@
     <string name="device_not_bonded">Não pareado</string>
     <string name="permission_location">A permissão de localização é obrigatória no utilizar Bluetooth Low Energy!</string>
     <string name="not_bluetooth_le">Seu dispositivo não suporta Bluetooth Low Energy!</string>
-    <string name="welcome">Bem-vindo</string>
+    <string name="welcome">Bem-vindo ao HANIoT</string>
     <string name="no_more_data">Não há mais dados disponíveis&#8230;</string>
     <string name="today_text">Hoje</string>
     <string name="yes_text">Sim</string>
@@ -789,4 +789,8 @@
     <string name="settings_your_password">Mudar senha</string>
     <string name="nutrition_quiz_empty">Ainda não há questionários nutricionais respondidos...</string>
     <string name="dentistry_quiz_empty">Ainda não há questionários odontológicos respondidos...</string>
+    <string name="invalid_auth">Auntenticação inválida! Faça login em outra conta e tente novamente.</string>
+    <string name="not_permission">Você não tem permissão para efetuar essa tarefa!</string>
+    <string name="not_found">Recurso não encontrado!</string>
+    <string name="request_exceeded">Limite de requisições excedidas, tente novamente mais tarde!</string>
 </resources>

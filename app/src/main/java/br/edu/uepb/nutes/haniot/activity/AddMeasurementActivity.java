@@ -40,6 +40,7 @@ import br.edu.uepb.nutes.haniot.data.model.PatientsType;
 import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
+import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.ErrorHandler;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.haniot.fragment.FragmentAnthropometrics;
 import br.edu.uepb.nutes.haniot.fragment.FragmentBloodPressure;
@@ -267,7 +268,7 @@ public class AddMeasurementActivity extends AppCompatActivity {
         if (!checkConnectivity())
             showMessage(R.string.no_internet_conection);
         else
-            showMessage(R.string.error_500);
+            ErrorHandler.showMessage(this, e);
     }
 
     /**
