@@ -245,7 +245,10 @@ public class User {
 
         User other = (User) o;
 
-        return other.get_id().equals(this.get_id()) && other.getEmail().equals(this.getEmail());
+        return other.get_id().equals(this.get_id())
+                && (other.email == null
+                || this.email == null
+                || other.getEmail().equals(this.getEmail()));
     }
 
     @Override

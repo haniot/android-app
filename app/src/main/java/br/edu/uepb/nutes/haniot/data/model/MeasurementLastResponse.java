@@ -10,10 +10,6 @@ import java.lang.reflect.Type;
 
 public class MeasurementLastResponse {
 
-    @SerializedName("body_temperature")
-    @Expose()
-    Measurement temperature;
-
     @SerializedName("weight")
     @Expose()
     Measurement weight;
@@ -37,14 +33,6 @@ public class MeasurementLastResponse {
     @SerializedName("waist_circumference")
     @Expose()
     Measurement waistCircumference;
-
-    public Measurement getTemperature() {
-        return temperature;
-    }
-
-    public void setTemperature(Measurement temperature) {
-        this.temperature = temperature;
-    }
 
     public Measurement getWeight() {
         return weight;
@@ -121,7 +109,6 @@ public class MeasurementLastResponse {
     @Override
     public String toString() {
         return "MeasurementLastResponse{" +
-                "temperature=" + temperature +
                 ", weight=" + weight +
                 ", heartRate=" + heartRate +
                 ", height=" + height +

@@ -156,6 +156,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         // close keyboard
         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+
         inputMethodManager.hideSoftInputFromWindow(Objects.requireNonNull(
                 getCurrentFocus()).getWindowToken(), HIDE_NOT_ALWAYS);
 
@@ -323,6 +324,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
             return;
         }
+        showMessage(R.string.error_500);
         Log.i(LOG_TAG, e.getMessage());
     }
 

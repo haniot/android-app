@@ -126,6 +126,7 @@ public class ManagerPatientsActivity extends AppCompatActivity {
      * Load patients in server.
      */
     private void loadData() {
+        if (!addPatient.isShown()) addPatient.show();
         mDataSwipeRefresh.setRefreshing(true);
         DisposableManager.add(haniotNetRepository
                 .getAllPatients(user.getPilotStudyIDSelected(), "created_at", 1, 100)

@@ -58,7 +58,6 @@ import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.HEIGHT;
 import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.MEDICAL_RECORDS;
 import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.PHYSICAL_ACTIVITY;
 import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.SLEEP_HABITS;
-import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.TEMPERATURE;
 import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.WAIST_CIRCUMFERENCE;
 import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.WEIGHT;
 
@@ -386,7 +385,7 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
         DisposableManager.add(haniotNetRepository
                 .getLastMeasurements(patient.get_id())
                 .subscribe(measurents -> {
-                    Log.w("AAA", measurents.toString());
+                    Log.w("AAA", measurents.toJson());
                     measurementLastResponse = measurents;
                     //  measurementList = measurents;
                     prepareMeasurements(measurents);
@@ -433,7 +432,6 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
         leftFields = validated.get(GLUCOSE) != null
                 && validated.get(BLOOD_PRESSURE) != null
                 && validated.get(WAIST_CIRCUMFERENCE) != null
-                && validated.get(TEMPERATURE) != null
                 && validated.get(WEIGHT) != null
                 && validated.get(SLEEP_HABITS) != null
                 && validated.get(PHYSICAL_ACTIVITY) == null
@@ -449,7 +447,6 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
             List<Measurement> measurements = new ArrayList<>();
             measurements.add(measurementLastResponse.getBloodPressure());
             measurements.add(measurementLastResponse.getWaistCircumference());
-            measurements.add(measurementLastResponse.getTemperature());
             measurements.add(measurementLastResponse.getWeight());
             measurements.add(measurementLastResponse.getBloodGlucose());
             measurements.add(measurementLastResponse.getHeight());

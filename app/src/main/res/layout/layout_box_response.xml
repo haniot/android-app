@@ -57,9 +57,14 @@
 
             <ImageView
                 android:id="@+id/img_device_sucess"
-                android:layout_gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_gravity="center"
+                android:layout_marginStart="0dp"
+                android:layout_marginEnd="54dp"
+                android:layout_centerHorizontal="true"
                 android:background="@drawable/bg_device"
                 android:backgroundTint="@color/colorWhite"
                 app:srcCompat="@drawable/thermometer" />
