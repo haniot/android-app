@@ -948,15 +948,19 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
     public void onItemClick(MeasurementMonitor item) {
         switch (item.getType()) {
             case ItemGridType.TEMPERATURE:
+                if (thermometerManager != null) thermometerManager.close();
                 startActivity(new Intent(mContext, ThermometerActivity.class));
                 break;
             case ItemGridType.BLOOD_GLUCOSE:
+                if (glucoseManager != null) glucoseManager.close();
                 startActivity(new Intent(mContext, GlucoseActivity.class));
                 break;
             case ItemGridType.HEART_RATE:
+                if (heartRateManager != null) heartRateManager.close();
                 startActivity(new Intent(mContext, HeartRateActivity.class));
                 break;
             case ItemGridType.WEIGHT:
+                if (scaleManager != null) scaleManager.close();
                 startActivity(new Intent(mContext, ScaleActivity.class));
                 break;
             case ItemGridType.BLOOD_PRESSURE:

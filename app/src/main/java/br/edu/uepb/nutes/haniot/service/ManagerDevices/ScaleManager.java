@@ -59,7 +59,7 @@ public class ScaleManager extends BluetoothManager {
                 //    01 - unfinished weighing
                 //    02 - finished weighing
                 boolean isFinalized = String.format("%02X", data[3]).equals("02");
-
+                Log.w("AAA", "isFinalized " + isFinalized + " | isFinishMeasurement: " + isFinishMeasurement);
                 // unfinished weighing
                 // 08-09: weight - BE uint16 times 0.01
                 bodyMass = Integer.valueOf(String.format("%02X", data[8]) +
@@ -84,6 +84,7 @@ public class ScaleManager extends BluetoothManager {
                             String.format("%02X", data[18]), 16) * 0.01f;
 
                     if (scaleDataCallback != null) {
+                        Log.w("AAA", "scaleDataCallback != null && !isFinishMeasurement");
                         scaleDataCallback.onMeasurementReceived(
                                 device,
                                 bodyMass,
@@ -96,6 +97,7 @@ public class ScaleManager extends BluetoothManager {
                     if (scaleDataCallback != null && !isFinishMeasurement) {
                         scaleDataCallback.onMeasurementReceiving(bodyMass, bodyMassUnit);
                     }
+
                     isFinishMeasurement = false;
                 }
             }

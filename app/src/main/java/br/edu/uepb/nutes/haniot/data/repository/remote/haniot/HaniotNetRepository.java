@@ -9,6 +9,7 @@ import com.google.gson.JsonObject;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
+import java.util.Objects;
 
 import br.edu.uepb.nutes.haniot.data.model.Admin;
 import br.edu.uepb.nutes.haniot.data.model.Device;
@@ -106,8 +107,6 @@ public class HaniotNetRepository extends BaseNetRepository {
                     .getInstance(mContext).getUserLogged() != null) {
                 EventBus.getDefault().post("unauthorized");
             }
-//            Log.w("RESPONSEBODY", "" + response.body().contentLength());
-//            Log.w("AAA", ":" + chain.proceed(chain.request()).body().string().length());
             return response;
         };
     }
