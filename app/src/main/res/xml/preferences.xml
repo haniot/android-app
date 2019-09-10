@@ -8,6 +8,11 @@
             android:title="@string/settings_your_data" />
 
         <Preference
+            android:key="@string/key_your_password"
+            android:summary="@string/settings_summary_your_password"
+            android:title="@string/settings_your_password" />
+
+        <Preference
             android:key="@string/key_pilot_study"
             android:summary="@string/piloty_study_sumary"
             android:title="@string/piloty_study_title" />

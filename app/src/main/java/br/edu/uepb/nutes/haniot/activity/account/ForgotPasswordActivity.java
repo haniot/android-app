@@ -3,7 +3,6 @@ package br.edu.uepb.nutes.haniot.activity.account;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -12,7 +11,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.AnimationUtils;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -32,7 +30,6 @@ import br.edu.uepb.nutes.haniot.activity.MainActivity;
 import br.edu.uepb.nutes.haniot.data.model.Device;
 import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.model.UserAccess;
-import br.edu.uepb.nutes.haniot.data.model.UserType;
 import br.edu.uepb.nutes.haniot.data.model.dao.DeviceDAO;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
@@ -42,6 +39,8 @@ import br.edu.uepb.nutes.haniot.service.TokenExpirationService;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.HttpException;
 
@@ -55,7 +54,7 @@ import static br.edu.uepb.nutes.haniot.data.model.UserType.PATIENT;
  *
  * @author Copyright (c) 2018, NUTES/UEPB
  */
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
+public class ForgotPasswordActivity extends AppCompatActivity implements View.OnClickListener {
     private final String LOG_TAG = "LoginActivity";
 
     @BindView(R.id.progressBarLogin)
@@ -67,20 +66,23 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @BindView(R.id.edit_text_email)
     EditText emailEditText;
 
-    @BindView(R.id.edit_text_password)
-    EditText passwordEditText;
+    @BindView(R.id.btn_forgot)
+    Button buttonForgot;
 
-    @BindView(R.id.btn_login)
-    Button buttonLogin;
+    @BindView(R.id.btn_ok)
+    Button buttonOk;
 
     @BindView(R.id.box_message_error)
     LinearLayout boxMessage;
 
+    @BindView(R.id.box_response)
+    LinearLayout boxResponse;
+
+    @BindView(R.id.box_forgout)
+    LinearLayout boxForgout;
+
     @BindView(R.id.message_error)
     TextView messageError;
-
-    @BindView(R.id.forgot_password)
-    TextView forgotPassword;
 
     private TokenExpirationService tokenExpirationService;
     private boolean mIsBound;
@@ -91,14 +93,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_forgot_password);
         ButterKnife.bind(this);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            int flags = getWindow().getDecorView().getSystemUiVisibility();
-            flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
-            getWindow().getDecorView().setSystemUiVisibility(flags);
-            getWindow().setStatusBarColor(getColor(android.R.color.background_light));
+            getWindow().setStatusBarColor(getColor(R.color.colorAccent));
         }
         mDeviceDAO = DeviceDAO.getInstance(this);
         haniotNetRepository = HaniotNetRepository.getInstance(this);
@@ -106,13 +105,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         doBindService();
 
-        buttonLogin.setOnClickListener(this);
-        forgotPassword.setOnClickListener(this);
-        passwordEditText.setOnEditorActionListener((textView, actionId, keyEvent) -> {
-            if (actionId == EditorInfo.IME_ACTION_SEND) login();
-
-            return false;
-        });
+        buttonForgot.setOnClickListener(this);
+        buttonOk.setOnClickListener(this);
     }
 
     @Override
@@ -137,11 +131,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.btn_login:
+            case R.id.btn_forgot:
                 login();
                 break;
-            case R.id.forgot_password:
-                startActivity(new Intent(this, ForgotPasswordActivity.class));
+            case R.id.btn_ok:
+                finish();
                 break;
             default:
                 break;
@@ -156,32 +150,34 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         // close keyboard
         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-
-        if (getCurrentFocus().getWindowToken() != null)
-            inputMethodManager.hideSoftInputFromWindow(Objects.requireNonNull(
-                    getCurrentFocus()).getWindowToken(), HIDE_NOT_ALWAYS);
+        inputMethodManager.hideSoftInputFromWindow(Objects.requireNonNull(
+                getCurrentFocus()).getWindowToken(), HIDE_NOT_ALWAYS);
 
         // Check if you have an internet connection.
         // If yes, it does authentication with the remote server
         if (!checkConnectivity() || !validate()) return;
 
-        authenticationInServer();
+        forgoutPassword();
+    }
+
+    private void showSucess() {
+        boxResponse.setVisibility(View.VISIBLE);
+        boxForgout.setVisibility(View.GONE);
     }
 
     /**
      * Authenticates the user on the remote server
      */
-    private void authenticationInServer() {
+    private void forgoutPassword() {
+//        user.set
+        JsonObject email = new JsonObject();
+        email.addProperty("email", emailEditText.getText().toString());
         DisposableManager.add(haniotNetRepository
-                .auth(String.valueOf(emailEditText.getText()), String.valueOf(passwordEditText.getText()))
+                .forgotPassword(email)
                 .doOnSubscribe(disposable -> showLoading(true))
                 .doAfterTerminate(() -> showLoading(false))
-                .subscribe(userAccess -> {
-                    if (appPreferencesHelper.saveUserAccessHaniot(userAccess)) {
-                        getUserProfile(userAccess);
-                        //TODO Temp
-                        Log.w("AAA", "Token: " + userAccess.getAccessToken());
-                    }
+                .subscribe(o -> {
+                    showSucess();
                 }, this::errorHandler)
         );
     }
@@ -291,7 +287,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     .getAsJsonObject();
             String redirectLink = json.get("redirect_link").getAsString();
             Intent intent = new Intent(
-                    LoginActivity.this,
+                    ForgotPasswordActivity.this,
                     ChangePasswordActivity.class
             );
             Log.i("AAA", redirectLink);
@@ -325,7 +321,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
             return;
         }
-        showMessage(R.string.error_500);
         Log.i(LOG_TAG, e.getMessage());
     }
 
@@ -354,7 +349,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         boolean valid = true;
 
         String email = emailEditText.getText().toString();
-        String password = passwordEditText.getText().toString();
 
         if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             emailEditText.setError(getString(R.string.validate_email));
@@ -362,15 +356,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         } else {
             emailEditText.setError(null);
         }
-        if (password.isEmpty()) {
-            passwordEditText.setError(getString(R.string.required_field));
-            valid = false;
-            if (emailEditText.getError() == null) passwordEditText.requestFocus();
-        } else {
-            passwordEditText.setError(null);
-        }
 
-        return valid;
+        return true;
     }
 
     /**
@@ -380,7 +367,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
      */
     private void showLoading(final boolean enabled) {
         runOnUiThread(() -> {
-            buttonLogin.setEnabled(!enabled);
+            buttonForgot.setEnabled(!enabled);
 
             if (enabled) mProgressBar.setVisibility(View.VISIBLE);
             else mProgressBar.setVisibility(View.GONE);

@@ -1,8 +1,8 @@
 apply plugin: 'com.android.application'
-dependencies {
-    debugImplementation "io.objectbox:objectbox-android-objectbrowser:$objectboxVersion"
-    releaseImplementation "io.objectbox:objectbox-android:$objectboxVersion"
-}
+//dependencies {
+//    debugImplementation "io.objectbox:objectbox-android-objectbrowser:$objectboxVersion"
+//    releaseImplementation "io.objectbox:objectbox-android:$objectboxVersion"
+//}
 apply plugin: 'io.objectbox'
 
 android {
@@ -18,6 +18,9 @@ android {
     }
     buildTypes {
         release {
+            lintOptions {
+                disable 'MissingTranslation'
+            }
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'

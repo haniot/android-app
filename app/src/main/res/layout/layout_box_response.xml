@@ -57,9 +57,14 @@
 
             <ImageView
                 android:id="@+id/img_device_sucess"
-                android:layout_gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_gravity="center"
+                android:layout_marginStart="0dp"
+                android:layout_marginEnd="54dp"
+                android:layout_centerHorizontal="true"
                 android:background="@drawable/bg_device"
                 android:backgroundTint="@color/colorWhite"
                 app:srcCompat="@drawable/thermometer" />
@@ -68,10 +73,11 @@
                 android:id="@+id/imageSuccess"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:layout_below="@+id/img_device_register"
-                android:layout_alignEnd="@+id/img_device_register"
+                android:layout_alignBottom="@+id/img_device_sucess"
+                android:layout_alignParentEnd="true"
                 android:layout_marginTop="-101dp"
-                android:layout_marginEnd="24dp"
+                android:layout_marginEnd="64dp"
+                android:layout_marginBottom="-15dp"
                 android:contentDescription="@string/image"
                 android:tint="@color/colorWhite"
                 app:srcCompat="@drawable/success" />

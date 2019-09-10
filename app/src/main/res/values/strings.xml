@@ -18,7 +18,7 @@
     <string name="device_not_bonded">Não pareado</string>
     <string name="permission_location">A permissão de localização é obrigatória no utilizar Bluetooth Low Energy!</string>
     <string name="not_bluetooth_le">Seu dispositivo não suporta Bluetooth Low Energy!</string>
-    <string name="welcome">Bem-vindo</string>
+    <string name="welcome">Bem-vindo ao HANIoT</string>
     <string name="no_more_data">Não há mais dados disponíveis&#8230;</string>
     <string name="today_text">Hoje</string>
     <string name="yes_text">Sim</string>
@@ -116,7 +116,7 @@
     <string name="settings_about">Sobre</string>
     <string name="settings_general">Geral</string>
     <string name="settings_send_bug">Reportar um problema</string>
-    <string name="settings_summary_your_data">Atualize seu nome, endereço de email e password.</string>
+    <string name="settings_summary_your_data">Atualize seu nome, endereço de email e outras informações.</string>
     <string name="settings_summary_signout">Você será desconectado do aplicativo e redirecionado para a tela de login.</string>
     <string name="settings_summary_bug">Encontrou um problema? Conte-nos e vamos nos esforçar para concertar :)</string>
     <string name="settings_summary_about">O NUTES é um centro de referência para o desenvolvimento de tecnologias a serem aplicadas no domínio da saúde, composto por professores, pesquisadores e estudantes de nível de graduação e pós-graduação das áreas de Ciência da Computação, Odontologia e Fisioterapia.</string>
@@ -783,4 +783,14 @@
     <string name="color_race">Cor/Raça</string>
     <string name="schoolarity_mother">Escolaridade da mãe</string>
     <string name="people_in_home">Número de pessoas em casa</string>
+    <string name="admin">Administrador</string>
+    <string name="key_your_password">key_password</string>
+    <string name="settings_summary_your_password">Atualize sua senha.</string>
+    <string name="settings_your_password">Mudar senha</string>
+    <string name="nutrition_quiz_empty">Ainda não há questionários nutricionais respondidos...</string>
+    <string name="dentistry_quiz_empty">Ainda não há questionários odontológicos respondidos...</string>
+    <string name="invalid_auth">Auntenticação inválida! Faça login em outra conta e tente novamente.</string>
+    <string name="not_permission">Você não tem permissão para efetuar essa tarefa!</string>
+    <string name="not_found">Recurso não encontrado!</string>
+    <string name="request_exceeded">Limite de requisições excedidas, tente novamente mais tarde!</string>
 </resources>

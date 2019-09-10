@@ -1,5 +1,7 @@
 package br.edu.uepb.nutes.haniot.data.repository.remote.haniot;
 
+import com.google.gson.JsonObject;
+
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.data.model.Admin;
@@ -24,10 +26,13 @@ import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.model.UserAccess;
 import io.reactivex.Completable;
 import io.reactivex.Single;
+import okhttp3.RequestBody;
 import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
+import retrofit2.http.Field;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
@@ -41,18 +46,22 @@ import retrofit2.http.Query;
  */
 public interface HaniotService {
     //    String BASE_URL_HANIOT = "http://192.168.0.119:8080/"; // API GATEWAY LOCAL
-    String BASE_URL_HANIOT = "https://200.129.82.8:8081/v1/"; // API GATEWAY LOCAL
+    String BASE_URL_HANIOT = "https://haniot.nutes.uepb.edu.br:8081/v1/"; // API GATEWAY LOCAL
 
     // auth
     @POST("auth")
     Single<UserAccess> auth(@Body User user);
+
+    // auth
+    @POST("auth/forgot")
+    Single<Object> forgotPassword(@Body JsonObject email);
 
     // user
     @DELETE("users/{user_id}")
     Completable deleteUser(@Path("user_id") String userId);
 
     @PATCH("auth/password")
-    Completable changePassword(@Path("user_id") String userId, @Body User user);
+    Completable changePassword(@Body User user);
 
     // users.healthprofessionals
     @GET("healthprofessionals/{healthprofessional_id}")
@@ -72,7 +81,7 @@ public interface HaniotService {
             @Body User healthProfissional
     );
 
-    @PATCH("users/admins/{admin_id}")
+    @PATCH("admins/{admin_id}")
     Single<Admin> updateAdmin(
             @Path("admin_id") String healthProfessionalId,
             @Body User healthProfissional

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="br.edu.uepb.nutes.haniot">
     <!-- PERMISSIONS -->
     <uses-permission android:name="android.permission.BLUETOOTH" />
@@ -18,12 +19,13 @@
         android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:usesCleartextTraffic="true">
+        tools:ignore="GoogleAppIndexingWarning"
+        android:fullBackupContent="true">
         <activity
             android:name=".activity.HistoricQuizActivity"
             android:label="@string/title_activity_historic_quiz"
             android:parentActivityName=".activity.ManagerPatientsActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".activity.NutritionalEvaluationActivity"
             android:parentActivityName=".activity.MainActivity" /> <!-- RECEIVER ACCOUNT SERVICE -->
@@ -89,7 +91,7 @@
             android:theme="@style/AppTheme" />
         <activity android:name=".activity.AddMeasurementActivity" />
         <activity
-            android:name=".activity.PatientRegisterActivity"
+            android:name=".activity.UserRegisterActivity"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".activity.QuizNutritionActivity"
@@ -100,7 +102,8 @@
             android:screenOrientation="portrait"
             android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar" /> <!-- ACTIVITIES REGISTER DEVICES -->
         <activity android:name=".devices.register.DeviceRegisterActivity" />
-        <activity android:name=".devices.register.DeviceManagerActivity" /> <!-- END ACTIVITIES REGISTER DEVICES -->
+        <activity android:name=".devices.register.DeviceManagerActivity" />
+        <activity android:name=".activity.account.ForgotPasswordActivity" /> <!-- END ACTIVITIES REGISTER DEVICES -->
         <!-- SERVICES -->
         <service
             android:name=".service.BluetoothLeService"

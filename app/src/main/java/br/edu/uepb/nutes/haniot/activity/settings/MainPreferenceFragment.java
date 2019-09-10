@@ -11,10 +11,10 @@ import android.support.v7.app.AlertDialog;
 import android.widget.Toast;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.activity.UserRegisterActivity;
 import br.edu.uepb.nutes.haniot.activity.PilotStudyActivity;
+import br.edu.uepb.nutes.haniot.activity.account.ChangePasswordActivity;
 import br.edu.uepb.nutes.haniot.activity.account.LoginActivity;
-import br.edu.uepb.nutes.haniot.activity.account.UpdateDataActivity;
-import br.edu.uepb.nutes.haniot.data.model.dao.PilotStudyDAO;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
@@ -73,8 +73,18 @@ public class MainPreferenceFragment extends PreferenceFragment {
         // Your data
         Preference prefYourData = findPreference(getString(R.string.key_your_data));
         prefYourData.setOnPreferenceClickListener(preference -> {
-            Intent intent = new Intent(getActivity(), UpdateDataActivity.class);
-            intent.putExtra(FORM_UPDATE, true);
+            Intent intent = new Intent(getActivity(), UserRegisterActivity.class);
+            intent.putExtra("editUser", true);
+            intent.putExtra("action", true);
+
+            getActivity().startActivity(intent);
+            return true;
+        });
+
+        // Your password
+        Preference prefYourPassword = findPreference(getString(R.string.key_your_password));
+        prefYourPassword.setOnPreferenceClickListener(preference -> {
+            Intent intent = new Intent(getActivity(), ChangePasswordActivity.class);
 
             getActivity().startActivity(intent);
             return true;
@@ -105,15 +115,15 @@ public class MainPreferenceFragment extends PreferenceFragment {
                                 // Remove user from server and redirect to login screen
                                 DisposableManager.add(haniotNetRepository
                                         .deleteUserById(appPreferences.getUserLogged().get_id()).subscribe(() -> {
-                                                    if (appPreferences.removeUserLogged()) {
-                                                        Intent intent = new Intent(getActivity(), LoginActivity.class);
-                                                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                                        getActivity().startActivity(intent);
-                                                        getActivity().finish();
-                                                    }
-                                                }, throwable -> {
-                                                    Toast.makeText(getActivity(), R.string.error_sign_out, Toast.LENGTH_SHORT).show();
-                                                }));
+                                            if (appPreferences.removeUserLogged()) {
+                                                Intent intent = new Intent(getActivity(), LoginActivity.class);
+                                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                getActivity().startActivity(intent);
+                                                getActivity().finish();
+                                            }
+                                        }, throwable -> {
+                                            Toast.makeText(getActivity(), R.string.error_sign_out, Toast.LENGTH_SHORT).show();
+                                        }));
                             }
                     )
                     .setNegativeButton(R.string.bt_cancel, null)

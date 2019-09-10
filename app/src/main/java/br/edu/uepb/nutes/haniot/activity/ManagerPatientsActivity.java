@@ -2,10 +2,7 @@ package br.edu.uepb.nutes.haniot.activity;
 
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.preference.Preference;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -15,11 +12,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,12 +24,11 @@ import java.util.List;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.SettingsActivity;
 import br.edu.uepb.nutes.haniot.adapter.ManagerPatientAdapter;
-import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
-import br.edu.uepb.nutes.haniot.data.model.PilotStudy;
 import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
+import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.ErrorHandler;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -122,7 +115,7 @@ public class ManagerPatientsActivity extends AppCompatActivity {
         disableBack();
 
         View.OnClickListener onClickListener = v -> {
-            startActivity(new Intent(this, PatientRegisterActivity.class));
+            startActivity(new Intent(this, UserRegisterActivity.class));
         };
         addPatient.setOnClickListener(onClickListener);
         addPatientShortCut.setOnClickListener(onClickListener);
@@ -133,6 +126,7 @@ public class ManagerPatientsActivity extends AppCompatActivity {
      * Load patients in server.
      */
     private void loadData() {
+        if (!addPatient.isShown()) addPatient.show();
         mDataSwipeRefresh.setRefreshing(true);
         DisposableManager.add(haniotNetRepository
                 .getAllPatients(user.getPilotStudyIDSelected(), "created_at", 1, 100)
@@ -158,12 +152,7 @@ public class ManagerPatientsActivity extends AppCompatActivity {
      * @param e {@link Throwable}
      */
     private void errorHandler(Throwable e) {
-        if (e instanceof HttpException) {
-            HttpException httpEx = ((HttpException) e);
-            Log.i(LOG_TAG, httpEx.getMessage());
-            showMessage(getResources().getString(R.string.error_500));
-        }
-        // message 500
+        ErrorHandler.showMessage(this, e);
     }
 
     @Override
@@ -213,7 +202,7 @@ public class ManagerPatientsActivity extends AppCompatActivity {
                             .show();
 
                 } else if (v.getId() == R.id.btnEditChildren) {
-                    Intent intent = new Intent(ManagerPatientsActivity.this, PatientRegisterActivity.class);
+                    Intent intent = new Intent(ManagerPatientsActivity.this, UserRegisterActivity.class);
                     intent.putExtra("action", "edit");
                     appPreferencesHelper.saveLastPatient(item);
                     startActivity(intent);

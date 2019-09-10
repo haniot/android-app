@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -24,10 +25,11 @@ import java.util.Calendar;
 import java.util.Objects;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.activity.account.ChangePasswordActivity;
+import br.edu.uepb.nutes.haniot.data.model.Admin;
 import br.edu.uepb.nutes.haniot.data.model.HealthProfessional;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.PatientsType;
-import br.edu.uepb.nutes.haniot.data.model.PilotStudy;
 import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.model.dao.PatientDAO;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
@@ -39,18 +41,20 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.HttpException;
 
+import static br.edu.uepb.nutes.haniot.data.model.UserType.ADMIN;
 import static br.edu.uepb.nutes.haniot.data.model.UserType.HEALTH_PROFESSIONAL;
+import static br.edu.uepb.nutes.haniot.data.model.UserType.PATIENT;
 
 /**
- * PatientRegisterActivity implementation.
+ * UserRegisterActivity implementation.
  *
  * @author Fábio Júnior <fabio.pequeno@nutes.uepb.edu.br>
  * @version 1.0
  * @copyright Copyright (c) 2019, NUTES UEPB
  */
-public class PatientRegisterActivity extends AppCompatActivity {
+public class UserRegisterActivity extends AppCompatActivity {
 
-    final private String TAG = "PatientRegisterActivity";
+    final private String TAG = "UserRegisterActivity";
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
@@ -90,21 +94,29 @@ public class PatientRegisterActivity extends AppCompatActivity {
     private HaniotNetRepository haniotNetRepository;
     private PatientDAO patientDAO;
     private boolean isEdit = false;
-    private User user;
     private String oldEmail;
-
+    private boolean editUserLogged;
+    private HealthProfessional healthProfessional;
+    private Admin admin;
+    private User userLogged;
+    private String name;
+    private String phoneNumber;
+    private String birthday;
+    private String gender;
+    private String id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_patient_info);
+        setContentView(R.layout.activity_user_info);
         ButterKnife.bind(this);
 
         toolbar.setTitle(getResources().getString(R.string.patient_profile));
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-
         if (getIntent().hasExtra("action")) isEdit = true;
+        if (getIntent().hasExtra("editUser")) editUserLogged = true;
+
         initComponents();
     }
 
@@ -142,16 +154,65 @@ public class PatientRegisterActivity extends AppCompatActivity {
         DisposableManager.dispose();
     }
 
+    private void editAdmin() {
+        Log.w("AAA", "editAdmin()");
+        admin.set_id(id);
+        admin.setName(nameEditTExt.getText().toString());
+        if (isEdit) {
+            if ((emailEditTExt.getText().toString().equals(userLogged.getEmail()))
+                    || emailEditTExt.getText().toString().isEmpty()) {
+                admin.setEmail(null);
+            } else admin.setEmail(emailEditTExt.getText().toString());
+        } else {
+            if (emailEditTExt.getText().toString().isEmpty()) admin.setEmail(null);
+            else admin.setEmail(emailEditTExt.getText().toString());
+        }
+
+        admin.setPhoneNumber(phoneEdittext.getText().toString());
+        admin.setBirthDate(DateUtils.formatDate(myCalendar.getTimeInMillis(), "yyyy-MM-dd"));
+        Log.w("AAA", "editing Admin: " + admin.toJson());
+        DisposableManager.add(haniotNetRepository.updateAdmin(admin).subscribe(admin1 -> {
+            showMessage(R.string.update_success);
+            finish();
+        }, this::errorHandler));
+
+    }
+
+    private void edithealthProfessional() {
+        Log.w("AAA", "edithealthProfessional()");
+        healthProfessional.set_id(id);
+        healthProfessional.setName(nameEditTExt.getText().toString());
+
+        if (isEdit) {
+            if ((emailEditTExt.getText().toString().equals(userLogged.getEmail()))
+                    || emailEditTExt.getText().toString().isEmpty()) {
+                healthProfessional.setEmail(null);
+            } else healthProfessional.setEmail(emailEditTExt.getText().toString());
+        } else {
+            if (emailEditTExt.getText().toString().isEmpty()) healthProfessional.setEmail(null);
+            else healthProfessional.setEmail(emailEditTExt.getText().toString());
+        }
+
+        healthProfessional.setPhoneNumber(phoneEdittext.getText().toString());
+        healthProfessional.setBirthDate(DateUtils.formatDate(myCalendar.getTimeInMillis(), "yyyy-MM-dd"));
+        Log.w("AAA", "editing Health Professional: " + healthProfessional.toJson());
+        DisposableManager.add(haniotNetRepository.updateHealthProfissional(healthProfessional).subscribe(healthProfessional1 -> {
+            showMessage(R.string.update_success);
+            finish();
+        }, this::errorHandler));
+    }
+
     /**
      * Save patient in App Preferences.
      */
     private void savePatient() {
-        Log.w("aa", "AAAA");
+        Log.w("AAA", "savePatient()");
         if (!isEdit) patient = new Patient();
 
         patient.setName(nameEditTExt.getText().toString());
 
         if (isEdit) {
+            patient.set_id(id);
             if ((emailEditTExt.getText().toString().equals(patient.getEmail()))
                     || emailEditTExt.getText().toString().isEmpty()) {
                 patient.setEmail(null);
@@ -170,7 +231,7 @@ public class PatientRegisterActivity extends AppCompatActivity {
             patient.setGender(PatientsType.GenderType.FEMALE);
         }
 
-        patient.setPilotId(user.getPilotStudyIDSelected());
+        patient.setPilotId(userLogged.getPilotStudyIDSelected());
         Log.i(TAG, patient.toJson());
 
         if (isEdit) {
@@ -182,7 +243,7 @@ public class PatientRegisterActivity extends AppCompatActivity {
                     .subscribe(patient1 -> {
                         patientDAO.save(patient);
                         showMessage(R.string.update_success);
-                        startActivity(new Intent(PatientRegisterActivity.this, ManagerPatientsActivity.class));
+                        startActivity(new Intent(UserRegisterActivity.this, ManagerPatientsActivity.class));
                         finish();
                     }, this::errorHandler));
         } else {
@@ -212,7 +273,7 @@ public class PatientRegisterActivity extends AppCompatActivity {
      */
     private void associatePatientToPilotStudy() {
         DisposableManager.add(haniotNetRepository
-                .associatePatientToPilotStudy(user.getPilotStudyIDSelected(), patient.get_id())
+                .associatePatientToPilotStudy(userLogged.getPilotStudyIDSelected(), patient.get_id())
                 .subscribe(o -> {
                     Log.w(TAG, "Patient associated to pilotstudy");
                     patientDAO.save(patient);
@@ -220,9 +281,9 @@ public class PatientRegisterActivity extends AppCompatActivity {
                     if (appPreferencesHelper.getUserLogged().getUserType().equals(HEALTH_PROFESSIONAL)) {
                         User user = appPreferencesHelper.getUserLogged();
                         if (user.getHealthArea().equals(getString(R.string.type_nutrition)))
-                            startActivity(new Intent(PatientRegisterActivity.this, QuizNutritionActivity.class));
+                            startActivity(new Intent(UserRegisterActivity.this, QuizNutritionActivity.class));
                         else if (user.getHealthArea().equals(getString(R.string.type_dentistry)))
-                            startActivity(new Intent(PatientRegisterActivity.this, QuizOdontologyActivity.class));
+                            startActivity(new Intent(UserRegisterActivity.this, QuizOdontologyActivity.class));
                     }
                     finish();
                 }, this::errorHandler));
@@ -279,7 +340,11 @@ public class PatientRegisterActivity extends AppCompatActivity {
      */
     View.OnClickListener fabClick = v -> {
         if (validate()) {
-            savePatient();
+            Log.w("AAA", "Validated: " + validate());
+            if (editUserLogged && userLogged.getUserType().equals(ADMIN)) editAdmin();
+            else if (editUserLogged && userLogged.getUserType().equals(HEALTH_PROFESSIONAL))
+                edithealthProfessional();
+            else savePatient();
         }
     };
 
@@ -287,23 +352,81 @@ public class PatientRegisterActivity extends AppCompatActivity {
      * Prepare the view for editing the data
      */
     private void prepareEditing() {
-        DisposableManager.add(haniotNetRepository
-                .getPatient(appPreferencesHelper.getLastPatient().get_id())
-                .doOnSubscribe(disposable -> {
-                    prepareView(); // Populate view with local data
-                    enabledView(false);
-                    showLoading(true);
-                })
-                .doAfterTerminate(() -> showLoading(false))
-                .subscribe(patient1 -> {
-                    if (patient1.getEmail() != null) patient.setEmail(patient1.getEmail());
-                    if (patient1.getName() != null) patient.setName(patient1.getName());
-                    oldEmail = patient1.getEmail();
-                    prepareView();
-                    enabledView(true);
-                }, this::errorHandler)
+        if (userLogged.getUserType().equals(PATIENT) || !editUserLogged) {
+            DisposableManager.add(haniotNetRepository
+                    .getPatient(appPreferencesHelper.getLastPatient().get_id())
+                    .doOnSubscribe(disposable -> {
+                        enabledView(false);
+                        showLoading(true);
+                    })
+                    .doAfterTerminate(() -> showLoading(false))
+                    .subscribe(patient1 -> {
+                        id = patient1.get_id();
+                        if (patient1.getEmail() != null) {
+                            patient.setEmail(patient1.getEmail());
+                            oldEmail = patient1.getEmail();
+                        }
+                        if (patient1.getName() != null) {
+                            patient.setName(patient1.getName());
+                            name = patient1.getName();
+                        }
+                        phoneNumber = patient1.getPhoneNumber();
+                        birthday = patient1.getBirthDate();
+                        gender = patient1.getGender();
+                        prepareView();
+                        enabledView(true);
+                    }, this::errorHandler));
+        } else if (userLogged.getUserType().equals(HEALTH_PROFESSIONAL)) {
+            genderIcon.setImageResource(R.drawable.ic_health_professional);
+            DisposableManager.add(haniotNetRepository
+                    .getHealthProfissional(userLogged.get_id())
+                    .doOnSubscribe(disposable -> {
+                        enabledView(false);
+                        showLoading(true);
+                    })
+                    .doAfterTerminate(() -> showLoading(false))
+                    .subscribe(healthProfessional1 -> {
+                        id = healthProfessional1.get_id();
 
-        );
+                        if (healthProfessional1.getEmail() != null) {
+                            healthProfessional.setEmail(healthProfessional1.getEmail());
+                            oldEmail = healthProfessional1.getEmail();
+                        }
+                        if (healthProfessional1.getName() != null) {
+                            healthProfessional.setName(healthProfessional1.getName());
+                            name = healthProfessional1.getName();
+                        }
+                        phoneNumber = healthProfessional1.getPhoneNumber();
+                        birthday = healthProfessional1.getBirthDate();
+                        prepareView();
+                        enabledView(true);
+                    }, this::errorHandler));
+        } else if (userLogged.getUserType().equals(ADMIN)) {
+            genderIcon.setImageResource(R.drawable.ic_admin);
+            DisposableManager.add(haniotNetRepository
+                    .getAdmin(userLogged.get_id())
+                    .doOnSubscribe(disposable -> {
+                        enabledView(false);
+                        showLoading(true);
+                    })
+                    .doAfterTerminate(() -> showLoading(false))
+                    .subscribe(admin1 -> {
+                        id = admin1.get_id();
+
+                        if (admin1.getEmail() != null) {
+                            admin.setEmail(admin1.getEmail());
+                            oldEmail = admin1.getEmail();
+                        }
+                        if (admin1.getName() != null) {
+                            admin.setName(admin1.getName());
+                            name = admin1.getName();
+                        }
+                        phoneNumber = admin1.getPhoneNumber();
+                        birthday = admin1.getBirthDate();
+                        prepareView();
+                        enabledView(true);
+                    }, this::errorHandler));
+        }
     }
 
     /**
@@ -339,23 +462,23 @@ public class PatientRegisterActivity extends AppCompatActivity {
     }
 
     private void prepareView() {
-        patient = appPreferencesHelper.getLastPatient();
-        if (patient == null) return;
-        nameEditTExt.setText(patient.getName());
-        emailEditTExt.setText(patient.getEmail());
-        phoneEdittext.setText(patient.getPhoneNumber());
-        birthEdittext.setText(DateUtils.formatDate(patient.getBirthDate(), getString(R.string.date_format)));
+        nameEditTExt.setText(name);
+        emailEditTExt.setText(oldEmail);
+        phoneEdittext.setText(phoneNumber);
+        birthEdittext.setText(DateUtils.formatDate(birthday, getString(R.string.date_format)));
+        if (editUserLogged) {
+            genderGroup.setVisibility(View.GONE);
+        }
 
+        Log.w("AAA", birthday);
+        Log.w("AAA", DateUtils.convertStringDateToCalendar(birthday, null).getTime().toString());
 
-        Log.w("AAA", patient.getBirthDate());
-        Log.w("AAA", DateUtils.convertStringDateToCalendar(patient.getBirthDate(), null).getTime().toString());
+        myCalendar = DateUtils.convertStringDateToCalendar(birthday, null);
 
-        myCalendar = DateUtils.convertStringDateToCalendar(patient.getBirthDate(), null);
-
-
-        if (patient.getGender().equals(PatientsType.GenderType.MALE))
-            genderGroup.check(R.id.male);
-        else genderGroup.check(R.id.female);
+        if (!editUserLogged)
+            if (gender.equals(PatientsType.GenderType.MALE))
+                genderGroup.check(R.id.male);
+            else genderGroup.check(R.id.female);
     }
 
     /**
@@ -383,12 +506,16 @@ public class PatientRegisterActivity extends AppCompatActivity {
         haniotNetRepository = HaniotNetRepository.getInstance(this);
         patientDAO = PatientDAO.getInstance(this);
         myCalendar = Calendar.getInstance();
-        user = appPreferencesHelper.getUserLogged();
+        userLogged = appPreferencesHelper.getUserLogged();
         fab.setOnClickListener(fabClick);
+        admin = new Admin();
+        healthProfessional = new HealthProfessional();
+        patient = new Patient();
 
-        if (isEdit) {
+        if (isEdit || editUserLogged) {
             prepareEditing();
         }
+
 
         genderGroup.setOnCheckedChangeListener((group, checkedId) -> {
             if (checkedId == R.id.male) genderIcon.setImageResource(R.drawable.x_boy);
@@ -398,7 +525,7 @@ public class PatientRegisterActivity extends AppCompatActivity {
         birthEdittext.setOnClickListener(v -> {
             InputMethodManager inputManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
             inputManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
-            DatePickerDialog dialog = new DatePickerDialog(PatientRegisterActivity.this,
+            DatePickerDialog dialog = new DatePickerDialog(UserRegisterActivity.this,
                     (view, year, month, dayOfMonth) -> {
                         myCalendar.set(Calendar.YEAR, year);
                         myCalendar.set(Calendar.MONTH, month);

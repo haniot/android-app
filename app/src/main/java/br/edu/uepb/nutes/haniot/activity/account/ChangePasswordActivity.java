@@ -17,9 +17,11 @@ import android.widget.Toast;
 import java.util.regex.Pattern;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.activity.MainActivity;
 import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
+import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.ErrorHandler;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
@@ -190,7 +192,11 @@ public class ChangePasswordActivity extends AppCompatActivity {
                 .doAfterTerminate(() -> loadingSend(false))
                 .subscribe(() -> {
                     printMessage(204);
-                    signOut();
+//                    signOut();
+
+                    //TODO
+                    startActivity(new Intent(this, MainActivity.class));
+                    finish();
                 }, this::errorHandler)
         );
     }
@@ -202,12 +208,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
      * @param e {@link Throwable}
      */
     private void errorHandler(Throwable e) {
-        if (e instanceof HttpException) {
-            HttpException httpEx = ((HttpException) e);
-            printMessage(httpEx.code());
-            return;
-        }
-        printMessage(500);
+        ErrorHandler.showMessage(this, e);
     }
 
     /**

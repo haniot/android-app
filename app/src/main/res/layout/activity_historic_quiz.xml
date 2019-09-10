@@ -95,12 +95,14 @@
                 android:visibility="gone">
 
                 <ImageView
+                    android:id="@+id/icon_error_nutrition"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_marginTop="50dp"
                     app:srcCompat="@drawable/ic_not_form" />
 
                 <TextView
+                    android:id="@+id/text_error_nutrition"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
@@ -110,7 +112,7 @@
                     android:gravity="center"
                     android:paddingStart="20dp"
                     android:paddingEnd="20dp"
-                    android:text="Ainda não há questionários nutricionais respondidos.."
+                    android:text=""
                     android:visibility="visible" />
             </LinearLayout>
 
@@ -153,12 +155,14 @@
                 android:visibility="gone">
 
                 <ImageView
+                    android:id="@+id/icon_error_dentistry"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_marginTop="50dp"
                     app:srcCompat="@drawable/ic_not_form" />
 
                 <TextView
+                    android:id="@+id/text_error_dentistry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"

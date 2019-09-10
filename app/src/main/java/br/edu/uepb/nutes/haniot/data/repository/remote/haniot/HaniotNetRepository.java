@@ -4,10 +4,12 @@ import android.content.Context;
 import android.util.Log;
 
 import com.auth0.android.jwt.JWT;
+import com.google.gson.JsonObject;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
+import java.util.Objects;
 
 import br.edu.uepb.nutes.haniot.data.model.Admin;
 import br.edu.uepb.nutes.haniot.data.model.Device;
@@ -37,6 +39,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.Interceptor;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 /**
@@ -104,8 +107,6 @@ public class HaniotNetRepository extends BaseNetRepository {
                     .getInstance(mContext).getUserLogged() != null) {
                 EventBus.getDefault().post("unauthorized");
             }
-//            Log.w("RESPONSEBODY", "" + response.body().contentLength());
-//            Log.w("AAA", ":" + chain.proceed(chain.request()).body().string().length());
             return response;
         };
     }
@@ -127,6 +128,13 @@ public class HaniotNetRepository extends BaseNetRepository {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
+    // forgot password
+    public Single<Object> forgotPassword(JsonObject email) {
+        return haniotService.forgotPassword(email)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
     // user
     public Completable deleteUserById(String userId) {
         return haniotService.deleteUser(userId)
@@ -135,7 +143,7 @@ public class HaniotNetRepository extends BaseNetRepository {
     }
 
     public Completable changePassword(User user) {
-        return haniotService.changePassword(user.get_id(), user)
+        return haniotService.changePassword(user)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

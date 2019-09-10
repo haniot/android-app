@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -64,6 +65,18 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
     @BindView(R.id.box_not_odontological)
     LinearLayout boxNotOdontological;
 
+    @BindView(R.id.icon_error_nutrition)
+    ImageView iconErrorNutrition;
+
+    @BindView(R.id.text_error_nutrition)
+    TextView textErrorNutrition;
+
+    @BindView(R.id.icon_error_dentistry)
+    ImageView iconErrorDentistry;
+
+    @BindView(R.id.text_error_dentistry)
+    TextView textErrorDentistry;
+
     private HaniotNetRepository haniotNetRepository;
     private AppPreferencesHelper appPreferencesHelper;
     private Patient patient;
@@ -100,12 +113,14 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
         patient = appPreferencesHelper.getLastPatient();
         user = appPreferencesHelper.getUserLogged();
-        if (user.getHealthArea().equals(DENTISTRY)) {
-            nutritionTitle.setVisibility(View.GONE);
-            loadingNutrition.setVisibility(View.GONE);
-        } else if (user.getHealthArea().equals(NUTRITION)) {
-            dentistryTitle.setVisibility(View.GONE);
-            loadingOdontological.setVisibility(View.GONE);
+        if (!user.getUserType().equals(ADMIN)) {
+            if (user.getHealthArea().equals(DENTISTRY)) {
+                nutritionTitle.setVisibility(View.GONE);
+                loadingNutrition.setVisibility(View.GONE);
+            } else if (user.getHealthArea().equals(NUTRITION)) {
+                dentistryTitle.setVisibility(View.GONE);
+                loadingOdontological.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -131,25 +146,31 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
      */
 
     private void downloadData() {
-        if (!user.getHealthArea().equals(DENTISTRY)) {
+        if (user.getUserType().equals(ADMIN) || !user.getHealthArea().equals(DENTISTRY)) {
             DisposableManager.add(haniotNetRepository
                     .getAllNutritionalQuestionnaires(patient.get_id(), 1, 100, "created_at")
                     .subscribe(nutritional -> {
-                        Log.w("AAA", "Size: " + nutritional.size());
+                        Log.w("AAA", "Size Nutrition: " + nutritional.size());
+                        showErrorDownloadData(false, NUTRITION);
                         setNutritionalGroups(nutritional);
                         loadingNutrition.setVisibility(View.GONE);
                     }, throwable -> {
-                        //TODO Mostrar erro
-
+                        loadingNutrition.setVisibility(View.GONE);
+                        showErrorDownloadData(true, NUTRITION);
                     }));
-        } else if (!user.getHealthArea().equals(NUTRITION)) {
+        }
+
+        if (user.getUserType().equals(ADMIN) || !user.getHealthArea().equals(NUTRITION)) {
             DisposableManager.add(haniotNetRepository
                     .getAllOdontologicalQuestionnaires(patient.get_id(), 1, 100, "created_at")
                     .subscribe(odontological -> {
+                        Log.w("AAA", "Size Odonto: " + odontological.size());
+                        showErrorDownloadData(false, DENTISTRY);
                         setOdontologicalGroups(odontological);
                         loadingOdontological.setVisibility(View.GONE);
                     }, throwable -> {
-                        //TODO Mostrar erro
+                        loadingOdontological.setVisibility(View.GONE);
+                        showErrorDownloadData(true, DENTISTRY);
                     }));
         }
     }
@@ -233,8 +254,9 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
             Log.w("AAA", nutritionalQuestionnaire.toString());
             setNutritionalItem(nutritionalQuestionnaire);
         }
-        if (nutritionalQuestionnaires.isEmpty()) boxNotNutrition.setVisibility(View.VISIBLE);
-        else boxNotNutrition.setVisibility(View.GONE);
+        if (nutritionalQuestionnaires.isEmpty()) {
+            showEmpty(true, NUTRITION);
+        }
         listNutritional.setAdapter(null);
         initRecyclerView();
     }
@@ -246,8 +268,9 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
             Log.w("AAA", odontologicalQuestionnaire.toString());
             setOdontologicalItem(odontologicalQuestionnaire);
         }
-        if (odontologicalQuestionnaires.isEmpty()) boxNotOdontological.setVisibility(View.VISIBLE);
-        else boxNotOdontological.setVisibility(View.GONE);
+        if (odontologicalQuestionnaires.isEmpty()) {
+            showEmpty(true, DENTISTRY);
+        }
         listOdontological.setAdapter(null);
         initRecyclerView();
     }
@@ -284,8 +307,41 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
     private void prepareItems() {
         groupItemOdontologicalEvaluations.clear();
         groupItemNutritionEvaluations.clear();
-//        downloadDataTemp();
         downloadData();
+    }
+
+    /**
+     * Show message empty list.
+     */
+    private void showEmpty(boolean enabled, String type) {
+        if (type.equals(NUTRITION)) {
+            iconErrorNutrition.setImageResource(R.drawable.ic_not_form);
+            textErrorNutrition.setText(getString(R.string.nutrition_quiz_empty));
+            if (enabled) boxNotNutrition.setVisibility(View.VISIBLE);
+            else boxNotNutrition.setVisibility(View.GONE);
+        } else if (type.equals(DENTISTRY)) {
+            iconErrorDentistry.setImageResource(R.drawable.ic_not_form);
+            textErrorDentistry.setText(getString(R.string.dentistry_quiz_empty));
+            if (enabled) boxNotOdontological.setVisibility(View.VISIBLE);
+            else boxNotOdontological.setVisibility(View.GONE);
+        }
+    }
+
+    /**
+     * Show message error download data.
+     */
+    private void showErrorDownloadData(boolean enabled, String type) {
+        if (type.equals(NUTRITION)) {
+            iconErrorNutrition.setImageResource(R.drawable.ic_error_server);
+            textErrorNutrition.setText(getText(R.string.error_recover_data));
+            if (enabled) boxNotNutrition.setVisibility(View.VISIBLE);
+            else boxNotNutrition.setVisibility(View.GONE);
+        } else if (type.equals(DENTISTRY)) {
+            iconErrorDentistry.setImageResource(R.drawable.ic_error_server);
+            textErrorDentistry.setText(getText(R.string.error_recover_data));
+            if (enabled) boxNotOdontological.setVisibility(View.VISIBLE);
+            else boxNotOdontological.setVisibility(View.GONE);
+        }
     }
 
     /**

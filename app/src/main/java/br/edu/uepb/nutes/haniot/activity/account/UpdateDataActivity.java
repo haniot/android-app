@@ -20,6 +20,7 @@ import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
+import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.ErrorHandler;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
@@ -262,12 +263,7 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
      * @param e {@link Throwable}
      */
     private void errorHandler(Throwable e) {
-        if (e instanceof HttpException) {
-            HttpException httpEx = ((HttpException) e);
-            showMessage(httpEx.code());
-            return;
-        }
-        showMessage(500);
+        ErrorHandler.showMessage(this, e);
     }
 
     /**
