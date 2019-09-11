@@ -3,7 +3,6 @@ package br.edu.uepb.nutes.haniot.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,11 +17,8 @@ import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup;
 import com.thoughtbot.expandablerecyclerview.viewholders.ChildViewHolder;
 import com.thoughtbot.expandablerecyclerview.viewholders.GroupViewHolder;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.Collection;
 import java.util.List;
-import java.util.Locale;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.data.model.ChronicDisease;
@@ -61,19 +57,15 @@ public class HistoricQuizAdapter extends CustomExpandableRecyclerViewAdapter<His
         HistoricQuizAdapter.ViewHolder> {
     private Context context;
     private int lastPosition = -1;
-    private DecimalFormat decimalFormat;
     public OnClick mListener;
 
     public HistoricQuizAdapter(List<? extends ExpandableGroup> groups, Context context) {
         super(groups);
         this.context = context;
-        decimalFormat = new DecimalFormat(context.getString(R.string.format_number2),
-                new DecimalFormatSymbols(Locale.US));
     }
 
     public void addAll(List<? extends ExpandableGroup> groups) {
-        Collection collection = groups;
-        getGroups().addAll(collection);
+        getGroups().addAll((Collection) groups);
         notifyGroupDataChanged();
         notifyDataSetChanged();
     }
@@ -96,8 +88,8 @@ public class HistoricQuizAdapter extends CustomExpandableRecyclerViewAdapter<His
     /**
      * Apply animation to list itemsList.
      *
-     * @param view
-     * @param position
+     * @param view     {@link View}
+     * @param position int
      */
     public void setAnimation(View view, int position) {
         // If the bound view wasn't previously displayed on screen, it's animated
@@ -148,8 +140,8 @@ public class HistoricQuizAdapter extends CustomExpandableRecyclerViewAdapter<His
     /**
      * Restore view to default.
      *
-     * @param h
-     * @param ig
+     * @param h  {@link ViewHolder}
+     * @param ig {@link ItemEvaluation}
      */
     private void resetView(ViewHolder h, ItemEvaluation ig) {
         h.checkItem.setVisibility(View.VISIBLE);
@@ -162,8 +154,8 @@ public class HistoricQuizAdapter extends CustomExpandableRecyclerViewAdapter<His
     /**
      * View displayed when there is no data.
      *
-     * @param h
-     * @param ig
+     * @param h  {@link ViewHolder}
+     * @param ig {@link ItemEvaluation}
      */
     private void createErrorView(ViewHolder h, ItemEvaluation ig) {
         h.messageText.setVisibility(View.VISIBLE);
@@ -185,9 +177,9 @@ public class HistoricQuizAdapter extends CustomExpandableRecyclerViewAdapter<His
     /**
      * View responsible for displaying questionnaire data.
      *
-     * @param h
-     * @param ig
-     * @param group
+     * @param h     {@link ViewHolder}
+     * @param ig    {@link ItemEvaluation}
+     * @param group {@link ExpandableGroup}
      */
     private void createQuizView(ViewHolder h, ItemEvaluation ig, ExpandableGroup group) {
         h.messageText.setVisibility(View.VISIBLE);
@@ -195,83 +187,101 @@ public class HistoricQuizAdapter extends CustomExpandableRecyclerViewAdapter<His
         h.checkItem.setOnClickListener(v -> {
             mListener.onAddItemClick(ig.getTitle(), ig.getTypeEvaluation(), ((GroupItemEvaluation) group).getIdGroup());
         });
-
         StringBuilder stringBuilder = new StringBuilder();
 
-        Log.w("AAAAAA", "Type Evaluation: " + ig.getTypeEvaluation());
-
         switch (ig.getTypeEvaluation()) {
-            case SLEEP_HABITS:
+            case SLEEP_HABITS: {
                 SleepHabit sleepHabit = ig.getSleepHabit();
-                stringBuilder.append("<h4>" + getString(R.string.sleep_at) + " </h4><p>").append(sleepHabit.getWeekDaySleep())
+                stringBuilder.append("<h4>")
+                        .append(getString(R.string.sleep_at)).append(" </h4><p>")
+                        .append(sleepHabit.getWeekDaySleep())
                         .append(getString(R.string.hours));
-                stringBuilder.append("<h4>" + getString(R.string.wakeup_at) + " </h4><p>").append(sleepHabit.getWeekDayWakeUp())
+                stringBuilder.append("<h4>")
+                        .append(getString(R.string.wakeup_at))
+                        .append(" </h4><p>")
+                        .append(sleepHabit.getWeekDayWakeUp())
                         .append(getString(R.string.hours));
                 break;
-            case MEDICAL_RECORDS:
+            }
+            case MEDICAL_RECORDS: {
                 MedicalRecord medicalRecord = ig.getMedicalRecord();
                 if (medicalRecord == null) return;
                 if (medicalRecord.getChronicDiseases() != null) {
                     for (ChronicDisease chronicDisease : medicalRecord.getChronicDiseases())
-                        stringBuilder
-                                .append("<h4>" + ChronicDiseaseType.ChronicDisease
-                                        .getString_PTBR(chronicDisease.getType()))
+                        stringBuilder.append("<h4>").append(ChronicDiseaseType.ChronicDisease
+                                .getString_PTBR(chronicDisease.getType()))
                                 .append("</h4><p>")
                                 .append(ChronicDiseaseType.DisieaseHistory
                                         .getStringPTBR(chronicDisease.getDiseaseHistory()));
                 }
                 break;
-            case FEEDING_HABITS:
+            }
+            case FEEDING_HABITS: {
                 FeedingHabitsRecord feedingHabitsRecord = ig.getFeedingHabitsRecord();
-                stringBuilder.append("<h4>" + getString(R.string.water_cup) + "</h4>").append(FeendingHabitsRecordType.OneDayFeedingAmount
-                        .getStringPTBR(feedingHabitsRecord.getDailyWaterGlasses()));
-                stringBuilder.append("<h4>" + getString(R.string.breakfast) + "</h4>").append(FeendingHabitsRecordType.OneDayFeedingAmount
-                        .getStringPTBR(feedingHabitsRecord.getBreakfastDailyFrequency()));
+                stringBuilder.append("<h4>").append(getString(R.string.water_cup)).append("</h4>")
+                        .append(FeendingHabitsRecordType.OneDayFeedingAmount
+                                .getStringPTBR(feedingHabitsRecord.getDailyWaterGlasses()));
+                stringBuilder.append("<h4>").append(getString(R.string.breakfast)).append("</h4>")
+                        .append(FeendingHabitsRecordType.OneDayFeedingAmount
+                                .getStringPTBR(feedingHabitsRecord.getBreakfastDailyFrequency()));
                 for (WeeklyFoodRecord weeklyFoodRecord : feedingHabitsRecord.getWeeklyFeedingHabits())
-                    stringBuilder
-                            .append("<h4>" + FoodType.getStringPTBR(weeklyFoodRecord.getFood()))
+                    stringBuilder.append("<h4>").append(FoodType.getStringPTBR(weeklyFoodRecord.getFood()))
                             .append("</h4><p>")
                             .append(FeendingHabitsRecordType.SevenDaysFeedingFrequency
                                     .getStringPTBR(weeklyFoodRecord.getSevenDaysFreq()));
                 break;
-            case PHYSICAL_ACTIVITY:
+            }
+            case PHYSICAL_ACTIVITY: {
                 PhysicalActivityHabit physicalActivityHabit = ig.getPhysicalActivityHabit();
-                stringBuilder.append("<h4>" + getString(R.string.sports_in_week) + "</h4>");
+                stringBuilder.append("<h4>").append(getString(R.string.sports_in_week)).append("</h4>");
                 for (String sport : physicalActivityHabit.getWeeklyActivities()) {
-                    stringBuilder.append("<p>" + SportsType.getStringPtBr(context, sport) + "</p>");
+                    stringBuilder.append("<p>").append(SportsType.getStringPtBr(context, sport)).append("</p>");
                 }
-                stringBuilder.append("<h4>" + getString(R.string.physical_school) + "</h4>")
+                stringBuilder.append("<h4>").append(getString(R.string.physical_school)).append("</h4>")
                         .append(SchoolActivityFrequencyType
                                 .getStringPTBR(physicalActivityHabit.getSchoolActivityFreq()));
                 break;
-            case FAMILY_COHESION:
+            }
+            case FAMILY_COHESION: {
                 FamilyCohesionRecord familyCohesionRecord = ig.getFamilyCohesionRecord();
-                stringBuilder.append("<h4>" + getString(R.string.help_family) + "</h4><p>")
-                        .append(FrequencyAnswersType.Frequency.getStringPTBR(familyCohesionRecord.getFamilyDecisionSupportFreq()))
-                        .append("</p><h4>" + getString(R.string.approval_friends) + "</h4><p>")
-                        .append(FrequencyAnswersType.Frequency.getStringPTBR(familyCohesionRecord.getFriendshipApprovalFreq()))
-                        .append("</p><h4>" + getString(R.string.only_family) + "</h4><p>")
-                        .append(FrequencyAnswersType.Frequency.getStringPTBR(familyCohesionRecord.getFamilyOnlyPreferenceFreq()))
-                        .append("</p><h4>" + getString(R.string.not_strangers) + "</h4><p>")
-                        .append(FrequencyAnswersType.Frequency.getStringPTBR(familyCohesionRecord.getFamilyMutualAidFreq()))
-                        .append("</p><h4>" + getString(R.string.family_freetime) + "</h4><p>")
-                        .append(FrequencyAnswersType.Frequency.getStringPTBR(familyCohesionRecord.getFreeTimeTogetherFreq()))
-                        .append("</p><h4>" + getString(R.string.family_union) + "</h4><p>")
-                        .append(FrequencyAnswersType.Frequency.getStringPTBR(familyCohesionRecord.getFamilyProximityPerceptionFreq()))
-                        .append("</p><h4>" + getString(R.string.family_share) + "</h4><p>")
-                        .append(FrequencyAnswersType.Frequency.getStringPTBR(familyCohesionRecord.getAllFamilyTasksFreq()))
-                        .append("</p><h4>" + getString(R.string.easy_family) + "</h4><p>")
-                        .append(FrequencyAnswersType.Frequency.getStringPTBR(familyCohesionRecord.getFamilyTasksOpportunityFreq()))
-                        .append("</p><h4>" + getString(R.string.family_decision) + "</h4><p>")
-                        .append(FrequencyAnswersType.Frequency.getStringPTBR(familyCohesionRecord.getFamilyDecisionSupportFreq()))
-                        .append("</p><h4>" + getString(R.string.familiy_union_important) + "</h4><p>")
-                        .append(FrequencyAnswersType.Frequency.getStringPTBR(familyCohesionRecord.getFamilyUnionRelevanceFreq()));
+                stringBuilder.append("<h4>").append(getString(R.string.help_family)).append("</h4><p>")
+                        .append(FrequencyAnswersType.Frequency
+                                .getStringPTBR(familyCohesionRecord.getFamilyDecisionSupportFreq()))
+                        .append("</p><h4>").append(getString(R.string.approval_friends)).append("</h4><p>")
+                        .append(FrequencyAnswersType.Frequency
+                                .getStringPTBR(familyCohesionRecord.getFriendshipApprovalFreq()))
+                        .append("</p><h4>").append(getString(R.string.only_family)).append("</h4><p>")
+                        .append(FrequencyAnswersType.Frequency
+                                .getStringPTBR(familyCohesionRecord.getFamilyOnlyPreferenceFreq()))
+                        .append("</p><h4>").append(getString(R.string.not_strangers)).append("</h4><p>")
+                        .append(FrequencyAnswersType.Frequency
+                                .getStringPTBR(familyCohesionRecord.getFamilyMutualAidFreq()))
+                        .append("</p><h4>").append(getString(R.string.family_freetime)).append("</h4><p>")
+                        .append(FrequencyAnswersType.Frequency
+                                .getStringPTBR(familyCohesionRecord.getFreeTimeTogetherFreq()))
+                        .append("</p><h4>").append(getString(R.string.family_union)).append("</h4><p>")
+                        .append(FrequencyAnswersType.Frequency
+                                .getStringPTBR(familyCohesionRecord.getFamilyProximityPerceptionFreq()))
+                        .append("</p><h4>").append(getString(R.string.family_share)).append("</h4><p>")
+                        .append(FrequencyAnswersType.Frequency
+                                .getStringPTBR(familyCohesionRecord.getAllFamilyTasksFreq()))
+                        .append("</p><h4>").append(getString(R.string.easy_family)).append("</h4><p>")
+                        .append(FrequencyAnswersType.Frequency
+                                .getStringPTBR(familyCohesionRecord.getFamilyTasksOpportunityFreq()))
+                        .append("</p><h4>").append(getString(R.string.family_decision)).append("</h4><p>")
+                        .append(FrequencyAnswersType.Frequency
+                                .getStringPTBR(familyCohesionRecord.getFamilyDecisionSupportFreq())).append("</p><h4>")
+                        .append(getString(R.string.familiy_union_important)).append("</h4><p>")
+                        .append(FrequencyAnswersType.Frequency
+                                .getStringPTBR(familyCohesionRecord.getFamilyUnionRelevanceFreq()));
                 break;
-            case ORAL_HEALTH:
+            }
+            case ORAL_HEALTH: {
                 OralHealthRecord oralHealthRecord = ig.getOralHealthRecord();
                 if (ig.getOralHealthRecord() == null) break;
-                stringBuilder.append("</p><h4>" + getString(R.string.tooth_higien) + "</h4><p>")
-                        .append(ToothLesionType.TeethBrushingFreq.getStringPtBr(oralHealthRecord.getTeethBrushingFreq()));
+                stringBuilder.append("</p><h4>").append(getString(R.string.tooth_higien)).append("</h4><p>")
+                        .append(ToothLesionType.TeethBrushingFreq
+                                .getStringPtBr(oralHealthRecord.getTeethBrushingFreq()));
 
                 List<ToothLesion> toothLesions = oralHealthRecord.getToothLesions();
                 ToothLesion whiteSpotLesionDeciduousTooth = new ToothLesion("deciduous_tooth", "white_spot_lesion");
@@ -279,43 +289,40 @@ public class HistoricQuizAdapter extends CustomExpandableRecyclerViewAdapter<His
                 ToothLesion cavitatedLesionDeciduousTooth = new ToothLesion("deciduous_tooth", "cavitated_lesion");
                 ToothLesion cavitatedLesionPermanentTooth = new ToothLesion("permanent_tooth", "cavitated_lesion");
 
-                stringBuilder.append("</p><h4>" + getString(R.string.white_spot_lesion_deciduous_tooth) + "</h4><p>");
-                if (toothLesions.contains(whiteSpotLesionDeciduousTooth))
-                    stringBuilder.append(getString(R.string.yes_text) + "</p>");
-                else stringBuilder.append(getString(R.string.no_text) + "</p>");
+                stringBuilder.append("</p><h4>").append(getString(R.string.white_spot_lesion_deciduous_tooth)).append("</h4><p>");
+                if (toothLesions != null && toothLesions.contains(whiteSpotLesionDeciduousTooth))
+                    stringBuilder.append(getString(R.string.yes_text)).append("</p>");
+                else stringBuilder.append(getString(R.string.no_text)).append("</p>");
 
-                stringBuilder.append("</p><h4>" + getString(R.string.white_spot_lesion_permanent_tooth) + "</h4><p>");
-                if (toothLesions.contains(whiteSpotLesionPermanentTooth))
-                    stringBuilder.append(getString(R.string.yes_text) + "</p>");
-                else stringBuilder.append(getString(R.string.no_text) + "</p>");
+                stringBuilder.append("</p><h4>").append(getString(R.string.white_spot_lesion_permanent_tooth)).append("</h4><p>");
+                if (toothLesions != null && toothLesions.contains(whiteSpotLesionPermanentTooth))
+                    stringBuilder.append(getString(R.string.yes_text)).append("</p>");
+                else stringBuilder.append(getString(R.string.no_text)).append("</p>");
 
-                stringBuilder.append("</p><h4>" + getString(R.string.cavitated_lesion_deciduous_tooth) + "</h4><p>");
-                if (toothLesions.contains(cavitatedLesionDeciduousTooth))
-                    stringBuilder.append(getString(R.string.yes_text) + "</p>");
-                else stringBuilder.append(getString(R.string.no_text) + "</p>");
+                stringBuilder.append("</p><h4>").append(getString(R.string.cavitated_lesion_deciduous_tooth)).append("</h4><p>");
+                if (toothLesions != null && toothLesions.contains(cavitatedLesionDeciduousTooth))
+                    stringBuilder.append(getString(R.string.yes_text)).append("</p>");
+                else stringBuilder.append(getString(R.string.no_text)).append("</p>");
 
-                stringBuilder.append("</p><h4>" + getString(R.string.cavitated_lesion_permanent_tooth) + "</h4><p>");
-                if (toothLesions.contains(cavitatedLesionPermanentTooth))
-                    stringBuilder.append(getString(R.string.yes_text) + "</p>");
-                else stringBuilder.append(getString(R.string.no_text) + "</p>");
-//
-//                if (oralHealthRecord.getToothLesions().isEmpty()) {
-//                    stringBuilder.append("<p>" + "Não possui algum tipo de cárie dentária" + "</p>");
-//                } else
-//                    for (ToothLesion toothLesion : oralHealthRecord.getToothLesions()) {
-//                        stringBuilder.append("<h4>" + ToothLesionType.LesionType.getStringPtBr(toothLesion.getLesionType()))
-//                                .append(" em ")
-//                                .append(ToothLesionType.ToothType.getStringPtbr(toothLesion.getToothType()) + "</h4>");
-//                    }
+                stringBuilder.append("</p><h4>").append(getString(R.string.cavitated_lesion_permanent_tooth)).append("</h4><p>");
+                if (toothLesions != null && toothLesions.contains(cavitatedLesionPermanentTooth))
+                    stringBuilder.append(getString(R.string.yes_text)).append("</p>");
+                else stringBuilder.append(getString(R.string.no_text)).append("</p>");
                 break;
-            case SOCIODEMOGRAPHICS:
+            }
+            case SOCIODEMOGRAPHICS: {
                 SociodemographicRecord sociodemographicRecord = ig.getSociodemographicRecord();
-                stringBuilder.append("<h4>" + getString(R.string.color_race) + "</h4><p>")
-                        .append(SociodemographicType.ColorRace.getStringPtBr(sociodemographicRecord.getColorRace()))
-                        .append("</p><h4>" + getString(R.string.schoolarity_mother) + "</h4><p>")
-                        .append(SociodemographicType.MotherScholarity.getStringPtBr(sociodemographicRecord.getMotherScholarity()))
-                        .append("</p><h4>" + getString(R.string.people_in_home) + "</h4><p>")
+                stringBuilder.append("<h4>").append(getString(R.string.color_race)).append("</h4><p>")
+                        .append(SociodemographicType.ColorRace
+                                .getStringPtBr(sociodemographicRecord.getColorRace()))
+                        .append("</p><h4>").append(getString(R.string.schoolarity_mother)).append("</h4><p>")
+                        .append(SociodemographicType.MotherScholarity
+                                .getStringPtBr(sociodemographicRecord.getMotherScholarity()))
+                        .append("</p><h4>").append(getString(R.string.people_in_home)).append("</h4><p>")
                         .append(sociodemographicRecord.getPeopleInHome());
+                break;
+            }
+            default:
                 break;
         }
         h.messageText.setText(Html.fromHtml(stringBuilder.toString()));
@@ -324,8 +331,8 @@ public class HistoricQuizAdapter extends CustomExpandableRecyclerViewAdapter<His
     /**
      * View displayed while downloading the data.
      *
-     * @param h
-     * @param ig
+     * @param h  {@link ViewHolder}
+     * @param ig {@link ItemEvaluation}
      */
     private void createLoadingView(ViewHolder h, ItemEvaluation ig) {
         h.loading.setVisibility(View.VISIBLE);
@@ -368,7 +375,6 @@ public class HistoricQuizAdapter extends CustomExpandableRecyclerViewAdapter<His
     }
 
     public class HeaderViewHolder extends GroupViewHolder {
-
         final View mView;
 
         @BindView(R.id.category_title)
@@ -377,7 +383,7 @@ public class HistoricQuizAdapter extends CustomExpandableRecyclerViewAdapter<His
         @BindView(R.id.expand)
         ImageView expand;
 
-        public HeaderViewHolder(View itemView) {
+        HeaderViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
 
@@ -401,12 +407,10 @@ public class HistoricQuizAdapter extends CustomExpandableRecyclerViewAdapter<His
     }
 
     public interface OnClick {
-
         void onAddItemClick(String name, int type);
 
         void onAddItemClick(String name, int type, String idQuiz);
 
         void onSelectClick(ItemEvaluation itemEvaluation, String idQuiz);
-
     }
 }
