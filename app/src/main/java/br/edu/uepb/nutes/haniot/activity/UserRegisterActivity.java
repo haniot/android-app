@@ -13,7 +13,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -25,13 +24,12 @@ import java.util.Calendar;
 import java.util.Objects;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.activity.account.ChangePasswordActivity;
 import br.edu.uepb.nutes.haniot.data.model.Admin;
 import br.edu.uepb.nutes.haniot.data.model.HealthProfessional;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
-import br.edu.uepb.nutes.haniot.data.model.PatientsType;
 import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.model.dao.PatientDAO;
+import br.edu.uepb.nutes.haniot.data.model.type.PatientsType;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
@@ -41,9 +39,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.HttpException;
 
-import static br.edu.uepb.nutes.haniot.data.model.UserType.ADMIN;
-import static br.edu.uepb.nutes.haniot.data.model.UserType.HEALTH_PROFESSIONAL;
-import static br.edu.uepb.nutes.haniot.data.model.UserType.PATIENT;
+import static br.edu.uepb.nutes.haniot.data.model.type.UserType.ADMIN;
+import static br.edu.uepb.nutes.haniot.data.model.type.UserType.HEALTH_PROFESSIONAL;
+import static br.edu.uepb.nutes.haniot.data.model.type.UserType.PATIENT;
 
 /**
  * UserRegisterActivity implementation.

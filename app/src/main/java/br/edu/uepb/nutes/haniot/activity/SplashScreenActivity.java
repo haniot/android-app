@@ -17,9 +17,9 @@ import br.edu.uepb.nutes.haniot.service.TokenExpirationService;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static br.edu.uepb.nutes.haniot.data.model.UserType.ADMIN;
-import static br.edu.uepb.nutes.haniot.data.model.UserType.NUTRITION;
-import static br.edu.uepb.nutes.haniot.data.model.UserType.PATIENT;
+import static br.edu.uepb.nutes.haniot.data.model.type.UserType.ADMIN;
+import static br.edu.uepb.nutes.haniot.data.model.type.UserType.NUTRITION;
+import static br.edu.uepb.nutes.haniot.data.model.type.UserType.PATIENT;
 
 /**
  * Activity SplashScreenActivity.

@@ -5,6 +5,7 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.data.model.type.ItemGridType;
 
 public class MeasurementMonitor {
     public static final int CONNECTED = 0;

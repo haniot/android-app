@@ -2,13 +2,11 @@ package br.edu.uepb.nutes.haniot.activity;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.text.InputType;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,15 +15,15 @@ import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.data.model.FamilyCohesionRecord;
-import br.edu.uepb.nutes.haniot.data.model.FrequencyAnswersType;
 import br.edu.uepb.nutes.haniot.data.model.OdontologicalQuestionnaire;
-import br.edu.uepb.nutes.haniot.data.model.OdontologicalQuestionnaireType;
 import br.edu.uepb.nutes.haniot.data.model.OralHealthRecord;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.SociodemographicRecord;
-import br.edu.uepb.nutes.haniot.data.model.SociodemographicType;
 import br.edu.uepb.nutes.haniot.data.model.ToothLesion;
-import br.edu.uepb.nutes.haniot.data.model.ToothLesionType;
+import br.edu.uepb.nutes.haniot.data.model.type.FrequencyAnswersType;
+import br.edu.uepb.nutes.haniot.data.model.type.OdontologicalQuestionnaireType;
+import br.edu.uepb.nutes.haniot.data.model.type.SociodemographicType;
+import br.edu.uepb.nutes.haniot.data.model.type.ToothLesionType;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
@@ -38,9 +36,7 @@ import br.edu.uepb.nutes.simplesurvey.question.Single;
 import retrofit2.HttpException;
 
 import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.FAMILY_COHESION;
-import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.FEEDING_HABITS;
 import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.ORAL_HEALTH;
-import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.SLEEP_HABITS;
 import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.SOCIODEMOGRAPHICS;
 
 /**

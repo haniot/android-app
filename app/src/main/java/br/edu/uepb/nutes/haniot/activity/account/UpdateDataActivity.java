@@ -27,9 +27,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.HttpException;
 
-import static br.edu.uepb.nutes.haniot.data.model.UserType.ADMIN;
-import static br.edu.uepb.nutes.haniot.data.model.UserType.HEALTH_PROFESSIONAL;
-import static br.edu.uepb.nutes.haniot.data.model.UserType.PATIENT;
+import static br.edu.uepb.nutes.haniot.data.model.type.UserType.ADMIN;
+import static br.edu.uepb.nutes.haniot.data.model.type.UserType.HEALTH_PROFESSIONAL;
+import static br.edu.uepb.nutes.haniot.data.model.type.UserType.PATIENT;
 
 /**
  * UpdateDataActivity implementation.

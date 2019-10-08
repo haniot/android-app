@@ -44,9 +44,9 @@ import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.ORAL_HEALTH;
 import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.PHYSICAL_ACTIVITY;
 import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.SLEEP_HABITS;
 import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.SOCIODEMOGRAPHICS;
-import static br.edu.uepb.nutes.haniot.data.model.UserType.ADMIN;
-import static br.edu.uepb.nutes.haniot.data.model.UserType.DENTISTRY;
-import static br.edu.uepb.nutes.haniot.data.model.UserType.NUTRITION;
+import static br.edu.uepb.nutes.haniot.data.model.type.UserType.ADMIN;
+import static br.edu.uepb.nutes.haniot.data.model.type.UserType.DENTISTRY;
+import static br.edu.uepb.nutes.haniot.data.model.type.UserType.NUTRITION;
 
 public class HistoricQuizActivity extends AppCompatActivity implements HistoricQuizAdapter.OnClick {
 

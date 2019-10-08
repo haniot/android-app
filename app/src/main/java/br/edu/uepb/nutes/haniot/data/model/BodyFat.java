@@ -9,6 +9,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.Objects;
 
+import br.edu.uepb.nutes.haniot.data.model.type.MeasurementType;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 

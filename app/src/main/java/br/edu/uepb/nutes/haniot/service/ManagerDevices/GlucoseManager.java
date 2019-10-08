@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.UUID;
 
-import br.edu.uepb.nutes.haniot.data.model.BloodGlucoseMealType;
+import br.edu.uepb.nutes.haniot.data.model.type.BloodGlucoseMealType;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.BloodGlucoseDataCallback;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.ManagerCallback;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;

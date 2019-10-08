@@ -1,7 +1,5 @@
 package br.edu.uepb.nutes.haniot.server.historical;
 
-import br.edu.uepb.nutes.haniot.data.model.MeasurementType;
-
 /**
  * Params used in historical query.
  *

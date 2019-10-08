@@ -13,8 +13,8 @@ import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.AddMeasurementActivity;
-import br.edu.uepb.nutes.haniot.data.model.MealGlucoseType;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
+import br.edu.uepb.nutes.haniot.data.model.type.MealGlucoseType;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
