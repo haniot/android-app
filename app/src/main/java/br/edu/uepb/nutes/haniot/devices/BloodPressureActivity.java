@@ -13,7 +13,7 @@ import br.edu.uepb.nutes.haniot.activity.AddMeasurementActivity;
 import br.edu.uepb.nutes.haniot.activity.charts.BloodPresssureChartActivity;
 import br.edu.uepb.nutes.haniot.adapter.BloodPressureAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.BaseAdapter;
-import br.edu.uepb.nutes.haniot.data.model.Measurement;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.type.ItemGridType;
 import br.edu.uepb.nutes.haniot.data.model.type.MeasurementType;
 import br.edu.uepb.nutes.haniot.devices.base.BaseDeviceActivity;

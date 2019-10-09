@@ -23,7 +23,7 @@ import br.edu.uepb.nutes.haniot.activity.charts.base.BaseChartActivity;
 import br.edu.uepb.nutes.haniot.activity.charts.base.CreateChart;
 import br.edu.uepb.nutes.haniot.activity.charts.base.InfoAdapter;
 import br.edu.uepb.nutes.haniot.activity.charts.base.InfoMeasurement;
-import br.edu.uepb.nutes.haniot.data.model.Measurement;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.Measurement;
 
 /**
  * BloodPresssureChartActivity implementation.

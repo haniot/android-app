@@ -6,8 +6,8 @@ import android.support.annotation.NonNull;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.App;
-import br.edu.uepb.nutes.haniot.data.model.Device;
-import br.edu.uepb.nutes.haniot.data.model.Device_;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.Device;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.Device_;
 import io.objectbox.Box;
 import io.objectbox.BoxStore;
 

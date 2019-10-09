@@ -6,8 +6,8 @@ import android.support.annotation.NonNull;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.App;
-import br.edu.uepb.nutes.haniot.data.model.Measurement;
-import br.edu.uepb.nutes.haniot.data.model.Measurement_;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.Measurement;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.Measurement_;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import io.objectbox.Box;
 import io.objectbox.BoxStore;

@@ -15,7 +15,7 @@ import br.edu.uepb.nutes.haniot.activity.AddMeasurementActivity;
 import br.edu.uepb.nutes.haniot.activity.charts.GlucoseChartActivity;
 import br.edu.uepb.nutes.haniot.adapter.GlucoseAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.BaseAdapter;
-import br.edu.uepb.nutes.haniot.data.model.Measurement;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.type.DeviceType;
 import br.edu.uepb.nutes.haniot.data.model.type.ItemGridType;
 import br.edu.uepb.nutes.haniot.data.model.type.MeasurementType;

@@ -13,7 +13,7 @@ import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.adapter.base.BaseAdapter;
-import br.edu.uepb.nutes.haniot.data.model.Device;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.Device;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 

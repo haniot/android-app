@@ -1,9 +1,9 @@
 package br.edu.uepb.nutes.haniot.data.repository.local.pref;
 
-import br.edu.uepb.nutes.haniot.data.model.Patient;
-import br.edu.uepb.nutes.haniot.data.model.PilotStudy;
-import br.edu.uepb.nutes.haniot.data.model.User;
-import br.edu.uepb.nutes.haniot.data.model.UserAccess;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.Patient;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.PilotStudy;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.User;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.UserAccess;
 
 /**
  * Interface for Preferences Helper.

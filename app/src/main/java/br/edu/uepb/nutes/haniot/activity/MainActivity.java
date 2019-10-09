@@ -30,8 +30,8 @@ import com.github.clans.fab.FloatingActionMenu;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.SettingsActivity;
-import br.edu.uepb.nutes.haniot.data.model.Patient;
-import br.edu.uepb.nutes.haniot.data.model.User;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.Patient;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.User;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.fragment.DashboardChartsFragment;
 import br.edu.uepb.nutes.haniot.fragment.MeasurementsGridFragment;

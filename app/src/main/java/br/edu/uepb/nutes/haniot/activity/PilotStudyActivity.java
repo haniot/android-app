@@ -1,6 +1,5 @@
 package br.edu.uepb.nutes.haniot.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -25,11 +24,11 @@ import java.util.Objects;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.adapter.PilotStudyAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
-import br.edu.uepb.nutes.haniot.data.model.Admin;
-import br.edu.uepb.nutes.haniot.data.model.HealthProfessional;
-import br.edu.uepb.nutes.haniot.data.model.Patient;
-import br.edu.uepb.nutes.haniot.data.model.PilotStudy;
-import br.edu.uepb.nutes.haniot.data.model.User;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.Admin;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.HealthProfessional;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.Patient;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.PilotStudy;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.User;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.ErrorHandler;
@@ -40,7 +39,6 @@ import butterknife.ButterKnife;
 
 import static br.edu.uepb.nutes.haniot.data.model.type.UserType.ADMIN;
 import static br.edu.uepb.nutes.haniot.data.model.type.UserType.HEALTH_PROFESSIONAL;
-import static br.edu.uepb.nutes.haniot.data.model.type.UserType.NUTRITION;
 import static br.edu.uepb.nutes.haniot.data.model.type.UserType.PATIENT;
 
 /**

@@ -13,15 +13,15 @@ import java.util.Collections;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.data.model.ChronicDisease;
-import br.edu.uepb.nutes.haniot.data.model.FeedingHabitsRecord;
-import br.edu.uepb.nutes.haniot.data.model.FoodType;
-import br.edu.uepb.nutes.haniot.data.model.MedicalRecord;
-import br.edu.uepb.nutes.haniot.data.model.NutritionalQuestionnaire;
-import br.edu.uepb.nutes.haniot.data.model.Patient;
-import br.edu.uepb.nutes.haniot.data.model.PhysicalActivityHabit;
-import br.edu.uepb.nutes.haniot.data.model.SleepHabit;
-import br.edu.uepb.nutes.haniot.data.model.WeeklyFoodRecord;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.ChronicDisease;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.FeedingHabitsRecord;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.FoodType;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.MedicalRecord;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.NutritionalQuestionnaire;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.Patient;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.PhysicalActivityHabit;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.SleepHabit;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.WeeklyFoodRecord;
 import br.edu.uepb.nutes.haniot.data.model.dao.FeedingHabitsDAO;
 import br.edu.uepb.nutes.haniot.data.model.dao.MedicalRecordDAO;
 import br.edu.uepb.nutes.haniot.data.model.dao.PhysicalActivityHabitsDAO;
@@ -42,10 +42,10 @@ import br.edu.uepb.nutes.simplesurvey.question.Open;
 import br.edu.uepb.nutes.simplesurvey.question.Single;
 import retrofit2.HttpException;
 
-import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.FEEDING_HABITS;
-import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.MEDICAL_RECORDS;
-import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.PHYSICAL_ACTIVITY;
-import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.SLEEP_HABITS;
+import static br.edu.uepb.nutes.haniot.data.model.objectbox.TypeEvaluation.FEEDING_HABITS;
+import static br.edu.uepb.nutes.haniot.data.model.objectbox.TypeEvaluation.MEDICAL_RECORDS;
+import static br.edu.uepb.nutes.haniot.data.model.objectbox.TypeEvaluation.PHYSICAL_ACTIVITY;
+import static br.edu.uepb.nutes.haniot.data.model.objectbox.TypeEvaluation.SLEEP_HABITS;
 
 /**
  * QuizNutritionActivity implementation.

@@ -15,9 +15,6 @@ public class FeedingHabitsRecord extends ActivityHabitsRecord {
     @Expose()
     private List<WeeklyFoodRecord> weeklyFeedingHabits;
 
-    @Expose(serialize = false, deserialize = false)
-    private List<WeeklyFoodRecord> weeklyFeedingHabitsDB;
-
     @SerializedName("daily_water_glasses")
     @Expose()
     private String dailyWaterGlasses;
@@ -68,18 +65,9 @@ public class FeedingHabitsRecord extends ActivityHabitsRecord {
         }
     }
 
-    public List<WeeklyFoodRecord> getWeeklyFeedingHabitsDB() {
-        return weeklyFeedingHabitsDB;
-    }
-
-    public void setWeeklyFeedingHabitsDB(List<WeeklyFoodRecord> weeklyFeedingHabits) {
-        this.getWeeklyFeedingHabitsDB().clear();
-        this.getWeeklyFeedingHabitsDB().addAll(weeklyFeedingHabits);
-    }
-
     public void addWeeklyFeedingHabitsDB(WeeklyFoodRecord... weeklyFoodRecord) {
         for (WeeklyFoodRecord weeklyFo : weeklyFoodRecord) {
-            this.getWeeklyFeedingHabitsDB().add(weeklyFo);
+            this.getWeeklyFeedingHabits().add(weeklyFo);
         }
     }
 
@@ -127,7 +115,6 @@ public class FeedingHabitsRecord extends ActivityHabitsRecord {
         return super.toString() +
                 " FeedingHabitsRecord{" +
                 "weeklyFeedingHabits=" + weeklyFeedingHabits +
-                ", weeklyFeedingHabitsDB=" + weeklyFeedingHabitsDB +
                 ", dailyWaterGlasses='" + dailyWaterGlasses + '\'' +
                 ", sixMonthBreastFeeding='" + sixMonthBreastFeeding + '\'' +
                 ", foodAllergyIntolerance=" + foodAllergyIntolerance +

@@ -30,9 +30,9 @@ import java.util.List;
 import java.util.Locale;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.data.model.Measurement;
-import br.edu.uepb.nutes.haniot.data.model.Patient;
-import br.edu.uepb.nutes.haniot.data.model.User;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.Measurement;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.Patient;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.User;
 import br.edu.uepb.nutes.haniot.data.model.type.ItemGridType;
 import br.edu.uepb.nutes.haniot.data.model.type.MeasurementType;
 import br.edu.uepb.nutes.haniot.data.model.type.PatientsType;

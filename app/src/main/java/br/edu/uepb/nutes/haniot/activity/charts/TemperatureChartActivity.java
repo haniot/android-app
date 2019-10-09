@@ -13,7 +13,7 @@ import java.util.List;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.charts.base.BaseChartActivity;
 import br.edu.uepb.nutes.haniot.activity.charts.base.CreateChart;
-import br.edu.uepb.nutes.haniot.data.model.Measurement;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.type.MeasurementType;
 
 /**

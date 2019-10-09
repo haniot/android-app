@@ -55,7 +55,11 @@ public class Device implements Parcelable {
     @Expose(serialize = false, deserialize = false)
     private int img;
 
-    public Device() {
+//    public Device() {
+//    }
+
+    public Device(br.edu.uepb.nutes.haniot.data.model.objectbox.Device d) {
+        this(d.getName(), d.getManufacturer(), d.getModelNumber(), d.getImg(), d.getType(), d.getUuid());
     }
 
     public Device(String name, String manufacturer, String modelNumber, int img, String type, String uuid) {

@@ -8,8 +8,8 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import br.edu.uepb.nutes.haniot.App;
-import br.edu.uepb.nutes.haniot.data.model.PilotStudy;
-import br.edu.uepb.nutes.haniot.data.model.PilotStudy_;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.PilotStudy;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.PilotStudy_;
 import io.objectbox.Box;
 import io.objectbox.BoxStore;
 

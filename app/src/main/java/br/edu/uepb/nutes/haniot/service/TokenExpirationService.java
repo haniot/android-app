@@ -15,7 +15,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import br.edu.uepb.nutes.haniot.activity.account.LoginActivity;
-import br.edu.uepb.nutes.haniot.data.model.UserAccess;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.UserAccess;
 import br.edu.uepb.nutes.haniot.data.model.dao.PilotStudyDAO;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 

@@ -8,10 +8,10 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import br.edu.uepb.nutes.haniot.App;
-import br.edu.uepb.nutes.haniot.data.model.FeedingHabitsRecord;
-import br.edu.uepb.nutes.haniot.data.model.FeedingHabitsRecord_;
-import br.edu.uepb.nutes.haniot.data.model.MedicalRecord;
-import br.edu.uepb.nutes.haniot.data.model.MedicalRecord_;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.FeedingHabitsRecord;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.FeedingHabitsRecord_;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.MedicalRecord;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.MedicalRecord_;
 import io.objectbox.Box;
 import io.objectbox.BoxStore;
 

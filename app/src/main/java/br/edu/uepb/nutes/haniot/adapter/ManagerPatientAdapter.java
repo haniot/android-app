@@ -18,7 +18,7 @@ import java.util.List;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.adapter.base.BaseAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
-import br.edu.uepb.nutes.haniot.data.model.Patient;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.Patient;
 import br.edu.uepb.nutes.haniot.data.model.type.PatientsType;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import butterknife.BindView;

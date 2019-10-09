@@ -13,7 +13,7 @@ import br.edu.uepb.nutes.haniot.activity.AddMeasurementActivity;
 import br.edu.uepb.nutes.haniot.activity.charts.TemperatureChartActivity;
 import br.edu.uepb.nutes.haniot.adapter.TemperatureAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.BaseAdapter;
-import br.edu.uepb.nutes.haniot.data.model.Measurement;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.type.DeviceType;
 import br.edu.uepb.nutes.haniot.data.model.type.ItemGridType;
 import br.edu.uepb.nutes.haniot.data.model.type.MeasurementType;

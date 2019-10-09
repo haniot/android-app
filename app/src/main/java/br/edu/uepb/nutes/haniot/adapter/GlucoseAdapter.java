@@ -10,7 +10,7 @@ import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.adapter.base.BaseAdapter;
-import br.edu.uepb.nutes.haniot.data.model.Measurement;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.type.BloodGlucoseMealType;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
