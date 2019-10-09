@@ -3,9 +3,6 @@ package br.edu.uepb.nutes.haniot.adapter;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
-import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class ItemQuizView extends RelativeLayout {

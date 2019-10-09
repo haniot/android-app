@@ -32,9 +32,9 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.Device;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.User;
-import br.edu.uepb.nutes.haniot.data.model.dao.DeviceDAO;
+import br.edu.uepb.nutes.haniot.data.model.model.Device;
+import br.edu.uepb.nutes.haniot.data.model.model.User;
+import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
@@ -57,7 +57,8 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
 
     private SimpleBleScanner mScanner;
     private Device mDevice;
-    private DeviceDAO mDeviceDAO;
+//    private DeviceDAO mDeviceDAO;
+    private Repository mRepository;
     private AppPreferencesHelper appPreferences;
     private HaniotNetRepository haniotRepository;
     private User user;
@@ -204,7 +205,8 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
                     deviceRest.setUserId(user.get_id());
                     Log.w("AAA", "User: " + user.get_id());
                     Log.w("AAA", "subscribe: " + deviceRest.toJson());
-                    mDeviceDAO.save(deviceRest);
+                    mRepository.saveDevice(deviceRest);
+
                     onDeviceRegistered(mDevice);
                 }, err -> {
                     onDeviceFounded(null);
@@ -412,7 +414,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         mDevice = getIntent().getParcelableExtra(DeviceManagerActivity.EXTRA_DEVICE);
         appPreferences = AppPreferencesHelper.getInstance(this);
         haniotRepository = HaniotNetRepository.getInstance(this);
-        mDeviceDAO = DeviceDAO.getInstance(this);
+        mRepository = Repository.getInstance(this);
 
         btnDeviceRegisterScanner.setOnClickListener(this);
         btnDeviceRegisterStop.setOnClickListener(this);

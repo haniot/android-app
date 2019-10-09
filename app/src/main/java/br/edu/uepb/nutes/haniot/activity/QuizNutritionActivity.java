@@ -13,12 +13,12 @@ import java.util.Collections;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.data.model.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.objectbox.ChronicDisease;
 import br.edu.uepb.nutes.haniot.data.model.objectbox.FeedingHabitsRecord;
 import br.edu.uepb.nutes.haniot.data.model.objectbox.FoodType;
 import br.edu.uepb.nutes.haniot.data.model.objectbox.MedicalRecord;
 import br.edu.uepb.nutes.haniot.data.model.objectbox.NutritionalQuestionnaire;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.Patient;
 import br.edu.uepb.nutes.haniot.data.model.objectbox.PhysicalActivityHabit;
 import br.edu.uepb.nutes.haniot.data.model.objectbox.SleepHabit;
 import br.edu.uepb.nutes.haniot.data.model.objectbox.WeeklyFoodRecord;

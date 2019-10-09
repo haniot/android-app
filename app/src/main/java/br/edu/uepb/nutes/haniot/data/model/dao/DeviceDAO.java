@@ -48,7 +48,6 @@ public class DeviceDAO {
         return deviceBox.put(device) > 0;
     }
 
-
     /**
      * Select a Device according to id.
      *

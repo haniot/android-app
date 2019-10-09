@@ -24,12 +24,13 @@ import java.util.Calendar;
 import java.util.Objects;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.Admin;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.HealthProfessional;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.Patient;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.User;
-import br.edu.uepb.nutes.haniot.data.model.dao.PatientDAO;
+import br.edu.uepb.nutes.haniot.data.model.model.Admin;
+import br.edu.uepb.nutes.haniot.data.model.model.HealthProfessional;
+import br.edu.uepb.nutes.haniot.data.model.model.Patient;
+import br.edu.uepb.nutes.haniot.data.model.model.User;
+//import br.edu.uepb.nutes.haniot.data.model.dao.PatientDAO;
 import br.edu.uepb.nutes.haniot.data.model.type.PatientsType;
+import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
@@ -90,7 +91,8 @@ public class UserRegisterActivity extends AppCompatActivity {
     private Patient patient;
     private AppPreferencesHelper appPreferencesHelper;
     private HaniotNetRepository haniotNetRepository;
-    private PatientDAO patientDAO;
+//    private PatientDAO patientDAO;
+    private Repository mRepository;
     private boolean isEdit = false;
     private String oldEmail;
     private boolean editUserLogged;
@@ -239,7 +241,7 @@ public class UserRegisterActivity extends AppCompatActivity {
                     .doOnSubscribe(disposable -> showLoading(true))
                     .doAfterTerminate(() -> showLoading(false))
                     .subscribe(patient1 -> {
-                        patientDAO.save(patient);
+                        mRepository.savePatient(patient);
                         showMessage(R.string.update_success);
                         startActivity(new Intent(UserRegisterActivity.this, ManagerPatientsActivity.class));
                         finish();
@@ -274,7 +276,7 @@ public class UserRegisterActivity extends AppCompatActivity {
                 .associatePatientToPilotStudy(userLogged.getPilotStudyIDSelected(), patient.get_id())
                 .subscribe(o -> {
                     Log.w(TAG, "Patient associated to pilotstudy");
-                    patientDAO.save(patient);
+                    mRepository.savePatient(patient);
                     appPreferencesHelper.saveLastPatient(patient);
                     if (appPreferencesHelper.getUserLogged().getUserType().equals(HEALTH_PROFESSIONAL)) {
                         User user = appPreferencesHelper.getUserLogged();
@@ -502,7 +504,7 @@ public class UserRegisterActivity extends AppCompatActivity {
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
         Log.i(TAG, appPreferencesHelper.getUserAccessHaniot().getAccessToken());
         haniotNetRepository = HaniotNetRepository.getInstance(this);
-        patientDAO = PatientDAO.getInstance(this);
+        mRepository = Repository.getInstance(this);
         myCalendar = Calendar.getInstance();
         userLogged = appPreferencesHelper.getUserLogged();
         fab.setOnClickListener(fabClick);

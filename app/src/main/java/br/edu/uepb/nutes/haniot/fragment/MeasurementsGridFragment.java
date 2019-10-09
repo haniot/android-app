@@ -49,19 +49,18 @@ import br.edu.uepb.nutes.haniot.activity.NutritionalEvaluationActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.SettingsActivity;
 import br.edu.uepb.nutes.haniot.adapter.MeasurementMonitorAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.BodyFat;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.Device;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.HeartRateItem;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.Measurement;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.MeasurementMonitor;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.Patient;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.PilotStudy;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.User;
-import br.edu.uepb.nutes.haniot.data.model.dao.DeviceDAO;
-import br.edu.uepb.nutes.haniot.data.model.dao.MeasurementDAO;
+import br.edu.uepb.nutes.haniot.data.model.model.BodyFat;
+import br.edu.uepb.nutes.haniot.data.model.model.Device;
+import br.edu.uepb.nutes.haniot.data.model.model.HeartRateItem;
+import br.edu.uepb.nutes.haniot.data.model.model.Measurement;
+import br.edu.uepb.nutes.haniot.data.model.model.MeasurementMonitor;
+import br.edu.uepb.nutes.haniot.data.model.model.Patient;
+import br.edu.uepb.nutes.haniot.data.model.model.PilotStudy;
+import br.edu.uepb.nutes.haniot.data.model.model.User;
 import br.edu.uepb.nutes.haniot.data.model.type.DeviceType;
 import br.edu.uepb.nutes.haniot.data.model.type.ItemGridType;
 import br.edu.uepb.nutes.haniot.data.model.type.MeasurementType;
+import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
@@ -101,7 +100,6 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
     private BloodPressureManager bloodPressureManager;
     private MeasurementMonitorAdapter mAdapter;
     private AppPreferencesHelper appPreferencesHelper;
-    private DeviceDAO deviceDAO;
     private User user;
     private String deviceTypeTag;
     private List<MeasurementMonitor> measurementMonitors;
@@ -113,7 +111,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
     private SharedPreferences prefSettings;
     private DecimalFormat decimalFormat;
     private HaniotNetRepository haniotRepository;
-    private MeasurementDAO measurementDAO;
+    private Repository mRepository;
     private PilotStudy pilotStudy;
     private static List<HeartRateItem> heartRateItems;
     private Patient patient;
@@ -140,8 +138,8 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         haniotRepository = HaniotNetRepository.getInstance(mContext);
-        measurementDAO = MeasurementDAO.getInstance(mContext);
-
+//        measurementDAO = MeasurementDAO.getInstance(mContext);
+        mRepository = Repository.getInstance(mContext);
     }
 
     @Override
@@ -567,7 +565,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
 //        Device device1 = getDeviceRegistered(DeviceType.HEART_RATE);
 //        if (device1 != null) measurement.setDeviceId(device1.get_id());
 
-        List<Measurement> measurements = measurementDAO.list(MeasurementType.HEART_RATE, patient.get_id(), 100, 1000);
+        List<Measurement> measurements = mRepository.listMeasurements(MeasurementType.HEART_RATE, patient.get_id(), 100, 1000);
         if (measurements == null) measurements = new ArrayList<>();
         measurements.add(measurement);
 
@@ -582,10 +580,10 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
                 .subscribe(measurement1 -> {
                     Log.w(LOG_TAG, measurement1.toString());
                     heartRateItems.clear();
-                    measurementDAO.removeAll(patient.get_id());
+                    mRepository.removeAllMeasurements(patient.get_id());
                 }, throwable -> {
                     Log.w(LOG_TAG, throwable.getMessage());
-                    measurementDAO.save(measurement);
+                    mRepository.saveMeasurement(measurement);
                 }));
     }
 
@@ -646,14 +644,14 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
      */
     private Device getDeviceRegistered(String type) {
 
-        for (Device device1 : deviceDAO.list(user.get_id()))
+        for (Device device1 : mRepository.listDevices(user.get_id()))
             if (device1.getType().equals(type)) return device1;
         return null;
     }
 
     private Device getDeviceRegisteredFromAddress(String address) {
 
-        for (Device device1 : deviceDAO.list(user.get_id()))
+        for (Device device1 : mRepository.listDevices(user.get_id()))
             if (device1.getAddress().equals(address)) return device1;
         return null;
     }
@@ -840,10 +838,10 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
         appPreferencesHelper = AppPreferencesHelper.getInstance(mContext);
         user = appPreferencesHelper.getUserLogged();
         patient = appPreferencesHelper.getLastPatient();
-        deviceDAO = DeviceDAO.getInstance(mContext);
-        Log.w("AAA", Arrays.toString(deviceDAO.list(user.get_id()).toArray()));
+//        deviceDAO = DeviceDAO.getInstance(mContext);
+//        Log.w("AAA", Arrays.toString(deviceDAO.list(user.get_id()).toArray()));
 
-        devices = deviceDAO.list(user.get_id());
+        devices = mRepository.listDevices(user.get_id());
         builder = new SimpleBleScanner.Builder();
         pilotStudy = appPreferencesHelper.getLastPilotStudy();
         if (heartRateItems == null) heartRateItems = new ArrayList<>();

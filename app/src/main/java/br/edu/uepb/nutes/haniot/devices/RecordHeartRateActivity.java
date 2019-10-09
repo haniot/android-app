@@ -44,10 +44,8 @@ import java.util.List;
 import java.util.UUID;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.Device;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.Measurement;
-import br.edu.uepb.nutes.haniot.data.model.dao.DeviceDAO;
-import br.edu.uepb.nutes.haniot.data.model.dao.MeasurementDAO;
+import br.edu.uepb.nutes.haniot.data.model.model.Device;
+import br.edu.uepb.nutes.haniot.data.model.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.fragment.GenericDialogFragment;
 import br.edu.uepb.nutes.haniot.fragment.RealTimeFragment;
@@ -82,8 +80,6 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
     private ObjectAnimator heartAnimation;
     private boolean isChronometerRunnig;
     private AppPreferencesHelper appPreferencesHelper;
-    private MeasurementDAO MeasurementDAO;
-    private DeviceDAO deviceDAO;
     private int fcMinimum, fcMaximum, fcAccumulate, fcTotal;
     private long registrationTimeStart, durationRegistration;
 
@@ -132,8 +128,6 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
         Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
-        deviceDAO = DeviceDAO.getInstance(this);
-        MeasurementDAO = MeasurementDAO.getInstance(this);
         lastPause = 0;
         fcMinimum = Integer.MAX_VALUE;
         fcMaximum = Integer.MIN_VALUE;

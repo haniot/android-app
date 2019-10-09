@@ -15,7 +15,7 @@ import br.edu.uepb.nutes.haniot.activity.AddMeasurementActivity;
 import br.edu.uepb.nutes.haniot.activity.charts.GlucoseChartActivity;
 import br.edu.uepb.nutes.haniot.adapter.GlucoseAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.BaseAdapter;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.Measurement;
+import br.edu.uepb.nutes.haniot.data.model.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.type.DeviceType;
 import br.edu.uepb.nutes.haniot.data.model.type.ItemGridType;
 import br.edu.uepb.nutes.haniot.data.model.type.MeasurementType;
@@ -55,7 +55,7 @@ public class GlucoseActivity extends BaseDeviceActivity {
         manager = new GlucoseManager(this);
         ((GlucoseManager) manager).setSimpleCallback(glucoseDataCallback);
 
-        mDevice = deviceDAO.getByType(appPreferencesHelper.getUserLogged().get_id(), DeviceType.GLUCOMETER);
+        mDevice = mRepository.getDeviceByType(appPreferencesHelper.getUserLogged().get_id(), DeviceType.GLUCOMETER);
     }
 
     private BloodGlucoseDataCallback glucoseDataCallback = new BloodGlucoseDataCallback() {
@@ -81,7 +81,8 @@ public class GlucoseActivity extends BaseDeviceActivity {
 //            if (mDevice != null) measurement.setDeviceId(mDevice.get_id());
             measurement.setUserId(patient.get_id());
 
-            synchronizeWithServer(measurement);
+            mRepository.saveMeasurement(measurement);
+            synchronizeWithServer(measurement); // RETIRAR
             updateUILastMeasurement(measurement, true);
         }
     };

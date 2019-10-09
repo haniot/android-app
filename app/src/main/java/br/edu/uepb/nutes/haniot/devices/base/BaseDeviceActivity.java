@@ -47,11 +47,11 @@ import java.util.Locale;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.adapter.base.BaseAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.Device;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.Measurement;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.Patient;
-import br.edu.uepb.nutes.haniot.data.model.dao.DeviceDAO;
-import br.edu.uepb.nutes.haniot.data.model.dao.MeasurementDAO;
+import br.edu.uepb.nutes.haniot.data.Convert;
+import br.edu.uepb.nutes.haniot.data.model.model.Device;
+import br.edu.uepb.nutes.haniot.data.model.model.Measurement;
+import br.edu.uepb.nutes.haniot.data.model.model.Patient;
+import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
@@ -77,8 +77,7 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
     protected Animation animation;
     protected Device mDevice;
     protected AppPreferencesHelper appPreferencesHelper;
-    private MeasurementDAO measurementDAO;
-    protected DeviceDAO deviceDAO;
+    protected Repository mRepository;
     protected DecimalFormat decimalFormat;
     private BaseAdapter mAdapter;
     protected BluetoothManager manager;
@@ -145,8 +144,7 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
         ButterKnife.bind(this);
 
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
-        measurementDAO = MeasurementDAO.getInstance(this);
-        deviceDAO = DeviceDAO.getInstance(this);
+        mRepository = Repository.getInstance(this);
         decimalFormat = new DecimalFormat(getString(R.string.format_number2), new DecimalFormatSymbols(Locale.US));
         measurementIdToDelete = new ArrayList<>();
         animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
@@ -375,7 +373,7 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
      */
     private void loadDataLocal() {
         page = INITIAL_PAGE; // returns to initial page
-        mAdapter.addItems(measurementDAO.list(getMeasurementType(), patient.get_id(), 0, 100));
+        mAdapter.addItems(mRepository.listMeasurements(getMeasurementType(), patient.get_id(), 0, 100));
 
         if (!mAdapter.itemsIsEmpty()) {
             updateUILastMeasurement((Measurement) mAdapter.getFirstItem(), false);
@@ -561,7 +559,7 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
                 })
                 .subscribe(measurement1 -> {
                 }, error -> {
-                    measurementDAO.save(measurement);
+                    mRepository.saveMeasurement(measurement);
                     Log.w(getTag(), error.getMessage());
                     printMessage(getString(R.string.error_500));
                 }));

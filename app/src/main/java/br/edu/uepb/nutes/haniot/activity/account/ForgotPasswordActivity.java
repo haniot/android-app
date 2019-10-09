@@ -27,10 +27,10 @@ import java.util.Objects;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.MainActivity;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.Device;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.User;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.UserAccess;
-import br.edu.uepb.nutes.haniot.data.model.dao.DeviceDAO;
+import br.edu.uepb.nutes.haniot.data.model.model.Device;
+import br.edu.uepb.nutes.haniot.data.model.model.User;
+import br.edu.uepb.nutes.haniot.data.model.model.UserAccess;
+import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.ErrorHandler;
@@ -39,8 +39,6 @@ import br.edu.uepb.nutes.haniot.service.TokenExpirationService;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import okhttp3.MediaType;
-import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.HttpException;
 
@@ -86,7 +84,7 @@ public class ForgotPasswordActivity extends AppCompatActivity implements View.On
 
     private TokenExpirationService tokenExpirationService;
     private boolean mIsBound;
-    private DeviceDAO mDeviceDAO;
+    private Repository mRepository;
     private HaniotNetRepository haniotNetRepository;
     private AppPreferencesHelper appPreferencesHelper;
 
@@ -99,7 +97,7 @@ public class ForgotPasswordActivity extends AppCompatActivity implements View.On
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             getWindow().setStatusBarColor(getColor(R.color.colorAccent));
         }
-        mDeviceDAO = DeviceDAO.getInstance(this);
+        mRepository = Repository.getInstance(this);
         haniotNetRepository = HaniotNetRepository.getInstance(this);
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
 
@@ -266,10 +264,10 @@ public class ForgotPasswordActivity extends AppCompatActivity implements View.On
                     finish();
                 })
                 .subscribe(devices -> {
-                    mDeviceDAO.removeAll(userId);
+                    mRepository.removeAllDevices(userId);
                     for (Device d : devices) {
                         d.setUserId(userId);
-                        mDeviceDAO.save(d);
+                        mRepository.saveDevice(d);
                     }
                 }, error -> Log.w(LOG_TAG, "syncDevices() error: " + error.getMessage()))
         );

@@ -34,18 +34,13 @@ import android.widget.Toast;
 
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
-import org.json.JSONException;
-
 import java.util.UUID;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.activity.charts.SmartBandChartActivity;
 import br.edu.uepb.nutes.haniot.adapter.SmartBandAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.Device;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.Measurement;
-import br.edu.uepb.nutes.haniot.data.model.dao.DeviceDAO;
-import br.edu.uepb.nutes.haniot.data.model.dao.MeasurementDAO;
+import br.edu.uepb.nutes.haniot.data.model.model.Device;
+import br.edu.uepb.nutes.haniot.data.model.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
 import br.edu.uepb.nutes.haniot.service.BluetoothLeService;
@@ -75,8 +70,6 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
     private ObjectAnimator heartAnimation;
     private Device mDevice;
     private AppPreferencesHelper appPreferencesHelper;
-    private MeasurementDAO measurementDAO;
-    private DeviceDAO deviceDAO;
     private SmartBandAdapter mAdapter;
     private boolean gattServiceDiscovered = false;
 
@@ -143,8 +136,6 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
 
         mDeviceAddress = "CD:EE:CD:A2:21:D4";
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
-        measurementDAO = MeasurementDAO.getInstance(this);
-        deviceDAO = DeviceDAO.getInstance(this);
 
         animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
         mChartButton.setOnClickListener(this);
