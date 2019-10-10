@@ -14,8 +14,7 @@ import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.AddMeasurementActivity;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.Measurement;
-import br.edu.uepb.nutes.haniot.utils.DateUtils;
+import br.edu.uepb.nutes.haniot.data.model.model.Measurement;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 

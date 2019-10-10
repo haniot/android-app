@@ -29,10 +29,10 @@ import java.util.Objects;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.adapter.DeviceAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.Device;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.User;
-import br.edu.uepb.nutes.haniot.data.model.dao.DeviceDAO;
+import br.edu.uepb.nutes.haniot.data.model.model.Device;
+import br.edu.uepb.nutes.haniot.data.model.model.User;
 import br.edu.uepb.nutes.haniot.data.model.type.DeviceType;
+import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
@@ -109,7 +109,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
     private DeviceAdapter mAdapterDeviceAvailable;
     private DeviceAdapter mAdapterDeviceRegistered;
     private AppPreferencesHelper appPreferences;
-    private DeviceDAO mDeviceDAO;
+    private Repository mRepository;
     private HaniotNetRepository haniotRepository;
     private List<String> deviceIdToDelete;
     private Handler handler;
@@ -123,7 +123,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         haniotRepository = HaniotNetRepository.getInstance(this);
         appPreferences = AppPreferencesHelper.getInstance(this);
-        mDeviceDAO = DeviceDAO.getInstance(this);
+        mRepository = Repository.getInstance(this);
 
         user = appPreferences.getUserLogged();
         if (user == null || user.get_id().isEmpty()) finish();
@@ -206,7 +206,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
                             populateDevicesRegistered(setImagesDevices(devices));
 
 
-                            populateDevicesAvailable(mDeviceDAO.list(user.get_id()));
+                            populateDevicesAvailable(mRepository.listDevices(user.get_id()));
                             showErrorConnection(false);
                         }, err -> showErrorConnection(true))
         );
@@ -348,7 +348,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
         for (String idDevice : deviceIdToDelete)
             DisposableManager.add(haniotRepository
                     .deleteDevice(user.get_id(), idDevice).subscribe(() -> {
-                        mDeviceDAO.remove(idDevice);
+                        mRepository.removeDevice(idDevice);
                         deviceIdToDelete.remove(idDevice);
 
                     }));

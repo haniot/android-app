@@ -14,12 +14,12 @@ import java.util.Collections;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.FamilyCohesionRecord;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.OdontologicalQuestionnaire;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.OralHealthRecord;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.Patient;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.SociodemographicRecord;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.ToothLesion;
+import br.edu.uepb.nutes.haniot.data.model.model.FamilyCohesionRecord;
+import br.edu.uepb.nutes.haniot.data.model.model.OdontologicalQuestionnaire;
+import br.edu.uepb.nutes.haniot.data.model.model.OralHealthRecord;
+import br.edu.uepb.nutes.haniot.data.model.model.Patient;
+import br.edu.uepb.nutes.haniot.data.model.model.SociodemographicRecord;
+import br.edu.uepb.nutes.haniot.data.model.model.ToothLesion;
 import br.edu.uepb.nutes.haniot.data.model.type.FrequencyAnswersType;
 import br.edu.uepb.nutes.haniot.data.model.type.OdontologicalQuestionnaireType;
 import br.edu.uepb.nutes.haniot.data.model.type.SociodemographicType;
@@ -35,9 +35,9 @@ import br.edu.uepb.nutes.simplesurvey.question.Open;
 import br.edu.uepb.nutes.simplesurvey.question.Single;
 import retrofit2.HttpException;
 
-import static br.edu.uepb.nutes.haniot.data.model.objectbox.TypeEvaluation.FAMILY_COHESION;
-import static br.edu.uepb.nutes.haniot.data.model.objectbox.TypeEvaluation.ORAL_HEALTH;
-import static br.edu.uepb.nutes.haniot.data.model.objectbox.TypeEvaluation.SOCIODEMOGRAPHICS;
+import static br.edu.uepb.nutes.haniot.data.model.type.TypeEvaluation.FAMILY_COHESION;
+import static br.edu.uepb.nutes.haniot.data.model.type.TypeEvaluation.ORAL_HEALTH;
+import static br.edu.uepb.nutes.haniot.data.model.type.TypeEvaluation.SOCIODEMOGRAPHICS;
 
 /**
  * QuizOdontologyActivity implementation.

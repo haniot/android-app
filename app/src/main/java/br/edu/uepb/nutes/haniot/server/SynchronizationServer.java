@@ -1,23 +1,15 @@
 package br.edu.uepb.nutes.haniot.server;
 
 import android.content.Context;
-import android.os.AsyncTask;
-import android.util.Log;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.Measurement;
-import br.edu.uepb.nutes.haniot.data.model.dao.MeasurementDAO;
-import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
+import br.edu.uepb.nutes.haniot.data.model.model.Measurement;
 
 /**
  * Class that implements logic for synchronizing local data with the remote server.

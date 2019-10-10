@@ -19,7 +19,7 @@ import java.util.List;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.AddMeasurementActivity;
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.Measurement;
+import br.edu.uepb.nutes.haniot.data.model.model.Measurement;
 import br.edu.uepb.nutes.haniot.utils.NumberPickerDialog;
 import butterknife.BindView;
 import butterknife.ButterKnife;

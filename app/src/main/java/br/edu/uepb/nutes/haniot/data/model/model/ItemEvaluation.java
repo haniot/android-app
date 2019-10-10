@@ -35,9 +35,7 @@ public class ItemEvaluation implements Parcelable, Cloneable {
     private SociodemographicRecord sociodemographicRecord;
     private List<HeartRateItem> dataset;
 
-    public ItemEvaluation() {
-
-    }
+    public ItemEvaluation() { }
 
     public ItemEvaluation(int icon, int typeHeader, String title, String quizText, int typeEvaluation) {
         this.icon = icon;

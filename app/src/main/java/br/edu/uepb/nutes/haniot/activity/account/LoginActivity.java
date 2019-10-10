@@ -28,10 +28,11 @@ import java.util.Objects;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.MainActivity;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.Device;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.User;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.UserAccess;
-import br.edu.uepb.nutes.haniot.data.model.dao.DeviceDAO;
+import br.edu.uepb.nutes.haniot.data.model.model.Device;
+import br.edu.uepb.nutes.haniot.data.model.model.User;
+import br.edu.uepb.nutes.haniot.data.model.model.UserAccess;
+//import br.edu.uepb.nutes.haniot.data.model.dao.DeviceDAO;
+import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.ErrorHandler;
@@ -82,7 +83,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private TokenExpirationService tokenExpirationService;
     private boolean mIsBound;
-    private DeviceDAO mDeviceDAO;
+    private Repository mRepository;
     private HaniotNetRepository haniotNetRepository;
     private AppPreferencesHelper appPreferencesHelper;
 
@@ -98,7 +99,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             getWindow().getDecorView().setSystemUiVisibility(flags);
             getWindow().setStatusBarColor(getColor(android.R.color.background_light));
         }
-        mDeviceDAO = DeviceDAO.getInstance(this);
+        mRepository = Repository.getInstance(this);
         haniotNetRepository = HaniotNetRepository.getInstance(this);
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
 
@@ -268,10 +269,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     finish();
                 })
                 .subscribe(devices -> {
-                    mDeviceDAO.removeAll(userId);
+                    mRepository.removeAllDevices(userId);
                     for (Device d : devices) {
                         d.setUserId(userId);
-                        mDeviceDAO.save(d);
+                        mRepository.saveDevice(d);
                     }
                 }, error -> Log.w(LOG_TAG, "syncDevices() error: " + error.getMessage()))
         );

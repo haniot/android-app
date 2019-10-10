@@ -14,10 +14,10 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.Admin;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.HealthProfessional;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.Patient;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.User;
+import br.edu.uepb.nutes.haniot.data.model.model.Admin;
+import br.edu.uepb.nutes.haniot.data.model.model.HealthProfessional;
+import br.edu.uepb.nutes.haniot.data.model.model.Patient;
+import br.edu.uepb.nutes.haniot.data.model.model.User;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.ErrorHandler;
@@ -25,7 +25,6 @@ import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepositor
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import retrofit2.HttpException;
 
 import static br.edu.uepb.nutes.haniot.data.model.type.UserType.ADMIN;
 import static br.edu.uepb.nutes.haniot.data.model.type.UserType.HEALTH_PROFESSIONAL;
