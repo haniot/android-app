@@ -402,7 +402,7 @@ public class EvaluationAdapter extends ExpandableRecyclerViewAdapter<EvaluationA
 //                if (oralHealthRecord.getToothLesions().isEmpty()) {
 //                    stringBuilder.append("<p>" + "Não possui algum tipo de cárie dentária" + "</p>");
 //                } else
-//                    for (ToothLesion toothLesion : oralHealthRecord.getToothLesions()) {
+//                    for (ToothLesionOB toothLesion : oralHealthRecord.getToothLesions()) {
 //                        stringBuilder.append("<h4>" + ToothLesionType.LesionType.getStringPtBr(toothLesion.getLesionType()))
 //                                .append(" em ")
 //                                .append(ToothLesionType.ToothType.getStringPtbr(toothLesion.getToothType()) + "</h4>");

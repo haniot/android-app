@@ -7,9 +7,9 @@ public interface TemperatureDataCallback extends DeviceStatusCallback {
     /**
      * Temperature measurement receiver.
      *
-     * @param device    {@link BluetoothDevice} Device that collected the measurement.
-     * @param temp      Measurement value.
-     * @param unit      Measurement unit.
+     * @param device    {@link BluetoothDevice} DeviceOB that collected the measurement.
+     * @param temp      MeasurementOB value.
+     * @param unit      MeasurementOB unit.
      * @param timestamp Datetime of collection.
      */
     void onMeasurementReceived(

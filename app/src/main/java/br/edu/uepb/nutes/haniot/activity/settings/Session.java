@@ -60,7 +60,7 @@ public class Session {
     /**
      * Retrieve the logged user
      *
-     * @return User
+     * @return UserOB
      */
     public User getUserLogged() {
         return Repository.getInstance(context).getUser(getIdLogged());
@@ -77,7 +77,7 @@ public class Session {
     }
 
     /**
-     * User it is logged?
+     * UserOB it is logged?
      *
      * @return boolean
      */

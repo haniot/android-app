@@ -6,8 +6,8 @@ import android.support.annotation.NonNull;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.App;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.User;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.User_;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.UserOB;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.UserOB_;
 import io.objectbox.Box;
 import io.objectbox.BoxStore;
 
@@ -19,7 +19,7 @@ import io.objectbox.BoxStore;
 public class UserDAO {
 
     public static UserDAO instance;
-    private static Box<User> userBox;
+    private static Box<UserOB> userBox;
 
     private UserDAO() {
     }
@@ -28,7 +28,7 @@ public class UserDAO {
         if (instance == null) instance = new UserDAO();
 
         BoxStore boxStore = ((App) context.getApplicationContext()).getBoxStore();
-        userBox = boxStore.boxFor(User.class);
+        userBox = boxStore.boxFor(UserOB.class);
 
         return instance;
     }
@@ -37,23 +37,23 @@ public class UserDAO {
      * get user for _id.
      *
      * @param _id String
-     * @return User
+     * @return UserOB
      */
-    public User get(@NonNull String _id) {
-        return userBox.query().equal(User_._id, _id).build().findFirst();
+    public UserOB get(@NonNull String _id) {
+        return userBox.query().equal(UserOB_._id, _id).build().findFirst();
     }
 
     /**
      * Selects user based on local id
      *
      * @param id long
-     * @return User
+     * @return UserOB
      */
-    public User get(@NonNull long id) {
-        return userBox.query().equal(User_.id, id).build().findFirst();
+    public UserOB get(@NonNull long id) {
+        return userBox.query().equal(UserOB_.id, id).build().findFirst();
     }
 
-    public List<User> listAll() {
+    public List<UserOB> listAll() {
         return null;
     }
 
@@ -63,7 +63,7 @@ public class UserDAO {
      * @param user
      * @return boolean
      */
-    public boolean save(@NonNull User user) {
+    public boolean save(@NonNull UserOB user) {
         return userBox.put(user) > 0;
     }
 
@@ -73,8 +73,8 @@ public class UserDAO {
      * @param user
      * @return boolean
      */
-    public boolean update(@NonNull User user) {
-        User userUp = get(user.get_id());
+    public boolean update(@NonNull UserOB user) {
+        UserOB userUp = get(user.get_id());
         /**
          * Id is required for an update
          * Otherwise it will be an insert
@@ -94,7 +94,7 @@ public class UserDAO {
      * @return boolean
      */
     public boolean remove(@NonNull long id) {
-        return userBox.query().equal(User_.id, id).build().remove() > 0;
+        return userBox.query().equal(UserOB_.id, id).build().remove() > 0;
     }
 
 
@@ -105,6 +105,6 @@ public class UserDAO {
      * @return boolean
      */
     public boolean remove(@NonNull String id) {
-        return userBox.query().equal(User_._id, id).build().remove() > 0;
+        return userBox.query().equal(UserOB_._id, id).build().remove() > 0;
     }
 }

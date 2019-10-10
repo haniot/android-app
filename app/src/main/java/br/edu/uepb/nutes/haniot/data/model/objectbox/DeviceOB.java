@@ -4,74 +4,59 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
 import java.util.Objects;
 
+import br.edu.uepb.nutes.haniot.data.model.model.Device;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.annotation.Index;
 import io.objectbox.annotation.Transient;
 
 /**
- * Represents Device object.
+ * Represents DeviceOB object.
  *
  * @author Copyright (c) 2019, NUTES/UEPB
  */
 @Entity
-public class Device implements Parcelable {
+public class DeviceOB implements Parcelable {
     @Id
-    @Expose(serialize = false, deserialize = false)
     private long id;
 
     @Index
-    @SerializedName("id")
-    @Expose()
     private String _id; // _id in server remote (UUID)
 
-    @SerializedName("name")
-    @Expose()
     private String name;
 
-    @SerializedName("address")
-    @Expose()
     private String address; // MAC address
 
-    @SerializedName("type")
-    @Expose()
     private String type;
 
-    @SerializedName("model_number")
-    @Expose()
     private String modelNumber;
 
-    @SerializedName("manufacturer")
-    @Expose()
     private String manufacturer;
 
-    @SerializedName("user_id")
-    @Expose()
     private String userId;
 
-    @Expose(serialize = false, deserialize = false)
     @Transient // not persisted
     private String uuid;
 
-    @Expose(serialize = false, deserialize = false)
     @Transient // not persisted
     private int img;
 
-//    public Device() {
-//    }
-
-    public Device(br.edu.uepb.nutes.haniot.data.model.model.Device d) {
-        this(d.getName(), d.getManufacturer(), d.getModelNumber(), d.getImg(), d.getType(), d.getUuid());
+    public DeviceOB(Device d) {
+        this.setId(d.getId());
+        this.set_id(d.get_id());
+        this.setName(d.getName());
+        this.setAddress(d.getAddress());
+        this.setType(d.getType());
+        this.setModelNumber(d.getModelNumber());
+        this.setManufacturer(d.getManufacturer());
+        this.setUserId(d.getUserId());
+        this.setUuid(d.getUuid());
+        this.setImg(d.getImg());
     }
 
-    public Device(String name, String manufacturer, String modelNumber, int img, String type, String uuid) {
+    public DeviceOB(String name, String manufacturer, String modelNumber, int img, String type, String uuid) {
         this.name = name;
         this.manufacturer = manufacturer;
         this.modelNumber = modelNumber;
@@ -80,7 +65,7 @@ public class Device implements Parcelable {
         this.uuid = uuid;
     }
 
-    protected Device(Parcel in) {
+    protected DeviceOB(Parcel in) {
         id = in.readLong();
         _id = in.readString();
         name = in.readString();
@@ -112,15 +97,15 @@ public class Device implements Parcelable {
         return 0;
     }
 
-    public static final Creator<Device> CREATOR = new Creator<Device>() {
+    public static final Creator<DeviceOB> CREATOR = new Creator<DeviceOB>() {
         @Override
-        public Device createFromParcel(Parcel in) {
-            return new Device(in);
+        public DeviceOB createFromParcel(Parcel in) {
+            return new DeviceOB(in);
         }
 
         @Override
-        public Device[] newArray(int size) {
-            return new Device[size];
+        public DeviceOB[] newArray(int size) {
+            return new DeviceOB[size];
         }
     };
 
@@ -211,26 +196,16 @@ public class Device implements Parcelable {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof Device)) return false;
+        if (!(o instanceof DeviceOB)) return false;
 
-        Device other = (Device) o;
+        DeviceOB other = (DeviceOB) o;
         return this.type.equals(other.type);
-    }
-
-    /**
-     * Convert object to json format.
-     *
-     * @return String
-     */
-    public String toJson() {
-        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-        return gson.toJson(this);
     }
 
     @NonNull
     @Override
     public String toString() {
-        return "Device{" +
+        return "DeviceOB{" +
                 "id=" + id +
                 ", _id='" + _id + '\'' +
                 ", name='" + name + '\'' +

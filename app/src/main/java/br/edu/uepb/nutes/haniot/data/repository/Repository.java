@@ -70,7 +70,7 @@ public class Repository {
     /**
      * Adds a new device to the database.
      *
-     * @param device Device
+     * @param device DeviceOB
      * @return boolean
      */
     public boolean saveDevice(@NonNull Device device) {
@@ -79,7 +79,7 @@ public class Repository {
 
 
     /**
-     * Select a Device according to id.
+     * Select a DeviceOB according to id.
      *
      * @param id long
      * @return Object
@@ -89,7 +89,7 @@ public class Repository {
     }
 
     /**
-     * Select a Device according to address and userId.
+     * Select a DeviceOB according to address and userId.
      *
      * @param address String
      * @param userId  long
@@ -104,7 +104,7 @@ public class Repository {
      *
      * @param userId {@link String}
      * @param type   {@link String}
-     * @return Device
+     * @return DeviceOB
      */
     public Device getDeviceByType(@NonNull String userId, String type) {
         return Convert.deviceToModel(deviceDAO.getByType(userId, type));
@@ -124,7 +124,7 @@ public class Repository {
      * Update device.
      * According to your _id and _id user provided by the remote server.
      *
-     * @param device Device
+     * @param device DeviceOB
      * @return boolean
      */
     public boolean updateDevice(@NonNull Device device) {
@@ -134,7 +134,7 @@ public class Repository {
     /**
      * Removes device passed as parameter.
      *
-     * @param device Device
+     * @param device DeviceOB
      * @return boolean
      */
     public boolean removeDevice(@NonNull Device device) {
@@ -176,27 +176,27 @@ public class Repository {
     // ------------- Feeding Habits DAO ---------------------
 
 
-    //    Search FeedingHabitsRecord by id
+    //    Search FeedingHabitsRecordOB by id
     public FeedingHabitsRecord getFeedingHabitsRecordFromPatientId(@NonNull String _id) {
         return Convert.feedingHabitsRecordToModel(feedingHabitsDAO.getFromPatientId(_id));
     }
 
-    //    get all FeedingHabitsRecord on database
+    //    get all FeedingHabitsRecordOB on database
     public List<FeedingHabitsRecord> getFeedingHabitsRecord() {
         return Convert.listFeedingHabitsRecordToModel(feedingHabitsDAO.get());
     }
 
-    //    save FeedingHabitsRecord
+    //    save FeedingHabitsRecordOB
     public boolean saveFeedingHabitsRecord(@NonNull FeedingHabitsRecord feedingHabitsRecord) {
         return feedingHabitsDAO.save(Convert.feedingHabitsRecordToObjectBox(feedingHabitsRecord));
     }
 
-    //    update FeedingHabitsRecord
+    //    update FeedingHabitsRecordOB
     public boolean updateFeedingHabitsRecord(@NonNull FeedingHabitsRecord feedingHabitsRecord) {
         return feedingHabitsDAO.update(Convert.feedingHabitsRecordToObjectBox(feedingHabitsRecord));
     }
 
-    //    remove FeedingHabitsRecord
+    //    remove FeedingHabitsRecordOB
     public boolean removeFeedingHabitsRecord(@NonNull FeedingHabitsRecord feedingHabitsRecord) {
         return feedingHabitsDAO.remove(Convert.feedingHabitsRecordToObjectBox(feedingHabitsRecord));
     }
@@ -271,7 +271,7 @@ public class Repository {
      * @param userId long
      * @param offset int
      * @param limit  int
-     * @return List<Measurement>
+     * @return List<MeasurementOB>
      */
     public List<Measurement> listMeasurements(@NonNull long userId, @NonNull int offset, @NonNull int limit) {
         return Convert.listMeasurementsToModel(measurementDAO.list(userId, offset, limit));
@@ -284,7 +284,7 @@ public class Repository {
      * @param userId long
      * @param offset int
      * @param limit  int
-     * @return List<Measurement>
+     * @return List<MeasurementOB>
      */
     public List<Measurement> listMeasurements(@NonNull String type, @NonNull String userId, @NonNull int offset, @NonNull int limit) {
         return Convert.listMeasurementsToModel(measurementDAO.list(type, userId, offset, limit));
@@ -297,7 +297,7 @@ public class Repository {
      * @param userId   long
      * @param offset   int
      * @param limit    int
-     * @return List<Measurement>
+     * @return List<MeasurementOB>
      */
     public List<Measurement> listMeasurements(@NonNull long deviceId, @NonNull long userId, @NonNull int offset, @NonNull int limit) {
         return Convert.listMeasurementsToModel(measurementDAO.list(deviceId, userId, offset, limit));
@@ -307,7 +307,7 @@ public class Repository {
      * Select all measurements of a user that were not sent to the remote server.
      *
      * @param userId long
-     * @return List<Measurement>
+     * @return List<MeasurementOB>
      */
     public List<Measurement> getNotSentMeasurement(@NonNull long userId) {
         return Convert.listMeasurementsToModel(measurementDAO.getNotSent(userId));
@@ -315,27 +315,27 @@ public class Repository {
 
     // ---------- MEDICAL RECORD DAO ----------------
 
-    //    Search FeedingHabitsRecord by id
+    //    Search FeedingHabitsRecordOB by id
     public MedicalRecord getMedicalRecordFromPatientId(@NonNull String _id) {
         return Convert.medicalRecordToModel(medicalRecordDAO.getFromPatientId(_id));
     }
 
-    //    get all FeedingHabitsRecord on database
+    //    get all FeedingHabitsRecordOB on database
     public List<MedicalRecord> getMedicalRecord() {
         return Convert.listMedicalRecordsToModel(medicalRecordDAO.get());
     }
 
-    //    save FeedingHabitsRecord
+    //    save FeedingHabitsRecordOB
     public boolean saveMedicalRecord(@NonNull MedicalRecord medicalRecord) {
         return medicalRecordDAO.save(Convert.medicalRecordToObjectBox(medicalRecord));
     }
 
-    //    update FeedingHabitsRecord
+    //    update FeedingHabitsRecordOB
     public boolean updateMedicalRecord(@NonNull MedicalRecord medicalRecord) {
         return medicalRecordDAO.update(Convert.medicalRecordToObjectBox(medicalRecord));
     }
 
-    //    remove FeedingHabitsRecord
+    //    remove FeedingHabitsRecordOB
     public boolean removeMedicalRecord(@NonNull MedicalRecord medicalRecord) {
         return medicalRecordDAO.remove(Convert.medicalRecordToObjectBox(medicalRecord));
     }
@@ -373,27 +373,27 @@ public class Repository {
     // ------------ PHYSICAL ACTIVITY HABITS DAO -----------
 
 
-    //    Search FeedingHabitsRecord by id
+    //    Search FeedingHabitsRecordOB by id
     public PhysicalActivityHabit getPhysicalActivityHabitFromPatientId(@NonNull String _id) {
         return Convert.physicalActivityHabitToModel(physicalActivityHabitsDAO.getFromPatientId(_id));
     }
 
-    //    get all FeedingHabitsRecord on database
+    //    get all FeedingHabitsRecordOB on database
     public List<PhysicalActivityHabit> getPhysicalActivityHabits() {
         return Convert.listPhysicalActivityHabitToModel(physicalActivityHabitsDAO.get());
     }
 
-    //    save FeedingHabitsRecord
+    //    save FeedingHabitsRecordOB
     public boolean savePhysicalActivityHabit(@NonNull PhysicalActivityHabit physicalActivityHabit) {
         return physicalActivityHabitsDAO.save(Convert.physicalActivityHabitToObjectBox(physicalActivityHabit));
     }
 
-    //    update FeedingHabitsRecord
+    //    update FeedingHabitsRecordOB
     public boolean updatePhysicalActivityHabit(@NonNull PhysicalActivityHabit physicalActivityHabit) {
         return physicalActivityHabitsDAO.update(Convert.physicalActivityHabitToObjectBox(physicalActivityHabit));
     }
 
-    //    remove FeedingHabitsRecord
+    //    remove FeedingHabitsRecordOB
     public boolean removePhysicalActivityHabit(@NonNull PhysicalActivityHabit physicalActivityHabit) {
         return physicalActivityHabitsDAO.remove(Convert.physicalActivityHabitToObjectBox(physicalActivityHabit));
     }
@@ -438,27 +438,27 @@ public class Repository {
 
     // --------------- SLEEP HABITS DAO --------------------
 
-    //    Search FeedingHabitsRecord by id
+    //    Search FeedingHabitsRecordOB by id
     public SleepHabit getSleepHabitsFromPatientId(@NonNull String _id) {
         return Convert.sleepHabitsToModel(sleepHabitsDAO.getFromPatientId(_id));
     }
 
-    //    get all FeedingHabitsRecord on database
+    //    get all FeedingHabitsRecordOB on database
     public List<SleepHabit> getSleepHabits() {
         return Convert.listSleepHabitsToModel(sleepHabitsDAO.get());
     }
 
-    //    save FeedingHabitsRecord
+    //    save FeedingHabitsRecordOB
     public boolean saveSleepHabits(@NonNull SleepHabit sleepHabit) {
         return sleepHabitsDAO.save(Convert.sleepHabitsToObjectBox(sleepHabit));
     }
 
-    //    update FeedingHabitsRecord
+    //    update FeedingHabitsRecordOB
     public boolean updateSleepHabits(@NonNull SleepHabit sleepHabit) {
         return sleepHabitsDAO.update(Convert.sleepHabitsToObjectBox(sleepHabit));
     }
 
-    //    remove FeedingHabitsRecord
+    //    remove FeedingHabitsRecordOB
     public boolean removeSleepHabits(@NonNull SleepHabit sleepHabit) {
         return sleepHabitsDAO.remove(Convert.sleepHabitsToObjectBox(sleepHabit));
     }
@@ -469,7 +469,7 @@ public class Repository {
      * get user for _id.
      *
      * @param _id String
-     * @return User
+     * @return UserOB
      */
     public User getUser(@NonNull String _id) {
         return Convert.userToModel(userDAO.get(_id));
@@ -479,7 +479,7 @@ public class Repository {
      * Selects user based on local id
      *
      * @param id long
-     * @return User
+     * @return UserOB
      */
     public User getUser(@NonNull long id) {
         return Convert.userToModel(userDAO.get(id));

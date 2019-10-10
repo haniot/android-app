@@ -8,8 +8,8 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import br.edu.uepb.nutes.haniot.App;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.PilotStudy;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.PilotStudy_;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.PilotStudyOB;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.PilotStudyOB_;
 import io.objectbox.Box;
 import io.objectbox.BoxStore;
 
@@ -20,7 +20,7 @@ import io.objectbox.BoxStore;
  */
 public class PilotStudyDAO {
     public static PilotStudyDAO instance;
-    private static Box<PilotStudy> pilotBox;
+    private static Box<PilotStudyOB> pilotBox;
 
     private PilotStudyDAO() {
     }
@@ -29,30 +29,30 @@ public class PilotStudyDAO {
         if (instance == null) instance = new PilotStudyDAO();
 
         BoxStore boxStore = ((App) context.getApplicationContext()).getBoxStore();
-        pilotBox = boxStore.boxFor(PilotStudy.class);
+        pilotBox = boxStore.boxFor(PilotStudyOB.class);
 
         return instance;
     }
 
-    public PilotStudy get(long id) {
-        return pilotBox.query().equal(PilotStudy_.id, id).build().findFirst();
+    public PilotStudyOB get(long id) {
+        return pilotBox.query().equal(PilotStudyOB_.id, id).build().findFirst();
     }
 
-    public PilotStudy get(@NonNull String _id) {
-        return pilotBox.query().equal(PilotStudy_._id, _id).build().findFirst();
+    public PilotStudyOB get(@NonNull String _id) {
+        return pilotBox.query().equal(PilotStudyOB_._id, _id).build().findFirst();
     }
 
-    public List<PilotStudy> list(String userId) {
-        return pilotBox.query().equal(PilotStudy_.userId, userId).build().find();
+    public List<PilotStudyOB> list(String userId) {
+        return pilotBox.query().equal(PilotStudyOB_.userId, userId).build().find();
     }
 
-    public boolean save(@NonNull PilotStudy PilotStudy) {
+    public boolean save(@NonNull PilotStudyOB PilotStudy) {
         return pilotBox.put(PilotStudy) > 0;
     }
 
-    public boolean update(@NonNull PilotStudy PilotStudy) {
+    public boolean update(@NonNull PilotStudyOB PilotStudy) {
         if (PilotStudy.getId() == 0) {
-            PilotStudy PilotStudyUp = get(PilotStudy.get_id());
+            PilotStudyOB PilotStudyUp = get(PilotStudy.get_id());
 
             if (PilotStudyUp == null) return false;
 
@@ -63,21 +63,21 @@ public class PilotStudyDAO {
     }
 
     public void clearSelected(@NonNull String userId) {
-        for (PilotStudy pilot : list(userId)) {
+        for (PilotStudyOB pilot : list(userId)) {
             pilot.setSelected(false);
             update(pilot);
         }
     }
 
-    public boolean remove(@NonNull PilotStudy PilotStudy) {
-        return pilotBox.query().equal(PilotStudy_.id, PilotStudy.getId()).build().remove() > 0;
+    public boolean remove(@NonNull PilotStudyOB PilotStudy) {
+        return pilotBox.query().equal(PilotStudyOB_.id, PilotStudy.getId()).build().remove() > 0;
     }
 
     public boolean remove(@NonNull String _id) {
-        return pilotBox.query().equal(PilotStudy_._id, _id).build().remove() > 0;
+        return pilotBox.query().equal(PilotStudyOB_._id, _id).build().remove() > 0;
     }
 
     public boolean removeAll(@NonNull String userId) {
-        return pilotBox.query().equal(PilotStudy_.userId, userId).build().remove() > 0;
+        return pilotBox.query().equal(PilotStudyOB_.userId, userId).build().remove() > 0;
     }
 }

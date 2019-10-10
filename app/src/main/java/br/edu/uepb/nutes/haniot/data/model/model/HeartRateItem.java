@@ -10,7 +10,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.Objects;
 
 /**
- * Represents Object of a HeartRateItem.
+ * Represents Object of a HeartRateItemOB.
  *
  * @author Copyright (c) 2019, NUTES/UEPB
  */
@@ -113,7 +113,7 @@ public class HeartRateItem implements Parcelable {
     @NonNull
     @Override
     public String toString() {
-        return "HeartRateItem{" +
+        return "HeartRateItemOB{" +
                 super.toString() + '\'' +
                 "value=" + value +
                 ", timestamp='" + timestamp + '\'' +

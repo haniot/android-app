@@ -1,45 +1,27 @@
 package br.edu.uepb.nutes.haniot.data.model.objectbox;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
 import java.util.Objects;
 
 import io.objectbox.annotation.Id;
 
-public class NutritionalQuestionnaire {
+public class NutritionalQuestionnaireOB {
 
     @Id
-    @Expose(deserialize = false, serialize = false)
     private long id;
 
-    @SerializedName("id")
-    @Expose()
     private String _id;
 
-    @SerializedName("created_at")
-    @Expose()
     String createdAt;
 
-    @SerializedName("sleep_habit")
-    @Expose()
-    SleepHabit sleepHabit;
+    SleepHabitOB sleepHabit;
 
-    @SerializedName("physical_activity_habits")
-    @Expose()
-    PhysicalActivityHabit physicalActivityHabit;
+    PhysicalActivityHabitOB physicalActivityHabit;
 
-    @SerializedName("feeding_habits_record")
-    @Expose()
-    FeedingHabitsRecord feedingHabitsRecord;
+    FeedingHabitsRecordOB feedingHabitsRecord;
 
-    @SerializedName("medical_record")
-    @Expose()
-    MedicalRecord medicalRecord;
+    MedicalRecordOB medicalRecord;
 
-    public NutritionalQuestionnaire() {
+    public NutritionalQuestionnaireOB() {
     }
 
     public long getId() {
@@ -66,51 +48,51 @@ public class NutritionalQuestionnaire {
         this.createdAt = createdAt;
     }
 
-    public SleepHabit getSleepHabit() {
+    public SleepHabitOB getSleepHabit() {
         return sleepHabit;
     }
 
-    public void setSleepHabit(SleepHabit sleepHabit) {
+    public void setSleepHabit(SleepHabitOB sleepHabit) {
         this.sleepHabit = sleepHabit;
     }
 
-    public PhysicalActivityHabit getPhysicalActivityHabit() {
+    public PhysicalActivityHabitOB getPhysicalActivityHabit() {
         return physicalActivityHabit;
     }
 
-    public void setPhysicalActivityHabit(PhysicalActivityHabit physicalActivityHabit) {
+    public void setPhysicalActivityHabit(PhysicalActivityHabitOB physicalActivityHabit) {
         this.physicalActivityHabit = physicalActivityHabit;
     }
 
-    public FeedingHabitsRecord getFeedingHabitsRecord() {
+    public FeedingHabitsRecordOB getFeedingHabitsRecord() {
         return feedingHabitsRecord;
     }
 
-    public void setFeedingHabitsRecord(FeedingHabitsRecord feedingHabitsRecord) {
+    public void setFeedingHabitsRecord(FeedingHabitsRecordOB feedingHabitsRecord) {
         this.feedingHabitsRecord = feedingHabitsRecord;
     }
 
-    public MedicalRecord getMedicalRecord() {
+    public MedicalRecordOB getMedicalRecord() {
         return medicalRecord;
     }
 
-    public void setMedicalRecord(MedicalRecord medicalRecord) {
+    public void setMedicalRecord(MedicalRecordOB medicalRecord) {
         this.medicalRecord = medicalRecord;
     }
 
-    /**
-     * Convert object to json format.
-     *
-     * @return String
-     */
-    public String toJson() {
-        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-        return gson.toJson(this);
-    }
+//    /**
+//     * Convert object to json format.
+//     *
+//     * @return String
+//     */
+//    public String toJson() {
+//        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+//        return gson.toJson(this);
+//    }
 
     @Override
     public String toString() {
-        return "NutritionalQuestionnaire{" +
+        return "NutritionalQuestionnaireOB{" +
                 "id=" + id +
                 ", _id='" + _id + '\'' +
                 ", createdAt='" + createdAt + '\'' +
@@ -125,7 +107,7 @@ public class NutritionalQuestionnaire {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        NutritionalQuestionnaire that = (NutritionalQuestionnaire) o;
+        NutritionalQuestionnaireOB that = (NutritionalQuestionnaireOB) o;
         return Objects.equals(_id, that._id) &&
                 Objects.equals(createdAt, that.createdAt);
     }

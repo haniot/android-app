@@ -1,59 +1,35 @@
 package br.edu.uepb.nutes.haniot.data.model.objectbox;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 import io.objectbox.annotation.Id;
 
-public class NutritionalEvaluation {
+public class NutritionalEvaluationOB {
 
     @Id
-    @Expose(deserialize = false, serialize = false)
     private long id;
 
-    @SerializedName("id")
-    @Expose()
     private String _id;
 
-    @SerializedName("patient")
-    @Expose()
-    private Patient patient;
+    private PatientOB patientOB;
 
-    @SerializedName("health_professional_id")
-    @Expose()
     private String healthProfessionalId;
 
-    @SerializedName("pilotstudy_id")
-    @Expose()
     private String pilotStudy;
 
-    @SerializedName("measurements")
-    @Expose()
-    private List<Measurement> measurements;
+    private List<MeasurementOB> measurements;
 
-    @SerializedName("feeding_habits_record")
-    @Expose()
-    private FeedingHabitsRecord feedingHabits;
+    private FeedingHabitsRecordOB feedingHabits;
 
-    @SerializedName("sleep_habit")
-    @Expose()
-    private SleepHabit sleepHabits;
+    private SleepHabitOB sleepHabits;
 
-    @SerializedName("physical_activity_habits")
-    @Expose()
-    private PhysicalActivityHabit physicalActivityHabits;
+    private PhysicalActivityHabitOB physicalActivityHabits;
 
-    @SerializedName("medical_record")
-    @Expose()
-    private MedicalRecord medicalRecord;
+    private MedicalRecordOB medicalRecord;
 
-    public NutritionalEvaluation() {
+    public NutritionalEvaluationOB() {
     }
 
     public long getId() {
@@ -72,12 +48,12 @@ public class NutritionalEvaluation {
         this._id = _id;
     }
 
-    public Patient getPatient() {
-        return patient;
+    public PatientOB getPatientOB() {
+        return patientOB;
     }
 
-    public void setPatient(Patient patient) {
-        this.patient = patient;
+    public void setPatientOB(PatientOB patientOB) {
+        this.patientOB = patientOB;
     }
 
     public String getHealthProfessionalId() {
@@ -96,74 +72,74 @@ public class NutritionalEvaluation {
         this.pilotStudy = pilotStudy;
     }
 
-    public List<Measurement> getMeasurements() {
+    public List<MeasurementOB> getMeasurements() {
         return measurements;
     }
 
-    public void setMeasurements(List<Measurement> measurements) {
+    public void setMeasurements(List<MeasurementOB> measurements) {
         this.measurements = measurements;
     }
 
-    public FeedingHabitsRecord getFeedingHabits() {
+    public FeedingHabitsRecordOB getFeedingHabits() {
         return feedingHabits;
     }
 
-    public void setFeedingHabits(FeedingHabitsRecord feedingHabits) {
+    public void setFeedingHabits(FeedingHabitsRecordOB feedingHabits) {
         this.feedingHabits = feedingHabits;
     }
 
-    public SleepHabit getSleepHabits() {
+    public SleepHabitOB getSleepHabits() {
         return sleepHabits;
     }
 
-    public void setSleepHabits(SleepHabit sleepHabits) {
+    public void setSleepHabits(SleepHabitOB sleepHabits) {
         this.sleepHabits = sleepHabits;
     }
 
-    public PhysicalActivityHabit getPhysicalActivityHabits() {
+    public PhysicalActivityHabitOB getPhysicalActivityHabits() {
         return physicalActivityHabits;
     }
 
-    public void setPhysicalActivityHabits(PhysicalActivityHabit physicalActivityHabits) {
+    public void setPhysicalActivityHabits(PhysicalActivityHabitOB physicalActivityHabits) {
         this.physicalActivityHabits = physicalActivityHabits;
     }
 
-    public MedicalRecord getMedicalRecord() {
+    public MedicalRecordOB getMedicalRecord() {
         return medicalRecord;
     }
 
-    public void setMedicalRecord(MedicalRecord medicalRecord) {
+    public void setMedicalRecord(MedicalRecordOB medicalRecord) {
         this.medicalRecord = medicalRecord;
     }
 
-    public void addMeasuerement(Measurement measurement) {
+    public void addMeasuerement(MeasurementOB measurement) {
         if (measurements == null) measurements = new ArrayList<>();
 
         measurements.add(measurement);
     }
 
-    public void removeMeasuerement(Measurement measurement) {
+    public void removeMeasuerement(MeasurementOB measurement) {
         if (measurements == null) return;
 
         measurements.remove(measurement);
     }
 
-    /**
-     * Convert object to json format.
-     *
-     * @return String
-     */
-    public String toJson() {
-        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-        return gson.toJson(this);
-    }
+//    /**
+//     * Convert object to json format.
+//     *
+//     * @return String
+//     */
+//    public String toJson() {
+//        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+//        return gson.toJson(this);
+//    }
 
     @Override
     public String toString() {
-        return "NutritionalEvaluation{" +
+        return "NutritionalEvaluationOB{" +
                 "id=" + id +
                 ", _id='" + _id + '\'' +
-                ", patient=" + patient +
+                ", patientOB=" + patientOB +
                 ", healthProfessionalId='" + healthProfessionalId + '\'' +
                 ", pilotStudy='" + pilotStudy + '\'' +
                 ", measurements=" + measurements +
@@ -178,7 +154,7 @@ public class NutritionalEvaluation {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        NutritionalEvaluation that = (NutritionalEvaluation) o;
+        NutritionalEvaluationOB that = (NutritionalEvaluationOB) o;
         return Objects.equals(id, that.id);
     }
 

@@ -1,7 +1,7 @@
 package br.edu.uepb.nutes.haniot.data.model.objectbox;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+//import com.google.gson.annotations.Expose;
+//import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,38 +12,27 @@ import io.objectbox.annotation.Id;
 public class DentristEvaluationOB {
 
     @Id
-    @Expose(deserialize = false, serialize = false)
     private long id;
 
-    @SerializedName("id")
     private String _id;
 
-    @SerializedName("patient")
-    private Patient patient;
+    private PatientOB patientOB;
 
-    @SerializedName("health_professional_id")
     private String healthProfessionalId;
 
-    @SerializedName("pilotstudy_id")
     private String pilotStudy;
 
-    @SerializedName("measurements")
-    private List<Measurement> measurements;
+    private List<MeasurementOB> measurements;
 
-    @SerializedName("feeding_habits_record")
-    private FeedingHabitsRecord feedingHabits;
+    private FeedingHabitsRecordOB feedingHabits;
 
-    @SerializedName("sleep_habits")
-    private SleepHabit sleepHabits;
+    private SleepHabitOB sleepHabits;
 
-    @SerializedName("oral_health_record")
-    private OralHealthRecord oralHealthRecord;
+    private OralHealthRecordOB oralHealthRecord;
 
-    @SerializedName("family_cohesion_record")
-    private FamilyCohesionRecord familyCohesionRecord;
+    private FamilyCohesionRecordOB familyCohesionRecord;
 
-    @SerializedName("family_cohesion_record")
-    private SociodemographicRecord sociodemographicRecord;
+    private SociodemographicRecordOB sociodemographicRecord;
 
     public DentristEvaluationOB() {
     }
@@ -64,12 +53,12 @@ public class DentristEvaluationOB {
         this._id = _id;
     }
 
-    public Patient getPatient() {
-        return patient;
+    public PatientOB getPatientOB() {
+        return patientOB;
     }
 
-    public void setPatient(Patient patient) {
-        this.patient = patient;
+    public void setPatientOB(PatientOB patientOB) {
+        this.patientOB = patientOB;
     }
 
     public String getHealthProfessionalId() {
@@ -88,61 +77,61 @@ public class DentristEvaluationOB {
         this.pilotStudy = pilotStudy;
     }
 
-    public List<Measurement> getMeasurements() {
+    public List<MeasurementOB> getMeasurements() {
         return measurements;
     }
 
-    public void setMeasurements(List<Measurement> measurements) {
+    public void setMeasurements(List<MeasurementOB> measurements) {
         this.measurements = measurements;
     }
 
-    public FeedingHabitsRecord getFeedingHabits() {
+    public FeedingHabitsRecordOB getFeedingHabits() {
         return feedingHabits;
     }
 
-    public void setFeedingHabits(FeedingHabitsRecord feedingHabits) {
+    public void setFeedingHabits(FeedingHabitsRecordOB feedingHabits) {
         this.feedingHabits = feedingHabits;
     }
 
-    public SleepHabit getSleepHabits() {
+    public SleepHabitOB getSleepHabits() {
         return sleepHabits;
     }
 
-    public void setSleepHabits(SleepHabit sleepHabits) {
+    public void setSleepHabits(SleepHabitOB sleepHabits) {
         this.sleepHabits = sleepHabits;
     }
 
-    public OralHealthRecord getOralHealthRecord() {
+    public OralHealthRecordOB getOralHealthRecord() {
         return oralHealthRecord;
     }
 
-    public void setOralHealthRecord(OralHealthRecord oralHealthRecord) {
+    public void setOralHealthRecord(OralHealthRecordOB oralHealthRecord) {
         this.oralHealthRecord = oralHealthRecord;
     }
 
-    public FamilyCohesionRecord getFamilyCohesionRecord() {
+    public FamilyCohesionRecordOB getFamilyCohesionRecord() {
         return familyCohesionRecord;
     }
 
-    public void setFamilyCohesionRecord(FamilyCohesionRecord familyCohesionRecord) {
+    public void setFamilyCohesionRecord(FamilyCohesionRecordOB familyCohesionRecord) {
         this.familyCohesionRecord = familyCohesionRecord;
     }
 
-    public SociodemographicRecord getSociodemographicRecord() {
+    public SociodemographicRecordOB getSociodemographicRecord() {
         return sociodemographicRecord;
     }
 
-    public void setSociodemographicRecord(SociodemographicRecord sociodemographicRecord) {
+    public void setSociodemographicRecord(SociodemographicRecordOB sociodemographicRecord) {
         this.sociodemographicRecord = sociodemographicRecord;
     }
 
-    public void addMeasuerement(Measurement measurement) {
+    public void addMeasuerement(MeasurementOB measurement) {
         if (measurements == null) measurements = new ArrayList<>();
 
         measurements.add(measurement);
     }
 
-    public void removeMeasuerement(Measurement measurement) {
+    public void removeMeasuerement(MeasurementOB measurement) {
         if (measurements == null) return;
 
         measurements.remove(measurement);
@@ -153,7 +142,7 @@ public class DentristEvaluationOB {
         return "DentristEvaluation{" +
                 "id=" + id +
                 ", _id='" + _id + '\'' +
-                ", patient=" + patient +
+                ", patientOB=" + patientOB +
                 ", healthProfessionalId='" + healthProfessionalId + '\'' +
                 ", pilotStudy='" + pilotStudy + '\'' +
                 ", measurements=" + measurements +

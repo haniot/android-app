@@ -8,16 +8,14 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import br.edu.uepb.nutes.haniot.App;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.FeedingHabitsRecord;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.FeedingHabitsRecord_;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.PhysicalActivityHabit;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.PhysicalActivityHabit_;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.PhysicalActivityHabitOB;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.PhysicalActivityHabitOB_;
 import io.objectbox.Box;
 import io.objectbox.BoxStore;
 
 public class PhysicalActivityHabitsDAO {
     public static PhysicalActivityHabitsDAO instance;
-    private static Box<PhysicalActivityHabit> physicalActivityHabitBox;
+    private static Box<PhysicalActivityHabitOB> physicalActivityHabitBox;
 
     private PhysicalActivityHabitsDAO(){}
 
@@ -25,30 +23,30 @@ public class PhysicalActivityHabitsDAO {
         if (instance == null) instance = new PhysicalActivityHabitsDAO();
 
         BoxStore boxStore = ((App) context.getApplicationContext()).getBoxStore();
-        physicalActivityHabitBox = boxStore.boxFor(PhysicalActivityHabit.class);
+        physicalActivityHabitBox = boxStore.boxFor(PhysicalActivityHabitOB.class);
 
         return instance;
     }
 
-//    Search FeedingHabitsRecord by id
-    public PhysicalActivityHabit getFromPatientId(@NonNull String _id){
-        return physicalActivityHabitBox.query().equal(PhysicalActivityHabit_.patientId,_id).build().findFirst();
+//    Search FeedingHabitsRecordOB by id
+    public PhysicalActivityHabitOB getFromPatientId(@NonNull String _id){
+        return physicalActivityHabitBox.query().equal(PhysicalActivityHabitOB_.patientId,_id).build().findFirst();
     }
 
-//    get all FeedingHabitsRecord on database
-    public List<PhysicalActivityHabit> get(){
+//    get all FeedingHabitsRecordOB on database
+    public List<PhysicalActivityHabitOB> get(){
         return physicalActivityHabitBox.query().build().find();
     }
 
-//    save FeedingHabitsRecord
-    public boolean save(@NonNull PhysicalActivityHabit physicalActivityHabit){
+//    save FeedingHabitsRecordOB
+    public boolean save(@NonNull PhysicalActivityHabitOB physicalActivityHabit){
         return physicalActivityHabitBox.put(physicalActivityHabit) > 0;
     }
 
-//    update FeedingHabitsRecord
-    public boolean update(@NonNull PhysicalActivityHabit physicalActivityHabit){
+//    update FeedingHabitsRecordOB
+    public boolean update(@NonNull PhysicalActivityHabitOB physicalActivityHabit){
         if (physicalActivityHabit.getId() == 0){
-            PhysicalActivityHabit physicalActivityHabitRecordUp = getFromPatientId(physicalActivityHabit.getPatientId());
+            PhysicalActivityHabitOB physicalActivityHabitRecordUp = getFromPatientId(physicalActivityHabit.getPatientId());
 
             if (physicalActivityHabitRecordUp == null) return false;
 
@@ -58,9 +56,9 @@ public class PhysicalActivityHabitsDAO {
         return save(physicalActivityHabit);
     }
 
-//    remove FeedingHabitsRecord
-    public boolean remove (@NonNull PhysicalActivityHabit physicalActivityHabit){
-        return physicalActivityHabitBox.query().equal(PhysicalActivityHabit_.patientId,physicalActivityHabit.getId()).build().remove() > 0;
+//    remove FeedingHabitsRecordOB
+    public boolean remove (@NonNull PhysicalActivityHabitOB physicalActivityHabit){
+        return physicalActivityHabitBox.query().equal(PhysicalActivityHabitOB_.patientId,physicalActivityHabit.getId()).build().remove() > 0;
     }
 
 }

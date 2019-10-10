@@ -1,7 +1,7 @@
 package br.edu.uepb.nutes.haniot.activity.charts.base;
 
 /**
- * Info of Measurement.
+ * Info of MeasurementOB.
  *
  * @author Fábio Júnior <fabio.pequeno@nutes.uepb.edu.br>
  * @version 1.0

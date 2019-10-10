@@ -23,7 +23,7 @@ public class DeviceType {
      * Retrieve the mapped type name in resources.
      *
      * @param context {@link Context}
-     * @param type Measurement type
+     * @param type MeasurementOB type
      * @return String
      */
     public static String getString(Context context, String type) {

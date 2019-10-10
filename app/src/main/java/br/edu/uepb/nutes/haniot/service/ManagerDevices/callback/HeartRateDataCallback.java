@@ -7,8 +7,8 @@ public interface HeartRateDataCallback extends DeviceStatusCallback {
     /**
      * Heart rate measurement receiver.
      *
-     * @param device    {@link BluetoothDevice} Device that collected the measurement.
-     * @param heartRate Measurement value in bpm.
+     * @param device    {@link BluetoothDevice} DeviceOB that collected the measurement.
+     * @param heartRate MeasurementOB value in bpm.
      * @param timestamp Datetime of collection.
      */
     void onMeasurementReceived(

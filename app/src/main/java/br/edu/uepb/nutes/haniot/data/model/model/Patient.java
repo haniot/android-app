@@ -8,6 +8,8 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 
+import br.edu.uepb.nutes.haniot.data.model.objectbox.PatientOB;
+
 public class Patient extends User {
 
     @SerializedName("pilotstudy_id")
@@ -21,8 +23,12 @@ public class Patient extends User {
     @Expose(serialize = false, deserialize = false)
     private String healthProfessionalId;
 
-    public Patient() {
+    public Patient() { }
 
+    public Patient(PatientOB p) {
+        this.setPilotId(p.getPilotId());
+        this.setGender(p.getGender());
+        this.setHealthProfessionalId(p.getHealthProfessionalId());
     }
 
     public String getPilotId() {
@@ -64,7 +70,7 @@ public class Patient extends User {
      * Convert json to Object.
      *
      * @param json String
-     * @return Patient
+     * @return PatientOB
      */
     public static Patient jsonDeserialize(String json) {
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
@@ -75,7 +81,7 @@ public class Patient extends User {
 
     @Override
     public String toString() {
-        return "Patient{" +
+        return "PatientOB{" +
                 ", pilotId='" + pilotId + '\'' +
                 ", gender='" + gender + '\'' +
                 ", healthProfessionalId='" + healthProfessionalId + '\'' +

@@ -138,7 +138,7 @@ public class PilotStudy {
      * Convert json to Object.
      *
      * @param json String
-     * @return PilotStudy
+     * @return PilotStudyOB
      */
     @Nullable
     public static PilotStudy jsonDeserialize(String json) {
@@ -163,7 +163,7 @@ public class PilotStudy {
 
     @Override
     public String toString() {
-        return "PilotStudy{" +
+        return "PilotStudyOB{" +
                 "id=" + id +
                 ", _id='" + _id + '\'' +
                 ", name='" + name + '\'' +

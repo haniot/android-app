@@ -170,7 +170,7 @@ public class UserRegisterActivity extends AppCompatActivity {
 
         admin.setPhoneNumber(phoneEdittext.getText().toString());
         admin.setBirthDate(DateUtils.formatDate(myCalendar.getTimeInMillis(), "yyyy-MM-dd"));
-        Log.w("AAA", "editing Admin: " + admin.toJson());
+        Log.w("AAA", "editing AdminOB: " + admin.toJson());
         DisposableManager.add(haniotNetRepository.updateAdmin(admin).subscribe(admin1 -> {
             showMessage(R.string.update_success);
             finish();
@@ -275,7 +275,7 @@ public class UserRegisterActivity extends AppCompatActivity {
         DisposableManager.add(haniotNetRepository
                 .associatePatientToPilotStudy(userLogged.getPilotStudyIDSelected(), patient.get_id())
                 .subscribe(o -> {
-                    Log.w(TAG, "Patient associated to pilotstudy");
+                    Log.w(TAG, "PatientOB associated to pilotstudy");
                     mRepository.savePatient(patient);
                     appPreferencesHelper.saveLastPatient(patient);
                     if (appPreferencesHelper.getUserLogged().getUserType().equals(HEALTH_PROFESSIONAL)) {

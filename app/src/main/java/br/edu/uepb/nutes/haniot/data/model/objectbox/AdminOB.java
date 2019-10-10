@@ -1,46 +1,34 @@
 package br.edu.uepb.nutes.haniot.data.model.objectbox;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
-import br.edu.uepb.nutes.haniot.data.model.objectbox.User;
 import io.objectbox.annotation.Entity;
 
 /**
- * Represents User object.
+ * Represents UserOB object.
  *
  * @author Copyright (c) 2019, NUTES/UEPB
  */
 @Entity
-public class Admin extends User {
+public class AdminOB extends UserOB {
 
-    @SerializedName("total_pilot_studies")
-    @Expose()
     private String totalPilotStudies;
 
-    @SerializedName("total_patients")
-    @Expose()
     private String totalPatients;
 
-    @SerializedName("total_health_professionals")
-    @Expose()
     private String totalHealthProfessionals;
 
-    @SerializedName("total_admins")
-    @Expose()
     private String totalAdmins;
 
-    public Admin() {
+    public AdminOB() {
     }
 
-    public Admin(String totalPilotStudies, String totalPatients, String totalHealthProfessionals, String totalAdmins) {
+    public AdminOB(String totalPilotStudies, String totalPatients, String totalHealthProfessionals, String totalAdmins) {
         this.totalPilotStudies = totalPilotStudies;
         this.totalPatients = totalPatients;
         this.totalHealthProfessionals = totalHealthProfessionals;
         this.totalAdmins = totalAdmins;
     }
 
-    public Admin(String email, String password, String totalPilotStudies, String totalPatients, String totalHealthProfessionals, String totalAdmins) {
+    public AdminOB(String email, String password, String totalPilotStudies, String totalPatients, String totalHealthProfessionals, String totalAdmins) {
         super(email, password);
         this.totalPilotStudies = totalPilotStudies;
         this.totalPatients = totalPatients;
@@ -48,7 +36,7 @@ public class Admin extends User {
         this.totalAdmins = totalAdmins;
     }
 
-    public Admin(String _id, String oldPassword, String newPassword, String totalPilotStudies, String totalPatients, String totalHealthProfessionals, String totalAdmins) {
+    public AdminOB(String _id, String oldPassword, String newPassword, String totalPilotStudies, String totalPatients, String totalHealthProfessionals, String totalAdmins) {
         super(_id, oldPassword, newPassword);
         this.totalPilotStudies = totalPilotStudies;
         this.totalPatients = totalPatients;
@@ -90,7 +78,7 @@ public class Admin extends User {
 
     @Override
     public String toString() {
-        return "Admin{" +
+        return "AdminOB{" +
                 "totalPilotStudies='" + totalPilotStudies + '\'' +
                 ", totalPatients='" + totalPatients + '\'' +
                 ", totalHealthProfessionals='" + totalHealthProfessionals + '\'' +

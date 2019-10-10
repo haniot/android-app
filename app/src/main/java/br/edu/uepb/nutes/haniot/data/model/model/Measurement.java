@@ -12,8 +12,10 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 import java.util.Objects;
 
+import br.edu.uepb.nutes.haniot.data.model.objectbox.MeasurementOB;
+
 /**
- * Represents Object of a Measurement.
+ * Represents Object of a MeasurementOB.
  *
  * @author Copyright (c) 2019, NUTES/UEPB
  */
@@ -52,18 +54,15 @@ public class Measurement implements Parcelable {
 
     @SerializedName("fat")
     @Expose()
-//    @Transient()
-    private BodyFat fat; // not persisted in ObjectBox
+    private BodyFat fat;
 
     @SerializedName("dataset")
     @Expose()
-//    @Transient()
-    private List<HeartRateItem> dataset; // not persisted in ObjectBox
+    private List<HeartRateItem> dataset;
 
     @SerializedName("bodyfat")
     @Expose()
-//    @Transient()
-    private List<BodyFat> bodyFat; // not persisted in ObjectBox
+    private List<BodyFat> bodyFat;
 
     @SerializedName("systolic")
     @Expose()
@@ -81,16 +80,17 @@ public class Measurement implements Parcelable {
     @Expose()
     private String meal;
 
-    // RELATIONS ObjectBox
-    @Expose(serialize = false, deserialize = false)
-//    @Backlink(to = "heartRate")
-//    private ToMany<HeartRateItem> datasetDB;
-    private List<HeartRateItem> datasetDB;
-
-    @Expose(serialize = false, deserialize = false)
-    private BodyFat bodyFatDB;
+//    @Expose(serialize = false, deserialize = false)
+//    private List<HeartRateItem> datasetDB;
+//
+//    @Expose(serialize = false, deserialize = false)
+//    private BodyFat bodyFatDB;
 
     public Measurement() {
+    }
+
+    public Measurement(MeasurementOB m) {
+
     }
 
     protected Measurement(Parcel in) {
@@ -257,14 +257,14 @@ public class Measurement implements Parcelable {
         this.meal = meal;
     }
 
-    public List<HeartRateItem> getDatasetDB() {
-        return datasetDB;
-    }
+//    public List<HeartRateItem> getDatasetDB() {
+//        return datasetDB;
+//    }
 
-    public void setDatasetDB(List<HeartRateItem> datasetDB) {
-        this.getDatasetDB().clear();
-        this.getDatasetDB().addAll(datasetDB);
-    }
+//    public void setDatasetDB(List<HeartRateItem> datasetDB) {
+//        this.getDatasetDB().clear();
+//        this.getDatasetDB().addAll(datasetDB);
+//    }
 
     public List<BodyFat> getBodyFat() {
         return bodyFat;
@@ -274,13 +274,13 @@ public class Measurement implements Parcelable {
         this.bodyFat = bodyFat;
     }
 
-    public BodyFat getBodyFatDB() {
-        return bodyFatDB;
-    }
-
-    public void setBodyFatDB(BodyFat bodyFatDB) {
-        this.bodyFatDB = bodyFatDB;
-    }
+//    public BodyFat getBodyFatDB() {
+//        return bodyFatDB;
+//    }
+//
+//    public void setBodyFatDB(BodyFat bodyFatDB) {
+//        this.bodyFatDB = bodyFatDB;
+//    }
 
     @Override
     public int hashCode() {
@@ -308,7 +308,7 @@ public class Measurement implements Parcelable {
     @NonNull
     @Override
     public String toString() {
-        return "Measurement{" +
+        return "MeasurementOB{" +
                 "id=" + id +
                 ", _id='" + _id + '\'' +
                 ", value=" + value +

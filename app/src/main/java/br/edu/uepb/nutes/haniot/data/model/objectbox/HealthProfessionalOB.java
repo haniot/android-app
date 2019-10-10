@@ -1,27 +1,20 @@
 package br.edu.uepb.nutes.haniot.data.model.objectbox;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
 import io.objectbox.annotation.Entity;
 
 /**
- * Represents User object.
+ * Represents UserOB object.
  *
  * @author Copyright (c) 2019, NUTES/UEPB
  */
 @Entity
-public class HealthProfessional extends User {
+public class HealthProfessionalOB extends UserOB {
 
-    @SerializedName("total_pilot_studies")
-    @Expose()
     private String totalPilotStudies;
 
-    @SerializedName("total_patients")
-    @Expose()
     private String totalPatients;
 
-    public HealthProfessional() {
+    public HealthProfessionalOB() {
     }
 
     public String getTotalPilotStudies() {

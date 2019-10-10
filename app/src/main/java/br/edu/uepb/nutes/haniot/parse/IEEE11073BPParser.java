@@ -119,7 +119,7 @@ public class IEEE11073BPParser {
         }
 
         /**
-         * Device timestamp
+         * DeviceOB timestamp
          */
         timestamp.set(
                 Integer.valueOf(year),

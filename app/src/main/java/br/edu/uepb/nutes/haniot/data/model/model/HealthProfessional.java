@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Represents User object.
+ * Represents UserOB object.
  *
  * @author Copyright (c) 2019, NUTES/UEPB
  */

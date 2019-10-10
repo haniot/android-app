@@ -35,7 +35,7 @@ public class OralHealthRecord {
 
 //    @Expose(serialize = false, deserialize = false)
 //    @Backlink(to = "oralHealthRecord")
-//    private ToMany<ToothLesion> toothLesionsDB;
+//    private ToMany<ToothLesionOB> toothLesionsDB;
 
     public long getId() {
         return id;
@@ -77,11 +77,11 @@ public class OralHealthRecord {
         this.toothLesions = toothLesions;
     }
 
-//    public ToMany<ToothLesion> getToothLesionsDB() {
+//    public ToMany<ToothLesionOB> getToothLesionsDB() {
 //        return toothLesionsDB;
 //    }
 //
-//    public void setToothLesionsDB(ToMany<ToothLesion> toothLesionsDB) {
+//    public void setToothLesionsDB(ToMany<ToothLesionOB> toothLesionsDB) {
 //        this.toothLesionsDB = toothLesionsDB;
 //    }
 
@@ -105,7 +105,7 @@ public class OralHealthRecord {
 
     @Override
     public String toString() {
-        return "OralHealthRecord{" +
+        return "OralHealthRecordOB{" +
                 "id=" + id +
                 ", _id='" + _id + '\'' +
                 ", patientId='" + patientId + '\'' +

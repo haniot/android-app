@@ -97,7 +97,7 @@ public class MeasurementLastResponse {
      * Convert json to Object.
      *
      * @param json String
-     * @return Patient
+     * @return PatientOB
      */
     public static Patient jsonDeserialize(String json) {
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();

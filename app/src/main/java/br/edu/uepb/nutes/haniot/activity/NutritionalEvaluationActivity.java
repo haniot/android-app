@@ -115,7 +115,7 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
     }
 
     /**
-     * Initialize NutritionalEvaluation recyclerview.
+     * Initialize NutritionalEvaluationOB recyclerview.
      */
     private void initRecyclerView() {
         evaluationAdapter = new EvaluationAdapter(groupItemEvaluations, this);
@@ -397,7 +397,7 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
     }
 
     /**
-     * Prepare measurements from Measurement Last Response from server.
+     * Prepare measurements from MeasurementOB Last Response from server.
      *
      * @param measurementLastResponse
      */

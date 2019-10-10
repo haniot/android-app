@@ -70,7 +70,7 @@ public abstract class ActivityHabitsRecord {
      * Convert json to Object.
      *
      * @param json String
-     * @return Patient
+     * @return PatientOB
      */
     public static ActivityHabitsRecord jsonDeserialize(String json) {
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
@@ -81,7 +81,7 @@ public abstract class ActivityHabitsRecord {
 
     @Override
     public String toString() {
-        return "ActivityHabitsRecord{" +
+        return "ActivityHabitsRecordOB{" +
                 "id=" + id +
                 ", _id='" + _id + '\'' +
                 ", createdAt='" + createdAt + '\'' +

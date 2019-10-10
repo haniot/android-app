@@ -374,7 +374,7 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
 //
 //                new Handler().postDelayed(() -> {
 //                    try {
-//                        Measurement measurement = JsonToMeasurementParser.heartRate(intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
+//                        MeasurementOB measurement = JsonToMeasurementParser.heartRate(intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
 //                        Log.i("MeasurementTO", measurement.toString());
 //
 //                        sendMeasurements(measurement);

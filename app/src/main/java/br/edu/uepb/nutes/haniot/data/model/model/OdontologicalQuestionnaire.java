@@ -95,7 +95,7 @@ public class OdontologicalQuestionnaire {
 
     @Override
     public String toString() {
-        return "OdontologicalQuestionnaire{" +
+        return "OdontologicalQuestionnaireOB{" +
                 "id=" + id +
                 ", _id='" + _id + '\'' +
                 ", createdAt='" + createdAt + '\'' +

@@ -1,10 +1,5 @@
 package br.edu.uepb.nutes.haniot.data.model.objectbox;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
 import java.util.List;
 
 import io.objectbox.annotation.Backlink;
@@ -12,36 +7,24 @@ import io.objectbox.annotation.Id;
 import io.objectbox.annotation.Transient;
 import io.objectbox.relation.ToMany;
 
-public class OralHealthRecord {
+public class OralHealthRecordOB {
 
     @Id
-    @Expose(serialize = false, deserialize = false)
     private long id;
 
-    @SerializedName("id")
-    @Expose()
     private String _id;
 
-
-    @Expose(serialize = false, deserialize = false)
     private String patientId;
 
-    @SerializedName("created_at")
-    @Expose(serialize = false)
     private String createdAt;
 
-    @SerializedName("teeth_brushing_freq")
-    @Expose()
     private String teethBrushingFreq;
 
-    @SerializedName("teeth_lesions")
-    @Expose()
     @Transient // not persisted
-    private List<ToothLesion> toothLesions;
+    private List<ToothLesionOB> toothLesions;
 
-    @Expose(serialize = false, deserialize = false)
     @Backlink(to = "oralHealthRecord")
-    private ToMany<ToothLesion> toothLesionsDB;
+    private ToMany<ToothLesionOB> toothLesionsDB;
 
     public long getId() {
         return id;
@@ -75,19 +58,19 @@ public class OralHealthRecord {
         this.teethBrushingFreq = teethBrushingFreq;
     }
 
-    public List<ToothLesion> getToothLesions() {
+    public List<ToothLesionOB> getToothLesions() {
         return toothLesions;
     }
 
-    public void setToothLesions(List<ToothLesion> toothLesions) {
+    public void setToothLesions(List<ToothLesionOB> toothLesions) {
         this.toothLesions = toothLesions;
     }
 
-    public ToMany<ToothLesion> getToothLesionsDB() {
+    public ToMany<ToothLesionOB> getToothLesionsDB() {
         return toothLesionsDB;
     }
 
-    public void setToothLesionsDB(ToMany<ToothLesion> toothLesionsDB) {
+    public void setToothLesionsDB(ToMany<ToothLesionOB> toothLesionsDB) {
         this.toothLesionsDB = toothLesionsDB;
     }
 
@@ -99,19 +82,19 @@ public class OralHealthRecord {
         this.patientId = patientId;
     }
 
-    /**
-     * Convert object to json format.
-     *
-     * @return String
-     */
-    public String toJson() {
-        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-        return gson.toJson(this);
-    }
+//    /**
+//     * Convert object to json format.
+//     *
+//     * @return String
+//     */
+//    public String toJson() {
+//        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+//        return gson.toJson(this);
+//    }
 
     @Override
     public String toString() {
-        return "OralHealthRecord{" +
+        return "OralHealthRecordOB{" +
                 "id=" + id +
                 ", _id='" + _id + '\'' +
                 ", patientId='" + patientId + '\'' +

@@ -8,8 +8,8 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import br.edu.uepb.nutes.haniot.App;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.Patient;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.Patient_;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.PatientOB;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.PatientOB_;
 import io.objectbox.Box;
 import io.objectbox.BoxStore;
 
@@ -21,7 +21,7 @@ import io.objectbox.BoxStore;
 public class PatientDAO {
 
     public static PatientDAO instance;
-    private static Box<Patient> patientBox;
+    private static Box<PatientOB> patientBox;
 
     private PatientDAO() {
     }
@@ -30,44 +30,44 @@ public class PatientDAO {
         if (instance == null) instance = new PatientDAO();
 
         BoxStore boxStore = ((App) context.getApplicationContext()).getBoxStore();
-        patientBox = boxStore.boxFor(Patient.class);
+        patientBox = boxStore.boxFor(PatientOB.class);
 
         return instance;
     }
 
-    public Patient get(long id) {
-        return patientBox.query().equal(Patient_.id, id).build().findFirst();
+    public PatientOB get(long id) {
+        return patientBox.query().equal(PatientOB_.id, id).build().findFirst();
     }
 
-    public Patient get(@NonNull String _id) {
-        return patientBox.query().equal(Patient_._id, _id).build().findFirst();
+    public PatientOB get(@NonNull String _id) {
+        return patientBox.query().equal(PatientOB_._id, _id).build().findFirst();
     }
 
-    public List<Patient> list(@NonNull String healthProfessionalId) {
-        return patientBox.query().equal(Patient_.healthProfessionalId, healthProfessionalId).build().find();
+    public List<PatientOB> list(@NonNull String healthProfessionalId) {
+        return patientBox.query().equal(PatientOB_.healthProfessionalId, healthProfessionalId).build().find();
     }
 
-    public boolean save(@NonNull Patient patient) {
-        return patientBox.put(patient) > 0;
+    public boolean save(@NonNull PatientOB patientOB) {
+        return patientBox.put(patientOB) > 0;
     }
 
-    public boolean update(@NonNull Patient patient) {
-        if (patient.getId() == 0) {
-            Patient patientUp = get(patient.getName());
+    public boolean update(@NonNull PatientOB patientOB) {
+        if (patientOB.getId() == 0) {
+            PatientOB patientOBUp = get(patientOB.getName());
 
-            if (patientUp == null) return false;
+            if (patientOBUp == null) return false;
 
-            patient.setId(patientUp.getId());
-            if (patient.get_id() == null) patient.set_id(patientUp.get_id());
+            patientOB.setId(patientOBUp.getId());
+            if (patientOB.get_id() == null) patientOB.set_id(patientOBUp.get_id());
         }
-        return save(patient);
+        return save(patientOB);
     }
 
-    public boolean remove(@NonNull Patient patient) {
-        return patientBox.query().equal(Patient_.id, patient.getId()).build().remove() > 0;
+    public boolean remove(@NonNull PatientOB patientOB) {
+        return patientBox.query().equal(PatientOB_.id, patientOB.getId()).build().remove() > 0;
     }
 
     public boolean remove(@NonNull String _id) {
-        return patientBox.query().equal(Patient_._id, _id).build().remove() > 0;
+        return patientBox.query().equal(PatientOB_._id, _id).build().remove() > 0;
     }
 }

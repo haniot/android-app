@@ -8,6 +8,9 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 
+import br.edu.uepb.nutes.haniot.data.Convert;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.ChronicDiseaseOB;
+
 public class ChronicDisease {
 
     @Expose(serialize = false, deserialize = false)
@@ -24,12 +27,18 @@ public class ChronicDisease {
     @Expose(serialize = false, deserialize = false)
     private MedicalRecord medicalRecord;
 
-    public ChronicDisease() {
-    }
+    public ChronicDisease() { }
 
     public ChronicDisease(String type, String diseaseHistory) {
         this.type = type;
         this.diseaseHistory = diseaseHistory;
+    }
+
+    public ChronicDisease(ChronicDiseaseOB c) {
+        this.setId(c.getId());
+        this.setType(c.getType());
+        this.setDiseaseHistory(c.getDiseaseHistory());
+        this.setMedicalRecord(Convert.medicalRecordToModel(c.getMedicalRecord().getTarget()));
     }
 
     public long getId() {
@@ -78,7 +87,7 @@ public class ChronicDisease {
      * Convert json to Object.
      *
      * @param json String
-     * @return Patient
+     * @return PatientOB
      */
     public static ChronicDisease jsonDeserialize(String json) {
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
@@ -89,7 +98,7 @@ public class ChronicDisease {
 
     @Override
     public String toString() {
-        return "ChronicDisease{" +
+        return "ChronicDiseaseOB{" +
                 "id=" + id +
                 ", type='" + type + '\'' +
                 ", diseaseHistory='" + diseaseHistory + '\'' +

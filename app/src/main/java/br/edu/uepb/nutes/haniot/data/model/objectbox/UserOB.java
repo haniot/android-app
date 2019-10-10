@@ -1,95 +1,61 @@
 package br.edu.uepb.nutes.haniot.data.model.objectbox;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-import com.google.gson.reflect.TypeToken;
-
-import java.lang.reflect.Type;
-
+import br.edu.uepb.nutes.haniot.data.model.type.UserType;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.annotation.Index;
 
 /**
- * Represents User object.
+ * Represents UserOB object.
  *
  * @author Copyright (c) 2019, NUTES/UEPB
  */
 @Entity
-public class User {
+public class UserOB {
     @Id
-    @Expose(serialize = false, deserialize = false)
     private long id;
 
     @Index
-    @SerializedName("id")
-    @Expose()
     private String _id; // _id in server remote (UUID)
 
     @Index
-    @SerializedName("email")
-    @Expose()
     private String email;
 
-    @SerializedName("name")
-    @Expose()
     private String name;
 
-    @SerializedName("birth_date")
-    @Expose()
     private String birthDate;
 
-    @SerializedName("health_area")
-    @Expose()
     private String healthArea;
 
-    @Expose(deserialize = false)
     private String password;
 
-    @SerializedName("old_password")
-    @Expose(deserialize = false)
     private String oldPassword;
 
-    @SerializedName("new_password")
-    @Expose(deserialize = false)
     private String newPassword;
 
-    @SerializedName("phone_number")
-    @Expose()
     private String phoneNumber; // provide by the server
 
-    @SerializedName("last_login")
-    @Expose()
     private String lastLogin;
 
-    @SerializedName("last_sync")
-    @Expose()
     private String lastSync;
 
-    @SerializedName("language")
-    @Expose()
     private String language;
 
-    @SerializedName("selected_pilot_study")
-    @Expose()
     private String pilotStudyIDSelected;
     /**
      * {@link UserType ()}
      */
-    @Expose()
     private String userType; // 1 admin, 2 health_profissional
 
-    public User() {
+    public UserOB() {
     }
 
-    public User(String email, String password) {
+    public UserOB(String email, String password) {
         this.email = email;
         this.password = password;
     }
 
-    public User(String _id, String oldPassword, String newPassword) {
+    public UserOB(String _id, String oldPassword, String newPassword) {
         this._id = _id;
         this.oldPassword = oldPassword;
         this.newPassword = newPassword;
@@ -175,15 +141,15 @@ public class User {
         this.phoneNumber = phoneNumber;
     }
 
-    /**
-     * Convert object to json format.
-     *
-     * @return String
-     */
-    public String toJson() {
-        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-        return gson.toJson(this);
-    }
+//    /**
+//     * Convert object to json format.
+//     *
+//     * @return String
+//     */
+//    public String toJson() {
+//        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+//        return gson.toJson(this);
+//    }
 
     public String getBirthDate() {
         return birthDate;
@@ -225,25 +191,25 @@ public class User {
         this.healthArea = healthArea;
     }
 
-    /**
-     * Convert json to Object.
-     *
-     * @param json String
-     * @return User
-     */
-    public static User jsonDeserialize(String json) {
-        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-        Type typeUser = new TypeToken<User>() {
-        }.getType();
-        return gson.fromJson(json, typeUser);
-    }
+//    /**
+//     * Convert json to Object.
+//     *
+//     * @param json String
+//     * @return UserOB
+//     */
+//    public static UserOB jsonDeserialize(String json) {
+//        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+//        Type typeUser = new TypeToken<UserOB>() {
+//        }.getType();
+//        return gson.fromJson(json, typeUser);
+//    }
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof User))
+        if (!(o instanceof UserOB))
             return false;
 
-        User other = (User) o;
+        UserOB other = (UserOB) o;
 
         return other.get_id().equals(this.get_id())
                 && (other.email == null
@@ -253,7 +219,7 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" +
+        return "UserOB{" +
                 "id=" + id +
                 ", _id='" + _id + '\'' +
                 ", email='" + email + '\'' +

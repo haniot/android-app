@@ -98,8 +98,8 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
         IntentFilter filterInternet = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
         registerReceiver(mReceiver, filterInternet);
         setupPatientActions();
-        Log.w("AAA", "User type: " + appPreferences.getUserAccessHaniot());
-        Log.w("AAA", "User: " + appPreferences.getUserLogged());
+        Log.w("AAA", "UserOB type: " + appPreferences.getUserAccessHaniot());
+        Log.w("AAA", "UserOB: " + appPreferences.getUserLogged());
 
 
     }

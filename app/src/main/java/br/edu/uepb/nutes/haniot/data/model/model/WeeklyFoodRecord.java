@@ -77,7 +77,7 @@ public class WeeklyFoodRecord {
      * Convert json to Object.
      *
      * @param json String
-     * @return Patient
+     * @return PatientOB
      */
     public static WeeklyFoodRecord jsonDeserialize(String json) {
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
@@ -89,7 +89,7 @@ public class WeeklyFoodRecord {
 
     @Override
     public String toString() {
-        return "WeeklyFoodRecord{" +
+        return "WeeklyFoodRecordOB{" +
                 "id=" + id +
                 ", food='" + food + '\'' +
                 ", sevenDaysFreq='" + sevenDaysFreq + '\'' +

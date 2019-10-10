@@ -108,7 +108,7 @@ public class SociodemographicRecord {
 
     @Override
     public String toString() {
-        return "SociodemographicRecord{" +
+        return "SociodemographicRecordOB{" +
                 "id=" + id +
                 ", _id='" + _id + '\'' +
                 ", patientId='" + patientId + '\'' +

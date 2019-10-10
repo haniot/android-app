@@ -343,7 +343,7 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
     }
 
     /**
-     * Initialize NutritionalEvaluation recyclerview.
+     * Initialize NutritionalEvaluationOB recyclerview.
      */
     private void initRecyclerView() {
         historicNutritionalAdapter = new HistoricQuizAdapter(groupItemNutritionEvaluations, this);

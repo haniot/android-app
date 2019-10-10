@@ -1,16 +1,7 @@
 package br.edu.uepb.nutes.haniot.data.model.objectbox;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-import com.google.gson.reflect.TypeToken;
-
-import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Objects;
-
-import javax.annotation.Nullable;
 
 import br.edu.uepb.nutes.haniot.utils.ConverterStringToDatabase;
 import io.objectbox.annotation.Convert;
@@ -19,44 +10,29 @@ import io.objectbox.annotation.Id;
 import io.objectbox.annotation.Index;
 
 @Entity
-public class PilotStudy {
+public class PilotStudyOB {
     @Id
-    @Expose(serialize = false, deserialize = false)
     private long id;
 
     @Index
-    @SerializedName("id")
-    @Expose()
     private String _id; // _id in server remote (UUID)
 
-    @SerializedName("name")
-    @Expose()
     private String name;
 
-    @SerializedName("is_active")
-    @Expose()
     private boolean isActive;
 
-    @SerializedName("start")
-    @Expose()
     private String start;
 
-    @SerializedName("end")
-    @Expose()
     private String end;
 
-    @Expose(serialize = false, deserialize = false)
     private boolean isSelected;
 
-    @SerializedName("health_professionals_id")
     @Convert(converter = ConverterStringToDatabase.class, dbType = String.class)
-    @Expose()
     private List<String> healthProfessionalsId;
 
-    @Expose()
     private String userId;
 
-    public PilotStudy() {
+    public PilotStudyOB() {
     }
 
     public long getId() {
@@ -131,35 +107,35 @@ public class PilotStudy {
         this.userId = userId;
     }
 
-    /**
-     * Convert object to json format.
-     *
-     * @return String
-     */
-    public String toJson() {
-        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-        return gson.toJson(this);
-    }
-
-    /**
-     * Convert json to Object.
-     *
-     * @param json String
-     * @return PilotStudy
-     */
-    @Nullable
-    public static PilotStudy jsonDeserialize(String json) {
-        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-        Type typePilot = new TypeToken<PilotStudy>() {
-        }.getType();
-        return gson.fromJson(json, typePilot);
-    }
+//    /**
+//     * Convert object to json format.
+//     *
+//     * @return String
+//     */
+//    public String toJson() {
+//        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+//        return gson.toJson(this);
+//    }
+//
+//    /**
+//     * Convert json to Object.
+//     *
+//     * @param json String
+//     * @return PilotStudyOB
+//     */
+//    @Nullable
+//    public static PilotStudyOB jsonDeserialize(String json) {
+//        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+//        Type typePilot = new TypeToken<PilotStudyOB>() {
+//        }.getType();
+//        return gson.fromJson(json, typePilot);
+//    }
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof PilotStudy)) return false;
+        if (!(o instanceof PilotStudyOB)) return false;
 
-        PilotStudy that = (PilotStudy) o;
+        PilotStudyOB that = (PilotStudyOB) o;
         return Objects.equals(name, that.name);
     }
 
@@ -170,7 +146,7 @@ public class PilotStudy {
 
     @Override
     public String toString() {
-        return "PilotStudy{" +
+        return "PilotStudyOB{" +
                 "id=" + id +
                 ", _id='" + _id + '\'' +
                 ", name='" + name + '\'' +

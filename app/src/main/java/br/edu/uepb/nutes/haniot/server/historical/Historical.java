@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.Measurement;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.MeasurementOB;
 import br.edu.uepb.nutes.haniot.server.Server;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import br.edu.uepb.nutes.haniot.utils.NameColumnsDB;
@@ -96,11 +96,11 @@ public final class Historical<T> {
      * Construct object of the measurement type from the JSONObject.
      *
      * @param o JSONObject
-     * @return Measurement
+     * @return MeasurementOB
      * @throws JSONException
      */
-    private Measurement buildMeasurement(JSONObject o) throws JSONException {
-//        Measurement m = new Measurement(
+    private MeasurementOB buildMeasurement(JSONObject o) throws JSONException {
+//        MeasurementOB m = new MeasurementOB(
 //                o.getDouble(NameColumnsDB.MEASUREMENT_VALUE),
 //                o.getString(NameColumnsDB.MEASUREMENT_UNIT),
 //                o.getLong(NameColumnsDB.MEASUREMENT_REGISTRATION_DATE),
@@ -120,11 +120,11 @@ public final class Historical<T> {
      * Construct objects of the measurement type from the JSONArray.
      *
      * @param arrayData JSONArray
-     * @return List<Measurement>
+     * @return List<MeasurementOB>
      * @throws JSONException
      */
-    private List<Measurement> buildMeasurements(JSONArray arrayData) throws JSONException {
-        List<Measurement> result = new ArrayList<>();
+    private List<MeasurementOB> buildMeasurements(JSONArray arrayData) throws JSONException {
+        List<MeasurementOB> result = new ArrayList<>();
 //
 //        for (int i = 0; i < arrayData.length(); i++) {
 //            JSONObject o = arrayData.getJSONObject(i);

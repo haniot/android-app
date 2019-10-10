@@ -204,7 +204,7 @@ public class FamilyCohesionRecord {
 
     @Override
     public String toString() {
-        return "FamilyCohesionRecord{" +
+        return "FamilyCohesionRecordOB{" +
                 "id=" + id +
                 ", _id='" + _id + '\'' +
                 ", patientId='" + patientId + '\'' +

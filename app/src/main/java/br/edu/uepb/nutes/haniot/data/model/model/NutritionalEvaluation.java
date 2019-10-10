@@ -157,7 +157,7 @@ public class NutritionalEvaluation {
 
     @Override
     public String toString() {
-        return "NutritionalEvaluation{" +
+        return "NutritionalEvaluationOB{" +
                 "id=" + id +
                 ", _id='" + _id + '\'' +
                 ", patient=" + patient +

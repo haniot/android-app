@@ -107,7 +107,7 @@ public class NutritionalQuestionnaire {
 
     @Override
     public String toString() {
-        return "NutritionalQuestionnaire{" +
+        return "NutritionalQuestionnaireOB{" +
                 "id=" + id +
                 ", _id='" + _id + '\'' +
                 ", createdAt='" + createdAt + '\'' +

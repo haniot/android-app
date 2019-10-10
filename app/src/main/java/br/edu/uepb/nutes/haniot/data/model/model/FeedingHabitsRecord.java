@@ -101,7 +101,7 @@ public class FeedingHabitsRecord extends ActivityHabitsRecord {
      * Convert json to Object.
      *
      * @param json String
-     * @return Patient
+     * @return PatientOB
      */
     public static FeedingHabitsRecord jsonDeserialize(String json) {
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
@@ -113,7 +113,7 @@ public class FeedingHabitsRecord extends ActivityHabitsRecord {
     @Override
     public String toString() {
         return super.toString() +
-                " FeedingHabitsRecord{" +
+                " FeedingHabitsRecordOB{" +
                 "weeklyFeedingHabits=" + weeklyFeedingHabits +
                 ", dailyWaterGlasses='" + dailyWaterGlasses + '\'' +
                 ", sixMonthBreastFeeding='" + sixMonthBreastFeeding + '\'' +

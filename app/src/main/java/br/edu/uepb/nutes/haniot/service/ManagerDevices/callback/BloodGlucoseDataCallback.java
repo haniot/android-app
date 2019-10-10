@@ -7,8 +7,8 @@ public interface BloodGlucoseDataCallback extends DeviceStatusCallback {
     /**
      * Blood Glucose measurement receiver.
      *
-     * @param device    {@link BluetoothDevice} Device that collected the measurement.
-     * @param glucose   Measurement value.
+     * @param device    {@link BluetoothDevice} DeviceOB that collected the measurement.
+     * @param glucose   MeasurementOB value.
      * @param meal      Meal value.
      * @param timestamp Datetime of collection.
      */

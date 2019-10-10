@@ -44,7 +44,7 @@ public class SynchronizationServer {
      * @param callbackSynchronization
      */
     public void run(SynchronizationServer.Callback callbackSynchronization) {
-        // User not connected or does not have active internet connection
+        // UserOB not connected or does not have active internet connection
 //        if (!session.isLogged() || !ConnectionUtils.internetIsEnabled(context)) {
 //            if (callbackSynchronization != null)
 //                callbackSynchronization.onError(null);
@@ -52,7 +52,7 @@ public class SynchronizationServer {
 //            return;
 //        }
 
-//        List<Measurement> measurements = MeasurementDAO.getInstance(context).getNotSent(session.getIdLogged());
+//        List<MeasurementOB> measurements = MeasurementDAO.getInstance(context).getNotSent(session.getIdLogged());
 //        sendMeasurementToServer(prepareMeasurements(measurements), callbackSynchronization);
     }
 
@@ -76,16 +76,16 @@ public class SynchronizationServer {
 //        }
 //
 //        JsonArray resultArrayJson = new JsonArray();
-//        List<Measurement> measurementsNoRelations = new ArrayList<>();
-//        List<Measurement> measurementsWithRelations = new ArrayList<>();
+//        List<MeasurementOB> measurementsNoRelations = new ArrayList<>();
+//        List<MeasurementOB> measurementsWithRelations = new ArrayList<>();
 
 //        /**
 //         * Separates the measurements that have self-relation from those that do not have.
 //         */
-//        for (Measurement m : measurements) {
+//        for (MeasurementOB m : measurements) {
 //            if (m.getMeasurementList().size() > 0) {
 //                boolean noAdd = false;
-//                for (Measurement mr : m.getMeasurementList()) {
+//                for (MeasurementOB mr : m.getMeasurementList()) {
 //                    if (measurementsWithRelations.contains(mr)) noAdd = true;
 //                    break;
 //                }
@@ -99,9 +99,9 @@ public class SynchronizationServer {
 //         * To treat the relationships and remove from the final json
 //         * those that are present in the association.
 //         */
-//        for (Measurement m : measurementsWithRelations) {
+//        for (MeasurementOB m : measurementsWithRelations) {
 //            JsonArray jsonRelationsArray = new JsonArray();
-//            for (Measurement mRelation : m.getMeasurementList()) {
+//            for (MeasurementOB mRelation : m.getMeasurementList()) {
 //                jsonRelationsArray.add(processMeasurement(mRelation));
 //                measurementsNoRelations.remove(mRelation);
 //            }
@@ -113,7 +113,7 @@ public class SynchronizationServer {
 //        /**
 //         * Treat those that have no relationship and that were not added to the final json.
 //         */
-//        for (Measurement m : measurementsNoRelations) {
+//        for (MeasurementOB m : measurementsNoRelations) {
 //            JsonObject jsonMeasurement = processMeasurement(m);
 //            jsonMeasurement.add("measurements", new JsonArray());
 //            resultArrayJson.add(jsonMeasurement); // Add to json final
@@ -133,7 +133,7 @@ public class SynchronizationServer {
     /**
      * Treats the object of a measurement by casting for the specific type and returns a JsonObject.
      *
-     * @param m Measurement
+     * @param m MeasurementOB
      * @return JsonObject
      */
     private JsonObject processMeasurement(Measurement m) {
@@ -234,7 +234,7 @@ public class SynchronizationServer {
 //                Log.i(TAG, "removeAllMeasurements()");
 ////                ContextMeasurementDAO contextMeasurementDAO = ContextMeasurementDAO.getInstance(context);
 ////                MeasurementDAO measurementDAO = MeasurementDAO.getInstance(context);
-////                for (Measurement m : measurementDAO.getNotSent(session.getIdLogged())) {
+////                for (MeasurementOB m : measurementDAO.getNotSent(session.getIdLogged())) {
 ////                    if (m.getContextMeasurements().size() > 0)
 ////                        contextMeasurementDAO.removeAllOfMeasurement(m.getId());
 ////                }

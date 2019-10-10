@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Represents User object.
+ * Represents UserOB object.
  *
  * @author Copyright (c) 2019, NUTES/UEPB
  */
@@ -86,7 +86,7 @@ public class Admin extends User {
 
     @Override
     public String toString() {
-        return "Admin{" +
+        return "AdminOB{" +
                 "totalPilotStudies='" + totalPilotStudies + '\'' +
                 ", totalPatients='" + totalPatients + '\'' +
                 ", totalHealthProfessionals='" + totalHealthProfessionals + '\'' +

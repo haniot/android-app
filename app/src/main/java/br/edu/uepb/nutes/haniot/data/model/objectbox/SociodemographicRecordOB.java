@@ -1,44 +1,25 @@
 package br.edu.uepb.nutes.haniot.data.model.objectbox;
 
-import android.util.Log;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
 import io.objectbox.annotation.Id;
 
-public class SociodemographicRecord {
+public class SociodemographicRecordOB {
 
     @Id
-    @Expose(serialize = false, deserialize = false)
     private long id;
 
-    @SerializedName("id")
-    @Expose()
     private String _id;
 
-    @Expose(serialize = false, deserialize = false)
     private String patientId;
 
-    @SerializedName("created_at")
-    @Expose(serialize = false)
     private String createdAt;
 
-    @SerializedName("color_race")
-    @Expose()
     private String colorRace;
 
-    @SerializedName("mother_scholarity")
-    @Expose()
     private String motherScholarity;
 
-    @SerializedName("people_in_home")
-    @Expose()
     private int peopleInHome;
 
-    public SociodemographicRecord() {
+    public SociodemographicRecordOB() {
     }
 
     public long getId() {
@@ -97,21 +78,21 @@ public class SociodemographicRecord {
         this.patientId = patientId;
     }
 
-    /**
-     * Convert object to json format.
-     *
-     * @return String
-     */
-    public String toJson() {
-        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-        String a = gson.toJson(this);
-        Log.i("AAAAAAAAAA", a);
-        return a;
-    }
+//    /**
+//     * Convert object to json format.
+//     *
+//     * @return String
+//     */
+//    public String toJson() {
+//        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+//        String a = gson.toJson(this);
+//        Log.i("AAAAAAAAAA", a);
+//        return a;
+//    }
 
     @Override
     public String toString() {
-        return "SociodemographicRecord{" +
+        return "SociodemographicRecordOB{" +
                 "id=" + id +
                 ", _id='" + _id + '\'' +
                 ", patientId='" + patientId + '\'' +

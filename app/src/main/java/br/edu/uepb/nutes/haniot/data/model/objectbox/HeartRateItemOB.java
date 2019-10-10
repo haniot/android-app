@@ -4,9 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
 import java.util.Objects;
 
 import io.objectbox.annotation.Entity;
@@ -14,36 +11,30 @@ import io.objectbox.annotation.Id;
 import io.objectbox.relation.ToOne;
 
 /**
- * Represents Object of a HeartRateItem.
+ * Represents Object of a HeartRateItemOB.
  *
  * @author Copyright (c) 2019, NUTES/UEPB
  */
 @Entity
-public class HeartRateItem implements Parcelable {
+public class HeartRateItemOB implements Parcelable {
     @Id
-    @Expose(serialize = false, deserialize = false)
     private long id;
 
-    @SerializedName("value")
-    @Expose()
     private int value;
 
-    @SerializedName("timestamp")
-    @Expose()
     private String timestamp;
 
-    @Expose(serialize = false, deserialize = false)
-    private ToOne<Measurement> heartRate;
+    private ToOne<MeasurementOB> heartRate;
 
-    public HeartRateItem() {
+    public HeartRateItemOB() {
     }
 
-    public HeartRateItem(int value, String timestamp) {
+    public HeartRateItemOB(int value, String timestamp) {
         this.value = value;
         this.timestamp = timestamp;
     }
 
-    protected HeartRateItem(Parcel in) {
+    protected HeartRateItemOB(Parcel in) {
         value = in.readInt();
         timestamp = in.readString();
     }
@@ -59,15 +50,15 @@ public class HeartRateItem implements Parcelable {
         return 0;
     }
 
-    public static final Creator<HeartRateItem> CREATOR = new Creator<HeartRateItem>() {
+    public static final Creator<HeartRateItemOB> CREATOR = new Creator<HeartRateItemOB>() {
         @Override
-        public HeartRateItem createFromParcel(Parcel in) {
-            return new HeartRateItem(in);
+        public HeartRateItemOB createFromParcel(Parcel in) {
+            return new HeartRateItemOB(in);
         }
 
         @Override
-        public HeartRateItem[] newArray(int size) {
-            return new HeartRateItem[size];
+        public HeartRateItemOB[] newArray(int size) {
+            return new HeartRateItemOB[size];
         }
     };
 
@@ -95,11 +86,11 @@ public class HeartRateItem implements Parcelable {
         this.timestamp = timestamp;
     }
 
-    public ToOne<Measurement> getHeartRate() {
+    public ToOne<MeasurementOB> getHeartRate() {
         return heartRate;
     }
 
-    public void setHeartRate(ToOne<Measurement> heartRate) {
+    public void setHeartRate(ToOne<MeasurementOB> heartRate) {
         this.heartRate = heartRate;
     }
 
@@ -110,15 +101,15 @@ public class HeartRateItem implements Parcelable {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof HeartRateItem)) return false;
-        HeartRateItem weight = (HeartRateItem) o;
+        if (!(o instanceof HeartRateItemOB)) return false;
+        HeartRateItemOB weight = (HeartRateItemOB) o;
         return Objects.equals(timestamp, weight.timestamp);
     }
 
     @NonNull
     @Override
     public String toString() {
-        return "HeartRateItem{" +
+        return "HeartRateItemOB{" +
                 super.toString() + '\'' +
                 "value=" + value +
                 ", timestamp='" + timestamp + '\'' +

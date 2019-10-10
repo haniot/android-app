@@ -300,7 +300,7 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
 //                    .pagination(0, LIMIT_PER_PAGE)
 //                    .build();
 //
-//            historical.request(this, new CallbackHistorical<Measurement>() {
+//            historical.request(this, new CallbackHistorical<MeasurementOB>() {
 //                @Override
 //                public void onBeforeSend() {
 //                    Log.w(TAG, "loadData - onBeforeSend()");
@@ -316,7 +316,7 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
 //                }
 //
 //                @Override
-//                public void onResult(List<Measurement> result) {
+//                public void onResult(List<MeasurementOB> result) {
 //                    Log.w(TAG, "loadData - onResult()");
 //                    if (result != null && result.size() > 0) {
 //                        mAdapter.addItems(result);
@@ -348,7 +348,7 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
 //                .pagination(mAdapter.getItemCount(), LIMIT_PER_PAGE)
 //                .build();
 //
-//        historical.request(this, new CallbackHistorical<Measurement>() {
+//        historical.request(this, new CallbackHistorical<MeasurementOB>() {
 //            @Override
 //            public void onBeforeSend() {
 //                Log.w(TAG, "loadMoreData - onBeforeSend()");
@@ -362,7 +362,7 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
 //            }
 //
 //            @Override
-//            public void onResult(List<Measurement> result) {
+//            public void onResult(List<MeasurementOB> result) {
 //                Log.w(TAG, "loadMoreData - onResult()");
 //                if (result != null && result.size() > 0) mAdapter.addItems(result);
 //                else printMessage(getString(R.string.no_more_data));
@@ -584,11 +584,11 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
                 String jsonData = intent.getStringExtra(BluetoothLeService.EXTRA_DATA);
 
 //                try {
-//                    Measurement heartRate = JsonToMeasurementParser.heartRate(jsonData);
-//                    Measurement steps = JsonToMeasurementParser.steps(jsonData);
-//                    Measurement distance = JsonToMeasurementParser.distance(jsonData);
-//                    Measurement calories = JsonToMeasurementParser.calories(jsonData);
-//                    User user = appPreferencesHelper.getUserLogged();
+//                    MeasurementOB heartRate = JsonToMeasurementParser.heartRate(jsonData);
+//                    MeasurementOB steps = JsonToMeasurementParser.steps(jsonData);
+//                    MeasurementOB distance = JsonToMeasurementParser.distance(jsonData);
+//                    MeasurementOB calories = JsonToMeasurementParser.calories(jsonData);
+//                    UserOB user = appPreferencesHelper.getUserLogged();
 //
 //                    /**
 //                     * Update UI
@@ -701,7 +701,7 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
 //                    /**
 //                     * Ralations
 //                     */
-//                    for (Measurement parent : m.getMeasurementList()) {
+//                    for (MeasurementOB parent : m.getMeasurementList()) {
 //                        if (parent.getTypeId() == MeasurementType.DISTANCE) {
 //                            mDistanceTextView.setText(String.valueOf((int) parent.getValue())
 //                                    .concat(parent.getUnit()));

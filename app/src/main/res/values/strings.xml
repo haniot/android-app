@@ -431,7 +431,7 @@
     <string name="smartband">Smartband</string>
     <!-- END MEASUREMENTS TYPES -->
 
-    <!-- Patient Quiz Nutrition -->
+    <!-- PatientOB Quiz Nutrition -->
     <string name="message_info_patient">Informe os dados básicos do paciente:</string>
     <string name="message_welcome_nutrition">Este questionário que você irá responder agora faz parte de uma pesquisa que tem como objetivo de conhecer alguns aspectos importantes da saúde dos(as) crianças e adolescentes que frequentam a clínica de odontologia da UEPB.</string>
     <string name="q1" translatable="false">Na semana passada você praticou:</string>
@@ -654,7 +654,7 @@
         <item>Meia noite</item>
     </string-array>
 
-    <!-- Patient Odonto Quiz -->
+    <!-- PatientOB Odonto Quiz -->
     <string name="message_welcome_odontology">"Este questionário que você irá responder agora faz parte de uma pesquisa que tem como objetivo de conhecer alguns aspectos importantes da saúde dos(as) crianças e adolescentes que frequentam a clínica de odontologia da UEPB."</string>
     <string name="question_1">Os membros da família pedem ajuda uns aos outros?</string>
     <string name="question_2">Aprovamos os amigos que cada um tem:</string>

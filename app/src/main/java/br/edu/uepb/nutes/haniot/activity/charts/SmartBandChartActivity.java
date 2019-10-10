@@ -61,7 +61,7 @@ public class SmartBandChartActivity extends BaseChartActivity {
         barChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
             @Override
             public void onValueSelected(Entry e, Highlight h) {
-                //              Measurement m = (Measurement) e.getData();
+                //              MeasurementOB m = (MeasurementOB) e.getData();
                 //  Log.d("TESTE", String.valueOf(points.get(3).getValue()));
                 Log.d("TESTE", String.valueOf(e.getX()) + " - " + String.valueOf(e.getY()));
 
@@ -138,9 +138,9 @@ public class SmartBandChartActivity extends BaseChartActivity {
         barChart.setVisibility(View.VISIBLE);
 
         //Teste
-//        for (Measurement measurement : data)
+//        for (MeasurementOB measurement : data)
 //            Log.d("A", DateUtils.formatDate(measurement.getRegistrationDate(), getString(R.string.date_format)) + " - " + measurement.getValue());
-//        for (Measurement measurement : points)
+//        for (MeasurementOB measurement : points)
 //            Log.d("B", DateUtils.formatDate(measurement.getRegistrationDate(), getString(R.string.date_format)) + " - " + measurement.getValue());
 
     }
@@ -181,11 +181,11 @@ public class SmartBandChartActivity extends BaseChartActivity {
 //                }
 //            }
 //
-//            Measurement measurement = data.get(0);
+//            MeasurementOB measurement = data.get(0);
 //            measurement.setValue(total);
 //            measurement.addMeasurement(
-//                    new Measurement(totalDist, getString(R.string.unit_meters), MeasurementType.DISTANCE),
-//                    new Measurement(totalCal, getString(R.string.unit_kcal), MeasurementType.CALORIES_BURNED)
+//                    new MeasurementOB(totalDist, getString(R.string.unit_meters), MeasurementType.DISTANCE),
+//                    new MeasurementOB(totalCal, getString(R.string.unit_kcal), MeasurementType.CALORIES_BURNED)
 //            );
 //
 //            points.add(measurement);
@@ -210,11 +210,11 @@ public class SmartBandChartActivity extends BaseChartActivity {
 //                }
 //
 //                if (current != compare) {
-//                    Measurement measurement = data.get(i);
+//                    MeasurementOB measurement = data.get(i);
 //                    measurement.setValue(total);
 //                    measurement.addMeasurement(
-//                            new Measurement(totalDist, "m", MeasurementType.DISTANCE),
-//                            new Measurement(totalCal, "kcal", MeasurementType.CALORIES_BURNED)
+//                            new MeasurementOB(totalDist, "m", MeasurementType.DISTANCE),
+//                            new MeasurementOB(totalCal, "kcal", MeasurementType.CALORIES_BURNED)
 //                    );
 //
 //                    points.add(measurement);

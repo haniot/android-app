@@ -336,7 +336,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
             measurement.setUserId(patient.get_id());
             measurement.setUnit(unit);
             measurement.setType(MeasurementType.BODY_TEMPERATURE);
-//            Device device1 = getDeviceRegistered(DeviceType.THERMOMETER);
+//            DeviceOB device1 = getDeviceRegistered(DeviceType.THERMOMETER);
 //            if (device1 != null) measurement.setDeviceId(device1.get_id());
             sendMeasurementToServer(measurement);
         }
@@ -380,7 +380,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
             measurement.setUserId(patient.get_id());
             measurement.setUnit(getString(R.string.unit_glucose_mg_dL));
 
-//            Device device1 = getDeviceRegistered(DeviceType.BLOOD_PRESSURE);
+//            DeviceOB device1 = getDeviceRegistered(DeviceType.BLOOD_PRESSURE);
 //            if (device1 != null) measurement.setDeviceId(device1.get_id());
 
             sendMeasurementToServer(measurement);
@@ -448,7 +448,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
             measurement.setUserId(patient.get_id());
             measurement.setUnit((bodyMassUnit != null && bodyMassUnit.equals("")) ? "kg" : bodyMassUnit);
 
-//            Device device1 = getDeviceRegistered(DeviceType.BODY_COMPOSITION);
+//            DeviceOB device1 = getDeviceRegistered(DeviceType.BODY_COMPOSITION);
 //            if (device1 != null) measurement.setDeviceId(device1.get_id());
 
             sendMeasurementToServer(measurement);
@@ -489,7 +489,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
             measurement.setUserId(patient.get_id());
             measurement.setUnit(getString(R.string.unit_glucose_mg_dL));
 
-//            Device device1 = getDeviceRegistered(DeviceType.GLUCOMETER);
+//            DeviceOB device1 = getDeviceRegistered(DeviceType.GLUCOMETER);
 //            if (device1 != null) measurement.setDeviceId(device1.get_id());
 
             sendMeasurementToServer(measurement);
@@ -562,7 +562,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
         measurement.setType(MeasurementType.HEART_RATE);
         measurement.setDataset(heartRateItems);
 
-//        Device device1 = getDeviceRegistered(DeviceType.HEART_RATE);
+//        DeviceOB device1 = getDeviceRegistered(DeviceType.HEART_RATE);
 //        if (device1 != null) measurement.setDeviceId(device1.get_id());
 
         List<Measurement> measurements = mRepository.listMeasurements(MeasurementType.HEART_RATE, patient.get_id(), 100, 1000);
@@ -616,8 +616,8 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
     /**
      * Update measurement in grid.
      *
-     * @param value     Measurement value
-     * @param unit      Measurement unit
+     * @param value     MeasurementOB value
+     * @param unit      MeasurementOB unit
      * @param timestamp Datetime of collection.
      * @param type      Type measurement in grid
      */
@@ -640,7 +640,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
      * Get device registered from type.
      *
      * @param type {@link DeviceType}
-     * @return Device
+     * @return DeviceOB
      */
     private Device getDeviceRegistered(String type) {
 
@@ -923,7 +923,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
     }
 
     /**
-     * Get Measurement Monitor item.
+     * Get MeasurementOB Monitor item.
      *
      * @param type int
      * @return MeasurementMonitor

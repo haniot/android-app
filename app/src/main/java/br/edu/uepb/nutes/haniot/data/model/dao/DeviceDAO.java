@@ -6,8 +6,8 @@ import android.support.annotation.NonNull;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.App;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.Device;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.Device_;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.DeviceOB;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.DeviceOB_;
 import io.objectbox.Box;
 import io.objectbox.BoxStore;
 
@@ -18,7 +18,7 @@ import io.objectbox.BoxStore;
  */
 public class DeviceDAO {
     public static DeviceDAO instance;
-    private static Box<Device> deviceBox;
+    private static Box<DeviceOB> deviceBox;
 
     private DeviceDAO() {
     }
@@ -33,7 +33,7 @@ public class DeviceDAO {
         if (instance == null) instance = new DeviceDAO();
 
         BoxStore boxStore = ((App) context.getApplicationContext()).getBoxStore();
-        deviceBox = boxStore.boxFor(Device.class);
+        deviceBox = boxStore.boxFor(DeviceOB.class);
 
         return instance;
     }
@@ -41,36 +41,36 @@ public class DeviceDAO {
     /**
      * Adds a new device to the database.
      *
-     * @param device Device
+     * @param device DeviceOB
      * @return boolean
      */
-    public boolean save(@NonNull Device device) {
+    public boolean save(@NonNull DeviceOB device) {
         return deviceBox.put(device) > 0;
     }
 
     /**
-     * Select a Device according to id.
+     * Select a DeviceOB according to id.
      *
      * @param id long
      * @return Object
      */
-    public Device get(long id) {
+    public DeviceOB get(long id) {
         return deviceBox.query()
-                .equal(Device_.id, id)
+                .equal(DeviceOB_.id, id)
                 .build().findFirst();
     }
 
     /**
-     * Select a Device according to address and userId.
+     * Select a DeviceOB according to address and userId.
      *
      * @param address String
      * @param userId  long
      * @return Object
      */
-    public Device get(@NonNull String address, String userId) {
+    public DeviceOB get(@NonNull String address, String userId) {
         return deviceBox.query()
-                .equal(Device_.address, address)
-                .equal(Device_.userId, userId)
+                .equal(DeviceOB_.address, address)
+                .equal(DeviceOB_.userId, userId)
                 .build().findFirst();
     }
 
@@ -79,12 +79,12 @@ public class DeviceDAO {
      *
      * @param userId {@link String}
      * @param type   {@link String}
-     * @return Device
+     * @return DeviceOB
      */
-    public Device getByType(@NonNull String userId, String type) {
+    public DeviceOB getByType(@NonNull String userId, String type) {
         return deviceBox.query()
-                .equal(Device_.userId, userId)
-                .equal(Device_.type, type)
+                .equal(DeviceOB_.userId, userId)
+                .equal(DeviceOB_.type, type)
                 .build().findFirst();
     }
 
@@ -94,9 +94,9 @@ public class DeviceDAO {
      * @param userId long
      * @return List<T>
      */
-    public List<Device> list(@NonNull String userId) {
+    public List<DeviceOB> list(@NonNull String userId) {
         return deviceBox.query()
-                .equal(Device_.userId, userId)
+                .equal(DeviceOB_.userId, userId)
                 .build().find();
     }
 
@@ -104,12 +104,12 @@ public class DeviceDAO {
      * Update device.
      * According to your _id and _id user provided by the remote server.
      *
-     * @param device Device
+     * @param device DeviceOB
      * @return boolean
      */
-    public boolean update(@NonNull Device device) {
+    public boolean update(@NonNull DeviceOB device) {
         if (device.getId() == 0) {
-            Device deviceUp = get(device.getId());
+            DeviceOB deviceUp = get(device.getId());
 
             // Id is required for an updateOrSave
             // Otherwise it will be an insert
@@ -124,12 +124,12 @@ public class DeviceDAO {
     /**
      * Removes device passed as parameter.
      *
-     * @param device Device
+     * @param device DeviceOB
      * @return boolean
      */
-    public boolean remove(@NonNull Device device) {
+    public boolean remove(@NonNull DeviceOB device) {
         return (deviceBox.query()
-                .equal(Device_.id, device.getId())
+                .equal(DeviceOB_.id, device.getId())
                 .build()
                 .remove()) > 0;
     }
@@ -142,7 +142,7 @@ public class DeviceDAO {
      */
     public boolean remove(@NonNull String _id) {
         return (deviceBox.query()
-                .equal(Device_._id, _id)
+                .equal(DeviceOB_._id, _id)
                 .build()
                 .remove()) > 0;
     }
@@ -156,7 +156,7 @@ public class DeviceDAO {
      */
     public boolean removeAll(@NonNull long userId) {
         return deviceBox.query()
-                .equal(Device_.userId, userId)
+                .equal(DeviceOB_.userId, userId)
                 .build().remove() > 0;
     }
 
@@ -169,7 +169,7 @@ public class DeviceDAO {
      */
     public boolean removeAll(@NonNull String userId) {
         return deviceBox.query()
-                .equal(Device_._id, userId)
+                .equal(DeviceOB_._id, userId)
                 .build().remove() > 0;
     }
 }

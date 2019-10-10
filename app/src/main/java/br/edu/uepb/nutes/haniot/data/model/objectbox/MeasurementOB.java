@@ -4,14 +4,10 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
 import java.util.List;
 import java.util.Objects;
 
+import br.edu.uepb.nutes.haniot.data.model.model.Measurement;
 import io.objectbox.annotation.Backlink;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
@@ -21,88 +17,64 @@ import io.objectbox.relation.ToMany;
 import io.objectbox.relation.ToOne;
 
 /**
- * Represents Object of a Measurement.
+ * Represents Object of a MeasurementOB.
  *
  * @author Copyright (c) 2019, NUTES/UEPB
  */
 @Entity
-public class Measurement implements Parcelable {
+public class MeasurementOB implements Parcelable {
+
     @Id
-    @Expose(serialize = false, deserialize = false)
     private long id;
-
     @Index
-    @SerializedName("id")
-    @Expose()
     private String _id; // _id in server remote (UUID)
-
-    @SerializedName("value")
-    @Expose()
     private double value;
-
-    @SerializedName("unit")
-    @Expose()
     private String unit;
-
-    @SerializedName("type")
-    @Expose()
     private String type;
-
-    @SerializedName("timestamp")
-    @Expose()
     private String timestamp;
-
-    @SerializedName("user_id")
-    @Expose()
     private String userId;
-
-    @SerializedName("device_id")
-    @Expose()
     private String deviceId;
-
-    @SerializedName("fat")
-    @Expose()
-    @Transient()
-    private BodyFat fat; // not persisted in ObjectBox
-
-    @SerializedName("dataset")
-    @Expose()
-    @Transient()
-    private List<HeartRateItem> dataset; // not persisted in ObjectBox
-
-    @SerializedName("bodyfat")
-    @Expose()
-    @Transient()
-    private List<BodyFat> bodyFat; // not persisted in ObjectBox
-
-    @SerializedName("systolic")
-    @Expose()
     private int systolic;
-
-    @SerializedName("diastolic")
-    @Expose()
     private int diastolic;
-
-    @SerializedName("pulse")
-    @Expose()
     private int pulse;
-
-    @SerializedName("meal")
-    @Expose()
     private String meal;
 
+    @Transient()
+    private BodyFatOB fat; // not persisted in ObjectBox
+
+    @Transient()
+    private List<HeartRateItemOB> dataset; // not persisted in ObjectBox
+
+    @Transient()
+    private List<BodyFatOB> bodyFat; // not persisted in ObjectBox
+
     // RELATIONS ObjectBox
-    @Expose(serialize = false, deserialize = false)
     @Backlink(to = "heartRate")
-    private ToMany<HeartRateItem> datasetDB;
+    private ToMany<HeartRateItemOB> datasetDB;
 
-    @Expose(serialize = false, deserialize = false)
-    private ToOne<BodyFat> bodyFatDB;
+    private ToOne<BodyFatOB> bodyFatDB;
 
-    public Measurement() {
+    public MeasurementOB(Measurement m) {
+        this.set_id(m.get_id());
+        this.setId(m.getId());
+        this.setValue(m.getValue());
+        this.setUnit(m.getUnit());
+        this.setType(m.getType());
+        this.setTimestamp(m.getTimestamp());
+        this.setUserId(m.getUserId());
+        this.setDeviceId(m.getDeviceId());
+        this.setSystolic(m.getSystolic());
+        this.setDiastolic(m.getDiastolic());
+        this.setPulse(m.getPulse());
+        this.setMeal(m.getMeal());
+
+
+        this.setBodyFat(m.getBodyFat());
+
+
     }
 
-    protected Measurement(Parcel in) {
+    protected MeasurementOB(Parcel in) {
         id = in.readLong();
         _id = in.readString();
         value = in.readDouble();
@@ -111,8 +83,8 @@ public class Measurement implements Parcelable {
         timestamp = in.readString();
         userId = in.readString();
         deviceId = in.readString();
-        fat = in.readParcelable(BodyFat.class.getClassLoader());
-        dataset = in.createTypedArrayList(HeartRateItem.CREATOR);
+        fat = in.readParcelable(BodyFatOB.class.getClassLoader());
+        dataset = in.createTypedArrayList(HeartRateItemOB.CREATOR);
         systolic = in.readInt();
         diastolic = in.readInt();
         pulse = in.readInt();
@@ -142,15 +114,15 @@ public class Measurement implements Parcelable {
         return 0;
     }
 
-    public static final Creator<Measurement> CREATOR = new Creator<Measurement>() {
+    public static final Creator<MeasurementOB> CREATOR = new Creator<MeasurementOB>() {
         @Override
-        public Measurement createFromParcel(Parcel in) {
-            return new Measurement(in);
+        public MeasurementOB createFromParcel(Parcel in) {
+            return new MeasurementOB(in);
         }
 
         @Override
-        public Measurement[] newArray(int size) {
-            return new Measurement[size];
+        public MeasurementOB[] newArray(int size) {
+            return new MeasurementOB[size];
         }
     };
 
@@ -218,19 +190,19 @@ public class Measurement implements Parcelable {
         this.deviceId = deviceId;
     }
 
-    public BodyFat getFat() {
+    public BodyFatOB getFat() {
         return fat;
     }
 
-    public void setFat(BodyFat fat) {
+    public void setFat(BodyFatOB fat) {
         this.fat = fat;
     }
 
-    public List<HeartRateItem> getDataset() {
+    public List<HeartRateItemOB> getDataset() {
         return dataset;
     }
 
-    public void setDataset(List<HeartRateItem> dataset) {
+    public void setDataset(List<HeartRateItemOB> dataset) {
         this.dataset = dataset;
     }
 
@@ -266,28 +238,28 @@ public class Measurement implements Parcelable {
         this.meal = meal;
     }
 
-    public ToMany<HeartRateItem> getDatasetDB() {
+    public ToMany<HeartRateItemOB> getDatasetDB() {
         return datasetDB;
     }
 
-    public void setDatasetDB(List<HeartRateItem> datasetDB) {
+    public void setDatasetDB(List<HeartRateItemOB> datasetDB) {
         this.getDatasetDB().clear();
         this.getDatasetDB().addAll(datasetDB);
     }
 
-    public List<BodyFat> getBodyFat() {
+    public List<BodyFatOB> getBodyFat() {
         return bodyFat;
     }
 
-    public void setBodyFat(List<BodyFat> bodyFat) {
+    public void setBodyFat(List<BodyFatOB> bodyFat) {
         this.bodyFat = bodyFat;
     }
 
-    public ToOne<BodyFat> getBodyFatDB() {
+    public ToOne<BodyFatOB> getBodyFatDB() {
         return bodyFatDB;
     }
 
-    public void setBodyFatDB(ToOne<BodyFat> bodyFatDB) {
+    public void setBodyFatDB(ToOne<BodyFatOB> bodyFatDB) {
         this.bodyFatDB = bodyFatDB;
     }
 
@@ -296,20 +268,10 @@ public class Measurement implements Parcelable {
         return Objects.hash(timestamp, userId);
     }
 
-    /**
-     * Convert object to json format.
-     *
-     * @return String
-     */
-    public String toJson() {
-        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-        return gson.toJson(this);
-    }
-
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof Measurement)) return false;
-        Measurement that = (Measurement) o;
+        if (!(o instanceof MeasurementOB)) return false;
+        MeasurementOB that = (MeasurementOB) o;
         return Objects.equals(timestamp, that.timestamp) &&
                 Objects.equals(userId, that.userId);
     }
@@ -317,7 +279,7 @@ public class Measurement implements Parcelable {
     @NonNull
     @Override
     public String toString() {
-        return "Measurement{" +
+        return "MeasurementOB{" +
                 "id=" + id +
                 ", _id='" + _id + '\'' +
                 ", value=" + value +

@@ -12,7 +12,7 @@ import java.util.Objects;
 import br.edu.uepb.nutes.haniot.data.model.type.MeasurementType;
 
 /**
- * Represents Object of a BodyFat.
+ * Represents Object of a BodyFatOB.
  *
  * @author Copyright (c) 2019, NUTES/UEPB
  */
@@ -131,7 +131,7 @@ public class BodyFat implements Parcelable {
     @NonNull
     @Override
     public String toString() {
-        return "BodyFat{" +
+        return "BodyFatOB{" +
                 "id=" + id +
                 ", value=" + value +
                 ", unit='" + unit + '\'' +

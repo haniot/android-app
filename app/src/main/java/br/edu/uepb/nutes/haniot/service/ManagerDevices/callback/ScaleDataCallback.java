@@ -7,18 +7,18 @@ public interface ScaleDataCallback extends DeviceStatusCallback {
     /**
      * Data is received by device before the end of the measurement.
      *
-     * @param bodyMass     Measurement value
-     * @param bodyMassUnit Measurement unit
+     * @param bodyMass     MeasurementOB value
+     * @param bodyMassUnit MeasurementOB unit
      */
     void onMeasurementReceiving(double bodyMass, String bodyMassUnit);
 
     /**
      * Body Mass measurement receiver.
      *
-     * @param device       {@link BluetoothDevice} Device that collected the measurement.
-     * @param bodyMass     Body Mass Measurement value.
+     * @param device       {@link BluetoothDevice} DeviceOB that collected the measurement.
+     * @param bodyMass     Body Mass MeasurementOB value.
      * @param bodyMassUnit Body Mass unit.
-     * @param bodyFat      Body Fat Measurement value in %.
+     * @param bodyFat      Body Fat MeasurementOB value in %.
      * @param timestamp    Datetime of collection.
      */
     void onMeasurementReceived(

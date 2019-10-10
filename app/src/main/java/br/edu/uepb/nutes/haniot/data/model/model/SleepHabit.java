@@ -54,7 +54,7 @@ public class SleepHabit extends ActivityHabitsRecord {
      * Convert json to Object.
      *
      * @param json String
-     * @return Patient
+     * @return PatientOB
      */
     public static SleepHabit jsonDeserialize(String json) {
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
@@ -66,7 +66,7 @@ public class SleepHabit extends ActivityHabitsRecord {
     @Override
     public String toString() {
         return super.toString() +
-                " SleepHabit{" +
+                " SleepHabitOB{" +
                 "weekDaySleep=" + weekDaySleep +
                 ", weekDayWakeUp=" + weekDayWakeUp +
                 '}';

@@ -1,41 +1,25 @@
 package br.edu.uepb.nutes.haniot.data.model.objectbox;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
 import java.util.Objects;
 
 import io.objectbox.annotation.Id;
 
-public class OdontologicalQuestionnaire {
+public class OdontologicalQuestionnaireOB {
 
     @Id
-    @Expose(deserialize = false, serialize = false)
     private long id;
 
-    @SerializedName("id")
-    @Expose()
     private String _id;
 
-    @SerializedName("created_at")
-    @Expose()
     String createdAt;
 
-    @SerializedName("sociodemographic_record")
-    @Expose()
-    SociodemographicRecord sociodemographicRecord;
+    SociodemographicRecordOB sociodemographicRecord;
 
-    @SerializedName("family_cohesion_record")
-    @Expose()
-    FamilyCohesionRecord familyCohesionRecord;
+    FamilyCohesionRecordOB familyCohesionRecord;
 
-    @SerializedName("oral_health_record")
-    @Expose()
-    OralHealthRecord oralHealthRecord;
+    OralHealthRecordOB oralHealthRecord;
 
-    public OdontologicalQuestionnaire() {
+    public OdontologicalQuestionnaireOB() {
     }
 
     public long getId() {
@@ -62,43 +46,43 @@ public class OdontologicalQuestionnaire {
         this.createdAt = createdAt;
     }
 
-    public SociodemographicRecord getSociodemographicRecord() {
+    public SociodemographicRecordOB getSociodemographicRecord() {
         return sociodemographicRecord;
     }
 
-    public void setSociodemographicRecord(SociodemographicRecord sociodemographicRecord) {
+    public void setSociodemographicRecord(SociodemographicRecordOB sociodemographicRecord) {
         this.sociodemographicRecord = sociodemographicRecord;
     }
 
-    public FamilyCohesionRecord getFamilyCohesionRecord() {
+    public FamilyCohesionRecordOB getFamilyCohesionRecord() {
         return familyCohesionRecord;
     }
 
-    public void setFamilyCohesionRecord(FamilyCohesionRecord familyCohesionRecord) {
+    public void setFamilyCohesionRecord(FamilyCohesionRecordOB familyCohesionRecord) {
         this.familyCohesionRecord = familyCohesionRecord;
     }
 
-    public OralHealthRecord getOralHealthRecord() {
+    public OralHealthRecordOB getOralHealthRecord() {
         return oralHealthRecord;
     }
 
-    public void setOralHealthRecord(OralHealthRecord oralHealthRecord) {
+    public void setOralHealthRecord(OralHealthRecordOB oralHealthRecord) {
         this.oralHealthRecord = oralHealthRecord;
     }
 
-    /**
-     * Convert object to json format.
-     *
-     * @return String
-     */
-    public String toJson() {
-        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-        return gson.toJson(this);
-    }
+//    /**
+//     * Convert object to json format.
+//     *
+//     * @return String
+//     */
+//    public String toJson() {
+//        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+//        return gson.toJson(this);
+//    }
 
     @Override
     public String toString() {
-        return "OdontologicalQuestionnaire{" +
+        return "OdontologicalQuestionnaireOB{" +
                 "id=" + id +
                 ", _id='" + _id + '\'' +
                 ", createdAt='" + createdAt + '\'' +
@@ -112,7 +96,7 @@ public class OdontologicalQuestionnaire {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        OdontologicalQuestionnaire that = (OdontologicalQuestionnaire) o;
+        OdontologicalQuestionnaireOB that = (OdontologicalQuestionnaireOB) o;
         return Objects.equals(_id, that._id) &&
                 Objects.equals(createdAt, that.createdAt);
     }

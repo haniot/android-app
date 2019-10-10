@@ -1,33 +1,21 @@
 package br.edu.uepb.nutes.haniot.data.model.objectbox;
 
-import android.util.Log;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
 import java.util.Objects;
 
 import io.objectbox.relation.ToOne;
 
-public class ToothLesion {
+public class ToothLesionOB {
 
-    @SerializedName("tooth_type")
-    @Expose()
     private String toothType;
 
-    @SerializedName("lesion_type")
-    @Expose()
     private String lesionType;
 
-    @Expose(serialize = false, deserialize = false)
-    private ToOne<OralHealthRecord> oralHealthRecord;
+    private ToOne<OralHealthRecordOB> oralHealthRecord;
 
-    public ToothLesion() {
+    public ToothLesionOB() {
     }
 
-    public ToothLesion(String toothType, String lesionType) {
+    public ToothLesionOB(String toothType, String lesionType) {
         this.toothType = toothType;
         this.lesionType = lesionType;
     }
@@ -48,29 +36,29 @@ public class ToothLesion {
         this.lesionType = lesionType;
     }
 
-    public ToOne<OralHealthRecord> getOralHealthRecord() {
+    public ToOne<OralHealthRecordOB> getOralHealthRecord() {
         return oralHealthRecord;
     }
 
-    public void setOralHealthRecord(ToOne<OralHealthRecord> oralHealthRecord) {
+    public void setOralHealthRecord(ToOne<OralHealthRecordOB> oralHealthRecord) {
         this.oralHealthRecord = oralHealthRecord;
     }
 
-    /**
-     * Convert object to json format.
-     *
-     * @return String
-     */
-    public String toJson() {
-        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-        String a = gson.toJson(this);
-        Log.i("AAAAAAAAAA", a);
-        return a;
-    }
+//    /**
+//     * Convert object to json format.
+//     *
+//     * @return String
+//     */
+//    public String toJson() {
+//        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+//        String a = gson.toJson(this);
+//        Log.i("AAAAAAAAAA", a);
+//        return a;
+//    }
 
     @Override
     public String toString() {
-        return "ToothLesion{" +
+        return "ToothLesionOB{" +
                 "toothType='" + toothType + '\'' +
                 ", lesionType='" + lesionType + '\'' +
                 ", oralHealthRecord=" + oralHealthRecord +
@@ -81,7 +69,7 @@ public class ToothLesion {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ToothLesion that = (ToothLesion) o;
+        ToothLesionOB that = (ToothLesionOB) o;
         return toothType.equals(that.toothType) &&
                 lesionType.equals(that.lesionType);
     }

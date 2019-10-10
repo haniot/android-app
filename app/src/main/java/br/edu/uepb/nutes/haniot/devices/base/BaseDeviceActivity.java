@@ -547,7 +547,7 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
     /**
      * Performs routine for data synchronization with server.
      *
-     * @param measurement Measurement to save in server
+     * @param measurement MeasurementOB to save in server
      */
     protected void synchronizeWithServer(Measurement measurement) {
         DisposableManager.add(haniotNetRepository

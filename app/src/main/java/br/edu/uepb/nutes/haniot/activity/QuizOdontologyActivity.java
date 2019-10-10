@@ -198,7 +198,7 @@ public class QuizOdontologyActivity extends SimpleSurvey implements Infor.OnInfo
 
     private void setOralRecord() {
 
-        //CATEGORY OralHealthRecord
+        //CATEGORY OralHealthRecordOB
         addQuestion(new Infor.Config()
                 .title(R.string.category_oralhealth, Color.WHITE)
                 .titleTextSize(28)
@@ -292,7 +292,7 @@ public class QuizOdontologyActivity extends SimpleSurvey implements Infor.OnInfo
 
     private void setSociodemographicRecord() {
 
-        //CATEGORY SociodemographicRecord
+        //CATEGORY SociodemographicRecordOB
         addQuestion(new Infor.Config()
                 .title(R.string.category_sociodemographic, Color.WHITE)
                 .titleTextSize(28)
@@ -666,11 +666,11 @@ public class QuizOdontologyActivity extends SimpleSurvey implements Infor.OnInfo
 
     private void printJson() {
         if (resourceToUpdate instanceof FamilyCohesionRecord) {
-            Log.w("AAA", "FamilyCohesionRecord " + ((FamilyCohesionRecord) resourceToUpdate).toJson());
+            Log.w("AAA", "FamilyCohesionRecordOB " + ((FamilyCohesionRecord) resourceToUpdate).toJson());
         } else if (resourceToUpdate instanceof OralHealthRecord) {
-            Log.w("AAA", "OralHealthRecord " + ((OralHealthRecord) resourceToUpdate).toJson());
+            Log.w("AAA", "OralHealthRecordOB " + ((OralHealthRecord) resourceToUpdate).toJson());
         } else if (resourceToUpdate instanceof SociodemographicRecord) {
-            Log.w("AAA", "SociodemographicRecord " + ((SociodemographicRecord) resourceToUpdate).toJson());
+            Log.w("AAA", "SociodemographicRecordOB " + ((SociodemographicRecord) resourceToUpdate).toJson());
         }
     }
 

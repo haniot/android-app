@@ -8,14 +8,14 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import br.edu.uepb.nutes.haniot.App;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.SleepHabit;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.SleepHabit_;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.SleepHabitOB;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.SleepHabitOB_;
 import io.objectbox.Box;
 import io.objectbox.BoxStore;
 
 public class SleepHabitsDAO {
     public static SleepHabitsDAO instance;
-    private static Box<SleepHabit> sleepHabitBox;
+    private static Box<SleepHabitOB> sleepHabitBox;
 
     private SleepHabitsDAO(){}
 
@@ -23,30 +23,30 @@ public class SleepHabitsDAO {
         if (instance == null) instance = new SleepHabitsDAO();
 
         BoxStore boxStore = ((App) context.getApplicationContext()).getBoxStore();
-        sleepHabitBox = boxStore.boxFor(SleepHabit.class);
+        sleepHabitBox = boxStore.boxFor(SleepHabitOB.class);
 
         return instance;
     }
 
-//    Search FeedingHabitsRecord by id
-    public SleepHabit getFromPatientId(@NonNull String _id){
-        return sleepHabitBox.query().equal(SleepHabit_.patientId,_id).build().findFirst();
+//    Search FeedingHabitsRecordOB by id
+    public SleepHabitOB getFromPatientId(@NonNull String _id){
+        return sleepHabitBox.query().equal(SleepHabitOB_.patientId,_id).build().findFirst();
     }
 
-//    get all FeedingHabitsRecord on database
-    public List<SleepHabit> get(){
+//    get all FeedingHabitsRecordOB on database
+    public List<SleepHabitOB> get(){
         return sleepHabitBox.query().build().find();
     }
 
-//    save FeedingHabitsRecord
-    public boolean save(@NonNull SleepHabit sleepHabit){
+//    save FeedingHabitsRecordOB
+    public boolean save(@NonNull SleepHabitOB sleepHabit){
         return sleepHabitBox.put(sleepHabit) > 0;
     }
 
-//    update FeedingHabitsRecord
-    public boolean update(@NonNull SleepHabit sleepHabit){
+//    update FeedingHabitsRecordOB
+    public boolean update(@NonNull SleepHabitOB sleepHabit){
         if (sleepHabit.getId() == 0){
-            SleepHabit sleepHabitRecordUp = getFromPatientId(sleepHabit.getPatientId());
+            SleepHabitOB sleepHabitRecordUp = getFromPatientId(sleepHabit.getPatientId());
 
             if (sleepHabitRecordUp == null) return false;
 
@@ -56,9 +56,9 @@ public class SleepHabitsDAO {
         return save(sleepHabit);
     }
 
-//    remove FeedingHabitsRecord
-    public boolean remove (@NonNull SleepHabit sleepHabit){
-        return sleepHabitBox.query().equal(SleepHabit_.patientId,sleepHabit.getId()).build().remove() > 0;
+//    remove FeedingHabitsRecordOB
+    public boolean remove (@NonNull SleepHabitOB sleepHabit){
+        return sleepHabitBox.query().equal(SleepHabitOB_.patientId,sleepHabit.getId()).build().remove() > 0;
     }
 
 }

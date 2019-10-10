@@ -389,7 +389,7 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
     /**
      * Retrieve the user data contained in the view.
      *
-     * @return User
+     * @return UserOB
      */
     private User getUserView() {
         user.setName(String.valueOf(nameEditText.getText()));

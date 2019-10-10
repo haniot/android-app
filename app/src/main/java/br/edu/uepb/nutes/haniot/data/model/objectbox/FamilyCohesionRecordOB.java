@@ -1,76 +1,41 @@
 package br.edu.uepb.nutes.haniot.data.model.objectbox;
 
-import android.util.Log;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
 import io.objectbox.annotation.Id;
 
-public class FamilyCohesionRecord {
+public class FamilyCohesionRecordOB {
 
     @Id
-    @Expose(serialize = false, deserialize = false)
     private long id;
 
-    @SerializedName("id")
-    @Expose()
     private String _id;
 
-    @Expose(serialize = false, deserialize = false)
     private String patientId;
 
-    @SerializedName("created_at")
-    @Expose(serialize = false)
     private String createdAt;
 
-    @SerializedName("family_mutual_aid_freq")
-    @Expose()
     private String familyMutualAidFreq;
 
-    @SerializedName("friendship_approval_freq")
-    @Expose()
     private String friendshipApprovalFreq;
 
-    @SerializedName("family_only_task_freq")
-    @Expose()
     private String familyOnlyTaskFreq;
 
-    @SerializedName("family_only_preference_freq")
-    @Expose()
     private String familyOnlyPreferenceFreq;
 
-    @SerializedName("free_time_together_freq")
-    @Expose()
     private String freeTimeTogetherFreq;
 
-    @SerializedName("family_proximity_perception_freq")
-    @Expose()
     private String familyProximityPerceptionFreq;
 
-    @SerializedName("all_family_tasks_freq")
-    @Expose()
     private String allFamilyTasksFreq;
 
-    @SerializedName("family_tasks_opportunity_freq")
-    @Expose()
     private String familyTasksOpportunityFreq;
 
-    @SerializedName("family_decision_support_freq")
-    @Expose()
     private String familyDecisionSupportFreq;
 
-    @SerializedName("family_union_relevance_freq")
-    @Expose()
     private String familyUnionRelevanceFreq;
 
-    @SerializedName("family_cohesion_result")
-    @Expose()
     private int familyCohesionResult;
 
-    public FamilyCohesionRecord() {
+    public FamilyCohesionRecordOB() {
     }
 
     public void setId(long id) {
@@ -193,21 +158,21 @@ public class FamilyCohesionRecord {
         this.patientId = patientId;
     }
 
-    /**
-     * Convert object to json format.
-     *
-     * @return String
-     */
-    public String toJson() {
-        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-        String a = gson.toJson(this);
-        Log.i("AAAAAAAAAA", a);
-        return a;
-    }
+//    /**
+//     * Convert object to json format.
+//     *
+//     * @return String
+//     */
+//    public String toJson() {
+//        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+//        String a = gson.toJson(this);
+//        Log.i("AAAAAAAAAA", a);
+//        return a;
+//    }
 
     @Override
     public String toString() {
-        return "FamilyCohesionRecord{" +
+        return "FamilyCohesionRecordOB{" +
                 "id=" + id +
                 ", _id='" + _id + '\'' +
                 ", patientId='" + patientId + '\'' +

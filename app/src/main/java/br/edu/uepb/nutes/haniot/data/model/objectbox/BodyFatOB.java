@@ -4,9 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
 import java.util.Objects;
 
 import br.edu.uepb.nutes.haniot.data.model.type.MeasurementType;
@@ -14,43 +11,34 @@ import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 
 /**
- * Represents Object of a BodyFat.
+ * Represents Object of a BodyFatOB.
  *
  * @author Copyright (c) 2019, NUTES/UEPB
  */
 @Entity
-public class BodyFat implements Parcelable {
+public class BodyFatOB implements Parcelable {
     @Id
-    @Expose(serialize = false, deserialize = false)
     private long id;
 
-    @SerializedName("value")
-    @Expose()
     private double value;
 
-    @SerializedName("unit")
-    @Expose()
     private String unit;
 
-    @SerializedName("timestamp")
-    @Expose()
     private String timestamp;
 
-    @SerializedName("type")
-    @Expose()
     private String type;
 
-    public BodyFat() {
+    public BodyFatOB() {
         this.type = MeasurementType.BODY_FAT;
     }
 
-    public BodyFat(double value, String unit) {
+    public BodyFatOB(double value, String unit) {
         this.type = MeasurementType.BODY_FAT;
         this.value = value;
         this.unit = unit;
     }
 
-    protected BodyFat(Parcel in) {
+    protected BodyFatOB(Parcel in) {
         id = in.readLong();
         value = in.readDouble();
         unit = in.readString();
@@ -72,15 +60,15 @@ public class BodyFat implements Parcelable {
         return 0;
     }
 
-    public static final Creator<BodyFat> CREATOR = new Creator<BodyFat>() {
+    public static final Creator<BodyFatOB> CREATOR = new Creator<BodyFatOB>() {
         @Override
-        public BodyFat createFromParcel(Parcel in) {
-            return new BodyFat(in);
+        public BodyFatOB createFromParcel(Parcel in) {
+            return new BodyFatOB(in);
         }
 
         @Override
-        public BodyFat[] newArray(int size) {
-            return new BodyFat[size];
+        public BodyFatOB[] newArray(int size) {
+            return new BodyFatOB[size];
         }
     };
 
@@ -126,15 +114,15 @@ public class BodyFat implements Parcelable {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof BodyFat)) return false;
-        BodyFat fat = (BodyFat) o;
+        if (!(o instanceof BodyFatOB)) return false;
+        BodyFatOB fat = (BodyFatOB) o;
         return Objects.equals(timestamp, fat.timestamp);
     }
 
     @NonNull
     @Override
     public String toString() {
-        return "BodyFat{" +
+        return "BodyFatOB{" +
                 "id=" + id +
                 ", value=" + value +
                 ", unit='" + unit + '\'' +

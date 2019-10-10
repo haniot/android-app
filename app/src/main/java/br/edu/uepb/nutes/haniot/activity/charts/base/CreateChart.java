@@ -34,7 +34,7 @@ import br.edu.uepb.nutes.haniot.activity.charts.BloodPresssureChartActivity;
 import br.edu.uepb.nutes.haniot.activity.charts.GlucoseChartActivity;
 import br.edu.uepb.nutes.haniot.activity.charts.HeartRateChartActivity;
 import br.edu.uepb.nutes.haniot.activity.charts.SmartBandChartActivity;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.Measurement;
+import br.edu.uepb.nutes.haniot.data.model.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.type.MeasurementType;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 

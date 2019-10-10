@@ -11,8 +11,10 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.Objects;
 
+import br.edu.uepb.nutes.haniot.data.model.objectbox.DeviceOB;
+
 /**
- * Represents Device object.
+ * Represents DeviceOB object.
  *
  * @author Copyright (c) 2019, NUTES/UEPB
  */
@@ -55,11 +57,17 @@ public class Device implements Parcelable {
     @Expose(serialize = false, deserialize = false)
     private int img;
 
-//    public Device() {
-//    }
-
-    public Device(br.edu.uepb.nutes.haniot.data.model.objectbox.Device d) {
-        this(d.getName(), d.getManufacturer(), d.getModelNumber(), d.getImg(), d.getType(), d.getUuid());
+    public Device(DeviceOB d) {
+        this.setId(d.getId());
+        this.set_id(d.get_id());
+        this.setName(d.getName());
+        this.setAddress(d.getAddress());
+        this.setType(d.getType());
+        this.setModelNumber(d.getModelNumber());
+        this.setManufacturer(d.getManufacturer());
+        this.setUserId(d.getUserId());
+        this.setUuid(d.getUuid());
+        this.setImg(d.getImg());
     }
 
     public Device(String name, String manufacturer, String modelNumber, int img, String type, String uuid) {
@@ -221,7 +229,7 @@ public class Device implements Parcelable {
     @NonNull
     @Override
     public String toString() {
-        return "Device{" +
+        return "DeviceOB{" +
                 "id=" + id +
                 ", _id='" + _id + '\'' +
                 ", name='" + name + '\'' +

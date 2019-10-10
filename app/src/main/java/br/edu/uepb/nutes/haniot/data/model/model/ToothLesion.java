@@ -68,7 +68,7 @@ public class ToothLesion {
 
     @Override
     public String toString() {
-        return "ToothLesion{" +
+        return "ToothLesionOB{" +
                 "toothType='" + toothType + '\'' +
                 ", lesionType='" + lesionType + '\'' +
                 ", oralHealthRecord=" + oralHealthRecord +

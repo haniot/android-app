@@ -11,7 +11,7 @@ import java.lang.reflect.Type;
 import br.edu.uepb.nutes.haniot.data.model.type.UserType;
 
 /**
- * Represents User object.
+ * Represents UserOB object.
  *
  * @author Copyright (c) 2019, NUTES/UEPB
  */
@@ -224,7 +224,7 @@ public class User {
      * Convert json to Object.
      *
      * @param json String
-     * @return User
+     * @return UserOB
      */
     public static User jsonDeserialize(String json) {
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
@@ -248,7 +248,7 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" +
+        return "UserOB{" +
                 "id=" + id +
                 ", _id='" + _id + '\'' +
                 ", email='" + email + '\'' +

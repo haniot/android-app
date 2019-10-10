@@ -7,7 +7,7 @@ public interface BloodPressureDataCallback extends DeviceStatusCallback {
     /**
      * Blood Pressure measurement receiver.
      *
-     * @param device    {@link BluetoothDevice} Device that collected the measurement.
+     * @param device    {@link BluetoothDevice} DeviceOB that collected the measurement.
      * @param systolic  Systolic value.
      * @param diastolic Diastolic value.
      * @param pulse     Pulse value in bpm.

@@ -1,35 +1,44 @@
 package br.edu.uepb.nutes.haniot.data;
 
-//import br.edu.uepb.nutes.haniot.data.model.Device;
-
 import java.util.ArrayList;
 import java.util.List;
 
-import br.edu.uepb.nutes.haniot.data.model.objectbox.Patient;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.MedicalRecord;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.Measurement;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.FeedingHabitsRecord;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.Device;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.PhysicalActivityHabit;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.PilotStudy;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.SleepHabit;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.User;
+import br.edu.uepb.nutes.haniot.data.model.model.ChronicDisease;
+import br.edu.uepb.nutes.haniot.data.model.model.Device;
+import br.edu.uepb.nutes.haniot.data.model.model.FeedingHabitsRecord;
+import br.edu.uepb.nutes.haniot.data.model.model.Measurement;
+import br.edu.uepb.nutes.haniot.data.model.model.MedicalRecord;
+import br.edu.uepb.nutes.haniot.data.model.model.Patient;
+import br.edu.uepb.nutes.haniot.data.model.model.PhysicalActivityHabit;
+import br.edu.uepb.nutes.haniot.data.model.model.PilotStudy;
+import br.edu.uepb.nutes.haniot.data.model.model.SleepHabit;
+import br.edu.uepb.nutes.haniot.data.model.model.User;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.ChronicDiseaseOB;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.DeviceOB;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.FeedingHabitsRecordOB;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.MeasurementOB;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.MedicalRecordOB;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.PatientOB;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.PhysicalActivityHabitOB;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.PilotStudyOB;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.SleepHabitOB;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.UserOB;
 
 public class Convert {
 
     // ------------- DEVICE ---------------------
 
-    public static Device deviceToObjectBox(br.edu.uepb.nutes.haniot.data.model.model.Device d) {
+    public static DeviceOB deviceToObjectBox(Device d) {
+        return new DeviceOB(d);
+    }
+
+    public static Device deviceToModel(DeviceOB d) {
         return new Device(d);
     }
 
-    public static br.edu.uepb.nutes.haniot.data.model.model.Device deviceToModel(Device d) {
-        return new br.edu.uepb.nutes.haniot.data.model.model.Device(d);
-    }
-
-    public static List<br.edu.uepb.nutes.haniot.data.model.model.Device> listDeviceToModel(List<Device> devices) {
-        List<br.edu.uepb.nutes.haniot.data.model.model.Device> list = new ArrayList<>();
-        for (Device d : devices) {
+    public static List<Device> listDeviceToModel(List<DeviceOB> devices) {
+        List<Device> list = new ArrayList<>();
+        for (DeviceOB d : devices) {
             list.add(Convert.deviceToModel(d));
         }
         return list;
@@ -37,107 +46,115 @@ public class Convert {
 
     // ------------- FEEDING HABITS RECORD ----------------------------
 
-    public static br.edu.uepb.nutes.haniot.data.model.model.FeedingHabitsRecord feedingHabitsRecordToModel(FeedingHabitsRecord f) {
+    public static FeedingHabitsRecord feedingHabitsRecordToModel(FeedingHabitsRecordOB f) {
         return null;
     }
 
-    public static List<br.edu.uepb.nutes.haniot.data.model.model.FeedingHabitsRecord> listFeedingHabitsRecordToModel(List<FeedingHabitsRecord> feedingHabitsRecords) {
+    public static List<FeedingHabitsRecord> listFeedingHabitsRecordToModel(List<FeedingHabitsRecordOB> feedingHabitsRecords) {
         return null;
     }
 
-    public static FeedingHabitsRecord feedingHabitsRecordToObjectBox(br.edu.uepb.nutes.haniot.data.model.model.FeedingHabitsRecord feedingHabitsRecord) {
+    public static FeedingHabitsRecordOB feedingHabitsRecordToObjectBox(FeedingHabitsRecord feedingHabitsRecord) {
         return null;
     }
 
     // ----------- MEASUREMENT ---------------------
 
-    public static Measurement measurementToObjectBox(br.edu.uepb.nutes.haniot.data.model.model.Measurement measurement) {
-        return null;
+    public static MeasurementOB measurementToObjectBox(Measurement measurement) {
+        return new MeasurementOB(measurement);
     }
 
-    public static br.edu.uepb.nutes.haniot.data.model.model.Measurement measurementToModel(Measurement measurement) {
-        return null;
+    public static Measurement measurementToModel(MeasurementOB measurement) {
+        return new Measurement(measurement);
     }
 
-    public static List<br.edu.uepb.nutes.haniot.data.model.model.Measurement> listMeasurementsToModel(List<Measurement> list) {
+    public static List<Measurement> listMeasurementsToModel(List<MeasurementOB> list) {
         return null;
     }
 
     // --------------- MEDICAL RECORDS ------------------------
 
-    public static br.edu.uepb.nutes.haniot.data.model.model.MedicalRecord medicalRecordToModel(MedicalRecord m) {
+    public static MedicalRecord medicalRecordToModel(MedicalRecordOB medicalRecord) {
+        return new MedicalRecord(medicalRecord);
+    }
+
+    public static List<MedicalRecord> listMedicalRecordsToModel(List<MedicalRecordOB> medicalRecords) {
         return null;
     }
 
-    public static List<br.edu.uepb.nutes.haniot.data.model.model.MedicalRecord> listMedicalRecordsToModel(List<MedicalRecord> medicalRecords) {
-        return null;
+    public static MedicalRecordOB medicalRecordToObjectBox(MedicalRecord medicalRecord) {
+        return new MedicalRecordOB(medicalRecord);
     }
 
-    public static MedicalRecord medicalRecordToObjectBox(br.edu.uepb.nutes.haniot.data.model.model.MedicalRecord medicalRecord) {
-        return null;
+    public static ChronicDisease chronicDiseaseToModel(ChronicDiseaseOB chronicDisease) {
+        return new ChronicDisease(chronicDisease);
     }
 
     // ------- PATIENT --------------
 
-    public static br.edu.uepb.nutes.haniot.data.model.model.Patient patientToModel(Patient patient) {
-        return null;
+    public static Patient patientToModel(PatientOB patientOB) {
+        return new Patient(patientOB);
     }
 
-    public static Patient patientToObjectBox(br.edu.uepb.nutes.haniot.data.model.model.Patient patient) {
-        return null;
+    public static PatientOB patientToObjectBox(Patient patient) {
+        return new PatientOB(patient);
     }
 
-    public static List<br.edu.uepb.nutes.haniot.data.model.model.Patient> listPatientsToModel(List<Patient> list) {
-        return null;
+    public static List<Patient> listPatientsToModel(List<PatientOB> patientsOB) {
+        List<Patient> list = new ArrayList<>();
+        for (PatientOB p : patientsOB) {
+            list.add(new Patient(p));
+        }
+        return list;
     }
 
     // ---------- PHYSICAL ACTIVITY HABIT -----------------
 
-    public static PhysicalActivityHabit physicalActivityHabitToObjectBox(br.edu.uepb.nutes.haniot.data.model.model.PhysicalActivityHabit physicalActivityHabit) {
+    public static PhysicalActivityHabitOB physicalActivityHabitToObjectBox(PhysicalActivityHabit physicalActivityHabit) {
         return null;
     }
 
-    public static br.edu.uepb.nutes.haniot.data.model.model.PhysicalActivityHabit physicalActivityHabitToModel(PhysicalActivityHabit fromPatientId) {
+    public static PhysicalActivityHabit physicalActivityHabitToModel(PhysicalActivityHabitOB fromPatientId) {
         return null;
     }
 
-    public static List<br.edu.uepb.nutes.haniot.data.model.model.PhysicalActivityHabit> listPhysicalActivityHabitToModel(List<PhysicalActivityHabit> physicalActivityHabits) {
+    public static List<PhysicalActivityHabit> listPhysicalActivityHabitToModel(List<PhysicalActivityHabitOB> physicalActivityHabits) {
         return null;
     }
 
     // ----------- PILOT STUDY ---------------------------
 
-    public static PilotStudy pilotStudyToObjectBox(br.edu.uepb.nutes.haniot.data.model.model.PilotStudy pilotStudy) {
+    public static PilotStudyOB pilotStudyToObjectBox(PilotStudy pilotStudy) {
         return null;
     }
 
-    public static br.edu.uepb.nutes.haniot.data.model.model.PilotStudy pilotStudyToModel(PilotStudy pilotStudy) {
+    public static PilotStudy pilotStudyToModel(PilotStudyOB pilotStudy) {
         return null;
     }
 
-    public static List<br.edu.uepb.nutes.haniot.data.model.model.PilotStudy> listPilotStudiesToModel(List<PilotStudy> list) {
+    public static List<PilotStudy> listPilotStudiesToModel(List<PilotStudyOB> list) {
         return null;
     }
 
     // -------------- SLEEP HABITS DAO ---------------------
 
-    public static SleepHabit sleepHabitsToObjectBox(br.edu.uepb.nutes.haniot.data.model.model.SleepHabit sleepHabit) {
+    public static SleepHabitOB sleepHabitsToObjectBox(SleepHabit sleepHabit) {
         return null;
     }
 
-    public static List<br.edu.uepb.nutes.haniot.data.model.model.SleepHabit> listSleepHabitsToModel(List<SleepHabit> sleepHabits) {
+    public static List<SleepHabit> listSleepHabitsToModel(List<SleepHabitOB> sleepHabits) {
         return null;
     }
 
-    public static br.edu.uepb.nutes.haniot.data.model.model.SleepHabit sleepHabitsToModel(SleepHabit fromPatientId) {
+    public static SleepHabit sleepHabitsToModel(SleepHabitOB fromPatientId) {
         return null;
     }
 
-    public static User userToObjectBox(br.edu.uepb.nutes.haniot.data.model.model.User user) {
+    public static UserOB userToObjectBox(User user) {
         return null;
     }
 
-    public static br.edu.uepb.nutes.haniot.data.model.model.User userToModel(User user) {
+    public static User userToModel(UserOB user) {
         return null;
     }
 }

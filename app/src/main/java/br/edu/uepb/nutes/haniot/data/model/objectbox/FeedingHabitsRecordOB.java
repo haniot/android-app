@@ -1,12 +1,11 @@
 package br.edu.uepb.nutes.haniot.data.model.objectbox;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-import com.google.gson.reflect.TypeToken;
+//import com.google.gson.Gson;
+//import com.google.gson.GsonBuilder;
+//import com.google.gson.annotations.Expose;
+//import com.google.gson.annotations.SerializedName;
+//import com.google.gson.reflect.TypeToken;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,34 +17,24 @@ import io.objectbox.annotation.Transient;
 import io.objectbox.relation.ToMany;
 
 @Entity
-public class FeedingHabitsRecord extends ActivityHabitsRecord {
-    @SerializedName("weekly_feeding_habits")
-    @Expose()
+public class FeedingHabitsRecordOB extends ActivityHabitsRecordOB {
+
     @Transient // not persisted
-    private List<WeeklyFoodRecord> weeklyFeedingHabits;
+    private List<WeeklyFoodRecordOB> weeklyFeedingHabits;
 
-    @Expose(serialize = false, deserialize = false)
     @Backlink(to = "feedingHabitsRecord")
-    private ToMany<WeeklyFoodRecord> weeklyFeedingHabitsDB;
+    private ToMany<WeeklyFoodRecordOB> weeklyFeedingHabitsDB;
 
-    @SerializedName("daily_water_glasses")
-    @Expose()
     private String dailyWaterGlasses;
 
-    @SerializedName("six_month_breast_feeding")
-    @Expose()
     private String sixMonthBreastFeeding;
 
-    @SerializedName("food_allergy_intolerance")
-    @Expose()
     @Convert(converter = ConverterStringToDatabase.class, dbType = String.class)
     private List<String> foodAllergyIntolerance;
 
-    @SerializedName("breakfast_daily_frequency")
-    @Expose()
     private String breakfastDailyFrequency;
 
-    public FeedingHabitsRecord() {
+    public FeedingHabitsRecordOB() {
     }
 
     public String getDailyWaterGlasses() {
@@ -64,32 +53,32 @@ public class FeedingHabitsRecord extends ActivityHabitsRecord {
         this.sixMonthBreastFeeding = sixMonthBreastFeeding;
     }
 
-    public List<WeeklyFoodRecord> getWeeklyFeedingHabits() {
+    public List<WeeklyFoodRecordOB> getWeeklyFeedingHabits() {
         return weeklyFeedingHabits;
     }
 
-    public void setWeeklyFeedingHabits(List<WeeklyFoodRecord> weeklyFeedingHabits) {
+    public void setWeeklyFeedingHabits(List<WeeklyFoodRecordOB> weeklyFeedingHabits) {
         this.weeklyFeedingHabits = weeklyFeedingHabits;
     }
 
-    public void addWeeklyFeedingHabits(WeeklyFoodRecord... weeklyFeedingHabits) {
+    public void addWeeklyFeedingHabits(WeeklyFoodRecordOB... weeklyFeedingHabits) {
         if (this.weeklyFeedingHabits == null) this.weeklyFeedingHabits = new ArrayList<>();
-        for (WeeklyFoodRecord weeklyFoodRecord : weeklyFeedingHabits) {
+        for (WeeklyFoodRecordOB weeklyFoodRecord : weeklyFeedingHabits) {
             this.weeklyFeedingHabits.add(weeklyFoodRecord);
         }
     }
 
-    public ToMany<WeeklyFoodRecord> getWeeklyFeedingHabitsDB() {
+    public ToMany<WeeklyFoodRecordOB> getWeeklyFeedingHabitsDB() {
         return weeklyFeedingHabitsDB;
     }
 
-    public void setWeeklyFeedingHabitsDB(List<WeeklyFoodRecord> weeklyFeedingHabits) {
+    public void setWeeklyFeedingHabitsDB(List<WeeklyFoodRecordOB> weeklyFeedingHabits) {
         this.getWeeklyFeedingHabitsDB().clear();
         this.getWeeklyFeedingHabitsDB().addAll(weeklyFeedingHabits);
     }
 
-    public void addWeeklyFeedingHabitsDB(WeeklyFoodRecord... weeklyFoodRecord) {
-        for (WeeklyFoodRecord weeklyFo : weeklyFoodRecord) {
+    public void addWeeklyFeedingHabitsDB(WeeklyFoodRecordOB... weeklyFoodRecord) {
+        for (WeeklyFoodRecordOB weeklyFo : weeklyFoodRecord) {
             this.getWeeklyFeedingHabitsDB().add(weeklyFo);
         }
     }
@@ -110,33 +99,33 @@ public class FeedingHabitsRecord extends ActivityHabitsRecord {
         this.breakfastDailyFrequency = breakfastDailyFrequency;
     }
 
-    /**
-     * Convert object to json format.
-     *
-     * @return String
-     */
-    public String toJson() {
-        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-        return gson.toJson(this);
-    }
-
-    /**
-     * Convert json to Object.
-     *
-     * @param json String
-     * @return Patient
-     */
-    public static FeedingHabitsRecord jsonDeserialize(String json) {
-        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-        Type typeFeedingHabits = new TypeToken<FeedingHabitsRecord>() {
-        }.getType();
-        return gson.fromJson(json, typeFeedingHabits);
-    }
+//    /**
+//     * Convert object to json format.
+//     *
+//     * @return String
+//     */
+//    public String toJson() {
+//        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+//        return gson.toJson(this);
+//    }
+//
+//    /**
+//     * Convert json to Object.
+//     *
+//     * @param json String
+//     * @return PatientOB
+//     */
+//    public static FeedingHabitsRecordOB jsonDeserialize(String json) {
+//        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+//        Type typeFeedingHabits = new TypeToken<FeedingHabitsRecordOB>() {
+//        }.getType();
+//        return gson.fromJson(json, typeFeedingHabits);
+//    }
 
     @Override
     public String toString() {
         return super.toString() +
-                " FeedingHabitsRecord{" +
+                " FeedingHabitsRecordOB{" +
                 "weeklyFeedingHabits=" + weeklyFeedingHabits +
                 ", weeklyFeedingHabitsDB=" + weeklyFeedingHabitsDB +
                 ", dailyWaterGlasses='" + dailyWaterGlasses + '\'' +
