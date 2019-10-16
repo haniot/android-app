@@ -12,6 +12,7 @@ import java.util.Objects;
 
 import javax.annotation.Nullable;
 
+import br.edu.uepb.nutes.haniot.data.model.objectbox.PilotStudyOB;
 import br.edu.uepb.nutes.haniot.utils.ConverterStringToDatabase;
 
 public class PilotStudy {
@@ -50,6 +51,18 @@ public class PilotStudy {
     private String userId;
 
     public PilotStudy() {
+    }
+
+    public PilotStudy(PilotStudyOB p) {
+        this.set_id(p.get_id());
+        this.setId(p.getId());
+        this.setName(p.getName());
+        this.setActive(p.isActive());
+        this.setStart(p.getStart());
+        this.setEnd(p.getEnd());
+        this.setSelected(p.isSelected());
+        this.setHealthProfessionalsId(p.getHealthProfessionalsId());
+        this.setUserId(p.getUserId());
     }
 
     public long getId() {

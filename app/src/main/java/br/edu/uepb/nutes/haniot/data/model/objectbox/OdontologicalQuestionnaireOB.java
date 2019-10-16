@@ -19,9 +19,6 @@ public class OdontologicalQuestionnaireOB {
 
     OralHealthRecordOB oralHealthRecord;
 
-    public OdontologicalQuestionnaireOB() {
-    }
-
     public long getId() {
         return id;
     }
@@ -69,16 +66,6 @@ public class OdontologicalQuestionnaireOB {
     public void setOralHealthRecord(OralHealthRecordOB oralHealthRecord) {
         this.oralHealthRecord = oralHealthRecord;
     }
-
-//    /**
-//     * Convert object to json format.
-//     *
-//     * @return String
-//     */
-//    public String toJson() {
-//        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-//        return gson.toJson(this);
-//    }
 
     @Override
     public String toString() {

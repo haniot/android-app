@@ -34,9 +34,6 @@ public class FeedingHabitsRecordOB extends ActivityHabitsRecordOB {
 
     private String breakfastDailyFrequency;
 
-    public FeedingHabitsRecordOB() {
-    }
-
     public String getDailyWaterGlasses() {
         return dailyWaterGlasses;
     }

@@ -323,8 +323,8 @@ public class Measurement implements Parcelable {
                 ", diastolic=" + diastolic +
                 ", pulse=" + pulse +
                 ", meal=" + meal +
-                ", datasetDB=" + datasetDB +
-                ", bodyFatDB=" + bodyFatDB +
+//                ", datasetDB=" + datasetDB +
+//                ", bodyFatDB=" + bodyFatDB +
                 '}';
     }
 }

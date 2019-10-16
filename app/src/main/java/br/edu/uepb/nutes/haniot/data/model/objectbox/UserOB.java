@@ -141,16 +141,6 @@ public class UserOB {
         this.phoneNumber = phoneNumber;
     }
 
-//    /**
-//     * Convert object to json format.
-//     *
-//     * @return String
-//     */
-//    public String toJson() {
-//        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-//        return gson.toJson(this);
-//    }
-
     public String getBirthDate() {
         return birthDate;
     }
@@ -190,19 +180,6 @@ public class UserOB {
     public void setHealthArea(String healthArea) {
         this.healthArea = healthArea;
     }
-
-//    /**
-//     * Convert json to Object.
-//     *
-//     * @param json String
-//     * @return UserOB
-//     */
-//    public static UserOB jsonDeserialize(String json) {
-//        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-//        Type typeUser = new TypeToken<UserOB>() {
-//        }.getType();
-//        return gson.fromJson(json, typeUser);
-//    }
 
     @Override
     public boolean equals(Object o) {

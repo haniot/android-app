@@ -82,16 +82,6 @@ public class OralHealthRecordOB {
         this.patientId = patientId;
     }
 
-//    /**
-//     * Convert object to json format.
-//     *
-//     * @return String
-//     */
-//    public String toJson() {
-//        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-//        return gson.toJson(this);
-//    }
-
     @Override
     public String toString() {
         return "OralHealthRecordOB{" +

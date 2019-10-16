@@ -15,6 +15,7 @@ public class HealthProfessionalOB extends UserOB {
     private String totalPatients;
 
     public HealthProfessionalOB() {
+
     }
 
     public String getTotalPilotStudies() {

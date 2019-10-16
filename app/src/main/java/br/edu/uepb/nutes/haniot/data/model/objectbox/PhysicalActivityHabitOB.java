@@ -14,9 +14,6 @@ public class PhysicalActivityHabitOB extends ActivityHabitsRecordOB {
     @Convert(converter = ConverterStringToDatabase.class, dbType = String.class)
     private List<String> weeklyActivities;
 
-    public PhysicalActivityHabitOB() {
-    }
-
     public String getSchoolActivityFreq() {
         return schoolActivityFreq;
     }
@@ -32,29 +29,6 @@ public class PhysicalActivityHabitOB extends ActivityHabitsRecordOB {
     public void setWeeklyActivities(List<String> weeklyActivities) {
         this.weeklyActivities = weeklyActivities;
     }
-
-//    /**
-//     * Convert object to json format.
-//     *
-//     * @return String
-//     */
-//    public String toJson() {
-//        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-//        return gson.toJson(this);
-//    }
-//
-//    /**
-//     * Convert json to Object.
-//     *
-//     * @param json String
-//     * @return PatientOB
-//     */
-//    public static PhysicalActivityHabitOB jsonDeserialize(String json) {
-//        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-//        Type typePhysicalActivity = new TypeToken<PhysicalActivityHabitOB>() {
-//        }.getType();
-//        return gson.fromJson(json, typePhysicalActivity);
-//    }
 
     @Override
     public String toString() {

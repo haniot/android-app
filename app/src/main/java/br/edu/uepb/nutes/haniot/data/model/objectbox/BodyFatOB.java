@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 
 import java.util.Objects;
 
+import br.edu.uepb.nutes.haniot.data.model.model.BodyFat;
 import br.edu.uepb.nutes.haniot.data.model.type.MeasurementType;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
@@ -28,8 +29,12 @@ public class BodyFatOB implements Parcelable {
 
     private String type;
 
-    public BodyFatOB() {
+    public BodyFatOB(BodyFat b) {
         this.type = MeasurementType.BODY_FAT;
+        this.setId(b.getId());
+        this.setValue(b.getValue());
+        this.setUnit(b.getUnit());
+        this.setTimestamp(b.getTimestamp());
     }
 
     public BodyFatOB(double value, String unit) {

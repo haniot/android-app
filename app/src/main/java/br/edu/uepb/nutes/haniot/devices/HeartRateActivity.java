@@ -79,7 +79,7 @@ public class HeartRateActivity extends BaseDeviceActivity implements GenericDial
             List<HeartRateItem> heartRateItems = new ArrayList<>();
             heartRateItems.add(new HeartRateItem(heartRate, DateUtils.getCurrentDateTimeUTC()));
             measurement.setDataset(heartRateItems);
-            measurement.setDatasetDB(heartRateItems);
+//            measurement.setDatasetDB(heartRateItems);
 
 //            if (mDevice != null)
 //                measurement.setDeviceId(mDevice.get_id());

@@ -1,5 +1,6 @@
 package br.edu.uepb.nutes.haniot.data.model.objectbox;
 
+import br.edu.uepb.nutes.haniot.data.Convert;
 import br.edu.uepb.nutes.haniot.data.model.model.ChronicDisease;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
@@ -16,13 +17,12 @@ public class ChronicDiseaseOB {
 
     private ToOne<MedicalRecordOB> medicalRecord;
 
-    public ChronicDiseaseOB() { }
-
     public ChronicDiseaseOB(ChronicDisease c) {
         this.setId(c.getId());
         this.setType(c.getType());
         this.setDiseaseHistory(c.getDiseaseHistory());
-        this.setMedicalRecord();
+        this.medicalRecord.setTarget(
+                Convert.medicalRecordToObjectBox(c.getMedicalRecord()));
     }
 
     public ChronicDiseaseOB(String type, String diseaseHistory) {

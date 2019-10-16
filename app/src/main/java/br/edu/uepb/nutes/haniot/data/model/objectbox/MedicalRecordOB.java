@@ -2,6 +2,7 @@ package br.edu.uepb.nutes.haniot.data.model.objectbox;
 
 import java.util.List;
 
+import br.edu.uepb.nutes.haniot.data.Convert;
 import br.edu.uepb.nutes.haniot.data.model.model.MedicalRecord;
 import io.objectbox.annotation.Backlink;
 import io.objectbox.annotation.Entity;
@@ -13,10 +14,9 @@ public class MedicalRecordOB extends ActivityHabitsRecordOB {
     @Backlink(to = "medicalRecord")
     private ToMany<ChronicDiseaseOB> chronicDiseases;
 
-    public MedicalRecordOB() { }
-
     public MedicalRecordOB(MedicalRecord m) {
-
+        this.chronicDiseases.addAll(
+                Convert.listChronicsToObjectBox(this, m.getChronicDiseases()));
     }
 
     public List<ChronicDiseaseOB> getChronicDiseases() {

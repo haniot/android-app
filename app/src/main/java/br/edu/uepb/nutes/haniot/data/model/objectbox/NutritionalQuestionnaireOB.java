@@ -21,9 +21,6 @@ public class NutritionalQuestionnaireOB {
 
     MedicalRecordOB medicalRecord;
 
-    public NutritionalQuestionnaireOB() {
-    }
-
     public long getId() {
         return id;
     }
@@ -79,16 +76,6 @@ public class NutritionalQuestionnaireOB {
     public void setMedicalRecord(MedicalRecordOB medicalRecord) {
         this.medicalRecord = medicalRecord;
     }
-
-//    /**
-//     * Convert object to json format.
-//     *
-//     * @return String
-//     */
-//    public String toJson() {
-//        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-//        return gson.toJson(this);
-//    }
 
     @Override
     public String toString() {

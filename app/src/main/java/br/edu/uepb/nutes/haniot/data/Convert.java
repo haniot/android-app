@@ -3,9 +3,11 @@ package br.edu.uepb.nutes.haniot.data;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.edu.uepb.nutes.haniot.data.model.model.BodyFat;
 import br.edu.uepb.nutes.haniot.data.model.model.ChronicDisease;
 import br.edu.uepb.nutes.haniot.data.model.model.Device;
 import br.edu.uepb.nutes.haniot.data.model.model.FeedingHabitsRecord;
+import br.edu.uepb.nutes.haniot.data.model.model.HeartRateItem;
 import br.edu.uepb.nutes.haniot.data.model.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.model.MedicalRecord;
 import br.edu.uepb.nutes.haniot.data.model.model.Patient;
@@ -13,16 +15,20 @@ import br.edu.uepb.nutes.haniot.data.model.model.PhysicalActivityHabit;
 import br.edu.uepb.nutes.haniot.data.model.model.PilotStudy;
 import br.edu.uepb.nutes.haniot.data.model.model.SleepHabit;
 import br.edu.uepb.nutes.haniot.data.model.model.User;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.BodyFatOB;
 import br.edu.uepb.nutes.haniot.data.model.objectbox.ChronicDiseaseOB;
 import br.edu.uepb.nutes.haniot.data.model.objectbox.DeviceOB;
 import br.edu.uepb.nutes.haniot.data.model.objectbox.FeedingHabitsRecordOB;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.HeartRateItemOB;
 import br.edu.uepb.nutes.haniot.data.model.objectbox.MeasurementOB;
 import br.edu.uepb.nutes.haniot.data.model.objectbox.MedicalRecordOB;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.MedicalRecordOB_;
 import br.edu.uepb.nutes.haniot.data.model.objectbox.PatientOB;
 import br.edu.uepb.nutes.haniot.data.model.objectbox.PhysicalActivityHabitOB;
 import br.edu.uepb.nutes.haniot.data.model.objectbox.PilotStudyOB;
 import br.edu.uepb.nutes.haniot.data.model.objectbox.SleepHabitOB;
 import br.edu.uepb.nutes.haniot.data.model.objectbox.UserOB;
+import io.objectbox.relation.ToMany;
 
 public class Convert {
 
@@ -69,7 +75,23 @@ public class Convert {
     }
 
     public static List<Measurement> listMeasurementsToModel(List<MeasurementOB> list) {
-        return null;
+        List<Measurement> lista = new ArrayList<>();
+        for(MeasurementOB aux : list) {
+            lista.add(new Measurement(aux));
+        }
+        return lista;
+    }
+
+    public static BodyFatOB bodyFatToObjectBox(BodyFat bf) {
+        return new BodyFatOB(bf);
+    }
+
+    public static List<HeartRateItemOB> listHeartRateToObjectBox(List<HeartRateItem> dataset) {
+        List<HeartRateItemOB> lista = new ArrayList<>();
+        for (HeartRateItem aux : dataset) {
+            lista.add(new HeartRateItemOB(aux));
+        }
+        return lista;
     }
 
     // --------------- MEDICAL RECORDS ------------------------
@@ -88,6 +110,22 @@ public class Convert {
 
     public static ChronicDisease chronicDiseaseToModel(ChronicDiseaseOB chronicDisease) {
         return new ChronicDisease(chronicDisease);
+    }
+
+    public static List<ChronicDisease> listChronicsToModel(List<ChronicDiseaseOB> c) {
+        List<ChronicDisease> list = new ArrayList<>();
+        for (ChronicDiseaseOB aux : c) {
+            list.add(new ChronicDisease(aux));
+        }
+        return list;
+    }
+
+    public static ToMany<ChronicDiseaseOB> listChronicsToObjectBox(MedicalRecordOB medicalRecordOB, List<ChronicDisease> c) {
+        ToMany<ChronicDiseaseOB> lista = new ToMany<>(medicalRecordOB, MedicalRecordOB_.chronicDiseases);
+        for (ChronicDisease aux: c) {
+            lista.add(new ChronicDiseaseOB(aux));
+        }
+        return lista;
     }
 
     // ------- PATIENT --------------
@@ -125,21 +163,25 @@ public class Convert {
     // ----------- PILOT STUDY ---------------------------
 
     public static PilotStudyOB pilotStudyToObjectBox(PilotStudy pilotStudy) {
-        return null;
+        return new PilotStudyOB(pilotStudy);
     }
 
     public static PilotStudy pilotStudyToModel(PilotStudyOB pilotStudy) {
-        return null;
+        return new PilotStudy(pilotStudy);
     }
 
     public static List<PilotStudy> listPilotStudiesToModel(List<PilotStudyOB> list) {
-        return null;
+        List<PilotStudy> lista = new ArrayList<>();
+        for (PilotStudyOB aux : list) {
+            lista.add(new PilotStudy(aux));
+        }
+        return lista;
     }
 
     // -------------- SLEEP HABITS DAO ---------------------
 
     public static SleepHabitOB sleepHabitsToObjectBox(SleepHabit sleepHabit) {
-        return null;
+        return new SleepHabitOB(sleepHabit);
     }
 
     public static List<SleepHabit> listSleepHabitsToModel(List<SleepHabitOB> sleepHabits) {

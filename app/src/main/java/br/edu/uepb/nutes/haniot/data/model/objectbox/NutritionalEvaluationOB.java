@@ -29,9 +29,6 @@ public class NutritionalEvaluationOB {
 
     private MedicalRecordOB medicalRecord;
 
-    public NutritionalEvaluationOB() {
-    }
-
     public long getId() {
         return id;
     }
@@ -123,16 +120,6 @@ public class NutritionalEvaluationOB {
 
         measurements.remove(measurement);
     }
-
-//    /**
-//     * Convert object to json format.
-//     *
-//     * @return String
-//     */
-//    public String toJson() {
-//        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-//        return gson.toJson(this);
-//    }
 
     @Override
     public String toString() {

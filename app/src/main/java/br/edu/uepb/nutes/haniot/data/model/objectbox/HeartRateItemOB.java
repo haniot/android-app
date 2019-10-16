@@ -6,6 +6,8 @@ import android.support.annotation.NonNull;
 
 import java.util.Objects;
 
+import br.edu.uepb.nutes.haniot.data.Convert;
+import br.edu.uepb.nutes.haniot.data.model.model.HeartRateItem;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.relation.ToOne;
@@ -26,7 +28,11 @@ public class HeartRateItemOB implements Parcelable {
 
     private ToOne<MeasurementOB> heartRate;
 
-    public HeartRateItemOB() {
+    public HeartRateItemOB(HeartRateItem h) {
+        this.setId(h.getId());
+        this.setValue(h.getValue());
+        this.setTimestamp(h.getTimestamp());
+        this.heartRate.setTarget(Convert.measurementToObjectBox(h.getHeartRate()));
     }
 
     public HeartRateItemOB(int value, String timestamp) {

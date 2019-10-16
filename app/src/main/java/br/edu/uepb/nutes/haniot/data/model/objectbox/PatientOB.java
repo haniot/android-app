@@ -10,9 +10,8 @@ public class PatientOB extends UserOB {
     private String gender;
     private String healthProfessionalId;
 
-    public PatientOB() { }
-
     public PatientOB(Patient p) {
+        super(p.getEmail(), p.getPassword());
         this.setPilotId(p.getPilotId());
         this.setGender(p.getGender());
         this.setHealthProfessionalId(p.getHealthProfessionalId());

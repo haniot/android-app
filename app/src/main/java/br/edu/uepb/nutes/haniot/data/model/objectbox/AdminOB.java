@@ -18,9 +18,6 @@ public class AdminOB extends UserOB {
 
     private String totalAdmins;
 
-    public AdminOB() {
-    }
-
     public AdminOB(String totalPilotStudies, String totalPatients, String totalHealthProfessionals, String totalAdmins) {
         this.totalPilotStudies = totalPilotStudies;
         this.totalPatients = totalPatients;

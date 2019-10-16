@@ -3,6 +3,7 @@ package br.edu.uepb.nutes.haniot.data.model.objectbox;
 import java.util.List;
 import java.util.Objects;
 
+import br.edu.uepb.nutes.haniot.data.model.model.PilotStudy;
 import br.edu.uepb.nutes.haniot.utils.ConverterStringToDatabase;
 import io.objectbox.annotation.Convert;
 import io.objectbox.annotation.Entity;
@@ -32,7 +33,16 @@ public class PilotStudyOB {
 
     private String userId;
 
-    public PilotStudyOB() {
+    public PilotStudyOB(PilotStudy p) {
+        this.set_id(p.get_id());
+        this.setId(p.getId());
+        this.setName(p.getName());
+        this.setActive(p.isActive());
+        this.setStart(p.getStart());
+        this.setEnd(p.getEnd());
+        this.setSelected(p.isSelected());
+        this.setHealthProfessionalsId(p.getHealthProfessionalsId());
+        this.setUserId(p.getUserId());
     }
 
     public long getId() {

@@ -48,29 +48,6 @@ public abstract class ActivityHabitsRecordOB {
         this.createdAt = createdAt;
     }
 
-//    /**
-//     * Convert object to json format.
-//     *
-//     * @return String
-//     */
-//    public String toJson() {
-//        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-//        return gson.toJson(this);
-//    }
-//
-//    /**
-//     * Convert json to Object.
-//     *
-//     * @param json String
-//     * @return PatientOB
-//     */
-//    public static ActivityHabitsRecordOB jsonDeserialize(String json) {
-//        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-//        Type typeActivityHabitsRecord = new TypeToken<ActivityHabitsRecordOB>() {
-//        }.getType();
-//        return gson.fromJson(json, typeActivityHabitsRecord);
-//    }
-
     @Override
     public String toString() {
         return "ActivityHabitsRecordOB{" +

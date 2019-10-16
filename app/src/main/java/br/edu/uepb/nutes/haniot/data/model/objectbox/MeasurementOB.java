@@ -7,12 +7,12 @@ import android.support.annotation.NonNull;
 import java.util.List;
 import java.util.Objects;
 
+import br.edu.uepb.nutes.haniot.data.Convert;
 import br.edu.uepb.nutes.haniot.data.model.model.Measurement;
 import io.objectbox.annotation.Backlink;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.annotation.Index;
-import io.objectbox.annotation.Transient;
 import io.objectbox.relation.ToMany;
 import io.objectbox.relation.ToOne;
 
@@ -39,20 +39,19 @@ public class MeasurementOB implements Parcelable {
     private int pulse;
     private String meal;
 
-    @Transient()
-    private BodyFatOB fat; // not persisted in ObjectBox
+//    @Transient()
+//    private BodyFatOB fat; // not persisted in ObjectBox
 
-    @Transient()
-    private List<HeartRateItemOB> dataset; // not persisted in ObjectBox
+//    @Transient()
+//    private List<HeartRateItemOB> dataset; // not persisted in ObjectBox
 
-    @Transient()
-    private List<BodyFatOB> bodyFat; // not persisted in ObjectBox
-
-    // RELATIONS ObjectBox
-    @Backlink(to = "heartRate")
-    private ToMany<HeartRateItemOB> datasetDB;
+//    @Transient()
+//    private List<BodyFatOB> bodyFat; // not persisted in ObjectBox
 
     private ToOne<BodyFatOB> bodyFatDB;
+
+    @Backlink(to = "heartRate")
+    private ToMany<HeartRateItemOB> datasetDB;
 
     public MeasurementOB(Measurement m) {
         this.set_id(m.get_id());
@@ -68,10 +67,8 @@ public class MeasurementOB implements Parcelable {
         this.setPulse(m.getPulse());
         this.setMeal(m.getMeal());
 
-
-        this.setBodyFat(m.getBodyFat());
-
-
+        this.bodyFatDB.setTarget(Convert.bodyFatToObjectBox(m.getFat()));
+        this.setDatasetDB(Convert.listHeartRateToObjectBox(m.getDataset()));
     }
 
     protected MeasurementOB(Parcel in) {
@@ -83,8 +80,8 @@ public class MeasurementOB implements Parcelable {
         timestamp = in.readString();
         userId = in.readString();
         deviceId = in.readString();
-        fat = in.readParcelable(BodyFatOB.class.getClassLoader());
-        dataset = in.createTypedArrayList(HeartRateItemOB.CREATOR);
+//        fat = in.readParcelable(BodyFatOB.class.getClassLoader());
+//        dataset = in.createTypedArrayList(HeartRateItemOB.CREATOR);
         systolic = in.readInt();
         diastolic = in.readInt();
         pulse = in.readInt();
@@ -101,8 +98,8 @@ public class MeasurementOB implements Parcelable {
         dest.writeString(timestamp);
         dest.writeString(userId);
         dest.writeString(deviceId);
-        dest.writeParcelable(fat, flags);
-        dest.writeTypedList(dataset);
+//        dest.writeParcelable(fat, flags);
+//        dest.writeTypedList(dataset);
         dest.writeInt(systolic);
         dest.writeInt(diastolic);
         dest.writeInt(pulse);
@@ -190,21 +187,21 @@ public class MeasurementOB implements Parcelable {
         this.deviceId = deviceId;
     }
 
-    public BodyFatOB getFat() {
-        return fat;
-    }
-
-    public void setFat(BodyFatOB fat) {
-        this.fat = fat;
-    }
-
-    public List<HeartRateItemOB> getDataset() {
-        return dataset;
-    }
-
-    public void setDataset(List<HeartRateItemOB> dataset) {
-        this.dataset = dataset;
-    }
+//    public BodyFatOB getFat() {
+//        return fat;
+//    }
+//
+//    public void setFat(BodyFatOB fat) {
+//        this.fat = fat;
+//    }
+//
+//    public List<HeartRateItemOB> getDataset() {
+//        return dataset;
+//    }
+//
+//    public void setDataset(List<HeartRateItemOB> dataset) {
+//        this.dataset = dataset;
+//    }
 
     public int getSystolic() {
         return systolic;
@@ -247,13 +244,13 @@ public class MeasurementOB implements Parcelable {
         this.getDatasetDB().addAll(datasetDB);
     }
 
-    public List<BodyFatOB> getBodyFat() {
-        return bodyFat;
-    }
-
-    public void setBodyFat(List<BodyFatOB> bodyFat) {
-        this.bodyFat = bodyFat;
-    }
+//    public List<BodyFatOB> getBodyFat() {
+//        return bodyFat;
+//    }
+//
+//    public void setBodyFat(List<BodyFatOB> bodyFat) {
+//        this.bodyFat = bodyFat;
+//    }
 
     public ToOne<BodyFatOB> getBodyFatDB() {
         return bodyFatDB;
@@ -288,8 +285,8 @@ public class MeasurementOB implements Parcelable {
                 ", timestamp='" + timestamp + '\'' +
                 ", userId='" + userId + '\'' +
                 ", deviceId='" + deviceId + '\'' +
-                ", fat=" + fat +
-                ", dataset=" + dataset +
+//                ", fat=" + fat +
+//                ", dataset=" + dataset +
                 ", systolic=" + systolic +
                 ", diastolic=" + diastolic +
                 ", pulse=" + pulse +

@@ -12,9 +12,6 @@ public class ToothLesionOB {
 
     private ToOne<OralHealthRecordOB> oralHealthRecord;
 
-    public ToothLesionOB() {
-    }
-
     public ToothLesionOB(String toothType, String lesionType) {
         this.toothType = toothType;
         this.lesionType = lesionType;

@@ -35,9 +35,6 @@ public class FamilyCohesionRecordOB {
 
     private int familyCohesionResult;
 
-    public FamilyCohesionRecordOB() {
-    }
-
     public void setId(long id) {
         this.id = id;
     }

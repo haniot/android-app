@@ -1,5 +1,6 @@
 package br.edu.uepb.nutes.haniot.data.model.objectbox;
 
+import br.edu.uepb.nutes.haniot.data.model.model.SleepHabit;
 import io.objectbox.annotation.Entity;
 
 @Entity
@@ -9,7 +10,9 @@ public class SleepHabitOB extends ActivityHabitsRecordOB {
 
     private int weekDayWakeUp;
 
-    public SleepHabitOB() {
+    public SleepHabitOB(SleepHabit s) {
+        this.setWeekDaySleep(s.getWeekDaySleep());
+        this.setWeekDayWakeUp(s.getWeekDayWakeUp());
     }
 
     public int getWeekDaySleep() {
@@ -27,31 +30,6 @@ public class SleepHabitOB extends ActivityHabitsRecordOB {
     public void setWeekDayWakeUp(int weekDayWakeUp) {
         this.weekDayWakeUp = weekDayWakeUp;
     }
-
-//    /**
-//     * Convert object to json format.
-//     *
-//     * @return String
-//     */
-//    public String toJson() {
-//        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-//        String a = gson.toJson(this);
-//        Log.i("AAAAAAAAAA", a);
-//        return a;
-//    }
-//
-//    /**
-//     * Convert json to Object.
-//     *
-//     * @param json String
-//     * @return PatientOB
-//     */
-//    public static SleepHabitOB jsonDeserialize(String json) {
-//        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-//        Type typeSleepHabits = new TypeToken<SleepHabitOB>() {
-//        }.getType();
-//        return gson.fromJson(json, typeSleepHabits);
-//    }
 
     @Override
     public String toString() {

@@ -19,9 +19,6 @@ public class SociodemographicRecordOB {
 
     private int peopleInHome;
 
-    public SociodemographicRecordOB() {
-    }
-
     public long getId() {
         return id;
     }
