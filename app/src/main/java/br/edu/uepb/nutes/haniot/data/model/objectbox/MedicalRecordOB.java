@@ -15,23 +15,17 @@ public class MedicalRecordOB extends ActivityHabitsRecordOB {
     private ToMany<ChronicDiseaseOB> chronicDiseases;
 
     public MedicalRecordOB(MedicalRecord m) {
-        this.chronicDiseases.addAll(
-                Convert.listChronicsToObjectBox(this, m.getChronicDiseases()));
+        super(m.getId(), m.get_id(), m.getCreatedAt(), m.getPatientId());
+        this.setChronicDiseases(Convert.listChronicsToObjectBox(m.getChronicDiseases()));
     }
 
     public List<ChronicDiseaseOB> getChronicDiseases() {
         return chronicDiseases;
     }
 
-    public void setChronicDiseases(ToMany<ChronicDiseaseOB> chronicDiseases) {
+    public void setChronicDiseases(List<ChronicDiseaseOB> chronicDiseases) {
         this.chronicDiseases.clear();
         this.chronicDiseases.addAll(chronicDiseases);
-    }
-
-    public void addChronicDiseases(ChronicDiseaseOB... chronicDiseases) {
-        for (ChronicDiseaseOB choChronicDisease : chronicDiseases) {
-            this.chronicDiseases.add(choChronicDisease);
-        }
     }
 
     public ToMany<ChronicDiseaseOB> getChronicDiseasesDB() {

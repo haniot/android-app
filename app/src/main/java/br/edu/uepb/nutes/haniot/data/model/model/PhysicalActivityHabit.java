@@ -9,6 +9,7 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.List;
 
+import br.edu.uepb.nutes.haniot.data.model.objectbox.PhysicalActivityHabitOB;
 import br.edu.uepb.nutes.haniot.utils.ConverterStringToDatabase;
 
 public class PhysicalActivityHabit extends ActivityHabitsRecord {
@@ -20,7 +21,12 @@ public class PhysicalActivityHabit extends ActivityHabitsRecord {
     @Expose()
     private List<String> weeklyActivities;
 
-    public PhysicalActivityHabit() {
+    public PhysicalActivityHabit() { }
+
+    public PhysicalActivityHabit(PhysicalActivityHabitOB p) {
+        super(p.getId(), p.get_id(), p.getCreatedAt(), p.getPatientId());
+        this.setSchoolActivityFreq(p.getSchoolActivityFreq());
+        this.setWeeklyActivities(p.getWeeklyActivities());
     }
 
     public String getSchoolActivityFreq() {

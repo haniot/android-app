@@ -38,7 +38,7 @@ public class ChronicDisease {
         this.setId(c.getId());
         this.setType(c.getType());
         this.setDiseaseHistory(c.getDiseaseHistory());
-        this.setMedicalRecord(Convert.medicalRecordToModel(c.getMedicalRecord().getTarget()));
+        this.setMedicalRecord(Convert.convertMedicalRecord(c.getMedicalRecord().getTarget()));
     }
 
     public long getId() {

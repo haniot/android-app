@@ -9,6 +9,9 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.Objects;
 
+import br.edu.uepb.nutes.haniot.data.Convert;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.HeartRateItemOB;
+
 /**
  * Represents Object of a HeartRateItemOB.
  *
@@ -36,6 +39,13 @@ public class HeartRateItem implements Parcelable {
     public HeartRateItem(int value, String timestamp) {
         this.value = value;
         this.timestamp = timestamp;
+    }
+
+    public HeartRateItem(HeartRateItemOB h) {
+        this.setId(h.getId());
+        this.setValue(h.getValue());
+        this.setTimestamp(h.getTimestamp());
+        this.setHeartRate(Convert.convertMeasurement(h.getHeartRate().getTarget()));
     }
 
     protected HeartRateItem(Parcel in) {

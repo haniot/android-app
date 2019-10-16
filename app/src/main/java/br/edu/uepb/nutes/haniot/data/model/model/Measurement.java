@@ -12,6 +12,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 import java.util.Objects;
 
+import br.edu.uepb.nutes.haniot.data.Convert;
 import br.edu.uepb.nutes.haniot.data.model.objectbox.MeasurementOB;
 
 /**
@@ -90,7 +91,16 @@ public class Measurement implements Parcelable {
     }
 
     public Measurement(MeasurementOB m) {
-
+        this.setId(m.getId());
+        this.set_id(m.get_id());
+        this.setValue(m.getValue());
+        this.setUnit(m.getUnit());
+        this.setType(m.getType());
+        this.setTimestamp(m.getTimestamp());
+        this.setUserId(m.getUserId());
+        this.setDeviceId(m.getDeviceId());
+        this.setFat(Convert.convertBodyFat(m.getBodyFatDB().getTarget()));
+        this.setDataset(Convert.convertListHeartRateL(m.getDatasetDB()));
     }
 
     protected Measurement(Parcel in) {

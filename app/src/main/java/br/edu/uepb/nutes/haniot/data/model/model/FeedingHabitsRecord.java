@@ -10,6 +10,9 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.edu.uepb.nutes.haniot.data.Convert;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.FeedingHabitsRecordOB;
+
 public class FeedingHabitsRecord extends ActivityHabitsRecord {
     @SerializedName("weekly_feeding_habits")
     @Expose()
@@ -33,6 +36,16 @@ public class FeedingHabitsRecord extends ActivityHabitsRecord {
 
     public FeedingHabitsRecord() {
     }
+
+    public FeedingHabitsRecord(FeedingHabitsRecordOB f) {
+        super(f.getId(), f.get_id(), f.getCreatedAt(), f.getPatientId());
+        this.setWeeklyFeedingHabits(Convert.convertListWeeklyFoodRecord(f.getWeeklyFeedingHabits()));
+        this.setDailyWaterGlasses(f.getDailyWaterGlasses());
+        this.setSixMonthBreastFeeding(f.getSixMonthBreastFeeding());
+        this.setFoodAllergyIntolerance(f.getFoodAllergyIntolerance());
+        this.setBreakfastDailyFrequency(f.getBreakfastDailyFrequency());
+    }
+
 
     public String getDailyWaterGlasses() {
         return dailyWaterGlasses;

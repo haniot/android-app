@@ -11,7 +11,8 @@ public class PatientOB extends UserOB {
     private String healthProfessionalId;
 
     public PatientOB(Patient p) {
-        super(p.getEmail(), p.getPassword());
+        super(p.getId(), p.get_id(), p.getEmail(), p.getName(), p.getBirthDate(), p.getHealthArea(), p.getPassword(), p.getOldPassword(), p.getNewPassword(),
+                p.getPhoneNumber(), p.getLastLogin(), p.getLastSync(), p.getLanguage(), p.getPilotStudyIDSelected(), p.getUserType());
         this.setPilotId(p.getPilotId());
         this.setGender(p.getGender());
         this.setHealthProfessionalId(p.getHealthProfessionalId());

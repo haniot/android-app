@@ -9,6 +9,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.Objects;
 
+import br.edu.uepb.nutes.haniot.data.model.objectbox.BodyFatOB;
 import br.edu.uepb.nutes.haniot.data.model.type.MeasurementType;
 
 /**
@@ -45,6 +46,14 @@ public class BodyFat implements Parcelable {
         this.type = MeasurementType.BODY_FAT;
         this.value = value;
         this.unit = unit;
+    }
+
+    public BodyFat(BodyFatOB b) {
+        this.setId(b.getId());
+        this.setValue(b.getValue());
+        this.setUnit(b.getUnit());
+        this.setTimestamp(b.getTimestamp());
+        this.setType(b.getType());
     }
 
     protected BodyFat(Parcel in) {

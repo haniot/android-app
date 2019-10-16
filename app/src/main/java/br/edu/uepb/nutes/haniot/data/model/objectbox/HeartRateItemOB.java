@@ -1,7 +1,5 @@
 package br.edu.uepb.nutes.haniot.data.model.objectbox;
 
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 import java.util.Objects;
@@ -18,7 +16,7 @@ import io.objectbox.relation.ToOne;
  * @author Copyright (c) 2019, NUTES/UEPB
  */
 @Entity
-public class HeartRateItemOB implements Parcelable {
+public class HeartRateItemOB {
     @Id
     private long id;
 
@@ -32,41 +30,8 @@ public class HeartRateItemOB implements Parcelable {
         this.setId(h.getId());
         this.setValue(h.getValue());
         this.setTimestamp(h.getTimestamp());
-        this.heartRate.setTarget(Convert.measurementToObjectBox(h.getHeartRate()));
+        this.heartRate.setTarget(Convert.convertMeasurement(h.getHeartRate()));
     }
-
-    public HeartRateItemOB(int value, String timestamp) {
-        this.value = value;
-        this.timestamp = timestamp;
-    }
-
-    protected HeartRateItemOB(Parcel in) {
-        value = in.readInt();
-        timestamp = in.readString();
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(value);
-        dest.writeString(timestamp);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<HeartRateItemOB> CREATOR = new Creator<HeartRateItemOB>() {
-        @Override
-        public HeartRateItemOB createFromParcel(Parcel in) {
-            return new HeartRateItemOB(in);
-        }
-
-        @Override
-        public HeartRateItemOB[] newArray(int size) {
-            return new HeartRateItemOB[size];
-        }
-    };
 
     public long getId() {
         return id;

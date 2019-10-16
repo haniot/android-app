@@ -74,7 +74,7 @@ public class Repository {
      * @return boolean
      */
     public boolean saveDevice(@NonNull Device device) {
-        return deviceDAO.save(Convert.deviceToObjectBox(device));
+        return deviceDAO.save(Convert.convertDevice(device));
     }
 
 
@@ -85,7 +85,7 @@ public class Repository {
      * @return Object
      */
     public Device getDevice(long id) {
-        return Convert.deviceToModel(deviceDAO.get(id));
+        return Convert.convertDevice(deviceDAO.get(id));
     }
 
     /**
@@ -96,7 +96,7 @@ public class Repository {
      * @return Object
      */
     public Device getDevice(@NonNull String address, String userId) {
-        return Convert.deviceToModel(deviceDAO.get(address, userId));
+        return Convert.convertDevice(deviceDAO.get(address, userId));
     }
 
     /**
@@ -107,7 +107,7 @@ public class Repository {
      * @return DeviceOB
      */
     public Device getDeviceByType(@NonNull String userId, String type) {
-        return Convert.deviceToModel(deviceDAO.getByType(userId, type));
+        return Convert.convertDevice(deviceDAO.getByType(userId, type));
     }
 
     /**
@@ -128,7 +128,7 @@ public class Repository {
      * @return boolean
      */
     public boolean updateDevice(@NonNull Device device) {
-        return deviceDAO.update(Convert.deviceToObjectBox(device));
+        return deviceDAO.update(Convert.convertDevice(device));
     }
 
     /**
@@ -138,7 +138,7 @@ public class Repository {
      * @return boolean
      */
     public boolean removeDevice(@NonNull Device device) {
-        return deviceDAO.remove(Convert.deviceToObjectBox(device));
+        return deviceDAO.remove(Convert.convertDevice(device));
     }
 
     /**
@@ -178,7 +178,7 @@ public class Repository {
 
     //    Search FeedingHabitsRecordOB by id
     public FeedingHabitsRecord getFeedingHabitsRecordFromPatientId(@NonNull String _id) {
-        return Convert.feedingHabitsRecordToModel(feedingHabitsDAO.getFromPatientId(_id));
+        return Convert.convertFeedingHabitsRecord(feedingHabitsDAO.getFromPatientId(_id));
     }
 
     //    get all FeedingHabitsRecordOB on database
@@ -188,17 +188,17 @@ public class Repository {
 
     //    save FeedingHabitsRecordOB
     public boolean saveFeedingHabitsRecord(@NonNull FeedingHabitsRecord feedingHabitsRecord) {
-        return feedingHabitsDAO.save(Convert.feedingHabitsRecordToObjectBox(feedingHabitsRecord));
+        return feedingHabitsDAO.save(Convert.convertFeedingHabitsRecord(feedingHabitsRecord));
     }
 
     //    update FeedingHabitsRecordOB
     public boolean updateFeedingHabitsRecord(@NonNull FeedingHabitsRecord feedingHabitsRecord) {
-        return feedingHabitsDAO.update(Convert.feedingHabitsRecordToObjectBox(feedingHabitsRecord));
+        return feedingHabitsDAO.update(Convert.convertFeedingHabitsRecord(feedingHabitsRecord));
     }
 
     //    remove FeedingHabitsRecordOB
     public boolean removeFeedingHabitsRecord(@NonNull FeedingHabitsRecord feedingHabitsRecord) {
-        return feedingHabitsDAO.remove(Convert.feedingHabitsRecordToObjectBox(feedingHabitsRecord));
+        return feedingHabitsDAO.remove(Convert.convertFeedingHabitsRecord(feedingHabitsRecord));
     }
 
 
@@ -211,7 +211,7 @@ public class Repository {
      * @return boolean
      */
     public boolean saveMeasurement(@NonNull Measurement measurement) {
-        return measurementDAO.save(Convert.measurementToObjectBox(measurement));
+        return measurementDAO.save(Convert.convertMeasurement(measurement));
     }
 
     /**
@@ -221,7 +221,7 @@ public class Repository {
      * @return boolean
      */
     public boolean updateMeasurement(@NonNull Measurement measurement) {
-        return measurementDAO.update(Convert.measurementToObjectBox(measurement));
+        return measurementDAO.update(Convert.convertMeasurement(measurement));
     }
 
     /**
@@ -231,7 +231,7 @@ public class Repository {
      * @return boolean
      */
     public boolean removeMeasurement(@NonNull Measurement measurement) {
-        return measurementDAO.remove(Convert.measurementToObjectBox(measurement));
+        return measurementDAO.remove(Convert.convertMeasurement(measurement));
     }
 
     /**
@@ -262,7 +262,7 @@ public class Repository {
      * @return Object
      */
     public Measurement getMeasurement(@NonNull long id) {
-        return Convert.measurementToModel(measurementDAO.get(id));
+        return Convert.convertMeasurement(measurementDAO.get(id));
     }
 
     /**
@@ -317,7 +317,7 @@ public class Repository {
 
     //    Search FeedingHabitsRecordOB by id
     public MedicalRecord getMedicalRecordFromPatientId(@NonNull String _id) {
-        return Convert.medicalRecordToModel(medicalRecordDAO.getFromPatientId(_id));
+        return Convert.convertMedicalRecord(medicalRecordDAO.getFromPatientId(_id));
     }
 
     //    get all FeedingHabitsRecordOB on database
@@ -327,27 +327,27 @@ public class Repository {
 
     //    save FeedingHabitsRecordOB
     public boolean saveMedicalRecord(@NonNull MedicalRecord medicalRecord) {
-        return medicalRecordDAO.save(Convert.medicalRecordToObjectBox(medicalRecord));
+        return medicalRecordDAO.save(Convert.convertMedicalRecord(medicalRecord));
     }
 
     //    update FeedingHabitsRecordOB
     public boolean updateMedicalRecord(@NonNull MedicalRecord medicalRecord) {
-        return medicalRecordDAO.update(Convert.medicalRecordToObjectBox(medicalRecord));
+        return medicalRecordDAO.update(Convert.convertMedicalRecord(medicalRecord));
     }
 
     //    remove FeedingHabitsRecordOB
     public boolean removeMedicalRecord(@NonNull MedicalRecord medicalRecord) {
-        return medicalRecordDAO.remove(Convert.medicalRecordToObjectBox(medicalRecord));
+        return medicalRecordDAO.remove(Convert.convertMedicalRecord(medicalRecord));
     }
 
     // --------- PATIENT DAO --------------
 
     public Patient getPatient(long id) {
-        return Convert.patientToModel(patientDAO.get(id));
+        return Convert.convertPatient(patientDAO.get(id));
     }
 
     public Patient getPatient(@NonNull String _id) {
-        return Convert.patientToModel(patientDAO.get(_id));
+        return Convert.convertPatient(patientDAO.get(_id));
     }
 
     public List<Patient> listPatients(@NonNull String healthProfessionalId) {
@@ -355,15 +355,15 @@ public class Repository {
     }
 
     public boolean savePatient(@NonNull Patient patient) {
-        return patientDAO.save(Convert.patientToObjectBox(patient));
+        return patientDAO.save(Convert.convertPatient(patient));
     }
 
     public boolean updatePatient(@NonNull Patient patient) {
-        return patientDAO.update(Convert.patientToObjectBox(patient));
+        return patientDAO.update(Convert.convertPatient(patient));
     }
 
     public boolean removePatient(@NonNull Patient patient) {
-        return patientDAO.remove(Convert.patientToObjectBox(patient));
+        return patientDAO.remove(Convert.convertPatient(patient));
     }
 
     public boolean removePatient(@NonNull String _id) {
@@ -375,37 +375,37 @@ public class Repository {
 
     //    Search FeedingHabitsRecordOB by id
     public PhysicalActivityHabit getPhysicalActivityHabitFromPatientId(@NonNull String _id) {
-        return Convert.physicalActivityHabitToModel(physicalActivityHabitsDAO.getFromPatientId(_id));
+        return Convert.convertPhysicalActivityHabit(physicalActivityHabitsDAO.getFromPatientId(_id));
     }
 
     //    get all FeedingHabitsRecordOB on database
     public List<PhysicalActivityHabit> getPhysicalActivityHabits() {
-        return Convert.listPhysicalActivityHabitToModel(physicalActivityHabitsDAO.get());
+        return Convert.convertListPhysicalActivityHabit(physicalActivityHabitsDAO.get());
     }
 
     //    save FeedingHabitsRecordOB
     public boolean savePhysicalActivityHabit(@NonNull PhysicalActivityHabit physicalActivityHabit) {
-        return physicalActivityHabitsDAO.save(Convert.physicalActivityHabitToObjectBox(physicalActivityHabit));
+        return physicalActivityHabitsDAO.save(Convert.convertPhysicalActivityHabit(physicalActivityHabit));
     }
 
     //    update FeedingHabitsRecordOB
     public boolean updatePhysicalActivityHabit(@NonNull PhysicalActivityHabit physicalActivityHabit) {
-        return physicalActivityHabitsDAO.update(Convert.physicalActivityHabitToObjectBox(physicalActivityHabit));
+        return physicalActivityHabitsDAO.update(Convert.convertPhysicalActivityHabit(physicalActivityHabit));
     }
 
     //    remove FeedingHabitsRecordOB
     public boolean removePhysicalActivityHabit(@NonNull PhysicalActivityHabit physicalActivityHabit) {
-        return physicalActivityHabitsDAO.remove(Convert.physicalActivityHabitToObjectBox(physicalActivityHabit));
+        return physicalActivityHabitsDAO.remove(Convert.convertPhysicalActivityHabit(physicalActivityHabit));
     }
 
     // ----------------- PILOT STUDY DAO -------------------------
 
     public PilotStudy getPilotStudy(long id) {
-        return Convert.pilotStudyToModel(pilotStudyDAO.get(id));
+        return Convert.convertPilotStudy(pilotStudyDAO.get(id));
     }
 
     public PilotStudy getPilotStudy(@NonNull String _id) {
-        return Convert.pilotStudyToModel(pilotStudyDAO.get(_id));
+        return Convert.convertPilotStudy(pilotStudyDAO.get(_id));
     }
 
     public List<PilotStudy> listPilotStudies(String userId) {
@@ -413,11 +413,11 @@ public class Repository {
     }
 
     public boolean savePilotStudy(@NonNull PilotStudy pilotStudy) {
-        return pilotStudyDAO.save(Convert.pilotStudyToObjectBox(pilotStudy));
+        return pilotStudyDAO.save(Convert.convertPilotStudy(pilotStudy));
     }
 
     public boolean updatePilotStudy(@NonNull PilotStudy pilotStudy) {
-        return pilotStudyDAO.update(Convert.pilotStudyToObjectBox(pilotStudy));
+        return pilotStudyDAO.update(Convert.convertPilotStudy(pilotStudy));
     }
 
     public void clearSelectedPilotStudy(@NonNull String userId) {
@@ -425,7 +425,7 @@ public class Repository {
     }
 
     public boolean removePilotStudy(@NonNull PilotStudy pilotStudy) {
-        return pilotStudyDAO.remove(Convert.pilotStudyToObjectBox(pilotStudy));
+        return pilotStudyDAO.remove(Convert.convertPilotStudy(pilotStudy));
     }
 
     public boolean removePilotStudy(@NonNull String _id) {
@@ -440,7 +440,7 @@ public class Repository {
 
     //    Search FeedingHabitsRecordOB by id
     public SleepHabit getSleepHabitsFromPatientId(@NonNull String _id) {
-        return Convert.sleepHabitsToModel(sleepHabitsDAO.getFromPatientId(_id));
+        return Convert.convertSleepHabit(sleepHabitsDAO.getFromPatientId(_id));
     }
 
     //    get all FeedingHabitsRecordOB on database
@@ -450,17 +450,17 @@ public class Repository {
 
     //    save FeedingHabitsRecordOB
     public boolean saveSleepHabits(@NonNull SleepHabit sleepHabit) {
-        return sleepHabitsDAO.save(Convert.sleepHabitsToObjectBox(sleepHabit));
+        return sleepHabitsDAO.save(Convert.convertSleepHabit(sleepHabit));
     }
 
     //    update FeedingHabitsRecordOB
     public boolean updateSleepHabits(@NonNull SleepHabit sleepHabit) {
-        return sleepHabitsDAO.update(Convert.sleepHabitsToObjectBox(sleepHabit));
+        return sleepHabitsDAO.update(Convert.convertSleepHabit(sleepHabit));
     }
 
     //    remove FeedingHabitsRecordOB
     public boolean removeSleepHabits(@NonNull SleepHabit sleepHabit) {
-        return sleepHabitsDAO.remove(Convert.sleepHabitsToObjectBox(sleepHabit));
+        return sleepHabitsDAO.remove(Convert.convertSleepHabit(sleepHabit));
     }
 
     // ---------- USER DAO ---------------
@@ -472,7 +472,7 @@ public class Repository {
      * @return UserOB
      */
     public User getUser(@NonNull String _id) {
-        return Convert.userToModel(userDAO.get(_id));
+        return Convert.convertUser(userDAO.get(_id));
     }
 
     /**
@@ -482,7 +482,7 @@ public class Repository {
      * @return UserOB
      */
     public User getUser(@NonNull long id) {
-        return Convert.userToModel(userDAO.get(id));
+        return Convert.convertUser(userDAO.get(id));
     }
 
     public List<User> listAllUsers() {
@@ -496,7 +496,7 @@ public class Repository {
      * @return boolean
      */
     public boolean saveUser(@NonNull User user) {
-        return userDAO.save(Convert.userToObjectBox(user));
+        return userDAO.save(Convert.convertUser(user));
     }
 
     /**
@@ -506,7 +506,7 @@ public class Repository {
      * @return boolean
      */
     public boolean updateUser(@NonNull User user) {
-        return userDAO.update(Convert.userToObjectBox(user));
+        return userDAO.update(Convert.convertUser(user));
     }
 
     /**

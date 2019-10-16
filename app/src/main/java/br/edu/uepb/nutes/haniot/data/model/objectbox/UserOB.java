@@ -1,5 +1,6 @@
 package br.edu.uepb.nutes.haniot.data.model.objectbox;
 
+import br.edu.uepb.nutes.haniot.data.model.model.User;
 import br.edu.uepb.nutes.haniot.data.model.type.UserType;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
@@ -47,18 +48,29 @@ public class UserOB {
      */
     private String userType; // 1 admin, 2 health_profissional
 
-    public UserOB() {
-    }
-
-    public UserOB(String email, String password) {
-        this.email = email;
-        this.password = password;
-    }
-
-    public UserOB(String _id, String oldPassword, String newPassword) {
+    public UserOB(long id, String _id, String email, String name, String birthDate, String healthArea,
+                  String password, String oldPassword, String newPassword, String phoneNumber,
+                  String lastLogin, String lastSync, String language, String pilotStudyIDSelected, String userType) {
+        this.id = id;
         this._id = _id;
+        this.email = email;
+        this.name = name;
+        this.birthDate = birthDate;
+        this.healthArea = healthArea;
+        this.password = password;
         this.oldPassword = oldPassword;
         this.newPassword = newPassword;
+        this.phoneNumber = phoneNumber;
+        this.lastLogin = lastLogin;
+        this.lastSync = lastSync;
+        this.language = language;
+        this.pilotStudyIDSelected = pilotStudyIDSelected;
+        this.userType = userType;
+    }
+
+    public UserOB(User p) {
+        this(p.getId(), p.get_id(), p.getEmail(), p.getName(), p.getBirthDate(), p.getHealthArea(), p.getPassword(), p.getOldPassword(), p.getNewPassword(),
+                p.getPhoneNumber(), p.getLastLogin(), p.getLastSync(), p.getLanguage(), p.getPilotStudyIDSelected(), p.getUserType());
     }
 
     public long getId() {

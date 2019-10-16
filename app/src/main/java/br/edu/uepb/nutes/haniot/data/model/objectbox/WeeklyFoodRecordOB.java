@@ -1,5 +1,7 @@
 package br.edu.uepb.nutes.haniot.data.model.objectbox;
 
+import br.edu.uepb.nutes.haniot.data.Convert;
+import br.edu.uepb.nutes.haniot.data.model.model.WeeklyFoodRecord;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.relation.ToOne;
@@ -14,6 +16,13 @@ public class WeeklyFoodRecordOB {
     private String sevenDaysFreq;
 
     private ToOne<FeedingHabitsRecordOB> feedingHabitsRecord;
+
+    public WeeklyFoodRecordOB(WeeklyFoodRecord w) {
+        this.setId(w.getId());
+        this.setFood(w.getFood());
+        this.setSevenDaysFreq(w.getSevenDaysFreq());
+        this.feedingHabitsRecord.setTarget(Convert.convertFeedingHabitsRecord(w.getFeedingHabitsRecord()));
+    }
 
     public long getId() {
         return id;

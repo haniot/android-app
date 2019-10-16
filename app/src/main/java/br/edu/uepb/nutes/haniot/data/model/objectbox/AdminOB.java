@@ -1,5 +1,6 @@
 package br.edu.uepb.nutes.haniot.data.model.objectbox;
 
+import br.edu.uepb.nutes.haniot.data.model.model.Admin;
 import io.objectbox.annotation.Entity;
 
 /**
@@ -18,27 +19,13 @@ public class AdminOB extends UserOB {
 
     private String totalAdmins;
 
-    public AdminOB(String totalPilotStudies, String totalPatients, String totalHealthProfessionals, String totalAdmins) {
-        this.totalPilotStudies = totalPilotStudies;
-        this.totalPatients = totalPatients;
-        this.totalHealthProfessionals = totalHealthProfessionals;
-        this.totalAdmins = totalAdmins;
-    }
-
-    public AdminOB(String email, String password, String totalPilotStudies, String totalPatients, String totalHealthProfessionals, String totalAdmins) {
-        super(email, password);
-        this.totalPilotStudies = totalPilotStudies;
-        this.totalPatients = totalPatients;
-        this.totalHealthProfessionals = totalHealthProfessionals;
-        this.totalAdmins = totalAdmins;
-    }
-
-    public AdminOB(String _id, String oldPassword, String newPassword, String totalPilotStudies, String totalPatients, String totalHealthProfessionals, String totalAdmins) {
-        super(_id, oldPassword, newPassword);
-        this.totalPilotStudies = totalPilotStudies;
-        this.totalPatients = totalPatients;
-        this.totalHealthProfessionals = totalHealthProfessionals;
-        this.totalAdmins = totalAdmins;
+    public AdminOB(Admin p) {
+        super(p.getId(), p.get_id(), p.getEmail(), p.getName(), p.getBirthDate(), p.getHealthArea(), p.getPassword(), p.getOldPassword(), p.getNewPassword(),
+                p.getPhoneNumber(), p.getLastLogin(), p.getLastSync(), p.getLanguage(), p.getPilotStudyIDSelected(), p.getUserType());
+        this.setTotalPilotStudies(p.getTotalPilotStudies());
+        this.setTotalPatients(p.getTotalPatients());
+        this.setTotalHealthProfessionals(p.getTotalHealthProfessionals());
+        this.setTotalAdmins(p.getTotalAdmins());
     }
 
     public String getTotalPilotStudies() {

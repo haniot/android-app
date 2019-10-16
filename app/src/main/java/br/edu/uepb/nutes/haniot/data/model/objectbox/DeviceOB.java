@@ -1,7 +1,5 @@
 package br.edu.uepb.nutes.haniot.data.model.objectbox;
 
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 import java.util.Objects;
@@ -18,7 +16,7 @@ import io.objectbox.annotation.Transient;
  * @author Copyright (c) 2019, NUTES/UEPB
  */
 @Entity
-public class DeviceOB implements Parcelable {
+public class DeviceOB {
     @Id
     private long id;
 
@@ -56,58 +54,14 @@ public class DeviceOB implements Parcelable {
         this.setImg(d.getImg());
     }
 
-    public DeviceOB(String name, String manufacturer, String modelNumber, int img, String type, String uuid) {
-        this.name = name;
-        this.manufacturer = manufacturer;
-        this.modelNumber = modelNumber;
-        this.img = img;
-        this.type = type;
-        this.uuid = uuid;
-    }
-
-    protected DeviceOB(Parcel in) {
-        id = in.readLong();
-        _id = in.readString();
-        name = in.readString();
-        address = in.readString();
-        type = in.readString();
-        modelNumber = in.readString();
-        manufacturer = in.readString();
-        userId = in.readString();
-        img = in.readInt();
-        uuid = in.readString();
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(id);
-        dest.writeString(_id);
-        dest.writeString(name);
-        dest.writeString(address);
-        dest.writeString(type);
-        dest.writeString(modelNumber);
-        dest.writeString(manufacturer);
-        dest.writeString(userId);
-        dest.writeInt(img);
-        dest.writeString(uuid);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<DeviceOB> CREATOR = new Creator<DeviceOB>() {
-        @Override
-        public DeviceOB createFromParcel(Parcel in) {
-            return new DeviceOB(in);
-        }
-
-        @Override
-        public DeviceOB[] newArray(int size) {
-            return new DeviceOB[size];
-        }
-    };
+//    public DeviceOB(String name, String manufacturer, String modelNumber, int img, String type, String uuid) {
+//        this.name = name;
+//        this.manufacturer = manufacturer;
+//        this.modelNumber = modelNumber;
+//        this.img = img;
+//        this.type = type;
+//        this.uuid = uuid;
+//    }
 
     public long getId() {
         return id;

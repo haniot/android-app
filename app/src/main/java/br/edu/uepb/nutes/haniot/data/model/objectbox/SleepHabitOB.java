@@ -11,6 +11,7 @@ public class SleepHabitOB extends ActivityHabitsRecordOB {
     private int weekDayWakeUp;
 
     public SleepHabitOB(SleepHabit s) {
+        super(s.getId(), s.get_id(), s.getCreatedAt(), s.getPatientId());
         this.setWeekDaySleep(s.getWeekDaySleep());
         this.setWeekDayWakeUp(s.getWeekDayWakeUp());
     }

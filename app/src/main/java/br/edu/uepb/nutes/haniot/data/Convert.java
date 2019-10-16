@@ -15,6 +15,7 @@ import br.edu.uepb.nutes.haniot.data.model.model.PhysicalActivityHabit;
 import br.edu.uepb.nutes.haniot.data.model.model.PilotStudy;
 import br.edu.uepb.nutes.haniot.data.model.model.SleepHabit;
 import br.edu.uepb.nutes.haniot.data.model.model.User;
+import br.edu.uepb.nutes.haniot.data.model.model.WeeklyFoodRecord;
 import br.edu.uepb.nutes.haniot.data.model.objectbox.BodyFatOB;
 import br.edu.uepb.nutes.haniot.data.model.objectbox.ChronicDiseaseOB;
 import br.edu.uepb.nutes.haniot.data.model.objectbox.DeviceOB;
@@ -22,55 +23,74 @@ import br.edu.uepb.nutes.haniot.data.model.objectbox.FeedingHabitsRecordOB;
 import br.edu.uepb.nutes.haniot.data.model.objectbox.HeartRateItemOB;
 import br.edu.uepb.nutes.haniot.data.model.objectbox.MeasurementOB;
 import br.edu.uepb.nutes.haniot.data.model.objectbox.MedicalRecordOB;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.MedicalRecordOB_;
 import br.edu.uepb.nutes.haniot.data.model.objectbox.PatientOB;
 import br.edu.uepb.nutes.haniot.data.model.objectbox.PhysicalActivityHabitOB;
 import br.edu.uepb.nutes.haniot.data.model.objectbox.PilotStudyOB;
 import br.edu.uepb.nutes.haniot.data.model.objectbox.SleepHabitOB;
 import br.edu.uepb.nutes.haniot.data.model.objectbox.UserOB;
-import io.objectbox.relation.ToMany;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.WeeklyFoodRecordOB;
 
 public class Convert {
 
     // ------------- DEVICE ---------------------
 
-    public static DeviceOB deviceToObjectBox(Device d) {
+    public static DeviceOB convertDevice(Device d) {
         return new DeviceOB(d);
     }
 
-    public static Device deviceToModel(DeviceOB d) {
+    public static Device convertDevice(DeviceOB d) {
         return new Device(d);
     }
 
     public static List<Device> listDeviceToModel(List<DeviceOB> devices) {
         List<Device> list = new ArrayList<>();
         for (DeviceOB d : devices) {
-            list.add(Convert.deviceToModel(d));
+            list.add(Convert.convertDevice(d));
         }
         return list;
     }
 
     // ------------- FEEDING HABITS RECORD ----------------------------
 
-    public static FeedingHabitsRecord feedingHabitsRecordToModel(FeedingHabitsRecordOB f) {
-        return null;
+    public static FeedingHabitsRecord convertFeedingHabitsRecord(FeedingHabitsRecordOB f) {
+        return new FeedingHabitsRecord(f);
+    }
+
+    public static FeedingHabitsRecordOB convertFeedingHabitsRecord(FeedingHabitsRecord feedingHabitsRecord) {
+        return new FeedingHabitsRecordOB(feedingHabitsRecord);
     }
 
     public static List<FeedingHabitsRecord> listFeedingHabitsRecordToModel(List<FeedingHabitsRecordOB> feedingHabitsRecords) {
-        return null;
+        List<FeedingHabitsRecord> lista = new ArrayList<>();
+        for (FeedingHabitsRecordOB aux : feedingHabitsRecords) {
+            lista.add(new FeedingHabitsRecord(aux));
+        }
+        return lista;
     }
 
-    public static FeedingHabitsRecordOB feedingHabitsRecordToObjectBox(FeedingHabitsRecord feedingHabitsRecord) {
-        return null;
+    public static List<WeeklyFoodRecord> convertListWeeklyFoodRecord(List<WeeklyFoodRecordOB> list) {
+        List<WeeklyFoodRecord> lista = new ArrayList<>();
+        for (WeeklyFoodRecordOB aux : list) {
+            lista.add(new WeeklyFoodRecord(aux));
+        }
+        return lista;
+    }
+
+    public static List<WeeklyFoodRecordOB> listWeeklyFoodRecordToObjectBox(List<WeeklyFoodRecord> list) {
+        List<WeeklyFoodRecordOB> lista = new ArrayList<>();
+        for (WeeklyFoodRecord aux : list) {
+            lista.add(new WeeklyFoodRecordOB(aux));
+        }
+        return lista;
     }
 
     // ----------- MEASUREMENT ---------------------
 
-    public static MeasurementOB measurementToObjectBox(Measurement measurement) {
+    public static MeasurementOB convertMeasurement(Measurement measurement) {
         return new MeasurementOB(measurement);
     }
 
-    public static Measurement measurementToModel(MeasurementOB measurement) {
+    public static Measurement convertMeasurement(MeasurementOB measurement) {
         return new Measurement(measurement);
     }
 
@@ -82,29 +102,45 @@ public class Convert {
         return lista;
     }
 
-    public static BodyFatOB bodyFatToObjectBox(BodyFat bf) {
+    public static BodyFatOB convertBodyFat(BodyFat bf) {
         return new BodyFatOB(bf);
     }
 
-    public static List<HeartRateItemOB> listHeartRateToObjectBox(List<HeartRateItem> dataset) {
+    public static BodyFat convertBodyFat(BodyFatOB bf) {
+        return new BodyFat(bf);
+    }
+
+    public static List<HeartRateItemOB> convertListHeartRate(List<HeartRateItem> list) {
         List<HeartRateItemOB> lista = new ArrayList<>();
-        for (HeartRateItem aux : dataset) {
+        for (HeartRateItem aux : list) {
             lista.add(new HeartRateItemOB(aux));
+        }
+        return lista;
+    }
+
+    public static List<HeartRateItem> convertListHeartRateL(List<HeartRateItemOB> list) {
+        List<HeartRateItem> lista = new ArrayList<>();
+        for (HeartRateItemOB aux : list) {
+            lista.add(new HeartRateItem(aux));
         }
         return lista;
     }
 
     // --------------- MEDICAL RECORDS ------------------------
 
-    public static MedicalRecord medicalRecordToModel(MedicalRecordOB medicalRecord) {
+    public static MedicalRecord convertMedicalRecord(MedicalRecordOB medicalRecord) {
         return new MedicalRecord(medicalRecord);
     }
 
     public static List<MedicalRecord> listMedicalRecordsToModel(List<MedicalRecordOB> medicalRecords) {
-        return null;
+        List<MedicalRecord> lista = new ArrayList<>();
+        for (MedicalRecordOB aux : medicalRecords) {
+            lista.add(new MedicalRecord(aux));
+        }
+        return lista;
     }
 
-    public static MedicalRecordOB medicalRecordToObjectBox(MedicalRecord medicalRecord) {
+    public static MedicalRecordOB convertMedicalRecord(MedicalRecord medicalRecord) {
         return new MedicalRecordOB(medicalRecord);
     }
 
@@ -120,8 +156,8 @@ public class Convert {
         return list;
     }
 
-    public static ToMany<ChronicDiseaseOB> listChronicsToObjectBox(MedicalRecordOB medicalRecordOB, List<ChronicDisease> c) {
-        ToMany<ChronicDiseaseOB> lista = new ToMany<>(medicalRecordOB, MedicalRecordOB_.chronicDiseases);
+    public static List<ChronicDiseaseOB> listChronicsToObjectBox(List<ChronicDisease> c) {
+        List<ChronicDiseaseOB> lista = new ArrayList<>();
         for (ChronicDisease aux: c) {
             lista.add(new ChronicDiseaseOB(aux));
         }
@@ -130,11 +166,11 @@ public class Convert {
 
     // ------- PATIENT --------------
 
-    public static Patient patientToModel(PatientOB patientOB) {
+    public static Patient convertPatient(PatientOB patientOB) {
         return new Patient(patientOB);
     }
 
-    public static PatientOB patientToObjectBox(Patient patient) {
+    public static PatientOB convertPatient(Patient patient) {
         return new PatientOB(patient);
     }
 
@@ -148,25 +184,29 @@ public class Convert {
 
     // ---------- PHYSICAL ACTIVITY HABIT -----------------
 
-    public static PhysicalActivityHabitOB physicalActivityHabitToObjectBox(PhysicalActivityHabit physicalActivityHabit) {
-        return null;
+    public static PhysicalActivityHabitOB convertPhysicalActivityHabit(PhysicalActivityHabit physicalActivityHabit) {
+        return new PhysicalActivityHabitOB(physicalActivityHabit);
     }
 
-    public static PhysicalActivityHabit physicalActivityHabitToModel(PhysicalActivityHabitOB fromPatientId) {
-        return null;
+    public static PhysicalActivityHabit convertPhysicalActivityHabit(PhysicalActivityHabitOB physicalActivityHabit) {
+        return new PhysicalActivityHabit(physicalActivityHabit);
     }
 
-    public static List<PhysicalActivityHabit> listPhysicalActivityHabitToModel(List<PhysicalActivityHabitOB> physicalActivityHabits) {
-        return null;
+    public static List<PhysicalActivityHabit> convertListPhysicalActivityHabit(List<PhysicalActivityHabitOB> physicalActivityHabits) {
+        List<PhysicalActivityHabit> lista = new ArrayList<>();
+        for (PhysicalActivityHabitOB aux : physicalActivityHabits) {
+            lista.add(new PhysicalActivityHabit(aux));
+        }
+        return lista;
     }
 
     // ----------- PILOT STUDY ---------------------------
 
-    public static PilotStudyOB pilotStudyToObjectBox(PilotStudy pilotStudy) {
+    public static PilotStudyOB convertPilotStudy(PilotStudy pilotStudy) {
         return new PilotStudyOB(pilotStudy);
     }
 
-    public static PilotStudy pilotStudyToModel(PilotStudyOB pilotStudy) {
+    public static PilotStudy convertPilotStudy(PilotStudyOB pilotStudy) {
         return new PilotStudy(pilotStudy);
     }
 
@@ -180,23 +220,27 @@ public class Convert {
 
     // -------------- SLEEP HABITS DAO ---------------------
 
-    public static SleepHabitOB sleepHabitsToObjectBox(SleepHabit sleepHabit) {
+    public static SleepHabitOB convertSleepHabit(SleepHabit sleepHabit) {
         return new SleepHabitOB(sleepHabit);
     }
 
+    public static SleepHabit convertSleepHabit(SleepHabitOB sleepHabit) {
+        return new SleepHabit(sleepHabit);
+    }
+
     public static List<SleepHabit> listSleepHabitsToModel(List<SleepHabitOB> sleepHabits) {
-        return null;
+        List<SleepHabit> lista = new ArrayList<>();
+        for (SleepHabitOB aux : sleepHabits) {
+            lista.add(new SleepHabit(aux));
+        }
+        return lista;
     }
 
-    public static SleepHabit sleepHabitsToModel(SleepHabitOB fromPatientId) {
-        return null;
+    public static UserOB convertUser(User user) {
+        return new UserOB(user);
     }
 
-    public static UserOB userToObjectBox(User user) {
-        return null;
-    }
-
-    public static User userToModel(UserOB user) {
-        return null;
+    public static User convertUser(UserOB user) {
+        return new User(user);
     }
 }

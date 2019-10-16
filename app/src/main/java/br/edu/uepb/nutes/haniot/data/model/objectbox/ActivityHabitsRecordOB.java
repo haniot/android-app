@@ -16,6 +16,13 @@ public abstract class ActivityHabitsRecordOB {
 
     private String patientId;
 
+    public ActivityHabitsRecordOB(long id, String _id, String createdAt, String patientId) {
+        this.id = id;
+        this._id = _id;
+        this.createdAt = createdAt;
+        this.patientId = patientId;
+    }
+
     public long getId() {
         return id;
     }

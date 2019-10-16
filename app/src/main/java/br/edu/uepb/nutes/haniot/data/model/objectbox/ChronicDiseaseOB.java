@@ -22,12 +22,7 @@ public class ChronicDiseaseOB {
         this.setType(c.getType());
         this.setDiseaseHistory(c.getDiseaseHistory());
         this.medicalRecord.setTarget(
-                Convert.medicalRecordToObjectBox(c.getMedicalRecord()));
-    }
-
-    public ChronicDiseaseOB(String type, String diseaseHistory) {
-        this.type = type;
-        this.diseaseHistory = diseaseHistory;
+                Convert.convertMedicalRecord(c.getMedicalRecord()));
     }
 
     public long getId() {

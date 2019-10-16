@@ -155,18 +155,6 @@ public class FamilyCohesionRecordOB {
         this.patientId = patientId;
     }
 
-//    /**
-//     * Convert object to json format.
-//     *
-//     * @return String
-//     */
-//    public String toJson() {
-//        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-//        String a = gson.toJson(this);
-//        Log.i("AAAAAAAAAA", a);
-//        return a;
-//    }
-
     @Override
     public String toString() {
         return "FamilyCohesionRecordOB{" +

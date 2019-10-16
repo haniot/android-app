@@ -8,6 +8,7 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 
+import br.edu.uepb.nutes.haniot.data.model.objectbox.UserOB;
 import br.edu.uepb.nutes.haniot.data.model.type.UserType;
 
 /**
@@ -88,6 +89,24 @@ public class User {
         this._id = _id;
         this.oldPassword = oldPassword;
         this.newPassword = newPassword;
+    }
+
+    public User(UserOB p) {
+        this.set_id(p.get_id());
+        this.setId(p.getId());
+        this.setEmail(p.getEmail());
+        this.setName(p.getName());
+        this.setBirthDate(p.getBirthDate());
+        this.setHealthArea(p.getHealthArea());
+        this.setPassword(p.getPassword());
+        this.setOldPassword(p.getOldPassword());
+        this.setNewPassword(p.getNewPassword());
+        this.setPhoneNumber(p.getPhoneNumber());
+        this.setLastLogin(p.getLastLogin());
+        this.setLastSync(p.getLastSync());
+        this.setLanguage(p.getLanguage());
+        this.setPilotStudyIDSelected(p.getPilotStudyIDSelected());
+        this.setUserType(p.getUserType());
     }
 
     public long getId() {

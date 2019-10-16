@@ -10,6 +10,8 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 
+import br.edu.uepb.nutes.haniot.data.model.objectbox.SleepHabitOB;
+
 public class SleepHabit extends ActivityHabitsRecord {
     @SerializedName("week_day_sleep")
     @Expose()
@@ -19,7 +21,12 @@ public class SleepHabit extends ActivityHabitsRecord {
     @Expose()
     private int weekDayWakeUp;
 
-    public SleepHabit() {
+    public SleepHabit() { }
+
+    public SleepHabit(SleepHabitOB s) {
+        super(s.getId(), s.get_id(), s.getCreatedAt(), s.getPatientId());
+        this.setWeekDaySleep(s.getWeekDaySleep());
+        this.setWeekDayWakeUp(s.getWeekDayWakeUp());
     }
 
     public int getWeekDaySleep() {

@@ -1,7 +1,5 @@
 package br.edu.uepb.nutes.haniot.data.model.objectbox;
 
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 import java.util.List;
@@ -22,7 +20,7 @@ import io.objectbox.relation.ToOne;
  * @author Copyright (c) 2019, NUTES/UEPB
  */
 @Entity
-public class MeasurementOB implements Parcelable {
+public class MeasurementOB {
 
     @Id
     private long id;
@@ -67,61 +65,9 @@ public class MeasurementOB implements Parcelable {
         this.setPulse(m.getPulse());
         this.setMeal(m.getMeal());
 
-        this.bodyFatDB.setTarget(Convert.bodyFatToObjectBox(m.getFat()));
-        this.setDatasetDB(Convert.listHeartRateToObjectBox(m.getDataset()));
+        this.bodyFatDB.setTarget(Convert.convertBodyFat(m.getFat()));
+        this.setDatasetDB(Convert.convertListHeartRate(m.getDataset()));
     }
-
-    protected MeasurementOB(Parcel in) {
-        id = in.readLong();
-        _id = in.readString();
-        value = in.readDouble();
-        unit = in.readString();
-        type = in.readString();
-        timestamp = in.readString();
-        userId = in.readString();
-        deviceId = in.readString();
-//        fat = in.readParcelable(BodyFatOB.class.getClassLoader());
-//        dataset = in.createTypedArrayList(HeartRateItemOB.CREATOR);
-        systolic = in.readInt();
-        diastolic = in.readInt();
-        pulse = in.readInt();
-        meal = in.readString();
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(id);
-        dest.writeString(_id);
-        dest.writeDouble(value);
-        dest.writeString(unit);
-        dest.writeString(type);
-        dest.writeString(timestamp);
-        dest.writeString(userId);
-        dest.writeString(deviceId);
-//        dest.writeParcelable(fat, flags);
-//        dest.writeTypedList(dataset);
-        dest.writeInt(systolic);
-        dest.writeInt(diastolic);
-        dest.writeInt(pulse);
-        dest.writeString(meal);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<MeasurementOB> CREATOR = new Creator<MeasurementOB>() {
-        @Override
-        public MeasurementOB createFromParcel(Parcel in) {
-            return new MeasurementOB(in);
-        }
-
-        @Override
-        public MeasurementOB[] newArray(int size) {
-            return new MeasurementOB[size];
-        }
-    };
 
     public long getId() {
         return id;
@@ -235,7 +181,7 @@ public class MeasurementOB implements Parcelable {
         this.meal = meal;
     }
 
-    public ToMany<HeartRateItemOB> getDatasetDB() {
+    public List<HeartRateItemOB> getDatasetDB() {
         return datasetDB;
     }
 

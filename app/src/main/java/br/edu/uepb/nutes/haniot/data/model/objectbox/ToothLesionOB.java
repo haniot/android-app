@@ -12,10 +12,10 @@ public class ToothLesionOB {
 
     private ToOne<OralHealthRecordOB> oralHealthRecord;
 
-    public ToothLesionOB(String toothType, String lesionType) {
-        this.toothType = toothType;
-        this.lesionType = lesionType;
-    }
+//    public ToothLesionOB(String toothType, String lesionType) {
+//        this.toothType = toothType;
+//        this.lesionType = lesionType;
+//    }
 
     public String getToothType() {
         return toothType;
@@ -40,18 +40,6 @@ public class ToothLesionOB {
     public void setOralHealthRecord(ToOne<OralHealthRecordOB> oralHealthRecord) {
         this.oralHealthRecord = oralHealthRecord;
     }
-
-//    /**
-//     * Convert object to json format.
-//     *
-//     * @return String
-//     */
-//    public String toJson() {
-//        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-//        String a = gson.toJson(this);
-//        Log.i("AAAAAAAAAA", a);
-//        return a;
-//    }
 
     @Override
     public String toString() {
