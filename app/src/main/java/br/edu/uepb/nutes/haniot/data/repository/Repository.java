@@ -1,10 +1,17 @@
 package br.edu.uepb.nutes.haniot.data.repository;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.activity.QuizNutritionActivity;
+import br.edu.uepb.nutes.haniot.activity.QuizOdontologyActivity;
+import br.edu.uepb.nutes.haniot.activity.UserRegisterActivity;
 import br.edu.uepb.nutes.haniot.data.Convert;
 import br.edu.uepb.nutes.haniot.data.model.dao.DeviceDAO;
 import br.edu.uepb.nutes.haniot.data.model.dao.FeedingHabitsDAO;
@@ -15,8 +22,10 @@ import br.edu.uepb.nutes.haniot.data.model.dao.PhysicalActivityHabitsDAO;
 import br.edu.uepb.nutes.haniot.data.model.dao.PilotStudyDAO;
 import br.edu.uepb.nutes.haniot.data.model.dao.SleepHabitsDAO;
 import br.edu.uepb.nutes.haniot.data.model.dao.UserDAO;
+import br.edu.uepb.nutes.haniot.data.model.model.Admin;
 import br.edu.uepb.nutes.haniot.data.model.model.Device;
 import br.edu.uepb.nutes.haniot.data.model.model.FeedingHabitsRecord;
+import br.edu.uepb.nutes.haniot.data.model.model.HealthProfessional;
 import br.edu.uepb.nutes.haniot.data.model.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.model.MedicalRecord;
 import br.edu.uepb.nutes.haniot.data.model.model.Patient;
@@ -24,7 +33,13 @@ import br.edu.uepb.nutes.haniot.data.model.model.PhysicalActivityHabit;
 import br.edu.uepb.nutes.haniot.data.model.model.PilotStudy;
 import br.edu.uepb.nutes.haniot.data.model.model.SleepHabit;
 import br.edu.uepb.nutes.haniot.data.model.model.User;
+import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
+import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.ErrorHandler;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
+import io.reactivex.Completable;
+import io.reactivex.Single;
+
+import static br.edu.uepb.nutes.haniot.data.model.type.UserType.HEALTH_PROFESSIONAL;
 
 /**
  * Classe responsável por gerenciar o repositório local e o repositório remoto
@@ -74,6 +89,21 @@ public class Repository {
      * @return boolean
      */
     public boolean saveDevice(@NonNull Device device) {
+        DisposableManager.add(haniotNetRepository
+                        .saveDevice(device)
+                        .subscribe(deviceRest -> {
+                            deviceRest.setImg(device.getImg());
+//                    deviceRest.setUserId(user.get_id());
+//                    Log.w("AAA", "UserOB: " + user.get_id());
+//                    Log.w("AAA", "subscribe: " + deviceRest.toJson());
+//                    mRepository.saveDevice(deviceRest);
+//
+//                    onDeviceRegistered(mDevice);
+                        }, err -> {
+//                    onDeviceFounded(null);
+//                    Log.w(LOG_TAG, "ERROR SAVE:" + err.getMessage() + device);
+                        })
+        );
         return deviceDAO.save(Convert.convertDevice(device));
     }
 
@@ -139,6 +169,14 @@ public class Repository {
      */
     public boolean removeDevice(@NonNull Device device) {
         return deviceDAO.remove(Convert.convertDevice(device));
+    }
+
+    public boolean removeDevice(String userId, String idDevice) {
+        DisposableManager.add(haniotNetRepository
+                .deleteDevice(userId, idDevice).subscribe(() -> {
+
+                }));
+        return deviceDAO.remove(idDevice);
     }
 
     /**
@@ -211,7 +249,25 @@ public class Repository {
      * @return boolean
      */
     public boolean saveMeasurement(@NonNull Measurement measurement) {
+        DisposableManager.add(haniotNetRepository
+                .saveMeasurement(measurement)
+//                .doAfterSuccess(measurement1 -> {
+//                    printMessage(getString(R.string.measurement_save));
+//                    Log.w(getTag(), "SINCRONIZAR...");
+//                    loadData(true);
+//                })
+                .subscribe(measurement1 -> {
+                }, error -> {
+//                    mRepository.saveMeasurement(measurement);
+//                    Log.w(getTag(), error.getMessage());
+//                    printMessage(getString(R.string.error_500));
+                }));
         return measurementDAO.save(Convert.convertMeasurement(measurement));
+    }
+
+    public void saveMeasurement(List<Measurement> measurements) {
+        for (Measurement aux : measurements)
+            saveMeasurement(aux);
     }
 
     /**
@@ -227,12 +283,17 @@ public class Repository {
     /**
      * Remove measurement.
      *
-     * @param measurement
+     * @param id
      * @return boolean
      */
-    public boolean removeMeasurement(@NonNull Measurement measurement) {
-        return measurementDAO.remove(Convert.convertMeasurement(measurement));
+    public boolean removeMeasurement(@NonNull String patientId, @NonNull String id) {
+        DisposableManager.add(haniotNetRepository
+                .deleteMeasurement(patientId, id).subscribe(() -> {
+//                    measurementIdToDelete.remove(id);
+                }));
+        return measurementDAO.remove(id);
     }
+
 
     /**
      * Remove all measurements associated with device and user.
@@ -263,6 +324,44 @@ public class Repository {
      */
     public Measurement getMeasurement(@NonNull long id) {
         return Convert.convertMeasurement(measurementDAO.get(id));
+    }
+
+    public List<Measurement> getMeasurements(String patientId, String measurementType, String sort, String dateStart, String dateEnd, int page, int limitPerPage) {
+        List<Measurement> aux = new ArrayList<>();
+        DisposableManager.add(haniotNetRepository
+                .getAllMeasurementsByType(patientId, measurementType, sort,
+                        dateStart, dateEnd, page, limitPerPage)
+//                .doOnSubscribe(disposable -> {
+//                    toggleLoading(true);
+//                    toggleNoDataMessage(false);
+//                })
+//                .doAfterTerminate(() -> {
+//                    Log.w(getTag(), "loadData - doAfterTerminate");
+//                    toggleLoading(false); // Disable loading
+//                })
+                .subscribe(measurements -> {
+                    List<Measurement> a = measurements;
+
+//                    Log.w(getTag(), "loadData - onResult()");
+//                    if (measurements != null && measurements.size() > 0) {
+//                        mAdapter.addItems(measurements);
+//                        itShouldLoadMore = true;
+//                        if (page == INITIAL_PAGE) {
+//                            updateUILastMeasurement((Measurement) mAdapter.getFirstItem(), false);
+//                        }
+//                        page++;
+//                    } else {
+//                        toggleLoading(false);
+//                        if (mAdapter.itemsIsEmpty())
+//                            toggleNoDataMessage(true); // Enable message no data
+//                        itShouldLoadMore = false;
+//                    }
+                }, erro -> {
+//                    Log.w(getTag(), "loadData - onError()");
+//                    if (mAdapter.itemsIsEmpty()) printMessage(getString(R.string.error_500));
+//                    return measurementDAO.list(patientId, )
+                }));
+        return aux;
     }
 
     /**
@@ -355,10 +454,35 @@ public class Repository {
     }
 
     public boolean savePatient(@NonNull Patient patient) {
+        DisposableManager.add(haniotNetRepository
+                .savePatient(patient)
+                .doAfterTerminate(() -> {
+//                    showLoading(false);
+//                    Log.i(TAG, "Salvando paciente no servidor!");
+                })
+                .doOnSubscribe(disposable -> {
+//                    Log.i(TAG, "Salvando paciente no servidor!");
+//                    showLoading(true);
+                })
+                .subscribe(patientAux -> {
+//                    if (patient.get_id() == null) {
+////                        showMessage(R.string.error_recover_data);
+//                        return;
+//                    }
+//                    this.patient.set_id(patient.get_id());
+//                    associatePatientToPilotStudy();
+                }, erro -> {
+                }));
         return patientDAO.save(Convert.convertPatient(patient));
     }
 
     public boolean updatePatient(@NonNull Patient patient) {
+        DisposableManager.add(haniotNetRepository.updatePatient(patient).subscribe(patient1 -> {
+
+        }, erro -> {
+            Log.w("AAA", erro.getMessage());
+//            ErrorHandler.showMessage(this, erro);
+        }));
         return patientDAO.update(Convert.convertPatient(patient));
     }
 
@@ -408,7 +532,11 @@ public class Repository {
         return Convert.convertPilotStudy(pilotStudyDAO.get(_id));
     }
 
-    public List<PilotStudy> listPilotStudies(String userId) {
+    public List<PilotStudy> getAllPilotStudies() {
+        return Convert.listPilotStudiesToModel(pilotStudyDAO.list(null));
+    }
+
+    public List<PilotStudy> getPilotStudiesByUserId(String userId) {
         return Convert.listPilotStudiesToModel(pilotStudyDAO.list(userId));
     }
 
@@ -529,4 +657,31 @@ public class Repository {
         return userDAO.remove(id);
     }
 
+    public void updateAdmin(Admin admin) {
+        DisposableManager.add(haniotNetRepository.updateAdmin(admin)
+                .subscribe(admin1 -> {
+
+                }, erro -> {
+                }));
+    }
+
+    public void updateHealthProfissional(HealthProfessional healthProfessional) {
+        DisposableManager.add(haniotNetRepository.updateHealthProfissional(healthProfessional)
+                .subscribe(healthProfessional1 -> {
+
+        }, erro -> {}));
+    }
+
+    public void associatePatientToPilotStudy(String pilotStudyId, String patientId) {
+        DisposableManager.add(haniotNetRepository
+                .associatePatientToPilotStudy(pilotStudyId, patientId)
+                .subscribe(o -> {
+
+                }, erro -> {
+                }));
+    }
+
+    public Single<List<Measurement>> getAllMeasurementsByType(String id, String typeMeasurement, String timestamp, String dateStart, String dateEnd, int i, int i1) {
+        return null;
+    }
 }

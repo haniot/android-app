@@ -36,6 +36,7 @@ import br.edu.uepb.nutes.haniot.data.model.model.User;
 import br.edu.uepb.nutes.haniot.data.model.type.ItemGridType;
 import br.edu.uepb.nutes.haniot.data.model.type.MeasurementType;
 import br.edu.uepb.nutes.haniot.data.model.type.PatientsType;
+import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.ErrorHandler;
@@ -97,7 +98,8 @@ public class AddMeasurementActivity extends AppCompatActivity {
     TextView messageError;
 
     private final Calendar myCalendar = Calendar.getInstance();
-    private HaniotNetRepository haniotNetRepository;
+    //    private HaniotNetRepository haniotNetRepository;
+    private Repository mRepository;
     private AppPreferencesHelper appPreferencesHelper;
     private Fragment myFragment;
     private User user;
@@ -115,7 +117,8 @@ public class AddMeasurementActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setupComponents();
-        haniotNetRepository = HaniotNetRepository.getInstance(this);
+        mRepository = Repository.getInstance(this);
+//        haniotNetRepository = HaniotNetRepository.getInstance(this);
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
         user = appPreferencesHelper.getUserLogged();
         patient = appPreferencesHelper.getLastPatient();
@@ -396,14 +399,15 @@ public class AddMeasurementActivity extends AppCompatActivity {
                 .setMessage(getString(R.string.confirm_save_measurement))
                 .setCancelable(false)
                 .setPositiveButton(getString(R.string.yes_text), (dialog, id) -> {
-                    DisposableManager.add(haniotNetRepository
-                            .saveMeasurement(measurements)
-                            .doAfterSuccess(measurement1 -> {
-                                showToast(getString(R.string.measurement_save));
-                                finish();
-                            })
-                            .subscribe(measurement1 -> {
-                            }, this::errorHandler));
+                    mRepository.saveMeasurement(measurements);
+//                    DisposableManager.add(haniotNetRepository
+//                            .saveMeasurement(measurements)
+//                            .doAfterSuccess(measurement1 -> {
+//                                showToast(getString(R.string.measurement_save));
+//                                finish();
+//                            })
+//                            .subscribe(measurement1 -> {
+//                            }, this::errorHandler));
                 })
                 .setNegativeButton(getString(R.string.no_text), null)
                 .show();
@@ -421,14 +425,15 @@ public class AddMeasurementActivity extends AppCompatActivity {
                     .setMessage(getString(R.string.confirm_save_measurement))
                     .setCancelable(false)
                     .setPositiveButton(getString(R.string.yes_text), (dialog, id) -> {
-                        DisposableManager.add(haniotNetRepository
-                                .saveMeasurement(measurement)
-                                .doAfterSuccess(measurement1 -> {
-                                    showToast(getString(R.string.measurement_save));
-                                    finish();
-                                })
-                                .subscribe(measurement1 -> {
-                                }, this::errorHandler));
+                        mRepository.saveMeasurement(measurement);
+//                        DisposableManager.add(haniotNetRepository
+//                                .saveMeasurement(measurement)
+//                                .doAfterSuccess(measurement1 -> {
+//                                    showToast(getString(R.string.measurement_save));
+//                                    finish();
+//                                })
+//                                .subscribe(measurement1 -> {
+//                                }, this::errorHandler));
                     })
                     .setNegativeButton(getString(R.string.no_text), null)
                     .show();

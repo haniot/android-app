@@ -57,10 +57,8 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
 
     private SimpleBleScanner mScanner;
     private Device mDevice;
-//    private DeviceDAO mDeviceDAO;
     private Repository mRepository;
     private AppPreferencesHelper appPreferences;
-    private HaniotNetRepository haniotRepository;
     private User user;
 
     @BindView(R.id.box_scanner)
@@ -198,21 +196,23 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         Log.i("AAA", device.toJson());
         device.setModelNumber(null); // TODO Remover quando a API der suporte
         device.setUserId(user.get_id());
-        DisposableManager.add(haniotRepository
-                .saveDevice(device)
-                .subscribe(deviceRest -> {
-                    deviceRest.setImg(device.getImg());
-                    deviceRest.setUserId(user.get_id());
-                    Log.w("AAA", "UserOB: " + user.get_id());
-                    Log.w("AAA", "subscribe: " + deviceRest.toJson());
-                    mRepository.saveDevice(deviceRest);
+        mRepository.saveDevice(device);
 
-                    onDeviceRegistered(mDevice);
-                }, err -> {
-                    onDeviceFounded(null);
-                    Log.w(LOG_TAG, "ERROR SAVE:" + err.getMessage() + device);
-                })
-        );
+//        DisposableManager.add(haniotRepository
+//                .saveDevice(device)
+//                .subscribe(deviceRest -> {
+//                    deviceRest.setImg(device.getImg());
+//                    deviceRest.setUserId(user.get_id());
+//                    Log.w("AAA", "UserOB: " + user.get_id());
+//                    Log.w("AAA", "subscribe: " + deviceRest.toJson());
+//                    mRepository.saveDevice(deviceRest);
+//
+//                    onDeviceRegistered(mDevice);
+//                }, err -> {
+//                    onDeviceFounded(null);
+//                    Log.w(LOG_TAG, "ERROR SAVE:" + err.getMessage() + device);
+//                })
+//        );
     }
 
     /**
@@ -413,7 +413,6 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
 
         mDevice = getIntent().getParcelableExtra(DeviceManagerActivity.EXTRA_DEVICE);
         appPreferences = AppPreferencesHelper.getInstance(this);
-        haniotRepository = HaniotNetRepository.getInstance(this);
         mRepository = Repository.getInstance(this);
 
         btnDeviceRegisterScanner.setOnClickListener(this);

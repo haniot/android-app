@@ -90,8 +90,8 @@ public class UserRegisterActivity extends AppCompatActivity {
     private Calendar myCalendar;
     private Patient patient;
     private AppPreferencesHelper appPreferencesHelper;
-    private HaniotNetRepository haniotNetRepository;
-//    private PatientDAO patientDAO;
+//    private HaniotNetRepository haniotNetRepository;
+    //    private PatientDAO patientDAO;
     private Repository mRepository;
     private boolean isEdit = false;
     private String oldEmail;
@@ -171,10 +171,13 @@ public class UserRegisterActivity extends AppCompatActivity {
         admin.setPhoneNumber(phoneEdittext.getText().toString());
         admin.setBirthDate(DateUtils.formatDate(myCalendar.getTimeInMillis(), "yyyy-MM-dd"));
         Log.w("AAA", "editing AdminOB: " + admin.toJson());
-        DisposableManager.add(haniotNetRepository.updateAdmin(admin).subscribe(admin1 -> {
-            showMessage(R.string.update_success);
-            finish();
-        }, this::errorHandler));
+        mRepository.updateAdmin(admin);
+        showMessage(R.string.update_success);
+        finish();
+//        DisposableManager.add(haniotNetRepository.updateAdmin(admin).subscribe(admin1 -> {
+//            showMessage(R.string.update_success);
+//            finish();
+//        }, this::errorHandler));
 
     }
 
@@ -196,10 +199,12 @@ public class UserRegisterActivity extends AppCompatActivity {
         healthProfessional.setPhoneNumber(phoneEdittext.getText().toString());
         healthProfessional.setBirthDate(DateUtils.formatDate(myCalendar.getTimeInMillis(), "yyyy-MM-dd"));
         Log.w("AAA", "editing Health Professional: " + healthProfessional.toJson());
-        DisposableManager.add(haniotNetRepository.updateHealthProfissional(healthProfessional).subscribe(healthProfessional1 -> {
-            showMessage(R.string.update_success);
-            finish();
-        }, this::errorHandler));
+        mRepository.updateHealthProfissional(healthProfessional);
+        showMessage(R.string.update_success);
+        finish();
+//        DisposableManager.add(haniotNetRepository.updateHealthProfissional(healthProfessional).subscribe(healthProfessional1 -> {
+//
+//        }, this::errorHandler));
     }
 
     /**
@@ -236,35 +241,47 @@ public class UserRegisterActivity extends AppCompatActivity {
 
         if (isEdit) {
             Log.w("AAA", "patient to edit: " + patient.toJson());
-            DisposableManager.add(haniotNetRepository
-                    .updatePatient(patient)
-                    .doOnSubscribe(disposable -> showLoading(true))
-                    .doAfterTerminate(() -> showLoading(false))
-                    .subscribe(patient1 -> {
-                        mRepository.savePatient(patient);
-                        showMessage(R.string.update_success);
-                        startActivity(new Intent(UserRegisterActivity.this, ManagerPatientsActivity.class));
-                        finish();
-                    }, this::errorHandler));
+            mRepository.updatePatient(patient);
+            showMessage(R.string.update_success);
+            startActivity(new Intent(UserRegisterActivity.this, ManagerPatientsActivity.class));
+            finish();
+//            DisposableManager.add(haniotNetRepository
+//                    .updatePatient(patient)
+//                    .doOnSubscribe(disposable -> showLoading(true))
+//                    .doAfterTerminate(() -> showLoading(false))
+//                    .subscribe(patient1 -> {
+//                        mRepository.savePatient(patient);
+//                        showMessage(R.string.update_success);
+//                        startActivity(new Intent(UserRegisterActivity.this, ManagerPatientsActivity.class));
+//                        finish();
+//                    }, this::errorHandler));
         } else {
-            DisposableManager.add(haniotNetRepository
-                    .savePatient(patient)
-                    .doAfterTerminate(() -> {
-                        showLoading(false);
-                        Log.i(TAG, "Salvando paciente no servidor!");
-                    })
-                    .doOnSubscribe(disposable -> {
-                        Log.i(TAG, "Salvando paciente no servidor!");
-                        showLoading(true);
-                    })
-                    .subscribe(patient -> {
-                        if (patient.get_id() == null) {
-                            showMessage(R.string.error_recover_data);
-                            return;
-                        }
-                        this.patient.set_id(patient.get_id());
-                        associatePatientToPilotStudy();
-                    }, this::errorHandler));
+            mRepository.savePatient(patient);
+            if (patient.get_id() == null) {
+                showMessage(R.string.error_recover_data);
+                return;
+            }
+            this.patient.set_id(patient.get_id());
+            associatePatientToPilotStudy();
+
+//            DisposableManager.add(haniotNetRepository
+//                    .savePatient(patient)
+//                    .doAfterTerminate(() -> {
+//                        showLoading(false);
+//                        Log.i(TAG, "Salvando paciente no servidor!");
+//                    })
+//                    .doOnSubscribe(disposable -> {
+//                        Log.i(TAG, "Salvando paciente no servidor!");
+//                        showLoading(true);
+//                    })
+//                    .subscribe(patient -> {
+//                        if (patient.get_id() == null) {
+//                            showMessage(R.string.error_recover_data);
+//                            return;
+//                        }
+//                        this.patient.set_id(patient.get_id());
+//                        associatePatientToPilotStudy();
+//                    }, this::errorHandler));
         }
     }
 
@@ -272,21 +289,33 @@ public class UserRegisterActivity extends AppCompatActivity {
      * Associate patient to selected pilot study in server.
      */
     private void associatePatientToPilotStudy() {
-        DisposableManager.add(haniotNetRepository
-                .associatePatientToPilotStudy(userLogged.getPilotStudyIDSelected(), patient.get_id())
-                .subscribe(o -> {
-                    Log.w(TAG, "PatientOB associated to pilotstudy");
-                    mRepository.savePatient(patient);
-                    appPreferencesHelper.saveLastPatient(patient);
-                    if (appPreferencesHelper.getUserLogged().getUserType().equals(HEALTH_PROFESSIONAL)) {
-                        User user = appPreferencesHelper.getUserLogged();
-                        if (user.getHealthArea().equals(getString(R.string.type_nutrition)))
-                            startActivity(new Intent(UserRegisterActivity.this, QuizNutritionActivity.class));
-                        else if (user.getHealthArea().equals(getString(R.string.type_dentistry)))
-                            startActivity(new Intent(UserRegisterActivity.this, QuizOdontologyActivity.class));
-                    }
-                    finish();
-                }, this::errorHandler));
+        mRepository.associatePatientToPilotStudy(userLogged.getPilotStudyIDSelected(), patient.get_id());
+        mRepository.savePatient(patient);
+        appPreferencesHelper.saveLastPatient(patient);
+
+        if (appPreferencesHelper.getUserLogged().getUserType().equals(HEALTH_PROFESSIONAL)) {
+            User user = appPreferencesHelper.getUserLogged();
+            if (user.getHealthArea().equals(getString(R.string.type_nutrition)))
+                startActivity(new Intent(UserRegisterActivity.this, QuizNutritionActivity.class));
+            else if (user.getHealthArea().equals(getString(R.string.type_dentistry)))
+                startActivity(new Intent(UserRegisterActivity.this, QuizOdontologyActivity.class));
+        }
+        finish();
+//        DisposableManager.add(haniotNetRepository
+//                .associatePatientToPilotStudy(userLogged.getPilotStudyIDSelected(), patient.get_id())
+//                .subscribe(o -> {
+//                    Log.w(TAG, "PatientOB associated to pilotstudy");
+//                    mRepository.savePatient(patient);
+//                    appPreferencesHelper.saveLastPatient(patient);
+//                    if (appPreferencesHelper.getUserLogged().getUserType().equals(HEALTH_PROFESSIONAL)) {
+//                        User user = appPreferencesHelper.getUserLogged();
+//                        if (user.getHealthArea().equals(getString(R.string.type_nutrition)))
+//                            startActivity(new Intent(UserRegisterActivity.this, QuizNutritionActivity.class));
+//                        else if (user.getHealthArea().equals(getString(R.string.type_dentistry)))
+//                            startActivity(new Intent(UserRegisterActivity.this, QuizOdontologyActivity.class));
+//                    }
+//                    finish();
+//                }, this::errorHandler));
     }
 
     /**
@@ -503,7 +532,6 @@ public class UserRegisterActivity extends AppCompatActivity {
     private void initComponents() {
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
         Log.i(TAG, appPreferencesHelper.getUserAccessHaniot().getAccessToken());
-        haniotNetRepository = HaniotNetRepository.getInstance(this);
         mRepository = Repository.getInstance(this);
         myCalendar = Calendar.getInstance();
         userLogged = appPreferencesHelper.getUserLogged();

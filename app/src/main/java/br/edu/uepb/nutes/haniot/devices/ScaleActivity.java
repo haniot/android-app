@@ -115,7 +115,7 @@ public class ScaleActivity extends BaseDeviceActivity {
 //                measurement.setDeviceId(mDevice.get_id());
 
             if (bodyMass > 0) {
-                synchronizeWithServer(measurement);
+                mRepository.saveMeasurement(measurement);
                 updateUILastMeasurement(measurement, true);
             }
         }

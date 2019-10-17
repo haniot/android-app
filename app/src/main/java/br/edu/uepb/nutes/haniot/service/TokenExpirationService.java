@@ -16,9 +16,10 @@ import org.greenrobot.eventbus.Subscribe;
 
 import br.edu.uepb.nutes.haniot.activity.account.LoginActivity;
 import br.edu.uepb.nutes.haniot.data.model.model.UserAccess;
-//import br.edu.uepb.nutes.haniot.data.model.dao.PilotStudyDAO;
 import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
+
+//import br.edu.uepb.nutes.haniot.data.model.dao.PilotStudyDAO;
 
 /**
  * Service for token expiration.

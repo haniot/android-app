@@ -24,12 +24,12 @@ import java.util.Calendar;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.data.model.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.model.Measurement;
+import br.edu.uepb.nutes.haniot.data.model.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.type.MeasurementType;
+import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
-import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
@@ -51,8 +51,8 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
     public final int CHART_TYPE_YEAR = 4;
 
     protected int currentChartType;
+    private Repository mRepository;
     private AppPreferencesHelper appPreferencesHelper;
-    protected HaniotNetRepository haniotNetRepository;
     protected Patient patient;
 
     @BindView(R.id.toolbar)
@@ -95,7 +95,7 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
-        haniotNetRepository = HaniotNetRepository.getInstance(this);
+        mRepository = Repository.getInstance(this);
         patient = appPreferencesHelper.getLastPatient();
 
         initView();
@@ -214,7 +214,15 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
         Log.w(TAG, "Data fim: " + dateEnd);
 
         if (ConnectionUtils.internetIsEnabled(this)) {
-            DisposableManager.add(haniotNetRepository.
+//            List<Measurement> measurements = mRepository.getMeasurements(patient.get_id(), getTypeMeasurement(),
+//                    "timestamp", dateStart, dateEnd, 1, 100);
+//            if (measurements != null) {
+//                runOnUiThread(() -> {
+//                    onUpdateData(measurements, currentChartType);
+//                    createMoreInfo(measurements);
+//                });
+//            }
+            DisposableManager.add(mRepository.
                     getAllMeasurementsByType(patient.get_id(), getTypeMeasurement(), "timestamp",
                             dateStart, dateEnd, 1, 100)
                     .doOnSubscribe(disposable -> {
@@ -234,6 +242,27 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
                         Log.w(TAG, "onError()");
                         printMessage(getString(R.string.error_500));
                     }));
+
+//            DisposableManager.add(haniotNetRepository.
+//                    getAllMeasurementsByType(patient.get_id(), getTypeMeasurement(), "timestamp",
+//                            dateStart, dateEnd, 1, 100)
+//                    .doOnSubscribe(disposable -> {
+//                        Log.w(TAG, "onBeforeSend()");
+//                        mProgressBar.setVisibility(View.VISIBLE);
+//                        getChart().setVisibility(View.INVISIBLE);
+//                    })
+//                    .subscribe(measurements -> {
+//                        Log.w(TAG, "onSuccess()");
+//                        if (measurements != null) {
+//                            runOnUiThread(() -> {
+//                                onUpdateData(measurements, currentChartType);
+//                                createMoreInfo(measurements);
+//                            });
+//                        }
+//                    }, error -> {
+//                        Log.w(TAG, "onError()");
+//                        printMessage(getString(R.string.error_500));
+//                    }));
         } else {
             runOnUiThread(() -> {
                 onUpdateData(new ArrayList<>(), currentChartType);

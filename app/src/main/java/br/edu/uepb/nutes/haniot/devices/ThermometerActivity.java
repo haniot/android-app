@@ -63,7 +63,7 @@ public class ThermometerActivity extends BaseDeviceActivity {
             measurement.setUserId(patient.get_id());
             measurement.setType(MeasurementType.BODY_TEMPERATURE);
 
-            synchronizeWithServer(measurement);
+            mRepository.saveMeasurement(measurement);
         }
 
         @Override

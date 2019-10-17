@@ -64,12 +64,12 @@ public class MeasurementDAO {
     /**
      * Remove measurementOB.
      *
-     * @param measurementOB
+     * @param id
      * @return boolean
      */
-    public boolean remove(@NonNull MeasurementOB measurementOB) {
+    public boolean remove(@NonNull String id) {
         return measurementBox.query()
-                .equal(MeasurementOB_.id, measurementOB.getId())
+                .equal(MeasurementOB_.id, id)
                 .build()
                 .remove() > 0;
     }

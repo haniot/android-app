@@ -34,8 +34,6 @@ import br.edu.uepb.nutes.haniot.data.model.model.User;
 import br.edu.uepb.nutes.haniot.data.model.type.DeviceType;
 import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
-import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
-import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -110,7 +108,6 @@ public class DeviceManagerActivity extends AppCompatActivity {
     private DeviceAdapter mAdapterDeviceRegistered;
     private AppPreferencesHelper appPreferences;
     private Repository mRepository;
-    private HaniotNetRepository haniotRepository;
     private List<String> deviceIdToDelete;
     private Handler handler;
     private Runnable runnable;
@@ -121,7 +118,6 @@ public class DeviceManagerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manager_devices);
         ButterKnife.bind(this);
-        haniotRepository = HaniotNetRepository.getInstance(this);
         appPreferences = AppPreferencesHelper.getInstance(this);
         mRepository = Repository.getInstance(this);
 
@@ -189,27 +185,31 @@ public class DeviceManagerActivity extends AppCompatActivity {
      * Download list of devices registered.
      */
     public void downloadDevicesData() {
-        DisposableManager.add(
-                haniotRepository
-                        .getAllDevices(user.get_id())
-                        .doOnSubscribe(disposable -> {
-                            swipeRefreshLayoutDevices.setRefreshing(true);
-                            contentDevices.setVisibility(View.GONE);
-                        })
-                        .doAfterTerminate(() -> {
-                            swipeRefreshLayoutDevices.setEnabled(true);
-                            swipeRefreshLayoutDevices.setRefreshing(false);
-                        })
-                        .subscribe(devices -> {
-                            Log.w("AAA", Arrays.toString(devices.toArray()));
-                            contentDevices.setVisibility(View.VISIBLE);
-                            populateDevicesRegistered(setImagesDevices(devices));
+        List<Device> devices = mRepository.listDevices(user.get_id());
+        populateDevicesRegistered(setImagesDevices(devices));
+        populateDevicesAvailable(devices);
 
-
-                            populateDevicesAvailable(mRepository.listDevices(user.get_id()));
-                            showErrorConnection(false);
-                        }, err -> showErrorConnection(true))
-        );
+//        DisposableManager.add(
+//                haniotRepository
+//                        .getAllDevices(user.get_id())
+//                        .doOnSubscribe(disposable -> {
+//                            swipeRefreshLayoutDevices.setRefreshing(true);
+//                            contentDevices.setVisibility(View.GONE);
+//                        })
+//                        .doAfterTerminate(() -> {
+//                            swipeRefreshLayoutDevices.setEnabled(true);
+//                            swipeRefreshLayoutDevices.setRefreshing(false);
+//                        })
+//                        .subscribe(devices -> {
+//                            Log.w("AAA", Arrays.toString(devices.toArray()));
+//                            contentDevices.setVisibility(View.VISIBLE);
+//                            populateDevicesRegistered(setImagesDevices(devices));
+//
+//
+//                            populateDevicesAvailable(mRepository.listDevices(user.get_id()));
+//                            showErrorConnection(false);
+//                        }, err -> showErrorConnection(true))
+//        );
     }
 
     /**
@@ -345,13 +345,15 @@ public class DeviceManagerActivity extends AppCompatActivity {
     private void removePendingDevices() {
         Log.w("XXX", "removePendingDevices()");
         if (deviceIdToDelete == null || deviceIdToDelete.isEmpty()) return;
-        for (String idDevice : deviceIdToDelete)
-            DisposableManager.add(haniotRepository
-                    .deleteDevice(user.get_id(), idDevice).subscribe(() -> {
-                        mRepository.removeDevice(idDevice);
-                        deviceIdToDelete.remove(idDevice);
-
-                    }));
+        for (String idDevice : deviceIdToDelete) {
+            mRepository.removeDevice(user.get_id(), idDevice);
+            deviceIdToDelete.remove(idDevice);
+        }
+//            DisposableManager.add(haniotRepository
+//                    .deleteDevice(user.get_id(), idDevice).subscribe(() -> {
+//                        mRepository.removeDevice(idDevice);
+//                        deviceIdToDelete.remove(idDevice);
+//                    }));
     }
 
     /**
