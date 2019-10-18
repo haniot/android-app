@@ -1,17 +1,12 @@
 package br.edu.uepb.nutes.haniot.data.repository;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
-import java.util.ArrayList;
+import com.google.gson.JsonObject;
+
 import java.util.List;
 
-import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.activity.QuizNutritionActivity;
-import br.edu.uepb.nutes.haniot.activity.QuizOdontologyActivity;
-import br.edu.uepb.nutes.haniot.activity.UserRegisterActivity;
 import br.edu.uepb.nutes.haniot.data.Convert;
 import br.edu.uepb.nutes.haniot.data.model.dao.DeviceDAO;
 import br.edu.uepb.nutes.haniot.data.model.dao.FeedingHabitsDAO;
@@ -27,19 +22,23 @@ import br.edu.uepb.nutes.haniot.data.model.model.Device;
 import br.edu.uepb.nutes.haniot.data.model.model.FeedingHabitsRecord;
 import br.edu.uepb.nutes.haniot.data.model.model.HealthProfessional;
 import br.edu.uepb.nutes.haniot.data.model.model.Measurement;
+import br.edu.uepb.nutes.haniot.data.model.model.MeasurementLastResponse;
 import br.edu.uepb.nutes.haniot.data.model.model.MedicalRecord;
+import br.edu.uepb.nutes.haniot.data.model.model.NutritionalEvaluation;
+import br.edu.uepb.nutes.haniot.data.model.model.NutritionalEvaluationResult;
+import br.edu.uepb.nutes.haniot.data.model.model.NutritionalQuestionnaire;
+import br.edu.uepb.nutes.haniot.data.model.model.OdontologicalQuestionnaire;
 import br.edu.uepb.nutes.haniot.data.model.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.model.PhysicalActivityHabit;
 import br.edu.uepb.nutes.haniot.data.model.model.PilotStudy;
 import br.edu.uepb.nutes.haniot.data.model.model.SleepHabit;
 import br.edu.uepb.nutes.haniot.data.model.model.User;
+import br.edu.uepb.nutes.haniot.data.model.model.UserAccess;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
-import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.ErrorHandler;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import io.reactivex.Completable;
 import io.reactivex.Single;
-
-import static br.edu.uepb.nutes.haniot.data.model.type.UserType.HEALTH_PROFESSIONAL;
+import retrofit2.Response;
 
 /**
  * Classe responsável por gerenciar o repositório local e o repositório remoto
@@ -88,23 +87,9 @@ public class Repository {
      * @param device DeviceOB
      * @return boolean
      */
-    public boolean saveDevice(@NonNull Device device) {
-        DisposableManager.add(haniotNetRepository
-                        .saveDevice(device)
-                        .subscribe(deviceRest -> {
-                            deviceRest.setImg(device.getImg());
-//                    deviceRest.setUserId(user.get_id());
-//                    Log.w("AAA", "UserOB: " + user.get_id());
-//                    Log.w("AAA", "subscribe: " + deviceRest.toJson());
-//                    mRepository.saveDevice(deviceRest);
-//
-//                    onDeviceRegistered(mDevice);
-                        }, err -> {
-//                    onDeviceFounded(null);
-//                    Log.w(LOG_TAG, "ERROR SAVE:" + err.getMessage() + device);
-                        })
-        );
-        return deviceDAO.save(Convert.convertDevice(device));
+    public Single<Device> saveDevice(@NonNull Device device) {
+        return haniotNetRepository.saveDevice(device);
+//        return deviceDAO.save(Convert.convertDevice(device));
     }
 
 
@@ -137,17 +122,8 @@ public class Repository {
      * @return DeviceOB
      */
     public Device getDeviceByType(@NonNull String userId, String type) {
+//        return haniotNetRepository.getDevice()
         return Convert.convertDevice(deviceDAO.getByType(userId, type));
-    }
-
-    /**
-     * Retrieves all device according to userId.
-     *
-     * @param userId long
-     * @return List<T>
-     */
-    public List<Device> listDevices(@NonNull String userId) {
-        return Convert.listDeviceToModel(deviceDAO.list(userId));
     }
 
     /**
@@ -182,11 +158,13 @@ public class Repository {
     /**
      * Removes device passed as parameter.
      *
-     * @param _id String
+     * @param userId   String
+     * @param deviceId String
      * @return boolean
      */
-    public boolean removeDevice(@NonNull String _id) {
-        return deviceDAO.remove(_id);
+    public Completable deleteDevice(@NonNull String userId, @NonNull String deviceId) {
+        deviceDAO.remove(deviceId);
+        return haniotNetRepository.deleteDevice(userId, deviceId);
     }
 
     /**
@@ -248,62 +226,24 @@ public class Repository {
      * @param measurement
      * @return boolean
      */
-    public boolean saveMeasurement(@NonNull Measurement measurement) {
-        DisposableManager.add(haniotNetRepository
-                .saveMeasurement(measurement)
-//                .doAfterSuccess(measurement1 -> {
-//                    printMessage(getString(R.string.measurement_save));
-//                    Log.w(getTag(), "SINCRONIZAR...");
-//                    loadData(true);
-//                })
-                .subscribe(measurement1 -> {
-                }, error -> {
-//                    mRepository.saveMeasurement(measurement);
-//                    Log.w(getTag(), error.getMessage());
-//                    printMessage(getString(R.string.error_500));
-                }));
-        return measurementDAO.save(Convert.convertMeasurement(measurement));
+    public Single<Measurement> saveMeasurement(@NonNull Measurement measurement) {
+        return haniotNetRepository.saveMeasurement(measurement);
+//        return measurementDAO.save(Convert.convertMeasurement(measurement));
     }
 
-    public void saveMeasurement(List<Measurement> measurements) {
-        for (Measurement aux : measurements)
-            saveMeasurement(aux);
-    }
-
-    /**
-     * Update measurement data.
-     *
-     * @param measurement
-     * @return boolean
-     */
-    public boolean updateMeasurement(@NonNull Measurement measurement) {
-        return measurementDAO.update(Convert.convertMeasurement(measurement));
+    public Single<Object> saveMeasurement(List<Measurement> measurements) {
+        return haniotNetRepository.saveMeasurement(measurements);
     }
 
     /**
      * Remove measurement.
      *
-     * @param id
+     * @param measurementId
      * @return boolean
      */
-    public boolean removeMeasurement(@NonNull String patientId, @NonNull String id) {
-        DisposableManager.add(haniotNetRepository
-                .deleteMeasurement(patientId, id).subscribe(() -> {
-//                    measurementIdToDelete.remove(id);
-                }));
-        return measurementDAO.remove(id);
-    }
-
-
-    /**
-     * Remove all measurements associated with device and user.
-     *
-     * @param deviceId long
-     * @param userId   long
-     * @return boolean
-     */
-    public boolean removeAllMeasurements(@NonNull long deviceId, @NonNull long userId) {
-        return measurementDAO.removeAll(deviceId, userId);
+    public Completable deleteMeasurement(@NonNull String patientId, @NonNull String measurementId) {
+        measurementDAO.remove(patientId, measurementId);
+        return haniotNetRepository.deleteMeasurement(patientId, measurementId);
     }
 
     /**
@@ -319,49 +259,17 @@ public class Repository {
     /**
      * Select a measurement.
      *
-     * @param id long
+     * @param userId        String
+     * @param measurementId String
      * @return Object
      */
-    public Measurement getMeasurement(@NonNull long id) {
-        return Convert.convertMeasurement(measurementDAO.get(id));
+    public Single<Measurement> getMeasurement(@NonNull String userId, @NonNull String measurementId) {
+        return haniotNetRepository.getMeasurement(userId, measurementId);
+//        return Convert.convertMeasurement(measurementDAO.get(id));
     }
 
-    public List<Measurement> getMeasurements(String patientId, String measurementType, String sort, String dateStart, String dateEnd, int page, int limitPerPage) {
-        List<Measurement> aux = new ArrayList<>();
-        DisposableManager.add(haniotNetRepository
-                .getAllMeasurementsByType(patientId, measurementType, sort,
-                        dateStart, dateEnd, page, limitPerPage)
-//                .doOnSubscribe(disposable -> {
-//                    toggleLoading(true);
-//                    toggleNoDataMessage(false);
-//                })
-//                .doAfterTerminate(() -> {
-//                    Log.w(getTag(), "loadData - doAfterTerminate");
-//                    toggleLoading(false); // Disable loading
-//                })
-                .subscribe(measurements -> {
-                    List<Measurement> a = measurements;
-
-//                    Log.w(getTag(), "loadData - onResult()");
-//                    if (measurements != null && measurements.size() > 0) {
-//                        mAdapter.addItems(measurements);
-//                        itShouldLoadMore = true;
-//                        if (page == INITIAL_PAGE) {
-//                            updateUILastMeasurement((Measurement) mAdapter.getFirstItem(), false);
-//                        }
-//                        page++;
-//                    } else {
-//                        toggleLoading(false);
-//                        if (mAdapter.itemsIsEmpty())
-//                            toggleNoDataMessage(true); // Enable message no data
-//                        itShouldLoadMore = false;
-//                    }
-                }, erro -> {
-//                    Log.w(getTag(), "loadData - onError()");
-//                    if (mAdapter.itemsIsEmpty()) printMessage(getString(R.string.error_500));
-//                    return measurementDAO.list(patientId, )
-                }));
-        return aux;
+    public Single<List<Measurement>> getMeasurements(String patientId, String measurementType, String sort, String dateStart, String dateEnd, int page, int limitPerPage) {
+        return haniotNetRepository.getAllMeasurementsByType(patientId, measurementType, sort, dateStart, dateEnd, page, limitPerPage);
     }
 
     /**
@@ -387,19 +295,6 @@ public class Repository {
      */
     public List<Measurement> listMeasurements(@NonNull String type, @NonNull String userId, @NonNull int offset, @NonNull int limit) {
         return Convert.listMeasurementsToModel(measurementDAO.list(type, userId, offset, limit));
-    }
-
-    /**
-     * Select all measurements associated with the device and user.
-     *
-     * @param deviceId long
-     * @param userId   long
-     * @param offset   int
-     * @param limit    int
-     * @return List<MeasurementOB>
-     */
-    public List<Measurement> listMeasurements(@NonNull long deviceId, @NonNull long userId, @NonNull int offset, @NonNull int limit) {
-        return Convert.listMeasurementsToModel(measurementDAO.list(deviceId, userId, offset, limit));
     }
 
     /**
@@ -441,57 +336,21 @@ public class Repository {
 
     // --------- PATIENT DAO --------------
 
-    public Patient getPatient(long id) {
-        return Convert.convertPatient(patientDAO.get(id));
+    public Single<Patient> getPatient(@NonNull String _id) {
+        return haniotNetRepository.getPatient(_id);
+//        return Convert.convertPatient(patientDAO.get(_id));
     }
 
-    public Patient getPatient(@NonNull String _id) {
-        return Convert.convertPatient(patientDAO.get(_id));
+    public Single<Patient> savePatient(@NonNull Patient patient) {
+        return haniotNetRepository.savePatient(patient);
+
+//        return patientDAO.save(Convert.convertPatient(patient));
     }
 
-    public List<Patient> listPatients(@NonNull String healthProfessionalId) {
-        return Convert.listPatientsToModel(patientDAO.list(healthProfessionalId));
-    }
+    public Single<Patient> updatePatient(@NonNull Patient patient) {
+        return haniotNetRepository.updatePatient(patient);
 
-    public boolean savePatient(@NonNull Patient patient) {
-        DisposableManager.add(haniotNetRepository
-                .savePatient(patient)
-                .doAfterTerminate(() -> {
-//                    showLoading(false);
-//                    Log.i(TAG, "Salvando paciente no servidor!");
-                })
-                .doOnSubscribe(disposable -> {
-//                    Log.i(TAG, "Salvando paciente no servidor!");
-//                    showLoading(true);
-                })
-                .subscribe(patientAux -> {
-//                    if (patient.get_id() == null) {
-////                        showMessage(R.string.error_recover_data);
-//                        return;
-//                    }
-//                    this.patient.set_id(patient.get_id());
-//                    associatePatientToPilotStudy();
-                }, erro -> {
-                }));
-        return patientDAO.save(Convert.convertPatient(patient));
-    }
-
-    public boolean updatePatient(@NonNull Patient patient) {
-        DisposableManager.add(haniotNetRepository.updatePatient(patient).subscribe(patient1 -> {
-
-        }, erro -> {
-            Log.w("AAA", erro.getMessage());
-//            ErrorHandler.showMessage(this, erro);
-        }));
-        return patientDAO.update(Convert.convertPatient(patient));
-    }
-
-    public boolean removePatient(@NonNull Patient patient) {
-        return patientDAO.remove(Convert.convertPatient(patient));
-    }
-
-    public boolean removePatient(@NonNull String _id) {
-        return patientDAO.remove(_id);
+//        return patientDAO.update(Convert.convertPatient(patient));
     }
 
     // ------------ PHYSICAL ACTIVITY HABITS DAO -----------
@@ -524,40 +383,12 @@ public class Repository {
 
     // ----------------- PILOT STUDY DAO -------------------------
 
-    public PilotStudy getPilotStudy(long id) {
-        return Convert.convertPilotStudy(pilotStudyDAO.get(id));
-    }
-
-    public PilotStudy getPilotStudy(@NonNull String _id) {
-        return Convert.convertPilotStudy(pilotStudyDAO.get(_id));
-    }
-
     public List<PilotStudy> getAllPilotStudies() {
         return Convert.listPilotStudiesToModel(pilotStudyDAO.list(null));
     }
 
     public List<PilotStudy> getPilotStudiesByUserId(String userId) {
         return Convert.listPilotStudiesToModel(pilotStudyDAO.list(userId));
-    }
-
-    public boolean savePilotStudy(@NonNull PilotStudy pilotStudy) {
-        return pilotStudyDAO.save(Convert.convertPilotStudy(pilotStudy));
-    }
-
-    public boolean updatePilotStudy(@NonNull PilotStudy pilotStudy) {
-        return pilotStudyDAO.update(Convert.convertPilotStudy(pilotStudy));
-    }
-
-    public void clearSelectedPilotStudy(@NonNull String userId) {
-        pilotStudyDAO.clearSelected(userId);
-    }
-
-    public boolean removePilotStudy(@NonNull PilotStudy pilotStudy) {
-        return pilotStudyDAO.remove(Convert.convertPilotStudy(pilotStudy));
-    }
-
-    public boolean removePilotStudy(@NonNull String _id) {
-        return pilotStudyDAO.remove(_id);
     }
 
     public boolean removeAllPilotStudiesy(@NonNull String userId) {
@@ -594,16 +425,6 @@ public class Repository {
     // ---------- USER DAO ---------------
 
     /**
-     * get user for _id.
-     *
-     * @param _id String
-     * @return UserOB
-     */
-    public User getUser(@NonNull String _id) {
-        return Convert.convertUser(userDAO.get(_id));
-    }
-
-    /**
      * Selects user based on local id
      *
      * @param id long
@@ -613,75 +434,93 @@ public class Repository {
         return Convert.convertUser(userDAO.get(id));
     }
 
-    public List<User> listAllUsers() {
-        return null;
+    public Single<Admin> updateAdmin(Admin admin) {
+        return haniotNetRepository.updateAdmin(admin);
     }
 
-    /**
-     * Add new user.
-     *
-     * @param user
-     * @return boolean
-     */
-    public boolean saveUser(@NonNull User user) {
-        return userDAO.save(Convert.convertUser(user));
+    public Single<HealthProfessional> updateHealthProfissional(HealthProfessional healthProfessional) {
+        return haniotNetRepository.updateHealthProfissional(healthProfessional);
     }
 
-    /**
-     * Update user.
-     *
-     * @param user
-     * @return boolean
-     */
-    public boolean updateUser(@NonNull User user) {
-        return userDAO.update(Convert.convertUser(user));
+    public Single<Response<Void>> associatePatientToPilotStudy(String pilotStudyId, String patientId) {
+        return haniotNetRepository.associatePatientToPilotStudy(pilotStudyId, patientId);
     }
 
-    /**
-     * Remove user.
-     *
-     * @param id
-     * @return boolean
-     */
-    public boolean removeUser(@NonNull long id) {
-        return userDAO.remove(id);
+    public Single<List<Measurement>> getAllMeasurementsByType(String userId, String typeMeasurement,
+                                                              String timestamp, String dateStart, String dateEnd, int page, int limit) {
+        return haniotNetRepository.getAllMeasurementsByType(
+                userId, typeMeasurement, timestamp, dateStart, dateEnd, page, limit);
     }
 
-    /**
-     * Remove user.
-     *
-     * @param id
-     * @return boolean
-     */
-    public boolean removeUser(@NonNull String id) {
-        return userDAO.remove(id);
+    public Single<HealthProfessional> getHealthProfissional(String _id) {
+        return haniotNetRepository.getHealthProfissional(_id);
     }
 
-    public void updateAdmin(Admin admin) {
-        DisposableManager.add(haniotNetRepository.updateAdmin(admin)
-                .subscribe(admin1 -> {
-
-                }, erro -> {
-                }));
+    public Single<Admin> getAdmin(String _id) {
+        return haniotNetRepository.getAdmin(_id);
     }
 
-    public void updateHealthProfissional(HealthProfessional healthProfessional) {
-        DisposableManager.add(haniotNetRepository.updateHealthProfissional(healthProfessional)
-                .subscribe(healthProfessional1 -> {
-
-        }, erro -> {}));
+    public Single<List<Device>> getAllDevices(String patientId) {
+        return haniotNetRepository.getAllDevices(patientId);
     }
 
-    public void associatePatientToPilotStudy(String pilotStudyId, String patientId) {
-        DisposableManager.add(haniotNetRepository
-                .associatePatientToPilotStudy(pilotStudyId, patientId)
-                .subscribe(o -> {
-
-                }, erro -> {
-                }));
+    public Single<UserAccess> auth(String username, String password) {
+        return haniotNetRepository.auth(username, password);
     }
 
-    public Single<List<Measurement>> getAllMeasurementsByType(String id, String typeMeasurement, String timestamp, String dateStart, String dateEnd, int i, int i1) {
-        return null;
+    public Completable changePassword(User user) {
+        return haniotNetRepository.changePassword(user);
+    }
+
+    public Single<Object> forgotPassword(JsonObject email) {
+        return haniotNetRepository.forgotPassword(email);
+    }
+
+    public Single<List<NutritionalQuestionnaire>> getAllNutritionalQuestionnaires(String patientId, int page, int limit, String sort) {
+        return haniotNetRepository.getAllNutritionalQuestionnaires(patientId, page, limit, sort);
+    }
+
+    public Single<List<OdontologicalQuestionnaire>> getAllOdontologicalQuestionnaires(String patientId, int page, int limit, String sort) {
+        return haniotNetRepository.getAllOdontologicalQuestionnaires(patientId, page, limit, sort);
+    }
+
+    public Completable deleteUserById(String userId) {
+        return haniotNetRepository.deleteUserById(userId);
+    }
+
+    public Single<List<Patient>> getAllPatients(String pilotStudyId, String sort, int page, int limit) {
+        return haniotNetRepository.getAllPatients(pilotStudyId, sort, page, limit);
+    }
+
+    public Completable deletePatient(String patientId) {
+        return haniotNetRepository.deletePatient(patientId);
+    }
+
+    public Single<NutritionalQuestionnaire> getLastNutritionalQuestionnaire(String patientId) {
+        return haniotNetRepository.getLastNutritionalQuestionnaire(patientId);
+    }
+
+    public Single<MeasurementLastResponse> getLastMeasurements(String patientId) {
+        return haniotNetRepository.getLastMeasurements(patientId);
+    }
+
+    public Single<NutritionalEvaluationResult> saveNutritionalEvaluation(NutritionalEvaluation nutritionalEvaluation) {
+        return haniotNetRepository.saveNutritionalEvaluation(nutritionalEvaluation);
+    }
+
+    public Single<NutritionalQuestionnaire> saveNutritionalQuestionnaire(String patientId, NutritionalQuestionnaire nutritionalQuestionnaire) {
+        return haniotNetRepository.saveNutritionalQuestionnaire(patientId, nutritionalQuestionnaire);
+    }
+
+    public Single<Object> updateNutritionalQuestionnaire(String patientId, String questionnaireId, String resourceName, Object object) {
+        return haniotNetRepository.updateNutritionalQuestionnaire(patientId, questionnaireId, resourceName, object);
+    }
+
+    public Single<OdontologicalQuestionnaire> saveOdontologicalQuestionnaire(String patientId, OdontologicalQuestionnaire odontologicalQuestionnaire) {
+        return haniotNetRepository.saveOdontologicalQuestionnaire(patientId, odontologicalQuestionnaire);
+    }
+
+    public Single<Object> updateOdontologicalQuestionnaire(String patientId, String questionnaireId, String resourceName, Object object) {
+        return haniotNetRepository.updateOdontologicalQuestionnaire(patientId, questionnaireId, resourceName, object);
     }
 }

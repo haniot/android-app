@@ -15,9 +15,9 @@ import br.edu.uepb.nutes.haniot.activity.UserRegisterActivity;
 import br.edu.uepb.nutes.haniot.activity.PilotStudyActivity;
 import br.edu.uepb.nutes.haniot.activity.account.ChangePasswordActivity;
 import br.edu.uepb.nutes.haniot.activity.account.LoginActivity;
+import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
-import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.haniot.devices.register.DeviceManagerActivity;
 
 /**
@@ -29,7 +29,7 @@ public class MainPreferenceFragment extends PreferenceFragment {
     public static final String FORM_UPDATE = "form_update";
 
     private AppPreferencesHelper appPreferences;
-    private HaniotNetRepository haniotNetRepository;
+    private Repository mRepository;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -38,7 +38,7 @@ public class MainPreferenceFragment extends PreferenceFragment {
         addPreferencesFromResource(R.xml.preferences);
 
         appPreferences = AppPreferencesHelper.getInstance(getActivity().getApplicationContext());
-        haniotNetRepository = HaniotNetRepository.getInstance(getActivity().getApplicationContext());
+        mRepository = Repository.getInstance(getActivity().getApplicationContext());
         // Send feedback
         Preference prefSendFeedback = findPreference(getString(R.string.key_send_bug));
         prefSendFeedback.setOnPreferenceClickListener(preference -> {
@@ -113,8 +113,9 @@ public class MainPreferenceFragment extends PreferenceFragment {
                     .setMessage(R.string.confirm_delete_account)
                     .setPositiveButton(R.string.bt_ok, (dialog, which) -> {
                                 // Remove user from server and redirect to login screen
-                                DisposableManager.add(haniotNetRepository
-                                        .deleteUserById(appPreferences.getUserLogged().get_id()).subscribe(() -> {
+                                DisposableManager.add(mRepository
+                                        .deleteUserById(appPreferences.getUserLogged().get_id())
+                                        .subscribe(() -> {
                                             if (appPreferences.removeUserLogged()) {
                                                 Intent intent = new Intent(getActivity(), LoginActivity.class);
                                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

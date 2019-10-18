@@ -24,9 +24,9 @@ import br.edu.uepb.nutes.haniot.data.model.type.FrequencyAnswersType;
 import br.edu.uepb.nutes.haniot.data.model.type.OdontologicalQuestionnaireType;
 import br.edu.uepb.nutes.haniot.data.model.type.SociodemographicType;
 import br.edu.uepb.nutes.haniot.data.model.type.ToothLesionType;
+import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
-import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.simplesurvey.base.SimpleSurvey;
 import br.edu.uepb.nutes.simplesurvey.question.Dichotomic;
 import br.edu.uepb.nutes.simplesurvey.question.Infor;
@@ -60,7 +60,7 @@ public class QuizOdontologyActivity extends SimpleSurvey implements Infor.OnInfo
     private Patient patient;
 
     private AppPreferencesHelper appPreferencesHelper;
-    private HaniotNetRepository haniotNetRepository;
+    private Repository mRepository;
 
     private FamilyCohesionRecord familyCohesionRecord;
     private OralHealthRecord oralHealthRecord;
@@ -143,7 +143,7 @@ public class QuizOdontologyActivity extends SimpleSurvey implements Infor.OnInfo
      */
     private void initResources() {
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
-        haniotNetRepository = HaniotNetRepository.getInstance(this);
+        mRepository = Repository.getInstance(this);
         patient = appPreferencesHelper.getLastPatient();
         familyCohesionRecord = new FamilyCohesionRecord();
         oralHealthRecord = new OralHealthRecord();
@@ -600,7 +600,7 @@ public class QuizOdontologyActivity extends SimpleSurvey implements Infor.OnInfo
         dialog.show();
         Log.w("AAA", odontologicalQuestionnaire.toJson());
         if (updateType == null) {
-            DisposableManager.add(haniotNetRepository
+            DisposableManager.add(mRepository
                     .saveOdontologicalQuestionnaire(patient.get_id(), odontologicalQuestionnaire)
                     .doAfterTerminate(() -> {
                     })
@@ -635,7 +635,7 @@ public class QuizOdontologyActivity extends SimpleSurvey implements Infor.OnInfo
 
             Log.w("AAA", "id: " + idUpdate);
             if (idUpdate != null) {
-                DisposableManager.add(haniotNetRepository
+                DisposableManager.add(mRepository
                         .updateOdontologicalQuestionnaire(patient.get_id(), idUpdate, updateType, resourceToUpdate)
                         .subscribe(o -> {
                             dialog.cancel();

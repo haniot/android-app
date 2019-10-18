@@ -63,7 +63,6 @@ import br.edu.uepb.nutes.haniot.data.model.type.MeasurementType;
 import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
-import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.haniot.devices.BloodPressureActivity;
 import br.edu.uepb.nutes.haniot.devices.GlucoseActivity;
 import br.edu.uepb.nutes.haniot.devices.HeartRateActivity;
@@ -110,7 +109,6 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
     private SimpleBleScanner.Builder builder;
     private SharedPreferences prefSettings;
     private DecimalFormat decimalFormat;
-    private HaniotNetRepository haniotRepository;
     private Repository mRepository;
     private PilotStudy pilotStudy;
     private static List<HeartRateItem> heartRateItems;
@@ -137,8 +135,6 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        haniotRepository = HaniotNetRepository.getInstance(mContext);
-//        measurementDAO = MeasurementDAO.getInstance(mContext);
         mRepository = Repository.getInstance(mContext);
     }
 
@@ -155,7 +151,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
 
     //TODO Próxima sprint
     private void downloadLastMeasurements() {
-        DisposableManager.add(haniotRepository
+        DisposableManager.add(mRepository
                 .getAllMeasurementsByType(patient.get_id(), "blood_glucose", "-timestamp", null, null, 1, 1)
                 .subscribe(measurements -> {
                     if (!measurements.isEmpty()) {
@@ -531,7 +527,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
 
     private void sendMeasurementToServer(Measurement measurement) {
         Log.i(LOG_TAG, "Saving " + measurement.toJson());
-        DisposableManager.add(haniotRepository
+        DisposableManager.add(mRepository
                 .saveMeasurement(measurement)
                 .doAfterSuccess(measurement1 -> {
                     Log.i(LOG_TAG, "Saved " + measurement1.toJson());
@@ -569,7 +565,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
         if (measurements == null) measurements = new ArrayList<>();
         measurements.add(measurement);
 
-        DisposableManager.add(haniotRepository
+        DisposableManager.add(mRepository
                 .saveMeasurement(measurements)
                 .doAfterTerminate(() -> {
                     dialog.cancel();
@@ -644,14 +640,14 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
      */
     private Device getDeviceRegistered(String type) {
 
-        for (Device device1 : mRepository.listDevices(user.get_id()))
+        for (Device device1 : devices)
             if (device1.getType().equals(type)) return device1;
         return null;
     }
 
     private Device getDeviceRegisteredFromAddress(String address) {
 
-        for (Device device1 : mRepository.listDevices(user.get_id()))
+        for (Device device1 : devices)
             if (device1.getAddress().equals(address)) return device1;
         return null;
     }
@@ -841,7 +837,10 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
 //        deviceDAO = DeviceDAO.getInstance(mContext);
 //        Log.w("AAA", Arrays.toString(deviceDAO.list(user.get_id()).toArray()));
 
-        devices = mRepository.listDevices(user.get_id());
+        DisposableManager.add(
+                mRepository.getAllDevices(user.get_id())
+                        .subscribe(devices1 -> devices = devices1));
+
         builder = new SimpleBleScanner.Builder();
         pilotStudy = appPreferencesHelper.getLastPilotStudy();
         if (heartRateItems == null) heartRateItems = new ArrayList<>();

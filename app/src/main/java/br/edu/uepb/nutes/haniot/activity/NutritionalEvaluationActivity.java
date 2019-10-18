@@ -34,9 +34,9 @@ import br.edu.uepb.nutes.haniot.data.model.model.PilotStudy;
 import br.edu.uepb.nutes.haniot.data.model.model.User;
 import br.edu.uepb.nutes.haniot.data.model.type.ItemGridType;
 import br.edu.uepb.nutes.haniot.data.model.type.TypeEvaluation;
+import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
-import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.haniot.devices.GlucoseActivity;
 import br.edu.uepb.nutes.haniot.devices.ScaleActivity;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
@@ -82,7 +82,7 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
     private List<GroupItemEvaluation> groupItemEvaluations;
     private AppPreferencesHelper helper;
     private Patient patient;
-    private HaniotNetRepository haniotNetRepository;
+    private Repository mRepository;
     private AppPreferencesHelper appPreferencesHelper;
     private NutritionalEvaluation nutritionalEvaluation;
     private PilotStudy pilotStudy;
@@ -146,7 +146,7 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
         validated = new HashMap<>();
         groupItemEvaluations = new ArrayList<>();
         helper = AppPreferencesHelper.getInstance(this);
-        haniotNetRepository = HaniotNetRepository.getInstance(this);
+        mRepository = Repository.getInstance(this);
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
         patient = helper.getLastPatient();
         user = helper.getUserLogged();
@@ -371,7 +371,7 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
      */
     private void downloadData() {
 
-        DisposableManager.add(haniotNetRepository
+        DisposableManager.add(mRepository
                 .getLastNutritionalQuestionnaire(patient.get_id())
                 .subscribe(nutritionalQuestionnaires -> {
                     Log.w("AAA", nutritionalQuestionnaires.toJson());
@@ -382,7 +382,7 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
                     onDownloadError(ALL_QUIZ);
                 }));
 
-        DisposableManager.add(haniotNetRepository
+        DisposableManager.add(mRepository
                 .getLastMeasurements(patient.get_id())
                 .subscribe(measurents -> {
                     Log.w("AAA", measurents.toJson());
@@ -458,7 +458,7 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
                     .setMessage(getString(R.string.confirm_save_evaluation))
                     .setCancelable(false)
                     .setPositiveButton(getString(R.string.yes_text), (dialog, id) -> {
-                        DisposableManager.add(haniotNetRepository
+                        DisposableManager.add(mRepository
                                 .saveNutritionalEvaluation(nutritionalEvaluation)
                                 .subscribe(nutritionalEvaluationResult -> {
                                     Toast.makeText(this, R.string.evaluation_sucessfull, Toast.LENGTH_LONG).show();

@@ -25,9 +25,9 @@ import br.edu.uepb.nutes.haniot.data.model.model.OdontologicalQuestionnaire;
 import br.edu.uepb.nutes.haniot.data.model.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.model.User;
 import br.edu.uepb.nutes.haniot.data.model.type.TypeEvaluation;
+import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
-import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -75,7 +75,7 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
     @BindView(R.id.text_error_dentistry)
     TextView textErrorDentistry;
 
-    private HaniotNetRepository haniotNetRepository;
+    private Repository mRepository;
     private AppPreferencesHelper appPreferencesHelper;
     private Patient patient;
     private List<GroupItemEvaluation> groupItemNutritionEvaluations;
@@ -107,7 +107,7 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
     private void initResources() {
         groupItemNutritionEvaluations = new ArrayList<>();
         groupItemOdontologicalEvaluations = new ArrayList<>();
-        haniotNetRepository = HaniotNetRepository.getInstance(this);
+        mRepository = Repository.getInstance(this);
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
         patient = appPreferencesHelper.getLastPatient();
         user = appPreferencesHelper.getUserLogged();
@@ -145,7 +145,7 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
 
     private void downloadData() {
         if (user.getUserType().equals(ADMIN) || !user.getHealthArea().equals(DENTISTRY)) {
-            DisposableManager.add(haniotNetRepository
+            DisposableManager.add(mRepository
                     .getAllNutritionalQuestionnaires(patient.get_id(), 1, 100, "created_at")
                     .subscribe(nutritional -> {
                         Log.w("AAA", "Size Nutrition: " + nutritional.size());
@@ -159,7 +159,7 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
         }
 
         if (user.getUserType().equals(ADMIN) || !user.getHealthArea().equals(NUTRITION)) {
-            DisposableManager.add(haniotNetRepository
+            DisposableManager.add(mRepository
                     .getAllOdontologicalQuestionnaires(patient.get_id(), 1, 100, "created_at")
                     .subscribe(odontological -> {
                         Log.w("AAA", "Size Odonto: " + odontological.size());

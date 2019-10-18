@@ -18,10 +18,10 @@ import java.util.regex.Pattern;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.MainActivity;
 import br.edu.uepb.nutes.haniot.data.model.model.User;
+import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.ErrorHandler;
-import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -53,7 +53,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
     EditText confirmPasswordEditText;
 
     private Menu menu;
-    private HaniotNetRepository haniotNetRepository;
+    private Repository mRepository;
     private AppPreferencesHelper appPreferences;
     private User user;
 
@@ -66,7 +66,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle(R.string.change_password);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        haniotNetRepository = HaniotNetRepository.getInstance(this);
+        mRepository = Repository.getInstance(this);
         appPreferences = AppPreferencesHelper.getInstance(this);
 
         String changePasswordId = appPreferences.getString("user_id");
@@ -184,7 +184,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
         user.setOldPassword(String.valueOf(currentPasswordEditText.getText()));
         user.setNewPassword(String.valueOf(newPasswordEditText.getText()));
 
-        DisposableManager.add(haniotNetRepository
+        DisposableManager.add(mRepository
                 .changePassword(user)
                 .doOnSubscribe(disposable -> loadingSend(true))
                 .doAfterTerminate(() -> loadingSend(false))

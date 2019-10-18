@@ -34,7 +34,6 @@ import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.ErrorHandler;
-import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.haniot.service.TokenExpirationService;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
@@ -85,7 +84,6 @@ public class ForgotPasswordActivity extends AppCompatActivity implements View.On
     private TokenExpirationService tokenExpirationService;
     private boolean mIsBound;
     private Repository mRepository;
-    private HaniotNetRepository haniotNetRepository;
     private AppPreferencesHelper appPreferencesHelper;
 
     @Override
@@ -98,7 +96,6 @@ public class ForgotPasswordActivity extends AppCompatActivity implements View.On
             getWindow().setStatusBarColor(getColor(R.color.colorAccent));
         }
         mRepository = Repository.getInstance(this);
-        haniotNetRepository = HaniotNetRepository.getInstance(this);
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
 
         doBindService();
@@ -170,7 +167,7 @@ public class ForgotPasswordActivity extends AppCompatActivity implements View.On
 //        user.set
         JsonObject email = new JsonObject();
         email.addProperty("email", emailEditText.getText().toString());
-        DisposableManager.add(haniotNetRepository
+        DisposableManager.add(mRepository
                 .forgotPassword(email)
                 .doOnSubscribe(disposable -> showLoading(true))
                 .doAfterTerminate(() -> showLoading(false))
@@ -188,7 +185,7 @@ public class ForgotPasswordActivity extends AppCompatActivity implements View.On
     private void getUserProfile(UserAccess userAccess) {
         switch (userAccess.getTokenType()) {
             case HEALTH_PROFESSIONAL:
-                DisposableManager.add(haniotNetRepository
+                DisposableManager.add(mRepository
                         .getHealthProfissional(userAccess.getSubject())
                         .doOnSubscribe(disposable -> showLoading(true))
                         .doAfterTerminate(() -> showLoading(false))
@@ -204,7 +201,7 @@ public class ForgotPasswordActivity extends AppCompatActivity implements View.On
                 );
                 break;
             case ADMIN:
-                DisposableManager.add(haniotNetRepository
+                DisposableManager.add(mRepository
                         .getAdmin(userAccess.getSubject())
                         .doOnSubscribe(disposable -> showLoading(true))
                         .doAfterTerminate(() -> showLoading(false))
@@ -220,7 +217,7 @@ public class ForgotPasswordActivity extends AppCompatActivity implements View.On
                 );
                 break;
             case PATIENT:
-                DisposableManager.add(haniotNetRepository
+                DisposableManager.add(mRepository
                         .getPatient(userAccess.getSubject())
                         .doOnSubscribe(disposable -> showLoading(true))
                         .doAfterTerminate(() -> showLoading(false))
@@ -256,7 +253,7 @@ public class ForgotPasswordActivity extends AppCompatActivity implements View.On
     public void syncDevices(String userId) {
         if (userId == null) return;
 
-        DisposableManager.add(haniotNetRepository
+        DisposableManager.add(mRepository
                 .getAllDevices(userId)
                 .doOnSubscribe(disposable -> showLoading(true))
                 .doAfterTerminate(() -> {

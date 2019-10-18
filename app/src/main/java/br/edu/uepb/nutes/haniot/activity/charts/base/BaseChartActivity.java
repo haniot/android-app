@@ -51,7 +51,7 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
     public final int CHART_TYPE_YEAR = 4;
 
     protected int currentChartType;
-    private Repository mRepository;
+    protected Repository mRepository;
     private AppPreferencesHelper appPreferencesHelper;
     protected Patient patient;
 
@@ -214,14 +214,6 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
         Log.w(TAG, "Data fim: " + dateEnd);
 
         if (ConnectionUtils.internetIsEnabled(this)) {
-//            List<Measurement> measurements = mRepository.getMeasurements(patient.get_id(), getTypeMeasurement(),
-//                    "timestamp", dateStart, dateEnd, 1, 100);
-//            if (measurements != null) {
-//                runOnUiThread(() -> {
-//                    onUpdateData(measurements, currentChartType);
-//                    createMoreInfo(measurements);
-//                });
-//            }
             DisposableManager.add(mRepository.
                     getAllMeasurementsByType(patient.get_id(), getTypeMeasurement(), "timestamp",
                             dateStart, dateEnd, 1, 100)
@@ -242,27 +234,6 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
                         Log.w(TAG, "onError()");
                         printMessage(getString(R.string.error_500));
                     }));
-
-//            DisposableManager.add(haniotNetRepository.
-//                    getAllMeasurementsByType(patient.get_id(), getTypeMeasurement(), "timestamp",
-//                            dateStart, dateEnd, 1, 100)
-//                    .doOnSubscribe(disposable -> {
-//                        Log.w(TAG, "onBeforeSend()");
-//                        mProgressBar.setVisibility(View.VISIBLE);
-//                        getChart().setVisibility(View.INVISIBLE);
-//                    })
-//                    .subscribe(measurements -> {
-//                        Log.w(TAG, "onSuccess()");
-//                        if (measurements != null) {
-//                            runOnUiThread(() -> {
-//                                onUpdateData(measurements, currentChartType);
-//                                createMoreInfo(measurements);
-//                            });
-//                        }
-//                    }, error -> {
-//                        Log.w(TAG, "onError()");
-//                        printMessage(getString(R.string.error_500));
-//                    }));
         } else {
             runOnUiThread(() -> {
                 onUpdateData(new ArrayList<>(), currentChartType);

@@ -88,7 +88,7 @@ public class BodyCompositionChartActivity extends BaseChartActivity {
      */
     public void setLimitObesity() {
         runOnUiThread(() -> {
-            DisposableManager.add(haniotNetRepository.
+            DisposableManager.add(mRepository.
                     getAllMeasurementsByType(patient.get_id(), MeasurementType.HEIGHT,
                             "-timestamp", null, null, 1, 1)
                     .doAfterSuccess(measurements -> {

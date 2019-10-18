@@ -47,14 +47,12 @@ import java.util.Locale;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.adapter.base.BaseAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
-import br.edu.uepb.nutes.haniot.data.Convert;
 import br.edu.uepb.nutes.haniot.data.model.model.Device;
 import br.edu.uepb.nutes.haniot.data.model.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.model.Patient;
 import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
-import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.BluetoothManager;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import br.edu.uepb.nutes.haniot.utils.NetworkUtil;
@@ -82,7 +80,6 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
     private BaseAdapter mAdapter;
     protected BluetoothManager manager;
 
-    protected HaniotNetRepository haniotNetRepository;
     protected Patient patient;
 
     private boolean wifiRequest;
@@ -151,7 +148,6 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
         mChartButton.setOnClickListener(this);
         mAddButton.setOnClickListener(this);
 
-        haniotNetRepository = HaniotNetRepository.getInstance(this);
         patient = appPreferencesHelper.getLastPatient();
 
         if (isTablet(this)) {
@@ -360,13 +356,12 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
         Log.w("XXX", "removePendingMeasurements()");
         if (measurementIdToDelete == null || measurementIdToDelete.isEmpty()) return;
         for (String id : measurementIdToDelete) {
-            mRepository.removeMeasurement(patient.get_id(), id);
+            DisposableManager.add(mRepository
+                    .deleteMeasurement(patient.get_id(), id).subscribe(() -> {
+                        measurementIdToDelete.remove(id);
+                    }));
             measurementIdToDelete.remove(id);
         }
-//            DisposableManager.add(haniotNetRepository
-//                    .deleteMeasurement(patient.get_id(), id).subscribe(() -> {
-//                        measurementIdToDelete.remove(id);
-//                    }));
     }
 
 //    /**
@@ -399,45 +394,46 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
             mAdapter.clearItems();
         }
 
-        mRepository.getMeasurements(patient.get_id(), getMeasurementType(), "-timestamp", page, LIMIT_PER_PAGE);
+        removePendingMeasurements();
+        DisposableManager.add(mRepository
+                .getAllMeasurementsByType(patient.get_id(),
+                        getMeasurementType(), "-timestamp",
+                        null, null, page, LIMIT_PER_PAGE)
+                .doOnSubscribe(disposable -> {
+                    Log.w(getTag(), "loadData - doOnSubscribe");
+                    toggleLoading(true);
+                    toggleNoDataMessage(false);
+                })
+                .doAfterTerminate(() -> {
+                    Log.w(getTag(), "loadData - doAfterTerminate");
+                    toggleLoading(false); // Disable loading
+                })
+                .subscribe(measurements -> {
+                    Log.w(getTag(), "loadData - onResult()");
+                    if (measurements != null && measurements.size() > 0) {
+                        mAdapter.addItems(measurements);
+                        itShouldLoadMore = true;
+                        if (page == INITIAL_PAGE) {
+                            updateUILastMeasurement((Measurement) mAdapter.getFirstItem(), false);
+                        }
+                        page++;
+                    } else {
+                        toggleLoading(false);
+                        if (mAdapter.itemsIsEmpty())
+                            toggleNoDataMessage(true); // Enable message no data
+                        itShouldLoadMore = false;
+                    }
+                }, erro -> {
+                    Log.w(getTag(), "loadData - onError()");
+                    if (mAdapter.itemsIsEmpty()) printMessage(getString(R.string.error_500));
+                }));
 
+//        mRepository.getMeasurements(patient.get_id(), getMeasurementType(), "-timestamp", page, LIMIT_PER_PAGE);
+//
 //        if (!ConnectionUtils.internetIsEnabled(this)) {
 //            loadDataLocal();
 //        } else {
-//            removePendingMeasurements();
-//            DisposableManager.add(haniotNetRepository
-//                    .getAllMeasurementsByType(patient.get_id(),
-//                            getMeasurementType(), "-timestamp",
-//                            null, null, page, LIMIT_PER_PAGE)
-//                    .doOnSubscribe(disposable -> {
-//                        Log.w(getTag(), "loadData - doOnSubscribe");
-//                        toggleLoading(true);
-//                        toggleNoDataMessage(false);
-//                    })
-//                    .doAfterTerminate(() -> {
-//                        Log.w(getTag(), "loadData - doAfterTerminate");
-//                        toggleLoading(false); // Disable loading
-//                    })
-//                    .subscribe(measurements -> {
-//                        Log.w(getTag(), "loadData - onResult()");
-//                        if (measurements != null && measurements.size() > 0) {
-//                            mAdapter.addItems(measurements);
-//                            itShouldLoadMore = true;
-//                            if (page == INITIAL_PAGE) {
-//                                updateUILastMeasurement((Measurement) mAdapter.getFirstItem(), false);
-//                            }
-//                            page++;
-//                        } else {
-//                            toggleLoading(false);
-//                            if (mAdapter.itemsIsEmpty())
-//                                toggleNoDataMessage(true); // Enable message no data
-//                            itShouldLoadMore = false;
-//                        }
-//                    }, erro -> {
-//                        Log.w(getTag(), "loadData - onError()");
-//                        if (mAdapter.itemsIsEmpty()) printMessage(getString(R.string.error_500));
-//                        else loadDataLocal();
-//                    }));
+//
 //        }
     }
 
@@ -549,26 +545,26 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
         });
     }
 
-//    /**
-//     * Performs routine for data synchronization with server.
-//     *
-//     * @param measurement MeasurementOB to save in server
-//     */
-//    protected void synchronizeWithServer(Measurement measurement) {
-//        DisposableManager.add(haniotNetRepository
-//                .saveMeasurement(measurement)
-//                .doAfterSuccess(measurement1 -> {
-//                    printMessage(getString(R.string.measurement_save));
-//                    Log.w(getTag(), "SINCRONIZAR...");
-//                    loadData(true);
-//                })
-//                .subscribe(measurement1 -> {
-//                }, error -> {
-//                    mRepository.saveMeasurement(measurement);
-//                    Log.w(getTag(), error.getMessage());
-//                    printMessage(getString(R.string.error_500));
-//                }));
-//    }
+    /**
+     * Performs routine for data synchronization with server.
+     *
+     * @param measurement MeasurementOB to save in server
+     */
+    protected void saveMeasurement(Measurement measurement) {
+        DisposableManager.add(mRepository
+                .saveMeasurement(measurement)
+                .doAfterSuccess(measurement1 -> {
+                    printMessage(getString(R.string.measurement_save));
+                    Log.w(getTag(), "SINCRONIZAR...");
+                    loadData(true);
+                })
+                .subscribe(measurement1 -> {
+                }, error -> {
+                    mRepository.saveMeasurement(measurement);
+                    Log.w(getTag(), error.getMessage());
+                    printMessage(getString(R.string.error_500));
+                }));
+    }
 
     protected abstract String getMeasurementType();
 

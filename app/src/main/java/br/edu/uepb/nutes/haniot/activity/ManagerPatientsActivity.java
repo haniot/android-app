@@ -25,10 +25,10 @@ import br.edu.uepb.nutes.haniot.activity.settings.SettingsActivity;
 import br.edu.uepb.nutes.haniot.adapter.ManagerPatientAdapter;
 import br.edu.uepb.nutes.haniot.data.model.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.model.User;
+import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.ErrorHandler;
-import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -56,9 +56,9 @@ public class ManagerPatientsActivity extends AppCompatActivity {
 
     private List<Patient> patientList;
     private ManagerPatientAdapter adapter;
+    private Repository mRepository;
     private SearchView searchView;
     private AppPreferencesHelper appPreferencesHelper;
-    private HaniotNetRepository haniotNetRepository;
     private User user;
 
     @Override
@@ -105,7 +105,7 @@ public class ManagerPatientsActivity extends AppCompatActivity {
         });
         message.setVisibility(View.INVISIBLE);
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
-        haniotNetRepository = HaniotNetRepository.getInstance(this);
+        mRepository = Repository.getInstance(this);
         patientList = new ArrayList<>();
         user = appPreferencesHelper.getUserLogged();
         disableBack();
@@ -124,7 +124,7 @@ public class ManagerPatientsActivity extends AppCompatActivity {
     private void loadData() {
         if (!addPatient.isShown()) addPatient.show();
         mDataSwipeRefresh.setRefreshing(true);
-        DisposableManager.add(haniotNetRepository
+        DisposableManager.add(mRepository
                 .getAllPatients(user.getPilotStudyIDSelected(), "created_at", 1, 100)
                 .doAfterTerminate(() -> mDataSwipeRefresh.setRefreshing(false))
                 .subscribe(patients -> {
@@ -223,7 +223,7 @@ public class ManagerPatientsActivity extends AppCompatActivity {
 
     private void removePatient(Patient patient) {
 
-        DisposableManager.add(haniotNetRepository
+        DisposableManager.add(mRepository
                 .deletePatient(patient.get_id())
                 .doAfterTerminate(this::loadData)
                 .subscribe(() -> {

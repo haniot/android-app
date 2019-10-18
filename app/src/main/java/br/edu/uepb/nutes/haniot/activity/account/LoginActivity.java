@@ -36,7 +36,6 @@ import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.ErrorHandler;
-import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.haniot.service.TokenExpirationService;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
@@ -84,7 +83,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private TokenExpirationService tokenExpirationService;
     private boolean mIsBound;
     private Repository mRepository;
-    private HaniotNetRepository haniotNetRepository;
     private AppPreferencesHelper appPreferencesHelper;
 
     @Override
@@ -100,7 +98,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             getWindow().setStatusBarColor(getColor(android.R.color.background_light));
         }
         mRepository = Repository.getInstance(this);
-        haniotNetRepository = HaniotNetRepository.getInstance(this);
+//        haniotNetRepository = HaniotNetRepository.getInstance(this);
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
 
         doBindService();
@@ -171,7 +169,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
      * Authenticates the user on the remote server
      */
     private void authenticationInServer() {
-        DisposableManager.add(haniotNetRepository
+        DisposableManager.add(mRepository
                 .auth(String.valueOf(emailEditText.getText()), String.valueOf(passwordEditText.getText()))
                 .doOnSubscribe(disposable -> showLoading(true))
                 .doAfterTerminate(() -> showLoading(false))
@@ -193,7 +191,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private void getUserProfile(UserAccess userAccess) {
         switch (userAccess.getTokenType()) {
             case HEALTH_PROFESSIONAL:
-                DisposableManager.add(haniotNetRepository
+                DisposableManager.add(mRepository
                         .getHealthProfissional(userAccess.getSubject())
                         .doOnSubscribe(disposable -> showLoading(true))
                         .doAfterTerminate(() -> showLoading(false))
@@ -209,7 +207,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 );
                 break;
             case ADMIN:
-                DisposableManager.add(haniotNetRepository
+                DisposableManager.add(mRepository
                         .getAdmin(userAccess.getSubject())
                         .doOnSubscribe(disposable -> showLoading(true))
                         .doAfterTerminate(() -> showLoading(false))
@@ -225,7 +223,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 );
                 break;
             case PATIENT:
-                DisposableManager.add(haniotNetRepository
+                DisposableManager.add(mRepository
                         .getPatient(userAccess.getSubject())
                         .doOnSubscribe(disposable -> showLoading(true))
                         .doAfterTerminate(() -> showLoading(false))
@@ -261,7 +259,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void syncDevices(String userId) {
         if (userId == null) return;
 
-        DisposableManager.add(haniotNetRepository
+        DisposableManager.add(mRepository
                 .getAllDevices(userId)
                 .doOnSubscribe(disposable -> showLoading(true))
                 .doAfterTerminate(() -> {

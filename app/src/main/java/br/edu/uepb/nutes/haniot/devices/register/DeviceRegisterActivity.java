@@ -37,7 +37,6 @@ import br.edu.uepb.nutes.haniot.data.model.model.User;
 import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
-import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.simpleblescanner.SimpleBleScanner;
 import br.edu.uepb.nutes.simpleblescanner.SimpleScannerCallback;
 import butterknife.BindView;
@@ -196,23 +195,22 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         Log.i("AAA", device.toJson());
         device.setModelNumber(null); // TODO Remover quando a API der suporte
         device.setUserId(user.get_id());
-        mRepository.saveDevice(device);
 
-//        DisposableManager.add(haniotRepository
-//                .saveDevice(device)
-//                .subscribe(deviceRest -> {
-//                    deviceRest.setImg(device.getImg());
-//                    deviceRest.setUserId(user.get_id());
-//                    Log.w("AAA", "UserOB: " + user.get_id());
-//                    Log.w("AAA", "subscribe: " + deviceRest.toJson());
-//                    mRepository.saveDevice(deviceRest);
-//
-//                    onDeviceRegistered(mDevice);
-//                }, err -> {
-//                    onDeviceFounded(null);
-//                    Log.w(LOG_TAG, "ERROR SAVE:" + err.getMessage() + device);
-//                })
-//        );
+        DisposableManager.add(mRepository
+                .saveDevice(device)
+                .subscribe(deviceRest -> {
+                    deviceRest.setImg(device.getImg());
+                    deviceRest.setUserId(user.get_id());
+                    Log.w("AAA", "UserOB: " + user.get_id());
+                    Log.w("AAA", "subscribe: " + deviceRest.toJson());
+                    mRepository.saveDevice(deviceRest);
+
+                    onDeviceRegistered(mDevice);
+                }, err -> {
+                    onDeviceFounded(null);
+                    Log.w(LOG_TAG, "ERROR SAVE:" + err.getMessage() + device);
+                })
+        );
     }
 
     /**

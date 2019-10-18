@@ -84,7 +84,7 @@ public class HeartRateActivity extends BaseDeviceActivity implements GenericDial
 //            if (mDevice != null)
 //                measurement.setDeviceId(mDevice.get_id());
 
-            mRepository.saveMeasurement(measurement);
+            saveMeasurement(measurement);
             updateUILastMeasurement(measurement, true);
         }
 

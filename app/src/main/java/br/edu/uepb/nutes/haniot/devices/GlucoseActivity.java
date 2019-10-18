@@ -81,8 +81,7 @@ public class GlucoseActivity extends BaseDeviceActivity {
 //            if (mDevice != null) measurement.setDeviceId(mDevice.get_id());
             measurement.setUserId(patient.get_id());
 
-            mRepository.saveMeasurement(measurement);
-//            synchronizeWithServer(measurement); // RETIRAR
+            saveMeasurement(measurement);
             updateUILastMeasurement(measurement, true);
         }
     };

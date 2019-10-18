@@ -30,7 +30,6 @@ import br.edu.uepb.nutes.haniot.data.model.type.SportsType;
 import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
-import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.simplesurvey.base.SimpleSurvey;
 import br.edu.uepb.nutes.simplesurvey.question.Dichotomic;
 import br.edu.uepb.nutes.simplesurvey.question.Infor;
@@ -75,7 +74,6 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
     private Repository mRepository;
 
     private AppPreferencesHelper appPreferencesHelper;
-    private HaniotNetRepository haniotNetRepository;
     int checkpoint;
     private NutritionalQuestionnaire nutritionalQuestionnaire;
     private String updateType;
@@ -127,7 +125,6 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
      */
     private void initResources() {
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
-        haniotNetRepository = HaniotNetRepository.getInstance(this);
         patient = appPreferencesHelper.getLastPatient();
         chronicDiseases = new ArrayList<>();
         weeklyFoodRecords = new ArrayList<>();
@@ -689,7 +686,7 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
         if (updateType == null) {
             Log.w("AAA", "updateType == null");
             Log.w("AAA", "Saving: " + nutritionalQuestionnaire.toJson());
-            DisposableManager.add(haniotNetRepository
+            DisposableManager.add(mRepository
                     .saveNutritionalQuestionnaire(patient.get_id(), nutritionalQuestionnaire)
                     .doAfterTerminate(() -> {
                     })
@@ -723,7 +720,7 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
             printJson();
             Log.w("AAA", "id: " + idUpdate);
             if (idUpdate != null) {
-                DisposableManager.add(haniotNetRepository
+                DisposableManager.add(mRepository
                         .updateNutritionalQuestionnaire(patient.get_id(), idUpdate, updateType, resourceToUpdate)
                         .subscribe(o -> {
                             dialog.cancel();

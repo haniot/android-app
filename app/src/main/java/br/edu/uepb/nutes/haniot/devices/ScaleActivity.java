@@ -115,7 +115,7 @@ public class ScaleActivity extends BaseDeviceActivity {
 //                measurement.setDeviceId(mDevice.get_id());
 
             if (bodyMass > 0) {
-                mRepository.saveMeasurement(measurement);
+                saveMeasurement(measurement);
                 updateUILastMeasurement(measurement, true);
             }
         }
@@ -235,7 +235,7 @@ public class ScaleActivity extends BaseDeviceActivity {
                 titleBodyFatTextView.setVisibility(View.VISIBLE);
             }
 
-            DisposableManager.add(haniotNetRepository.
+            DisposableManager.add(mRepository.
                     getAllMeasurementsByType(patient.get_id(),
                             MeasurementType.HEIGHT, "-timestamp", null, null, 1, 1)
                     .subscribe(measurements -> {
