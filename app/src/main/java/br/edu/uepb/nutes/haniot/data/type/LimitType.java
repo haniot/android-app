@@ -1,4 +1,4 @@
-package br.edu.uepb.nutes.haniot.data.model.type;
+package br.edu.uepb.nutes.haniot.data.type;
 
 /**
  * Created by Fabio on 04/06/2018.

@@ -10,7 +10,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.Objects;
 
 import br.edu.uepb.nutes.haniot.data.model.objectbox.BodyFatOB;
-import br.edu.uepb.nutes.haniot.data.model.type.MeasurementType;
+import br.edu.uepb.nutes.haniot.data.type.MeasurementType;
 
 /**
  * Represents Object of a BodyFatOB.

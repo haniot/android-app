@@ -27,8 +27,8 @@ import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static br.edu.uepb.nutes.haniot.data.model.type.UserType.ADMIN;
-import static br.edu.uepb.nutes.haniot.data.model.type.UserType.PATIENT;
+import static br.edu.uepb.nutes.haniot.data.type.UserType.ADMIN;
+import static br.edu.uepb.nutes.haniot.data.type.UserType.PATIENT;
 
 /**
  * DashboardChartsFragment implementation.

@@ -2,24 +2,29 @@ package br.edu.uepb.nutes.haniot.data.model.objectbox.nutritional;
 
 import java.util.Objects;
 
+import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
+import io.objectbox.annotation.Index;
+import io.objectbox.relation.ToOne;
 
+@Entity
 public class NutritionalQuestionnaireOB {
 
     @Id
     private long id;
 
+    @Index
     private String _id;
 
     String createdAt;
 
-    SleepHabitOB sleepHabit;
+    ToOne<SleepHabitOB> sleepHabit;
 
-    PhysicalActivityHabitOB physicalActivityHabit;
+    ToOne<PhysicalActivityHabitOB> physicalActivityHabit;
 
-    FeedingHabitsRecordOB feedingHabitsRecord;
+    ToOne<FeedingHabitsRecordOB> feedingHabitsRecord;
 
-    MedicalRecordOB medicalRecord;
+    ToOne<MedicalRecordOB> medicalRecord;
 
     public long getId() {
         return id;
@@ -46,35 +51,35 @@ public class NutritionalQuestionnaireOB {
     }
 
     public SleepHabitOB getSleepHabit() {
-        return sleepHabit;
+        return sleepHabit.getTarget();
     }
 
     public void setSleepHabit(SleepHabitOB sleepHabit) {
-        this.sleepHabit = sleepHabit;
+        this.sleepHabit.setTarget(sleepHabit);
     }
 
     public PhysicalActivityHabitOB getPhysicalActivityHabit() {
-        return physicalActivityHabit;
+        return physicalActivityHabit.getTarget();
     }
 
     public void setPhysicalActivityHabit(PhysicalActivityHabitOB physicalActivityHabit) {
-        this.physicalActivityHabit = physicalActivityHabit;
+        this.physicalActivityHabit.setTarget(physicalActivityHabit);
     }
 
     public FeedingHabitsRecordOB getFeedingHabitsRecord() {
-        return feedingHabitsRecord;
+        return feedingHabitsRecord.getTarget();
     }
 
     public void setFeedingHabitsRecord(FeedingHabitsRecordOB feedingHabitsRecord) {
-        this.feedingHabitsRecord = feedingHabitsRecord;
+        this.feedingHabitsRecord.setTarget(feedingHabitsRecord);
     }
 
     public MedicalRecordOB getMedicalRecord() {
-        return medicalRecord;
+        return medicalRecord.getTarget();
     }
 
     public void setMedicalRecord(MedicalRecordOB medicalRecord) {
-        this.medicalRecord = medicalRecord;
+        this.medicalRecord.setTarget(medicalRecord);
     }
 
     @Override

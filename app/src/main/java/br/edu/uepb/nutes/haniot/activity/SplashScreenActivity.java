@@ -7,19 +7,12 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
-import org.json.JSONObject;
-
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.account.LoginActivity;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
-import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
 import br.edu.uepb.nutes.haniot.service.TokenExpirationService;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static br.edu.uepb.nutes.haniot.data.model.type.UserType.ADMIN;
-import static br.edu.uepb.nutes.haniot.data.model.type.UserType.NUTRITION;
-import static br.edu.uepb.nutes.haniot.data.model.type.UserType.PATIENT;
 
 /**
  * Activity SplashScreenActivity.

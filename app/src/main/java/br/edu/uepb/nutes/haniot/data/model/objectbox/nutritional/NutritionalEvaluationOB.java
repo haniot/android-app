@@ -1,35 +1,55 @@
 package br.edu.uepb.nutes.haniot.data.model.objectbox.nutritional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import br.edu.uepb.nutes.haniot.data.Convert;
+import br.edu.uepb.nutes.haniot.data.model.model.nutritional.NutritionalEvaluation;
 import br.edu.uepb.nutes.haniot.data.model.objectbox.MeasurementOB;
 import br.edu.uepb.nutes.haniot.data.model.objectbox.PatientOB;
+import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
+import io.objectbox.annotation.Index;
+import io.objectbox.relation.ToMany;
+import io.objectbox.relation.ToOne;
 
+@Entity
 public class NutritionalEvaluationOB {
 
     @Id
     private long id;
 
+    @Index
     private String _id;
 
-    private PatientOB patientOB;
+    private ToOne<PatientOB> patientOB;
 
     private String healthProfessionalId;
 
     private String pilotStudy;
 
-    private List<MeasurementOB> measurements;
+    private ToMany<MeasurementOB> measurements;
 
-    private FeedingHabitsRecordOB feedingHabits;
+    private ToOne<FeedingHabitsRecordOB> feedingHabits;
 
-    private SleepHabitOB sleepHabits;
+    private ToOne<SleepHabitOB> sleepHabits;
 
-    private PhysicalActivityHabitOB physicalActivityHabits;
+    private ToOne<PhysicalActivityHabitOB> physicalActivityHabits;
 
-    private MedicalRecordOB medicalRecord;
+    private ToOne<MedicalRecordOB> medicalRecord;
+
+    public NutritionalEvaluationOB(NutritionalEvaluation n) {
+        this.setId(n.getId());
+        this.set_id(n.get_id());
+        this.setPatientOB(Convert.convertPatient(n.getPatient()));
+        this.setHealthProfessionalId(n.getHealthProfessionalId());
+        this.setPilotStudy(n.getPilotStudy());
+        this.setMeasurements(Convert.listMeasurementsToObjectBox(n.getMeasurements()));
+        this.setFeedingHabits(Convert.convertFeedingHabitsRecord(n.getFeedingHabits()));
+        this.setSleepHabits(Convert.convertSleepHabit(n.getSleepHabits()));
+        this.setPhysicalActivityHabits(Convert.convertPhysicalActivityHabit(n.getPhysicalActivityHabits()));
+        this.setMedicalRecord(Convert.convertMedicalRecord(n.getMedicalRecord()));
+    }
 
     public long getId() {
         return id;
@@ -48,11 +68,11 @@ public class NutritionalEvaluationOB {
     }
 
     public PatientOB getPatientOB() {
-        return patientOB;
+        return patientOB.getTarget();
     }
 
     public void setPatientOB(PatientOB patientOB) {
-        this.patientOB = patientOB;
+        this.patientOB.setTarget(patientOB);
     }
 
     public String getHealthProfessionalId() {
@@ -76,51 +96,40 @@ public class NutritionalEvaluationOB {
     }
 
     public void setMeasurements(List<MeasurementOB> measurements) {
-        this.measurements = measurements;
+        this.measurements.clear();
+        this.measurements.addAll(measurements);
     }
 
     public FeedingHabitsRecordOB getFeedingHabits() {
-        return feedingHabits;
+        return feedingHabits.getTarget();
     }
 
     public void setFeedingHabits(FeedingHabitsRecordOB feedingHabits) {
-        this.feedingHabits = feedingHabits;
+        this.feedingHabits.setTarget(feedingHabits);
     }
 
     public SleepHabitOB getSleepHabits() {
-        return sleepHabits;
+        return sleepHabits.getTarget();
     }
 
     public void setSleepHabits(SleepHabitOB sleepHabits) {
-        this.sleepHabits = sleepHabits;
+        this.sleepHabits.setTarget(sleepHabits);
     }
 
     public PhysicalActivityHabitOB getPhysicalActivityHabits() {
-        return physicalActivityHabits;
+        return physicalActivityHabits.getTarget();
     }
 
     public void setPhysicalActivityHabits(PhysicalActivityHabitOB physicalActivityHabits) {
-        this.physicalActivityHabits = physicalActivityHabits;
+        this.physicalActivityHabits.setTarget(physicalActivityHabits);
     }
 
     public MedicalRecordOB getMedicalRecord() {
-        return medicalRecord;
+        return medicalRecord.getTarget();
     }
 
     public void setMedicalRecord(MedicalRecordOB medicalRecord) {
-        this.medicalRecord = medicalRecord;
-    }
-
-    public void addMeasuerement(MeasurementOB measurement) {
-        if (measurements == null) measurements = new ArrayList<>();
-
-        measurements.add(measurement);
-    }
-
-    public void removeMeasuerement(MeasurementOB measurement) {
-        if (measurements == null) return;
-
-        measurements.remove(measurement);
+        this.medicalRecord.setTarget(medicalRecord);
     }
 
     @Override
@@ -146,6 +155,4 @@ public class NutritionalEvaluationOB {
         NutritionalEvaluationOB that = (NutritionalEvaluationOB) o;
         return Objects.equals(id, that.id);
     }
-
-
 }

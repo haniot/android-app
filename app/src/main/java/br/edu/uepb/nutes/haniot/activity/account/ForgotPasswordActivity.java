@@ -42,9 +42,9 @@ import okhttp3.ResponseBody;
 import retrofit2.HttpException;
 
 import static android.view.inputmethod.InputMethodManager.HIDE_NOT_ALWAYS;
-import static br.edu.uepb.nutes.haniot.data.model.type.UserType.ADMIN;
-import static br.edu.uepb.nutes.haniot.data.model.type.UserType.HEALTH_PROFESSIONAL;
-import static br.edu.uepb.nutes.haniot.data.model.type.UserType.PATIENT;
+import static br.edu.uepb.nutes.haniot.data.type.UserType.ADMIN;
+import static br.edu.uepb.nutes.haniot.data.type.UserType.HEALTH_PROFESSIONAL;
+import static br.edu.uepb.nutes.haniot.data.type.UserType.PATIENT;
 
 /**
  * LoginActivity implementation.

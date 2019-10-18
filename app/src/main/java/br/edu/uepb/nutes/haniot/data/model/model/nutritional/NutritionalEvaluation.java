@@ -9,8 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import br.edu.uepb.nutes.haniot.data.Convert;
 import br.edu.uepb.nutes.haniot.data.model.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.model.Patient;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.nutritional.NutritionalEvaluationOB;
 
 public class NutritionalEvaluation {
 
@@ -54,6 +56,19 @@ public class NutritionalEvaluation {
     private MedicalRecord medicalRecord;
 
     public NutritionalEvaluation() {
+    }
+
+    public NutritionalEvaluation(NutritionalEvaluationOB n) {
+        this.setId(n.getId());
+        this.set_id(n.get_id());
+        this.setPatient(Convert.convertPatient(n.getPatientOB()));
+        this.setHealthProfessionalId(n.getHealthProfessionalId());
+        this.setPilotStudy(n.getPilotStudy());
+        this.setMeasurements(Convert.listMeasurementsToModel(n.getMeasurements()));
+        this.setFeedingHabits(Convert.convertFeedingHabitsRecord(n.getFeedingHabits()));
+        this.setSleepHabits(Convert.convertSleepHabit(n.getSleepHabits()));
+        this.setPhysicalActivityHabits(Convert.convertPhysicalActivityHabit(n.getPhysicalActivityHabits()));
+        this.setMedicalRecord(Convert.convertMedicalRecord(n.getMedicalRecord()));
     }
 
     public long getId() {

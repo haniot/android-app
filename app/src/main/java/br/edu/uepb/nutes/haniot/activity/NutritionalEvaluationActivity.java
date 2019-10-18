@@ -32,8 +32,8 @@ import br.edu.uepb.nutes.haniot.data.model.model.nutritional.NutritionalQuestion
 import br.edu.uepb.nutes.haniot.data.model.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.model.PilotStudy;
 import br.edu.uepb.nutes.haniot.data.model.model.User;
-import br.edu.uepb.nutes.haniot.data.model.type.ItemGridType;
-import br.edu.uepb.nutes.haniot.data.model.type.TypeEvaluation;
+import br.edu.uepb.nutes.haniot.data.type.ItemGridType;
+import br.edu.uepb.nutes.haniot.data.type.TypeEvaluation;
 import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
@@ -48,18 +48,18 @@ import static br.edu.uepb.nutes.haniot.data.model.model.ItemEvaluation.TYPE_ERRO
 import static br.edu.uepb.nutes.haniot.data.model.model.ItemEvaluation.TYPE_LOADING;
 import static br.edu.uepb.nutes.haniot.data.model.model.ItemEvaluation.TYPE_MEASUREMENT;
 import static br.edu.uepb.nutes.haniot.data.model.model.ItemEvaluation.TYPE_QUIZ;
-import static br.edu.uepb.nutes.haniot.data.model.type.TypeEvaluation.ALL_MEASUREMENT;
-import static br.edu.uepb.nutes.haniot.data.model.type.TypeEvaluation.ALL_QUIZ;
-import static br.edu.uepb.nutes.haniot.data.model.type.TypeEvaluation.BLOOD_PRESSURE;
-import static br.edu.uepb.nutes.haniot.data.model.type.TypeEvaluation.FEEDING_HABITS;
-import static br.edu.uepb.nutes.haniot.data.model.type.TypeEvaluation.GLUCOSE;
-import static br.edu.uepb.nutes.haniot.data.model.type.TypeEvaluation.HEARTRATE;
-import static br.edu.uepb.nutes.haniot.data.model.type.TypeEvaluation.HEIGHT;
-import static br.edu.uepb.nutes.haniot.data.model.type.TypeEvaluation.MEDICAL_RECORDS;
-import static br.edu.uepb.nutes.haniot.data.model.type.TypeEvaluation.PHYSICAL_ACTIVITY;
-import static br.edu.uepb.nutes.haniot.data.model.type.TypeEvaluation.SLEEP_HABITS;
-import static br.edu.uepb.nutes.haniot.data.model.type.TypeEvaluation.WAIST_CIRCUMFERENCE;
-import static br.edu.uepb.nutes.haniot.data.model.type.TypeEvaluation.WEIGHT;
+import static br.edu.uepb.nutes.haniot.data.type.TypeEvaluation.ALL_MEASUREMENT;
+import static br.edu.uepb.nutes.haniot.data.type.TypeEvaluation.ALL_QUIZ;
+import static br.edu.uepb.nutes.haniot.data.type.TypeEvaluation.BLOOD_PRESSURE;
+import static br.edu.uepb.nutes.haniot.data.type.TypeEvaluation.FEEDING_HABITS;
+import static br.edu.uepb.nutes.haniot.data.type.TypeEvaluation.GLUCOSE;
+import static br.edu.uepb.nutes.haniot.data.type.TypeEvaluation.HEARTRATE;
+import static br.edu.uepb.nutes.haniot.data.type.TypeEvaluation.HEIGHT;
+import static br.edu.uepb.nutes.haniot.data.type.TypeEvaluation.MEDICAL_RECORDS;
+import static br.edu.uepb.nutes.haniot.data.type.TypeEvaluation.PHYSICAL_ACTIVITY;
+import static br.edu.uepb.nutes.haniot.data.type.TypeEvaluation.SLEEP_HABITS;
+import static br.edu.uepb.nutes.haniot.data.type.TypeEvaluation.WAIST_CIRCUMFERENCE;
+import static br.edu.uepb.nutes.haniot.data.type.TypeEvaluation.WEIGHT;
 
 public class NutritionalEvaluationActivity extends AppCompatActivity implements EvaluationAdapter.OnClick {
 

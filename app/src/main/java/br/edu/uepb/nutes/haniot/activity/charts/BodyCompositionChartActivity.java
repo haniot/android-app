@@ -15,7 +15,7 @@ import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.charts.base.BaseChartActivity;
 import br.edu.uepb.nutes.haniot.activity.charts.base.CreateChart;
 import br.edu.uepb.nutes.haniot.data.model.model.Measurement;
-import br.edu.uepb.nutes.haniot.data.model.type.MeasurementType;
+import br.edu.uepb.nutes.haniot.data.type.MeasurementType;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 
 /**

@@ -102,6 +102,14 @@ public class Convert {
         return lista;
     }
 
+    public static List<MeasurementOB> listMeasurementsToObjectBox(List<Measurement> list) {
+        List<MeasurementOB> lista = new ArrayList<>();
+        for (Measurement aux : list) {
+            lista.add(new MeasurementOB(aux));
+        }
+        return lista;
+    }
+
     public static BodyFatOB convertBodyFat(BodyFat bf) {
         return new BodyFatOB(bf);
     }
