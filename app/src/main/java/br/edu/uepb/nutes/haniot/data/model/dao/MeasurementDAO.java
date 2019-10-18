@@ -6,6 +6,8 @@ import android.support.annotation.NonNull;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.App;
+import br.edu.uepb.nutes.haniot.data.Convert;
+import br.edu.uepb.nutes.haniot.data.model.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.objectbox.MeasurementOB;
 import br.edu.uepb.nutes.haniot.data.model.objectbox.MeasurementOB_;
 import io.objectbox.Box;
@@ -37,28 +39,28 @@ public class MeasurementDAO {
     /**
      * Adds a new measurementOB to the database.
      *
-     * @param measurementOB
+     * @param measurement
      * @return boolean
      */
-    public boolean save(@NonNull MeasurementOB measurementOB) {
-        return measurementBox.put(measurementOB) > 0;
+    public boolean save(@NonNull Measurement measurement) {
+        return measurementBox.put(Convert.convertMeasurement(measurement)) > 0;
     }
 
     /**
      * Update measurementOB data.
      *
-     * @param measurementOB
+     * @param measurement
      * @return boolean
      */
-    public boolean update(@NonNull MeasurementOB measurementOB) {
-        if (measurementOB.getId() == 0) {
+    public boolean update(@NonNull Measurement measurement) {
+        if (measurement.getId() == 0) {
             /**
              * Id is required for an updateOrSave
              * Otherwise it will be an insert
              */
             return false;
         }
-        return save(measurementOB); // updateOrSave
+        return save(measurement); // updateOrSave
     }
 
     /**

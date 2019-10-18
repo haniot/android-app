@@ -14,12 +14,12 @@ import java.util.Collections;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.data.model.model.FamilyCohesionRecord;
-import br.edu.uepb.nutes.haniot.data.model.model.OdontologicalQuestionnaire;
-import br.edu.uepb.nutes.haniot.data.model.model.OralHealthRecord;
+import br.edu.uepb.nutes.haniot.data.model.model.odontological.FamilyCohesionRecord;
+import br.edu.uepb.nutes.haniot.data.model.model.odontological.OdontologicalQuestionnaire;
+import br.edu.uepb.nutes.haniot.data.model.model.odontological.OralHealthRecord;
 import br.edu.uepb.nutes.haniot.data.model.model.Patient;
-import br.edu.uepb.nutes.haniot.data.model.model.SociodemographicRecord;
-import br.edu.uepb.nutes.haniot.data.model.model.ToothLesion;
+import br.edu.uepb.nutes.haniot.data.model.model.odontological.SociodemographicRecord;
+import br.edu.uepb.nutes.haniot.data.model.model.odontological.ToothLesion;
 import br.edu.uepb.nutes.haniot.data.model.type.FrequencyAnswersType;
 import br.edu.uepb.nutes.haniot.data.model.type.OdontologicalQuestionnaireType;
 import br.edu.uepb.nutes.haniot.data.model.type.SociodemographicType;

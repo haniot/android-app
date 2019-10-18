@@ -561,6 +561,9 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
 //        DeviceOB device1 = getDeviceRegistered(DeviceType.HEART_RATE);
 //        if (device1 != null) measurement.setDeviceId(device1.get_id());
 
+//        DisposableManager.add(mRepository
+//        .getAllMeasurementsByType(patient.get_id(), MeasurementType.HEART_RATE, null, null, null, 1, 10000));
+
         List<Measurement> measurements = mRepository.listMeasurements(MeasurementType.HEART_RATE, patient.get_id(), 100, 1000);
         if (measurements == null) measurements = new ArrayList<>();
         measurements.add(measurement);

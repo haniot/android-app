@@ -4,31 +4,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.data.model.model.BodyFat;
-import br.edu.uepb.nutes.haniot.data.model.model.ChronicDisease;
+import br.edu.uepb.nutes.haniot.data.model.model.nutritional.ChronicDisease;
 import br.edu.uepb.nutes.haniot.data.model.model.Device;
-import br.edu.uepb.nutes.haniot.data.model.model.FeedingHabitsRecord;
+import br.edu.uepb.nutes.haniot.data.model.model.nutritional.FeedingHabitsRecord;
 import br.edu.uepb.nutes.haniot.data.model.model.HeartRateItem;
 import br.edu.uepb.nutes.haniot.data.model.model.Measurement;
-import br.edu.uepb.nutes.haniot.data.model.model.MedicalRecord;
+import br.edu.uepb.nutes.haniot.data.model.model.nutritional.MedicalRecord;
 import br.edu.uepb.nutes.haniot.data.model.model.Patient;
-import br.edu.uepb.nutes.haniot.data.model.model.PhysicalActivityHabit;
+import br.edu.uepb.nutes.haniot.data.model.model.nutritional.PhysicalActivityHabit;
 import br.edu.uepb.nutes.haniot.data.model.model.PilotStudy;
-import br.edu.uepb.nutes.haniot.data.model.model.SleepHabit;
+import br.edu.uepb.nutes.haniot.data.model.model.nutritional.SleepHabit;
 import br.edu.uepb.nutes.haniot.data.model.model.User;
-import br.edu.uepb.nutes.haniot.data.model.model.WeeklyFoodRecord;
+import br.edu.uepb.nutes.haniot.data.model.model.nutritional.WeeklyFoodRecord;
 import br.edu.uepb.nutes.haniot.data.model.objectbox.BodyFatOB;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.ChronicDiseaseOB;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.nutritional.ChronicDiseaseOB;
 import br.edu.uepb.nutes.haniot.data.model.objectbox.DeviceOB;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.FeedingHabitsRecordOB;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.nutritional.FeedingHabitsRecordOB;
 import br.edu.uepb.nutes.haniot.data.model.objectbox.HeartRateItemOB;
 import br.edu.uepb.nutes.haniot.data.model.objectbox.MeasurementOB;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.MedicalRecordOB;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.nutritional.MedicalRecordOB;
 import br.edu.uepb.nutes.haniot.data.model.objectbox.PatientOB;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.PhysicalActivityHabitOB;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.nutritional.PhysicalActivityHabitOB;
 import br.edu.uepb.nutes.haniot.data.model.objectbox.PilotStudyOB;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.SleepHabitOB;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.nutritional.SleepHabitOB;
 import br.edu.uepb.nutes.haniot.data.model.objectbox.UserOB;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.WeeklyFoodRecordOB;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.nutritional.WeeklyFoodRecordOB;
 
 public class Convert {
 

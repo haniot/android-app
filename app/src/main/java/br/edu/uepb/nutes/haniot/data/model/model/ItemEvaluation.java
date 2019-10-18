@@ -5,6 +5,14 @@ import android.os.Parcelable;
 
 import java.util.List;
 
+import br.edu.uepb.nutes.haniot.data.model.model.nutritional.FeedingHabitsRecord;
+import br.edu.uepb.nutes.haniot.data.model.model.nutritional.MedicalRecord;
+import br.edu.uepb.nutes.haniot.data.model.model.nutritional.PhysicalActivityHabit;
+import br.edu.uepb.nutes.haniot.data.model.model.nutritional.SleepHabit;
+import br.edu.uepb.nutes.haniot.data.model.model.odontological.FamilyCohesionRecord;
+import br.edu.uepb.nutes.haniot.data.model.model.odontological.OralHealthRecord;
+import br.edu.uepb.nutes.haniot.data.model.model.odontological.SociodemographicRecord;
+
 public class ItemEvaluation implements Parcelable, Cloneable {
     public static final int TYPE_MEASUREMENT = 2;
     public static final int TYPE_QUIZ = 3;

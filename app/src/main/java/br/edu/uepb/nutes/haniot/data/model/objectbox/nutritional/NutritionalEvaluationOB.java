@@ -1,17 +1,14 @@
-package br.edu.uepb.nutes.haniot.data.model.objectbox;
+package br.edu.uepb.nutes.haniot.data.model.objectbox.nutritional;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import br.edu.uepb.nutes.haniot.data.model.objectbox.nutritional.FeedingHabitsRecordOB;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.nutritional.SleepHabitOB;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.odontological.FamilyCohesionRecordOB;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.odontological.OralHealthRecordOB;
-import br.edu.uepb.nutes.haniot.data.model.objectbox.odontological.SociodemographicRecordOB;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.MeasurementOB;
+import br.edu.uepb.nutes.haniot.data.model.objectbox.PatientOB;
 import io.objectbox.annotation.Id;
 
-public class DentristEvaluationOB {
+public class NutritionalEvaluationOB {
 
     @Id
     private long id;
@@ -30,11 +27,9 @@ public class DentristEvaluationOB {
 
     private SleepHabitOB sleepHabits;
 
-    private OralHealthRecordOB oralHealthRecord;
+    private PhysicalActivityHabitOB physicalActivityHabits;
 
-    private FamilyCohesionRecordOB familyCohesionRecord;
-
-    private SociodemographicRecordOB sociodemographicRecord;
+    private MedicalRecordOB medicalRecord;
 
     public long getId() {
         return id;
@@ -100,28 +95,20 @@ public class DentristEvaluationOB {
         this.sleepHabits = sleepHabits;
     }
 
-    public OralHealthRecordOB getOralHealthRecord() {
-        return oralHealthRecord;
+    public PhysicalActivityHabitOB getPhysicalActivityHabits() {
+        return physicalActivityHabits;
     }
 
-    public void setOralHealthRecord(OralHealthRecordOB oralHealthRecord) {
-        this.oralHealthRecord = oralHealthRecord;
+    public void setPhysicalActivityHabits(PhysicalActivityHabitOB physicalActivityHabits) {
+        this.physicalActivityHabits = physicalActivityHabits;
     }
 
-    public FamilyCohesionRecordOB getFamilyCohesionRecord() {
-        return familyCohesionRecord;
+    public MedicalRecordOB getMedicalRecord() {
+        return medicalRecord;
     }
 
-    public void setFamilyCohesionRecord(FamilyCohesionRecordOB familyCohesionRecord) {
-        this.familyCohesionRecord = familyCohesionRecord;
-    }
-
-    public SociodemographicRecordOB getSociodemographicRecord() {
-        return sociodemographicRecord;
-    }
-
-    public void setSociodemographicRecord(SociodemographicRecordOB sociodemographicRecord) {
-        this.sociodemographicRecord = sociodemographicRecord;
+    public void setMedicalRecord(MedicalRecordOB medicalRecord) {
+        this.medicalRecord = medicalRecord;
     }
 
     public void addMeasuerement(MeasurementOB measurement) {
@@ -138,7 +125,7 @@ public class DentristEvaluationOB {
 
     @Override
     public String toString() {
-        return "DentristEvaluation{" +
+        return "NutritionalEvaluationOB{" +
                 "id=" + id +
                 ", _id='" + _id + '\'' +
                 ", patientOB=" + patientOB +
@@ -147,9 +134,8 @@ public class DentristEvaluationOB {
                 ", measurements=" + measurements +
                 ", feedingHabits=" + feedingHabits +
                 ", sleepHabits=" + sleepHabits +
-                ", oralHealthRecord=" + oralHealthRecord +
-                ", familyCohesionRecord=" + familyCohesionRecord +
-                ", sociodemographicRecord=" + sociodemographicRecord +
+                ", physicalActivityHabits=" + physicalActivityHabits +
+                ", medicalRecord=" + medicalRecord +
                 '}';
     }
 
@@ -157,7 +143,9 @@ public class DentristEvaluationOB {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        DentristEvaluationOB that = (DentristEvaluationOB) o;
+        NutritionalEvaluationOB that = (NutritionalEvaluationOB) o;
         return Objects.equals(id, that.id);
     }
+
+
 }

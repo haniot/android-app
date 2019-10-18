@@ -8,6 +8,8 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import br.edu.uepb.nutes.haniot.App;
+import br.edu.uepb.nutes.haniot.data.Convert;
+import br.edu.uepb.nutes.haniot.data.model.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.objectbox.PatientOB;
 import br.edu.uepb.nutes.haniot.data.model.objectbox.PatientOB_;
 import io.objectbox.Box;
@@ -47,20 +49,20 @@ public class PatientDAO {
         return patientBox.query().equal(PatientOB_.healthProfessionalId, healthProfessionalId).build().find();
     }
 
-    public boolean save(@NonNull PatientOB patientOB) {
-        return patientBox.put(patientOB) > 0;
+    public boolean save(@NonNull Patient patient) {
+        return patientBox.put(Convert.convertPatient(patient)) > 0;
     }
 
-    public boolean update(@NonNull PatientOB patientOB) {
-        if (patientOB.getId() == 0) {
-            PatientOB patientOBUp = get(patientOB.getName());
+    public boolean update(@NonNull Patient patient) {
+        if (patient.getId() == 0) {
+            PatientOB patientOBUp = get(patient.getName());
 
             if (patientOBUp == null) return false;
 
-            patientOB.setId(patientOBUp.getId());
-            if (patientOB.get_id() == null) patientOB.set_id(patientOBUp.get_id());
+            patient.setId(patientOBUp.getId());
+            if (patient.get_id() == null) patient.set_id(patientOBUp.get_id());
         }
-        return save(patientOB);
+        return save(patient);
     }
 
     public boolean remove(@NonNull PatientOB patientOB) {

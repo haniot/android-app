@@ -1,5 +1,7 @@
-package br.edu.uepb.nutes.haniot.data.model.model;
+package br.edu.uepb.nutes.haniot.data.model.model.nutritional;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -7,48 +9,51 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import br.edu.uepb.nutes.haniot.data.model.model.nutritional.FeedingHabitsRecord;
-import br.edu.uepb.nutes.haniot.data.model.model.nutritional.SleepHabit;
-import br.edu.uepb.nutes.haniot.data.model.model.odontological.FamilyCohesionRecord;
-import br.edu.uepb.nutes.haniot.data.model.model.odontological.OralHealthRecord;
-import br.edu.uepb.nutes.haniot.data.model.model.odontological.SociodemographicRecord;
+import br.edu.uepb.nutes.haniot.data.model.model.Measurement;
+import br.edu.uepb.nutes.haniot.data.model.model.Patient;
 
-public class DentristEvaluation {
+public class NutritionalEvaluation {
 
     @Expose(deserialize = false, serialize = false)
     private long id;
 
     @SerializedName("id")
+    @Expose()
     private String _id;
 
     @SerializedName("patient")
+    @Expose()
     private Patient patient;
 
     @SerializedName("health_professional_id")
+    @Expose()
     private String healthProfessionalId;
 
     @SerializedName("pilotstudy_id")
+    @Expose()
     private String pilotStudy;
 
     @SerializedName("measurements")
+    @Expose()
     private List<Measurement> measurements;
 
     @SerializedName("feeding_habits_record")
+    @Expose()
     private FeedingHabitsRecord feedingHabits;
 
-    @SerializedName("sleep_habits")
+    @SerializedName("sleep_habit")
+    @Expose()
     private SleepHabit sleepHabits;
 
-    @SerializedName("oral_health_record")
-    private OralHealthRecord oralHealthRecord;
+    @SerializedName("physical_activity_habits")
+    @Expose()
+    private PhysicalActivityHabit physicalActivityHabits;
 
-    @SerializedName("family_cohesion_record")
-    private FamilyCohesionRecord familyCohesionRecord;
+    @SerializedName("medical_record")
+    @Expose()
+    private MedicalRecord medicalRecord;
 
-    @SerializedName("family_cohesion_record")
-    private SociodemographicRecord sociodemographicRecord;
-
-    public DentristEvaluation() {
+    public NutritionalEvaluation() {
     }
 
     public long getId() {
@@ -115,28 +120,20 @@ public class DentristEvaluation {
         this.sleepHabits = sleepHabits;
     }
 
-    public OralHealthRecord getOralHealthRecord() {
-        return oralHealthRecord;
+    public PhysicalActivityHabit getPhysicalActivityHabits() {
+        return physicalActivityHabits;
     }
 
-    public void setOralHealthRecord(OralHealthRecord oralHealthRecord) {
-        this.oralHealthRecord = oralHealthRecord;
+    public void setPhysicalActivityHabits(PhysicalActivityHabit physicalActivityHabits) {
+        this.physicalActivityHabits = physicalActivityHabits;
     }
 
-    public FamilyCohesionRecord getFamilyCohesionRecord() {
-        return familyCohesionRecord;
+    public MedicalRecord getMedicalRecord() {
+        return medicalRecord;
     }
 
-    public void setFamilyCohesionRecord(FamilyCohesionRecord familyCohesionRecord) {
-        this.familyCohesionRecord = familyCohesionRecord;
-    }
-
-    public SociodemographicRecord getSociodemographicRecord() {
-        return sociodemographicRecord;
-    }
-
-    public void setSociodemographicRecord(SociodemographicRecord sociodemographicRecord) {
-        this.sociodemographicRecord = sociodemographicRecord;
+    public void setMedicalRecord(MedicalRecord medicalRecord) {
+        this.medicalRecord = medicalRecord;
     }
 
     public void addMeasuerement(Measurement measurement) {
@@ -151,9 +148,19 @@ public class DentristEvaluation {
         measurements.remove(measurement);
     }
 
+    /**
+     * Convert object to json format.
+     *
+     * @return String
+     */
+    public String toJson() {
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        return gson.toJson(this);
+    }
+
     @Override
     public String toString() {
-        return "DentristEvaluation{" +
+        return "NutritionalEvaluationOB{" +
                 "id=" + id +
                 ", _id='" + _id + '\'' +
                 ", patient=" + patient +
@@ -162,9 +169,8 @@ public class DentristEvaluation {
                 ", measurements=" + measurements +
                 ", feedingHabits=" + feedingHabits +
                 ", sleepHabits=" + sleepHabits +
-                ", oralHealthRecord=" + oralHealthRecord +
-                ", familyCohesionRecord=" + familyCohesionRecord +
-                ", sociodemographicRecord=" + sociodemographicRecord +
+                ", physicalActivityHabits=" + physicalActivityHabits +
+                ", medicalRecord=" + medicalRecord +
                 '}';
     }
 
@@ -172,7 +178,9 @@ public class DentristEvaluation {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        DentristEvaluation that = (DentristEvaluation) o;
+        NutritionalEvaluation that = (NutritionalEvaluation) o;
         return Objects.equals(id, that.id);
     }
+
+
 }
