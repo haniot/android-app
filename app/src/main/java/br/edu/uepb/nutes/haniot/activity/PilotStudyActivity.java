@@ -9,6 +9,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AnimationUtils;
@@ -23,21 +24,22 @@ import java.util.Objects;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.adapter.PilotStudyAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
-import br.edu.uepb.nutes.haniot.data.model.model.Admin;
-import br.edu.uepb.nutes.haniot.data.model.model.HealthProfessional;
-import br.edu.uepb.nutes.haniot.data.model.model.Patient;
-import br.edu.uepb.nutes.haniot.data.model.model.PilotStudy;
-import br.edu.uepb.nutes.haniot.data.model.model.User;
+import br.edu.uepb.nutes.haniot.data.model.Admin;
+import br.edu.uepb.nutes.haniot.data.model.HealthProfessional;
+import br.edu.uepb.nutes.haniot.data.model.Patient;
+import br.edu.uepb.nutes.haniot.data.model.PilotStudy;
+import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
+import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.ErrorHandler;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static br.edu.uepb.nutes.haniot.data.type.UserType.ADMIN;
-import static br.edu.uepb.nutes.haniot.data.type.UserType.HEALTH_PROFESSIONAL;
-import static br.edu.uepb.nutes.haniot.data.type.UserType.PATIENT;
+import static br.edu.uepb.nutes.haniot.data.model.type.UserType.ADMIN;
+import static br.edu.uepb.nutes.haniot.data.model.type.UserType.HEALTH_PROFESSIONAL;
+import static br.edu.uepb.nutes.haniot.data.model.type.UserType.PATIENT;
 
 /**
  * Implementation of the pilot study selection list.
@@ -254,40 +256,33 @@ public class PilotStudyActivity extends AppCompatActivity {
             Patient patient = new Patient();
             patient.set_id(user.get_id());
             patient.setPilotStudyIDSelected(pilot.get_id());
-            mRepository.updatePatient(patient);
-            openDashboard();
-//            DisposableManager.add(haniotNetRepository.updatePatient(patient).subscribe(patient1 -> {
-//                openDashboard();
-//            }, throwable -> {
-//                Log.w("AAA", throwable.getMessage());
-//                ErrorHandler.showMessage(this, throwable);
-//            }));
+            DisposableManager.add(mRepository.updatePatient(patient).subscribe(patient1 -> {
+                openDashboard();
+            }, throwable -> {
+                Log.w("AAA", throwable.getMessage());
+                ErrorHandler.showMessage(this, throwable);
+            }));
         } else if (user.getUserType().equals(ADMIN)) {
             Admin admin = new Admin();
             admin.set_id(user.get_id());
             admin.setPilotStudyIDSelected(pilot.get_id());
-            mRepository.updateAdmin(admin);
-            openDashboard();
-//            DisposableManager.add(haniotNetRepository.updateAdmin(admin).subscribe(admin1 -> {
-//                openDashboard();
-//            }, throwable -> {
-//                Log.w("AAA", throwable.getMessage());
-//                ErrorHandler.showMessage(this, throwable);
-//            }));
+            DisposableManager.add(mRepository.updateAdmin(admin).subscribe(admin1 -> {
+                openDashboard();
+            }, throwable -> {
+                Log.w("AAA", throwable.getMessage());
+                ErrorHandler.showMessage(this, throwable);
+            }));
         } else if (user.getUserType().equals(HEALTH_PROFESSIONAL)) {
             HealthProfessional healthProfessional = new HealthProfessional();
             healthProfessional.set_id(user.get_id());
             healthProfessional.setPilotStudyIDSelected(pilot.get_id());
-            mRepository.updateHealthProfissional(healthProfessional);
-            openDashboard();
-//            DisposableManager.add(haniotNetRepository.updateHealthProfissional(healthProfessional).subscribe(healthProfessional1 -> {
-//                openDashboard();
-//            }, throwable -> {
-//                Log.w("AAA", throwable.getMessage());
-//                ErrorHandler.showMessage(this, throwable);
-//            }));
+            DisposableManager.add(mRepository.updateHealthProfissional(healthProfessional).subscribe(healthProfessional1 -> {
+                openDashboard();
+            }, throwable -> {
+                Log.w("AAA", throwable.getMessage());
+                ErrorHandler.showMessage(this, throwable);
+            }));
         }
-
     }
 
     private void openDashboard() {
@@ -315,52 +310,37 @@ public class PilotStudyActivity extends AppCompatActivity {
         }
 
         if (appPreferences.getUserLogged().getUserType().equals(ADMIN)) {
-            List<PilotStudy> pilotStudies = mRepository.getAllPilotStudies();
-            for (PilotStudy pilot : pilotStudies) {
-                if (user.getPilotStudyIDSelected() != null && pilot.get_id().equals(user.getPilotStudyIDSelected())) {
-                    pilot.setSelected(true);
-                }
-            }
-            populatePilotStudiesView(pilotStudies);
-
-//            DisposableManager.add(haniotNetRepository
-//                    .getAllPilotStudies()
-//                    .doOnSubscribe(disposable -> showLoading(true))
-//                    .doAfterTerminate(() -> showLoading(false))
-//                    .subscribe(pilotStudies -> {
-//                        for (PilotStudy pilot : pilotStudies) {
-//                            if (user.getPilotStudyIDSelected() != null && pilot.get_id().equals(user.getPilotStudyIDSelected())) {
-//                                pilot.setSelected(true);
-//                            }
-//                        }
-//                        populatePilotStudiesView(pilotStudies);
-//                    }, error -> {
-//                        populatePilotStudiesView(null);
-//                    })
-//            );
+            DisposableManager.add(mRepository
+                    .getAllPilotStudies()
+                    .doOnSubscribe(disposable -> showLoading(true))
+                    .doAfterTerminate(() -> showLoading(false))
+                    .subscribe(pilotStudies -> {
+                        for (PilotStudy pilot : pilotStudies) {
+                            if (user.getPilotStudyIDSelected() != null && pilot.get_id().equals(user.getPilotStudyIDSelected())) {
+                                pilot.setSelected(true);
+                            }
+                        }
+                        populatePilotStudiesView(pilotStudies);
+                    }, error -> {
+                        populatePilotStudiesView(null);
+                    })
+            );
         } else {
-            List<PilotStudy> pilotStudies = mRepository.getPilotStudiesByUserId(appPreferences.getUserLogged().get_id());
-            for (PilotStudy pilot : pilotStudies) {
-                if (user.getPilotStudyIDSelected() != null && pilot.get_id().equals(user.getPilotStudyIDSelected())) {
-                    pilot.setSelected(true);
-                }
-            }
-            populatePilotStudiesView(pilotStudies);
-//            DisposableManager.add(haniotNetRepository
-//                    .getAllUserPilotStudies(appPreferences.getUserLogged().get_id())
-//                    .doOnSubscribe(disposable -> showLoading(true))
-//                    .doAfterTerminate(() -> showLoading(false))
-//                    .subscribe(pilotStudies -> {
-//                        for (PilotStudy pilot : pilotStudies) {
-//                            if (user.getPilotStudyIDSelected() != null && pilot.get_id().equals(user.getPilotStudyIDSelected())) {
-//                                pilot.setSelected(true);
-//                            }
-//                        }
-//                        populatePilotStudiesView(pilotStudies);
-//                    }, error -> {
-//                        populatePilotStudiesView(null);
-//                    })
-//            );
+            DisposableManager.add(mRepository
+                    .getAllUserPilotStudies(appPreferences.getUserLogged().get_id())
+                    .doOnSubscribe(disposable -> showLoading(true))
+                    .doAfterTerminate(() -> showLoading(false))
+                    .subscribe(pilotStudies -> {
+                        for (PilotStudy pilot : pilotStudies) {
+                            if (user.getPilotStudyIDSelected() != null && pilot.get_id().equals(user.getPilotStudyIDSelected())) {
+                                pilot.setSelected(true);
+                            }
+                        }
+                        populatePilotStudiesView(pilotStudies);
+                    }, error -> {
+                        populatePilotStudiesView(null);
+                    })
+            );
         }
     }
 

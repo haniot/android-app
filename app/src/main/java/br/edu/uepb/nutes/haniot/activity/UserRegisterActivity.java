@@ -24,11 +24,11 @@ import java.util.Calendar;
 import java.util.Objects;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.data.model.model.Admin;
-import br.edu.uepb.nutes.haniot.data.model.model.HealthProfessional;
-import br.edu.uepb.nutes.haniot.data.model.model.Patient;
-import br.edu.uepb.nutes.haniot.data.model.model.User;
-import br.edu.uepb.nutes.haniot.data.type.PatientsType;
+import br.edu.uepb.nutes.haniot.data.model.Admin;
+import br.edu.uepb.nutes.haniot.data.model.HealthProfessional;
+import br.edu.uepb.nutes.haniot.data.model.Patient;
+import br.edu.uepb.nutes.haniot.data.model.User;
+import br.edu.uepb.nutes.haniot.data.model.type.PatientsType;
 import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
@@ -38,9 +38,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.HttpException;
 
-import static br.edu.uepb.nutes.haniot.data.type.UserType.ADMIN;
-import static br.edu.uepb.nutes.haniot.data.type.UserType.HEALTH_PROFESSIONAL;
-import static br.edu.uepb.nutes.haniot.data.type.UserType.PATIENT;
+import static br.edu.uepb.nutes.haniot.data.model.type.UserType.ADMIN;
+import static br.edu.uepb.nutes.haniot.data.model.type.UserType.HEALTH_PROFESSIONAL;
+import static br.edu.uepb.nutes.haniot.data.model.type.UserType.PATIENT;
 
 /**
  * UserRegisterActivity implementation.
@@ -241,7 +241,7 @@ public class UserRegisterActivity extends AppCompatActivity {
                     .doOnSubscribe(disposable -> showLoading(true))
                     .doAfterTerminate(() -> showLoading(false))
                     .subscribe(patient1 -> {
-                        mRepository.savePatient(patient);
+//                        mRepository.savePatient(patient);
                         showMessage(R.string.update_success);
                         startActivity(new Intent(UserRegisterActivity.this, ManagerPatientsActivity.class));
                         finish();
@@ -275,7 +275,7 @@ public class UserRegisterActivity extends AppCompatActivity {
         DisposableManager.add(mRepository
                 .associatePatientToPilotStudy(userLogged.getPilotStudyIDSelected(), patient.get_id())
                 .subscribe(o -> {
-                    Log.w(TAG, "PatientOB associated to pilotstudy");
+                    Log.w(TAG, "Patient associated to pilotstudy");
                     mRepository.savePatient(patient);
                     appPreferencesHelper.saveLastPatient(patient);
                     if (appPreferencesHelper.getUserLogged().getUserType().equals(HEALTH_PROFESSIONAL)) {

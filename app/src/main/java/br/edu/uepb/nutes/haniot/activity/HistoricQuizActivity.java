@@ -18,13 +18,13 @@ import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.adapter.HistoricQuizAdapter;
-import br.edu.uepb.nutes.haniot.data.model.model.GroupItemEvaluation;
-import br.edu.uepb.nutes.haniot.data.model.model.ItemEvaluation;
-import br.edu.uepb.nutes.haniot.data.model.model.nutritional.NutritionalQuestionnaire;
-import br.edu.uepb.nutes.haniot.data.model.model.odontological.OdontologicalQuestionnaire;
-import br.edu.uepb.nutes.haniot.data.model.model.Patient;
-import br.edu.uepb.nutes.haniot.data.model.model.User;
-import br.edu.uepb.nutes.haniot.data.type.TypeEvaluation;
+import br.edu.uepb.nutes.haniot.data.model.GroupItemEvaluation;
+import br.edu.uepb.nutes.haniot.data.model.ItemEvaluation;
+import br.edu.uepb.nutes.haniot.data.model.nutritional.NutritionalQuestionnaire;
+import br.edu.uepb.nutes.haniot.data.model.odontological.OdontologicalQuestionnaire;
+import br.edu.uepb.nutes.haniot.data.model.Patient;
+import br.edu.uepb.nutes.haniot.data.model.User;
+import br.edu.uepb.nutes.haniot.data.model.type.TypeEvaluation;
 import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
@@ -32,19 +32,19 @@ import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static br.edu.uepb.nutes.haniot.data.model.model.ItemEvaluation.TYPE_ERROR;
-import static br.edu.uepb.nutes.haniot.data.model.model.ItemEvaluation.TYPE_LOADING;
-import static br.edu.uepb.nutes.haniot.data.model.model.ItemEvaluation.TYPE_QUIZ;
-import static br.edu.uepb.nutes.haniot.data.type.TypeEvaluation.FAMILY_COHESION;
-import static br.edu.uepb.nutes.haniot.data.type.TypeEvaluation.FEEDING_HABITS;
-import static br.edu.uepb.nutes.haniot.data.type.TypeEvaluation.MEDICAL_RECORDS;
-import static br.edu.uepb.nutes.haniot.data.type.TypeEvaluation.ORAL_HEALTH;
-import static br.edu.uepb.nutes.haniot.data.type.TypeEvaluation.PHYSICAL_ACTIVITY;
-import static br.edu.uepb.nutes.haniot.data.type.TypeEvaluation.SLEEP_HABITS;
-import static br.edu.uepb.nutes.haniot.data.type.TypeEvaluation.SOCIODEMOGRAPHICS;
-import static br.edu.uepb.nutes.haniot.data.type.UserType.ADMIN;
-import static br.edu.uepb.nutes.haniot.data.type.UserType.DENTISTRY;
-import static br.edu.uepb.nutes.haniot.data.type.UserType.NUTRITION;
+import static br.edu.uepb.nutes.haniot.data.model.ItemEvaluation.TYPE_ERROR;
+import static br.edu.uepb.nutes.haniot.data.model.ItemEvaluation.TYPE_LOADING;
+import static br.edu.uepb.nutes.haniot.data.model.ItemEvaluation.TYPE_QUIZ;
+import static br.edu.uepb.nutes.haniot.data.model.type.TypeEvaluation.FAMILY_COHESION;
+import static br.edu.uepb.nutes.haniot.data.model.type.TypeEvaluation.FEEDING_HABITS;
+import static br.edu.uepb.nutes.haniot.data.model.type.TypeEvaluation.MEDICAL_RECORDS;
+import static br.edu.uepb.nutes.haniot.data.model.type.TypeEvaluation.ORAL_HEALTH;
+import static br.edu.uepb.nutes.haniot.data.model.type.TypeEvaluation.PHYSICAL_ACTIVITY;
+import static br.edu.uepb.nutes.haniot.data.model.type.TypeEvaluation.SLEEP_HABITS;
+import static br.edu.uepb.nutes.haniot.data.model.type.TypeEvaluation.SOCIODEMOGRAPHICS;
+import static br.edu.uepb.nutes.haniot.data.model.type.UserType.ADMIN;
+import static br.edu.uepb.nutes.haniot.data.model.type.UserType.DENTISTRY;
+import static br.edu.uepb.nutes.haniot.data.model.type.UserType.NUTRITION;
 
 public class HistoricQuizActivity extends AppCompatActivity implements HistoricQuizAdapter.OnClick {
 

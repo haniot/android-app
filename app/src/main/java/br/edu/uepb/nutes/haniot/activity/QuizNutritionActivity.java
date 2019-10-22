@@ -13,20 +13,20 @@ import java.util.Collections;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.data.model.model.nutritional.ChronicDisease;
-import br.edu.uepb.nutes.haniot.data.model.model.nutritional.FeedingHabitsRecord;
-import br.edu.uepb.nutes.haniot.data.model.model.nutritional.MedicalRecord;
-import br.edu.uepb.nutes.haniot.data.model.model.nutritional.NutritionalQuestionnaire;
-import br.edu.uepb.nutes.haniot.data.model.model.Patient;
-import br.edu.uepb.nutes.haniot.data.model.model.nutritional.PhysicalActivityHabit;
-import br.edu.uepb.nutes.haniot.data.model.model.nutritional.SleepHabit;
-import br.edu.uepb.nutes.haniot.data.model.model.nutritional.WeeklyFoodRecord;
-import br.edu.uepb.nutes.haniot.data.type.ChronicDiseaseType;
-import br.edu.uepb.nutes.haniot.data.type.FeendingHabitsRecordType;
-import br.edu.uepb.nutes.haniot.data.type.FoodType;
-import br.edu.uepb.nutes.haniot.data.type.NutritionalQuestionnaireType;
-import br.edu.uepb.nutes.haniot.data.type.SchoolActivityFrequencyType;
-import br.edu.uepb.nutes.haniot.data.type.SportsType;
+import br.edu.uepb.nutes.haniot.data.model.nutritional.ChronicDisease;
+import br.edu.uepb.nutes.haniot.data.model.nutritional.FeedingHabitsRecord;
+import br.edu.uepb.nutes.haniot.data.model.nutritional.MedicalRecord;
+import br.edu.uepb.nutes.haniot.data.model.nutritional.NutritionalQuestionnaire;
+import br.edu.uepb.nutes.haniot.data.model.Patient;
+import br.edu.uepb.nutes.haniot.data.model.nutritional.PhysicalActivityHabit;
+import br.edu.uepb.nutes.haniot.data.model.nutritional.SleepHabit;
+import br.edu.uepb.nutes.haniot.data.model.nutritional.WeeklyFoodRecord;
+import br.edu.uepb.nutes.haniot.data.model.type.ChronicDiseaseType;
+import br.edu.uepb.nutes.haniot.data.model.type.FeendingHabitsRecordType;
+import br.edu.uepb.nutes.haniot.data.model.type.FoodType;
+import br.edu.uepb.nutes.haniot.data.model.type.NutritionalQuestionnaireType;
+import br.edu.uepb.nutes.haniot.data.model.type.SchoolActivityFrequencyType;
+import br.edu.uepb.nutes.haniot.data.model.type.SportsType;
 import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
@@ -38,10 +38,10 @@ import br.edu.uepb.nutes.simplesurvey.question.Open;
 import br.edu.uepb.nutes.simplesurvey.question.Single;
 import retrofit2.HttpException;
 
-import static br.edu.uepb.nutes.haniot.data.type.TypeEvaluation.FEEDING_HABITS;
-import static br.edu.uepb.nutes.haniot.data.type.TypeEvaluation.MEDICAL_RECORDS;
-import static br.edu.uepb.nutes.haniot.data.type.TypeEvaluation.PHYSICAL_ACTIVITY;
-import static br.edu.uepb.nutes.haniot.data.type.TypeEvaluation.SLEEP_HABITS;
+import static br.edu.uepb.nutes.haniot.data.model.type.TypeEvaluation.FEEDING_HABITS;
+import static br.edu.uepb.nutes.haniot.data.model.type.TypeEvaluation.MEDICAL_RECORDS;
+import static br.edu.uepb.nutes.haniot.data.model.type.TypeEvaluation.PHYSICAL_ACTIVITY;
+import static br.edu.uepb.nutes.haniot.data.model.type.TypeEvaluation.SLEEP_HABITS;
 
 /**
  * QuizNutritionActivity implementation.
@@ -143,7 +143,7 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
         medicalRecord.setChronicDiseases(chronicDiseases);
         medicalRecord.setPatientId(patient.get_id());
         Log.i(LOG_TAG, medicalRecord.toJson());
-        mRepository.saveMedicalRecord(medicalRecord);
+//        mRepository.saveMedicalRecord(medicalRecord);
         nutritionalQuestionnaire.setMedicalRecord(medicalRecord);
         resourceToUpdate = medicalRecord;
     }
@@ -157,7 +157,7 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
         feedingHabitsRecord.setWeeklyFeedingHabits(weeklyFoodRecords);
         Log.i(LOG_TAG, feedingHabitsRecord.toJson());
 //        feedingHabitsDAO.save(feedingHabitsRecord);
-        mRepository.saveFeedingHabitsRecord(feedingHabitsRecord);
+//        mRepository.saveFeedingHabitsRecord(feedingHabitsRecord);
         nutritionalQuestionnaire.setFeedingHabitsRecord(feedingHabitsRecord);
         resourceToUpdate = feedingHabitsRecord;
     }
@@ -169,7 +169,7 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
         sleepHabit.setPatientId(patient.get_id());
         Log.i(LOG_TAG, sleepHabit.toJson());
 //        sleepHabitsDAO.save(sleepHabit);
-        mRepository.saveSleepHabits(sleepHabit);
+//        mRepository.saveSleepHabits(sleepHabit);
         nutritionalQuestionnaire.setSleepHabit(sleepHabit);
         resourceToUpdate = sleepHabit;
     }
@@ -181,7 +181,7 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
         physicalActivityHabits.setPatientId(patient.get_id());
         Log.i(LOG_TAG, physicalActivityHabits.toJson());
 //        physicalActivityHabitsDAO.save(physicalActivityHabits);
-        mRepository.savePhysicalActivityHabit(physicalActivityHabits);
+//        mRepository.savePhysicalActivityHabit(physicalActivityHabits);
         nutritionalQuestionnaire.setPhysicalActivityHabit(physicalActivityHabits);
         resourceToUpdate = physicalActivityHabits;
     }

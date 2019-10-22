@@ -2,7 +2,7 @@ package br.edu.uepb.nutes.haniot;
 
 import android.app.Application;
 
-import br.edu.uepb.nutes.haniot.data.model.objectbox.MyObjectBox;
+import br.edu.uepb.nutes.haniot.data.objectbox.MyObjectBox;
 import io.objectbox.BoxStore;
 import io.objectbox.android.AndroidObjectBrowser;
 

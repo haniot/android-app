@@ -3,9 +3,9 @@ package br.edu.uepb.nutes.haniot.activity.settings;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import br.edu.uepb.nutes.haniot.data.model.model.User;
+import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.repository.Repository;
-//import br.edu.uepb.nutes.haniot.data.model.dao.UserDAO;
+//import br.edu.uepb.nutes.haniot.data.dao.UserDAO;
 
 /**
  * Session implementation.
@@ -63,8 +63,7 @@ public class Session {
      * @return UserOB
      */
     public User getUserLogged() {
-        return Repository.getInstance(context).getUser(getIdLogged());
-//        return UserDAO.getInstance(context).get(getIdLogged());
+        return Repository.getInstance(context).getUser(get_idLogged());
     }
 
     /**

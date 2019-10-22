@@ -18,7 +18,7 @@ import com.thoughtbot.expandablerecyclerview.viewholders.GroupViewHolder;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.data.model.model.ItemEvaluation;
+import br.edu.uepb.nutes.haniot.data.model.ItemEvaluation;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 

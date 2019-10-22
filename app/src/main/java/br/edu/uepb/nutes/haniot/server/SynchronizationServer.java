@@ -9,7 +9,7 @@ import org.json.JSONObject;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.activity.settings.Session;
-import br.edu.uepb.nutes.haniot.data.model.model.Measurement;
+import br.edu.uepb.nutes.haniot.data.model.Measurement;
 
 /**
  * Class that implements logic for synchronizing local data with the remote server.

@@ -30,14 +30,15 @@ import java.util.List;
 import java.util.Locale;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.data.model.model.Measurement;
-import br.edu.uepb.nutes.haniot.data.model.model.Patient;
-import br.edu.uepb.nutes.haniot.data.model.model.User;
-import br.edu.uepb.nutes.haniot.data.type.ItemGridType;
-import br.edu.uepb.nutes.haniot.data.type.MeasurementType;
-import br.edu.uepb.nutes.haniot.data.type.PatientsType;
+import br.edu.uepb.nutes.haniot.data.model.Measurement;
+import br.edu.uepb.nutes.haniot.data.model.Patient;
+import br.edu.uepb.nutes.haniot.data.model.User;
+import br.edu.uepb.nutes.haniot.data.model.type.ItemGridType;
+import br.edu.uepb.nutes.haniot.data.model.type.MeasurementType;
+import br.edu.uepb.nutes.haniot.data.model.type.PatientsType;
 import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
+import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.ErrorHandler;
 import br.edu.uepb.nutes.haniot.fragment.FragmentAnthropometrics;
 import br.edu.uepb.nutes.haniot.fragment.FragmentBloodPressure;
@@ -397,15 +398,14 @@ public class AddMeasurementActivity extends AppCompatActivity {
                 .setMessage(getString(R.string.confirm_save_measurement))
                 .setCancelable(false)
                 .setPositiveButton(getString(R.string.yes_text), (dialog, id) -> {
-                    mRepository.saveMeasurement(measurements);
-//                    DisposableManager.add(haniotNetRepository
-//                            .saveMeasurement(measurements)
-//                            .doAfterSuccess(measurement1 -> {
-//                                showToast(getString(R.string.measurement_save));
-//                                finish();
-//                            })
-//                            .subscribe(measurement1 -> {
-//                            }, this::errorHandler));
+                    DisposableManager.add(mRepository
+                            .saveMeasurement(measurements)
+                            .doAfterSuccess(measurement1 -> {
+                                showToast(getString(R.string.measurement_save));
+                                finish();
+                            })
+                            .subscribe(measurement1 -> {
+                            }, this::errorHandler));
                 })
                 .setNegativeButton(getString(R.string.no_text), null)
                 .show();
@@ -423,15 +423,14 @@ public class AddMeasurementActivity extends AppCompatActivity {
                     .setMessage(getString(R.string.confirm_save_measurement))
                     .setCancelable(false)
                     .setPositiveButton(getString(R.string.yes_text), (dialog, id) -> {
-                        mRepository.saveMeasurement(measurement);
-//                        DisposableManager.add(haniotNetRepository
-//                                .saveMeasurement(measurement)
-//                                .doAfterSuccess(measurement1 -> {
-//                                    showToast(getString(R.string.measurement_save));
-//                                    finish();
-//                                })
-//                                .subscribe(measurement1 -> {
-//                                }, this::errorHandler));
+                        DisposableManager.add(mRepository
+                                .saveMeasurement(measurement)
+                                .doAfterSuccess(measurement1 -> {
+                                    showToast(getString(R.string.measurement_save));
+                                    finish();
+                                })
+                                .subscribe(measurement1 -> {
+                                }, this::errorHandler));
                     })
                     .setNegativeButton(getString(R.string.no_text), null)
                     .show();

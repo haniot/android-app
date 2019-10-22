@@ -15,11 +15,11 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import br.edu.uepb.nutes.haniot.activity.account.LoginActivity;
-import br.edu.uepb.nutes.haniot.data.model.model.UserAccess;
+import br.edu.uepb.nutes.haniot.data.model.UserAccess;
 import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 
-//import br.edu.uepb.nutes.haniot.data.model.dao.PilotStudyDAO;
+//import br.edu.uepb.nutes.haniot.data.dao.PilotStudyDAO;
 
 /**
  * Service for token expiration.
@@ -55,8 +55,8 @@ public class TokenExpirationService extends Service {
         if (!event.equalsIgnoreCase("unauthorized")) return;
 
         if (appPreferences.getUserLogged() != null) {
-            Repository.getInstance(getApplicationContext()).
-                    removeAllPilotStudiesy(appPreferences.getUserLogged().get_id());
+//            Repository.getInstance(getApplicationContext()).
+//                    removeAllPilotStudiesy(appPreferences.getUserLogged().get_id());
 //            PilotStudyDAO.getInstance(getApplicationContext())
 //                    .removeAll(appPreferences.getUserLogged().get_id());
             appPreferences.removeUserLogged();
