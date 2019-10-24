@@ -10,6 +10,7 @@ import br.edu.uepb.nutes.haniot.data.Convert;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.objectbox.MeasurementOB;
 import br.edu.uepb.nutes.haniot.data.objectbox.MeasurementOB_;
+import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import io.objectbox.Box;
 import io.objectbox.BoxStore;
 
@@ -24,14 +25,14 @@ public class MeasurementDAO {
     public static MeasurementDAO instance;
     private static Box<MeasurementOB> measurementBox;
 
-    private MeasurementDAO() {
+    private MeasurementDAO(Context context) {
+        BoxStore boxStore = ((App) context.getApplicationContext()).getBoxStore();
+        measurementBox = boxStore.boxFor(MeasurementOB.class);
     }
 
     public static synchronized MeasurementDAO getInstance(@NonNull Context context) {
-        if (instance == null) instance = new MeasurementDAO();
-
-        BoxStore boxStore = ((App) context.getApplicationContext()).getBoxStore();
-        measurementBox = boxStore.boxFor(MeasurementOB.class);
+        if (instance == null)
+            instance = new MeasurementDAO(context);
 
         return instance;
     }
@@ -46,7 +47,7 @@ public class MeasurementDAO {
         return measurementBox.put(Convert.convertMeasurement(measurement)) > 0;
     }
 
-    public void save(List<Measurement> measurements) {
+    public void saveAll(List<Measurement> measurements) {
         for (Measurement aux : measurements) {
             this.save(aux);
         }
@@ -72,7 +73,7 @@ public class MeasurementDAO {
     /**
      * Remove measurementOB.
      *
-     * @param userId String
+     * @param userId        String
      * @param measurementId String
      * @return boolean
      */
@@ -84,20 +85,20 @@ public class MeasurementDAO {
                 .remove() > 0;
     }
 
-    /**
-     * Remove all measurements associated with device and user.
-     *
-     * @param deviceId long
-     * @param userId   long
-     * @return boolean
-     */
-    public boolean removeAll(@NonNull long deviceId, @NonNull long userId) {
-        return measurementBox.query()
-                .equal(MeasurementOB_.deviceId, deviceId)
-                .equal(MeasurementOB_.userId, userId)
-                .build()
-                .remove() > 0;
-    }
+//    /**
+//     * Remove all measurements associated with device and user.
+//     *
+//     * @param deviceId long
+//     * @param userId   long
+//     * @return boolean
+//     */
+//    public boolean removeAll(@NonNull long deviceId, @NonNull long userId) {
+//        return measurementBox.query()
+//                .equal(MeasurementOB_.deviceId, deviceId)
+//                .equal(MeasurementOB_.userId, userId)
+//                .build()
+//                .remove() > 0;
+//    }
 
     /**
      * Remove all measurements associated with user.
@@ -112,17 +113,26 @@ public class MeasurementDAO {
                 .remove() > 0;
     }
 
-    /**
-     * Select a measurement.
-     *
-     * @param id long
-     * @return Object
-     */
-    public MeasurementOB get(@NonNull long id) {
-        return measurementBox.query()
-                .equal(MeasurementOB_.id, id)
+//    /**
+//     * Select a measurement.
+//     *
+//     * @param id long
+//     * @return Object
+//     */
+//    public MeasurementOB get(@NonNull long id) {
+//        return measurementBox.query()
+//                .equal(MeasurementOB_.id, id)
+//                .build()
+//                .findFirst();
+//    }
+
+    public Measurement get(String userId, String measurementId) {
+        MeasurementOB m = measurementBox.query()
+                .equal(MeasurementOB_._id, measurementId)
+                .equal(MeasurementOB_.userId, userId)
                 .build()
                 .findFirst();
+        return new Measurement(m);
     }
 
     /**
@@ -144,7 +154,7 @@ public class MeasurementDAO {
     /**
      * Select all measurements of a type associated with the user.
      *
-     * @param type {@link String}
+     * @param type   {@link String}
      * @param userId long
      * @param offset int
      * @param limit  int
@@ -188,5 +198,16 @@ public class MeasurementDAO {
                 .equal(MeasurementOB_.userId, userId)
                 .build()
                 .find();
+    }
+
+    public List<Measurement> getMeasurementsByType(String userId, String type, String sort, String dateStart, String dateEnd, int page, int limit) {
+        List<MeasurementOB> aux =
+                measurementBox.query()
+                .equal(MeasurementOB_.userId, userId)
+                .equal(MeasurementOB_.type, type)
+                .orderDesc(MeasurementOB_.timestamp)
+                .build()
+                .find(page, limit);
+        return Convert.listMeasurementsToModel(aux);
     }
 }

@@ -41,8 +41,12 @@ public class PatientDAO {
         return patientBox.query().equal(PatientOB_.id, id).build().findFirst();
     }
 
-    public PatientOB get(@NonNull String _id) {
-        return patientBox.query().equal(PatientOB_._id, _id).build().findFirst();
+    public Patient get(@NonNull String _id) {
+        PatientOB aux = patientBox.query()
+                .equal(PatientOB_._id, _id)
+                .build()
+                .findFirst();
+        return new Patient(aux);
     }
 
     public List<PatientOB> list(@NonNull String healthProfessionalId) {
@@ -50,12 +54,12 @@ public class PatientDAO {
     }
 
     public boolean save(@NonNull Patient patient) {
-        return patientBox.put(Convert.convertPatient(patient)) > 0;
+        return patientBox.put(new PatientOB(patient)) > 0;
     }
 
     public boolean update(@NonNull Patient patient) {
         if (patient.getId() == 0) {
-            PatientOB patientOBUp = get(patient.getName());
+            Patient patientOBUp = get(patient.getName());
 
             if (patientOBUp == null) return false;
 
@@ -63,10 +67,6 @@ public class PatientDAO {
             if (patient.get_id() == null) patient.set_id(patientOBUp.get_id());
         }
         return save(patient);
-    }
-
-    public boolean remove(@NonNull PatientOB patientOB) {
-        return patientBox.query().equal(PatientOB_.id, patientOB.getId()).build().remove() > 0;
     }
 
     public boolean remove(@NonNull String _id) {

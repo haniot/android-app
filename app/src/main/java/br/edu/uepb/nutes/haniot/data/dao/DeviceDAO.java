@@ -50,6 +50,12 @@ public class DeviceDAO {
         return deviceBox.put(Convert.convertDevice(device)) > 0;
     }
 
+    public void save(List<Device> devices) {
+        for (Device aux : devices) {
+            this.save(aux);
+        }
+    }
+
     /**
      * Select a DeviceOB according to address and userId.
      *
@@ -58,7 +64,7 @@ public class DeviceDAO {
      * @return Object
      */
     public Device get(@NonNull String address, String userId) {
-        DeviceOB aux =  deviceBox.query()
+        DeviceOB aux = deviceBox.query()
                 .equal(DeviceOB_.address, address)
                 .equal(DeviceOB_.userId, userId)
                 .build().findFirst();
@@ -82,6 +88,7 @@ public class DeviceDAO {
 
     /**
      * Retrieves all devices not syncronized
+     *
      * @return
      */
     public List<Device> getAllNotSync() {
@@ -89,6 +96,13 @@ public class DeviceDAO {
                 .equal(DeviceOB_.sync, false)
                 .build().find();
         return Convert.listDeviceToModel(aux);
+    }
+
+    public boolean removeSyncronized() {
+        return (deviceBox.query()
+                .equal(DeviceOB_.sync, true)
+                .build()
+                .remove()) > 0;
     }
 
     /**
@@ -168,5 +182,12 @@ public class DeviceDAO {
         return deviceBox.query()
                 .equal(DeviceOB_._id, userId)
                 .build().remove() > 0;
+    }
+
+    public List<Device> getAllDevices(String patientId) {
+        return Convert.listDeviceToModel(
+                deviceBox.query()
+                        .equal(DeviceOB_.userId, patientId)
+                        .build().find());
     }
 }

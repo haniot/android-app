@@ -261,7 +261,7 @@ public class ForgotPasswordActivity extends AppCompatActivity implements View.On
                     finish();
                 })
                 .subscribe(devices -> {
-                    mRepository.removeAllDevices(userId);
+                    mRepository.removeAllDevicesLocal(userId);
                     for (Device d : devices) {
                         d.setUserId(userId);
                         mRepository.saveDevice(d);

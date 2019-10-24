@@ -33,6 +33,7 @@ import androidx.annotation.RequiresApi;
 
 import com.github.clans.fab.FloatingActionMenu;
 
+import java.lang.reflect.Array;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
@@ -564,7 +565,8 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
 //        DisposableManager.add(mRepository
 //        .getAllMeasurementsByType(patient.get_id(), MeasurementType.HEART_RATE, null, null, null, 1, 10000));
 
-        List<Measurement> measurements = mRepository.listMeasurements(MeasurementType.HEART_RATE, patient.get_id(), 100, 1000);
+//        List<Measurement> measurements = mRepository.listMeasurements(MeasurementType.HEART_RATE, patient.get_id(), 100, 1000);
+        List<Measurement> measurements = new ArrayList<>();
         if (measurements == null) measurements = new ArrayList<>();
         measurements.add(measurement);
 
@@ -579,7 +581,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
                 .subscribe(measurement1 -> {
                     Log.w(LOG_TAG, measurement1.toString());
                     heartRateItems.clear();
-                    mRepository.removeAllMeasurements(patient.get_id());
+//                    mRepository.removeAllMeasurements(patient.get_id());
                 }, throwable -> {
                     Log.w(LOG_TAG, throwable.getMessage());
                     mRepository.saveMeasurement(measurement);

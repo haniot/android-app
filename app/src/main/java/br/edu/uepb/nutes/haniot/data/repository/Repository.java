@@ -19,21 +19,21 @@ import br.edu.uepb.nutes.haniot.data.dao.nutritionalDao.PhysicalActivityHabitsDA
 import br.edu.uepb.nutes.haniot.data.dao.nutritionalDao.SleepHabitsDAO;
 import br.edu.uepb.nutes.haniot.data.model.Admin;
 import br.edu.uepb.nutes.haniot.data.model.Device;
-import br.edu.uepb.nutes.haniot.data.model.nutritional.FeedingHabitsRecord;
 import br.edu.uepb.nutes.haniot.data.model.HealthProfessional;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.MeasurementLastResponse;
+import br.edu.uepb.nutes.haniot.data.model.Patient;
+import br.edu.uepb.nutes.haniot.data.model.PilotStudy;
+import br.edu.uepb.nutes.haniot.data.model.User;
+import br.edu.uepb.nutes.haniot.data.model.UserAccess;
+import br.edu.uepb.nutes.haniot.data.model.nutritional.FeedingHabitsRecord;
 import br.edu.uepb.nutes.haniot.data.model.nutritional.MedicalRecord;
 import br.edu.uepb.nutes.haniot.data.model.nutritional.NutritionalEvaluation;
 import br.edu.uepb.nutes.haniot.data.model.nutritional.NutritionalEvaluationResult;
 import br.edu.uepb.nutes.haniot.data.model.nutritional.NutritionalQuestionnaire;
-import br.edu.uepb.nutes.haniot.data.model.odontological.OdontologicalQuestionnaire;
-import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.nutritional.PhysicalActivityHabit;
-import br.edu.uepb.nutes.haniot.data.model.PilotStudy;
 import br.edu.uepb.nutes.haniot.data.model.nutritional.SleepHabit;
-import br.edu.uepb.nutes.haniot.data.model.User;
-import br.edu.uepb.nutes.haniot.data.model.UserAccess;
+import br.edu.uepb.nutes.haniot.data.model.odontological.OdontologicalQuestionnaire;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
@@ -90,14 +90,13 @@ public class Repository {
             for (Device aux : devices) {
                 DisposableManager.add(
                         haniotNetRepository.saveDevice(aux)
-                        .subscribe(device -> {
-                            aux.setSync(true);
-                            deviceDAO.update(aux);
-                        })
+                                .subscribe(device -> {
+                                    device.setSync(true);
+                                    deviceDAO.save(device);
+                                })
                 );
             }
             // varrer todos os DAOs em busca de dados não sincronizados
-            // devices = deviceDAO.get
 
             // for em todos os devices
             // if (device.isSync == false) envia pro haniotNetRepository
@@ -108,7 +107,12 @@ public class Repository {
 //            DisposableManager.add(
 //                    haniotNetRepository.getAllDevices()
 //            );
+
             // baixar os mais atuais para o repositorio local
+            deviceDAO.removeSyncronized();
+//            DisposableManager.add(
+//                    haniotNetRepository.getAllDevices()
+//            );
         }
     }
 
@@ -121,13 +125,34 @@ public class Repository {
      * @return boolean
      */
     public Single<Device> saveDevice(@NonNull Device device) {
-        deviceDAO.save(device);
-        this.syncronize();
-        return haniotNetRepository.saveDevice(device);
+        if (ConnectionUtils.internetIsEnabled(mContext)) {
+            return haniotNetRepository.saveDevice(device)
+                    .map(device1 -> {
+                        deviceDAO.save(device1);
+                        return device1;
+                    });
+        } else {
+            deviceDAO.save(device);
+            return Single.just(device);
+//            if (deviceDAO.save(device)) { // salvo com sucesso
+//                return Single.just(device);
+//            } else {
+//                return Single.error();
+//            }
+        }
     }
 
     public Single<List<Device>> getAllDevices(String patientId) {
-        return haniotNetRepository.getAllDevices(patientId);
+        if (ConnectionUtils.internetIsEnabled(mContext)) {
+            return haniotNetRepository.getAllDevices(patientId)
+                    .map(devices -> {
+                        deviceDAO.save(devices);
+                        return devices;
+                    });
+        } else {
+            List<Device> dev = deviceDAO.getAllDevices(patientId);
+            return Single.just(dev);
+        }
     }
 
     /**
@@ -150,8 +175,11 @@ public class Repository {
      * @return boolean
      */
     public Completable deleteDevice(@NonNull String userId, @NonNull String deviceId) {
-        deviceDAO.remove(deviceId);
-        return haniotNetRepository.deleteDevice(userId, deviceId);
+        return haniotNetRepository.deleteDevice(userId, deviceId)
+                .doOnComplete(() -> {
+                            deviceDAO.remove(deviceId);
+                        }
+                );
     }
 
     /**
@@ -161,7 +189,7 @@ public class Repository {
      * @param userId {@link String}
      * @return long - Total number of itemsList removed
      */
-    public boolean removeAllDevices(@NonNull String userId) {
+    public boolean removeAllDevicesLocal(@NonNull String userId) {
         return deviceDAO.removeAll(userId);
     }
 
@@ -177,27 +205,30 @@ public class Repository {
         if (ConnectionUtils.internetIsEnabled(mContext)) {
             return haniotNetRepository.saveMeasurement(measurement)
                     .map(measurement1 -> {
+                        measurement1.setSync(true);
                         measurementDAO.save(measurement1);
-                        this.syncronize();
                         return measurement1;
                     });
         } else {
             measurementDAO.save(measurement);
+            return Single.just(measurement);
 
         }
-        return haniotNetRepository.saveMeasurement(measurement)
-                .map(measurement1 -> {
-                    measurementDAO.save(measurement1);
-                    return measurement1;
-                });
     }
 
     public Single<Object> saveMeasurement(List<Measurement> measurements) {
-        return haniotNetRepository.saveMeasurement(measurements)
-                .map(measurements1 -> {
-                    measurementDAO.save(measurements);
-                    return measurements1;
-                });
+        if (ConnectionUtils.internetIsEnabled(mContext)) {
+            return haniotNetRepository.saveMeasurement(measurements)
+                    .map(measurements1 -> {
+                        for (Measurement m : (List<Measurement>) measurements1)
+                            m.setSync(true);
+                        measurementDAO.saveAll(measurements);
+                        return measurements1;
+                    });
+        } else {
+            measurementDAO.saveAll(measurements);
+            return Single.just(measurements);
+        }
     }
 
     /**
@@ -207,18 +238,10 @@ public class Repository {
      * @return boolean
      */
     public Completable deleteMeasurement(@NonNull String patientId, @NonNull String measurementId) {
-        measurementDAO.remove(patientId, measurementId);
-        return haniotNetRepository.deleteMeasurement(patientId, measurementId);
-    }
-
-    /**
-     * Remove all measurements associated with user.
-     *
-     * @param userId long
-     * @return boolean
-     */
-    public boolean removeAllMeasurements(@NonNull String userId) {
-        return measurementDAO.removeAll(userId);
+        return haniotNetRepository.deleteMeasurement(patientId, measurementId)
+                .doOnComplete(() -> {
+                    measurementDAO.remove(patientId, measurementId);
+                });
     }
 
     /**
@@ -229,57 +252,49 @@ public class Repository {
      * @return Object
      */
     public Single<Measurement> getMeasurement(@NonNull String userId, @NonNull String measurementId) {
-        return haniotNetRepository.getMeasurement(userId, measurementId);
-//        return Convert.convertMeasurement(measurementDAO.get(id));
-    }
-
-    public Single<MeasurementLastResponse> getLastMeasurements(String patientId) {
-        return haniotNetRepository.getLastMeasurements(patientId);
+        if (ConnectionUtils.internetIsEnabled(mContext)) {
+            return haniotNetRepository.getMeasurement(userId, measurementId);
+        } else {
+            return Single.just(measurementDAO.get(userId, measurementId));
+        }
     }
 
     public Single<List<Measurement>> getAllMeasurementsByType(String userId, String typeMeasurement,
-                                                              String sort, String dateStart, String dateEnd, int page, int limit) {
-        return haniotNetRepository.getAllMeasurementsByType(
-                userId, typeMeasurement, sort, dateStart, dateEnd, page, limit);
-    }
-
-    /**
-     * Select all measurements of a type associated with the user.
-     *
-     * @param type   {@link String}
-     * @param userId long
-     * @param offset int
-     * @param limit  int
-     * @return List<MeasurementOB>
-     */
-    public List<Measurement> listMeasurements(@NonNull String type, @NonNull String userId, @NonNull int offset, @NonNull int limit) {
-        return Convert.listMeasurementsToModel(measurementDAO.list(type, userId, offset, limit));
-    }
-
-    // --------------- Health Professional
-
-    public Single<HealthProfessional> updateHealthProfissional(HealthProfessional healthProfessional) {
-        return haniotNetRepository.updateHealthProfissional(healthProfessional);
-    }
-
-    public Single<HealthProfessional> getHealthProfissional(String _id) {
-        return haniotNetRepository.getHealthProfissional(_id);
+                                                              String sort, String dateStart,
+                                                              String dateEnd, int page, int limit) {
+        if (ConnectionUtils.internetIsEnabled(mContext)) {
+            return haniotNetRepository.getAllMeasurementsByType(
+                    userId, typeMeasurement, sort, dateStart, dateEnd, page, limit);
+        } else {
+            List<Measurement> aux = measurementDAO.getMeasurementsByType(userId, typeMeasurement, sort, dateStart, dateEnd, page, limit);
+            return Single.just(aux);
+        }
     }
 
     // --------- PATIENT DAO --------------
 
     public Single<Patient> getPatient(@NonNull String _id) {
-//        patientDAO.get(_id);
-        return haniotNetRepository.getPatient(_id);
+        Patient p = patientDAO.get(_id);
+
+        if (p != null) {
+            return Single.just(p);
+        } else {
+            return haniotNetRepository.getPatient(_id);
+        }
     }
 
     public Single<Patient> savePatient(@NonNull Patient patient) {
-        return haniotNetRepository.savePatient(patient)
-                .map(patient1 -> {
-                    patientDAO.save(patient1);
-                    return patient1;
-                });
-        // sincronizar
+        if (ConnectionUtils.internetIsEnabled(mContext)) {
+            return haniotNetRepository.savePatient(patient)
+                    .map(patient1 -> {
+                        patient1.setSync(true);
+                        patientDAO.save(patient1);
+                        return patient1;
+                    });
+        } else {
+            patientDAO.save(patient);
+            return Single.just(patient);
+        }
     }
 
     public Single<Patient> updatePatient(@NonNull Patient patient) {
@@ -292,8 +307,10 @@ public class Repository {
     }
 
     public Completable deletePatient(String patientId) {
-        patientDAO.remove(patientId);
-        return haniotNetRepository.deletePatient(patientId);
+        return haniotNetRepository.deletePatient(patientId)
+                .doOnComplete(() -> {
+                    patientDAO.remove(patientId);
+                });
     }
 
     public Single<Response<Void>> associatePatientToPilotStudy(String pilotStudyId, String patientId) {
@@ -308,6 +325,17 @@ public class Repository {
 
     public Single<NutritionalQuestionnaire> getLastNutritionalQuestionnaire(String patientId) {
         return haniotNetRepository.getLastNutritionalQuestionnaire(patientId);
+    }
+
+    /**
+     * Select Last measurements of a patient
+     * Necessary connection
+     *
+     * @param patientId String
+     * @return
+     */
+    public Single<MeasurementLastResponse> getLastMeasurements(String patientId) {
+        return haniotNetRepository.getLastMeasurements(patientId);
     }
 
     public Single<NutritionalEvaluationResult> saveNutritionalEvaluation(NutritionalEvaluation nutritionalEvaluation) {
@@ -342,13 +370,20 @@ public class Repository {
         return feedingHabitsDAO.save(Convert.convertFeedingHabitsRecord(feedingHabitsRecord));
     }
 
+    // --------------- Health Professional ---------------------------------
+
+    public Single<HealthProfessional> updateHealthProfissional(HealthProfessional healthProfessional) {
+        return haniotNetRepository.updateHealthProfissional(healthProfessional);
+    }
+
+    public Single<HealthProfessional> getHealthProfissional(String healthProfessionalId) {
+        return haniotNetRepository.getHealthProfissional(healthProfessionalId);
+    }
 
     // ----------------- PILOT STUDY DAO -------------------------
 
     public Single<List<PilotStudy>> getAllPilotStudies() {
         return haniotNetRepository.getAllPilotStudies();
-        // Verificar se vai manter base local
-//        return Convert.listPilotStudiesToModel(pilotStudyDAO.list(null));
     }
 
     public Single<List<PilotStudy>> getAllUserPilotStudies(String userId) {
@@ -408,6 +443,29 @@ public class Repository {
     public User getUser(@NonNull String _id) {
         return Convert.convertUser(userDAO.get(_id));
     }
+//
+//    /**
+//     * Remove all measurements associated with user.
+//     *
+//     * @param userId long
+//     * @return boolean
+//     */
+//    public boolean removeAllMeasurements(@NonNull String userId) {
+//        return measurementDAO.removeAll(userId);
+//    }
+//
+//    /**
+//     * Select all measurements of a type associated with the user.
+//     *
+//     * @param type   {@link String}
+//     * @param userId long
+//     * @param offset int
+//     * @param limit  int
+//     * @return List<MeasurementOB>
+//     */
+//    public List<Measurement> listMeasurements(@NonNull String type, @NonNull String userId, @NonNull int offset, @NonNull int limit) {
+//        return Convert.listMeasurementsToModel(measurementDAO.list(type, userId, offset, limit));
+//    }
 
 //    public boolean removeAllPilotStudiesy(@NonNull String userId) {
 //        return pilotStudyDAO.removeAll(userId);
