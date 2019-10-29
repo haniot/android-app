@@ -190,4 +190,18 @@ public class DeviceDAO {
                         .equal(DeviceOB_.userId, patientId)
                         .build().find());
     }
+
+    public void markAsSync(long id) {
+        deviceBox.query()
+                .equal(DeviceOB_.id, id)
+                .build()
+                .remove();
+    }
+
+    public void addAll(List<Device> devices) {
+        for (Device device : devices) {
+            device.setSync(true);
+            deviceBox.put(new DeviceOB(device));
+        }
+    }
 }

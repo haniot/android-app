@@ -52,6 +52,7 @@ public class MeasurementOB extends SyncOB {
     private ToMany<HeartRateItemOB> datasetDB;
 
     public MeasurementOB(Measurement m) {
+        super(m.isSync());
         this.set_id(m.get_id());
         this.setId(m.getId());
         this.setValue(m.getValue());

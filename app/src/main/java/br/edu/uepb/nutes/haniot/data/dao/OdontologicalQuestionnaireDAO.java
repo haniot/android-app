@@ -51,4 +51,25 @@ public class OdontologicalQuestionnaireDAO {
                 .find();
         return Convert.listOdontologicalQuestionnaireToModel(aux);
     }
+
+    public void markAsSync(long id) {
+        odontologicalQuestionnaireBox.query()
+                .equal(OdontologicalQuestionnaireOB_.id, id)
+                .build()
+                .remove();
+    }
+
+    public void removeSyncronized() {
+        odontologicalQuestionnaireBox.query()
+                .equal(OdontologicalQuestionnaireOB_.sync, true)
+                .build()
+                .remove();
+    }
+
+    public void addAll(List<OdontologicalQuestionnaire> odontologicalQuestionnaires) {
+        for (OdontologicalQuestionnaire odontologicalQuestionnaire : odontologicalQuestionnaires) {
+            odontologicalQuestionnaire.setSync(true);
+            odontologicalQuestionnaireBox.put(new OdontologicalQuestionnaireOB(odontologicalQuestionnaire));
+        }
+    }
 }

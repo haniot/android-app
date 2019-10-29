@@ -7,8 +7,8 @@ public class SyncOB {
 
     private boolean sync;
 
-    public SyncOB() {
-        this.sync = false; // inicializando não sincronizado
+    public SyncOB(boolean sync) {
+        this.sync = sync; // inicializando não sincronizado
     }
 
     public boolean isSync() {

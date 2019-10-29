@@ -17,7 +17,7 @@ public class HealthProfessionalOB extends UserOB {
 
     public HealthProfessionalOB(HealthProfessional p) {
         super(p.getId(), p.get_id(), p.getEmail(), p.getName(), p.getBirthDate(), p.getHealthArea(), p.getPassword(), p.getOldPassword(), p.getNewPassword(),
-                p.getPhoneNumber(), p.getLastLogin(), p.getLastSync(), p.getLanguage(), p.getPilotStudyIDSelected(), p.getUserType());
+                p.getPhoneNumber(), p.getLastLogin(), p.getLastSync(), p.getLanguage(), p.getPilotStudyIDSelected(), p.getUserType(), p.isSync());
         this.setTotalPilotStudies(p.getTotalPilotStudies());
         this.setTotalPatients(p.getTotalPatients());
     }

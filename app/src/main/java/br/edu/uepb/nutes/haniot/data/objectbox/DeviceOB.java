@@ -42,6 +42,7 @@ public class DeviceOB extends SyncOB {
     private int img;
 
     public DeviceOB(Device d) {
+        super(d.isSync());
         this.setId(d.getId());
         this.set_id(d.get_id());
         this.setName(d.getName());

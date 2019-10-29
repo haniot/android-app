@@ -50,7 +50,8 @@ public class UserOB extends SyncOB {
 
     public UserOB(long id, String _id, String email, String name, String birthDate, String healthArea,
                   String password, String oldPassword, String newPassword, String phoneNumber,
-                  String lastLogin, String lastSync, String language, String pilotStudyIDSelected, String userType) {
+                  String lastLogin, String lastSync, String language, String pilotStudyIDSelected, String userType, boolean sync) {
+        super(sync);
         this.id = id;
         this._id = _id;
         this.email = email;
@@ -70,7 +71,7 @@ public class UserOB extends SyncOB {
 
     public UserOB(User p) {
         this(p.getId(), p.get_id(), p.getEmail(), p.getName(), p.getBirthDate(), p.getHealthArea(), p.getPassword(), p.getOldPassword(), p.getNewPassword(),
-                p.getPhoneNumber(), p.getLastLogin(), p.getLastSync(), p.getLanguage(), p.getPilotStudyIDSelected(), p.getUserType());
+                p.getPhoneNumber(), p.getLastLogin(), p.getLastSync(), p.getLanguage(), p.getPilotStudyIDSelected(), p.getUserType(), p.isSync());
     }
 
     public long getId() {

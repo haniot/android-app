@@ -21,7 +21,7 @@ public class AdminOB extends UserOB {
 
     public AdminOB(Admin p) {
         super(p.getId(), p.get_id(), p.getEmail(), p.getName(), p.getBirthDate(), p.getHealthArea(), p.getPassword(), p.getOldPassword(), p.getNewPassword(),
-                p.getPhoneNumber(), p.getLastLogin(), p.getLastSync(), p.getLanguage(), p.getPilotStudyIDSelected(), p.getUserType());
+                p.getPhoneNumber(), p.getLastLogin(), p.getLastSync(), p.getLanguage(), p.getPilotStudyIDSelected(), p.getUserType(), p.isSync());
         this.setTotalPilotStudies(p.getTotalPilotStudies());
         this.setTotalPatients(p.getTotalPatients());
         this.setTotalHealthProfessionals(p.getTotalHealthProfessionals());

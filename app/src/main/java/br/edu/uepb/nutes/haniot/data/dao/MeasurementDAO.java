@@ -220,4 +220,25 @@ public class MeasurementDAO {
                         .find();
         return Convert.listMeasurementsToModel(aux);
     }
+
+    public void markAsSync(long id) {
+        measurementBox.query()
+                .equal(MeasurementOB_.id, id)
+                .build()
+                .remove();
+    }
+
+    public void removeSyncronized() {
+        measurementBox.query()
+                .equal(MeasurementOB_.sync, true)
+                .build()
+                .remove();
+    }
+
+    public void addAll(List<Measurement> measurements) {
+        for (Measurement measurement : measurements) {
+            measurement.setSync(true);
+            measurementBox.put(new MeasurementOB(measurement));
+        }
+    }
 }

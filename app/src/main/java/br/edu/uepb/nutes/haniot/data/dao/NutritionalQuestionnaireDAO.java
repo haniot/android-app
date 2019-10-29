@@ -51,4 +51,25 @@ public class NutritionalQuestionnaireDAO {
                 .find();
         return Convert.listNutritionalQuestionnaireToModel(aux);
     }
+
+    public void markAsSync(long id) {
+        nutritionalQuestionnaireBox.query()
+                .equal(NutritionalQuestionnaireOB_.id, id)
+                .build()
+                .remove();
+    }
+
+    public void removeSyncronized() {
+        nutritionalQuestionnaireBox.query()
+                .equal(NutritionalQuestionnaireOB_.sync, true)
+                .build()
+                .remove();
+    }
+
+    public void addAll(List<NutritionalQuestionnaire> nutritionalQuestionnaires) {
+        for (NutritionalQuestionnaire n : nutritionalQuestionnaires) {
+            n.setSync(true);
+            nutritionalQuestionnaireBox.put(new NutritionalQuestionnaireOB(n));
+        }
+    }
 }

@@ -32,6 +32,7 @@ public class NutritionalQuestionnaireOB extends SyncOB {
     ToOne<MedicalRecordOB> medicalRecord;
 
     public NutritionalQuestionnaireOB(NutritionalQuestionnaire n) {
+        super(n.isSync());
         this.setId(n.getId());
         this.set_id(n.get_id());
         this.setPatientId(n.getPatientId());

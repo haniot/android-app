@@ -90,4 +90,25 @@ public class PatientDAO {
                 .find();
         return Convert.listPatientsToModel(aux);
     }
+
+    public void markAsSync(long id) {
+        patientBox.query()
+                .equal(PatientOB_.id, id)
+                .build()
+                .remove();
+    }
+
+    public void addAll(List<Patient> patients) {
+        for (Patient patient : patients) {
+            patient.setSync(true);
+            patientBox.put(new PatientOB(patient));
+        }
+    }
+
+    public void removeSyncronized() {
+        patientBox.query()
+                .equal(PatientOB_.sync, true)
+                .build()
+                .remove();
+    }
 }
