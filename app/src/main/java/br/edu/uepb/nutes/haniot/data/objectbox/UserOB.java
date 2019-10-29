@@ -12,7 +12,7 @@ import io.objectbox.annotation.Index;
  * @author Copyright (c) 2019, NUTES/UEPB
  */
 @Entity
-public class UserOB {
+public class UserOB extends SyncOB {
     @Id
     private long id;
 

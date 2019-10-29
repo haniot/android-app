@@ -2,19 +2,24 @@ package br.edu.uepb.nutes.haniot.data.objectbox.nutritional;
 
 import java.util.Objects;
 
+import br.edu.uepb.nutes.haniot.data.Convert;
+import br.edu.uepb.nutes.haniot.data.model.nutritional.NutritionalQuestionnaire;
+import br.edu.uepb.nutes.haniot.data.objectbox.SyncOB;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.annotation.Index;
 import io.objectbox.relation.ToOne;
 
 @Entity
-public class NutritionalQuestionnaireOB {
+public class NutritionalQuestionnaireOB extends SyncOB {
 
     @Id
     private long id;
 
     @Index
     private String _id;
+
+    String patientId;
 
     String createdAt;
 
@@ -25,6 +30,17 @@ public class NutritionalQuestionnaireOB {
     ToOne<FeedingHabitsRecordOB> feedingHabitsRecord;
 
     ToOne<MedicalRecordOB> medicalRecord;
+
+    public NutritionalQuestionnaireOB(NutritionalQuestionnaire n) {
+        this.setId(n.getId());
+        this.set_id(n.get_id());
+        this.setPatientId(n.getPatientId());
+        this.setCreatedAt(n.getCreatedAt());
+        this.setSleepHabit(Convert.convertSleepHabit(n.getSleepHabit()));
+        this.setPhysicalActivityHabit(Convert.convertPhysicalActivityHabit(n.getPhysicalActivityHabit()));
+        this.setFeedingHabitsRecord(Convert.convertFeedingHabitsRecord(n.getFeedingHabitsRecord()));
+        this.setMedicalRecord(Convert.convertMedicalRecord(n.getMedicalRecord()));
+    }
 
     public long getId() {
         return id;
@@ -40,6 +56,14 @@ public class NutritionalQuestionnaireOB {
 
     public void set_id(String _id) {
         this._id = _id;
+    }
+
+    public void setPatientId(String patientId) {
+        this.patientId = patientId;
+    }
+
+    public String getPatientId() {
+        return this.patientId;
     }
 
     public String getCreatedAt() {

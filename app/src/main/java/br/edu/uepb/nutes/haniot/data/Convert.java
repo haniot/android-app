@@ -11,11 +11,17 @@ import br.edu.uepb.nutes.haniot.data.model.HeartRateItem;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.nutritional.MedicalRecord;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
+import br.edu.uepb.nutes.haniot.data.model.nutritional.NutritionalQuestionnaire;
 import br.edu.uepb.nutes.haniot.data.model.nutritional.PhysicalActivityHabit;
 import br.edu.uepb.nutes.haniot.data.model.PilotStudy;
 import br.edu.uepb.nutes.haniot.data.model.nutritional.SleepHabit;
 import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.model.nutritional.WeeklyFoodRecord;
+import br.edu.uepb.nutes.haniot.data.model.odontological.FamilyCohesionRecord;
+import br.edu.uepb.nutes.haniot.data.model.odontological.OdontologicalQuestionnaire;
+import br.edu.uepb.nutes.haniot.data.model.odontological.OralHealthRecord;
+import br.edu.uepb.nutes.haniot.data.model.odontological.SociodemographicRecord;
+import br.edu.uepb.nutes.haniot.data.model.odontological.ToothLesion;
 import br.edu.uepb.nutes.haniot.data.objectbox.BodyFatOB;
 import br.edu.uepb.nutes.haniot.data.objectbox.nutritional.ChronicDiseaseOB;
 import br.edu.uepb.nutes.haniot.data.objectbox.DeviceOB;
@@ -24,11 +30,17 @@ import br.edu.uepb.nutes.haniot.data.objectbox.HeartRateItemOB;
 import br.edu.uepb.nutes.haniot.data.objectbox.MeasurementOB;
 import br.edu.uepb.nutes.haniot.data.objectbox.nutritional.MedicalRecordOB;
 import br.edu.uepb.nutes.haniot.data.objectbox.PatientOB;
+import br.edu.uepb.nutes.haniot.data.objectbox.nutritional.NutritionalQuestionnaireOB;
 import br.edu.uepb.nutes.haniot.data.objectbox.nutritional.PhysicalActivityHabitOB;
 import br.edu.uepb.nutes.haniot.data.objectbox.PilotStudyOB;
 import br.edu.uepb.nutes.haniot.data.objectbox.nutritional.SleepHabitOB;
 import br.edu.uepb.nutes.haniot.data.objectbox.UserOB;
 import br.edu.uepb.nutes.haniot.data.objectbox.nutritional.WeeklyFoodRecordOB;
+import br.edu.uepb.nutes.haniot.data.objectbox.odontological.FamilyCohesionRecordOB;
+import br.edu.uepb.nutes.haniot.data.objectbox.odontological.OdontologicalQuestionnaireOB;
+import br.edu.uepb.nutes.haniot.data.objectbox.odontological.OralHealthRecordOB;
+import br.edu.uepb.nutes.haniot.data.objectbox.odontological.SociodemographicRecordOB;
+import br.edu.uepb.nutes.haniot.data.objectbox.odontological.ToothLesionOB;
 
 public class Convert {
 
@@ -250,5 +262,45 @@ public class Convert {
 
     public static User convertUser(UserOB user) {
         return new User(user);
+    }
+
+    public static List<NutritionalQuestionnaire> listNutritionalQuestionnaireToModel(List<NutritionalQuestionnaireOB> n) {
+        List<NutritionalQuestionnaire> aux = new ArrayList<>();
+        for (NutritionalQuestionnaireOB questionnaire : n) {
+            aux.add(new NutritionalQuestionnaire(questionnaire));
+        }
+        return aux;
+    }
+
+    public static SociodemographicRecordOB convertSociodemographicRecord(SociodemographicRecord sociodemographicRecord) {
+        return new SociodemographicRecordOB(sociodemographicRecord);
+    }
+
+    public static SociodemographicRecord convertSociodemographicRecord(SociodemographicRecordOB sociodemographicRecord) {
+        return new SociodemographicRecord(sociodemographicRecord);
+    }
+
+    public static List<OdontologicalQuestionnaire> listOdontologicalQuestionnaireToModel(List<OdontologicalQuestionnaireOB> n) {
+        List<OdontologicalQuestionnaire> aux = new ArrayList<>();
+        for (OdontologicalQuestionnaireOB questionnaire : n) {
+            aux.add(new OdontologicalQuestionnaire(questionnaire));
+        }
+        return aux;
+    }
+
+    public static FamilyCohesionRecordOB convertFamilyCohesionRecord(FamilyCohesionRecord f) {
+        return new FamilyCohesionRecordOB(f);
+    }
+
+    public static OralHealthRecordOB convertOralHealthRecord(OralHealthRecord o) {
+        return new OralHealthRecordOB(o);
+    }
+
+    public static List<ToothLesionOB> listToothLesionsToObjectBox(List<ToothLesion> toothLesions) {
+        List<ToothLesionOB> aux = new ArrayList<>();
+        for (ToothLesion t : toothLesions) {
+            aux.add(new ToothLesionOB(t));
+        }
+        return aux;
     }
 }

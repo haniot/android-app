@@ -7,7 +7,9 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.Objects;
 
+import br.edu.uepb.nutes.haniot.data.Convert;
 import br.edu.uepb.nutes.haniot.data.model.Sync;
+import br.edu.uepb.nutes.haniot.data.objectbox.nutritional.NutritionalQuestionnaireOB;
 
 public class NutritionalQuestionnaire extends Sync {
 
@@ -17,6 +19,8 @@ public class NutritionalQuestionnaire extends Sync {
     @SerializedName("id")
     @Expose()
     private String _id;
+
+    private String patientId;
 
     @SerializedName("created_at")
     @Expose()
@@ -39,6 +43,17 @@ public class NutritionalQuestionnaire extends Sync {
     MedicalRecord medicalRecord;
 
     public NutritionalQuestionnaire() {
+    }
+
+    public NutritionalQuestionnaire(NutritionalQuestionnaireOB q) {
+        this.setId(q.getId());
+        this.set_id(q.get_id());
+        this.setPatientId(q.getPatientId());
+        this.setCreatedAt(q.getCreatedAt());
+        this.setSleepHabit(Convert.convertSleepHabit(q.getSleepHabit()));
+        this.setPhysicalActivityHabit(Convert.convertPhysicalActivityHabit(q.getPhysicalActivityHabit()));
+        this.setFeedingHabitsRecord(Convert.convertFeedingHabitsRecord(q.getFeedingHabitsRecord()));
+        this.setMedicalRecord(Convert.convertMedicalRecord(q.getMedicalRecord()));
     }
 
     public long getId() {
@@ -127,5 +142,13 @@ public class NutritionalQuestionnaire extends Sync {
         NutritionalQuestionnaire that = (NutritionalQuestionnaire) o;
         return Objects.equals(_id, that._id) &&
                 Objects.equals(createdAt, that.createdAt);
+    }
+
+    public void setPatientId(String patientId) {
+        this.patientId = patientId;
+    }
+
+    public String getPatientId() {
+        return this.patientId;
     }
 }

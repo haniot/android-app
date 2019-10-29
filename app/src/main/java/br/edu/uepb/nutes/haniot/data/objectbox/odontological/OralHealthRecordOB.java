@@ -2,16 +2,21 @@ package br.edu.uepb.nutes.haniot.data.objectbox.odontological;
 
 import java.util.List;
 
+import br.edu.uepb.nutes.haniot.data.Convert;
+import br.edu.uepb.nutes.haniot.data.model.odontological.OralHealthRecord;
 import io.objectbox.annotation.Backlink;
+import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
-import io.objectbox.annotation.Transient;
+import io.objectbox.annotation.Index;
 import io.objectbox.relation.ToMany;
 
+@Entity
 public class OralHealthRecordOB {
 
     @Id
     private long id;
 
+    @Index
     private String _id;
 
     private String patientId;
@@ -20,11 +25,17 @@ public class OralHealthRecordOB {
 
     private String teethBrushingFreq;
 
-    @Transient // not persisted
-    private List<ToothLesionOB> toothLesions;
-
     @Backlink(to = "oralHealthRecord")
-    private ToMany<ToothLesionOB> toothLesionsDB;
+    private ToMany<ToothLesionOB> toothLesions;
+
+    public OralHealthRecordOB(OralHealthRecord o) {
+        this.setId(o.getId());
+        this.set_id(o.get_id());
+        this.setPatientId(o.getPatientId());
+        this.setCreatedAt(o.getCreatedAt());
+        this.setTeethBrushingFreq(o.getTeethBrushingFreq());
+        this.setToothLesions(Convert.listToothLesionsToObjectBox(o.getToothLesions()));
+    }
 
     public long getId() {
         return id;
@@ -63,15 +74,8 @@ public class OralHealthRecordOB {
     }
 
     public void setToothLesions(List<ToothLesionOB> toothLesions) {
-        this.toothLesions = toothLesions;
-    }
-
-    public ToMany<ToothLesionOB> getToothLesionsDB() {
-        return toothLesionsDB;
-    }
-
-    public void setToothLesionsDB(ToMany<ToothLesionOB> toothLesionsDB) {
-        this.toothLesionsDB = toothLesionsDB;
+        this.toothLesions.clear();
+        this.toothLesions.addAll(toothLesions);
     }
 
     public String getPatientId() {
@@ -90,8 +94,8 @@ public class OralHealthRecordOB {
                 ", patientId='" + patientId + '\'' +
                 ", createdAt='" + createdAt + '\'' +
                 ", teethBrushingFreq='" + teethBrushingFreq + '\'' +
+//                ", toothLesions=" + toothLesions +
                 ", toothLesions=" + toothLesions +
-                ", toothLesionsDB=" + toothLesionsDB +
                 '}';
     }
 }

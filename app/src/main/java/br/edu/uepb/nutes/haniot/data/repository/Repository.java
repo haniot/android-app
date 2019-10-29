@@ -7,14 +7,15 @@ import com.google.gson.JsonObject;
 
 import java.util.List;
 
-import br.edu.uepb.nutes.haniot.data.Convert;
 import br.edu.uepb.nutes.haniot.data.dao.DeviceDAO;
 import br.edu.uepb.nutes.haniot.data.dao.MeasurementDAO;
+import br.edu.uepb.nutes.haniot.data.dao.OdontologicalQuestionnaireDAO;
 import br.edu.uepb.nutes.haniot.data.dao.PatientDAO;
 import br.edu.uepb.nutes.haniot.data.dao.PilotStudyDAO;
 import br.edu.uepb.nutes.haniot.data.dao.UserDAO;
 import br.edu.uepb.nutes.haniot.data.dao.nutritionalDao.FeedingHabitsDAO;
 import br.edu.uepb.nutes.haniot.data.dao.nutritionalDao.MedicalRecordDAO;
+import br.edu.uepb.nutes.haniot.data.dao.nutritionalDao.NutritionalQuestionnaireDAO;
 import br.edu.uepb.nutes.haniot.data.dao.nutritionalDao.PhysicalActivityHabitsDAO;
 import br.edu.uepb.nutes.haniot.data.dao.nutritionalDao.SleepHabitsDAO;
 import br.edu.uepb.nutes.haniot.data.model.Admin;
@@ -26,13 +27,9 @@ import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.PilotStudy;
 import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.model.UserAccess;
-import br.edu.uepb.nutes.haniot.data.model.nutritional.FeedingHabitsRecord;
-import br.edu.uepb.nutes.haniot.data.model.nutritional.MedicalRecord;
 import br.edu.uepb.nutes.haniot.data.model.nutritional.NutritionalEvaluation;
 import br.edu.uepb.nutes.haniot.data.model.nutritional.NutritionalEvaluationResult;
 import br.edu.uepb.nutes.haniot.data.model.nutritional.NutritionalQuestionnaire;
-import br.edu.uepb.nutes.haniot.data.model.nutritional.PhysicalActivityHabit;
-import br.edu.uepb.nutes.haniot.data.model.nutritional.SleepHabit;
 import br.edu.uepb.nutes.haniot.data.model.odontological.OdontologicalQuestionnaire;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
@@ -55,38 +52,63 @@ public class Repository {
     }
 
     private Repository(Context context) {
+        this.mContext = context;
+
         this.haniotNetRepository = HaniotNetRepository.getInstance(context);
 
         this.deviceDAO = DeviceDAO.getInstance(context);
-        this.feedingHabitsDAO = FeedingHabitsDAO.getInstance(context);
         this.measurementDAO = MeasurementDAO.getInstance(context);
-        this.medicalRecordDAO = MedicalRecordDAO.getInstance(context);
+
         this.patientDAO = PatientDAO.getInstance(context);
-        this.physicalActivityHabitsDAO = PhysicalActivityHabitsDAO.getInstance(context);
-        this.pilotStudyDAO = PilotStudyDAO.getInstance(context);
-        this.sleepHabitsDAO = SleepHabitsDAO.getInstance(context);
         this.userDAO = UserDAO.getInstance(context);
 
-        this.mContext = context;
+        this.pilotStudyDAO = PilotStudyDAO.getInstance(context);
+
+        this.physicalActivityHabitsDAO = PhysicalActivityHabitsDAO.getInstance(context);
+        this.sleepHabitsDAO = SleepHabitsDAO.getInstance(context);
+        this.feedingHabitsDAO = FeedingHabitsDAO.getInstance(context);
+        this.medicalRecordDAO = MedicalRecordDAO.getInstance(context);
+
+        this.nutritionalQuestionnaireDAO = NutritionalQuestionnaireDAO.getInstance(context);
+        this.odontologicalQuestionnaireDAO = OdontologicalQuestionnaireDAO.getInstance(context);
     }
 
     private HaniotNetRepository haniotNetRepository;
 
     private DeviceDAO deviceDAO;
-    private FeedingHabitsDAO feedingHabitsDAO;
+
     private MeasurementDAO measurementDAO;
-    private MedicalRecordDAO medicalRecordDAO;
-    private PatientDAO patientDAO;
-    private PhysicalActivityHabitsDAO physicalActivityHabitsDAO;
-    private PilotStudyDAO pilotStudyDAO;
-    private SleepHabitsDAO sleepHabitsDAO;
+
     private UserDAO userDAO;
+    private PatientDAO patientDAO;
+
+    private PilotStudyDAO pilotStudyDAO;
+
+    private SleepHabitsDAO sleepHabitsDAO;
+    private FeedingHabitsDAO feedingHabitsDAO;
+    private PhysicalActivityHabitsDAO physicalActivityHabitsDAO;
+    private MedicalRecordDAO medicalRecordDAO;
+
+    private NutritionalQuestionnaireDAO nutritionalQuestionnaireDAO;
+    private OdontologicalQuestionnaireDAO odontologicalQuestionnaireDAO;
 
     private Context mContext;
 
     public void syncronize() {
+        // dispositivos (do user)
+        // pacientes (se der todos)
+        // medicoes
+        // questionarios
+
+        List<Device> devices = deviceDAO.getAllNotSync();
+        List<Patient> patients = patientDAO.getAllNotSync();
+        List<Measurement> measurements = measurementDAO.getAllNotSync();
+        List<NutritionalQuestionnaire> nutritionalQuestionnaires = nutritionalQuestionnaireDAO.getAllNotSync();
+        List<OdontologicalQuestionnaire> odontologicalQuestionnaires = odontologicalQuestionnaireDAO.getAllNotSync();
+
         if (ConnectionUtils.internetIsEnabled(this.mContext)) {
-            List<Device> devices = deviceDAO.getAllNotSync();
+
+
             for (Device aux : devices) {
                 DisposableManager.add(
                         haniotNetRepository.saveDevice(aux)
@@ -128,10 +150,11 @@ public class Repository {
         if (ConnectionUtils.internetIsEnabled(mContext)) {
             return haniotNetRepository.saveDevice(device)
                     .map(device1 -> {
-                        deviceDAO.save(device1);
+                        syncronize();
                         return device1;
                     });
         } else {
+            device.setSync(false);
             deviceDAO.save(device);
             return Single.just(device);
 //            if (deviceDAO.save(device)) { // salvo com sucesso
@@ -146,7 +169,7 @@ public class Repository {
         if (ConnectionUtils.internetIsEnabled(mContext)) {
             return haniotNetRepository.getAllDevices(patientId)
                     .map(devices -> {
-                        deviceDAO.save(devices);
+                        syncronize();
                         return devices;
                     });
         } else {
@@ -176,10 +199,7 @@ public class Repository {
      */
     public Completable deleteDevice(@NonNull String userId, @NonNull String deviceId) {
         return haniotNetRepository.deleteDevice(userId, deviceId)
-                .doOnComplete(() -> {
-                            deviceDAO.remove(deviceId);
-                        }
-                );
+                .doOnComplete(() -> syncronize());
     }
 
     /**
@@ -205,11 +225,11 @@ public class Repository {
         if (ConnectionUtils.internetIsEnabled(mContext)) {
             return haniotNetRepository.saveMeasurement(measurement)
                     .map(measurement1 -> {
-                        measurement1.setSync(true);
-                        measurementDAO.save(measurement1);
+                        syncronize();
                         return measurement1;
                     });
         } else {
+            measurement.setSync(false);
             measurementDAO.save(measurement);
             return Single.just(measurement);
 
@@ -220,13 +240,14 @@ public class Repository {
         if (ConnectionUtils.internetIsEnabled(mContext)) {
             return haniotNetRepository.saveMeasurement(measurements)
                     .map(measurements1 -> {
-                        for (Measurement m : (List<Measurement>) measurements1)
-                            m.setSync(true);
-                        measurementDAO.saveAll(measurements);
+                        syncronize();
                         return measurements1;
                     });
         } else {
-            measurementDAO.saveAll(measurements);
+            for (Measurement m : measurements) {
+                m.setSync(false);
+                measurementDAO.save(m);
+            }
             return Single.just(measurements);
         }
     }
@@ -239,30 +260,14 @@ public class Repository {
      */
     public Completable deleteMeasurement(@NonNull String patientId, @NonNull String measurementId) {
         return haniotNetRepository.deleteMeasurement(patientId, measurementId)
-                .doOnComplete(() -> {
-                    measurementDAO.remove(patientId, measurementId);
-                });
-    }
-
-    /**
-     * Select a measurement.
-     *
-     * @param userId        String
-     * @param measurementId String
-     * @return Object
-     */
-    public Single<Measurement> getMeasurement(@NonNull String userId, @NonNull String measurementId) {
-        if (ConnectionUtils.internetIsEnabled(mContext)) {
-            return haniotNetRepository.getMeasurement(userId, measurementId);
-        } else {
-            return Single.just(measurementDAO.get(userId, measurementId));
-        }
+                .doOnComplete(() -> syncronize());
     }
 
     public Single<List<Measurement>> getAllMeasurementsByType(String userId, String typeMeasurement,
                                                               String sort, String dateStart,
                                                               String dateEnd, int page, int limit) {
         if (ConnectionUtils.internetIsEnabled(mContext)) {
+            syncronize();
             return haniotNetRepository.getAllMeasurementsByType(
                     userId, typeMeasurement, sort, dateStart, dateEnd, page, limit);
         } else {
@@ -274,12 +279,17 @@ public class Repository {
     // --------- PATIENT DAO --------------
 
     public Single<Patient> getPatient(@NonNull String _id) {
-        Patient p = patientDAO.get(_id);
-
-        if (p != null) {
-            return Single.just(p);
-        } else {
+        if (ConnectionUtils.internetIsEnabled(mContext)) {
+            syncronize();
             return haniotNetRepository.getPatient(_id);
+        } else {
+            Patient p = patientDAO.get(_id);
+
+            if (p != null) {
+                return Single.just(p);
+            } else {
+                return haniotNetRepository.getPatient(_id);
+            }
         }
     }
 
@@ -287,30 +297,44 @@ public class Repository {
         if (ConnectionUtils.internetIsEnabled(mContext)) {
             return haniotNetRepository.savePatient(patient)
                     .map(patient1 -> {
-                        patient1.setSync(true);
-                        patientDAO.save(patient1);
+                        syncronize();
                         return patient1;
                     });
         } else {
+            patient.setSync(false);
             patientDAO.save(patient);
             return Single.just(patient);
         }
     }
 
     public Single<Patient> updatePatient(@NonNull Patient patient) {
-        patientDAO.update(patient);
-        return haniotNetRepository.updatePatient(patient);
+        if (ConnectionUtils.internetIsEnabled(mContext)) {
+            return haniotNetRepository.updatePatient(patient)
+                    .map(patient1 -> {
+                        syncronize();
+                        return patient1;
+                    });
+        } else {
+            patient.setSync(false);
+            patientDAO.update(patient);
+            return Single.just(patient);
+        }
     }
 
     public Single<List<Patient>> getAllPatients(String pilotStudyId, String sort, int page, int limit) {
-        return haniotNetRepository.getAllPatients(pilotStudyId, sort, page, limit);
+        if (ConnectionUtils.internetIsEnabled(mContext)) {
+            syncronize();
+            return haniotNetRepository.getAllPatients(pilotStudyId, sort, page, limit);
+        } else {
+            List<Patient> aux = patientDAO.getAllPatients(pilotStudyId, sort, page, limit);
+            return Single.just(aux);
+        }
+
     }
 
     public Completable deletePatient(String patientId) {
         return haniotNetRepository.deletePatient(patientId)
-                .doOnComplete(() -> {
-                    patientDAO.remove(patientId);
-                });
+                .doOnComplete(() -> syncronize());
     }
 
     public Single<Response<Void>> associatePatientToPilotStudy(String pilotStudyId, String patientId) {
@@ -320,9 +344,26 @@ public class Repository {
     // ------------ NUTRITIONAL DAO -----------
 
     public Single<List<NutritionalQuestionnaire>> getAllNutritionalQuestionnaires(String patientId, int page, int limit, String sort) {
-        return haniotNetRepository.getAllNutritionalQuestionnaires(patientId, page, limit, sort);
+        if (ConnectionUtils.internetIsEnabled(mContext)) {
+            return haniotNetRepository.getAllNutritionalQuestionnaires(patientId, page, limit, sort)
+                    .map(nutritionalQuestionnaires -> {
+                        for (NutritionalQuestionnaire n : nutritionalQuestionnaires) {
+                            n.setPatientId(patientId);
+                        }
+                        syncronize();
+                        return nutritionalQuestionnaires;
+                    });
+        } else {
+            List<NutritionalQuestionnaire> aux = nutritionalQuestionnaireDAO.getAll(patientId, page, limit, sort);
+            return Single.just(aux);
+        }
     }
 
+    /**
+     * Utilizado para avaliação nutricional
+     * @param patientId String
+     * @return NutritionalQuestionnaire
+     */
     public Single<NutritionalQuestionnaire> getLastNutritionalQuestionnaire(String patientId) {
         return haniotNetRepository.getLastNutritionalQuestionnaire(patientId);
     }
@@ -332,7 +373,7 @@ public class Repository {
      * Necessary connection
      *
      * @param patientId String
-     * @return
+     * @return MeasurementLasResponse
      */
     public Single<MeasurementLastResponse> getLastMeasurements(String patientId) {
         return haniotNetRepository.getLastMeasurements(patientId);
@@ -342,32 +383,35 @@ public class Repository {
         return haniotNetRepository.saveNutritionalEvaluation(nutritionalEvaluation);
     }
 
-    public Single<NutritionalQuestionnaire> saveNutritionalQuestionnaire(String patientId, NutritionalQuestionnaire nutritionalQuestionnaire) {
-        this.savePhysicalActivityHabit(nutritionalQuestionnaire.getPhysicalActivityHabit());
-        this.saveSleepHabits(nutritionalQuestionnaire.getSleepHabit());
-        this.saveMedicalRecord(nutritionalQuestionnaire.getMedicalRecord());
-        this.saveFeedingHabitsRecord(nutritionalQuestionnaire.getFeedingHabitsRecord());
-        return haniotNetRepository.saveNutritionalQuestionnaire(patientId, nutritionalQuestionnaire);
+    public Single<NutritionalQuestionnaire> saveNutritionalQuestionnaire(NutritionalQuestionnaire nutritionalQuestionnaire) {
+        if (ConnectionUtils.internetIsEnabled(mContext)) {
+            return haniotNetRepository.saveNutritionalQuestionnaire(nutritionalQuestionnaire.getPatientId(), nutritionalQuestionnaire)
+                    .map(nutritionalQuestionnaire1 -> {
+                        syncronize();
+                        return nutritionalQuestionnaire1;
+                    });
+        } else {
+            nutritionalQuestionnaire.setSync(false);
+            nutritionalQuestionnaireDAO.save(nutritionalQuestionnaire);
+            return Single.just(nutritionalQuestionnaire);
+        }
+//        this.savePhysicalActivityHabit(nutritionalQuestionnaire.getPhysicalActivityHabit());
+//        this.saveSleepHabits(nutritionalQuestionnaire.getSleepHabit());
+//        this.saveMedicalRecord(nutritionalQuestionnaire.getMedicalRecord());
+//        this.saveFeedingHabitsRecord(nutritionalQuestionnaire.getFeedingHabitsRecord());
     }
 
     public Single<Object> updateNutritionalQuestionnaire(String patientId, String questionnaireId, String resourceName, Object object) {
-        return haniotNetRepository.updateNutritionalQuestionnaire(patientId, questionnaireId, resourceName, object);
-    }
-
-    private boolean savePhysicalActivityHabit(@NonNull PhysicalActivityHabit physicalActivityHabit) {
-        return physicalActivityHabitsDAO.save(Convert.convertPhysicalActivityHabit(physicalActivityHabit));
-    }
-
-    private boolean saveSleepHabits(@NonNull SleepHabit sleepHabit) {
-        return sleepHabitsDAO.save(sleepHabit);
-    }
-
-    private boolean saveMedicalRecord(@NonNull MedicalRecord medicalRecord) {
-        return medicalRecordDAO.save(medicalRecord);
-    }
-
-    private boolean saveFeedingHabitsRecord(@NonNull FeedingHabitsRecord feedingHabitsRecord) {
-        return feedingHabitsDAO.save(Convert.convertFeedingHabitsRecord(feedingHabitsRecord));
+        if (ConnectionUtils.internetIsEnabled(mContext)) {
+            return haniotNetRepository.updateNutritionalQuestionnaire(patientId, questionnaireId, resourceName, object)
+                    .map(o -> {
+                        syncronize();
+                        return o;
+                    });
+        } else {
+            nutritionalQuestionnaireDAO.update(patientId, questionnaireId, resourceName, object);
+            return Single.just(null); // VERIFICAR
+        }
     }
 
     // --------------- Health Professional ---------------------------------
@@ -418,18 +462,47 @@ public class Repository {
         return haniotNetRepository.forgotPassword(email);
     }
 
-    // --------------- Odontological Questionnaire
+    // --------------- Odontological Questionnaire -------------------------------
 
     public Single<List<OdontologicalQuestionnaire>> getAllOdontologicalQuestionnaires(String patientId, int page, int limit, String sort) {
-        return haniotNetRepository.getAllOdontologicalQuestionnaires(patientId, page, limit, sort);
+        if (ConnectionUtils.internetIsEnabled(mContext)) {
+            return haniotNetRepository.getAllOdontologicalQuestionnaires(patientId, page, limit, sort)
+                    .map(odontologicalQuestionnaires -> {
+                        syncronize();
+                        return odontologicalQuestionnaires;
+                    });
+        } else {
+            List<OdontologicalQuestionnaire> aux = odontologicalQuestionnaireDAO.getAll(patientId, page, limit, sort);
+            return Single.just(aux);
+        }
+
     }
 
-    public Single<OdontologicalQuestionnaire> saveOdontologicalQuestionnaire(String patientId, OdontologicalQuestionnaire odontologicalQuestionnaire) {
-        return haniotNetRepository.saveOdontologicalQuestionnaire(patientId, odontologicalQuestionnaire);
+    public Single<OdontologicalQuestionnaire> saveOdontologicalQuestionnaire(OdontologicalQuestionnaire odontologicalQuestionnaire) {
+        if (ConnectionUtils.internetIsEnabled(mContext)) {
+            return haniotNetRepository.saveOdontologicalQuestionnaire(odontologicalQuestionnaire.getPatientId(), odontologicalQuestionnaire)
+                    .map(odontologicalQuestionnaire1 -> {
+                        syncronize();
+                        return odontologicalQuestionnaire;
+                    });
+        } else {
+            odontologicalQuestionnaire.setSync(false);
+            odontologicalQuestionnaireDAO.save(odontologicalQuestionnaire);
+            return Single.just(odontologicalQuestionnaire);
+        }
     }
 
     public Single<Object> updateOdontologicalQuestionnaire(String patientId, String questionnaireId, String resourceName, Object object) {
-        return haniotNetRepository.updateOdontologicalQuestionnaire(patientId, questionnaireId, resourceName, object);
+        if (ConnectionUtils.internetIsEnabled(mContext)) {
+            return haniotNetRepository.updateOdontologicalQuestionnaire(patientId, questionnaireId, resourceName, object)
+                    .map(o -> {
+                        syncronize();
+                        return o;
+                    });
+        } else {
+            odontologicalQuestionnaireDAO.update(patientId, questionnaireId, resourceName, object);
+            return (null); // VERIFICAR
+        }
     }
 
     // -------- UNUSED ------------------------
@@ -441,122 +514,7 @@ public class Repository {
      * @return UserOB
      */
     public User getUser(@NonNull String _id) {
-        return Convert.convertUser(userDAO.get(_id));
+        return new User(userDAO.get(_id));
     }
-//
-//    /**
-//     * Remove all measurements associated with user.
-//     *
-//     * @param userId long
-//     * @return boolean
-//     */
-//    public boolean removeAllMeasurements(@NonNull String userId) {
-//        return measurementDAO.removeAll(userId);
-//    }
-//
-//    /**
-//     * Select all measurements of a type associated with the user.
-//     *
-//     * @param type   {@link String}
-//     * @param userId long
-//     * @param offset int
-//     * @param limit  int
-//     * @return List<MeasurementOB>
-//     */
-//    public List<Measurement> listMeasurements(@NonNull String type, @NonNull String userId, @NonNull int offset, @NonNull int limit) {
-//        return Convert.listMeasurementsToModel(measurementDAO.list(type, userId, offset, limit));
-//    }
 
-//    public boolean removeAllPilotStudiesy(@NonNull String userId) {
-//        return pilotStudyDAO.removeAll(userId);
-//    }
-//    //    Search FeedingHabitsRecordOB by id
-//    public SleepHabit getSleepHabitsFromPatientId(@NonNull String _id) {
-//        return Convert.convertSleepHabit(sleepHabitsDAO.getFromPatientId(_id));
-//    }
-//
-//    //    get all FeedingHabitsRecordOB on database
-//    public List<SleepHabit> getSleepHabits() {
-//        return Convert.listSleepHabitsToModel(sleepHabitsDAO.get());
-//    }
-
-//    //    update FeedingHabitsRecordOB
-//    public boolean updateSleepHabits(@NonNull SleepHabit sleepHabit) {
-//        return sleepHabitsDAO.update(Convert.convertSleepHabit(sleepHabit));
-//    }
-//
-//    //    remove FeedingHabitsRecordOB
-//    public boolean removeSleepHabits(@NonNull SleepHabit sleepHabit) {
-//        return sleepHabitsDAO.remove(Convert.convertSleepHabit(sleepHabit));
-//    }
-
-//    //    Search FeedingHabitsRecordOB by id
-//    public PhysicalActivityHabit getPhysicalActivityHabitFromPatientId(@NonNull String _id) {
-//        return Convert.convertPhysicalActivityHabit(physicalActivityHabitsDAO.getFromPatientId(_id));
-//    }
-//
-//    //    get all FeedingHabitsRecordOB on database
-//    public List<PhysicalActivityHabit> getPhysicalActivityHabits() {
-//        return Convert.convertListPhysicalActivityHabit(physicalActivityHabitsDAO.get());
-//    }
-
-//    //    update FeedingHabitsRecordOB
-//    public boolean updatePhysicalActivityHabit(@NonNull PhysicalActivityHabit physicalActivityHabit) {
-//        return physicalActivityHabitsDAO.update(Convert.convertPhysicalActivityHabit(physicalActivityHabit));
-//    }
-//
-//    //    remove FeedingHabitsRecordOB
-//    public boolean removePhysicalActivityHabit(@NonNull PhysicalActivityHabit physicalActivityHabit) {
-//        return physicalActivityHabitsDAO.remove(Convert.convertPhysicalActivityHabit(physicalActivityHabit));
-//    }
-//    //    Search FeedingHabitsRecordOB by id
-//    public MedicalRecord getMedicalRecordFromPatientId(@NonNull String _id) {
-//        return Convert.convertMedicalRecord(medicalRecordDAO.getFromPatientId(_id));
-//    }
-//
-//    //    get all FeedingHabitsRecordOB on database
-//    public List<MedicalRecord> getMedicalRecord() {
-//        return Convert.listMedicalRecordsToModel(medicalRecordDAO.get());
-//    }
-
-//    //    update FeedingHabitsRecordOB
-//    public boolean updateMedicalRecord(@NonNull MedicalRecord medicalRecord) {
-//        return medicalRecordDAO.update(Convert.convertMedicalRecord(medicalRecord));
-//    }
-//
-//    //    remove FeedingHabitsRecordOB
-//    public boolean removeMedicalRecord(@NonNull MedicalRecord medicalRecord) {
-//        return medicalRecordDAO.remove(Convert.convertMedicalRecord(medicalRecord));
-//    }
-//    Search FeedingHabitsRecordOB by id
-//public FeedingHabitsRecord getFeedingHabitsRecordFromPatientId(@NonNull String _id) {
-//    return Convert.convertFeedingHabitsRecord(feedingHabitsDAO.getFromPatientId(_id));
-//}
-//
-//    //    get all FeedingHabitsRecordOB on database
-//    public List<FeedingHabitsRecord> getFeedingHabitsRecord() {
-//        return Convert.listFeedingHabitsRecordToModel(feedingHabitsDAO.get());
-//    }
-//
-//    //    update FeedingHabitsRecordOB
-//    public boolean updateFeedingHabitsRecord(@NonNull FeedingHabitsRecord feedingHabitsRecord) {
-//        return feedingHabitsDAO.update(Convert.convertFeedingHabitsRecord(feedingHabitsRecord));
-//    }
-//
-//    //    remove FeedingHabitsRecordOB
-//    public boolean removeFeedingHabitsRecord(@NonNull FeedingHabitsRecord feedingHabitsRecord) {
-//        return feedingHabitsDAO.remove(Convert.convertFeedingHabitsRecord(feedingHabitsRecord));
-//    }
-    //    public List<PilotStudy> getPilotStudiesByUserId(String userId) {
-//        return Convert.listPilotStudiesToModel(pilotStudyDAO.list(userId));
-//    }
-//    /**
-//     * Select all measurements of a user that were not sent to the remote server.
-//     *
-//     * @param userId long
-//     * @return List<MeasurementOB>
-//     */
-//    public List<Measurement> getNotSentMeasurement(@NonNull long userId) {
-//        return Convert.listMeasurementsToModel(measurementDAO.getNotSent(userId));
-//    }
 }

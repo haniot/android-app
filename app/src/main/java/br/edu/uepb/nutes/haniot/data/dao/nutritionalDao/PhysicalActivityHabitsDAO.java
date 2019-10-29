@@ -8,6 +8,8 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import br.edu.uepb.nutes.haniot.App;
+import br.edu.uepb.nutes.haniot.data.Convert;
+import br.edu.uepb.nutes.haniot.data.model.nutritional.PhysicalActivityHabit;
 import br.edu.uepb.nutes.haniot.data.objectbox.nutritional.PhysicalActivityHabitOB;
 import br.edu.uepb.nutes.haniot.data.objectbox.nutritional.PhysicalActivityHabitOB_;
 import io.objectbox.Box;
@@ -39,12 +41,12 @@ public class PhysicalActivityHabitsDAO {
     }
 
 //    save FeedingHabitsRecordOB
-    public boolean save(@NonNull PhysicalActivityHabitOB physicalActivityHabit){
-        return physicalActivityHabitBox.put(physicalActivityHabit) > 0;
+    public boolean save(@NonNull PhysicalActivityHabit physicalActivityHabit){
+        return physicalActivityHabitBox.put(Convert.convertPhysicalActivityHabit(physicalActivityHabit)) > 0;
     }
 
 //    update FeedingHabitsRecordOB
-    public boolean update(@NonNull PhysicalActivityHabitOB physicalActivityHabit){
+    public boolean update(@NonNull PhysicalActivityHabit physicalActivityHabit){
         if (physicalActivityHabit.getId() == 0){
             PhysicalActivityHabitOB physicalActivityHabitRecordUp = getFromPatientId(physicalActivityHabit.getPatientId());
 

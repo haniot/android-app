@@ -599,9 +599,10 @@ public class QuizOdontologyActivity extends SimpleSurvey implements Infor.OnInfo
                 "Aguarde alguns instantes...", true);
         dialog.show();
         Log.w("AAA", odontologicalQuestionnaire.toJson());
+        odontologicalQuestionnaire.setPatientId(patient.get_id());
         if (updateType == null) {
             DisposableManager.add(mRepository
-                    .saveOdontologicalQuestionnaire(patient.get_id(), odontologicalQuestionnaire)
+                    .saveOdontologicalQuestionnaire(odontologicalQuestionnaire)
                     .doAfterTerminate(() -> {
                     })
                     .subscribe(odontologicalQuestionnaire1 -> {

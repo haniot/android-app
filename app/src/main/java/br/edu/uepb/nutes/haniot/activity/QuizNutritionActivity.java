@@ -686,8 +686,9 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
         if (updateType == null) {
             Log.w("AAA", "updateType == null");
             Log.w("AAA", "Saving: " + nutritionalQuestionnaire.toJson());
+            nutritionalQuestionnaire.setPatientId(patient.get_id());
             DisposableManager.add(mRepository
-                    .saveNutritionalQuestionnaire(patient.get_id(), nutritionalQuestionnaire)
+                    .saveNutritionalQuestionnaire(nutritionalQuestionnaire)
                     .doAfterTerminate(() -> {
                     })
                     .subscribe(nutritionalQuestionnaire -> {

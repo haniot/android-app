@@ -77,11 +77,11 @@ public class OralHealthRecord {
         this.toothLesions = toothLesions;
     }
 
-//    public ToMany<ToothLesionOB> getToothLesionsDB() {
+//    public ToMany<ToothLesionOB> getToothLesions() {
 //        return toothLesionsDB;
 //    }
 //
-//    public void setToothLesionsDB(ToMany<ToothLesionOB> toothLesionsDB) {
+//    public void setToothLesions(ToMany<ToothLesionOB> toothLesionsDB) {
 //        this.toothLesionsDB = toothLesionsDB;
 //    }
 

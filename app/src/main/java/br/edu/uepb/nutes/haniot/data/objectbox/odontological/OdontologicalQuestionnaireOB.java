@@ -2,22 +2,41 @@ package br.edu.uepb.nutes.haniot.data.objectbox.odontological;
 
 import java.util.Objects;
 
+import br.edu.uepb.nutes.haniot.data.Convert;
+import br.edu.uepb.nutes.haniot.data.model.odontological.OdontologicalQuestionnaire;
+import br.edu.uepb.nutes.haniot.data.objectbox.SyncOB;
+import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
+import io.objectbox.annotation.Index;
+import io.objectbox.relation.ToOne;
 
-public class OdontologicalQuestionnaireOB {
+@Entity
+public class OdontologicalQuestionnaireOB extends SyncOB {
 
     @Id
     private long id;
 
+    @Index
     private String _id;
 
     String createdAt;
 
-    SociodemographicRecordOB sociodemographicRecord;
+    private String patientId;
 
-    FamilyCohesionRecordOB familyCohesionRecord;
+    ToOne<SociodemographicRecordOB> sociodemographicRecord;
 
-    OralHealthRecordOB oralHealthRecord;
+    ToOne<FamilyCohesionRecordOB> familyCohesionRecord;
+
+    ToOne<OralHealthRecordOB> oralHealthRecord;
+
+    public OdontologicalQuestionnaireOB(OdontologicalQuestionnaire o) {
+        this.setId(o.getId());
+        this.set_id(o.get_id());
+        this.setCreatedAt(o.getCreatedAt());
+        this.setSociodemographicRecord(Convert.convertSociodemographicRecord(o.getSociodemographicRecord()));
+        this.setFamilyCohesionRecord(Convert.convertFamilyCohesionRecord(o.getFamilyCohesionRecord()));
+        this.setOralHealthRecord(Convert.convertOralHealthRecord(o.getOralHealthRecord()));
+    }
 
     public long getId() {
         return id;
@@ -44,27 +63,27 @@ public class OdontologicalQuestionnaireOB {
     }
 
     public SociodemographicRecordOB getSociodemographicRecord() {
-        return sociodemographicRecord;
+        return sociodemographicRecord.getTarget();
     }
 
     public void setSociodemographicRecord(SociodemographicRecordOB sociodemographicRecord) {
-        this.sociodemographicRecord = sociodemographicRecord;
+        this.sociodemographicRecord.setTarget(sociodemographicRecord);
     }
 
     public FamilyCohesionRecordOB getFamilyCohesionRecord() {
-        return familyCohesionRecord;
+        return familyCohesionRecord.getTarget();
     }
 
     public void setFamilyCohesionRecord(FamilyCohesionRecordOB familyCohesionRecord) {
-        this.familyCohesionRecord = familyCohesionRecord;
+        this.familyCohesionRecord.setTarget(familyCohesionRecord);
     }
 
     public OralHealthRecordOB getOralHealthRecord() {
-        return oralHealthRecord;
+        return oralHealthRecord.getTarget();
     }
 
     public void setOralHealthRecord(OralHealthRecordOB oralHealthRecord) {
-        this.oralHealthRecord = oralHealthRecord;
+        this.oralHealthRecord.setTarget(oralHealthRecord);
     }
 
     @Override
@@ -86,5 +105,13 @@ public class OdontologicalQuestionnaireOB {
         OdontologicalQuestionnaireOB that = (OdontologicalQuestionnaireOB) o;
         return Objects.equals(_id, that._id) &&
                 Objects.equals(createdAt, that.createdAt);
+    }
+
+    public String getPatientId() {
+        return patientId;
+    }
+
+    public void setPatientId(String patientId) {
+        this.patientId = patientId;
     }
 }

@@ -7,6 +7,8 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import br.edu.uepb.nutes.haniot.data.objectbox.odontological.SociodemographicRecordOB;
+
 public class SociodemographicRecord {
 
     @Expose(serialize = false, deserialize = false)
@@ -36,6 +38,16 @@ public class SociodemographicRecord {
     private int peopleInHome;
 
     public SociodemographicRecord() {
+    }
+
+    public SociodemographicRecord(SociodemographicRecordOB s) {
+        this.setId(s.getId());
+        this.set_id(s.get_id());
+        this.setPatientId(s.getPatientId());
+        this.setCreatedAt(s.getCreatedAt());
+        this.setColorRace(s.getColorRace());
+        this.setMotherScholarity(s.getMotherScholarity());
+        this.setPeopleInHome(s.getPeopleInHome());
     }
 
     public long getId() {

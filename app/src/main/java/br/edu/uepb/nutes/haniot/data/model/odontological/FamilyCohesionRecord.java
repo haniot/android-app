@@ -78,7 +78,7 @@ public class FamilyCohesionRecord {
         return id;
     }
 
-    public String get_Id() {
+    public String get_id() {
         return _id;
     }
 

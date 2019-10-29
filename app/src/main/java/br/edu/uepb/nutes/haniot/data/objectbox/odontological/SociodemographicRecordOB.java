@@ -1,12 +1,17 @@
 package br.edu.uepb.nutes.haniot.data.objectbox.odontological;
 
+import br.edu.uepb.nutes.haniot.data.model.odontological.SociodemographicRecord;
+import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
+import io.objectbox.annotation.Index;
 
+@Entity
 public class SociodemographicRecordOB {
 
     @Id
     private long id;
 
+    @Index
     private String _id;
 
     private String patientId;
@@ -18,6 +23,16 @@ public class SociodemographicRecordOB {
     private String motherScholarity;
 
     private int peopleInHome;
+
+    public SociodemographicRecordOB(SociodemographicRecord s) {
+        this.setId(s.getId());
+        this.set_id(s.get_id());
+        this.setPatientId(s.getPatientId());
+        this.setCreatedAt(s.getCreatedAt());
+        this.setColorRace(s.getColorRace());
+        this.setMotherScholarity(s.getMotherScholarity());
+        this.setPeopleInHome(s.getPeopleInHome());
+    }
 
     public long getId() {
         return id;

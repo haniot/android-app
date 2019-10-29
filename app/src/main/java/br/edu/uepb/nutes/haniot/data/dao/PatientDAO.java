@@ -3,6 +3,7 @@ package br.edu.uepb.nutes.haniot.data.dao;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -14,6 +15,7 @@ import br.edu.uepb.nutes.haniot.data.objectbox.PatientOB;
 import br.edu.uepb.nutes.haniot.data.objectbox.PatientOB_;
 import io.objectbox.Box;
 import io.objectbox.BoxStore;
+import io.reactivex.Single;
 
 /**
  * Represents PatientDAO.
@@ -71,5 +73,21 @@ public class PatientDAO {
 
     public boolean remove(@NonNull String _id) {
         return patientBox.query().equal(PatientOB_._id, _id).build().remove() > 0;
+    }
+
+    public List<Patient> getAllPatients(String pilotStudyId, String sort, int page, int limit) {
+        List<PatientOB> aux = patientBox.query()
+                                .equal(PatientOB_.pilotId, pilotStudyId)
+                                .build()
+                                .find();
+        return Convert.listPatientsToModel(aux);
+    }
+
+    public List<Patient> getAllNotSync() {
+        List<PatientOB> aux = patientBox.query()
+                .equal(PatientOB_.sync, false)
+                .build()
+                .find();
+        return Convert.listPatientsToModel(aux);
     }
 }

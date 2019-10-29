@@ -1,12 +1,17 @@
 package br.edu.uepb.nutes.haniot.data.objectbox.odontological;
 
+import br.edu.uepb.nutes.haniot.data.model.odontological.FamilyCohesionRecord;
+import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
+import io.objectbox.annotation.Index;
 
+@Entity
 public class FamilyCohesionRecordOB {
 
     @Id
     private long id;
 
+    @Index
     private String _id;
 
     private String patientId;
@@ -35,6 +40,24 @@ public class FamilyCohesionRecordOB {
 
     private int familyCohesionResult;
 
+    public FamilyCohesionRecordOB(FamilyCohesionRecord f) {
+        this.setId(f.getId());
+        this.set_id(f.get_id());
+        this.setPatientId(f.getPatientId());
+        this.setCreatedAt(f.getCreatedAt());
+        this.setFamilyMutualAidFreq(f.getFamilyMutualAidFreq());
+        this.setFriendshipApprovalFreq(f.getFriendshipApprovalFreq());
+        this.setFamilyOnlyTaskFreq(f.getFamilyOnlyTaskFreq());
+        this.setFamilyOnlyPreferenceFreq(f.getFamilyOnlyPreferenceFreq());
+        this.setFreeTimeTogetherFreq(f.getFreeTimeTogetherFreq());
+        this.setFamilyProximityPerceptionFreq(f.getFamilyProximityPerceptionFreq());
+        this.setAllFamilyTasksFreq(f.getAllFamilyTasksFreq());
+        this.setFamilyTasksOpportunityFreq(f.getFamilyTasksOpportunityFreq());
+        this.setFamilyDecisionSupportFreq(f.getFamilyDecisionSupportFreq());
+        this.setFamilyUnionRelevanceFreq(f.getFamilyUnionRelevanceFreq());
+        this.setFamilyCohesionResult(f.getFamilyCohesionResult());
+    }
+
     public void setId(long id) {
         this.id = id;
     }
@@ -43,11 +66,11 @@ public class FamilyCohesionRecordOB {
         return id;
     }
 
-    public String get_Id() {
+    public String get_id() {
         return _id;
     }
 
-    public void set_Id(String _id) {
+    public void set_id(String _id) {
         this._id = _id;
     }
 

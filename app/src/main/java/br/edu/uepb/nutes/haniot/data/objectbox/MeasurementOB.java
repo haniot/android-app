@@ -20,7 +20,7 @@ import io.objectbox.relation.ToOne;
  * @author Copyright (c) 2019, NUTES/UEPB
  */
 @Entity
-public class MeasurementOB {
+public class MeasurementOB extends SyncOB {
 
     @Id
     private long id;

@@ -11,6 +11,8 @@ import java.util.Objects;
 
 public class ToothLesion {
 
+    private long id;
+
     @SerializedName("tooth_type")
     @Expose()
     private String toothType;
@@ -87,5 +89,13 @@ public class ToothLesion {
     @Override
     public int hashCode() {
         return Objects.hash(toothType, lesionType);
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 }

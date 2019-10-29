@@ -2,9 +2,17 @@ package br.edu.uepb.nutes.haniot.data.objectbox.odontological;
 
 import java.util.Objects;
 
+import br.edu.uepb.nutes.haniot.data.Convert;
+import br.edu.uepb.nutes.haniot.data.model.odontological.ToothLesion;
+import io.objectbox.annotation.Entity;
+import io.objectbox.annotation.Id;
 import io.objectbox.relation.ToOne;
 
+@Entity
 public class ToothLesionOB {
+
+    @Id
+    private long id;
 
     private String toothType;
 
@@ -12,10 +20,20 @@ public class ToothLesionOB {
 
     private ToOne<OralHealthRecordOB> oralHealthRecord;
 
-//    public ToothLesionOB(String toothType, String lesionType) {
-//        this.toothType = toothType;
-//        this.lesionType = lesionType;
-//    }
+    public ToothLesionOB(ToothLesion t) {
+        this.setId(t.getId());
+        this.setToothType(t.getToothType());
+        this.setLesionType(t.getLesionType());
+        this.setOralHealthRecord(Convert.convertOralHealthRecord(t.getOralHealthRecord()));
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public String getToothType() {
         return toothType;
@@ -37,8 +55,8 @@ public class ToothLesionOB {
         return oralHealthRecord;
     }
 
-    public void setOralHealthRecord(ToOne<OralHealthRecordOB> oralHealthRecord) {
-        this.oralHealthRecord = oralHealthRecord;
+    public void setOralHealthRecord(OralHealthRecordOB oralHealthRecord) {
+        this.oralHealthRecord.setTarget(oralHealthRecord);
     }
 
     @Override

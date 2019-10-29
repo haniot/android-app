@@ -47,11 +47,11 @@ public class MeasurementDAO {
         return measurementBox.put(Convert.convertMeasurement(measurement)) > 0;
     }
 
-    public void saveAll(List<Measurement> measurements) {
-        for (Measurement aux : measurements) {
-            this.save(aux);
-        }
-    }
+//    public void saveAll(List<Measurement> measurements) {
+//        for (Measurement aux : measurements) {
+//            this.save(aux);
+//        }
+//    }
 
     /**
      * Update measurementOB data.
@@ -207,7 +207,17 @@ public class MeasurementDAO {
                 .equal(MeasurementOB_.type, type)
                 .orderDesc(MeasurementOB_.timestamp)
                 .build()
-                .find(page, limit);
+                .find();
+//                .find(page, limit);
+        return Convert.listMeasurementsToModel(aux);
+    }
+
+    public List<Measurement> getAllNotSync() {
+        List<MeasurementOB> aux =
+                measurementBox.query()
+                        .equal(MeasurementOB_.sync, false)
+                        .build()
+                        .find();
         return Convert.listMeasurementsToModel(aux);
     }
 }
