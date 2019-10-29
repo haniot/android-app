@@ -1,9 +1,7 @@
-package br.edu.uepb.nutes.haniot.data.dao;
+package br.edu.uepb.nutes.haniot.data.dao.del;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-
-import java.util.List;
 
 import br.edu.uepb.nutes.haniot.App;
 import br.edu.uepb.nutes.haniot.data.objectbox.UserOB;

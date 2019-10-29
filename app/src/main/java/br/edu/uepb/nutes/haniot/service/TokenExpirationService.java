@@ -19,7 +19,7 @@ import br.edu.uepb.nutes.haniot.data.model.UserAccess;
 import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 
-//import br.edu.uepb.nutes.haniot.data.dao.PilotStudyDAO;
+//import br.edu.uepb.nutes.haniot.data.dao.del.PilotStudyDAO;
 
 /**
  * Service for token expiration.

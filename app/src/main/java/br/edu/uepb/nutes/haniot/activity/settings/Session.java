@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 
 import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.repository.Repository;
-//import br.edu.uepb.nutes.haniot.data.dao.UserDAO;
+//import br.edu.uepb.nutes.haniot.data.dao.del.UserDAO;
 
 /**
  * Session implementation.

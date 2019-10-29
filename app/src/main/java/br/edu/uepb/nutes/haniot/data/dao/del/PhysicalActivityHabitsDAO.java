@@ -1,4 +1,4 @@
-package br.edu.uepb.nutes.haniot.data.dao.nutritionalDao;
+package br.edu.uepb.nutes.haniot.data.dao.del;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
