@@ -27,6 +27,8 @@ public class BodyFatOB {
 
     private String type;
 
+    public BodyFatOB() {}
+
     public BodyFatOB(BodyFat b) {
         this.type = MeasurementType.BODY_FAT;
         this.setId(b.getId());

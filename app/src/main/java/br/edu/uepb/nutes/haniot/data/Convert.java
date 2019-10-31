@@ -32,7 +32,7 @@ import br.edu.uepb.nutes.haniot.data.objectbox.nutritional.MedicalRecordOB;
 import br.edu.uepb.nutes.haniot.data.objectbox.PatientOB;
 import br.edu.uepb.nutes.haniot.data.objectbox.nutritional.NutritionalQuestionnaireOB;
 import br.edu.uepb.nutes.haniot.data.objectbox.nutritional.PhysicalActivityHabitOB;
-import br.edu.uepb.nutes.haniot.data.objectbox.PilotStudyOB;
+import br.edu.uepb.nutes.haniot.data.objectbox.del.PilotStudyOB;
 import br.edu.uepb.nutes.haniot.data.objectbox.nutritional.SleepHabitOB;
 import br.edu.uepb.nutes.haniot.data.objectbox.UserOB;
 import br.edu.uepb.nutes.haniot.data.objectbox.nutritional.WeeklyFoodRecordOB;

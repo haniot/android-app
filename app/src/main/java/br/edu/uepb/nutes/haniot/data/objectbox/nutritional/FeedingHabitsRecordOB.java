@@ -25,6 +25,10 @@ public class FeedingHabitsRecordOB extends ActivityHabitsRecordOB {
     @Backlink(to = "feedingHabitsRecord")
     private ToMany<WeeklyFoodRecordOB> weeklyFeedingHabits;
 
+    public FeedingHabitsRecordOB() {
+        super();
+    }
+
     public FeedingHabitsRecordOB(FeedingHabitsRecord f) {
         super(f.getId(), f.get_id(), f.getCreatedAt(), f.getPatientId());
         this.setDailyWaterGlasses(f.getDailyWaterGlasses());

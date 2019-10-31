@@ -15,6 +15,10 @@ public class MedicalRecordOB extends ActivityHabitsRecordOB {
     @Backlink(to = "medicalRecord")
     private ToMany<ChronicDiseaseOB> chronicDiseases;
 
+    public MedicalRecordOB() {
+        super();
+    }
+
     public MedicalRecordOB(MedicalRecord m) {
         super(m.getId(), m.get_id(), m.getCreatedAt(), m.getPatientId());
         this.setChronicDiseases(Convert.listChronicsToObjectBox(m.getChronicDiseases()));

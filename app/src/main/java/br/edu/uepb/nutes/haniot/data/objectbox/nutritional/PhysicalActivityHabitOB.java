@@ -16,6 +16,10 @@ public class PhysicalActivityHabitOB extends ActivityHabitsRecordOB {
     @Convert(converter = ConverterStringToDatabase.class, dbType = String.class)
     private List<String> weeklyActivities;
 
+    public PhysicalActivityHabitOB() {
+        super();
+    }
+
     public PhysicalActivityHabitOB(PhysicalActivityHabit p) {
         super(p.getId(), p.get_id(), p.getCreatedAt(), p.getPatientId());
         this.setSchoolActivityFreq(p.getSchoolActivityFreq());

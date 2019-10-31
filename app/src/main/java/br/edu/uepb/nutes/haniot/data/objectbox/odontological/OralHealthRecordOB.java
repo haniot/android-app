@@ -28,6 +28,8 @@ public class OralHealthRecordOB {
     @Backlink(to = "oralHealthRecord")
     private ToMany<ToothLesionOB> toothLesions;
 
+    public OralHealthRecordOB() {}
+
     public OralHealthRecordOB(OralHealthRecord o) {
         this.setId(o.getId());
         this.set_id(o.get_id());

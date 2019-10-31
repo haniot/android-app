@@ -10,6 +10,10 @@ public class PatientOB extends UserOB {
     private String gender;
     private String healthProfessionalId;
 
+    public PatientOB() {
+        super();
+    }
+
     public PatientOB(Patient p) {
         super(p.getId(), p.get_id(), p.getEmail(), p.getName(), p.getBirthDate(), p.getHealthArea(), p.getPassword(), p.getOldPassword(), p.getNewPassword(),
                 p.getPhoneNumber(), p.getLastLogin(), p.getLastSync(), p.getLanguage(), p.getPilotStudyIDSelected(), p.getUserType(), p.isSync());

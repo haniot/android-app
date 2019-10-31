@@ -258,11 +258,14 @@ public class UserRegisterActivity extends AppCompatActivity {
                         showLoading(true);
                     })
                     .subscribe(patient -> {
-                        if (patient.get_id() == null) {
-                            showMessage(R.string.error_recover_data);
-                            return;
-                        }
-                        this.patient.set_id(patient.get_id());
+
+                        // Quando salva localmente não tem _id
+//                        if (patient.get_id() == null) {
+//                            showMessage(R.string.error_recover_data);
+//                            return;
+//                        }
+                        if (patient.get_id() != null)
+                            this.patient.set_id(patient.get_id());
                         associatePatientToPilotStudy();
                     }, this::errorHandler));
         }
@@ -273,7 +276,7 @@ public class UserRegisterActivity extends AppCompatActivity {
      */
     private void associatePatientToPilotStudy() {
         DisposableManager.add(mRepository
-                .associatePatientToPilotStudy(userLogged.getPilotStudyIDSelected(), patient.get_id())
+                .associatePatientToPilotStudy(userLogged.getPilotStudyIDSelected(), patient)
                 .subscribe(o -> {
                     Log.w(TAG, "Patient associated to pilotstudy");
                     mRepository.savePatient(patient);

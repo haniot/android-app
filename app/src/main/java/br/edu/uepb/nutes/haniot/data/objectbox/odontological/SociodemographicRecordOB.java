@@ -24,6 +24,8 @@ public class SociodemographicRecordOB {
 
     private int peopleInHome;
 
+    public SociodemographicRecordOB() {}
+
     public SociodemographicRecordOB(SociodemographicRecord s) {
         this.setId(s.getId());
         this.set_id(s.get_id());

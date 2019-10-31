@@ -29,6 +29,10 @@ public class OdontologicalQuestionnaireOB extends SyncOB {
 
     ToOne<OralHealthRecordOB> oralHealthRecord;
 
+    public OdontologicalQuestionnaireOB() {
+        super();
+    }
+
     public OdontologicalQuestionnaireOB(OdontologicalQuestionnaire o) {
         super(o.isSync());
         this.setId(o.getId());

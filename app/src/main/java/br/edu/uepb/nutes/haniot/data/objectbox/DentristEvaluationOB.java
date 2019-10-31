@@ -36,6 +36,8 @@ public class DentristEvaluationOB {
 
     private SociodemographicRecordOB sociodemographicRecord;
 
+    public DentristEvaluationOB() {}
+
     public long getId() {
         return id;
     }

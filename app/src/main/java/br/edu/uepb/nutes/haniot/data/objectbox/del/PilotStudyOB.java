@@ -1,4 +1,4 @@
-package br.edu.uepb.nutes.haniot.data.objectbox;
+package br.edu.uepb.nutes.haniot.data.objectbox.del;
 
 import java.util.List;
 import java.util.Objects;

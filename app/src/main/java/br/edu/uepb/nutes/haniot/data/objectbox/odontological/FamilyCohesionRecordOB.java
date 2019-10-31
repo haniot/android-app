@@ -40,6 +40,8 @@ public class FamilyCohesionRecordOB {
 
     private int familyCohesionResult;
 
+    public FamilyCohesionRecordOB() {}
+
     public FamilyCohesionRecordOB(FamilyCohesionRecord f) {
         this.setId(f.getId());
         this.set_id(f.get_id());

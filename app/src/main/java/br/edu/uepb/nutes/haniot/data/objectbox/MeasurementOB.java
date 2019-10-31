@@ -51,6 +51,10 @@ public class MeasurementOB extends SyncOB {
     @Backlink(to = "heartRate")
     private ToMany<HeartRateItemOB> datasetDB;
 
+    public MeasurementOB() {
+        super();
+    }
+
     public MeasurementOB(Measurement m) {
         super(m.isSync());
         this.set_id(m.get_id());

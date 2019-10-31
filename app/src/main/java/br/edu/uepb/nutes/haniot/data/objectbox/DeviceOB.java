@@ -41,6 +41,10 @@ public class DeviceOB extends SyncOB {
     @Transient // not persisted
     private int img;
 
+    public DeviceOB() {
+        super();
+    }
+
     public DeviceOB(Device d) {
         super(d.isSync());
         this.setId(d.getId());

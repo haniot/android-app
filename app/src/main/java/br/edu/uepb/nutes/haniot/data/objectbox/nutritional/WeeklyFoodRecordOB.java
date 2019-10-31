@@ -17,6 +17,10 @@ public class WeeklyFoodRecordOB {
 
     private ToOne<FeedingHabitsRecordOB> feedingHabitsRecord;
 
+    public WeeklyFoodRecordOB() {
+        super();
+    }
+
     public WeeklyFoodRecordOB(WeeklyFoodRecord w) {
         this.setId(w.getId());
         this.setFood(w.getFood());

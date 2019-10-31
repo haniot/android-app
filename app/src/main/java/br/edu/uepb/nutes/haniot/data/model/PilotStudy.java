@@ -12,7 +12,7 @@ import java.util.Objects;
 
 import javax.annotation.Nullable;
 
-import br.edu.uepb.nutes.haniot.data.objectbox.PilotStudyOB;
+import br.edu.uepb.nutes.haniot.data.objectbox.del.PilotStudyOB;
 
 public class PilotStudy extends Sync {
 

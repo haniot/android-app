@@ -20,6 +20,8 @@ public class ToothLesionOB {
 
     private ToOne<OralHealthRecordOB> oralHealthRecord;
 
+    public ToothLesionOB() {}
+
     public ToothLesionOB(ToothLesion t) {
         this.setId(t.getId());
         this.setToothType(t.getToothType());

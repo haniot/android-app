@@ -33,6 +33,7 @@ import br.edu.uepb.nutes.haniot.data.model.nutritional.NutritionalEvaluation;
 import br.edu.uepb.nutes.haniot.data.model.nutritional.NutritionalEvaluationResult;
 import br.edu.uepb.nutes.haniot.data.model.nutritional.NutritionalQuestionnaire;
 import br.edu.uepb.nutes.haniot.data.model.odontological.OdontologicalQuestionnaire;
+import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
@@ -56,46 +57,37 @@ public class Repository {
 
     private Repository(Context context) {
         this.mContext = context;
-
         this.haniotNetRepository = HaniotNetRepository.getInstance(context);
-
+        this.appPreferencesHelper = AppPreferencesHelper.getInstance(context);
         this.deviceDAO = DeviceDAO.getInstance(context);
         this.measurementDAO = MeasurementDAO.getInstance(context);
-
         this.patientDAO = PatientDAO.getInstance(context);
         this.userDAO = UserDAO.getInstance(context);
-
-        this.pilotStudyDAO = PilotStudyDAO.getInstance(context);
-
-        this.physicalActivityHabitsDAO = PhysicalActivityHabitsDAO.getInstance(context);
-        this.sleepHabitsDAO = SleepHabitsDAO.getInstance(context);
-        this.feedingHabitsDAO = FeedingHabitsDAO.getInstance(context);
-        this.medicalRecordDAO = MedicalRecordDAO.getInstance(context);
-
+//        this.pilotStudyDAO = PilotStudyDAO.getInstance(context);
+//        this.physicalActivityHabitsDAO = PhysicalActivityHabitsDAO.getInstance(context);
+//        this.sleepHabitsDAO = SleepHabitsDAO.getInstance(context);
+//        this.feedingHabitsDAO = FeedingHabitsDAO.getInstance(context);
+//        this.medicalRecordDAO = MedicalRecordDAO.getInstance(context);
         this.nutritionalQuestionnaireDAO = NutritionalQuestionnaireDAO.getInstance(context);
         this.odontologicalQuestionnaireDAO = OdontologicalQuestionnaireDAO.getInstance(context);
     }
 
     private HaniotNetRepository haniotNetRepository;
-
+    private AppPreferencesHelper appPreferencesHelper;
     private DeviceDAO deviceDAO;
-
     private MeasurementDAO measurementDAO;
-
     private UserDAO userDAO;
     private PatientDAO patientDAO;
-
-    private PilotStudyDAO pilotStudyDAO;
-
-    private SleepHabitsDAO sleepHabitsDAO;
-    private FeedingHabitsDAO feedingHabitsDAO;
-    private PhysicalActivityHabitsDAO physicalActivityHabitsDAO;
-    private MedicalRecordDAO medicalRecordDAO;
-
     private NutritionalQuestionnaireDAO nutritionalQuestionnaireDAO;
     private OdontologicalQuestionnaireDAO odontologicalQuestionnaireDAO;
-
     private Context mContext;
+
+//    private PilotStudyDAO pilotStudyDAO;
+//
+//    private SleepHabitsDAO sleepHabitsDAO;
+//    private FeedingHabitsDAO feedingHabitsDAO;
+//    private PhysicalActivityHabitsDAO physicalActivityHabitsDAO;
+//    private MedicalRecordDAO medicalRecordDAO;
 
     private void enviarNaoSincronizados() {
         List<Device> devices = deviceDAO.getAllNotSync();
@@ -148,11 +140,7 @@ public class Repository {
         odontologicalQuestionnaireDAO.removeSyncronized();
     }
 
-    public void syncronize() {
-        // dispositivos (do user)
-        // pacientes (se der todos)
-        // medicoes
-        // questionarios
+    public synchronized void syncronize() {
 
         if (ConnectionUtils.internetIsEnabled(this.mContext)) {
             // ------------------ envia os que estão pendentes
@@ -163,28 +151,25 @@ public class Repository {
 
             // ------------------ Baixa os mais recentes do servidor
 
-            List<PilotStudy> pilotStudies = new ArrayList<>();
+            String pilotStudyId = null;
+            pilotStudyId = appPreferencesHelper.getLastPilotStudy().get_id();
+            if (pilotStudyId == null) {
+                pilotStudyId = appPreferencesHelper.getUserLogged().getPilotStudyIDSelected();
+            }
+
             List<Patient> patients = new ArrayList<>();
             List<Device> devices = new ArrayList<>();
             List<Measurement> measurements = new ArrayList<>();
             List<NutritionalQuestionnaire> nutritionalQuestionnaires = new ArrayList<>();
             List<OdontologicalQuestionnaire> odontologicalQuestionnaires = new ArrayList<>();
 
-            // recupera todos os pilotos estudo
+            // recupera todos os pacientes de todos os pilotos estudo
             DisposableManager.add(
-                    this.getAllPilotStudies()
-                        .subscribe((Consumer<List<PilotStudy>>) pilotStudies::addAll)
+                    this.getAllPatients(pilotStudyId, null, 1, 100)
+                        .subscribe((Consumer<List<Patient>>) patients::addAll)
             );
 
-            // recupera todos os pacientes de todos os pilotos estudo
-            for (PilotStudy pilotStudy : pilotStudies) {
-                DisposableManager.add(
-                        haniotNetRepository.getAllPatients(pilotStudy.get_id(), null, 1, 100)
-                            .subscribe((Consumer<List<Patient>>) patients::addAll)
-                );
-            }
-
-            // recupera todos os dipositivos de todos os pacientes
+            // recupera todos os dipositivos de todos os pacientes - verificar se é o paciente ou o profissional que tem
             for (Patient patient : patients) {
                 DisposableManager.add(
                         haniotNetRepository.getAllDevices(patient.get_id())
@@ -409,8 +394,11 @@ public class Repository {
 
     public Single<List<Patient>> getAllPatients(String pilotStudyId, String sort, int page, int limit) {
         if (ConnectionUtils.internetIsEnabled(mContext)) {
-            syncronize();
-            return haniotNetRepository.getAllPatients(pilotStudyId, sort, page, limit);
+            return haniotNetRepository.getAllPatients(pilotStudyId, sort, page, limit)
+                    .map(patients -> {
+                        syncronize();
+                        return patients;
+                    });
         } else {
             List<Patient> aux = patientDAO.getAllPatients(pilotStudyId, sort, page, limit);
             return Single.just(aux);
@@ -423,8 +411,18 @@ public class Repository {
                 .doOnComplete(() -> syncronize());
     }
 
-    public Single<Response<Void>> associatePatientToPilotStudy(String pilotStudyId, String patientId) {
-        return haniotNetRepository.associatePatientToPilotStudy(pilotStudyId, patientId);
+    public Single<Response<Void>> associatePatientToPilotStudy(String pilotStudyId, Patient patient) {
+        if (ConnectionUtils.internetIsEnabled(mContext)) {
+            return haniotNetRepository.associatePatientToPilotStudy(pilotStudyId, patient.get_id());
+        } else {
+            patient.setPilotId(pilotStudyId);
+            patient.setSync(false);
+            if (patientDAO.save(patient)) {
+                return Single.just(Response.success(null));
+            } else {
+                return Single.just(Response.error(404, null));
+            }
+        }
     }
 
     // ------------ NUTRITIONAL DAO -----------

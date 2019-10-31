@@ -26,6 +26,8 @@ public class HeartRateItemOB {
 
     private ToOne<MeasurementOB> heartRate;
 
+    public HeartRateItemOB() {}
+
     public HeartRateItemOB(HeartRateItem h) {
         this.setId(h.getId());
         this.setValue(h.getValue());

@@ -74,6 +74,10 @@ public class UserOB extends SyncOB {
                 p.getPhoneNumber(), p.getLastLogin(), p.getLastSync(), p.getLanguage(), p.getPilotStudyIDSelected(), p.getUserType(), p.isSync());
     }
 
+    public UserOB() {
+        super();
+    }
+
     public long getId() {
         return id;
     }

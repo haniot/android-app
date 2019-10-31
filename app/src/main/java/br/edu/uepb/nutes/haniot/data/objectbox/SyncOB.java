@@ -11,6 +11,8 @@ public class SyncOB {
         this.sync = sync; // inicializando não sincronizado
     }
 
+    public SyncOB() {}
+
     public boolean isSync() {
         return sync;
     }

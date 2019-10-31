@@ -17,6 +17,8 @@ public class ChronicDiseaseOB {
 
     private ToOne<MedicalRecordOB> medicalRecord;
 
+    public ChronicDiseaseOB() {}
+
     public ChronicDiseaseOB(ChronicDisease c) {
         this.setId(c.getId());
         this.setType(c.getType());

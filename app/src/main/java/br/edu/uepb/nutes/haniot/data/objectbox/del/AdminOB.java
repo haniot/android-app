@@ -1,6 +1,7 @@
-package br.edu.uepb.nutes.haniot.data.objectbox;
+package br.edu.uepb.nutes.haniot.data.objectbox.del;
 
 import br.edu.uepb.nutes.haniot.data.model.Admin;
+import br.edu.uepb.nutes.haniot.data.objectbox.UserOB;
 import io.objectbox.annotation.Entity;
 
 /**
