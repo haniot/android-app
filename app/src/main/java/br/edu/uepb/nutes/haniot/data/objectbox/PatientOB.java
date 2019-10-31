@@ -1,10 +1,13 @@
 package br.edu.uepb.nutes.haniot.data.objectbox;
 
+import android.util.Log;
+
 import br.edu.uepb.nutes.haniot.data.model.Patient;
 import io.objectbox.annotation.Entity;
 
 @Entity
 public class PatientOB extends UserOB {
+    String TAG = "PatientOB";
 
     private String pilotId;
     private String gender;

@@ -18,8 +18,8 @@ public class HealthProfessional extends User {
     @Expose()
     private String totalPatients;
 
-    public HealthProfessional() {
-    }
+//    public HealthProfessional() {
+//    }
 
     public String getTotalPilotStudies() {
         return totalPilotStudies;

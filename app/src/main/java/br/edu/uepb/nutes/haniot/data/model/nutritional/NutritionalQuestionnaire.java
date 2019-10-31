@@ -42,10 +42,10 @@ public class NutritionalQuestionnaire extends Sync {
     @Expose()
     MedicalRecord medicalRecord;
 
-    public NutritionalQuestionnaire() {
-    }
+    public NutritionalQuestionnaire() {}
 
     public NutritionalQuestionnaire(NutritionalQuestionnaireOB q) {
+        super(q.isSync());
         this.setId(q.getId());
         this.set_id(q.get_id());
         this.setPatientId(q.getPatientId());

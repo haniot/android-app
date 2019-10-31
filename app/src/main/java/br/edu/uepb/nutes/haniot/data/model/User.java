@@ -78,35 +78,46 @@ public class User extends Sync {
     private String userType; // 1 admin, 2 health_profissional
 
     public User() {
+        super(false);
+    }
+
+    public User(long id, String _id, String email, String name, String birthDate, String healthArea,
+                String password, String oldPassword, String newPassword, String phoneNumber, String lastLogin,
+                String lastSync, String language, String pilotStudyIDSelected, String userType, boolean was_sync) {
+        super(was_sync);
+        this.id = id;
+        this._id = _id;
+        this.email = email;
+        this.name = name;
+        this.birthDate = birthDate;
+        this.healthArea = healthArea;
+        this.password = password;
+        this.oldPassword = oldPassword;
+        this.newPassword = newPassword;
+        this.phoneNumber = phoneNumber;
+        this.lastLogin = lastLogin;
+        this.lastSync = lastSync;
+        this.language = language;
+        this.pilotStudyIDSelected = pilotStudyIDSelected;
+        this.userType = userType;
+    }
+    public User(UserOB p) {
+        this(p.getId(), p.get_id(), p.getEmail(), p.getName(), p.getBirthDate(), p.getHealthArea(),
+                p.getPassword(), p.getOldPassword(), p.getNewPassword(), p.getPhoneNumber(), p.getLastLogin(),
+                p.getLastSync(), p.getLanguage(), p.getPilotStudyIDSelected(), p.getUserType(), p.isSync());
     }
 
     public User(String email, String password) {
+        this();
         this.email = email;
         this.password = password;
     }
 
     public User(String _id, String oldPassword, String newPassword) {
+        this();
         this._id = _id;
         this.oldPassword = oldPassword;
         this.newPassword = newPassword;
-    }
-
-    public User(UserOB p) {
-        this.set_id(p.get_id());
-        this.setId(p.getId());
-        this.setEmail(p.getEmail());
-        this.setName(p.getName());
-        this.setBirthDate(p.getBirthDate());
-        this.setHealthArea(p.getHealthArea());
-        this.setPassword(p.getPassword());
-        this.setOldPassword(p.getOldPassword());
-        this.setNewPassword(p.getNewPassword());
-        this.setPhoneNumber(p.getPhoneNumber());
-        this.setLastLogin(p.getLastLogin());
-        this.setLastSync(p.getLastSync());
-        this.setLanguage(p.getLanguage());
-        this.setPilotStudyIDSelected(p.getPilotStudyIDSelected());
-        this.setUserType(p.getUserType());
     }
 
     public long getId() {
@@ -274,9 +285,9 @@ public class User extends Sync {
                 ", name='" + name + '\'' +
                 ", birthDate='" + birthDate + '\'' +
                 ", healthArea='" + healthArea + '\'' +
-                ", password='" + password + '\'' +
-                ", oldPassword='" + oldPassword + '\'' +
-                ", newPassword='" + newPassword + '\'' +
+//                ", password='" + password + '\'' +
+//                ", oldPassword='" + oldPassword + '\'' +
+//                ", newPassword='" + newPassword + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", lastLogin='" + lastLogin + '\'' +
                 ", lastSync='" + lastSync + '\'' +

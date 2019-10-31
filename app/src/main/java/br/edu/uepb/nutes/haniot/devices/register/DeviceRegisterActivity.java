@@ -200,10 +200,10 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
                 .saveDevice(device)
                 .subscribe(deviceRest -> {
                     deviceRest.setImg(device.getImg());
-                    deviceRest.setUserId(user.get_id());
+//                    deviceRest.setUserId(user.get_id());
                     Log.w("AAA", "UserOB: " + user.get_id());
                     Log.w("AAA", "subscribe: " + deviceRest.toJson());
-                    mRepository.saveDevice(deviceRest);
+//                    mRepository.saveDevice(deviceRest);
 
                     onDeviceRegistered(mDevice);
                 }, err -> {

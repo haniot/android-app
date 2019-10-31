@@ -5,7 +5,11 @@ public class Sync {
     private boolean was_sync;
 
     public Sync() {
-        this.was_sync = false; // inicializando não sincronizado
+        this(false);
+    }
+
+    public Sync(boolean was_sync) {
+        this.was_sync = was_sync; // inicializando não sincronizado
     }
 
     public boolean isSync() {

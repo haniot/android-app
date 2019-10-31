@@ -645,15 +645,17 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
      */
     private Device getDeviceRegistered(String type) {
 
-        for (Device device1 : devices)
-            if (device1.getType().equals(type)) return device1;
+        if (devices != null)
+            for (Device device1 : devices)
+                if (device1.getType().equals(type)) return device1;
         return null;
     }
 
     private Device getDeviceRegisteredFromAddress(String address) {
 
-        for (Device device1 : devices)
-            if (device1.getAddress().equals(address)) return device1;
+        if (devices != null)
+            for (Device device1 : devices)
+                if (device1.getAddress().equals(address)) return device1;
         return null;
     }
 
@@ -844,7 +846,10 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
 
         DisposableManager.add(
                 mRepository.getAllDevices(user.get_id())
-                        .subscribe(devices1 -> devices = devices1));
+                        .subscribe(devices1 -> {
+                            devices = devices1;
+                            Log.w("AAA", Arrays.toString(devices1.toArray()));
+                        }));
 
         builder = new SimpleBleScanner.Builder();
         pilotStudy = appPreferencesHelper.getLastPilotStudy();

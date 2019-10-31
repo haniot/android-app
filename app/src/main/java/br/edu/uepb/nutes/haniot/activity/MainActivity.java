@@ -51,12 +51,16 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
     private final String LOG_TAG = "MainActivity";
     private final int REQUEST_ENABLE_BLUETOOTH = 1;
     private final int REQUEST_ENABLE_LOCATION = 2;
+
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+
     @BindView(R.id.frameCharts)
     FrameLayout frameChart;
+
     @BindView(R.id.frameMeasurements)
     FrameLayout frameMeasurements;
+
     @BindView(R.id.nestedScrollView)
     NestedScrollView nestedScrollView;
 
@@ -125,7 +129,7 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
     protected void onResume() {
         super.onResume();
         // Verify the pilot is selected
-        Log.w("AAA", "" + userLogged.getPilotStudyIDSelected());
+        Log.w("AAA", "PilotStudyId: " + userLogged.getPilotStudyIDSelected());
         if ((userLogged.getPilotStudyIDSelected() == null || userLogged.getPilotStudyIDSelected().isEmpty())
                 && !appPreferences.getUserLogged().getUserType().equals(PATIENT)) {
             startActivity(new Intent(this, WelcomeActivity.class));

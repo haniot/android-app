@@ -26,6 +26,9 @@ public class Patient extends User {
     public Patient() { }
 
     public Patient(PatientOB p) {
+        super(p.getId(), p.get_id(), p.getEmail(), p.getName(), p.getBirthDate(), p.getHealthArea(),
+                p.getPassword(), p.getOldPassword(), p.getNewPassword(), p.getPhoneNumber(), p.getLastLogin(),
+                p.getLastSync(), p.getLanguage(), p.getPilotStudyIDSelected(), p.getUserType(), p.isSync());
         this.setPilotId(p.getPilotId());
         this.setGender(p.getGender());
         this.setHealthProfessionalId(p.getHealthProfessionalId());
@@ -81,7 +84,7 @@ public class Patient extends User {
 
     @Override
     public String toString() {
-        return "PatientOB{" +
+        return "PatientOB{" + super.toString() +
                 ", pilotId='" + pilotId + '\'' +
                 ", gender='" + gender + '\'' +
                 ", healthProfessionalId='" + healthProfessionalId + '\'' +
