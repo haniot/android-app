@@ -266,6 +266,7 @@ public class UserRegisterActivity extends AppCompatActivity {
 //                        }
                         if (patient.get_id() != null)
                             this.patient.set_id(patient.get_id());
+                        this.patient.setId(patient.getId());
                         associatePatientToPilotStudy();
                     }, this::errorHandler));
         }
@@ -279,7 +280,7 @@ public class UserRegisterActivity extends AppCompatActivity {
                 .associatePatientToPilotStudy(userLogged.getPilotStudyIDSelected(), patient)
                 .subscribe(o -> {
                     Log.w(TAG, "Patient associated to pilotstudy");
-                    mRepository.savePatient(patient);
+//                    mRepository.savePatient(patient);
                     appPreferencesHelper.saveLastPatient(patient);
                     if (appPreferencesHelper.getUserLogged().getUserType().equals(HEALTH_PROFESSIONAL)) {
                         User user = appPreferencesHelper.getUserLogged();

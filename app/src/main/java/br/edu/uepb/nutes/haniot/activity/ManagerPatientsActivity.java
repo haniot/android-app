@@ -112,6 +112,7 @@ public class ManagerPatientsActivity extends AppCompatActivity {
 
         View.OnClickListener onClickListener = v -> {
             startActivity(new Intent(this, UserRegisterActivity.class));
+            finish();
         };
         addPatient.setOnClickListener(onClickListener);
         addPatientShortCut.setOnClickListener(onClickListener);

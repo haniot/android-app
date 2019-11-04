@@ -318,7 +318,7 @@ public class Measurement extends Sync implements Parcelable {
     @NonNull
     @Override
     public String toString() {
-        return "MeasurementOB{" +
+        return "Measurement{" +
                 "id=" + id +
                 ", _id='" + _id + '\'' +
                 ", value=" + value +

@@ -44,10 +44,10 @@ public class DeviceDAO {
      * Adds a new device to the database.
      *
      * @param device DeviceOB
-     * @return boolean
+     * @return long
      */
-    public boolean save(@NonNull Device device) {
-        return deviceBox.put(Convert.convertDevice(device)) > 0;
+    public long save(@NonNull Device device) {
+        return deviceBox.put(Convert.convertDevice(device));
     }
 
     public void save(List<Device> devices) {
@@ -123,15 +123,15 @@ public class DeviceDAO {
      * According to your _id and _id user provided by the remote server.
      *
      * @param device DeviceOB
-     * @return boolean
+     * @return long
      */
-    public boolean update(@NonNull Device device) {
+    public long update(@NonNull Device device) {
         if (device.get_id().equals("")) {
             Device deviceUp = get(device.get_id());
 
             // Id is required for an updateOrSave
             // Otherwise it will be an insert
-            if (deviceUp == null) return false;
+            if (deviceUp == null) return 0;
 
             device.setId(deviceUp.getId());
         }

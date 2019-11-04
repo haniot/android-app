@@ -30,6 +30,7 @@ import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.SettingsActivity;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.User;
+import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.fragment.DashboardChartsFragment;
 import br.edu.uepb.nutes.haniot.fragment.MeasurementsGridFragment;
@@ -105,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
         Log.w("AAA", "UserOB type: " + appPreferences.getUserAccessHaniot());
         Log.w("AAA", "UserOB: " + appPreferences.getUserLogged());
 
-
+        Repository.getInstance(this).syncronize();
     }
 
     private void loadDashboard() {
@@ -292,6 +293,7 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
         switch (item.getItemId()) {
             case R.id.btnManagePatient:
                 startActivity(new Intent(getApplicationContext(), ManagerPatientsActivity.class));
+                finish();
                 break;
             case R.id.btnMenuMainSettings:
                 Intent it = new Intent(this, SettingsActivity.class);

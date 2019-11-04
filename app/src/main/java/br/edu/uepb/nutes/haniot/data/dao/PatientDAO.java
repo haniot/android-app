@@ -3,7 +3,6 @@ package br.edu.uepb.nutes.haniot.data.dao;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -15,7 +14,6 @@ import br.edu.uepb.nutes.haniot.data.objectbox.PatientOB;
 import br.edu.uepb.nutes.haniot.data.objectbox.PatientOB_;
 import io.objectbox.Box;
 import io.objectbox.BoxStore;
-import io.reactivex.Single;
 
 /**
  * Represents PatientDAO.
@@ -55,15 +53,15 @@ public class PatientDAO {
         return patientBox.query().equal(PatientOB_.healthProfessionalId, healthProfessionalId).build().find();
     }
 
-    public boolean save(@NonNull Patient patient) {
-        return patientBox.put(new PatientOB(patient)) > 0;
+    public long save(@NonNull Patient patient) {
+        return patientBox.put(new PatientOB(patient));
     }
 
-    public boolean update(@NonNull Patient patient) {
+    public long update(@NonNull Patient patient) {
         if (patient.getId() == 0) {
             Patient patientOBUp = get(patient.getName());
 
-            if (patientOBUp == null) return false;
+            if (patientOBUp == null) return 0;
 
             patient.setId(patientOBUp.getId());
             if (patient.get_id() == null) patient.set_id(patientOBUp.get_id());
