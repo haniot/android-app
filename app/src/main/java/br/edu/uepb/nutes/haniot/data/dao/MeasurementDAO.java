@@ -169,14 +169,34 @@ public class MeasurementDAO {
                 .find(offset, limit);
     }
 
+    public List<Measurement> getAllMeasurements(String userId, String sort, String dateStart, String dateEnd, int page, int limit) {
+        List<MeasurementOB> aux;
+        if (userId == null) {
+            aux = measurementBox.query()
+//                    .equal(MeasurementOB_.userId, userId)
+                    .orderDesc(MeasurementOB_.timestamp)
+                    .build()
+                    .find();
+//                .find(page, limit);
+        } else {
+            aux = measurementBox.query()
+                    .equal(MeasurementOB_.userId, userId)
+                    .orderDesc(MeasurementOB_.timestamp)
+                    .build()
+                    .find();
+//                .find(page, limit);
+        }
+        return Convert.listMeasurementsToModel(aux);
+    }
+
     public List<Measurement> getMeasurementsByType(String userId, String type, String sort, String dateStart, String dateEnd, int page, int limit) {
         List<MeasurementOB> aux =
                 measurementBox.query()
-                .equal(MeasurementOB_.userId, userId)
-                .equal(MeasurementOB_.type, type)
-                .orderDesc(MeasurementOB_.timestamp)
-                .build()
-                .find();
+                        .equal(MeasurementOB_.userId, userId)
+                        .equal(MeasurementOB_.type, type)
+                        .orderDesc(MeasurementOB_.timestamp)
+                        .build()
+                        .find();
 //                .find(page, limit);
         Log.i(TAG, "getMeasurementsByType: " + aux.toString());
         return Convert.listMeasurementsToModel(aux);

@@ -78,8 +78,14 @@ public class ManagerPatientsActivity extends AppCompatActivity {
      * Initialize SwipeRefresh
      */
     private void initDataSwipeRefresh() {
-        mDataSwipeRefresh.setOnRefreshListener(this::loadData);
-        loadData();
+//        mDataSwipeRefresh.setOnRefreshListener(this::loadData);
+        mDataSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                loadData();
+            }
+        });
+//        loadData();
     }
 
     /**
@@ -127,10 +133,11 @@ public class ManagerPatientsActivity extends AppCompatActivity {
         if (!addPatient.isShown())
             addPatient.show();
 
-        mDataSwipeRefresh.setRefreshing(true);
+//        mDataSwipeRefresh.setRefreshing(true);
         DisposableManager.add(mRepository
                 .getAllPatients(user.getPilotStudyIDSelected(), "created_at", 1, 100)
                 .doAfterTerminate(() -> mDataSwipeRefresh.setRefreshing(false))
+                .doOnSubscribe(disposable -> mDataSwipeRefresh.setRefreshing(true))
                 .subscribe(patients -> {
                     patientList = patients;
 

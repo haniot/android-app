@@ -134,17 +134,18 @@ public class Repository {
     }
 
     public synchronized void syncronize() {
+
         if (ConnectionUtils.internetIsEnabled(this.mContext)) {
             Log.i(TAG, "syncronize: COM INTERNET");
             sendUnsynchronized();
             removeSync();
-            Log.i(TAG, "syncronize: Depois de excluido: " + measurementDAO.getMeasurementsByType("5dc0540d336ca000129467d7", "", "", "", "", 5, 100));
+            Log.i(TAG, "syncronize: Depois de excluido: " + measurementDAO.getAllMeasurements(null, "", "", "", 5, 100));
 
             // ------------------ Baixa os mais recentes do servidor
 
             User user = appPreferencesHelper.getUserLogged();
 
-            String pilotStudyId = null;
+            String pilotStudyId;
             if (appPreferencesHelper.getLastPilotStudy() != null) {
                 pilotStudyId = appPreferencesHelper.getLastPilotStudy().get_id();
             } else {
@@ -180,7 +181,7 @@ public class Repository {
                             })
             );
         } else {
-            Log.i(TAG, "syncronize: SEM INTERNET medições salvas: " + measurementDAO.getMeasurementsByType("5dc0540d336ca000129467d7", "", null, null, null, 1, 100).toString());
+            Log.i(TAG, "syncronize: SEM INTERNET medições salvas: " + measurementDAO.getAllMeasurements(null, null, null, null, 1, 100).toString());
         }
     }
 
@@ -195,7 +196,7 @@ public class Repository {
                                 m.setUserId(patientId);
                                 measurementDAO.save(m);
                             }
-                            Log.i(TAG, "syncronize: Depois de baixado: " + measurementDAO.getMeasurementsByType("5dc0540d336ca000129467d7", "", "", "", "", 5, 100));
+                            Log.i(TAG, "syncronize: Depois de baixado: " + measurementDAO.getAllMeasurements(patientId, "", "", "", 5, 100));
                         }).subscribe()
         );
     }
@@ -260,9 +261,8 @@ public class Repository {
                         return devices;
                     });
         } else {
-            List<Device> dev = deviceDAO.getAllDevices(userId);
-            Log.i(TAG, dev.toString());
-            return Single.just(new ArrayList<>());
+            List<Device> devices = deviceDAO.getAllDevices(userId);
+            return Single.just(devices);
         }
     }
 
@@ -274,7 +274,7 @@ public class Repository {
      * @return DeviceOB
      */
     public Device getDeviceByType(@NonNull String userId, String type) {
-//        syncronize(); // Download devices to local repository
+        syncronize(); // Download devices to local repository
         return deviceDAO.getByType(userId, type);
     }
 
@@ -321,9 +321,9 @@ public class Repository {
                     });
         } else {
             measurement.setSync(false);
-            measurementDAO.save(measurement);
+            long id = measurementDAO.save(measurement);
+            measurement.setId(id);
             return Single.just(measurement);
-
         }
     }
 
@@ -338,7 +338,8 @@ public class Repository {
         } else {
             for (Measurement m : measurements) {
                 m.setSync(false);
-                measurementDAO.save(m);
+                long id = measurementDAO.save(m);
+                m.setId(id);
             }
             return Single.just(measurements);
         }
