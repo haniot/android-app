@@ -435,7 +435,6 @@ public class AddMeasurementActivity extends AppCompatActivity {
                     .setNegativeButton(getString(R.string.no_text), null)
                     .show();
 
-
         } else showToast(getString(R.string.value_empty));
     }
 

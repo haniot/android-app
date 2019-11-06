@@ -584,7 +584,6 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
 //                    mRepository.removeAllMeasurements(patient.get_id());
                 }, throwable -> {
                     Log.w(LOG_TAG, throwable.getMessage());
-                    mRepository.saveMeasurement(measurement);
                 }));
     }
 

@@ -46,10 +46,10 @@ public class MeasurementOB extends SyncOB {
 //    @Transient()
 //    private List<BodyFatOB> bodyFat; // not persisted in ObjectBox
 
-    private ToOne<BodyFatOB> bodyFatDB;
+    private ToOne<BodyFatOB> bodyFat;
 
     @Backlink(to = "heartRate")
-    private ToMany<HeartRateItemOB> datasetDB;
+    private ToMany<HeartRateItemOB> dataset;
 
     public MeasurementOB() {
         super();
@@ -70,8 +70,10 @@ public class MeasurementOB extends SyncOB {
         this.setPulse(m.getPulse());
         this.setMeal(m.getMeal());
 
-        this.bodyFatDB.setTarget(Convert.convertBodyFat(m.getFat()));
-        this.setDatasetDB(Convert.convertListHeartRate(m.getDataset()));
+        if (m.getFat() != null)
+            this.bodyFat.setTarget(Convert.convertBodyFat(m.getFat()));
+        if (m.getDataset() != null)
+            this.setDataset(Convert.convertListHeartRate(m.getDataset()));
     }
 
     public long getId() {
@@ -186,13 +188,13 @@ public class MeasurementOB extends SyncOB {
         this.meal = meal;
     }
 
-    public List<HeartRateItemOB> getDatasetDB() {
-        return datasetDB;
+    public List<HeartRateItemOB> getDataset() {
+        return dataset;
     }
 
-    public void setDatasetDB(List<HeartRateItemOB> datasetDB) {
-        this.getDatasetDB().clear();
-        this.getDatasetDB().addAll(datasetDB);
+    public void setDataset(List<HeartRateItemOB> datasetDB) {
+        this.getDataset().clear();
+        this.getDataset().addAll(datasetDB);
     }
 
 //    public List<BodyFatOB> getBodyFat() {
@@ -203,12 +205,12 @@ public class MeasurementOB extends SyncOB {
 //        this.bodyFat = bodyFat;
 //    }
 
-    public ToOne<BodyFatOB> getBodyFatDB() {
-        return bodyFatDB;
+    public ToOne<BodyFatOB> getBodyFat() {
+        return bodyFat;
     }
 
-    public void setBodyFatDB(ToOne<BodyFatOB> bodyFatDB) {
-        this.bodyFatDB = bodyFatDB;
+    public void setBodyFat(ToOne<BodyFatOB> bodyFat) {
+        this.bodyFat = bodyFat;
     }
 
     @Override
@@ -242,8 +244,8 @@ public class MeasurementOB extends SyncOB {
                 ", diastolic=" + diastolic +
                 ", pulse=" + pulse +
                 ", meal=" + meal +
-                ", datasetDB=" + datasetDB +
-                ", bodyFatDB=" + bodyFatDB +
+                ", dataset=" + dataset +
+                ", bodyFat=" + bodyFat +
                 '}';
     }
 }

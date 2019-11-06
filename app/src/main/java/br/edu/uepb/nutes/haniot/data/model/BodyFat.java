@@ -39,11 +39,12 @@ public class BodyFat implements Parcelable {
     private String type;
 
     public BodyFat() {
+        this.id = 0;
         this.type = MeasurementType.BODY_FAT;
     }
 
     public BodyFat(double value, String unit) {
-        this.type = MeasurementType.BODY_FAT;
+        this();
         this.value = value;
         this.unit = unit;
     }

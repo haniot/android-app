@@ -560,7 +560,6 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
                 })
                 .subscribe(measurement1 -> {
                 }, error -> {
-                    mRepository.saveMeasurement(measurement);
                     Log.w(getTag(), error.getMessage());
                     printMessage(getString(R.string.error_500));
                 }));

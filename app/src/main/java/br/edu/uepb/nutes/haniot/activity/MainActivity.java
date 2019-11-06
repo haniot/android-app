@@ -80,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
     private MeasurementsGridFragment measurementsGridFragment;
     private DashboardChartsFragment dashboardChartsFragment;
     private AppPreferencesHelper appPreferences;
+    private Repository mRepository;
     private Patient patient;
     private long backPressed;
     private User userLogged;
@@ -106,8 +107,8 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
         Log.w("AAA", "UserOB type: " + appPreferences.getUserAccessHaniot());
         Log.w("AAA", "UserOB: " + appPreferences.getUserLogged());
 
-        Repository mRepository = Repository.getInstance(this);
-        mRepository.syncronize();
+        mRepository = Repository.getInstance(this);
+//        mRepository.syncronize();
     }
 
     private void loadDashboard() {
@@ -138,6 +139,7 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
         } else {
             checkPatient();
         }
+        mRepository.syncronize();
     }
 
     @Override

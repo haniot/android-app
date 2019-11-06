@@ -27,10 +27,13 @@ public class BodyFatOB {
 
     private String type;
 
-    public BodyFatOB() {}
+    public BodyFatOB() {
+        this.id = 0;
+        this.type = MeasurementType.BODY_FAT;
+    }
 
     public BodyFatOB(BodyFat b) {
-        this.type = MeasurementType.BODY_FAT;
+        this();
         this.setId(b.getId());
         this.setValue(b.getValue());
         this.setUnit(b.getUnit());

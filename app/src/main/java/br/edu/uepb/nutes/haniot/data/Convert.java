@@ -127,6 +127,7 @@ public class Convert {
     }
 
     public static BodyFat convertBodyFat(BodyFatOB bf) {
+        if (bf == null) return null;
         return new BodyFat(bf);
     }
 

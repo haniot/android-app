@@ -2,6 +2,7 @@ package br.edu.uepb.nutes.haniot.data.dao;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import java.util.List;
 
@@ -10,7 +11,6 @@ import br.edu.uepb.nutes.haniot.data.Convert;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.objectbox.MeasurementOB;
 import br.edu.uepb.nutes.haniot.data.objectbox.MeasurementOB_;
-import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import io.objectbox.Box;
 import io.objectbox.BoxStore;
 
@@ -22,6 +22,7 @@ import io.objectbox.BoxStore;
  * @copyright Copyright (c) 2017, NUTES UEPB
  */
 public class MeasurementDAO {
+    private static final String TAG = "MEASUREMENTDAO";
     public static MeasurementDAO instance;
     private static Box<MeasurementOB> measurementBox;
 
@@ -43,15 +44,9 @@ public class MeasurementDAO {
      * @param measurement
      * @return boolean
      */
-    public boolean save(@NonNull Measurement measurement) {
-        return measurementBox.put(Convert.convertMeasurement(measurement)) > 0;
+    public long save(@NonNull Measurement measurement) {
+        return measurementBox.put(Convert.convertMeasurement(measurement));
     }
-
-//    public void saveAll(List<Measurement> measurements) {
-//        for (Measurement aux : measurements) {
-//            this.save(aux);
-//        }
-//    }
 
     /**
      * Update measurementOB data.
@@ -59,13 +54,13 @@ public class MeasurementDAO {
      * @param measurement
      * @return boolean
      */
-    public boolean update(@NonNull Measurement measurement) {
+    public long update(@NonNull Measurement measurement) {
         if (measurement.getId() == 0) {
             /**
              * Id is required for an updateOrSave
              * Otherwise it will be an insert
              */
-            return false;
+            return 0;
         }
         return save(measurement); // updateOrSave
     }
@@ -112,19 +107,6 @@ public class MeasurementDAO {
                 .build()
                 .remove() > 0;
     }
-
-//    /**
-//     * Select a measurement.
-//     *
-//     * @param id long
-//     * @return Object
-//     */
-//    public MeasurementOB get(@NonNull long id) {
-//        return measurementBox.query()
-//                .equal(MeasurementOB_.id, id)
-//                .build()
-//                .findFirst();
-//    }
 
     public Measurement get(String userId, String measurementId) {
         MeasurementOB m = measurementBox.query()
@@ -187,19 +169,6 @@ public class MeasurementDAO {
                 .find(offset, limit);
     }
 
-    /**
-     * Select all measurements of a user that were not sent to the remote server.
-     *
-     * @param userId long
-     * @return List<MeasurementOB>
-     */
-    public List<MeasurementOB> getNotSent(@NonNull long userId) {
-        return measurementBox.query()
-                .equal(MeasurementOB_.userId, userId)
-                .build()
-                .find();
-    }
-
     public List<Measurement> getMeasurementsByType(String userId, String type, String sort, String dateStart, String dateEnd, int page, int limit) {
         List<MeasurementOB> aux =
                 measurementBox.query()
@@ -209,6 +178,7 @@ public class MeasurementDAO {
                 .build()
                 .find();
 //                .find(page, limit);
+        Log.i(TAG, "getMeasurementsByType: " + aux.toString());
         return Convert.listMeasurementsToModel(aux);
     }
 

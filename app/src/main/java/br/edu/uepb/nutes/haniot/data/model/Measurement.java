@@ -99,8 +99,10 @@ public class Measurement extends Sync implements Parcelable {
         this.setTimestamp(m.getTimestamp());
         this.setUserId(m.getUserId());
         this.setDeviceId(m.getDeviceId());
-        this.setFat(Convert.convertBodyFat(m.getBodyFatDB().getTarget()));
-        this.setDataset(Convert.convertListHeartRateL(m.getDatasetDB()));
+        if (m.getBodyFat() != null)
+            this.setFat(Convert.convertBodyFat(m.getBodyFat().getTarget()));
+        if (m.getDataset() != null)
+            this.setDataset(Convert.convertListHeartRateL(m.getDataset()));
     }
 
     protected Measurement(Parcel in) {
@@ -267,13 +269,13 @@ public class Measurement extends Sync implements Parcelable {
         this.meal = meal;
     }
 
-//    public List<HeartRateItem> getDatasetDB() {
+//    public List<HeartRateItem> getDataset() {
 //        return datasetDB;
 //    }
 
-//    public void setDatasetDB(List<HeartRateItem> datasetDB) {
-//        this.getDatasetDB().clear();
-//        this.getDatasetDB().addAll(datasetDB);
+//    public void setDataset(List<HeartRateItem> datasetDB) {
+//        this.getDataset().clear();
+//        this.getDataset().addAll(datasetDB);
 //    }
 
     public List<BodyFat> getBodyFat() {
@@ -284,11 +286,11 @@ public class Measurement extends Sync implements Parcelable {
         this.bodyFat = bodyFat;
     }
 
-//    public BodyFat getBodyFatDB() {
+//    public BodyFat getBodyFat() {
 //        return bodyFatDB;
 //    }
 //
-//    public void setBodyFatDB(BodyFat bodyFatDB) {
+//    public void setBodyFat(BodyFat bodyFatDB) {
 //        this.bodyFatDB = bodyFatDB;
 //    }
 
