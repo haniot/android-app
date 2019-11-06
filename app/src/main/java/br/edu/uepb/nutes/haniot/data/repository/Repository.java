@@ -166,10 +166,10 @@ public class Repository {
                                 for (Patient p : patientDAO.getAllPatients(pilotId, "", 1, 100)) {
                                     haniotNetRepository.getAllMeasurements(p.get_id(), 1, 100, null)
                                             .doAfterSuccess(measurements -> {
-                                                Log.i(TAG, "syncronize: MEASUREMENTS "+measurements.toString());
+                                                Log.i(TAG, "syncronize: MEASUREMENTS "+ p.getName() + " -> " + measurements.toString());
                                                 for (Measurement m : measurements) {
                                                     m.setSync(true);
-//                                                    measurementDAO.save(m);
+                                                    measurementDAO.save(m);
                                                 }
 //                                                measurementDAO.addAll(measurements);
                                             }).subscribe();

@@ -79,6 +79,7 @@ public class ManagerPatientsActivity extends AppCompatActivity {
      */
     private void initDataSwipeRefresh() {
         mDataSwipeRefresh.setOnRefreshListener(this::loadData);
+        loadData();
     }
 
     /**

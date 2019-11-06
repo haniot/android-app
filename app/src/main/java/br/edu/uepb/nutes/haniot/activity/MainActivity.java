@@ -106,7 +106,8 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
         Log.w("AAA", "UserOB type: " + appPreferences.getUserAccessHaniot());
         Log.w("AAA", "UserOB: " + appPreferences.getUserLogged());
 
-        Repository.getInstance(this).syncronize();
+        Repository mRepository = Repository.getInstance(this);
+        mRepository.syncronize();
     }
 
     private void loadDashboard() {
