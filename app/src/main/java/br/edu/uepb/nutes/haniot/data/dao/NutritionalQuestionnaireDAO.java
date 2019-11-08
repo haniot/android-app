@@ -28,20 +28,21 @@ public class NutritionalQuestionnaireDAO {
         return instance;
     }
 
-
     public List<NutritionalQuestionnaire> getAll(String patientId, int page, int limit, String sort) {
+        page--;
         List<NutritionalQuestionnaireOB> aux = nutritionalQuestionnaireBox.query()
                 .equal(NutritionalQuestionnaireOB_.patientId, patientId)
+                .orderDesc(NutritionalQuestionnaireOB_.createdAt)
                 .build()
-                .find();
+                .find(page * limit, limit);
         return Convert.listNutritionalQuestionnaireToModel(aux);
     }
 
     public void update(String patientId, String questionnaireId, String resourceName, Object object) {
     }
 
-    public boolean save(NutritionalQuestionnaire nutritionalQuestionnaire) {
-        return nutritionalQuestionnaireBox.put(new NutritionalQuestionnaireOB(nutritionalQuestionnaire)) > 0;
+    public long save(NutritionalQuestionnaire nutritionalQuestionnaire) {
+        return nutritionalQuestionnaireBox.put(new NutritionalQuestionnaireOB(nutritionalQuestionnaire));
     }
 
     public List<NutritionalQuestionnaire> getAllNotSync() {
@@ -64,12 +65,5 @@ public class NutritionalQuestionnaireDAO {
                 .equal(NutritionalQuestionnaireOB_.sync, true)
                 .build()
                 .remove();
-    }
-
-    public void addAll(List<NutritionalQuestionnaire> nutritionalQuestionnaires) {
-        for (NutritionalQuestionnaire n : nutritionalQuestionnaires) {
-            n.setSync(true);
-            nutritionalQuestionnaireBox.put(new NutritionalQuestionnaireOB(n));
-        }
     }
 }

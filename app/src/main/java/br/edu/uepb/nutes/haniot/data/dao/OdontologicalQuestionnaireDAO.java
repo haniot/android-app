@@ -28,20 +28,21 @@ public class OdontologicalQuestionnaireDAO {
         return instance;
     }
 
-
     public List<OdontologicalQuestionnaire> getAll(String patientId, int page, int limit, String sort) {
+        page--;
         List<OdontologicalQuestionnaireOB> aux = odontologicalQuestionnaireBox.query()
                 .equal(OdontologicalQuestionnaireOB_.patientId, patientId)
+                .orderDesc(OdontologicalQuestionnaireOB_.createdAt)
                 .build()
-                .find();
+                .find(page * limit, limit);
         return Convert.listOdontologicalQuestionnaireToModel(aux);
     }
 
     public void update(String patientId, String questionnaireId, String resourceName, Object object) {
     }
 
-    public boolean save(OdontologicalQuestionnaire odontologicalQuestionnaire) {
-        return odontologicalQuestionnaireBox.put(new OdontologicalQuestionnaireOB(odontologicalQuestionnaire)) > 0;
+    public long save(OdontologicalQuestionnaire odontologicalQuestionnaire) {
+        return odontologicalQuestionnaireBox.put(new OdontologicalQuestionnaireOB(odontologicalQuestionnaire));
     }
 
     public List<OdontologicalQuestionnaire> getAllNotSync() {
@@ -64,12 +65,5 @@ public class OdontologicalQuestionnaireDAO {
                 .equal(OdontologicalQuestionnaireOB_.sync, true)
                 .build()
                 .remove();
-    }
-
-    public void addAll(List<OdontologicalQuestionnaire> odontologicalQuestionnaires) {
-        for (OdontologicalQuestionnaire odontologicalQuestionnaire : odontologicalQuestionnaires) {
-            odontologicalQuestionnaire.setSync(true);
-            odontologicalQuestionnaireBox.put(new OdontologicalQuestionnaireOB(odontologicalQuestionnaire));
-        }
     }
 }

@@ -42,7 +42,7 @@ import static br.edu.uepb.nutes.haniot.data.model.type.UserType.HEALTH_PROFESSIO
 import static br.edu.uepb.nutes.haniot.data.model.type.UserType.PATIENT;
 
 /**
- * Implementation of the pilot study selection list.
+ * Implementation of the pilot study selection getAllByUserId.
  *
  * @author Copyright (c) 2018, NUTES/UEPB
  */

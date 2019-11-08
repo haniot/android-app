@@ -53,7 +53,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
     }
 
     /**
-     * Get list items.
+     * Get getAllByUserId items.
      *
      * @return List<T>
      */
@@ -62,7 +62,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
     }
 
     /**
-     * Checks if item list is empty
+     * Checks if item getAllByUserId is empty
      *
      * @return boolean
      */
@@ -125,7 +125,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
     }
 
     /**
-     * Clear the list of itemsList and notifies you that the data set has changed.
+     * Clear the getAllByUserId of itemsList and notifies you that the data set has changed.
      */
     public void clearItems() {
         itemsList.clear();
@@ -146,7 +146,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
     }
 
     /**
-     * Apply animation to list itemsList.
+     * Apply animation to getAllByUserId itemsList.
      *
      * @param view
      * @param position

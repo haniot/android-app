@@ -194,16 +194,17 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     public void saveDeviceInServer(final Device device) {
         Log.i("AAA", device.toJson());
         device.setModelNumber(null); // TODO Remover quando a API der suporte
+        mDevice.setUserId(user.get_id());
         device.setUserId(user.get_id());
 
         DisposableManager.add(mRepository
-                .saveDevice(device)
+                .saveDeviceRemote(device)
                 .subscribe(deviceRest -> {
                     deviceRest.setImg(device.getImg());
-//                    deviceRest.setUserId(user.get_id());
                     Log.w("AAA", "UserOB: " + user.get_id());
                     Log.w("AAA", "subscribe: " + deviceRest.toJson());
-//                    mRepository.saveDevice(deviceRest);
+                    deviceRest.setSync(true);
+                    mRepository.saveDeviceLocal(deviceRest);
 
                     onDeviceRegistered(mDevice);
                 }, err -> {

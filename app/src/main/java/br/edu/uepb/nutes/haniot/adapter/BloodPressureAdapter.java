@@ -16,7 +16,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Adapter from the RecyclerView to list the Blood Pressure.
+ * Adapter from the RecyclerView to getAllByUserId the Blood Pressure.
  *
  * @author Copyright (c) 2019, NUTES/UEPB
  */

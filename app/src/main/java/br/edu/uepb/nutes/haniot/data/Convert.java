@@ -51,6 +51,8 @@ public class Convert {
     }
 
     public static Device convertDevice(DeviceOB d) {
+        if (d == null)
+            return null;
         return new Device(d);
     }
 
@@ -268,9 +270,15 @@ public class Convert {
     public static List<NutritionalQuestionnaire> listNutritionalQuestionnaireToModel(List<NutritionalQuestionnaireOB> n) {
         List<NutritionalQuestionnaire> aux = new ArrayList<>();
         for (NutritionalQuestionnaireOB questionnaire : n) {
-            aux.add(new NutritionalQuestionnaire(questionnaire));
+            aux.add(convertNutritionalQuestionnaire(questionnaire));
         }
         return aux;
+    }
+
+    private static NutritionalQuestionnaire convertNutritionalQuestionnaire(NutritionalQuestionnaireOB questionnaire) {
+        if (questionnaire == null)
+            return null;
+        return new NutritionalQuestionnaire(questionnaire);
     }
 
     public static SociodemographicRecordOB convertSociodemographicRecord(SociodemographicRecord sociodemographicRecord) {
@@ -284,9 +292,15 @@ public class Convert {
     public static List<OdontologicalQuestionnaire> listOdontologicalQuestionnaireToModel(List<OdontologicalQuestionnaireOB> n) {
         List<OdontologicalQuestionnaire> aux = new ArrayList<>();
         for (OdontologicalQuestionnaireOB questionnaire : n) {
-            aux.add(new OdontologicalQuestionnaire(questionnaire));
+            aux.add(convertOdontologicalQuestionnaire(questionnaire));
         }
         return aux;
+    }
+
+    private static OdontologicalQuestionnaire convertOdontologicalQuestionnaire(OdontologicalQuestionnaireOB questionnaire) {
+        if (questionnaire == null)
+            return null;
+        return new OdontologicalQuestionnaire(questionnaire);
     }
 
     public static FamilyCohesionRecordOB convertFamilyCohesionRecord(FamilyCohesionRecord f) {

@@ -49,6 +49,35 @@ public final class DateUtils {
     }
 
     /**
+     * Check if timeStamp is between dateStart and dateEnd
+     * @param timeStamp
+     * @param start
+     * @param end
+     * @return
+     */
+    public static boolean compareDates(String timeStamp, String start, String end) {
+        if (timeStamp == null)
+            return true;
+        if (start == null && end == null)
+            return true;
+
+        Date data = DateUtils.convertDateTime(timeStamp);
+
+        if (start == null) {
+            Date dataEnd = DateUtils.convertDateTime(end);
+            return data.compareTo(dataEnd) < 0;
+        }
+        if (end == null) {
+            Date dataStart = DateUtils.convertDateTime(start);
+            return data.compareTo(dataStart) > 0;
+        }
+        Date dataStart = DateUtils.convertDateTime(start);
+        Date dataEnd = DateUtils.convertDateTime(end);
+
+        return data.compareTo(dataStart) > 0 && data.compareTo(dataEnd) < 0;
+    }
+
+    /**
      * Convert date time in Object Date.
      *
      * @param datetime {@link String} Date time in format yyy-MM-dd'T'HH:mm:ss

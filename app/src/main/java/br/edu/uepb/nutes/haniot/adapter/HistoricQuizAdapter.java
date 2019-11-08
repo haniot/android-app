@@ -86,7 +86,7 @@ public class HistoricQuizAdapter extends CustomExpandableRecyclerViewAdapter<His
     }
 
     /**
-     * Apply animation to list itemsList.
+     * Apply animation to getAllByUserId itemsList.
      *
      * @param view     {@link View}
      * @param position int

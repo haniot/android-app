@@ -17,7 +17,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Adapter from the RecyclerView to list the glucose.
+ * Adapter from the RecyclerView to getAllByUserId the glucose.
  *
  * @author Copyright (c) 2019, NUTES/UEPB
  */

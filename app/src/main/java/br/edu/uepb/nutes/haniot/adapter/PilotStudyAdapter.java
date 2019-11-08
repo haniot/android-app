@@ -21,7 +21,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Adapter from the RecyclerView to list the Pilots Studies.
+ * Adapter from the RecyclerView to getAllByUserId the Pilots Studies.
  *
  * @author Copyright (c) 2019, NUTES/UEPB
  */

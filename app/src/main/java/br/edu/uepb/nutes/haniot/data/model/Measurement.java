@@ -81,24 +81,24 @@ public class Measurement extends Sync implements Parcelable {
     @Expose()
     private String meal;
 
-//    @Expose(serialize = false, deserialize = false)
-//    private List<HeartRateItem> datasetDB;
-//
-//    @Expose(serialize = false, deserialize = false)
-//    private BodyFat bodyFatDB;
-
     public Measurement() {
     }
 
     public Measurement(MeasurementOB m) {
-        this.setId(m.getId());
+        super(m.isSync());
         this.set_id(m.get_id());
+        this.setId(m.getId());
         this.setValue(m.getValue());
         this.setUnit(m.getUnit());
         this.setType(m.getType());
         this.setTimestamp(m.getTimestamp());
         this.setUserId(m.getUserId());
         this.setDeviceId(m.getDeviceId());
+        this.setSystolic(m.getSystolic());
+        this.setDiastolic(m.getDiastolic());
+        this.setPulse(m.getPulse());
+        this.setMeal(m.getMeal());
+
         if (m.getBodyFat() != null)
             this.setFat(Convert.convertBodyFat(m.getBodyFat().getTarget()));
         if (m.getDataset() != null)

@@ -16,7 +16,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Adapter from the RecyclerView to list the SmartBand.
+ * Adapter from the RecyclerView to getAllByUserId the SmartBand.
  *
  * @author Copyright (c) 2019, NUTES/UEPB
  */

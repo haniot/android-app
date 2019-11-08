@@ -33,7 +33,7 @@ public class QuizItemExpandableAdapter extends ExpandableRecyclerViewAdapter<Qui
     }
 
     /**
-     * Apply animation to list itemsList.
+     * Apply animation to getAllByUserId itemsList.
      *
      * @param view     int
      * @param position {@link View}

@@ -18,7 +18,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Adapter from the RecyclerView to list the heart rate.
+ * Adapter from the RecyclerView to getAllByUserId the heart rate.
  *
  * @author Copyright (c) 2019, NUTES/UEPB
  */

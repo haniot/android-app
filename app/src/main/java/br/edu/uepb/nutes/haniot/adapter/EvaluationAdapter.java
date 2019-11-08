@@ -90,7 +90,7 @@ public class EvaluationAdapter extends ExpandableRecyclerViewAdapter<EvaluationA
     }
 
     /**
-     * Apply animation to list itemsList.
+     * Apply animation to getAllByUserId itemsList.
      *
      * @param view
      * @param position

@@ -25,20 +25,15 @@ public class PatientDAO {
     public static PatientDAO instance;
     private static Box<PatientOB> patientBox;
 
-    private PatientDAO() {
+    private PatientDAO(Context context) {
+        BoxStore boxStore = ((App) context.getApplicationContext()).getBoxStore();
+        patientBox = boxStore.boxFor(PatientOB.class);
     }
 
     public static synchronized PatientDAO getInstance(@Nullable Context context) {
-        if (instance == null) instance = new PatientDAO();
-
-        BoxStore boxStore = ((App) context.getApplicationContext()).getBoxStore();
-        patientBox = boxStore.boxFor(PatientOB.class);
-
+        if (instance == null)
+            instance = new PatientDAO(context);
         return instance;
-    }
-
-    public PatientOB get(long id) {
-        return patientBox.query().equal(PatientOB_.id, id).build().findFirst();
     }
 
     public Patient get(@NonNull String _id) {
@@ -46,12 +41,16 @@ public class PatientDAO {
                 .equal(PatientOB_._id, _id)
                 .build()
                 .findFirst();
-        return new Patient(aux);
+        return Convert.convertPatient(aux);
     }
 
-    public List<PatientOB> list(@NonNull String healthProfessionalId) {
-        return patientBox.query().equal(PatientOB_.healthProfessionalId, healthProfessionalId).build().find();
-    }
+//    public PatientOB get(long id) {
+//        return patientBox.query().equal(PatientOB_.id, id).build().findFirst();
+//    }
+
+//    public List<PatientOB> list(@NonNull String healthProfessionalId) {
+//        return patientBox.query().equal(PatientOB_.healthProfessionalId, healthProfessionalId).build().find();
+//    }
 
     public long save(@NonNull Patient patient) {
         return patientBox.put(new PatientOB(patient));
@@ -70,14 +69,17 @@ public class PatientDAO {
     }
 
     public boolean remove(@NonNull String _id) {
-        return patientBox.query().equal(PatientOB_._id, _id).build().remove() > 0;
+        return patientBox.query()
+                .equal(PatientOB_._id, _id)
+                .build().remove() > 0;
     }
 
     public List<Patient> getAllPatients(String pilotStudyId, String sort, int page, int limit) {
+        page--;
         List<PatientOB> aux = patientBox.query()
                                 .equal(PatientOB_.pilotId, pilotStudyId)
                                 .build()
-                                .find();
+                                .find(page * limit, limit);
         return Convert.listPatientsToModel(aux);
     }
 
@@ -94,13 +96,6 @@ public class PatientDAO {
                 .equal(PatientOB_.id, id)
                 .build()
                 .remove();
-    }
-
-    public void addAll(List<Patient> patients) {
-        for (Patient patient : patients) {
-            patient.setSync(true);
-            patientBox.put(new PatientOB(patient));
-        }
     }
 
     public void removeSyncronized() {

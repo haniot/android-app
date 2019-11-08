@@ -309,7 +309,7 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
     }
 
     /**
-     * Show message empty list.
+     * Show message empty getAllByUserId.
      */
     private void showEmpty(boolean enabled, String type) {
         if (type.equals(NUTRITION)) {

@@ -139,7 +139,7 @@ public class ItemQuizView extends RelativeLayout {
         }
 
         /**
-         * Clear the list of itemsList and notifies you that the data set has changed.
+         * Clear the getAllByUserId of itemsList and notifies you that the data set has changed.
          */
         public void clearItems() {
             items.clear();

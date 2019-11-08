@@ -22,7 +22,9 @@ public class DeviceDAO {
     public static DeviceDAO instance;
     private static Box<DeviceOB> deviceBox;
 
-    private DeviceDAO() {
+    private DeviceDAO(Context context) {
+        BoxStore boxStore = ((App) context.getApplicationContext()).getBoxStore();
+        deviceBox = boxStore.boxFor(DeviceOB.class);
     }
 
     /**
@@ -32,11 +34,8 @@ public class DeviceDAO {
      * @return DeviceDAO
      */
     public static synchronized DeviceDAO getInstance(@NonNull Context context) {
-        if (instance == null) instance = new DeviceDAO();
-
-        BoxStore boxStore = ((App) context.getApplicationContext()).getBoxStore();
-        deviceBox = boxStore.boxFor(DeviceOB.class);
-
+        if (instance == null)
+            instance = new DeviceDAO(context);
         return instance;
     }
 
@@ -48,12 +47,6 @@ public class DeviceDAO {
      */
     public long save(@NonNull Device device) {
         return deviceBox.put(Convert.convertDevice(device));
-    }
-
-    public void save(List<Device> devices) {
-        for (Device aux : devices) {
-            this.save(aux);
-        }
     }
 
     /**
@@ -68,7 +61,7 @@ public class DeviceDAO {
                 .equal(DeviceOB_.address, address)
                 .equal(DeviceOB_.userId, userId)
                 .build().findFirst();
-        return new Device(aux);
+        return Convert.convertDevice(aux);
     }
 
     /**
@@ -83,7 +76,7 @@ public class DeviceDAO {
                 .equal(DeviceOB_.userId, userId)
                 .equal(DeviceOB_.type, type)
                 .build().findFirst();
-        return new Device(aux);
+        return Convert.convertDevice(aux);
     }
 
     /**
@@ -106,19 +99,6 @@ public class DeviceDAO {
     }
 
     /**
-     * Retrieves all device according to userId.
-     *
-     * @param userId long
-     * @return List<T>
-     */
-    public List<Device> list(@NonNull String userId) {
-        List<DeviceOB> aux = deviceBox.query()
-                .equal(DeviceOB_.userId, userId)
-                .build().find();
-        return Convert.listDeviceToModel(aux);
-    }
-
-    /**
      * Update device.
      * According to your _id and _id user provided by the remote server.
      *
@@ -138,24 +118,16 @@ public class DeviceDAO {
         return save(device); // updateOrSave
     }
 
+    /**
+     * Get device by _id
+     * @param _id
+     * @return
+     */
     private Device get(String _id) {
         DeviceOB aux = deviceBox.query()
                 .equal(DeviceOB_._id, _id)
                 .build().findFirst();
-        return new Device(aux);
-    }
-
-    /**
-     * Removes device passed as parameter.
-     *
-     * @param device DeviceOB
-     * @return boolean
-     */
-    public boolean remove(@NonNull Device device) {
-        return (deviceBox.query()
-                .equal(DeviceOB_.id, device.getId())
-                .build()
-                .remove()) > 0;
+        return Convert.convertDevice(aux);
     }
 
     /**
@@ -180,14 +152,14 @@ public class DeviceDAO {
      */
     public boolean removeAll(@NonNull String userId) {
         return deviceBox.query()
-                .equal(DeviceOB_._id, userId)
+                .equal(DeviceOB_.userId, userId)
                 .build().remove() > 0;
     }
 
-    public List<Device> getAllDevices(String patientId) {
+    public List<Device> getAllDevices(String userId) {
         return Convert.listDeviceToModel(
                 deviceBox.query()
-                        .equal(DeviceOB_.userId, patientId)
+                        .equal(DeviceOB_.userId, userId)
                         .build().find());
     }
 
@@ -196,12 +168,5 @@ public class DeviceDAO {
                 .equal(DeviceOB_.id, id)
                 .build()
                 .remove();
-    }
-
-    public void addAll(List<Device> devices) {
-        for (Device device : devices) {
-            device.setSync(true);
-            deviceBox.put(new DeviceOB(device));
-        }
     }
 }

@@ -539,7 +539,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
     }
 
     /**
-     * Save collected list of HeartRate measurements.
+     * Save collected getAllByUserId of HeartRate measurements.
      */
     public void saveHeartRateCollection() {
 
@@ -804,7 +804,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
     }
 
     /**
-     * Update monitor list.
+     * Update monitor getAllByUserId.
      */
     private void refreshListMonitor() {
         mAdapter.clearItems();
@@ -841,7 +841,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
         user = appPreferencesHelper.getUserLogged();
         patient = appPreferencesHelper.getLastPatient();
 //        deviceDAO = DeviceDAO.getInstance(mContext);
-//        Log.w("AAA", Arrays.toString(deviceDAO.list(user.get_id()).toArray()));
+//        Log.w("AAA", Arrays.toString(deviceDAO.getAllByUserId(user.get_id()).toArray()));
 
         DisposableManager.add(
                 mRepository.getAllDevices(user.get_id())
@@ -859,7 +859,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
     }
 
     /**
-     * Init recycler view of list devices.
+     * Init recycler view of getAllByUserId devices.
      */
     private void initRecyclerView() {
         mAdapter.setHasStableIds(true);
@@ -910,7 +910,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
     }
 
     /**
-     * calculate number of columns of list measurement.
+     * calculate number of columns of getAllByUserId measurement.
      *
      * @param context {@link Context}
      * @return int
@@ -946,7 +946,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
     }
 
     /**
-     * On click item of measurement monitor list.
+     * On click item of measurement monitor getAllByUserId.
      *
      * @param item {@link MeasurementMonitor}
      */

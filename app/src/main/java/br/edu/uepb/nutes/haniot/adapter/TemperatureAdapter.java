@@ -19,7 +19,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Adapter from the RecyclerView to list the temperatures.
+ * Adapter from the RecyclerView to getAllByUserId the temperatures.
  *
  * @author Copyright (c) 2019, NUTES/UEPB
  */

@@ -273,7 +273,7 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
      * when an error occurs on the first request with the server.
      */
     private void loadDataLocal() {
-//        mAdapter.addItems(measurementDAO.list(MeasurementType.STEPS, appPreferencesHelper.getUserLogged().getId(), 0, 100));
+//        mAdapter.addItems(measurementDAO.getAllByUserId(MeasurementType.STEPS, appPreferencesHelper.getUserLogged().getId(), 0, 100));
 //
 //        if (!mAdapter.itemsIsEmpty()) {
 //            updateUILastMeasurement(mAdapter.getFirstItem(), false);
@@ -289,7 +289,7 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
      * Otherwise it displays from the remote server.
      */
     private void loadData() {
-//        mAdapter.clearItems(); // clear list
+//        mAdapter.clearItems(); // clear getAllByUserId
 //
 //        if (!ConnectionUtils.internetIsEnabled(this)) {
 //            loadDataLocal();

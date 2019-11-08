@@ -183,7 +183,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
     }
 
     /**
-     * Download list of devices registered.
+     * Download getAllByUserId of devices registered.
      */
     public void downloadDevicesData() {
         DisposableManager.add(mRepository
@@ -446,7 +446,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
     }
 
     /**
-     * Merge between list of available and registered devices.
+     * Merge between getAllByUserId of available and registered devices.
      *
      * @param registeredList {@link List<Device>}
      * @param availableList  {@link List<Device>}

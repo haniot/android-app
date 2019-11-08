@@ -270,7 +270,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     mRepository.removeAllDevicesLocal(userId);
                     for (Device d : devices) {
                         d.setUserId(userId);
-                        mRepository.saveDevice(d);
+                        d.setSync(true);
+                        mRepository.saveDeviceLocal(d);
                     }
                 }, error -> Log.w(LOG_TAG, "syncDevices() error: " + error.getMessage()))
         );

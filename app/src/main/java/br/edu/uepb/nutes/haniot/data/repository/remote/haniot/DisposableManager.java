@@ -7,6 +7,10 @@ import io.reactivex.disposables.Disposable;
 public class DisposableManager {
     private static CompositeDisposable compositeDisposable;
 
+    public static void clear() {
+        compositeDisposable.clear();
+    }
+
     public static void add(@NonNull Disposable disposable) {
         getCompositeDisposable().add(disposable);
     }
