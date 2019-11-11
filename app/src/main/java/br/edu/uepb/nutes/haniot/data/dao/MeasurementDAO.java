@@ -69,14 +69,14 @@ public class MeasurementDAO {
     /**
      * Remove measurementOB.
      *
-     * @param userId        String
-     * @param measurementId String
+//     * @param userId        String
+     * @param measurementId long
      * @return boolean
      */
-    public boolean remove(@NonNull String userId, String measurementId) {
+    public boolean remove(@NonNull long measurementId) {
         return measurementBox.query()
-                .equal(MeasurementOB_._id, measurementId)
-                .equal(MeasurementOB_.userId, userId)
+                .equal(MeasurementOB_.id, measurementId)
+//                .equal(MeasurementOB_.userId, userId)
                 .build()
                 .remove() > 0;
     }

@@ -68,9 +68,9 @@ public class PatientDAO {
         return save(patient);
     }
 
-    public boolean remove(@NonNull String _id) {
+    public boolean remove(@NonNull long id) {
         return patientBox.query()
-                .equal(PatientOB_._id, _id)
+                .equal(PatientOB_.id, id)
                 .build().remove() > 0;
     }
 

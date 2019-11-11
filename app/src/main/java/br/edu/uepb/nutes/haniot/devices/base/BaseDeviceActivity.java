@@ -86,7 +86,7 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
     private boolean bluetoothRequest;
     private boolean isFirst;
 
-    private List<String> measurementIdToDelete;
+    private List<Measurement> measurementsToDelete;
     private Handler handler;
     private Runnable runnable;
     private Snackbar snackbar;
@@ -143,7 +143,7 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
         mRepository = Repository.getInstance(this);
         decimalFormat = new DecimalFormat(getString(R.string.format_number2), new DecimalFormatSymbols(Locale.US));
-        measurementIdToDelete = new ArrayList<>();
+        measurementsToDelete = new ArrayList<>();
         animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
         mChartButton.setOnClickListener(this);
         mAddButton.setOnClickListener(this);
@@ -289,7 +289,7 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
             @Override
             public void onItemSwiped(Measurement item, int position) {
                 mAdapter.removeItem(item);
-                measurementIdToDelete.add(item.get_id());
+                measurementsToDelete.add(item);
                 handler = new Handler();
                 runnable = () -> {
                     removePendingMeasurements();
@@ -301,7 +301,7 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
                 snackbar.setAction(getString(R.string.undo), view -> {
                     mAdapter.restoreItem(item, position);
                     mRecyclerView.scrollToPosition(position);
-                    measurementIdToDelete.remove(item.get_id());
+                    measurementsToDelete.remove(item);
 //                    handler.removeCallbacks(runnable);
                 });
                 snackbar.show();
@@ -354,13 +354,18 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
 
     private void removePendingMeasurements() {
         Log.w("XXX", "removePendingMeasurements()");
-        if (measurementIdToDelete == null || measurementIdToDelete.isEmpty()) return;
-        for (String id : measurementIdToDelete) {
+        if (measurementsToDelete == null || measurementsToDelete.isEmpty()) return;
+        for (Measurement measurement : measurementsToDelete) {
+            measurement.setUserId(patient.get_id());
+
             DisposableManager.add(mRepository
-                    .deleteMeasurement(patient.get_id(), id).subscribe(() -> {
-                        measurementIdToDelete.remove(id);
+                    .deleteMeasurement(measurement)
+                    .subscribe(() -> {
+                        measurementsToDelete.remove(measurement);
+                    }, throwable -> {
+                        Log.i("REMOVER", "removePendingMeasurements: ERROR, não removido");
                     }));
-            measurementIdToDelete.remove(id);
+            measurementsToDelete.remove(measurement);
         }
     }
 

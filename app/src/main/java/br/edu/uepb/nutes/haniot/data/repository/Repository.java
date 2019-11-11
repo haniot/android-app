@@ -374,14 +374,20 @@ public class Repository {
     /**
      * Remove measurement.
      *
-     * @param measurementId
+     * @param measurement
      * @return boolean
      */
-    public Completable deleteMeasurement(@NonNull String patientId, @NonNull String measurementId) {
+    public Completable deleteMeasurement(@NonNull Measurement measurement) {
         Log.i(TAG, "deleteMeasurement: ");
-//        if ()
-        return haniotNetRepository.deleteMeasurement(patientId, measurementId);
-//                .doOnComplete(() -> syncronize());
+        Log.i(TAG, "deleteMeasurement: "+ measurement.get_id());
+        Log.i(TAG, "deleteMeasurement: "+ measurement.getUserId());
+        Log.i(TAG, "deleteMeasurement: "+ measurement.getId());
+        if (measurement.get_id() == null && !measurement.isSync()) { // não foi sincronizada ainda, removo localmente
+            measurementDAO.remove(measurement.getId());
+            return Completable.complete();
+        } else {
+            return haniotNetRepository.deleteMeasurement(measurement.getUserId(), measurement.get_id());
+        }
     }
 
     public Single<List<Measurement>> getAllMeasurementsByType(String userId, String typeMeasurement,
@@ -470,10 +476,15 @@ public class Repository {
         }
     }
 
-    public Completable deletePatient(String patientId) {
+    public Completable deletePatient(@NonNull Patient patient) {
         Log.i(TAG, "deletePatient: ");
-        return haniotNetRepository.deletePatient(patientId)
-                .doOnComplete(() -> syncronize());
+        if (patient.get_id() == null) {
+            patientDAO.remove(patient.getId());
+            return Completable.complete();
+        } else {
+            return haniotNetRepository.deletePatient(patient.get_id())
+                    .doOnComplete(() -> syncronize());
+        }
     }
 
     public Single<Response<Void>> associatePatientToPilotStudy(String pilotStudyId, Patient patient) {

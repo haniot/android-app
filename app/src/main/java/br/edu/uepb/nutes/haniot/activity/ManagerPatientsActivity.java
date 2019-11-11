@@ -235,7 +235,7 @@ public class ManagerPatientsActivity extends AppCompatActivity {
     private void removePatient(Patient patient) {
 
         DisposableManager.add(mRepository
-                .deletePatient(patient.get_id())
+                .deletePatient(patient)
                 .doAfterTerminate(this::loadData)
                 .subscribe(() -> {
                             adapter.removeItem(patient);
