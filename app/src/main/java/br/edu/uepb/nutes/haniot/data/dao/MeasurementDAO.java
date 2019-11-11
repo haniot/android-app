@@ -198,7 +198,10 @@ public class MeasurementDAO {
 //                        .filter(m -> DateUtils.compareDates(m.getTimestamp(), dateStart, dateEnd))
                         .build()
                         .find(page * limit, limit);
-        Log.i(TAG, "getMeasurementsByType: " + aux.toString());
+        List<MeasurementOB> teste = measurementBox.query()
+                .orderDesc(MeasurementOB_.timestamp)
+                .build().find(page * limit, limit);
+        Log.i(TAG, "ATUALMENTE: " + teste.toString());
         return Convert.listMeasurementsToModel(aux);
     }
 

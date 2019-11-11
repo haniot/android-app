@@ -523,7 +523,7 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        DisposableManager.dispose();
+//        DisposableManager.clear();
         if (manager != null) manager.close();
         unregisterReceiver(mReceiver);
     }
