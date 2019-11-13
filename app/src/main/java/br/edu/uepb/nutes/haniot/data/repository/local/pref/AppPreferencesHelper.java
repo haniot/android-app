@@ -63,7 +63,7 @@ public class AppPreferencesHelper implements PreferencesHelper {
         if (patient == null) {
             throw new LocalPreferenceException("attribute patient can not be null or empty!");
         }
-
+        Log.i("MainActivity:", "saveLastPatient: "+ patient.toJson());
         return mPrefs.edit()
                 .putString(PREF_KEY_PATIENT, String.valueOf(patient.toJson()))
                 .commit();

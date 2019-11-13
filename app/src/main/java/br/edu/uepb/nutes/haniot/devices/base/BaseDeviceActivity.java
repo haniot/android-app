@@ -90,6 +90,8 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
     private Handler handler;
     private Runnable runnable;
     private Snackbar snackbar;
+
+    private boolean first;
     /**
      * We need this variable to lock and unlock loading more.
      * We should not charge more when a request has already been made.
@@ -164,6 +166,7 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
         registerReceiver(mReceiver, filterBluetooth);
         IntentFilter filterInternet = new IntentFilter(CONNECTIVITY_CHANGE);
         registerReceiver(mReceiver, filterInternet);
+
     }
 
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -364,27 +367,13 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
                         measurementsToDelete.remove(measurement);
                     }, throwable -> {
                         Log.i("REMOVER", "removePendingMeasurements: ERROR, não removido");
+                        printMessage(getString(R.string.error_500));
+                        loadData(true);
+                        return; // após o erro não tenta os próximos
                     }));
             measurementsToDelete.remove(measurement);
         }
     }
-
-//    /**
-//     * Load data from the local database.
-//     * It should only be called when there is no internet connection or
-//     * when an error occurs on the first request with the server.
-//     */
-//    private void loadDataLocal() {
-//        page = INITIAL_PAGE; // returns to initial page
-//        mAdapter.addItems(mRepository.listMeasurements(getMeasurementType(), patient.get_id(), 0, 100));
-//
-//        if (!mAdapter.itemsIsEmpty()) {
-//            updateUILastMeasurement((Measurement) mAdapter.getFirstItem(), false);
-//        } else {
-//            toggleNoDataMessage(true); // Enable message no data
-//        }
-//        toggleLoading(false);
-//    }
 
     /**
      * Load data.
@@ -432,14 +421,6 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
                     Log.w(getTag(), "loadData - onError()");
                     if (mAdapter.itemsIsEmpty()) printMessage(getString(R.string.error_500));
                 }));
-
-//        mRepository.getMeasurements(patient.get_id(), getMeasurementType(), "-timestamp", page, LIMIT_PER_PAGE);
-//
-//        if (!ConnectionUtils.internetIsEnabled(this)) {
-//            loadDataLocal();
-//        } else {
-//
-//        }
     }
 
     /**
@@ -511,6 +492,7 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
             boxMessage.setVisibility(View.GONE);
         }
         checkPermissions();
+//        if (!isFirst)
         loadData(true);
         updateConnectionState();
 
@@ -560,7 +542,6 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
                 .saveMeasurement(measurement)
                 .doAfterSuccess(measurement1 -> {
                     printMessage(getString(R.string.measurement_save));
-                    Log.w(getTag(), "SINCRONIZAR...");
                     loadData(true);
                 })
                 .subscribe(measurement1 -> {

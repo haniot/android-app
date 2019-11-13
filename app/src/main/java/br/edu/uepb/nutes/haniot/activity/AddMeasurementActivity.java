@@ -475,7 +475,7 @@ public class AddMeasurementActivity extends AppCompatActivity {
 
         } else {
             switch (typeMeasurement) {
-                case "blood_glucose":
+                case MeasurementType.BLOOD_GLUCOSE:
                     if (textMeasurement.getText().toString().isEmpty()) {
                         showMessage(R.string.measurement_invalid);
                         return;
@@ -483,8 +483,8 @@ public class AddMeasurementActivity extends AppCompatActivity {
                     measurement = communicator.getMeasurement();
                     measurement.setValue(Double.valueOf(textMeasurement.getText().toString()));
                     break;
-                case "weight":
-                case "body_temperature":
+                case MeasurementType.BODY_MASS:
+                case MeasurementType.BODY_TEMPERATURE:
                     if (textMeasurement.getText().toString().isEmpty()) {
                         showMessage(R.string.measurement_invalid);
                         return;
@@ -492,12 +492,12 @@ public class AddMeasurementActivity extends AppCompatActivity {
                     measurement.setValue(Double.valueOf(textMeasurement.getText().toString()));
                     measurement.setUnit(textUnit.getText().toString());
                     break;
-                case "heart_rate":
+                case MeasurementType.HEART_RATE:
                     measurement = communicator.getMeasurement();
                     measurement.getDataset().get(0)
                             .setTimestamp(DateUtils.convertDateTimeToUTC(myCalendar.getTime()));
                     break;
-                case "blood_pressure":
+                case MeasurementType.BLOOD_PRESSURE:
                     measurement = communicator.getMeasurement();
                     break;
             }

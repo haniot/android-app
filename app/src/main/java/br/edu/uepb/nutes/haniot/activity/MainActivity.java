@@ -32,7 +32,6 @@ import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
-import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.fragment.DashboardChartsFragment;
 import br.edu.uepb.nutes.haniot.fragment.MeasurementsGridFragment;
 import br.edu.uepb.nutes.haniot.utils.NetworkUtil;
@@ -109,6 +108,7 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
         Log.w("AAA", "UserOB: " + appPreferences.getUserLogged());
 
         mRepository = Repository.getInstance(this);
+        mRepository.syncronize();
     }
 
     private void loadDashboard() {
@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
     @Override
     protected void onStart() {
         super.onStart();
-        mRepository.syncronize();
+//        mRepository.syncronize();
     }
 
     @Override
@@ -152,7 +152,7 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
     @Override
     protected void onPause() {
         super.onPause();
-        DisposableManager.clear();
+//        DisposableManager.clear();
     }
 
     /**
@@ -207,6 +207,7 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
         patient = appPreferences.getLastPatient();
 
         if (patient != null) {
+            Log.i(LOG_TAG, "checkPatient: " + patient.toString());
             loadDashboard();
             checkPermissions();
         } else {

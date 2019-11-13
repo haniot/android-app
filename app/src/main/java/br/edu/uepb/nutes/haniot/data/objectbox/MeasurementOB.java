@@ -72,8 +72,8 @@ public class MeasurementOB extends SyncOB {
 
         if (m.getFat() != null)
             this.bodyFat.setTarget(Convert.convertBodyFat(m.getFat()));
-        if (m.getDataset() != null)
-            this.setDataset(Convert.convertListHeartRate(m.getDataset()));
+
+        this.setDataset(Convert.convertListHeartRate(m.getDataset()));
     }
 
     public long getId() {

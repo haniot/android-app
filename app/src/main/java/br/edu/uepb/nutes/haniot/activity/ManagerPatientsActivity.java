@@ -29,6 +29,7 @@ import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.ErrorHandler;
+import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -209,10 +210,18 @@ public class ManagerPatientsActivity extends AppCompatActivity {
                             .show();
 
                 } else if (v.getId() == R.id.btnEditChildren) {
-                    Intent intent = new Intent(ManagerPatientsActivity.this, UserRegisterActivity.class);
-                    intent.putExtra("action", "edit");
-                    appPreferencesHelper.saveLastPatient(item);
-                    startActivity(intent);
+                    if (item.get_id() != null) {
+                        if (ConnectionUtils.internetIsEnabled(getApplicationContext())) {
+                            Intent intent = new Intent(ManagerPatientsActivity.this, UserRegisterActivity.class);
+                            intent.putExtra("action", "edit");
+                            appPreferencesHelper.saveLastPatient(item);
+                            startActivity(intent);
+                        } else {
+                            showMessage(getString(R.string.error_500));
+                        }
+                    } else {
+                        // IMPLEMENTAR EDICAO OFF
+                    }
                 }
             }
 
@@ -238,11 +247,15 @@ public class ManagerPatientsActivity extends AppCompatActivity {
                 .deletePatient(patient)
                 .doAfterTerminate(this::loadData)
                 .subscribe(() -> {
-                            adapter.removeItem(patient);
-                            adapter.notifyDataSetChanged();
+//                            adapter.removeItem(patient);
+//                            adapter.notifyDataSetChanged();
                             showMessage(getResources().getString(R.string.patient_removed));
                             Patient lastPatient = appPreferencesHelper.getLastPatient();
-                            if (lastPatient != null && patient.get_id().equals(lastPatient.get_id())) {
+                            if (lastPatient.get_id() != null) {
+                                if (lastPatient.get_id().equals(patient.get_id())) {
+                                    appPreferencesHelper.removeLastPatient();
+                                }
+                            } else {
                                 appPreferencesHelper.removeLastPatient();
                             }
                         },

@@ -33,7 +33,6 @@ public class BodyFatOB {
     }
 
     public BodyFatOB(BodyFat b) {
-        this();
         this.setId(b.getId());
         this.setValue(b.getValue());
         this.setUnit(b.getUnit());

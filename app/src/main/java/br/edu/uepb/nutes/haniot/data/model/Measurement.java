@@ -99,10 +99,10 @@ public class Measurement extends Sync implements Parcelable {
         this.setPulse(m.getPulse());
         this.setMeal(m.getMeal());
 
-        if (m.getBodyFat() != null)
+        if (m.getBodyFat() != null && m.getBodyFat().getTarget() != null)
             this.setFat(Convert.convertBodyFat(m.getBodyFat().getTarget()));
-        if (m.getDataset() != null)
-            this.setDataset(Convert.convertListHeartRateL(m.getDataset()));
+
+        this.setDataset(Convert.convertListHeartRateL(m.getDataset()));
     }
 
     protected Measurement(Parcel in) {

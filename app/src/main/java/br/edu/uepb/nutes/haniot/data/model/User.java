@@ -19,6 +19,7 @@ import br.edu.uepb.nutes.haniot.data.model.type.UserType;
 public class User extends Sync {
 
     @Expose(serialize = false, deserialize = false)
+//    @Expose()
     private long id;
 
     @SerializedName("id")

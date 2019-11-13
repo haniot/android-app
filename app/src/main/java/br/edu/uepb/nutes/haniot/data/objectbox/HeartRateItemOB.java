@@ -32,7 +32,9 @@ public class HeartRateItemOB {
         this.setId(h.getId());
         this.setValue(h.getValue());
         this.setTimestamp(h.getTimestamp());
-        this.heartRate.setTarget(Convert.convertMeasurement(h.getHeartRate()));
+
+        if (h.getHeartRate() != null)
+            this.heartRate.setTarget(Convert.convertMeasurement(h.getHeartRate()));
     }
 
     public long getId() {

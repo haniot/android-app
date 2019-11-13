@@ -12,6 +12,7 @@ import br.edu.uepb.nutes.haniot.data.Convert;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.objectbox.MeasurementOB;
 import br.edu.uepb.nutes.haniot.data.objectbox.MeasurementOB_;
+import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import io.objectbox.Box;
 import io.objectbox.BoxStore;
@@ -222,6 +223,7 @@ public class MeasurementDAO {
     }
 
     public void removeSyncronized() {
+        Log.i(Repository.TAG, "Removendo Measurements sincronizadas");
         measurementBox.query()
                 .equal(MeasurementOB_.sync, true)
                 .build()

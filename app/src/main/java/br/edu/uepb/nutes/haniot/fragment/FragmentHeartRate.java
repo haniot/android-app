@@ -16,6 +16,7 @@ import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.AddMeasurementActivity;
 import br.edu.uepb.nutes.haniot.data.model.HeartRateItem;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
+import br.edu.uepb.nutes.haniot.data.model.type.MeasurementType;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -98,8 +99,9 @@ public class FragmentHeartRate extends Fragment implements AddMeasurementActivit
         heartRateItems.add(heartRateItem);
 
         measurement.setDataset(heartRateItems);
-        measurement.setType("heart_rate");
+        measurement.setType(MeasurementType.HEART_RATE);
         measurement.setUnit(getContext().getResources().getString(R.string.unit_heart_rate));
+        measurement.setDeviceId(null);
         return measurement;
     }
 

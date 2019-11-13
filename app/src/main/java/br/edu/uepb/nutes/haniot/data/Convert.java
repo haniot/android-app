@@ -125,6 +125,7 @@ public class Convert {
     }
 
     public static BodyFatOB convertBodyFat(BodyFat bf) {
+        if (bf == null) return null;
         return new BodyFatOB(bf);
     }
 
@@ -135,6 +136,8 @@ public class Convert {
 
     public static List<HeartRateItemOB> convertListHeartRate(List<HeartRateItem> list) {
         List<HeartRateItemOB> lista = new ArrayList<>();
+        if (list == null || list.isEmpty()) return lista;
+
         for (HeartRateItem aux : list) {
             lista.add(new HeartRateItemOB(aux));
         }
@@ -143,6 +146,8 @@ public class Convert {
 
     public static List<HeartRateItem> convertListHeartRateL(List<HeartRateItemOB> list) {
         List<HeartRateItem> lista = new ArrayList<>();
+        if (list == null || list.isEmpty()) return lista;
+
         for (HeartRateItemOB aux : list) {
             lista.add(new HeartRateItem(aux));
         }

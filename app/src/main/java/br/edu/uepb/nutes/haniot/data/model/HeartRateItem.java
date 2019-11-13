@@ -45,7 +45,9 @@ public class HeartRateItem implements Parcelable {
         this.setId(h.getId());
         this.setValue(h.getValue());
         this.setTimestamp(h.getTimestamp());
-        this.setHeartRate(Convert.convertMeasurement(h.getHeartRate().getTarget()));
+
+        if (h.getHeartRate() != null && h.getHeartRate().getTarget() != null)
+            this.setHeartRate(Convert.convertMeasurement(h.getHeartRate().getTarget()));
     }
 
     protected HeartRateItem(Parcel in) {

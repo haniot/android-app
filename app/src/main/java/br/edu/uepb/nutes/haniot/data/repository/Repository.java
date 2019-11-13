@@ -4,8 +4,6 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.google.gson.JsonObject;
-
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.data.dao.DeviceDAO;
@@ -14,22 +12,14 @@ import br.edu.uepb.nutes.haniot.data.dao.NutritionalQuestionnaireDAO;
 import br.edu.uepb.nutes.haniot.data.dao.OdontologicalQuestionnaireDAO;
 import br.edu.uepb.nutes.haniot.data.dao.PatientDAO;
 import br.edu.uepb.nutes.haniot.data.dao.del.UserDAO;
-import br.edu.uepb.nutes.haniot.data.model.Admin;
 import br.edu.uepb.nutes.haniot.data.model.Device;
-import br.edu.uepb.nutes.haniot.data.model.HealthProfessional;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
-import br.edu.uepb.nutes.haniot.data.model.MeasurementLastResponse;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
-import br.edu.uepb.nutes.haniot.data.model.PilotStudy;
 import br.edu.uepb.nutes.haniot.data.model.User;
-import br.edu.uepb.nutes.haniot.data.model.UserAccess;
-import br.edu.uepb.nutes.haniot.data.model.nutritional.NutritionalEvaluation;
-import br.edu.uepb.nutes.haniot.data.model.nutritional.NutritionalEvaluationResult;
 import br.edu.uepb.nutes.haniot.data.model.nutritional.NutritionalQuestionnaire;
 import br.edu.uepb.nutes.haniot.data.model.odontological.OdontologicalQuestionnaire;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
-import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import io.reactivex.Completable;
 import io.reactivex.Single;
@@ -38,8 +28,7 @@ import retrofit2.Response;
 /**
  * Classe responsável por gerenciar o repositório local e o repositório remoto
  */
-public class Repository {
-    String TAG = "REPOSITORY";
+public class Repository extends RepositoryOn {
 
     private static Repository instance;
 
@@ -50,8 +39,7 @@ public class Repository {
     }
 
     private Repository(Context context) {
-        this.mContext = context;
-        this.haniotNetRepository = HaniotNetRepository.getInstance(context);
+        super(context);
         this.appPreferencesHelper = AppPreferencesHelper.getInstance(context);
         this.deviceDAO = DeviceDAO.getInstance(context);
         this.measurementDAO = MeasurementDAO.getInstance(context);
@@ -61,7 +49,6 @@ public class Repository {
         this.odontologicalQuestionnaireDAO = OdontologicalQuestionnaireDAO.getInstance(context);
     }
 
-    private HaniotNetRepository haniotNetRepository;
     private AppPreferencesHelper appPreferencesHelper;
     private DeviceDAO deviceDAO;
     private MeasurementDAO measurementDAO;
@@ -69,7 +56,6 @@ public class Repository {
     private PatientDAO patientDAO;
     private NutritionalQuestionnaireDAO nutritionalQuestionnaireDAO;
     private OdontologicalQuestionnaireDAO odontologicalQuestionnaireDAO;
-    private Context mContext;
 
     private boolean sendUnsynchronized() {
         List<Device> devices = deviceDAO.getAllNotSync();
@@ -80,7 +66,7 @@ public class Repository {
 
         if (devices.isEmpty() && patients.isEmpty() && measurements.isEmpty() &&
                 nutritionalQuestionnaires.isEmpty() && odontologicalQuestionnaires.isEmpty()) {
-            Log.i(TAG, "sendUnsynchronized: NADA A ENVIAR");
+            Log.i(TAG, "sendUnsynchronized: NADA PARA ENVIAR");
             return false;
         }
 
@@ -126,61 +112,45 @@ public class Repository {
                             .subscribe()
             );
         }
+        Log.i(TAG, "sendUnsynchronized: ENVIADOS");
         return true;
     }
-
-//    private void removeSync() {
-//        Log.i(TAG, "removeSync: removendo os sincronizados...");
-//        patientDAO.removeSyncronized();
-////        deviceDAO.removeSyncronized();
-//        measurementDAO.removeSyncronized();
-//        nutritionalQuestionnaireDAO.removeSyncronized();
-//        odontologicalQuestionnaireDAO.removeSyncronized();
-//    }
 
     public synchronized void syncronize() {
 
         if (ConnectionUtils.internetIsEnabled(this.mContext)) {
             Log.i(TAG, "syncronize: COM INTERNET");
-
             sendUnsynchronized();
-
             // ------------------ Baixa os mais recentes do servidor
-
-            User user = appPreferencesHelper.getUserLogged();
 
             String pilotStudyId;
             if (appPreferencesHelper.getLastPilotStudy() != null) {
                 pilotStudyId = appPreferencesHelper.getLastPilotStudy().get_id();
             } else {
-                pilotStudyId = user.getPilotStudyIDSelected();
+                pilotStudyId = appPreferencesHelper.getUserLogged().getPilotStudyIDSelected();
             }
             String pilotId = pilotStudyId;
             Log.i(TAG, "syncronize: Agora vamos baixar os pacientes....");
 
-            if (patientDAO.getAllPatients(pilotStudyId, null, 1, 100).isEmpty()) {
-                // recupera todos os pacientes do piloto estudo setado atualmente
-                DisposableManager.add(haniotNetRepository
-                        .getAllPatients(pilotStudyId, null, 1, 100)
-                        .doAfterSuccess(patients1 -> {
-                            patientDAO.removeSyncronized();
-                            Log.i(TAG, "syncronize: DoAfterSuccess...");
+            DisposableManager.add(haniotNetRepository
+                    .getAllPatients(pilotStudyId, null, 1, 100)
+                    .doAfterSuccess(patients1 -> {
+                        patientDAO.removeSyncronized();
 
-                            for (Patient p : patients1) {
-                                p.setSync(true);
-                                p.setPilotId(pilotId);
-                                patientDAO.save(p);
+                        for (Patient p : patients1) {
+                            p.setSync(true);
+                            p.setPilotId(pilotId);
 
+                            if (patientDAO.save(p) > 0) {
                                 downloadMeasurements(p.get_id());
                                 downloadNutritionalQuestionnaires(p.get_id());
                                 downloadOdontologicalQuestionnaires(p.get_id());
                             }
-                            Log.i(TAG, "syncronize: pacientes baixados: " + patientDAO.getAllPatients(pilotId, null, 1, 100).toString());
-                        }).subscribe((patients -> Log.i(TAG, "syncronize: subscribe executado com sucesso...")),
-                                throwable -> Log.i(TAG, "syncronize: Error ao baixar, não remover..."))
-                );
-            }
-//            DisposableManager.clear();
+                        }
+                        Log.i(TAG, "syncronize: pacientes baixados: " + patientDAO.getAllPatients(pilotId, null, 1, 100).toString());
+                    }).subscribe((patients -> Log.i(TAG, "syncronize: subscribe executado com sucesso...")),
+                            throwable -> Log.i(TAG, "syncronize: Error ao baixar, não remover..."))
+            );
 
             // recupera todos os dipositivos de todos os pacientes - verificar se é o paciente ou o profissional que tem
 //            DisposableManager.add(
@@ -201,7 +171,7 @@ public class Repository {
     private void downloadMeasurements(String patientId) {
         measurementDAO = MeasurementDAO.getInstance(mContext);
         DisposableManager.add(
-                haniotNetRepository.getAllMeasurements(patientId, 1, 100, null)
+                haniotNetRepository.getAllMeasurements(patientId, 1, 100, "-timestamp")
                         .doAfterSuccess(measurements -> {
                             measurementDAO.removeSyncronized();
 
@@ -210,14 +180,14 @@ public class Repository {
                                 m.setUserId(patientId);
                                 measurementDAO.save(m);
                             }
-                            Log.i(TAG, "syncronize: Depois de baixado("+ patientId + "):" + measurementDAO.getAllMeasurements(patientId, null, null, null, 1, 100));
+                            Log.i(TAG, "syncronize: Baixados (" + patientDAO.get(patientId).getName() + "):" + measurementDAO.getAllMeasurements(patientId, null, null, null, 1, 100));
                         }).subscribe()
         );
     }
 
     private void downloadOdontologicalQuestionnaires(String patientId) {
         DisposableManager.add(
-                haniotNetRepository.getAllOdontologicalQuestionnaires(patientId, 1, 100, null)
+                haniotNetRepository.getAllOdontologicalQuestionnaires(patientId, 1, 100, "-timestamp")
                         .doAfterSuccess(odontologicalQuestionnaires -> {
                             odontologicalQuestionnaireDAO.removeSyncronized();
 
@@ -233,7 +203,7 @@ public class Repository {
 
     private void downloadNutritionalQuestionnaires(String patientId) {
         DisposableManager.add(
-                haniotNetRepository.getAllNutritionalQuestionnaires(patientId, 1, 100, null)
+                haniotNetRepository.getAllNutritionalQuestionnaires(patientId, 1, 100, "-timestamp")
                         .doAfterSuccess(nutritionalQuestionnaires -> {
                             nutritionalQuestionnaireDAO.removeSyncronized();
 
@@ -339,36 +309,54 @@ public class Repository {
      */
     public Single<Measurement> saveMeasurement(@NonNull Measurement measurement) {
         Log.i(TAG, "saveMeasurement: ");
+        measurement.setSync(false);
+        long id = measurementDAO.save(measurement);
+        measurement.setId(id);
+
         if (ConnectionUtils.internetIsEnabled(mContext)) {
-            return haniotNetRepository.saveMeasurement(measurement)
-                    .map(measurement1 -> {
-                        syncronize();
-                        return measurement1;
-                    });
-        } else {
-            measurement.setSync(false);
-            long id = measurementDAO.save(measurement);
-            measurement.setId(id);
-            return Single.just(measurement);
+            syncronize();
         }
+        return Single.just(measurement);
+
+//        if (ConnectionUtils.internetIsEnabled(mContext)) {
+//            return haniotNetRepository.saveMeasurement(measurement)
+//                    .map(measurement1 -> {
+//                        syncronize();
+//                        return measurement1;
+//                    });
+//        } else {
+//            measurement.setSync(false);
+//            long id = measurementDAO.save(measurement);
+//            measurement.setId(id);
+//            return Single.just(measurement);
+//        }
     }
 
     public Single<Object> saveMeasurement(List<Measurement> measurements) {
         Log.i(TAG, "saveMeasurements: ");
-        if (ConnectionUtils.internetIsEnabled(mContext)) {
-            return haniotNetRepository.saveMeasurement(measurements)
-                    .map(measurements1 -> {
-                        syncronize();
-                        return measurements1;
-                    });
-        } else {
-            for (Measurement m : measurements) {
-                m.setSync(false);
-                long id = measurementDAO.save(m);
-                m.setId(id);
-            }
-            return Single.just(measurements);
+        for (Measurement m : measurements) {
+            m.setSync(false);
+            long id = measurementDAO.save(m);
+            m.setId(id);
         }
+        if (ConnectionUtils.internetIsEnabled(mContext))
+            syncronize();
+
+        return Single.just(measurements);
+//        if (ConnectionUtils.internetIsEnabled(mContext)) {
+//            return haniotNetRepository.saveMeasurement(measurements)
+//                    .map(measurements1 -> {
+//                        syncronize();
+//                        return measurements1;
+//                    });
+//        } else {
+//            for (Measurement m : measurements) {
+//                m.setSync(false);
+//                long id = measurementDAO.save(m);
+//                m.setId(id);
+//            }
+//            return Single.just(measurements);
+//        }
     }
 
     /**
@@ -379,14 +367,12 @@ public class Repository {
      */
     public Completable deleteMeasurement(@NonNull Measurement measurement) {
         Log.i(TAG, "deleteMeasurement: ");
-        Log.i(TAG, "deleteMeasurement: "+ measurement.get_id());
-        Log.i(TAG, "deleteMeasurement: "+ measurement.getUserId());
-        Log.i(TAG, "deleteMeasurement: "+ measurement.getId());
         if (measurement.get_id() == null && !measurement.isSync()) { // não foi sincronizada ainda, removo localmente
             measurementDAO.remove(measurement.getId());
             return Completable.complete();
         } else {
-            return haniotNetRepository.deleteMeasurement(measurement.getUserId(), measurement.get_id());
+            return haniotNetRepository.deleteMeasurement(measurement.getUserId(), measurement.get_id())
+                    .doOnComplete(this::syncronize);
         }
     }
 
@@ -397,11 +383,14 @@ public class Repository {
         List<Measurement> aux = measurementDAO.getMeasurementsByType(userId, typeMeasurement, sort, dateStart, dateEnd, page, limit);
         if (ConnectionUtils.internetIsEnabled(mContext)) {
 
-
             Log.i(TAG, "getAllMeasurementsByType: COM INTERNET - page[" + page + "] -> " + aux.toString());
 
             return haniotNetRepository.getAllMeasurementsByType(
-                    userId, typeMeasurement, sort, dateStart, dateEnd, page, limit);
+                    userId, typeMeasurement, sort, dateStart, dateEnd, page, limit)
+                    .map(measurements -> {
+                        if (page == 1) syncronize();
+                        return measurements;
+                    });
         } else {
             Log.i(TAG, "getAllMeasurementsByType: SEM INTERNET - page[" + page + "] -> " + aux.toString());
             return Single.just(aux);
@@ -445,16 +434,17 @@ public class Repository {
 
     public Single<Patient> updatePatient(@NonNull Patient patient) {
         Log.i(TAG, "updatePatient: ");
-        if (ConnectionUtils.internetIsEnabled(mContext)) {
+
+        if (patient.get_id() == null && !patient.isSync()) {
+            patient.setSync(false);
+            patientDAO.update(patient);
+            return Single.just(patient);
+        } else {
             return haniotNetRepository.updatePatient(patient)
                     .map(patient1 -> {
                         syncronize();
                         return patient1;
                     });
-        } else {
-            patient.setSync(false);
-            patientDAO.update(patient);
-            return Single.just(patient);
         }
     }
 
@@ -521,34 +511,6 @@ public class Repository {
         }
     }
 
-    /**
-     * Utilizado para avaliação nutricional
-     *
-     * @param patientId String
-     * @return NutritionalQuestionnaire
-     */
-    public Single<NutritionalQuestionnaire> getLastNutritionalQuestionnaire(String patientId) {
-        Log.i(TAG, "getLastNutritionalQuestionnaire: ");
-        return haniotNetRepository.getLastNutritionalQuestionnaire(patientId);
-    }
-
-    /**
-     * Select Last measurements of a patient
-     * Necessary connection
-     *
-     * @param patientId String
-     * @return MeasurementLasResponse
-     */
-    public Single<MeasurementLastResponse> getLastMeasurements(String patientId) {
-        Log.i(TAG, "getLastMeasurements: ");
-        return haniotNetRepository.getLastMeasurements(patientId);
-    }
-
-    public Single<NutritionalEvaluationResult> saveNutritionalEvaluation(NutritionalEvaluation nutritionalEvaluation) {
-        Log.i(TAG, "saveNutritionalEvaluation: ");
-        return haniotNetRepository.saveNutritionalEvaluation(nutritionalEvaluation);
-    }
-
     public Single<NutritionalQuestionnaire> saveNutritionalQuestionnaire(NutritionalQuestionnaire nutritionalQuestionnaire) {
         Log.i(TAG, "saveNutritionalQuestionnaire: ");
         if (ConnectionUtils.internetIsEnabled(mContext)) {
@@ -581,64 +543,6 @@ public class Repository {
             nutritionalQuestionnaireDAO.update(patientId, questionnaireId, resourceName, object);
             return Single.just(null); // VERIFICAR
         }
-    }
-
-    // --------------- Health Professional ---------------------------------
-
-    public Single<HealthProfessional> updateHealthProfissional(HealthProfessional healthProfessional) {
-        Log.i(TAG, "updateHealthProfissional: ");
-        return haniotNetRepository.updateHealthProfissional(healthProfessional);
-    }
-
-    public Single<HealthProfessional> getHealthProfissional(String healthProfessionalId) {
-        Log.i(TAG, "getHealthProfissional: ");
-        return haniotNetRepository.getHealthProfissional(healthProfessionalId);
-    }
-
-    // ----------------- PILOT STUDY DAO -------------------------
-
-    public Single<List<PilotStudy>> getAllPilotStudies() {
-        Log.i(TAG, "getAllPilotStudies: ");
-        return haniotNetRepository.getAllPilotStudies();
-    }
-
-    public Single<List<PilotStudy>> getAllUserPilotStudies(String userId) {
-        Log.i(TAG, "getAllUserPilotStudies: ");
-        return haniotNetRepository.getAllUserPilotStudies(userId);
-    }
-
-    // ---------- USER DAO ---------------
-
-    public Completable deleteUserById(String userId) {
-        Log.i(TAG, "deleteUserById: ");
-        return haniotNetRepository.deleteUserById(userId);
-    }
-
-    // ------------ admin and password ------------
-
-    public Single<Admin> updateAdmin(Admin admin) {
-        Log.i(TAG, "updateAdmin: ");
-        return haniotNetRepository.updateAdmin(admin);
-    }
-
-    public Single<Admin> getAdmin(String _id) {
-        Log.i(TAG, "getAdmin: ");
-        return haniotNetRepository.getAdmin(_id);
-    }
-
-    public Single<UserAccess> auth(String username, String password) {
-        Log.i(TAG, "auth: ");
-        return haniotNetRepository.auth(username, password);
-    }
-
-    public Completable changePassword(User user) {
-        Log.i(TAG, "changePassword: ");
-        return haniotNetRepository.changePassword(user);
-    }
-
-    public Single<Object> forgotPassword(JsonObject email) {
-        Log.i(TAG, "forgotPassword: ");
-        return haniotNetRepository.forgotPassword(email);
     }
 
     // --------------- Odontological Questionnaire -------------------------------
