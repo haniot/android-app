@@ -3,10 +3,12 @@ package br.edu.uepb.nutes.haniot.data.dao;
 import android.content.Context;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.App;
 import br.edu.uepb.nutes.haniot.data.Convert;
+import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.nutritional.NutritionalQuestionnaire;
 import br.edu.uepb.nutes.haniot.data.objectbox.nutritional.NutritionalQuestionnaireOB;
 import br.edu.uepb.nutes.haniot.data.objectbox.nutritional.NutritionalQuestionnaireOB_;
@@ -30,13 +32,23 @@ public class NutritionalQuestionnaireDAO {
         return instance;
     }
 
-    public List<NutritionalQuestionnaire> getAll(String patientId, int page, int limit, String sort) {
+    public List<NutritionalQuestionnaire> getAll(Patient patient, int page, int limit, String sort) {
         page--;
-        List<NutritionalQuestionnaireOB> aux = nutritionalQuestionnaireBox.query()
-                .equal(NutritionalQuestionnaireOB_.patientId, patientId)
-                .orderDesc(NutritionalQuestionnaireOB_.createdAt)
-                .build()
-                .find(page * limit, limit);
+        List<NutritionalQuestionnaireOB> aux;
+
+        if (patient.get_id() != null) {
+            aux = nutritionalQuestionnaireBox.query()
+                    .equal(NutritionalQuestionnaireOB_.patient_id, patient.get_id())
+                    .orderDesc(NutritionalQuestionnaireOB_.createdAt)
+                    .build()
+                    .find(page * limit, limit);
+        } else {
+            aux = nutritionalQuestionnaireBox.query()
+                    .equal(NutritionalQuestionnaireOB_.patientId, patient.getId())
+                    .orderDesc(NutritionalQuestionnaireOB_.createdAt)
+                    .build()
+                    .find(page * limit, limit);
+        }
         return Convert.listNutritionalQuestionnaireToModel(aux);
     }
 

@@ -33,7 +33,6 @@ import androidx.annotation.RequiresApi;
 
 import com.github.clans.fab.FloatingActionMenu;
 
-import java.lang.reflect.Array;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
@@ -153,7 +152,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
     //TODO Próxima sprint
     private void downloadLastMeasurements() {
         DisposableManager.add(mRepository
-                .getAllMeasurementsByType(patient.get_id(), "blood_glucose", "-timestamp", null, null, 1, 1)
+                .getAllMeasurementsByType(patient, "blood_glucose", "-timestamp", null, null, 1, 1)
                 .subscribe(measurements -> {
                     if (!measurements.isEmpty()) {
                         Log.w(LOG_TAG, Arrays.toString(measurements.toArray()));
@@ -330,7 +329,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
             Measurement measurement = new Measurement();
             measurement.setValue(temp);
             measurement.setTimestamp(DateUtils.getCurrentDateTimeUTC());
-            measurement.setUserId(patient.get_id());
+            measurement.setUser_id(patient.get_id());
             measurement.setUnit(unit);
             measurement.setType(MeasurementType.BODY_TEMPERATURE);
 //            DeviceOB device1 = getDeviceRegistered(DeviceType.THERMOMETER);
@@ -374,7 +373,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
 
             if (pulse > 0) measurement.setPulse(pulse);
 
-            measurement.setUserId(patient.get_id());
+            measurement.setUser_id(patient.get_id());
             measurement.setUnit(getString(R.string.unit_glucose_mg_dL));
 
 //            DeviceOB device1 = getDeviceRegistered(DeviceType.BLOOD_PRESSURE);
@@ -442,7 +441,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
             }
             measurement.setType(MeasurementType.BODY_MASS);
             measurement.setTimestamp(timestamp);
-            measurement.setUserId(patient.get_id());
+            measurement.setUser_id(patient.get_id());
             measurement.setUnit((bodyMassUnit != null && bodyMassUnit.equals("")) ? "kg" : bodyMassUnit);
 
 //            DeviceOB device1 = getDeviceRegistered(DeviceType.BODY_COMPOSITION);
@@ -483,7 +482,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
             measurement.setMeal(meal);
             measurement.setTimestamp(timestamp);
             measurement.setType(MeasurementType.BLOOD_GLUCOSE);
-            measurement.setUserId(patient.get_id());
+            measurement.setUser_id(patient.get_id());
             measurement.setUnit(getString(R.string.unit_glucose_mg_dL));
 
 //            DeviceOB device1 = getDeviceRegistered(DeviceType.GLUCOMETER);
@@ -554,7 +553,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
         dialog.show();
 
         Measurement measurement = new Measurement();
-        measurement.setUserId(patient.get_id());
+        measurement.setUser_id(patient.get_id());
         measurement.setUnit("bpm");
         measurement.setType(MeasurementType.HEART_RATE);
         measurement.setDataset(heartRateItems);

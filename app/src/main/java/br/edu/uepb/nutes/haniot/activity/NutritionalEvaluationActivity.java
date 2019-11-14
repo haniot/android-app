@@ -271,7 +271,7 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
             if (nutritionalQuestionnaire.getSleepHabit() == null) {
                 itemEvaluation.setTypeHeader(TYPE_EMPTY_REQUIRED);
             } else {
-                nutritionalQuestionnaire.getSleepHabit().setCreatedAt(nutritionalQuestionnaire.getCreatedAt());
+//                nutritionalQuestionnaire.getSleepHabit().setCreatedAt(nutritionalQuestionnaire.getCreatedAt());
                 itemEvaluation.setTypeHeader(TYPE_QUIZ);
                 itemEvaluation.setSleepHabit(lastNutritionalQuestionnaire.getSleepHabit());
             }
@@ -284,7 +284,7 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
             if (nutritionalQuestionnaire.getMedicalRecord() == null) {
                 itemEvaluation.setTypeHeader(TYPE_EMPTY_REQUIRED);
             } else {
-                nutritionalQuestionnaire.getMedicalRecord().setCreatedAt(nutritionalQuestionnaire.getCreatedAt());
+//                nutritionalQuestionnaire.getMedicalRecord().setCreatedAt(nutritionalQuestionnaire.getCreatedAt());
                 itemEvaluation.setTypeHeader(TYPE_QUIZ);
                 itemEvaluation.setMedicalRecord(lastNutritionalQuestionnaire.getMedicalRecord());
             }
@@ -297,7 +297,7 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
             if (nutritionalQuestionnaire.getFeedingHabitsRecord() == null) {
                 itemEvaluation.setTypeHeader(TYPE_EMPTY_REQUIRED);
             } else {
-                nutritionalQuestionnaire.getFeedingHabitsRecord().setCreatedAt(nutritionalQuestionnaire.getCreatedAt());
+//                nutritionalQuestionnaire.getFeedingHabitsRecord().setCreatedAt(nutritionalQuestionnaire.getCreatedAt());
                 itemEvaluation.setTypeHeader(TYPE_QUIZ);
                 itemEvaluation.setFeedingHabitsRecord(lastNutritionalQuestionnaire.getFeedingHabitsRecord());
             }
@@ -310,7 +310,7 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
             if (nutritionalQuestionnaire.getPhysicalActivityHabit() == null) {
                 itemEvaluation.setTypeHeader(TYPE_EMPTY_REQUIRED);
             } else {
-                nutritionalQuestionnaire.getPhysicalActivityHabit().setCreatedAt(nutritionalQuestionnaire.getCreatedAt());
+//                nutritionalQuestionnaire.getPhysicalActivityHabit().setCreatedAt(nutritionalQuestionnaire.getCreatedAt());
                 itemEvaluation.setTypeHeader(TYPE_QUIZ);
                 itemEvaluation.setPhysicalActivityHabit(lastNutritionalQuestionnaire.getPhysicalActivityHabit());
             }

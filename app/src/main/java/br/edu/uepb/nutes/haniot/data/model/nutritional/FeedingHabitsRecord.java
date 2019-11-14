@@ -39,7 +39,7 @@ public class FeedingHabitsRecord extends ActivityHabitsRecord {
     }
 
     public FeedingHabitsRecord(FeedingHabitsRecordOB f) {
-        super(f.getId(), f.get_id(), f.getCreatedAt(), f.getPatientId());
+        super(f.getId(), f.get_id());
         this.setWeeklyFeedingHabits(Convert.convertListWeeklyFoodRecord(f.getWeeklyFeedingHabits()));
         this.setDailyWaterGlasses(f.getDailyWaterGlasses());
         this.setSixMonthBreastFeeding(f.getSixMonthBreastFeeding());

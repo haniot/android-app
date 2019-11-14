@@ -32,7 +32,7 @@ public class FeedingHabitsRecordOB extends ActivityHabitsRecordOB {
     }
 
     public FeedingHabitsRecordOB(FeedingHabitsRecord f) {
-        super(f.getId(), f.get_id(), f.getCreatedAt(), f.getPatientId());
+        super(f.getId(), f.get_id());
         this.setDailyWaterGlasses(f.getDailyWaterGlasses());
         this.setSixMonthBreastFeeding(f.getSixMonthBreastFeeding());
         this.setFoodAllergyIntolerance(f.getFoodAllergyIntolerance());

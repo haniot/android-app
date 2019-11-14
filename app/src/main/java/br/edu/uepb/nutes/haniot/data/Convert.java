@@ -32,7 +32,6 @@ import br.edu.uepb.nutes.haniot.data.objectbox.nutritional.MedicalRecordOB;
 import br.edu.uepb.nutes.haniot.data.objectbox.PatientOB;
 import br.edu.uepb.nutes.haniot.data.objectbox.nutritional.NutritionalQuestionnaireOB;
 import br.edu.uepb.nutes.haniot.data.objectbox.nutritional.PhysicalActivityHabitOB;
-import br.edu.uepb.nutes.haniot.data.objectbox.del.PilotStudyOB;
 import br.edu.uepb.nutes.haniot.data.objectbox.nutritional.SleepHabitOB;
 import br.edu.uepb.nutes.haniot.data.objectbox.UserOB;
 import br.edu.uepb.nutes.haniot.data.objectbox.nutritional.WeeklyFoodRecordOB;
@@ -225,24 +224,6 @@ public class Convert {
         List<PhysicalActivityHabit> lista = new ArrayList<>();
         for (PhysicalActivityHabitOB aux : physicalActivityHabits) {
             lista.add(new PhysicalActivityHabit(aux));
-        }
-        return lista;
-    }
-
-    // ----------- PILOT STUDY ---------------------------
-
-    public static PilotStudyOB convertPilotStudy(PilotStudy pilotStudy) {
-        return new PilotStudyOB(pilotStudy);
-    }
-
-    public static PilotStudy convertPilotStudy(PilotStudyOB pilotStudy) {
-        return new PilotStudy(pilotStudy);
-    }
-
-    public static List<PilotStudy> listPilotStudiesToModel(List<PilotStudyOB> list) {
-        List<PilotStudy> lista = new ArrayList<>();
-        for (PilotStudyOB aux : list) {
-            lista.add(new PilotStudy(aux));
         }
         return lista;
     }

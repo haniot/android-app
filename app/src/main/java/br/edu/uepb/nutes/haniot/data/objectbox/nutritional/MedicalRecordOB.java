@@ -20,7 +20,7 @@ public class MedicalRecordOB extends ActivityHabitsRecordOB {
     }
 
     public MedicalRecordOB(MedicalRecord m) {
-        super(m.getId(), m.get_id(), m.getCreatedAt(), m.getPatientId());
+        super(m.getId(), m.get_id());
         this.setChronicDiseases(Convert.listChronicsToObjectBox(m.getChronicDiseases()));
     }
 

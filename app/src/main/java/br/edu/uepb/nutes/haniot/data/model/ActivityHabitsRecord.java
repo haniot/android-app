@@ -17,20 +17,20 @@ public abstract class ActivityHabitsRecord extends Sync {
     @Expose()
     private String _id;
 
-    @SerializedName("created_at")
-    @Expose()
-    private String createdAt;
-
-    @Expose(serialize = false, deserialize = false)
-    private String patientId;
+//    @SerializedName("created_at")
+//    @Expose()
+//    private String createdAt;
+//
+//    @Expose(serialize = false, deserialize = false)
+//    private String patientId;
 
     public ActivityHabitsRecord() { }
 
-    public ActivityHabitsRecord(long id, String _id, String createdAt, String patientId) {
+    public ActivityHabitsRecord(long id, String _id) {
         this.id = id;
         this._id = _id;
-        this.createdAt = createdAt;
-        this.patientId = patientId;
+//        this.createdAt = createdAt;
+//        this.patientId = patientId;
     }
 
     public long getId() {
@@ -49,21 +49,21 @@ public abstract class ActivityHabitsRecord extends Sync {
         this._id = _id;
     }
 
-    public String getPatientId() {
-        return patientId;
-    }
-
-    public void setPatientId(String patientId) {
-        this.patientId = patientId;
-    }
-
-    public String getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
-    }
+//    public String getPatientId() {
+//        return patientId;
+//    }
+//
+//    public void setPatientId(String patientId) {
+//        this.patientId = patientId;
+//    }
+//
+//    public String getCreatedAt() {
+//        return createdAt;
+//    }
+//
+//    public void setCreatedAt(String createdAt) {
+//        this.createdAt = createdAt;
+//    }
 
     /**
      * Convert object to json format.
@@ -93,8 +93,8 @@ public abstract class ActivityHabitsRecord extends Sync {
         return "ActivityHabitsRecordOB{" +
                 "id=" + id +
                 ", _id='" + _id + '\'' +
-                ", createdAt='" + createdAt + '\'' +
-                ", patientId='" + patientId + '\'' +
+//                ", createdAt='" + createdAt + '\'' +
+//                ", patientId='" + patientId + '\'' +
                 '}';
     }
 }

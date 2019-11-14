@@ -102,7 +102,7 @@ public class ScaleActivity extends BaseDeviceActivity {
         public void onMeasurementReceived(@NonNull BluetoothDevice device, double bodyMass,
                                           String bodyMassUnit, double bodyFat, String timestamp) {
             Measurement measurement = new Measurement();
-            measurement.setUserId(patient.get_id());
+            measurement.setUser_id(patient.get_id());
             measurement.setTimestamp(timestamp);
             measurement.setType(MeasurementType.BODY_MASS);
             measurement.setUnit("kg");
@@ -236,7 +236,7 @@ public class ScaleActivity extends BaseDeviceActivity {
             }
 
             DisposableManager.add(mRepository.
-                    getAllMeasurementsByType(patient.get_id(),
+                    getAllMeasurementsByType(patient,
                             MeasurementType.HEIGHT, "-timestamp", null, null, 1, 1)
                     .subscribe(measurements -> {
 

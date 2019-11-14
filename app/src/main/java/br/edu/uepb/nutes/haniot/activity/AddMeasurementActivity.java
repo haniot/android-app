@@ -387,7 +387,7 @@ public class AddMeasurementActivity extends AppCompatActivity {
             return;
         }
         for (Measurement measurement : measurements) {
-            measurement.setUserId(patient.get_id());
+            measurement.setUser_id(patient.get_id());
             Log.w(TAG, "Tempo selecionado do myCalendar: " + myCalendar.getTime());
             measurement.setTimestamp(DateUtils.convertDateTimeToUTC(myCalendar.getTime()));
             Log.i("AAA", "saving " + measurement.toJson());
@@ -414,7 +414,7 @@ public class AddMeasurementActivity extends AppCompatActivity {
     private void saveMeasurement(Measurement measurement) {
         if (measurement != null) {
             Log.w(TAG, measurement.getType() + ": salvando");
-            measurement.setUserId(patient.get_id());
+            measurement.setUser_id(patient.get_id());
             measurement.setTimestamp(DateUtils.convertDateTimeToUTC(myCalendar.getTime()));
             Log.w(TAG, "Tempo selecionado do myCalendar: " + myCalendar.getTime());
             Log.w(TAG, "JSON: " + measurement.toJson());

@@ -146,7 +146,7 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
     private void downloadData() {
         if (user.getUserType().equals(ADMIN) || !user.getHealthArea().equals(DENTISTRY)) {
             DisposableManager.add(mRepository
-                    .getAllNutritionalQuestionnaires(patient.get_id(), 1, 100, "created_at")
+                    .getAllNutritionalQuestionnaires(patient, 1, 100, "created_at")
                     .subscribe(nutritional -> {
                         Log.w("AAA", "Size Nutrition: " + nutritional.size());
                         showErrorDownloadData(false, NUTRITION);

@@ -141,7 +141,7 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
      */
     private void saveMedicalRecords() {
         medicalRecord.setChronicDiseases(chronicDiseases);
-        medicalRecord.setPatientId(patient.get_id());
+//        medicalRecord.setPatientId(patient.get_id());
         Log.i(LOG_TAG, medicalRecord.toJson());
 //        mRepository.saveMedicalRecord(medicalRecord);
         nutritionalQuestionnaire.setMedicalRecord(medicalRecord);
@@ -152,7 +152,7 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
      * Save feeding habits in server.
      */
     private void saveFeedingHabits() {
-        feedingHabitsRecord.setPatientId(patient.get_id());
+//        feedingHabitsRecord.setPatientId(patient.get_id());
 //        feedingHabitsRecord.setWeeklyFeedingHabitsDB(weeklyFoodRecords);
         feedingHabitsRecord.setWeeklyFeedingHabits(weeklyFoodRecords);
         Log.i(LOG_TAG, feedingHabitsRecord.toJson());
@@ -166,7 +166,7 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
      * Save sleep habits in server.
      */
     private void saveSleepHabits() {
-        sleepHabit.setPatientId(patient.get_id());
+//        sleepHabit.setPatientId(patient.get_id());
         Log.i(LOG_TAG, sleepHabit.toJson());
 //        sleepHabitsDAO.save(sleepHabit);
 //        mRepository.saveSleepHabits(sleepHabit);
@@ -178,7 +178,7 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
      * Save activity habits in server.
      */
     private void saveActivityHabits() {
-        physicalActivityHabits.setPatientId(patient.get_id());
+//        physicalActivityHabits.setPatientId(patient.get_id());
         Log.i(LOG_TAG, physicalActivityHabits.toJson());
 //        physicalActivityHabitsDAO.save(physicalActivityHabits);
 //        mRepository.savePhysicalActivityHabit(physicalActivityHabits);
@@ -686,7 +686,12 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
         if (updateType == null) {
             Log.w("AAA", "updateType == null");
             Log.w("AAA", "Saving: " + nutritionalQuestionnaire.toJson());
-            nutritionalQuestionnaire.setPatientId(patient.get_id());
+
+            if (patient.get_id() != null) { // salvo no servidor
+                nutritionalQuestionnaire.setPatient_id(patient.get_id());
+            } else { // salvo localmente
+                nutritionalQuestionnaire.setPatientId(patient.getId());
+            }
 
             DisposableManager.add(mRepository
                     .saveNutritionalQuestionnaire(nutritionalQuestionnaire)

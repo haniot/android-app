@@ -199,13 +199,13 @@ public class HaniotNetRepository extends BaseNetRepository {
 
     // users.measurements
     public Single<Measurement> saveMeasurement(Measurement measurement) {
-        return haniotService.addMeasurement(measurement.getUserId(), measurement)
+        return haniotService.addMeasurement(measurement.getUser_id(), measurement)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     public Single<Object> saveMeasurement(List<Measurement> measurement) {
-        return haniotService.addMeasurement(measurement.get(0).getUserId(), measurement)
+        return haniotService.addMeasurement(measurement.get(0).getUser_id(), measurement)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -310,11 +310,11 @@ public class HaniotNetRepository extends BaseNetRepository {
     }
 
     // pilotstudies.patients.sleephabits
-    public Single<SleepHabit> saveSleepHabit(SleepHabit sleepHabit) {
-        return haniotService.addSleepHabit(sleepHabit.getPatientId(), sleepHabit)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-    }
+//    public Single<SleepHabit> saveSleepHabit(SleepHabit sleepHabit) {
+//        return haniotService.addSleepHabit(sleepHabit.getPatientId(), sleepHabit)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread());
+//    }
 
     public Completable deleteSleepHabit(String patientId, String sleepHabitId) {
         return haniotService.deleteSleepHabit(patientId, sleepHabitId)
@@ -323,16 +323,16 @@ public class HaniotNetRepository extends BaseNetRepository {
     }
 
     // pilotstudies.patients.physicalactivityhabits
-    public Single<PhysicalActivityHabit> savePhysicalActivityHabit(
-            PhysicalActivityHabit physicalActivityHabits) {
-        return haniotService
-                .addPhysicalActivityHabit(
-                        physicalActivityHabits.getPatientId(),
-                        physicalActivityHabits
-                )
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-    }
+//    public Single<PhysicalActivityHabit> savePhysicalActivityHabit(
+//            PhysicalActivityHabit physicalActivityHabits) {
+//        return haniotService
+//                .addPhysicalActivityHabit(
+//                        physicalActivityHabits.getPatientId(),
+//                        physicalActivityHabits
+//                )
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread());
+//    }
 
     public Completable deletePhysicalActivityHabit(String patientId, String physicalActivityHabitId) {
         return haniotService.deletePhysicalActivityHabit(patientId, physicalActivityHabitId)
@@ -341,12 +341,12 @@ public class HaniotNetRepository extends BaseNetRepository {
     }
 
     // pilotstudies.patients.feedinghabitsrecords
-    public Single<FeedingHabitsRecord> saveFeedingHabitsRecord(FeedingHabitsRecord feedingHabitsRecord) {
-        return haniotService.addFeedingHabitsRecord(feedingHabitsRecord.getPatientId(),
-                feedingHabitsRecord)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-    }
+//    public Single<FeedingHabitsRecord> saveFeedingHabitsRecord(FeedingHabitsRecord feedingHabitsRecord) {
+//        return haniotService.addFeedingHabitsRecord(feedingHabitsRecord.getPatientId(),
+//                feedingHabitsRecord)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread());
+//    }
 
     public Completable deleteFeedingHabitsRecord(String patientId, String feedingHabitsRecordId) {
         return haniotService.deleteFeedingHabitsRecord(patientId, feedingHabitsRecordId)
@@ -355,11 +355,11 @@ public class HaniotNetRepository extends BaseNetRepository {
     }
 
     // pilotstudies.patients.medicalrecords
-    public Single<MedicalRecord> saveMedicalRecord(MedicalRecord medicalRecord) {
-        return haniotService.addMedicalRecord(medicalRecord.getPatientId(), medicalRecord)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-    }
+//    public Single<MedicalRecord> saveMedicalRecord(MedicalRecord medicalRecord) {
+//        return haniotService.addMedicalRecord(medicalRecord.getPatientId(), medicalRecord)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread());
+//    }
 
     public Completable deleteMedicalRecord(String patientId, String medicalRecordId) {
         return haniotService.deleteMedicalRecord(patientId, medicalRecordId)
@@ -507,7 +507,7 @@ public class HaniotNetRepository extends BaseNetRepository {
 
     public Single<NutritionalQuestionnaire> saveNutritionalQuestionnaire(NutritionalQuestionnaire nutritionalQuestionnaire) {
         return haniotService.saveNutritionalQuestionnaire(
-                nutritionalQuestionnaire.getPatientId(),
+                nutritionalQuestionnaire.getPatient_id(),
                 nutritionalQuestionnaire)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());

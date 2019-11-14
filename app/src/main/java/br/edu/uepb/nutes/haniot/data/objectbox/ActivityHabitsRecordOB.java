@@ -12,17 +12,17 @@ public abstract class ActivityHabitsRecordOB {
     @Index
     private String _id;
 
-    private String createdAt;
-
-    private String patientId;
+//    private String createdAt;
+//
+//    private String patientId;
 
     public ActivityHabitsRecordOB() {}
 
-    public ActivityHabitsRecordOB(long id, String _id, String createdAt, String patientId) {
+    public ActivityHabitsRecordOB(long id, String _id) {
         this.id = id;
         this._id = _id;
-        this.createdAt = createdAt;
-        this.patientId = patientId;
+//        this.createdAt = createdAt;
+//        this.patientId = patientId;
     }
 
     public long getId() {
@@ -41,29 +41,29 @@ public abstract class ActivityHabitsRecordOB {
         this._id = _id;
     }
 
-    public String getPatientId() {
-        return patientId;
-    }
-
-    public void setPatientId(String patientId) {
-        this.patientId = patientId;
-    }
-
-    public String getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
-    }
+//    public String getPatientId() {
+//        return patientId;
+//    }
+//
+//    public void setPatientId(String patientId) {
+//        this.patientId = patientId;
+//    }
+//
+//    public String getCreatedAt() {
+//        return createdAt;
+//    }
+//
+//    public void setCreatedAt(String createdAt) {
+//        this.createdAt = createdAt;
+//    }
 
     @Override
     public String toString() {
         return "ActivityHabitsRecordOB{" +
                 "id=" + id +
                 ", _id='" + _id + '\'' +
-                ", createdAt='" + createdAt + '\'' +
-                ", patientId='" + patientId + '\'' +
+//                ", createdAt='" + createdAt + '\'' +
+//                ", patientId='" + patientId + '\'' +
                 '}';
     }
 }

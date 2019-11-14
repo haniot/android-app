@@ -79,7 +79,7 @@ public class GlucoseActivity extends BaseDeviceActivity {
             measurement.setMeal(meal);
             measurement.setTimestamp(timestamp);
 //            if (mDevice != null) measurement.setDeviceId(mDevice.get_id());
-            measurement.setUserId(patient.get_id());
+            measurement.setUser_id(patient.get_id());
 
             saveMeasurement(measurement);
             updateUILastMeasurement(measurement, true);

@@ -19,7 +19,9 @@ public class NutritionalQuestionnaireOB extends SyncOB {
     @Index
     private String _id;
 
-    String patientId;
+    String patient_id;
+
+    long patientId;
 
     String createdAt;
 
@@ -39,7 +41,10 @@ public class NutritionalQuestionnaireOB extends SyncOB {
         super(n.isSync());
         this.setId(n.getId());
         this.set_id(n.get_id());
+
+        this.setPatient_id(n.getPatient_id());
         this.setPatientId(n.getPatientId());
+
         this.setCreatedAt(n.getCreatedAt());
         this.setSleepHabit(Convert.convertSleepHabit(n.getSleepHabit()));
         this.setPhysicalActivityHabit(Convert.convertPhysicalActivityHabit(n.getPhysicalActivityHabit()));
@@ -55,6 +60,14 @@ public class NutritionalQuestionnaireOB extends SyncOB {
         this.id = id;
     }
 
+    public long getPatientId() {
+        return patientId;
+    }
+
+    public void setPatientId(long patientId) {
+        this.patientId = patientId;
+    }
+
     public String get_id() {
         return _id;
     }
@@ -63,12 +76,12 @@ public class NutritionalQuestionnaireOB extends SyncOB {
         this._id = _id;
     }
 
-    public void setPatientId(String patientId) {
-        this.patientId = patientId;
+    public void setPatient_id(String patient_id) {
+        this.patient_id = patient_id;
     }
 
-    public String getPatientId() {
-        return this.patientId;
+    public String getPatient_id() {
+        return this.patient_id;
     }
 
     public String getCreatedAt() {

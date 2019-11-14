@@ -59,7 +59,7 @@ public class ThermometerActivity extends BaseDeviceActivity {
             measurement.setValue(temp);
             measurement.setUnit(unit);
 //            if (mDevice != null) measurement.setDeviceId(mDevice.get_id());
-            measurement.setUserId(patient.get_id());
+            measurement.setUser_id(patient.get_id());
             measurement.setType(MeasurementType.BODY_TEMPERATURE);
 
             saveMeasurement(measurement);

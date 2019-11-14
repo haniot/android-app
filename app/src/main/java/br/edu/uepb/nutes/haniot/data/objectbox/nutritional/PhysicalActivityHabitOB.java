@@ -21,7 +21,7 @@ public class PhysicalActivityHabitOB extends ActivityHabitsRecordOB {
     }
 
     public PhysicalActivityHabitOB(PhysicalActivityHabit p) {
-        super(p.getId(), p.get_id(), p.getCreatedAt(), p.getPatientId());
+        super(p.getId(), p.get_id());
         this.setSchoolActivityFreq(p.getSchoolActivityFreq());
         this.setWeeklyActivities(p.getWeeklyActivities());
     }

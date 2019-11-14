@@ -359,7 +359,7 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
         Log.w("XXX", "removePendingMeasurements()");
         if (measurementsToDelete == null || measurementsToDelete.isEmpty()) return;
         for (Measurement measurement : measurementsToDelete) {
-            measurement.setUserId(patient.get_id());
+            measurement.setUser_id(patient.get_id());
 
             DisposableManager.add(mRepository
                     .deleteMeasurement(measurement)
@@ -390,7 +390,7 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
 
         removePendingMeasurements();
         DisposableManager.add(mRepository
-                .getAllMeasurementsByType(patient.get_id(),
+                .getAllMeasurementsByType(patient,
                         getMeasurementType(), "-timestamp",
                         null, null, page, LIMIT_PER_PAGE)
                 .doOnSubscribe(disposable -> {

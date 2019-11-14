@@ -63,7 +63,7 @@ public class MeasurementOB extends SyncOB {
         this.setUnit(m.getUnit());
         this.setType(m.getType());
         this.setTimestamp(m.getTimestamp());
-        this.setUserId(m.getUserId());
+        this.setUserId(m.getUser_id());
         this.setDeviceId(m.getDeviceId());
         this.setSystolic(m.getSystolic());
         this.setDiastolic(m.getDiastolic());

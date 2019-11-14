@@ -47,7 +47,9 @@ public class Measurement extends Sync implements Parcelable {
 
     @SerializedName("user_id")
     @Expose()
-    private String userId;
+    private String user_id;
+
+    private long userId;
 
     @SerializedName("device_id")
     @Expose()
@@ -92,7 +94,7 @@ public class Measurement extends Sync implements Parcelable {
         this.setUnit(m.getUnit());
         this.setType(m.getType());
         this.setTimestamp(m.getTimestamp());
-        this.setUserId(m.getUserId());
+        this.setUser_id(m.getUserId());
         this.setDeviceId(m.getDeviceId());
         this.setSystolic(m.getSystolic());
         this.setDiastolic(m.getDiastolic());
@@ -112,7 +114,7 @@ public class Measurement extends Sync implements Parcelable {
         unit = in.readString();
         type = in.readString();
         timestamp = in.readString();
-        userId = in.readString();
+        user_id = in.readString();
         deviceId = in.readString();
         fat = in.readParcelable(BodyFat.class.getClassLoader());
         dataset = in.createTypedArrayList(HeartRateItem.CREATOR);
@@ -130,7 +132,7 @@ public class Measurement extends Sync implements Parcelable {
         dest.writeString(unit);
         dest.writeString(type);
         dest.writeString(timestamp);
-        dest.writeString(userId);
+        dest.writeString(user_id);
         dest.writeString(deviceId);
         dest.writeParcelable(fat, flags);
         dest.writeTypedList(dataset);
@@ -205,12 +207,12 @@ public class Measurement extends Sync implements Parcelable {
         this.timestamp = timestamp;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getUser_id() {
+        return user_id;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
     }
 
     public String getDeviceId() {
@@ -269,15 +271,6 @@ public class Measurement extends Sync implements Parcelable {
         this.meal = meal;
     }
 
-//    public List<HeartRateItem> getDataset() {
-//        return datasetDB;
-//    }
-
-//    public void setDataset(List<HeartRateItem> datasetDB) {
-//        this.getDataset().clear();
-//        this.getDataset().addAll(datasetDB);
-//    }
-
     public List<BodyFat> getBodyFat() {
         return bodyFat;
     }
@@ -286,17 +279,17 @@ public class Measurement extends Sync implements Parcelable {
         this.bodyFat = bodyFat;
     }
 
-//    public BodyFat getBodyFat() {
-//        return bodyFatDB;
-//    }
-//
-//    public void setBodyFat(BodyFat bodyFatDB) {
-//        this.bodyFatDB = bodyFatDB;
-//    }
+    public long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(long userId) {
+        this.userId = userId;
+    }
 
     @Override
     public int hashCode() {
-        return Objects.hash(timestamp, userId);
+        return Objects.hash(timestamp, user_id);
     }
 
     /**
@@ -314,7 +307,7 @@ public class Measurement extends Sync implements Parcelable {
         if (!(o instanceof Measurement)) return false;
         Measurement that = (Measurement) o;
         return Objects.equals(timestamp, that.timestamp) &&
-                Objects.equals(userId, that.userId);
+                Objects.equals(user_id, that.user_id);
     }
 
     @NonNull
@@ -327,7 +320,7 @@ public class Measurement extends Sync implements Parcelable {
                 ", unit='" + unit + '\'' +
                 ", type='" + type + '\'' +
                 ", timestamp='" + timestamp + '\'' +
-                ", userId='" + userId + '\'' +
+                ", user_id='" + user_id + '\'' +
                 ", deviceId='" + deviceId + '\'' +
                 ", fat=" + fat +
                 ", dataset=" + dataset +
@@ -335,8 +328,6 @@ public class Measurement extends Sync implements Parcelable {
                 ", diastolic=" + diastolic +
                 ", pulse=" + pulse +
                 ", meal=" + meal +
-//                ", datasetDB=" + datasetDB +
-//                ", bodyFatDB=" + bodyFatDB +
                 '}';
     }
 }

@@ -215,7 +215,7 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
 
         if (ConnectionUtils.internetIsEnabled(this)) {
             DisposableManager.add(mRepository.
-                    getAllMeasurementsByType(patient.get_id(), getTypeMeasurement(), "timestamp",
+                    getAllMeasurementsByType(patient, getTypeMeasurement(), "timestamp",
                             dateStart, dateEnd, 1, 100)
                     .doOnSubscribe(disposable -> {
                         Log.w(TAG, "onBeforeSend()");

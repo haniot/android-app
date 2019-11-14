@@ -89,7 +89,7 @@ public class BodyCompositionChartActivity extends BaseChartActivity {
     public void setLimitObesity() {
         runOnUiThread(() -> {
             DisposableManager.add(mRepository.
-                    getAllMeasurementsByType(patient.get_id(), MeasurementType.HEIGHT,
+                    getAllMeasurementsByType(patient, MeasurementType.HEIGHT,
                             "-timestamp", null, null, 1, 1)
                     .doAfterSuccess(measurements -> {
                         if (measurements != null && measurements.size() > 0) {
