@@ -44,7 +44,7 @@ public class NutritionalQuestionnaireDAO {
     }
 
     public long save(NutritionalQuestionnaire nutritionalQuestionnaire) {
-        return nutritionalQuestionnaireBox.put(new NutritionalQuestionnaireOB(nutritionalQuestionnaire));
+        return nutritionalQuestionnaireBox.put(Convert.convertNutritionalQuestionnaire(nutritionalQuestionnaire));
     }
 
     public List<NutritionalQuestionnaire> getAllNotSync() {

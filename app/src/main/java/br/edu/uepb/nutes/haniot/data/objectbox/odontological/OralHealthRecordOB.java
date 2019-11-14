@@ -25,7 +25,6 @@ public class OralHealthRecordOB {
 
     private String teethBrushingFreq;
 
-    @Backlink(to = "oralHealthRecord")
     private ToMany<ToothLesionOB> toothLesions;
 
     public OralHealthRecordOB() {}

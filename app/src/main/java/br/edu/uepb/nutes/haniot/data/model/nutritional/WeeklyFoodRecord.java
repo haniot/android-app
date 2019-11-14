@@ -26,8 +26,8 @@ public class WeeklyFoodRecord {
     @Expose
     private String sevenDaysFreq;
 
-    @Expose(serialize = false, deserialize = false)
-    private FeedingHabitsRecord feedingHabitsRecord;
+//    @Expose(serialize = false, deserialize = false)
+//    private FeedingHabitsRecord feedingHabitsRecord;
 
     public WeeklyFoodRecord() {
     }
@@ -36,7 +36,7 @@ public class WeeklyFoodRecord {
         this.setId(w.getId());
         this.setFood(w.getFood());
         this.setSevenDaysFreq(w.getSevenDaysFreq());
-        this.setFeedingHabitsRecord(Convert.convertFeedingHabitsRecord(w.getFeedingHabitsRecord().getTarget()));
+//        this.setFeedingHabitsRecord(Convert.convertFeedingHabitsRecord(w.getFeedingHabitsRecord().getTarget()));
     }
 
     public long getId() {
@@ -63,13 +63,13 @@ public class WeeklyFoodRecord {
         this.sevenDaysFreq = sevenDaysFreq;
     }
 
-    public FeedingHabitsRecord getFeedingHabitsRecord() {
-        return feedingHabitsRecord;
-    }
+//    public FeedingHabitsRecord getFeedingHabitsRecord() {
+//        return feedingHabitsRecord;
+//    }
 
-    public void setFeedingHabitsRecord(FeedingHabitsRecord feedingHabitsRecord) {
-        this.feedingHabitsRecord = feedingHabitsRecord;
-    }
+//    public void setFeedingHabitsRecord(FeedingHabitsRecord feedingHabitsRecord) {
+//        this.feedingHabitsRecord = feedingHabitsRecord;
+//    }
 
     /**
      * Convert object to json format.

@@ -46,8 +46,10 @@ public class OdontologicalQuestionnaire extends Sync {
         this.set_id(o.get_id());
         this.setPatientId(o.getPatientId());
         this.setCreatedAt(o.getCreatedAt());
-        this.setSociodemographicRecord(Convert.convertSociodemographicRecord(o.getSociodemographicRecord()));
 
+        this.setSociodemographicRecord(Convert.convertSociodemographicRecord(o.getSociodemographicRecord()));
+        this.setFamilyCohesionRecord(Convert.convertFamilyCohesionRecord(o.getFamilyCohesionRecord()));
+        this.setOralHealthRecord(Convert.convertOralHealthRecord(o.getOralHealthRecord()));
     }
 
     public long getId() {
@@ -72,6 +74,9 @@ public class OdontologicalQuestionnaire extends Sync {
 
     public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
+        this.getSociodemographicRecord().setCreatedAt(createdAt);
+        this.getOralHealthRecord().setCreatedAt(createdAt);
+        this.getFamilyCohesionRecord().setCreatedAt(createdAt);
     }
 
     public SociodemographicRecord getSociodemographicRecord() {
@@ -79,6 +84,8 @@ public class OdontologicalQuestionnaire extends Sync {
     }
 
     public void setSociodemographicRecord(SociodemographicRecord sociodemographicRecord) {
+        sociodemographicRecord.setCreatedAt(this.getCreatedAt());
+        sociodemographicRecord.setPatientId(this.getPatientId());
         this.sociodemographicRecord = sociodemographicRecord;
     }
 
@@ -87,6 +94,8 @@ public class OdontologicalQuestionnaire extends Sync {
     }
 
     public void setFamilyCohesionRecord(FamilyCohesionRecord familyCohesionRecord) {
+        familyCohesionRecord.setCreatedAt(this.getCreatedAt());
+        familyCohesionRecord.setPatientId(this.getPatientId());
         this.familyCohesionRecord = familyCohesionRecord;
     }
 
@@ -95,6 +104,8 @@ public class OdontologicalQuestionnaire extends Sync {
     }
 
     public void setOralHealthRecord(OralHealthRecord oralHealthRecord) {
+        oralHealthRecord.setCreatedAt(this.getCreatedAt());
+        oralHealthRecord.setPatientId(this.getPatientId());
         this.oralHealthRecord = oralHealthRecord;
     }
 
@@ -135,5 +146,8 @@ public class OdontologicalQuestionnaire extends Sync {
 
     public void setPatientId(String patientId) {
         this.patientId = patientId;
+        this.getFamilyCohesionRecord().setPatientId(patientId);
+        this.getOralHealthRecord().setPatientId(patientId);
+        this.getSociodemographicRecord().setPatientId(patientId);
     }
 }

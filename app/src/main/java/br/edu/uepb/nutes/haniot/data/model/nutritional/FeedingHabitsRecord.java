@@ -127,7 +127,7 @@ public class FeedingHabitsRecord extends ActivityHabitsRecord {
     @Override
     public String toString() {
         return super.toString() +
-                " FeedingHabitsRecordOB{" +
+                " FeedingHabitsRecord{" +
                 "weeklyFeedingHabits=" + weeklyFeedingHabits +
                 ", dailyWaterGlasses='" + dailyWaterGlasses + '\'' +
                 ", sixMonthBreastFeeding='" + sixMonthBreastFeeding + '\'' +

@@ -9,6 +9,8 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.Objects;
 
+import br.edu.uepb.nutes.haniot.data.objectbox.odontological.ToothLesionOB;
+
 public class ToothLesion {
 
     private long id;
@@ -21,15 +23,18 @@ public class ToothLesion {
     @Expose()
     private String lesionType;
 
-    @Expose(serialize = false, deserialize = false)
-    private OralHealthRecord oralHealthRecord;
-
     public ToothLesion() {
     }
 
     public ToothLesion(String toothType, String lesionType) {
         this.toothType = toothType;
         this.lesionType = lesionType;
+    }
+
+    public ToothLesion(ToothLesionOB t) {
+        this.setId(t.getId());
+        this.setToothType(t.getToothType());
+        this.setLesionType(t.getLesionType());
     }
 
     public String getToothType() {
@@ -46,14 +51,6 @@ public class ToothLesion {
 
     public void setLesionType(String lesionType) {
         this.lesionType = lesionType;
-    }
-
-    public OralHealthRecord getOralHealthRecord() {
-        return oralHealthRecord;
-    }
-
-    public void setOralHealthRecord(OralHealthRecord oralHealthRecord) {
-        this.oralHealthRecord = oralHealthRecord;
     }
 
     /**
@@ -73,7 +70,6 @@ public class ToothLesion {
         return "ToothLesionOB{" +
                 "toothType='" + toothType + '\'' +
                 ", lesionType='" + lesionType + '\'' +
-                ", oralHealthRecord=" + oralHealthRecord +
                 '}';
     }
 

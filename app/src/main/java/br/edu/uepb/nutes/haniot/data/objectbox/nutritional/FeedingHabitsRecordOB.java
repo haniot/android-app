@@ -1,5 +1,7 @@
 package br.edu.uepb.nutes.haniot.data.objectbox.nutritional;
 
+import android.util.Log;
+
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.data.model.nutritional.FeedingHabitsRecord;
@@ -22,7 +24,7 @@ public class FeedingHabitsRecordOB extends ActivityHabitsRecordOB {
     @Convert(converter = ConverterStringToDatabase.class, dbType = String.class)
     private List<String> foodAllergyIntolerance;
 
-    @Backlink(to = "feedingHabitsRecord")
+//    @Backlink(to = "feedingHabitsRecord")
     private ToMany<WeeklyFoodRecordOB> weeklyFeedingHabits;
 
     public FeedingHabitsRecordOB() {

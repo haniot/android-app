@@ -7,6 +7,9 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+import br.edu.uepb.nutes.haniot.data.Convert;
+import br.edu.uepb.nutes.haniot.data.objectbox.odontological.OralHealthRecordOB;
+
 public class OralHealthRecord {
 
     @Expose(serialize = false, deserialize = false)
@@ -15,7 +18,6 @@ public class OralHealthRecord {
     @SerializedName("id")
     @Expose()
     private String _id;
-
 
     @Expose(serialize = false, deserialize = false)
     private String patientId;
@@ -30,12 +32,18 @@ public class OralHealthRecord {
 
     @SerializedName("teeth_lesions")
     @Expose()
-//    @Transient // not persisted
     private List<ToothLesion> toothLesions;
 
-//    @Expose(serialize = false, deserialize = false)
-//    @Backlink(to = "oralHealthRecord")
-//    private ToMany<ToothLesionOB> toothLesionsDB;
+    public OralHealthRecord() { }
+
+    public OralHealthRecord(OralHealthRecordOB o) {
+        this.setId(o.getId());
+        this.set_id(o.get_id());
+        this.setPatientId(o.getPatientId());
+        this.setCreatedAt(o.getCreatedAt());
+        this.setTeethBrushingFreq(o.getTeethBrushingFreq());
+        this.setToothLesions(Convert.convertListToothLesionToModel(o.getToothLesions()));
+    }
 
     public long getId() {
         return id;
@@ -76,14 +84,6 @@ public class OralHealthRecord {
     public void setToothLesions(List<ToothLesion> toothLesions) {
         this.toothLesions = toothLesions;
     }
-
-//    public ToMany<ToothLesionOB> getToothLesions() {
-//        return toothLesionsDB;
-//    }
-//
-//    public void setToothLesions(ToMany<ToothLesionOB> toothLesionsDB) {
-//        this.toothLesionsDB = toothLesionsDB;
-//    }
 
     public String getPatientId() {
         return patientId;

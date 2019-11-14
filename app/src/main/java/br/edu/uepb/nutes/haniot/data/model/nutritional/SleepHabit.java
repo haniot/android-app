@@ -74,7 +74,7 @@ public class SleepHabit extends ActivityHabitsRecord {
     @Override
     public String toString() {
         return super.toString() +
-                " SleepHabitOB{" +
+                " SleepHabit{" +
                 "weekDaySleep=" + weekDaySleep +
                 ", weekDayWakeUp=" + weekDayWakeUp +
                 '}';

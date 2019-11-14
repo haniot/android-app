@@ -78,6 +78,10 @@ public class NutritionalQuestionnaire extends Sync {
 
     public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
+        this.getSleepHabit().setCreatedAt(createdAt);
+        this.getPhysicalActivityHabit().setCreatedAt(createdAt);
+        this.getFeedingHabitsRecord().setCreatedAt(createdAt);
+        this.getMedicalRecord().setCreatedAt(createdAt);
     }
 
     public SleepHabit getSleepHabit() {
@@ -85,6 +89,8 @@ public class NutritionalQuestionnaire extends Sync {
     }
 
     public void setSleepHabit(SleepHabit sleepHabit) {
+        sleepHabit.setCreatedAt(this.getCreatedAt());
+        sleepHabit.setPatientId(this.getPatientId());
         this.sleepHabit = sleepHabit;
     }
 
@@ -93,6 +99,8 @@ public class NutritionalQuestionnaire extends Sync {
     }
 
     public void setPhysicalActivityHabit(PhysicalActivityHabit physicalActivityHabit) {
+        physicalActivityHabit.setCreatedAt(this.getCreatedAt());
+        physicalActivityHabit.setPatientId(this.getPatientId());
         this.physicalActivityHabit = physicalActivityHabit;
     }
 
@@ -101,6 +109,8 @@ public class NutritionalQuestionnaire extends Sync {
     }
 
     public void setFeedingHabitsRecord(FeedingHabitsRecord feedingHabitsRecord) {
+        feedingHabitsRecord.setCreatedAt(this.getCreatedAt());
+        feedingHabitsRecord.setPatientId(this.getPatientId());
         this.feedingHabitsRecord = feedingHabitsRecord;
     }
 
@@ -109,6 +119,8 @@ public class NutritionalQuestionnaire extends Sync {
     }
 
     public void setMedicalRecord(MedicalRecord medicalRecord) {
+        medicalRecord.setCreatedAt(this.getCreatedAt());
+        medicalRecord.setPatientId(this.getPatientId());
         this.medicalRecord = medicalRecord;
     }
 
@@ -124,14 +136,14 @@ public class NutritionalQuestionnaire extends Sync {
 
     @Override
     public String toString() {
-        return "NutritionalQuestionnaireOB{" +
+        return "NutritionalQuestionnaire{" +
                 "id=" + id +
                 ", _id='" + _id + '\'' +
                 ", createdAt='" + createdAt + '\'' +
-                ", sleepHabit=" + sleepHabit +
-                ", physicalActivityHabit=" + physicalActivityHabit +
-                ", feedingHabitsRecord=" + feedingHabitsRecord +
-                ", medicalRecord=" + medicalRecord +
+                ", sleepHabit=" + sleepHabit.toString() +
+                ", physicalActivityHabit=" + physicalActivityHabit.toString() +
+                ", feedingHabitsRecord=" + feedingHabitsRecord.toString() +
+                ", medicalRecord=" + medicalRecord.toString() +
                 '}';
     }
 
@@ -146,6 +158,10 @@ public class NutritionalQuestionnaire extends Sync {
 
     public void setPatientId(String patientId) {
         this.patientId = patientId;
+        this.getSleepHabit().setPatientId(patientId);
+        this.getMedicalRecord().setPatientId(patientId);
+        this.getFeedingHabitsRecord().setPatientId(patientId);
+        this.getPhysicalActivityHabit().setPatientId(patientId);
     }
 
     public String getPatientId() {

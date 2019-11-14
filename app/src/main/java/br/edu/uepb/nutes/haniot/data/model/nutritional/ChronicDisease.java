@@ -24,8 +24,8 @@ public class ChronicDisease {
     @Expose()
     private String diseaseHistory;
 
-    @Expose(serialize = false, deserialize = false)
-    private MedicalRecord medicalRecord;
+//    @Expose(serialize = false, deserialize = false)
+//    private MedicalRecord medicalRecord;
 
     public ChronicDisease() { }
 
@@ -38,7 +38,7 @@ public class ChronicDisease {
         this.setId(c.getId());
         this.setType(c.getType());
         this.setDiseaseHistory(c.getDiseaseHistory());
-        this.setMedicalRecord(Convert.convertMedicalRecord(c.getMedicalRecord().getTarget()));
+//        this.setMedicalRecord(Convert.convertMedicalRecord(c.getMedicalRecord().getTarget()));
     }
 
     public long getId() {
@@ -65,13 +65,13 @@ public class ChronicDisease {
         this.diseaseHistory = diseaseHistory;
     }
 
-    public MedicalRecord getMedicalRecord() {
-        return medicalRecord;
-    }
-
-    public void setMedicalRecord(MedicalRecord medicalRecord) {
-        this.medicalRecord = medicalRecord;
-    }
+//    public MedicalRecord getMedicalRecord() {
+//        return medicalRecord;
+//    }
+//
+//    public void setMedicalRecord(MedicalRecord medicalRecord) {
+//        this.medicalRecord = medicalRecord;
+//    }
 
     /**
      * Convert object to json format.
@@ -98,11 +98,11 @@ public class ChronicDisease {
 
     @Override
     public String toString() {
-        return "ChronicDiseaseOB{" +
+        return "ChronicDisease{" +
                 "id=" + id +
                 ", type='" + type + '\'' +
                 ", diseaseHistory='" + diseaseHistory + '\'' +
-                ", medicalRecord=" + medicalRecord +
+//                ", medicalRecord=" + medicalRecord +
                 '}';
     }
 }

@@ -7,6 +7,8 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import br.edu.uepb.nutes.haniot.data.objectbox.odontological.FamilyCohesionRecordOB;
+
 public class FamilyCohesionRecord {
 
     @Expose(serialize = false, deserialize = false)
@@ -68,6 +70,24 @@ public class FamilyCohesionRecord {
     private int familyCohesionResult;
 
     public FamilyCohesionRecord() {
+    }
+
+    public FamilyCohesionRecord(FamilyCohesionRecordOB f) {
+        this.setId(f.getId());
+        this.set_Id(f.get_id());
+        this.setPatientId(f.getPatientId());
+        this.setCreatedAt(f.getCreatedAt());
+        this.setFamilyMutualAidFreq(f.getFamilyMutualAidFreq());
+        this.setFriendshipApprovalFreq(f.getFriendshipApprovalFreq());
+        this.setFamilyOnlyTaskFreq(f.getFamilyOnlyTaskFreq());
+        this.setFamilyOnlyPreferenceFreq(f.getFamilyOnlyPreferenceFreq());
+        this.setFreeTimeTogetherFreq(f.getFreeTimeTogetherFreq());
+        this.setFamilyProximityPerceptionFreq(f.getFamilyProximityPerceptionFreq());
+        this.setAllFamilyTasksFreq(f.getAllFamilyTasksFreq());
+        this.setFamilyTasksOpportunityFreq(f.getFamilyTasksOpportunityFreq());
+        this.setFamilyDecisionSupportFreq(f.getFamilyDecisionSupportFreq());
+        this.setFamilyUnionRelevanceFreq(f.getFamilyUnionRelevanceFreq());
+        this.setFamilyCohesionResult(f.getFamilyCohesionResult());
     }
 
     public void setId(long id) {

@@ -71,6 +71,7 @@ public class Convert {
     }
 
     public static FeedingHabitsRecordOB convertFeedingHabitsRecord(FeedingHabitsRecord feedingHabitsRecord) {
+        if (feedingHabitsRecord == null) return null;
         return new FeedingHabitsRecordOB(feedingHabitsRecord);
     }
 
@@ -110,7 +111,7 @@ public class Convert {
 
     public static List<Measurement> listMeasurementsToModel(List<MeasurementOB> list) {
         List<Measurement> lista = new ArrayList<>();
-        for(MeasurementOB aux : list) {
+        for (MeasurementOB aux : list) {
             lista.add(new Measurement(aux));
         }
         return lista;
@@ -186,7 +187,7 @@ public class Convert {
 
     public static List<ChronicDiseaseOB> listChronicsToObjectBox(List<ChronicDisease> c) {
         List<ChronicDiseaseOB> lista = new ArrayList<>();
-        for (ChronicDisease aux: c) {
+        for (ChronicDisease aux : c) {
             lista.add(new ChronicDiseaseOB(aux));
         }
         return lista;
@@ -280,10 +281,16 @@ public class Convert {
         return aux;
     }
 
-    private static NutritionalQuestionnaire convertNutritionalQuestionnaire(NutritionalQuestionnaireOB questionnaire) {
+    public static NutritionalQuestionnaire convertNutritionalQuestionnaire(NutritionalQuestionnaireOB questionnaire) {
         if (questionnaire == null)
             return null;
         return new NutritionalQuestionnaire(questionnaire);
+    }
+
+    public static NutritionalQuestionnaireOB convertNutritionalQuestionnaire(NutritionalQuestionnaire questionnaire) {
+        if (questionnaire == null)
+            return null;
+        return new NutritionalQuestionnaireOB(questionnaire);
     }
 
     public static SociodemographicRecordOB convertSociodemographicRecord(SociodemographicRecord sociodemographicRecord) {
@@ -309,17 +316,36 @@ public class Convert {
     }
 
     public static FamilyCohesionRecordOB convertFamilyCohesionRecord(FamilyCohesionRecord f) {
+        if (f == null) return null;
         return new FamilyCohesionRecordOB(f);
+    }
+
+    public static FamilyCohesionRecord convertFamilyCohesionRecord(FamilyCohesionRecordOB f) {
+        if (f == null) return null;
+        return new FamilyCohesionRecord(f);
     }
 
     public static OralHealthRecordOB convertOralHealthRecord(OralHealthRecord o) {
         return new OralHealthRecordOB(o);
     }
 
+    public static OralHealthRecord convertOralHealthRecord(OralHealthRecordOB o) {
+        if (o == null) return null;
+        return new OralHealthRecord(o);
+    }
+
     public static List<ToothLesionOB> listToothLesionsToObjectBox(List<ToothLesion> toothLesions) {
         List<ToothLesionOB> aux = new ArrayList<>();
         for (ToothLesion t : toothLesions) {
             aux.add(new ToothLesionOB(t));
+        }
+        return aux;
+    }
+
+    public static List<ToothLesion> convertListToothLesionToModel(List<ToothLesionOB> toothLesions) {
+        List<ToothLesion> aux = new ArrayList<>();
+        for (ToothLesionOB t : toothLesions) {
+            aux.add(new ToothLesion(t));
         }
         return aux;
     }

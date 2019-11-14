@@ -1,10 +1,8 @@
 package br.edu.uepb.nutes.haniot.data.objectbox.nutritional;
 
-import br.edu.uepb.nutes.haniot.data.Convert;
 import br.edu.uepb.nutes.haniot.data.model.nutritional.WeeklyFoodRecord;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
-import io.objectbox.relation.ToOne;
 
 @Entity
 public class WeeklyFoodRecordOB {
@@ -15,7 +13,7 @@ public class WeeklyFoodRecordOB {
 
     private String sevenDaysFreq;
 
-    private ToOne<FeedingHabitsRecordOB> feedingHabitsRecord;
+//    private ToOne<FeedingHabitsRecordOB> feedingHabitsRecord;
 
     public WeeklyFoodRecordOB() {
         super();
@@ -25,7 +23,7 @@ public class WeeklyFoodRecordOB {
         this.setId(w.getId());
         this.setFood(w.getFood());
         this.setSevenDaysFreq(w.getSevenDaysFreq());
-        this.feedingHabitsRecord.setTarget(Convert.convertFeedingHabitsRecord(w.getFeedingHabitsRecord()));
+//        this.feedingHabitsRecord.setTarget(Convert.convertFeedingHabitsRecord(w.getFeedingHabitsRecord()));
     }
 
     public long getId() {
@@ -52,13 +50,13 @@ public class WeeklyFoodRecordOB {
         this.sevenDaysFreq = sevenDaysFreq;
     }
 
-    public ToOne<FeedingHabitsRecordOB> getFeedingHabitsRecord() {
-        return feedingHabitsRecord;
-    }
-
-    public void setFeedingHabitsRecord(ToOne<FeedingHabitsRecordOB> feedingHabitsRecord) {
-        this.feedingHabitsRecord = feedingHabitsRecord;
-    }
+//    public ToOne<FeedingHabitsRecordOB> getFeedingHabitsRecord() {
+//        return feedingHabitsRecord;
+//    }
+//
+//    public void setFeedingHabitsRecord(ToOne<FeedingHabitsRecordOB> feedingHabitsRecord) {
+//        this.feedingHabitsRecord = feedingHabitsRecord;
+//    }
 
     @Override
     public String toString() {

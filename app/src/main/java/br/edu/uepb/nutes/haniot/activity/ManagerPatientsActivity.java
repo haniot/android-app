@@ -180,8 +180,12 @@ public class ManagerPatientsActivity extends AppCompatActivity {
                     appPreferencesHelper.saveLastPatient(patient);
                     startActivity(new Intent(ManagerPatientsActivity.this, QuizNutritionActivity.class));
                 } else if ("nutrition_evaluation".equals(action)) {
-                    appPreferencesHelper.saveLastPatient(patient);
-                    startActivity(new Intent(ManagerPatientsActivity.this, NutritionalEvaluationActivity.class));
+                    if (ConnectionUtils.internetIsEnabled(getApplicationContext())) {
+                        appPreferencesHelper.saveLastPatient(patient);
+                        startActivity(new Intent(ManagerPatientsActivity.this, NutritionalEvaluationActivity.class));
+                    } else {
+                        showMessage(getString(R.string.connect_network_try_again));
+                    }
                 } else if ("historic_quiz".equals(action)) {
                     appPreferencesHelper.saveLastPatient(patient);
                     startActivity(new Intent(ManagerPatientsActivity.this, HistoricQuizActivity.class));
@@ -217,7 +221,7 @@ public class ManagerPatientsActivity extends AppCompatActivity {
                             appPreferencesHelper.saveLastPatient(item);
                             startActivity(intent);
                         } else {
-                            showMessage(getString(R.string.error_500));
+                            showMessage(getString(R.string.connect_network_try_again));
                         }
                     } else {
                         // IMPLEMENTAR EDICAO OFF

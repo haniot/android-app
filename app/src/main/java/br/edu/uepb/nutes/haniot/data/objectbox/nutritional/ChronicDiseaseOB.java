@@ -15,7 +15,7 @@ public class ChronicDiseaseOB {
 
     private String diseaseHistory;
 
-    private ToOne<MedicalRecordOB> medicalRecord;
+//    private ToOne<MedicalRecordOB> medicalRecord;
 
     public ChronicDiseaseOB() {}
 
@@ -23,8 +23,8 @@ public class ChronicDiseaseOB {
         this.setId(c.getId());
         this.setType(c.getType());
         this.setDiseaseHistory(c.getDiseaseHistory());
-        this.medicalRecord.setTarget(
-                Convert.convertMedicalRecord(c.getMedicalRecord()));
+//        this.medicalRecord.setTarget(
+//                Convert.convertMedicalRecord(c.getMedicalRecord()));
     }
 
     public long getId() {
@@ -51,13 +51,13 @@ public class ChronicDiseaseOB {
         this.diseaseHistory = diseaseHistory;
     }
 
-    public ToOne<MedicalRecordOB> getMedicalRecord() {
-        return medicalRecord;
-    }
-
-    public void setMedicalRecord(ToOne<MedicalRecordOB> medicalRecord) {
-        this.medicalRecord = medicalRecord;
-    }
+//    public ToOne<MedicalRecordOB> getMedicalRecord() {
+//        return medicalRecord;
+//    }
+//
+//    public void setMedicalRecord(ToOne<MedicalRecordOB> medicalRecord) {
+//        this.medicalRecord = medicalRecord;
+//    }
 
     @Override
     public String toString() {
@@ -65,7 +65,7 @@ public class ChronicDiseaseOB {
                 "id=" + id +
                 ", type='" + type + '\'' +
                 ", diseaseHistory='" + diseaseHistory + '\'' +
-                ", medicalRecord=" + medicalRecord +
+//                ", medicalRecord=" + medicalRecord +
                 '}';
     }
 }

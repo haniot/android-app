@@ -68,7 +68,7 @@ public class MedicalRecord extends ActivityHabitsRecord {
     @Override
     public String toString() {
         return super.toString() +
-                " MedicalRecordOB{" +
+                " MedicalRecord{" +
                 ", chronicDiseases=" + chronicDiseases +
                 '}';
     }

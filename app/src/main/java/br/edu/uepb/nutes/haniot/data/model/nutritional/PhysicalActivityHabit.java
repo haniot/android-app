@@ -71,7 +71,7 @@ public class PhysicalActivityHabit extends ActivityHabitsRecord {
     @Override
     public String toString() {
         return super.toString() +
-                " PhysicalActivityHabitOB{" +
+                " PhysicalActivityHabit{" +
                 super.toString() +
                 "schoolActivityFreq='" + schoolActivityFreq + '\'' +
                 ", weeklyActivities=" + weeklyActivities +

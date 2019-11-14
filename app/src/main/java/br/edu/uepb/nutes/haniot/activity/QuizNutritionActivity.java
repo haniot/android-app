@@ -634,7 +634,7 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
     public void onClosePage() {
         new AlertDialog
                 .Builder(this)
-                .setMessage(getResources().getString(R.string.cancel))
+                .setMessage(getResources().getString(R.string.cancel)+"?")
                 .setPositiveButton(getResources().getText(R.string.yes_text), (dialog, which) -> {
                     finish();
                 })
@@ -667,9 +667,9 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
                 case FEEDING_HABITS:
                     saveFeedingHabits();
                     break;
-                case SLEEP_HABITS:
-                    saveSleepHabits();
-                    break;
+//                case SLEEP_HABITS:
+//                    saveSleepHabits();
+//                    break;
                 default:
                     saveSleepHabits();
             }
@@ -687,6 +687,7 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
             Log.w("AAA", "updateType == null");
             Log.w("AAA", "Saving: " + nutritionalQuestionnaire.toJson());
             nutritionalQuestionnaire.setPatientId(patient.get_id());
+
             DisposableManager.add(mRepository
                     .saveNutritionalQuestionnaire(nutritionalQuestionnaire)
                     .doAfterTerminate(() -> {

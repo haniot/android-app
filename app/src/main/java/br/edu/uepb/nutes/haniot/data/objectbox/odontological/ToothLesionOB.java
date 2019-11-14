@@ -18,15 +18,12 @@ public class ToothLesionOB {
 
     private String lesionType;
 
-    private ToOne<OralHealthRecordOB> oralHealthRecord;
-
     public ToothLesionOB() {}
 
     public ToothLesionOB(ToothLesion t) {
         this.setId(t.getId());
         this.setToothType(t.getToothType());
         this.setLesionType(t.getLesionType());
-        this.setOralHealthRecord(Convert.convertOralHealthRecord(t.getOralHealthRecord()));
     }
 
     public long getId() {
@@ -53,20 +50,12 @@ public class ToothLesionOB {
         this.lesionType = lesionType;
     }
 
-    public ToOne<OralHealthRecordOB> getOralHealthRecord() {
-        return oralHealthRecord;
-    }
-
-    public void setOralHealthRecord(OralHealthRecordOB oralHealthRecord) {
-        this.oralHealthRecord.setTarget(oralHealthRecord);
-    }
-
     @Override
     public String toString() {
         return "ToothLesionOB{" +
                 "toothType='" + toothType + '\'' +
                 ", lesionType='" + lesionType + '\'' +
-                ", oralHealthRecord=" + oralHealthRecord +
+//                ", oralHealthRecord=" + oralHealthRecord +
                 '}';
     }
 
