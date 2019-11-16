@@ -18,12 +18,12 @@ public class SociodemographicRecord {
     @Expose()
     private String _id;
 
-    @Expose(serialize = false, deserialize = false)
-    private String patientId;
-
-    @SerializedName("created_at")
-    @Expose(serialize = false)
-    private String createdAt;
+//    @Expose(serialize = false, deserialize = false)
+//    private String patientId;
+//
+//    @SerializedName("created_at")
+//    @Expose(serialize = false)
+//    private String createdAt;
 
     @SerializedName("color_race")
     @Expose()
@@ -43,8 +43,8 @@ public class SociodemographicRecord {
     public SociodemographicRecord(SociodemographicRecordOB s) {
         this.setId(s.getId());
         this.set_id(s.get_id());
-        this.setPatientId(s.getPatientId());
-        this.setCreatedAt(s.getCreatedAt());
+//        this.setPatientId(s.getPatientId());
+//        this.setCreatedAt(s.getCreatedAt());
         this.setColorRace(s.getColorRace());
         this.setMotherScholarity(s.getMotherScholarity());
         this.setPeopleInHome(s.getPeopleInHome());
@@ -66,13 +66,13 @@ public class SociodemographicRecord {
         this._id = _id;
     }
 
-    public String getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
-    }
+//    public String getCreatedAt() {
+//        return createdAt;
+//    }
+//
+//    public void setCreatedAt(String createdAt) {
+//        this.createdAt = createdAt;
+//    }
 
     public String getColorRace() {
         return colorRace;
@@ -98,13 +98,13 @@ public class SociodemographicRecord {
         this.peopleInHome = peopleInHome;
     }
 
-    public String getPatientId() {
-        return patientId;
-    }
-
-    public void setPatientId(String patientId) {
-        this.patientId = patientId;
-    }
+//    public String getPatientId() {
+//        return patientId;
+//    }
+//
+//    public void setPatientId(String patientId) {
+//        this.patientId = patientId;
+//    }
 
     /**
      * Convert object to json format.
@@ -123,8 +123,8 @@ public class SociodemographicRecord {
         return "SociodemographicRecordOB{" +
                 "id=" + id +
                 ", _id='" + _id + '\'' +
-                ", patientId='" + patientId + '\'' +
-                ", createdAt='" + createdAt + '\'' +
+//                ", patientId='" + patientId + '\'' +
+//                ", createdAt='" + createdAt + '\'' +
                 ", colorRace='" + colorRace + '\'' +
                 ", motherScholarity='" + motherScholarity + '\'' +
                 ", peopleInHome=" + peopleInHome +

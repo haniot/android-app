@@ -21,7 +21,8 @@ public class OdontologicalQuestionnaireOB extends SyncOB {
 
     String createdAt;
 
-    private String patientId;
+    private long patientId;
+    private String patient_id;
 
     ToOne<SociodemographicRecordOB> sociodemographicRecord;
 
@@ -29,15 +30,17 @@ public class OdontologicalQuestionnaireOB extends SyncOB {
 
     ToOne<OralHealthRecordOB> oralHealthRecord;
 
-    public OdontologicalQuestionnaireOB() {
-        super();
-    }
+    public OdontologicalQuestionnaireOB() { }
 
     public OdontologicalQuestionnaireOB(OdontologicalQuestionnaire o) {
         super(o.isSync());
         this.setId(o.getId());
         this.set_id(o.get_id());
         this.setCreatedAt(o.getCreatedAt());
+
+        this.setPatientId(o.getPatientId());
+        this.setPatient_id(o.getPatient_id());
+
         this.setSociodemographicRecord(Convert.convertSociodemographicRecord(o.getSociodemographicRecord()));
         this.setFamilyCohesionRecord(Convert.convertFamilyCohesionRecord(o.getFamilyCohesionRecord()));
         this.setOralHealthRecord(Convert.convertOralHealthRecord(o.getOralHealthRecord()));
@@ -112,11 +115,19 @@ public class OdontologicalQuestionnaireOB extends SyncOB {
                 Objects.equals(createdAt, that.createdAt);
     }
 
-    public String getPatientId() {
+    public long getPatientId() {
         return patientId;
     }
 
-    public void setPatientId(String patientId) {
+    public void setPatientId(long patientId) {
         this.patientId = patientId;
+    }
+
+    public String getPatient_id() {
+        return patient_id;
+    }
+
+    public void setPatient_id(String patient_id) {
+        this.patient_id = patient_id;
     }
 }

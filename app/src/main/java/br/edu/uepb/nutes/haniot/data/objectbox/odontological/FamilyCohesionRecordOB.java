@@ -14,10 +14,6 @@ public class FamilyCohesionRecordOB {
     @Index
     private String _id;
 
-    private String patientId;
-
-    private String createdAt;
-
     private String familyMutualAidFreq;
 
     private String friendshipApprovalFreq;
@@ -45,8 +41,7 @@ public class FamilyCohesionRecordOB {
     public FamilyCohesionRecordOB(FamilyCohesionRecord f) {
         this.setId(f.getId());
         this.set_id(f.get_id());
-        this.setPatientId(f.getPatientId());
-        this.setCreatedAt(f.getCreatedAt());
+
         this.setFamilyMutualAidFreq(f.getFamilyMutualAidFreq());
         this.setFriendshipApprovalFreq(f.getFriendshipApprovalFreq());
         this.setFamilyOnlyTaskFreq(f.getFamilyOnlyTaskFreq());
@@ -74,14 +69,6 @@ public class FamilyCohesionRecordOB {
 
     public void set_id(String _id) {
         this._id = _id;
-    }
-
-    public String getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
     }
 
     public String getFamilyMutualAidFreq() {
@@ -172,21 +159,11 @@ public class FamilyCohesionRecordOB {
         this.familyCohesionResult = familyCohesionResult;
     }
 
-    public String getPatientId() {
-        return patientId;
-    }
-
-    public void setPatientId(String patientId) {
-        this.patientId = patientId;
-    }
-
     @Override
     public String toString() {
         return "FamilyCohesionRecordOB{" +
                 "id=" + id +
                 ", _id='" + _id + '\'' +
-                ", patientId='" + patientId + '\'' +
-                ", createdAt='" + createdAt + '\'' +
                 ", familyMutualAidFreq='" + familyMutualAidFreq + '\'' +
                 ", friendshipApprovalFreq='" + friendshipApprovalFreq + '\'' +
                 ", familyOnlyTaskFreq='" + familyOnlyTaskFreq + '\'' +

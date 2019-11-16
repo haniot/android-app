@@ -10,6 +10,7 @@ import java.util.List;
 import br.edu.uepb.nutes.haniot.App;
 import br.edu.uepb.nutes.haniot.data.Convert;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
+import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.objectbox.MeasurementOB;
 import br.edu.uepb.nutes.haniot.data.objectbox.MeasurementOB_;
 import br.edu.uepb.nutes.haniot.data.repository.Repository;
@@ -69,8 +70,9 @@ public class MeasurementDAO {
 
     /**
      * Remove measurementOB.
+     * <p>
+     * //     * @param userId        String
      *
-//     * @param userId        String
      * @param measurementId long
      * @return boolean
      */
@@ -171,17 +173,17 @@ public class MeasurementDAO {
 //                .find(offset, limit);
 //    }
 
-    public List<Measurement> getAllMeasurements(String userId, String sort, String dateStart, String dateEnd, int page, int limit) {
+    public List<Measurement> getAllMeasurements(String user_id, String sort, String dateStart, String dateEnd, int page, int limit) {
         page--;
         List<MeasurementOB> aux;
-        if (userId == null) {
+        if (user_id == null) {
             aux = measurementBox.query()
                     .orderDesc(MeasurementOB_.timestamp)
                     .build()
                     .find(page * limit, limit);
         } else {
             aux = measurementBox.query()
-                    .equal(MeasurementOB_.userId, userId)
+                    .equal(MeasurementOB_.user_id, user_id)
                     .orderDesc(MeasurementOB_.timestamp)
                     .build()
                     .find(page * limit, limit);
@@ -189,26 +191,47 @@ public class MeasurementDAO {
         return Convert.listMeasurementsToModel(aux);
     }
 
-    public List<Measurement> getMeasurementsByType(String userId, String type, String sort, String dateStart, String dateEnd, int page, int limit) {
+    public List<Measurement> getMeasurementsByType(Patient patient, String type, String sort, String dateStart, String dateEnd, int page, int limit) {
         page--;
-        List<MeasurementOB> aux =
-                measurementBox.query()
-                        .equal(MeasurementOB_.userId, userId)
-                        .equal(MeasurementOB_.type, type)
-                        .orderDesc(MeasurementOB_.timestamp)
+        List<MeasurementOB> aux;
+
+        if (patient.get_id() != null) {
+            aux = measurementBox.query()
+                    .equal(MeasurementOB_.user_id, patient.get_id())
+                    .equal(MeasurementOB_.type, type)
+                    .orderDesc(MeasurementOB_.timestamp)
 //                        .filter(m -> DateUtils.compareDates(m.getTimestamp(), dateStart, dateEnd))
-                        .build()
-                        .find(page * limit, limit);
-        List<MeasurementOB> teste = measurementBox.query()
-                .orderDesc(MeasurementOB_.timestamp)
-                .build().find(page * limit, limit);
-        Log.i(TAG, "ATUALMENTE: " + teste.toString());
+                    .build()
+                    .find(page * limit, limit);
+        } else {
+            aux = measurementBox.query()
+                    .equal(MeasurementOB_.userId, patient.getId())
+                    .equal(MeasurementOB_.type, type)
+                    .orderDesc(MeasurementOB_.timestamp)
+//                        .filter(m -> DateUtils.compareDates(m.getTimestamp(), dateStart, dateEnd))
+                    .build()
+                    .find(page * limit, limit);
+        }
+//        List<MeasurementOB> teste = measurementBox.query()
+//                .orderDesc(MeasurementOB_.timestamp)
+//                .build().find(page * limit, limit);
+//        Log.i(TAG, "ATUALMENTE: " + teste.toString());
         return Convert.listMeasurementsToModel(aux);
     }
 
     public List<Measurement> getAllNotSync() {
         List<MeasurementOB> aux =
                 measurementBox.query()
+                        .equal(MeasurementOB_.sync, false)
+                        .build()
+                        .find();
+        return Convert.listMeasurementsToModel(aux);
+    }
+
+    public List<Measurement> getAllNotSync(long id) {
+        List<MeasurementOB> aux =
+                measurementBox.query()
+                        .equal(MeasurementOB_.userId, id)
                         .equal(MeasurementOB_.sync, false)
                         .build()
                         .find();

@@ -168,7 +168,7 @@ public class QuizOdontologyActivity extends SimpleSurvey implements Infor.OnInfo
     }
 
     private void saveFamilyCohesion() {
-        familyCohesionRecord.setPatientId(patient.get_id());
+//        familyCohesionRecord.setPatientId(patient.get_id());
         int totalPoints = 0;
         Log.w("AAA", "Size points: " + points.size());
         for (Integer integer : points) {
@@ -182,7 +182,7 @@ public class QuizOdontologyActivity extends SimpleSurvey implements Infor.OnInfo
     }
 
     private void saveOralHealth() {
-        oralHealthRecord.setPatientId(patient.get_id());
+//        oralHealthRecord.setPatientId(patient.get_id());
         oralHealthRecord.setToothLesions(toothLesions);
         oralHealthRecord.toJson();
         odontologicalQuestionnaire.setOralHealthRecord(oralHealthRecord);
@@ -190,7 +190,7 @@ public class QuizOdontologyActivity extends SimpleSurvey implements Infor.OnInfo
     }
 
     private void saveSociodemographic() {
-        sociodemographicRecord.setPatientId(patient.get_id());
+//        sociodemographicRecord.setPatientId(patient.get_id());
         sociodemographicRecord.toJson();
         odontologicalQuestionnaire.setSociodemographicRecord(sociodemographicRecord);
         resourceToUpdate = sociodemographicRecord;
@@ -599,7 +599,7 @@ public class QuizOdontologyActivity extends SimpleSurvey implements Infor.OnInfo
                 "Aguarde alguns instantes...", true);
         dialog.show();
         Log.w("AAA", odontologicalQuestionnaire.toJson());
-        odontologicalQuestionnaire.setPatientId(patient.get_id());
+        odontologicalQuestionnaire.setPatient_id(patient.get_id());
         if (updateType == null) {
             DisposableManager.add(mRepository
                     .saveOdontologicalQuestionnaire(odontologicalQuestionnaire)

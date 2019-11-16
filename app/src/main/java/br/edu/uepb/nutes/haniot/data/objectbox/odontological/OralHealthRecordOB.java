@@ -19,10 +19,6 @@ public class OralHealthRecordOB {
     @Index
     private String _id;
 
-    private String patientId;
-
-    private String createdAt;
-
     private String teethBrushingFreq;
 
     private ToMany<ToothLesionOB> toothLesions;
@@ -32,8 +28,6 @@ public class OralHealthRecordOB {
     public OralHealthRecordOB(OralHealthRecord o) {
         this.setId(o.getId());
         this.set_id(o.get_id());
-        this.setPatientId(o.getPatientId());
-        this.setCreatedAt(o.getCreatedAt());
         this.setTeethBrushingFreq(o.getTeethBrushingFreq());
         this.setToothLesions(Convert.listToothLesionsToObjectBox(o.getToothLesions()));
     }
@@ -54,14 +48,6 @@ public class OralHealthRecordOB {
         this._id = _id;
     }
 
-    public String getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
-    }
-
     public String getTeethBrushingFreq() {
         return teethBrushingFreq;
     }
@@ -79,21 +65,11 @@ public class OralHealthRecordOB {
         this.toothLesions.addAll(toothLesions);
     }
 
-    public String getPatientId() {
-        return patientId;
-    }
-
-    public void setPatientId(String patientId) {
-        this.patientId = patientId;
-    }
-
     @Override
     public String toString() {
         return "OralHealthRecordOB{" +
                 "id=" + id +
                 ", _id='" + _id + '\'' +
-                ", patientId='" + patientId + '\'' +
-                ", createdAt='" + createdAt + '\'' +
                 ", teethBrushingFreq='" + teethBrushingFreq + '\'' +
 //                ", toothLesions=" + toothLesions +
                 ", toothLesions=" + toothLesions +

@@ -67,6 +67,15 @@ public class NutritionalQuestionnaireDAO {
         return Convert.listNutritionalQuestionnaireToModel(aux);
     }
 
+    public List<NutritionalQuestionnaire> getAllNotSync(long id) {
+        List<NutritionalQuestionnaireOB> aux = nutritionalQuestionnaireBox.query()
+                .equal(NutritionalQuestionnaireOB_.patientId, id)
+                .equal(NutritionalQuestionnaireOB_.sync, false)
+                .build()
+                .find();
+        return Convert.listNutritionalQuestionnaireToModel(aux);
+    }
+
     public void markAsSync(long id) {
         nutritionalQuestionnaireBox.query()
                 .equal(NutritionalQuestionnaireOB_.id, id)

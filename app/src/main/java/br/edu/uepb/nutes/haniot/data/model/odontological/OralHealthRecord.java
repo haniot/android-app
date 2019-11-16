@@ -19,12 +19,12 @@ public class OralHealthRecord {
     @Expose()
     private String _id;
 
-    @Expose(serialize = false, deserialize = false)
-    private String patientId;
-
-    @SerializedName("created_at")
-    @Expose(serialize = false)
-    private String createdAt;
+//    @Expose(serialize = false, deserialize = false)
+//    private String patientId;
+//
+//    @SerializedName("created_at")
+//    @Expose(serialize = false)
+//    private String createdAt;
 
     @SerializedName("teeth_brushing_freq")
     @Expose()
@@ -39,8 +39,8 @@ public class OralHealthRecord {
     public OralHealthRecord(OralHealthRecordOB o) {
         this.setId(o.getId());
         this.set_id(o.get_id());
-        this.setPatientId(o.getPatientId());
-        this.setCreatedAt(o.getCreatedAt());
+//        this.setPatientId(o.getPatientId());
+//        this.setCreatedAt(o.getCreatedAt());
         this.setTeethBrushingFreq(o.getTeethBrushingFreq());
         this.setToothLesions(Convert.convertListToothLesionToModel(o.getToothLesions()));
     }
@@ -60,14 +60,14 @@ public class OralHealthRecord {
     public void set_id(String _id) {
         this._id = _id;
     }
-
-    public String getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
-    }
+//
+//    public String getCreatedAt() {
+//        return createdAt;
+//    }
+//
+//    public void setCreatedAt(String createdAt) {
+//        this.createdAt = createdAt;
+//    }
 
     public String getTeethBrushingFreq() {
         return teethBrushingFreq;
@@ -85,13 +85,13 @@ public class OralHealthRecord {
         this.toothLesions = toothLesions;
     }
 
-    public String getPatientId() {
-        return patientId;
-    }
-
-    public void setPatientId(String patientId) {
-        this.patientId = patientId;
-    }
+//    public String getPatientId() {
+//        return patientId;
+//    }
+//
+//    public void setPatientId(String patientId) {
+//        this.patientId = patientId;
+//    }
 
     /**
      * Convert object to json format.
@@ -108,8 +108,8 @@ public class OralHealthRecord {
         return "OralHealthRecordOB{" +
                 "id=" + id +
                 ", _id='" + _id + '\'' +
-                ", patientId='" + patientId + '\'' +
-                ", createdAt='" + createdAt + '\'' +
+//                ", patientId='" + patientId + '\'' +
+//                ", createdAt='" + createdAt + '\'' +
                 ", teethBrushingFreq='" + teethBrushingFreq + '\'' +
                 ", toothLesions=" + toothLesions +
 //                ", toothLesionsDB=" + toothLesionsDB +

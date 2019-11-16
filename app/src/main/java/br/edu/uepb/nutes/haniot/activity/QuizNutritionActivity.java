@@ -141,7 +141,7 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
      */
     private void saveMedicalRecords() {
         medicalRecord.setChronicDiseases(chronicDiseases);
-//        medicalRecord.setPatientId(patient.get_id());
+//        medicalRecord.setPatient_id(patient.get_id());
         Log.i(LOG_TAG, medicalRecord.toJson());
 //        mRepository.saveMedicalRecord(medicalRecord);
         nutritionalQuestionnaire.setMedicalRecord(medicalRecord);
@@ -152,7 +152,7 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
      * Save feeding habits in server.
      */
     private void saveFeedingHabits() {
-//        feedingHabitsRecord.setPatientId(patient.get_id());
+//        feedingHabitsRecord.setPatient_id(patient.get_id());
 //        feedingHabitsRecord.setWeeklyFeedingHabitsDB(weeklyFoodRecords);
         feedingHabitsRecord.setWeeklyFeedingHabits(weeklyFoodRecords);
         Log.i(LOG_TAG, feedingHabitsRecord.toJson());
@@ -166,7 +166,7 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
      * Save sleep habits in server.
      */
     private void saveSleepHabits() {
-//        sleepHabit.setPatientId(patient.get_id());
+//        sleepHabit.setPatient_id(patient.get_id());
         Log.i(LOG_TAG, sleepHabit.toJson());
 //        sleepHabitsDAO.save(sleepHabit);
 //        mRepository.saveSleepHabits(sleepHabit);
@@ -178,7 +178,7 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
      * Save activity habits in server.
      */
     private void saveActivityHabits() {
-//        physicalActivityHabits.setPatientId(patient.get_id());
+//        physicalActivityHabits.setPatient_id(patient.get_id());
         Log.i(LOG_TAG, physicalActivityHabits.toJson());
 //        physicalActivityHabitsDAO.save(physicalActivityHabits);
 //        mRepository.savePhysicalActivityHabit(physicalActivityHabits);

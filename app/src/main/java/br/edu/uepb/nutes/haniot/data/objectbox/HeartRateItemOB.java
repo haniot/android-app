@@ -24,7 +24,7 @@ public class HeartRateItemOB {
 
     private String timestamp;
 
-    private ToOne<MeasurementOB> heartRate;
+//    private ToOne<MeasurementOB> heartRate;
 
     public HeartRateItemOB() {}
 
@@ -33,8 +33,8 @@ public class HeartRateItemOB {
         this.setValue(h.getValue());
         this.setTimestamp(h.getTimestamp());
 
-        if (h.getHeartRate() != null)
-            this.heartRate.setTarget(Convert.convertMeasurement(h.getHeartRate()));
+//        if (h.getHeartRate() != null)
+//            this.heartRate.setTarget(Convert.convertMeasurement(h.getHeartRate()));
     }
 
     public long getId() {
@@ -61,13 +61,13 @@ public class HeartRateItemOB {
         this.timestamp = timestamp;
     }
 
-    public ToOne<MeasurementOB> getHeartRate() {
-        return heartRate;
-    }
-
-    public void setHeartRate(ToOne<MeasurementOB> heartRate) {
-        this.heartRate = heartRate;
-    }
+//    public ToOne<MeasurementOB> getHeartRate() {
+//        return heartRate;
+//    }
+//
+//    public void setHeartRate(ToOne<MeasurementOB> heartRate) {
+//        this.heartRate = heartRate;
+//    }
 
     @Override
     public int hashCode() {

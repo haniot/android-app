@@ -94,7 +94,10 @@ public class Measurement extends Sync implements Parcelable {
         this.setUnit(m.getUnit());
         this.setType(m.getType());
         this.setTimestamp(m.getTimestamp());
-        this.setUser_id(m.getUserId());
+
+        this.setUser_id(m.getUser_id());
+        this.setUserId(m.getUserId());
+
         this.setDeviceId(m.getDeviceId());
         this.setSystolic(m.getSystolic());
         this.setDiastolic(m.getDiastolic());

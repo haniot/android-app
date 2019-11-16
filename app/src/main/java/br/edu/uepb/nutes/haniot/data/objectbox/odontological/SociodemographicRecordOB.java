@@ -14,10 +14,6 @@ public class SociodemographicRecordOB {
     @Index
     private String _id;
 
-    private String patientId;
-
-    private String createdAt;
-
     private String colorRace;
 
     private String motherScholarity;
@@ -29,8 +25,6 @@ public class SociodemographicRecordOB {
     public SociodemographicRecordOB(SociodemographicRecord s) {
         this.setId(s.getId());
         this.set_id(s.get_id());
-        this.setPatientId(s.getPatientId());
-        this.setCreatedAt(s.getCreatedAt());
         this.setColorRace(s.getColorRace());
         this.setMotherScholarity(s.getMotherScholarity());
         this.setPeopleInHome(s.getPeopleInHome());
@@ -50,14 +44,6 @@ public class SociodemographicRecordOB {
 
     public void set_id(String _id) {
         this._id = _id;
-    }
-
-    public String getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
     }
 
     public String getColorRace() {
@@ -84,14 +70,6 @@ public class SociodemographicRecordOB {
         this.peopleInHome = peopleInHome;
     }
 
-    public String getPatientId() {
-        return patientId;
-    }
-
-    public void setPatientId(String patientId) {
-        this.patientId = patientId;
-    }
-
 //    /**
 //     * Convert object to json format.
 //     *
@@ -109,8 +87,6 @@ public class SociodemographicRecordOB {
         return "SociodemographicRecordOB{" +
                 "id=" + id +
                 ", _id='" + _id + '\'' +
-                ", patientId='" + patientId + '\'' +
-                ", createdAt='" + createdAt + '\'' +
                 ", colorRace='" + colorRace + '\'' +
                 ", motherScholarity='" + motherScholarity + '\'' +
                 ", peopleInHome=" + peopleInHome +

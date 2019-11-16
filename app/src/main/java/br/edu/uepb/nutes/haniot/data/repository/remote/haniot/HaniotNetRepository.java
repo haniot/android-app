@@ -311,7 +311,7 @@ public class HaniotNetRepository extends BaseNetRepository {
 
     // pilotstudies.patients.sleephabits
 //    public Single<SleepHabit> saveSleepHabit(SleepHabit sleepHabit) {
-//        return haniotService.addSleepHabit(sleepHabit.getPatientId(), sleepHabit)
+//        return haniotService.addSleepHabit(sleepHabit.getPatient_id(), sleepHabit)
 //                .subscribeOn(Schedulers.io())
 //                .observeOn(AndroidSchedulers.mainThread());
 //    }
@@ -327,7 +327,7 @@ public class HaniotNetRepository extends BaseNetRepository {
 //            PhysicalActivityHabit physicalActivityHabits) {
 //        return haniotService
 //                .addPhysicalActivityHabit(
-//                        physicalActivityHabits.getPatientId(),
+//                        physicalActivityHabits.getPatient_id(),
 //                        physicalActivityHabits
 //                )
 //                .subscribeOn(Schedulers.io())
@@ -342,7 +342,7 @@ public class HaniotNetRepository extends BaseNetRepository {
 
     // pilotstudies.patients.feedinghabitsrecords
 //    public Single<FeedingHabitsRecord> saveFeedingHabitsRecord(FeedingHabitsRecord feedingHabitsRecord) {
-//        return haniotService.addFeedingHabitsRecord(feedingHabitsRecord.getPatientId(),
+//        return haniotService.addFeedingHabitsRecord(feedingHabitsRecord.getPatient_id(),
 //                feedingHabitsRecord)
 //                .subscribeOn(Schedulers.io())
 //                .observeOn(AndroidSchedulers.mainThread());
@@ -356,7 +356,7 @@ public class HaniotNetRepository extends BaseNetRepository {
 
     // pilotstudies.patients.medicalrecords
 //    public Single<MedicalRecord> saveMedicalRecord(MedicalRecord medicalRecord) {
-//        return haniotService.addMedicalRecord(medicalRecord.getPatientId(), medicalRecord)
+//        return haniotService.addMedicalRecord(medicalRecord.getPatient_id(), medicalRecord)
 //                .subscribeOn(Schedulers.io())
 //                .observeOn(AndroidSchedulers.mainThread());
 //    }
@@ -368,16 +368,16 @@ public class HaniotNetRepository extends BaseNetRepository {
     }
 
     // pilotstudies.patients.familycohesionrecord
-    public Single<FamilyCohesionRecord> saveFamilyCohesionRecord(
-            FamilyCohesionRecord familyCohesionRecord) {
-        return haniotService
-                .addFamilyCohesionRecord(
-                        familyCohesionRecord.getPatientId(),
-                        familyCohesionRecord
-                )
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-    }
+//    public Single<FamilyCohesionRecord> saveFamilyCohesionRecord(
+//            FamilyCohesionRecord familyCohesionRecord) {
+//        return haniotService
+//                .addFamilyCohesionRecord(
+//                        familyCohesionRecord.getPatientId(),
+//                        familyCohesionRecord
+//                )
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread());
+//    }
 
     public Completable deleteFamilyCohesionRecord(String patientId, String familyCohesionRecordId) {
         return haniotService.deleteFamilyCohesionRecord(patientId, familyCohesionRecordId)
@@ -386,16 +386,16 @@ public class HaniotNetRepository extends BaseNetRepository {
     }
 
     // pilotstudies.patients.oralhealthrecords
-    public Single<OralHealthRecord> saveOralHealthRecord(
-            OralHealthRecord oralhealthrecord) {
-        return haniotService
-                .addOralHealthRecord(
-                        oralhealthrecord.getPatientId(),
-                        oralhealthrecord
-                )
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-    }
+//    public Single<OralHealthRecord> saveOralHealthRecord(
+//            OralHealthRecord oralhealthrecord) {
+//        return haniotService
+//                .addOralHealthRecord(
+//                        oralhealthrecord.getPatientId(),
+//                        oralhealthrecord
+//                )
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread());
+//    }
 
     public Completable deleteOralHealthRecord(String patientId, String oralHealthRecordsId) {
         return haniotService.deleteOralHealthRecord(patientId, oralHealthRecordsId)
@@ -404,16 +404,16 @@ public class HaniotNetRepository extends BaseNetRepository {
     }
 
     // pilotstudies.patients.sociodemographicrecord
-    public Single<SociodemographicRecord> saveSociodemographicRecord(
-            SociodemographicRecord sociodemographicrecord) {
-        return haniotService
-                .addSociodemographicRecord(
-                        sociodemographicrecord.getPatientId(),
-                        sociodemographicrecord
-                )
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-    }
+//    public Single<SociodemographicRecord> saveSociodemographicRecord(
+//            SociodemographicRecord sociodemographicrecord) {
+//        return haniotService
+//                .addSociodemographicRecord(
+//                        sociodemographicrecord.getPatientId(),
+//                        sociodemographicrecord
+//                )
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread());
+//    }
 
     public Completable deleteSociodemographicRecord(String patientId, String sociodemographicRecordId) {
         return haniotService.deleteSociodemographicRecord(patientId, sociodemographicRecordId)
@@ -515,7 +515,7 @@ public class HaniotNetRepository extends BaseNetRepository {
 
     public Single<OdontologicalQuestionnaire> saveOdontologicalQuestionnaire(OdontologicalQuestionnaire odontologicalQuestionnaire) {
         return haniotService.saveOdontologicalQuestionnaire(
-                odontologicalQuestionnaire.getPatientId(),
+                odontologicalQuestionnaire.getPatient_id(),
                 odontologicalQuestionnaire)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());

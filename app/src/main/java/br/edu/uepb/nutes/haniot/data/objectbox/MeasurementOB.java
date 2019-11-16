@@ -30,7 +30,8 @@ public class MeasurementOB extends SyncOB {
     private String unit;
     private String type;
     private String timestamp;
-    private String userId;
+    private String user_id;
+    private long userId;
     private String deviceId;
     private int systolic;
     private int diastolic;
@@ -48,7 +49,7 @@ public class MeasurementOB extends SyncOB {
 
     private ToOne<BodyFatOB> bodyFat;
 
-    @Backlink(to = "heartRate")
+//    @Backlink(to = "heartRate")
     private ToMany<HeartRateItemOB> dataset;
 
     public MeasurementOB() {
@@ -63,7 +64,10 @@ public class MeasurementOB extends SyncOB {
         this.setUnit(m.getUnit());
         this.setType(m.getType());
         this.setTimestamp(m.getTimestamp());
-        this.setUserId(m.getUser_id());
+
+        this.setUser_id(m.getUser_id());
+        this.setUserId(m.getUserId());
+
         this.setDeviceId(m.getDeviceId());
         this.setSystolic(m.getSystolic());
         this.setDiastolic(m.getDiastolic());
@@ -124,12 +128,20 @@ public class MeasurementOB extends SyncOB {
         this.timestamp = timestamp;
     }
 
-    public String getUserId() {
+    public long getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(long userId) {
         this.userId = userId;
+    }
+
+    public String getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
     }
 
     public String getDeviceId() {

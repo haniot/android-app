@@ -30,8 +30,8 @@ public class HeartRateItem implements Parcelable {
     @Expose()
     private String timestamp;
 
-    @Expose(serialize = false, deserialize = false)
-    private Measurement heartRate;
+//    @Expose(serialize = false, deserialize = false)
+//    private Measurement heartRate;
 
     public HeartRateItem() {
     }
@@ -46,8 +46,8 @@ public class HeartRateItem implements Parcelable {
         this.setValue(h.getValue());
         this.setTimestamp(h.getTimestamp());
 
-        if (h.getHeartRate() != null && h.getHeartRate().getTarget() != null)
-            this.setHeartRate(Convert.convertMeasurement(h.getHeartRate().getTarget()));
+//        if (h.getHeartRate() != null && h.getHeartRate().getTarget() != null)
+//            this.setHeartRate(Convert.convertMeasurement(h.getHeartRate().getTarget()));
     }
 
     protected HeartRateItem(Parcel in) {
@@ -102,13 +102,13 @@ public class HeartRateItem implements Parcelable {
         this.timestamp = timestamp;
     }
 
-    public Measurement getHeartRate() {
-        return heartRate;
-    }
-
-    public void setHeartRate(Measurement heartRate) {
-        this.heartRate = heartRate;
-    }
+//    public Measurement getHeartRate() {
+//        return heartRate;
+//    }
+//
+//    public void setHeartRate(Measurement heartRate) {
+//        this.heartRate = heartRate;
+//    }
 
     @Override
     public int hashCode() {

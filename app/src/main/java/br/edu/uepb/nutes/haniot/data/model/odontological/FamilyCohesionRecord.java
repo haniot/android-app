@@ -18,12 +18,12 @@ public class FamilyCohesionRecord {
     @Expose()
     private String _id;
 
-    @Expose(serialize = false, deserialize = false)
-    private String patientId;
-
-    @SerializedName("created_at")
-    @Expose(serialize = false)
-    private String createdAt;
+//    @Expose(serialize = false, deserialize = false)
+//    private String patientId;
+//
+//    @SerializedName("created_at")
+//    @Expose(serialize = false)
+//    private String createdAt;
 
     @SerializedName("family_mutual_aid_freq")
     @Expose()
@@ -75,8 +75,8 @@ public class FamilyCohesionRecord {
     public FamilyCohesionRecord(FamilyCohesionRecordOB f) {
         this.setId(f.getId());
         this.set_Id(f.get_id());
-        this.setPatientId(f.getPatientId());
-        this.setCreatedAt(f.getCreatedAt());
+//        this.setPatientId(f.getPatientId());
+//        this.setCreatedAt(f.getCreatedAt());
         this.setFamilyMutualAidFreq(f.getFamilyMutualAidFreq());
         this.setFriendshipApprovalFreq(f.getFriendshipApprovalFreq());
         this.setFamilyOnlyTaskFreq(f.getFamilyOnlyTaskFreq());
@@ -106,13 +106,13 @@ public class FamilyCohesionRecord {
         this._id = _id;
     }
 
-    public String getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
-    }
+//    public String getCreatedAt() {
+//        return createdAt;
+//    }
+//
+//    public void setCreatedAt(String createdAt) {
+//        this.createdAt = createdAt;
+//    }
 
     public String getFamilyMutualAidFreq() {
         return familyMutualAidFreq;
@@ -202,13 +202,13 @@ public class FamilyCohesionRecord {
         this.familyCohesionResult = familyCohesionResult;
     }
 
-    public String getPatientId() {
-        return patientId;
-    }
-
-    public void setPatientId(String patientId) {
-        this.patientId = patientId;
-    }
+//    public String getPatientId() {
+//        return patientId;
+//    }
+//
+//    public void setPatientId(String patientId) {
+//        this.patientId = patientId;
+//    }
 
     /**
      * Convert object to json format.
@@ -227,8 +227,8 @@ public class FamilyCohesionRecord {
         return "FamilyCohesionRecordOB{" +
                 "id=" + id +
                 ", _id='" + _id + '\'' +
-                ", patientId='" + patientId + '\'' +
-                ", createdAt='" + createdAt + '\'' +
+//                ", patientId='" + patientId + '\'' +
+//                ", createdAt='" + createdAt + '\'' +
                 ", familyMutualAidFreq='" + familyMutualAidFreq + '\'' +
                 ", friendshipApprovalFreq='" + friendshipApprovalFreq + '\'' +
                 ", familyOnlyTaskFreq='" + familyOnlyTaskFreq + '\'' +

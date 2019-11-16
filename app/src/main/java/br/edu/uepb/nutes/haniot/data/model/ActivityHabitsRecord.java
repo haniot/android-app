@@ -49,11 +49,11 @@ public abstract class ActivityHabitsRecord extends Sync {
         this._id = _id;
     }
 
-//    public String getPatientId() {
+//    public String getPatient_id() {
 //        return patientId;
 //    }
 //
-//    public void setPatientId(String patientId) {
+//    public void setPatient_id(String patientId) {
 //        this.patientId = patientId;
 //    }
 //

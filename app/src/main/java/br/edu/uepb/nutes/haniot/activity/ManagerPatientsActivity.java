@@ -255,7 +255,7 @@ public class ManagerPatientsActivity extends AppCompatActivity {
 //                            adapter.notifyDataSetChanged();
                             showMessage(getResources().getString(R.string.patient_removed));
                             Patient lastPatient = appPreferencesHelper.getLastPatient();
-                            if (lastPatient.get_id() != null) {
+                            if (lastPatient != null && lastPatient.get_id() != null) {
                                 if (lastPatient.get_id().equals(patient.get_id())) {
                                     appPreferencesHelper.removeLastPatient();
                                 }

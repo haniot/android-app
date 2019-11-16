@@ -55,6 +55,15 @@ public class OdontologicalQuestionnaireDAO {
         return Convert.listOdontologicalQuestionnaireToModel(aux);
     }
 
+    public List<OdontologicalQuestionnaire> getAllNotSync(long id) {
+        List<OdontologicalQuestionnaireOB> aux = odontologicalQuestionnaireBox.query()
+                .equal(OdontologicalQuestionnaireOB_.patientId, id)
+                .equal(OdontologicalQuestionnaireOB_.sync, false)
+                .build()
+                .find();
+        return Convert.listOdontologicalQuestionnaireToModel(aux);
+    }
+
     public void markAsSync(long id) {
         odontologicalQuestionnaireBox.query()
                 .equal(OdontologicalQuestionnaireOB_.id, id)
