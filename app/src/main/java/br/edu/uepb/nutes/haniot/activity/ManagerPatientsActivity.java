@@ -224,7 +224,10 @@ public class ManagerPatientsActivity extends AppCompatActivity {
                             showMessage(getString(R.string.connect_network_try_again));
                         }
                     } else {
-                        // IMPLEMENTAR EDICAO OFF
+                        Intent intent = new Intent(ManagerPatientsActivity.this, UserRegisterActivity.class);
+                        intent.putExtra("action", "edit");
+                        appPreferencesHelper.saveLastPatient(item);
+                        startActivity(intent);
                     }
                 }
             }

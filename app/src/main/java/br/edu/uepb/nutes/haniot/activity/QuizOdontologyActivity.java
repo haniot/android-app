@@ -27,6 +27,7 @@ import br.edu.uepb.nutes.haniot.data.model.type.ToothLesionType;
 import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
+import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import br.edu.uepb.nutes.simplesurvey.base.SimpleSurvey;
 import br.edu.uepb.nutes.simplesurvey.question.Dichotomic;
 import br.edu.uepb.nutes.simplesurvey.question.Infor;
@@ -599,7 +600,12 @@ public class QuizOdontologyActivity extends SimpleSurvey implements Infor.OnInfo
                 "Aguarde alguns instantes...", true);
         dialog.show();
         Log.w("AAA", odontologicalQuestionnaire.toJson());
-        odontologicalQuestionnaire.setPatient_id(patient.get_id());
+
+        if (patient.get_id() != null)
+            odontologicalQuestionnaire.setPatient_id(patient.get_id());
+        odontologicalQuestionnaire.setPatientId(patient.getId());
+        odontologicalQuestionnaire.setCreatedAt(DateUtils.getCurrentDateTimeUTC());
+
         if (updateType == null) {
             DisposableManager.add(mRepository
                     .saveOdontologicalQuestionnaire(odontologicalQuestionnaire)

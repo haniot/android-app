@@ -7,7 +7,6 @@ import java.util.Objects;
 
 import br.edu.uepb.nutes.haniot.data.Convert;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
-import io.objectbox.annotation.Backlink;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.annotation.Index;
@@ -38,18 +37,11 @@ public class MeasurementOB extends SyncOB {
     private int pulse;
     private String meal;
 
-//    @Transient()
-//    private BodyFatOB fat; // not persisted in ObjectBox
+    private ToOne<BodyFatOB> fat;
 
-//    @Transient()
-//    private List<HeartRateItemOB> dataset; // not persisted in ObjectBox
+    private ToMany<BodyFatOB> bodyFat;
 
-//    @Transient()
-//    private List<BodyFatOB> bodyFat; // not persisted in ObjectBox
-
-    private ToOne<BodyFatOB> bodyFat;
-
-//    @Backlink(to = "heartRate")
+    //    @Backlink(to = "heartRate")
     private ToMany<HeartRateItemOB> dataset;
 
     public MeasurementOB() {
@@ -75,7 +67,9 @@ public class MeasurementOB extends SyncOB {
         this.setMeal(m.getMeal());
 
         if (m.getFat() != null)
-            this.bodyFat.setTarget(Convert.convertBodyFat(m.getFat()));
+            this.fat.setTarget(Convert.convertBodyFat(m.getFat()));
+
+        this.setBodyFat(Convert.convertListBodyFatToObjectBox(m.getBodyFat()));
 
         this.setDataset(Convert.convertListHeartRate(m.getDataset()));
     }
@@ -152,21 +146,14 @@ public class MeasurementOB extends SyncOB {
         this.deviceId = deviceId;
     }
 
-//    public BodyFatOB getFat() {
-//        return fat;
-//    }
-//
-//    public void setFat(BodyFatOB fat) {
-//        this.fat = fat;
-//    }
-//
-//    public List<HeartRateItemOB> getDataset() {
-//        return dataset;
-//    }
-//
-//    public void setDataset(List<HeartRateItemOB> dataset) {
-//        this.dataset = dataset;
-//    }
+    public ToMany<BodyFatOB> getBodyFat() {
+        return bodyFat;
+    }
+
+    public void setBodyFat(List<BodyFatOB> bodyFat) {
+        this.bodyFat.clear();
+        this.bodyFat.addAll(bodyFat);
+    }
 
     public int getSystolic() {
         return systolic;
@@ -209,20 +196,12 @@ public class MeasurementOB extends SyncOB {
         this.getDataset().addAll(datasetDB);
     }
 
-//    public List<BodyFatOB> getBodyFat() {
-//        return bodyFat;
-//    }
-//
-//    public void setBodyFat(List<BodyFatOB> bodyFat) {
-//        this.bodyFat = bodyFat;
-//    }
-
-    public ToOne<BodyFatOB> getBodyFat() {
-        return bodyFat;
+    public ToOne<BodyFatOB> getFat() {
+        return fat;
     }
 
-    public void setBodyFat(ToOne<BodyFatOB> bodyFat) {
-        this.bodyFat = bodyFat;
+    public void setFat(ToOne<BodyFatOB> fat) {
+        this.fat = fat;
     }
 
     @Override
@@ -248,16 +227,16 @@ public class MeasurementOB extends SyncOB {
                 ", unit='" + unit + '\'' +
                 ", type='" + type + '\'' +
                 ", timestamp='" + timestamp + '\'' +
-                ", userId='" + userId + '\'' +
+                ", user_id='" + user_id + '\'' +
+                ", userId=" + userId +
                 ", deviceId='" + deviceId + '\'' +
-//                ", fat=" + fat +
-//                ", dataset=" + dataset +
                 ", systolic=" + systolic +
                 ", diastolic=" + diastolic +
                 ", pulse=" + pulse +
-                ", meal=" + meal +
-                ", dataset=" + dataset +
-                ", bodyFat=" + bodyFat +
+                ", meal='" + meal + '\'' +
+                ", fat=" + fat.getTarget() +
+                ", dataset=" + dataset.toString() +
+                ", Sync='" + isSync() + "\'" +
                 '}';
     }
 }

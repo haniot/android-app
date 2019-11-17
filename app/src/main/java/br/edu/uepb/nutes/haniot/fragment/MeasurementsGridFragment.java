@@ -330,6 +330,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
             measurement.setValue(temp);
             measurement.setTimestamp(DateUtils.getCurrentDateTimeUTC());
             measurement.setUser_id(patient.get_id());
+            measurement.setUserId(patient.getId());
             measurement.setUnit(unit);
             measurement.setType(MeasurementType.BODY_TEMPERATURE);
 //            DeviceOB device1 = getDeviceRegistered(DeviceType.THERMOMETER);
@@ -374,6 +375,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
             if (pulse > 0) measurement.setPulse(pulse);
 
             measurement.setUser_id(patient.get_id());
+            measurement.setUserId(patient.getId());
             measurement.setUnit(getString(R.string.unit_glucose_mg_dL));
 
 //            DeviceOB device1 = getDeviceRegistered(DeviceType.BLOOD_PRESSURE);
@@ -442,6 +444,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
             measurement.setType(MeasurementType.BODY_MASS);
             measurement.setTimestamp(timestamp);
             measurement.setUser_id(patient.get_id());
+            measurement.setUserId(patient.getId());
             measurement.setUnit((bodyMassUnit != null && bodyMassUnit.equals("")) ? "kg" : bodyMassUnit);
 
 //            DeviceOB device1 = getDeviceRegistered(DeviceType.BODY_COMPOSITION);
@@ -483,6 +486,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
             measurement.setTimestamp(timestamp);
             measurement.setType(MeasurementType.BLOOD_GLUCOSE);
             measurement.setUser_id(patient.get_id());
+            measurement.setUserId(patient.getId());
             measurement.setUnit(getString(R.string.unit_glucose_mg_dL));
 
 //            DeviceOB device1 = getDeviceRegistered(DeviceType.GLUCOMETER);
@@ -554,6 +558,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
 
         Measurement measurement = new Measurement();
         measurement.setUser_id(patient.get_id());
+        measurement.setUserId(patient.getId());
         measurement.setUnit("bpm");
         measurement.setType(MeasurementType.HEART_RATE);
         measurement.setDataset(heartRateItems);

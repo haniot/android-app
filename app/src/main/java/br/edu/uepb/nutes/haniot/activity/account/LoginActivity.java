@@ -224,7 +224,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 break;
             case PATIENT:
                 DisposableManager.add(mRepository
-                        .getPatient(userAccess.getSubject())
+                        .getPatientBy_id(userAccess.getSubject())
                         .doOnSubscribe(disposable -> showLoading(true))
                         .doAfterTerminate(() -> showLoading(false))
                         .subscribe(user -> {

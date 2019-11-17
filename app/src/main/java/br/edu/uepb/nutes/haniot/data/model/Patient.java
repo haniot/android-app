@@ -23,7 +23,12 @@ public class Patient extends User {
     @Expose(serialize = false, deserialize = false)
     private String healthProfessionalId;
 
-    public Patient() { }
+    @SerializedName("created_at")
+    @Expose()
+    private String createdAt;
+
+    public Patient() {
+    }
 
     public Patient(PatientOB p) {
         super(p.getId(), p.get_id(), p.getEmail(), p.getName(), p.getBirthDate(), p.getHealthArea(),
@@ -32,6 +37,7 @@ public class Patient extends User {
         this.setPilotId(p.getPilotId());
         this.setGender(p.getGender());
         this.setHealthProfessionalId(p.getHealthProfessionalId());
+        this.setCreatedAt(p.getCreatedAt());
     }
 
     public String getPilotId() {
@@ -56,6 +62,14 @@ public class Patient extends User {
 
     public void setHealthProfessionalId(String healthProfessionalId) {
         this.healthProfessionalId = healthProfessionalId;
+    }
+
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
     }
 
     /**
@@ -84,10 +98,11 @@ public class Patient extends User {
 
     @Override
     public String toString() {
-        return "PatientOB{" + super.toString() +
+        return "Patient{" + super.toString() +
                 ", pilotId='" + pilotId + '\'' +
                 ", gender='" + gender + '\'' +
                 ", healthProfessionalId='" + healthProfessionalId + '\'' +
+                ", createdAt='" + createdAt + "\'" +
                 '}';
     }
 }

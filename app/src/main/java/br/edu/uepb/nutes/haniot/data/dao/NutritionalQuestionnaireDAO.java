@@ -90,4 +90,11 @@ public class NutritionalQuestionnaireDAO {
                 .build()
                 .remove();
     }
+
+    public boolean removeByPatienId(long patientId) {
+        return nutritionalQuestionnaireBox.query()
+                .equal(NutritionalQuestionnaireOB_.patientId, patientId)
+                .build()
+                .remove() > 0;
+    }
 }

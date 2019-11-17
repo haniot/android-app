@@ -213,34 +213,40 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
         Log.w(TAG, "Data inicio: " + dateStart);
         Log.w(TAG, "Data fim: " + dateEnd);
 
-        if (ConnectionUtils.internetIsEnabled(this)) {
-            DisposableManager.add(mRepository.
-                    getAllMeasurementsByType(patient, getTypeMeasurement(), "timestamp",
-                            dateStart, dateEnd, 1, 100)
-                    .doOnSubscribe(disposable -> {
-                        Log.w(TAG, "onBeforeSend()");
-                        mProgressBar.setVisibility(View.VISIBLE);
-                        getChart().setVisibility(View.INVISIBLE);
-                    })
-                    .subscribe(measurements -> {
-                        Log.w(TAG, "onSuccess()");
-                        if (measurements != null) {
-                            runOnUiThread(() -> {
-                                onUpdateData(measurements, currentChartType);
-                                createMoreInfo(measurements);
-                            });
-                        }
-                    }, error -> {
-                        Log.w(TAG, "onError()");
-                        printMessage(getString(R.string.error_500));
-                    }));
-        } else {
-            runOnUiThread(() -> {
-                onUpdateData(new ArrayList<>(), currentChartType);
-                createMoreInfo(new ArrayList<>());
-//                printMessage(getString(R.string.connect_network_try_again));
-            });
-        }
+//        if (ConnectionUtils.internetIsEnabled(this)) {
+        DisposableManager.add(mRepository.
+                getAllMeasurementsByType(patient, getTypeMeasurement(), "timestamp",
+                        dateStart, dateEnd, 1, 100)
+                .doOnSubscribe(disposable -> {
+                    Log.w(TAG, "onBeforeSend()");
+                    mProgressBar.setVisibility(View.VISIBLE);
+                    getChart().setVisibility(View.INVISIBLE);
+                })
+                .subscribe(measurements -> {
+                    Log.w(TAG, "onSuccess()");
+                    if (measurements != null && measurements.size() > 0) {
+                        runOnUiThread(() -> {
+                            onUpdateData(measurements, currentChartType);
+                            createMoreInfo(measurements);
+                        });
+                    } else {
+                        runOnUiThread(() -> {
+                            onUpdateData(measurements, currentChartType);
+                            createMoreInfo(measurements);
+                            printMessage(getString(R.string.no_data_available));
+                        });
+                    }
+                }, error -> {
+                    Log.w(TAG, "onError()");
+                    printMessage(getString(R.string.error_500));
+                }));
+//        } else {
+//            runOnUiThread(() -> {
+//                onUpdateData(new ArrayList<>(), currentChartType);
+//                createMoreInfo(new ArrayList<>());
+////                printMessage(getString(R.string.connect_network_try_again));
+//            });
+//        }
     }
 
     /**

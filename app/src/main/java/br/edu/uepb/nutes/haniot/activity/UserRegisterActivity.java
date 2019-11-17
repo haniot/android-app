@@ -99,7 +99,9 @@ public class UserRegisterActivity extends AppCompatActivity {
     private String phoneNumber;
     private String birthday;
     private String gender;
-    private String id;
+    private String _id;
+
+    private long idLocal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,7 +154,7 @@ public class UserRegisterActivity extends AppCompatActivity {
 
     private void editAdmin() {
         Log.w("AAA", "editAdmin()");
-        admin.set_id(id);
+        admin.set_id(_id);
         admin.setName(nameEditTExt.getText().toString());
         if (isEdit) {
             if ((emailEditTExt.getText().toString().equals(userLogged.getEmail()))
@@ -178,7 +180,7 @@ public class UserRegisterActivity extends AppCompatActivity {
 
     private void edithealthProfessional() {
         Log.w("AAA", "edithealthProfessional()");
-        healthProfessional.set_id(id);
+        healthProfessional.set_id(_id);
         healthProfessional.setName(nameEditTExt.getText().toString());
 
         if (isEdit) {
@@ -212,7 +214,9 @@ public class UserRegisterActivity extends AppCompatActivity {
         patient.setName(nameEditTExt.getText().toString());
 
         if (isEdit) {
-            patient.set_id(id);
+            patient.set_id(_id);
+            patient.setId(idLocal);
+
             if ((emailEditTExt.getText().toString().equals(patient.getEmail()))
                     || emailEditTExt.getText().toString().isEmpty()) {
                 patient.setEmail(null);
@@ -247,8 +251,13 @@ public class UserRegisterActivity extends AppCompatActivity {
                         finish();
                     }, this::errorHandler));
         } else {
+            patient.setCreatedAt(DateUtils.getCurrentDateTimeUTC());
+
             DisposableManager.add(mRepository
                     .savePatient(patient)
+                    .doAfterSuccess(patient1 -> {
+
+                    })
                     .doAfterTerminate(() -> {
                         showLoading(false);
                         Log.i(TAG, "Salvando paciente no servidor!");
@@ -264,8 +273,8 @@ public class UserRegisterActivity extends AppCompatActivity {
 //                            showMessage(R.string.error_recover_data);
 //                            return;
 //                        }
-                        if (patient.get_id() != null)
-                            this.patient.set_id(patient.get_id());
+//                        if (patient.get_id() != null)
+                        this.patient.set_id(patient.get_id());
                         this.patient.setId(patient.getId());
                         associatePatientToPilotStudy();
                     }, this::errorHandler));
@@ -358,14 +367,16 @@ public class UserRegisterActivity extends AppCompatActivity {
     private void prepareEditing() {
         if (userLogged.getUserType().equals(PATIENT) || !editUserLogged) {
             DisposableManager.add(mRepository
-                    .getPatient(appPreferencesHelper.getLastPatient().get_id())
+                    .getPatient(appPreferencesHelper.getLastPatient())
                     .doOnSubscribe(disposable -> {
                         enabledView(false);
                         showLoading(true);
                     })
                     .doAfterTerminate(() -> showLoading(false))
                     .subscribe(patient1 -> {
-                        id = patient1.get_id();
+                        _id = patient1.get_id();
+                        idLocal = patient1.getId();
+
                         if (patient1.getEmail() != null) {
                             patient.setEmail(patient1.getEmail());
                             oldEmail = patient1.getEmail();
@@ -390,7 +401,7 @@ public class UserRegisterActivity extends AppCompatActivity {
                     })
                     .doAfterTerminate(() -> showLoading(false))
                     .subscribe(healthProfessional1 -> {
-                        id = healthProfessional1.get_id();
+                        _id = healthProfessional1.get_id();
 
                         if (healthProfessional1.getEmail() != null) {
                             healthProfessional.setEmail(healthProfessional1.getEmail());
@@ -415,7 +426,7 @@ public class UserRegisterActivity extends AppCompatActivity {
                     })
                     .doAfterTerminate(() -> showLoading(false))
                     .subscribe(admin1 -> {
-                        id = admin1.get_id();
+                        _id = admin1.get_id();
 
                         if (admin1.getEmail() != null) {
                             admin.setEmail(admin1.getEmail());

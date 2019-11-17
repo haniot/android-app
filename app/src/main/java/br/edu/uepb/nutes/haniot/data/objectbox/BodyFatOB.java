@@ -28,7 +28,6 @@ public class BodyFatOB {
     private String type;
 
     public BodyFatOB() {
-        this.id = 0;
         this.type = MeasurementType.BODY_FAT;
     }
 
@@ -38,46 +37,6 @@ public class BodyFatOB {
         this.setUnit(b.getUnit());
         this.setTimestamp(b.getTimestamp());
     }
-//
-//    public BodyFatOB(double value, String unit) {
-//        this.type = MeasurementType.BODY_FAT;
-//        this.value = value;
-//        this.unit = unit;
-//    }
-//
-//    protected BodyFatOB(Parcel in) {
-//        id = in.readLong();
-//        value = in.readDouble();
-//        unit = in.readString();
-//        timestamp = in.readString();
-//        type = in.readString();
-//    }
-//
-//    @Override
-//    public void writeToParcel(Parcel dest, int flags) {
-//        dest.writeLong(id);
-//        dest.writeDouble(value);
-//        dest.writeString(unit);
-//        dest.writeString(timestamp);
-//        dest.writeString(type);
-//    }
-//
-//    @Override
-//    public int describeContents() {
-//        return 0;
-//    }
-//
-//    public static final Creator<BodyFatOB> CREATOR = new Creator<BodyFatOB>() {
-//        @Override
-//        public BodyFatOB createFromParcel(Parcel in) {
-//            return new BodyFatOB(in);
-//        }
-//
-//        @Override
-//        public BodyFatOB[] newArray(int size) {
-//            return new BodyFatOB[size];
-//        }
-//    };
 
     public long getId() {
         return id;

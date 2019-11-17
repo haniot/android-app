@@ -58,120 +58,35 @@ public class MeasurementDAO {
      * @return boolean
      */
     public long update(@NonNull Measurement measurement) {
-        if (measurement.getId() == 0) {
-            /**
-             * Id is required for an updateOrSave
-             * Otherwise it will be an insert
-             */
+        if (measurement.getId() == 0)
             return 0;
-        }
         return save(measurement); // updateOrSave
     }
 
     /**
-     * Remove measurementOB.
-     * <p>
-     * //     * @param userId        String
-     *
+     * Remove measurement
      * @param measurementId long
      * @return boolean
      */
     public boolean remove(@NonNull long measurementId) {
         return measurementBox.query()
                 .equal(MeasurementOB_.id, measurementId)
-//                .equal(MeasurementOB_.userId, userId)
                 .build()
                 .remove() > 0;
     }
-
-//    /**
-//     * Remove all measurements associated with device and user.
-//     *
-//     * @param deviceId long
-//     * @param userId   long
-//     * @return boolean
-//     */
-//    public boolean removeAll(@NonNull long deviceId, @NonNull long userId) {
-//        return measurementBox.query()
-//                .equal(MeasurementOB_.deviceId, deviceId)
-//                .equal(MeasurementOB_.userId, userId)
-//                .build()
-//                .remove() > 0;
-//    }
 
     /**
      * Remove all measurements associated with user.
      *
-     * @param userId long
+     * @param patientId long
      * @return boolean
      */
-    public boolean removeAll(@NonNull String userId) {
+    public boolean removeByPatientId(@NonNull long patientId) {
         return measurementBox.query()
-                .equal(MeasurementOB_.userId, userId)
+                .equal(MeasurementOB_.userId, patientId)
                 .build()
                 .remove() > 0;
     }
-
-//    public Measurement get(String userId, String measurementId) {
-//        MeasurementOB m = measurementBox.query()
-//                .equal(MeasurementOB_._id, measurementId)
-//                .equal(MeasurementOB_.userId, userId)
-//                .build()
-//                .findFirst();
-//        return Convert.convertMeasurement(m);
-//    }
-
-//    /**
-//     * Select all measurements associated with the user.
-//     *
-//     * @param userId long
-//     * @param offset int
-//     * @param limit  int
-//     * @return List<MeasurementOB>
-//     */
-//    public List<MeasurementOB> getAllByUserId(@NonNull long userId, @NonNull int offset, @NonNull int limit) {
-//        return measurementBox.query()
-//                .equal(MeasurementOB_.userId, userId)
-//                .orderDesc(MeasurementOB_.id)
-//                .build()
-//                .find(offset, limit);
-//    }
-
-//    /**
-//     * Select all measurements of a type associated with the user.
-//     *
-//     * @param type   {@link String}
-//     * @param userId long
-//     * @param offset int
-//     * @param limit  int
-//     * @return List<MeasurementOB>
-//     */
-//    public List<MeasurementOB> getAllByUserId(@NonNull String type, @NonNull String userId, @NonNull int offset, @NonNull int limit) {
-//        return measurementBox.query()
-//                .equal(MeasurementOB_.type, type)
-//                .equal(MeasurementOB_.userId, userId)
-//                .orderDesc(MeasurementOB_.timestamp)
-//                .build()
-//                .find(offset, limit);
-//    }
-
-//    /**
-//     * Select all measurements associated with the device and user.
-//     *
-//     * @param deviceId long
-//     * @param userId   long
-//     * @param offset   int
-//     * @param limit    int
-//     * @return List<MeasurementOB>
-//     */
-//    public List<MeasurementOB> getAllByUserId(@NonNull long deviceId, @NonNull long userId, @NonNull int offset, @NonNull int limit) {
-//        return measurementBox.query()
-//                .equal(MeasurementOB_.deviceId, deviceId)
-//                .equal(MeasurementOB_.userId, userId)
-//                .orderDesc(MeasurementOB_.id)
-//                .build()
-//                .find(offset, limit);
-//    }
 
     public List<Measurement> getAllMeasurements(String user_id, String sort, String dateStart, String dateEnd, int page, int limit) {
         page--;
@@ -196,6 +111,7 @@ public class MeasurementDAO {
         List<MeasurementOB> aux;
 
         if (patient.get_id() != null) {
+            Log.i(TAG, "getMeasurementsByType: COM _ID - " + patient.get_id());
             aux = measurementBox.query()
                     .equal(MeasurementOB_.user_id, patient.get_id())
                     .equal(MeasurementOB_.type, type)
@@ -203,7 +119,9 @@ public class MeasurementDAO {
 //                        .filter(m -> DateUtils.compareDates(m.getTimestamp(), dateStart, dateEnd))
                     .build()
                     .find(page * limit, limit);
+            Log.i(TAG, "getMeasurementsByType: AUX" + aux.toString());
         } else {
+            Log.i(TAG, "getMeasurementsByType: SEM _ID");
             aux = measurementBox.query()
                     .equal(MeasurementOB_.userId, patient.getId())
                     .equal(MeasurementOB_.type, type)
@@ -212,10 +130,11 @@ public class MeasurementDAO {
                     .build()
                     .find(page * limit, limit);
         }
-//        List<MeasurementOB> teste = measurementBox.query()
-//                .orderDesc(MeasurementOB_.timestamp)
-//                .build().find(page * limit, limit);
-//        Log.i(TAG, "ATUALMENTE: " + teste.toString());
+
+        List<MeasurementOB> teste = measurementBox.query()
+                .orderDesc(MeasurementOB_.timestamp)
+                .build().find(page * limit, limit);
+        Log.i(TAG, "ATUALMENTE: " + teste.toString());
         return Convert.listMeasurementsToModel(aux);
     }
 

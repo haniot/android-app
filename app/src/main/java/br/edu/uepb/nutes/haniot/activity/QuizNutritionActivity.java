@@ -30,6 +30,7 @@ import br.edu.uepb.nutes.haniot.data.model.type.SportsType;
 import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
+import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import br.edu.uepb.nutes.simplesurvey.base.SimpleSurvey;
 import br.edu.uepb.nutes.simplesurvey.question.Dichotomic;
 import br.edu.uepb.nutes.simplesurvey.question.Infor;
@@ -634,7 +635,7 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
     public void onClosePage() {
         new AlertDialog
                 .Builder(this)
-                .setMessage(getResources().getString(R.string.cancel)+"?")
+                .setMessage(getResources().getString(R.string.cancel) + "?")
                 .setPositiveButton(getResources().getText(R.string.yes_text), (dialog, which) -> {
                     finish();
                 })
@@ -689,9 +690,9 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
 
             if (patient.get_id() != null) { // salvo no servidor
                 nutritionalQuestionnaire.setPatient_id(patient.get_id());
-            } else { // salvo localmente
-                nutritionalQuestionnaire.setPatientId(patient.getId());
             }
+            nutritionalQuestionnaire.setPatientId(patient.getId());
+            nutritionalQuestionnaire.setCreatedAt(DateUtils.getCurrentDateTimeUTC());
 
             DisposableManager.add(mRepository
                     .saveNutritionalQuestionnaire(nutritionalQuestionnaire)

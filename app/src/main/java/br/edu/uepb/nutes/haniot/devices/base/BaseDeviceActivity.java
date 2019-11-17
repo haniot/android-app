@@ -212,11 +212,11 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
     protected void toggleNoDataMessage(boolean visible) {
         runOnUiThread(() -> {
             if (visible) {
-                if (!ConnectionUtils.internetIsEnabled(getApplicationContext())) {
-                    noDataMessage.setText(getString(R.string.connect_network_try_again));
-                } else {
-                    noDataMessage.setText(getString(R.string.no_data_available));
-                }
+//                if (!ConnectionUtils.internetIsEnabled(getApplicationContext())) {
+//                    noDataMessage.setText(getString(R.string.connect_network_try_again));
+//                } else {
+                noDataMessage.setText(getString(R.string.no_data_available));
+//                }
                 noDataMessage.setVisibility(View.VISIBLE);
                 mDateLastMeasurement.setText("");
             } else {
@@ -360,6 +360,7 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
         if (measurementsToDelete == null || measurementsToDelete.isEmpty()) return;
         for (Measurement measurement : measurementsToDelete) {
             measurement.setUser_id(patient.get_id());
+            measurement.setUserId(patient.getId());
 
             DisposableManager.add(mRepository
                     .deleteMeasurement(measurement)

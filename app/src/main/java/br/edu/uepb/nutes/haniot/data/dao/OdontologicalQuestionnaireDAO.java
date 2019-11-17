@@ -78,4 +78,11 @@ public class OdontologicalQuestionnaireDAO {
                 .build()
                 .remove();
     }
+
+    public boolean removeByPatientId(long patientId) {
+        return odontologicalQuestionnaireBox.query()
+                .equal(OdontologicalQuestionnaireOB_.patientId, patientId)
+                .build()
+                .remove() > 0;
+    }
 }

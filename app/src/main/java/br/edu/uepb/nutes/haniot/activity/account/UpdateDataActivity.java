@@ -172,7 +172,7 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
                 break;
             case PATIENT:
                 DisposableManager.add(mRepository
-                        .getPatient(user.get_id())
+                        .getPatientBy_id(user.get_id())
                         .doOnSubscribe(disposable -> {
                             populateView(); // Populate view with local data
                             enabledView(false);

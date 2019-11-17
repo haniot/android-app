@@ -58,7 +58,7 @@ public class TokenExpirationService extends Service {
 //            Repository.getInstance(getApplicationContext()).
 //                    removeAllPilotStudiesy(appPreferences.getUserLogged().get_id());
 //            PilotStudyDAO.getInstance(getApplicationContext())
-//                    .removeAll(appPreferences.getUserLogged().get_id());
+//                    .removeByPatientId(appPreferences.getUserLogged().get_id());
             appPreferences.removeUserLogged();
         }
         redirectToLogin();

@@ -125,9 +125,9 @@ public class HeartRateItem implements Parcelable {
     @NonNull
     @Override
     public String toString() {
-        return "HeartRateItemOB{" +
-                super.toString() + '\'' +
-                "value=" + value +
+        return "HeartRateItem{" +
+                "id=" + id +
+                ", value=" + value +
                 ", timestamp='" + timestamp + '\'' +
                 '}';
     }

@@ -4,18 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.data.model.BodyFat;
-import br.edu.uepb.nutes.haniot.data.model.nutritional.ChronicDisease;
 import br.edu.uepb.nutes.haniot.data.model.Device;
-import br.edu.uepb.nutes.haniot.data.model.nutritional.FeedingHabitsRecord;
 import br.edu.uepb.nutes.haniot.data.model.HeartRateItem;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
-import br.edu.uepb.nutes.haniot.data.model.nutritional.MedicalRecord;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
+import br.edu.uepb.nutes.haniot.data.model.nutritional.ChronicDisease;
+import br.edu.uepb.nutes.haniot.data.model.nutritional.FeedingHabitsRecord;
+import br.edu.uepb.nutes.haniot.data.model.nutritional.MedicalRecord;
 import br.edu.uepb.nutes.haniot.data.model.nutritional.NutritionalQuestionnaire;
 import br.edu.uepb.nutes.haniot.data.model.nutritional.PhysicalActivityHabit;
-import br.edu.uepb.nutes.haniot.data.model.PilotStudy;
 import br.edu.uepb.nutes.haniot.data.model.nutritional.SleepHabit;
-import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.model.nutritional.WeeklyFoodRecord;
 import br.edu.uepb.nutes.haniot.data.model.odontological.FamilyCohesionRecord;
 import br.edu.uepb.nutes.haniot.data.model.odontological.OdontologicalQuestionnaire;
@@ -23,29 +21,30 @@ import br.edu.uepb.nutes.haniot.data.model.odontological.OralHealthRecord;
 import br.edu.uepb.nutes.haniot.data.model.odontological.SociodemographicRecord;
 import br.edu.uepb.nutes.haniot.data.model.odontological.ToothLesion;
 import br.edu.uepb.nutes.haniot.data.objectbox.BodyFatOB;
-import br.edu.uepb.nutes.haniot.data.objectbox.nutritional.ChronicDiseaseOB;
 import br.edu.uepb.nutes.haniot.data.objectbox.DeviceOB;
-import br.edu.uepb.nutes.haniot.data.objectbox.nutritional.FeedingHabitsRecordOB;
 import br.edu.uepb.nutes.haniot.data.objectbox.HeartRateItemOB;
 import br.edu.uepb.nutes.haniot.data.objectbox.MeasurementOB;
-import br.edu.uepb.nutes.haniot.data.objectbox.nutritional.MedicalRecordOB;
 import br.edu.uepb.nutes.haniot.data.objectbox.PatientOB;
+import br.edu.uepb.nutes.haniot.data.objectbox.nutritional.ChronicDiseaseOB;
+import br.edu.uepb.nutes.haniot.data.objectbox.nutritional.FeedingHabitsRecordOB;
+import br.edu.uepb.nutes.haniot.data.objectbox.nutritional.MedicalRecordOB;
 import br.edu.uepb.nutes.haniot.data.objectbox.nutritional.NutritionalQuestionnaireOB;
 import br.edu.uepb.nutes.haniot.data.objectbox.nutritional.PhysicalActivityHabitOB;
 import br.edu.uepb.nutes.haniot.data.objectbox.nutritional.SleepHabitOB;
-import br.edu.uepb.nutes.haniot.data.objectbox.UserOB;
 import br.edu.uepb.nutes.haniot.data.objectbox.nutritional.WeeklyFoodRecordOB;
 import br.edu.uepb.nutes.haniot.data.objectbox.odontological.FamilyCohesionRecordOB;
 import br.edu.uepb.nutes.haniot.data.objectbox.odontological.OdontologicalQuestionnaireOB;
 import br.edu.uepb.nutes.haniot.data.objectbox.odontological.OralHealthRecordOB;
 import br.edu.uepb.nutes.haniot.data.objectbox.odontological.SociodemographicRecordOB;
 import br.edu.uepb.nutes.haniot.data.objectbox.odontological.ToothLesionOB;
+import io.objectbox.relation.ToMany;
 
 public class Convert {
 
     // ------------- DEVICE ---------------------
 
     public static DeviceOB convertDevice(Device d) {
+        if (d == null) return null;
         return new DeviceOB(d);
     }
 
@@ -66,6 +65,7 @@ public class Convert {
     // ------------- FEEDING HABITS RECORD ----------------------------
 
     public static FeedingHabitsRecord convertFeedingHabitsRecord(FeedingHabitsRecordOB f) {
+        if (f == null) return null;
         return new FeedingHabitsRecord(f);
     }
 
@@ -101,6 +101,7 @@ public class Convert {
     // ----------- MEASUREMENT ---------------------
 
     public static MeasurementOB convertMeasurement(Measurement measurement) {
+        if (measurement == null) return null;
         return new MeasurementOB(measurement);
     }
 
@@ -144,7 +145,7 @@ public class Convert {
         return lista;
     }
 
-    public static List<HeartRateItem> convertListHeartRateL(List<HeartRateItemOB> list) {
+    public static List<HeartRateItem> convertListHeartRateToModel(List<HeartRateItemOB> list) {
         List<HeartRateItem> lista = new ArrayList<>();
         if (list == null || list.isEmpty()) return lista;
 
@@ -195,6 +196,7 @@ public class Convert {
     // ------- PATIENT --------------
 
     public static Patient convertPatient(PatientOB patientOB) {
+        if (patientOB == null) return null;
         return new Patient(patientOB);
     }
 
@@ -246,14 +248,6 @@ public class Convert {
         return lista;
     }
 
-    public static UserOB convertUser(User user) {
-        return new UserOB(user);
-    }
-
-    public static User convertUser(UserOB user) {
-        return new User(user);
-    }
-
     public static List<NutritionalQuestionnaire> listNutritionalQuestionnaireToModel(List<NutritionalQuestionnaireOB> n) {
         List<NutritionalQuestionnaire> aux = new ArrayList<>();
         for (NutritionalQuestionnaireOB questionnaire : n) {
@@ -279,20 +273,21 @@ public class Convert {
     }
 
     public static SociodemographicRecord convertSociodemographicRecord(SociodemographicRecordOB sociodemographicRecord) {
+        if (sociodemographicRecord == null) return null;
         return new SociodemographicRecord(sociodemographicRecord);
     }
 
     public static List<OdontologicalQuestionnaire> listOdontologicalQuestionnaireToModel(List<OdontologicalQuestionnaireOB> n) {
         List<OdontologicalQuestionnaire> aux = new ArrayList<>();
-        for (OdontologicalQuestionnaireOB questionnaire : n) {
+        if (n == null || n.isEmpty()) return aux;
+
+        for (OdontologicalQuestionnaireOB questionnaire : n)
             aux.add(convertOdontologicalQuestionnaire(questionnaire));
-        }
         return aux;
     }
 
     private static OdontologicalQuestionnaire convertOdontologicalQuestionnaire(OdontologicalQuestionnaireOB questionnaire) {
-        if (questionnaire == null)
-            return null;
+        if (questionnaire == null) return null;
         return new OdontologicalQuestionnaire(questionnaire);
     }
 
@@ -307,6 +302,7 @@ public class Convert {
     }
 
     public static OralHealthRecordOB convertOralHealthRecord(OralHealthRecord o) {
+        if (o == null) return null;
         return new OralHealthRecordOB(o);
     }
 
@@ -317,6 +313,8 @@ public class Convert {
 
     public static List<ToothLesionOB> listToothLesionsToObjectBox(List<ToothLesion> toothLesions) {
         List<ToothLesionOB> aux = new ArrayList<>();
+        if (toothLesions == null || toothLesions.isEmpty()) return aux;
+
         for (ToothLesion t : toothLesions) {
             aux.add(new ToothLesionOB(t));
         }
@@ -325,9 +323,30 @@ public class Convert {
 
     public static List<ToothLesion> convertListToothLesionToModel(List<ToothLesionOB> toothLesions) {
         List<ToothLesion> aux = new ArrayList<>();
+        if (toothLesions == null || toothLesions.isEmpty()) return aux;
+
         for (ToothLesionOB t : toothLesions) {
             aux.add(new ToothLesion(t));
         }
+        return aux;
+    }
+
+    public static List<BodyFatOB> convertListBodyFatToObjectBox(List<BodyFat> bodyFat) {
+        List<BodyFatOB> aux = new ArrayList<>();
+        if (bodyFat == null || bodyFat.isEmpty()) return aux;
+
+        for (BodyFat bf : bodyFat) {
+            aux.add(new BodyFatOB(bf));
+        }
+        return aux;
+    }
+
+    public static List<BodyFat> convertListBodyFatToModel(List<BodyFatOB> bodyFat) {
+        List<BodyFat> aux = new ArrayList<>();
+        if (bodyFat == null || bodyFat.isEmpty()) return aux;
+
+        for (BodyFatOB bf : bodyFat)
+            aux.add(new BodyFat(bf));
         return aux;
     }
 }

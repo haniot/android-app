@@ -103,6 +103,7 @@ public class ScaleActivity extends BaseDeviceActivity {
                                           String bodyMassUnit, double bodyFat, String timestamp) {
             Measurement measurement = new Measurement();
             measurement.setUser_id(patient.get_id());
+            measurement.setUserId(patient.getId());
             measurement.setTimestamp(timestamp);
             measurement.setType(MeasurementType.BODY_MASS);
             measurement.setUnit("kg");

@@ -218,7 +218,7 @@ public class ForgotPasswordActivity extends AppCompatActivity implements View.On
                 break;
             case PATIENT:
                 DisposableManager.add(mRepository
-                        .getPatient(userAccess.getSubject())
+                        .getPatientBy_id(userAccess.getSubject())
                         .doOnSubscribe(disposable -> showLoading(true))
                         .doAfterTerminate(() -> showLoading(false))
                         .subscribe(user -> {

@@ -104,10 +104,11 @@ public class Measurement extends Sync implements Parcelable {
         this.setPulse(m.getPulse());
         this.setMeal(m.getMeal());
 
-        if (m.getBodyFat() != null && m.getBodyFat().getTarget() != null)
-            this.setFat(Convert.convertBodyFat(m.getBodyFat().getTarget()));
+        if (m.getFat() != null && m.getFat().getTarget() != null)
+            this.setFat(Convert.convertBodyFat(m.getFat().getTarget()));
 
-        this.setDataset(Convert.convertListHeartRateL(m.getDataset()));
+        this.setBodyFat(Convert.convertListBodyFatToModel(m.getBodyFat()));
+        this.setDataset(Convert.convertListHeartRateToModel(m.getDataset()));
     }
 
     protected Measurement(Parcel in) {
@@ -324,13 +325,16 @@ public class Measurement extends Sync implements Parcelable {
                 ", type='" + type + '\'' +
                 ", timestamp='" + timestamp + '\'' +
                 ", user_id='" + user_id + '\'' +
+                ", userId=" + userId +
                 ", deviceId='" + deviceId + '\'' +
                 ", fat=" + fat +
                 ", dataset=" + dataset +
+                ", bodyFat=" + bodyFat +
                 ", systolic=" + systolic +
                 ", diastolic=" + diastolic +
                 ", pulse=" + pulse +
-                ", meal=" + meal +
+                ", meal='" + meal + '\'' +
+                ", Sync='" + isSync() + "\'" +
                 '}';
     }
 }

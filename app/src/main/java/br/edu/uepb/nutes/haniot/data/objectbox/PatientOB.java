@@ -1,21 +1,17 @@
 package br.edu.uepb.nutes.haniot.data.objectbox;
 
-import android.util.Log;
-
 import br.edu.uepb.nutes.haniot.data.model.Patient;
 import io.objectbox.annotation.Entity;
 
 @Entity
 public class PatientOB extends UserOB {
-    String TAG = "PatientOB";
 
     private String pilotId;
     private String gender;
     private String healthProfessionalId;
+    private String createdAt;
 
-    public PatientOB() {
-        super();
-    }
+    public PatientOB() { }
 
     public PatientOB(Patient p) {
         super(p.getId(), p.get_id(), p.getEmail(), p.getName(), p.getBirthDate(), p.getHealthArea(), p.getPassword(), p.getOldPassword(), p.getNewPassword(),
@@ -23,6 +19,7 @@ public class PatientOB extends UserOB {
         this.setPilotId(p.getPilotId());
         this.setGender(p.getGender());
         this.setHealthProfessionalId(p.getHealthProfessionalId());
+        this.setCreatedAt(p.getCreatedAt());
     }
 
     public String getPilotId() {
@@ -47,6 +44,14 @@ public class PatientOB extends UserOB {
 
     public void setHealthProfessionalId(String healthProfessionalId) {
         this.healthProfessionalId = healthProfessionalId;
+    }
+
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
     }
 
     @Override

@@ -38,7 +38,23 @@ public class PatientDAO {
         return instance;
     }
 
-    public Patient get(@NonNull String _id) {
+    public Patient get(@NonNull Patient patient) {
+        PatientOB aux;
+        if (patient.get_id() != null) {
+            aux = patientBox.query()
+                    .equal(PatientOB_._id, patient.get_id())
+                    .build()
+                    .findFirst();
+        } else {
+            aux = patientBox.query()
+                    .equal(PatientOB_.id, patient.getId())
+                    .build()
+                    .findFirst();
+        }
+        return Convert.convertPatient(aux);
+    }
+
+    public Patient getBy_id(@NonNull String _id) {
         PatientOB aux = patientBox.query()
                 .equal(PatientOB_._id, _id)
                 .build()
@@ -46,27 +62,13 @@ public class PatientDAO {
         return Convert.convertPatient(aux);
     }
 
-//    public PatientOB get(long id) {
-//        return patientBox.query().equal(PatientOB_.id, id).build().findFirst();
-//    }
-
-//    public List<PatientOB> list(@NonNull String healthProfessionalId) {
-//        return patientBox.query().equal(PatientOB_.healthProfessionalId, healthProfessionalId).build().find();
-//    }
-
     public long save(@NonNull Patient patient) {
-        return patientBox.put(new PatientOB(patient));
+        return patientBox.put(Convert.convertPatient(patient));
     }
 
     public long update(@NonNull Patient patient) {
-        if (patient.getId() == 0) {
-            Patient patientOBUp = get(patient.getName());
-
-            if (patientOBUp == null) return 0;
-
-            patient.setId(patientOBUp.getId());
-            if (patient.get_id() == null) patient.set_id(patientOBUp.get_id());
-        }
+        if (patient.getId() == 0)
+            return 0;
         return save(patient);
     }
 
@@ -79,9 +81,10 @@ public class PatientDAO {
     public List<Patient> getAllPatients(String pilotStudyId, String sort, int page, int limit) {
         page--;
         List<PatientOB> aux = patientBox.query()
-                                .equal(PatientOB_.pilotId, pilotStudyId)
-                                .build()
-                                .find(page * limit, limit);
+                .equal(PatientOB_.pilotId, pilotStudyId)
+                .orderDesc(PatientOB_.createdAt)
+                .build()
+                .find(page * limit, limit);
         return Convert.listPatientsToModel(aux);
     }
 

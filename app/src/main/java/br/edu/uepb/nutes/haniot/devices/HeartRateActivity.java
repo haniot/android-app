@@ -73,6 +73,7 @@ public class HeartRateActivity extends BaseDeviceActivity implements GenericDial
         public void onMeasurementReceived(@NonNull BluetoothDevice device, int heartRate, String timestamp) {
             Measurement measurement = new Measurement();
             measurement.setUser_id(patient.get_id());
+            measurement.setUserId(patient.getId());
             measurement.setUnit("bpm");
             measurement.setType(MeasurementType.HEART_RATE);
             measurement.setTimestamp(DateUtils.getCurrentDateTimeUTC());

@@ -26,7 +26,7 @@ public class NutritionalQuestionnaire extends Sync {
 
     @SerializedName("created_at")
     @Expose()
-    String createdAt;
+    private String createdAt;
 
     @SerializedName("sleep_habit")
     @Expose()
