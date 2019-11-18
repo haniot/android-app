@@ -2,9 +2,6 @@ package br.edu.uepb.nutes.haniot.data.objectbox.odontological;
 
 import java.util.List;
 
-import br.edu.uepb.nutes.haniot.data.Convert;
-import br.edu.uepb.nutes.haniot.data.model.odontological.OralHealthRecord;
-import io.objectbox.annotation.Backlink;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.annotation.Index;
@@ -24,13 +21,6 @@ public class OralHealthRecordOB {
     private ToMany<ToothLesionOB> toothLesions;
 
     public OralHealthRecordOB() {}
-
-    public OralHealthRecordOB(OralHealthRecord o) {
-        this.setId(o.getId());
-        this.set_id(o.get_id());
-        this.setTeethBrushingFreq(o.getTeethBrushingFreq());
-        this.setToothLesions(Convert.listToothLesionsToObjectBox(o.getToothLesions()));
-    }
 
     public long getId() {
         return id;

@@ -38,23 +38,6 @@ public class FamilyCohesionRecordOB {
 
     public FamilyCohesionRecordOB() {}
 
-    public FamilyCohesionRecordOB(FamilyCohesionRecord f) {
-        this.setId(f.getId());
-        this.set_id(f.get_id());
-
-        this.setFamilyMutualAidFreq(f.getFamilyMutualAidFreq());
-        this.setFriendshipApprovalFreq(f.getFriendshipApprovalFreq());
-        this.setFamilyOnlyTaskFreq(f.getFamilyOnlyTaskFreq());
-        this.setFamilyOnlyPreferenceFreq(f.getFamilyOnlyPreferenceFreq());
-        this.setFreeTimeTogetherFreq(f.getFreeTimeTogetherFreq());
-        this.setFamilyProximityPerceptionFreq(f.getFamilyProximityPerceptionFreq());
-        this.setAllFamilyTasksFreq(f.getAllFamilyTasksFreq());
-        this.setFamilyTasksOpportunityFreq(f.getFamilyTasksOpportunityFreq());
-        this.setFamilyDecisionSupportFreq(f.getFamilyDecisionSupportFreq());
-        this.setFamilyUnionRelevanceFreq(f.getFamilyUnionRelevanceFreq());
-        this.setFamilyCohesionResult(f.getFamilyCohesionResult());
-    }
-
     public void setId(long id) {
         this.id = id;
     }

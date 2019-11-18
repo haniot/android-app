@@ -39,7 +39,6 @@ public class BodyFat implements Parcelable {
     private String type;
 
     public BodyFat() {
-        this.id = 0;
         this.type = MeasurementType.BODY_FAT;
     }
 
@@ -47,14 +46,6 @@ public class BodyFat implements Parcelable {
         this();
         this.value = value;
         this.unit = unit;
-    }
-
-    public BodyFat(BodyFatOB b) {
-        this.setId(b.getId());
-        this.setValue(b.getValue());
-        this.setUnit(b.getUnit());
-        this.setTimestamp(b.getTimestamp());
-        this.setType(b.getType());
     }
 
     protected BodyFat(Parcel in) {

@@ -2,7 +2,6 @@ package br.edu.uepb.nutes.haniot.data.objectbox.nutritional;
 
 import java.util.List;
 
-import br.edu.uepb.nutes.haniot.data.model.nutritional.PhysicalActivityHabit;
 import br.edu.uepb.nutes.haniot.data.objectbox.ActivityHabitsRecordOB;
 import br.edu.uepb.nutes.haniot.utils.ConverterStringToDatabase;
 import io.objectbox.annotation.Convert;
@@ -17,13 +16,6 @@ public class PhysicalActivityHabitOB extends ActivityHabitsRecordOB {
     private List<String> weeklyActivities;
 
     public PhysicalActivityHabitOB() {
-        super();
-    }
-
-    public PhysicalActivityHabitOB(PhysicalActivityHabit p) {
-        super(p.getId(), p.get_id());
-        this.setSchoolActivityFreq(p.getSchoolActivityFreq());
-        this.setWeeklyActivities(p.getWeeklyActivities());
     }
 
     public String getSchoolActivityFreq() {

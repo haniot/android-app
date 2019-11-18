@@ -10,9 +10,6 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 
-import br.edu.uepb.nutes.haniot.data.Convert;
-import br.edu.uepb.nutes.haniot.data.objectbox.nutritional.WeeklyFoodRecordOB;
-
 public class WeeklyFoodRecord {
 
     @Expose(serialize = false, deserialize = false)
@@ -26,17 +23,7 @@ public class WeeklyFoodRecord {
     @Expose
     private String sevenDaysFreq;
 
-//    @Expose(serialize = false, deserialize = false)
-//    private FeedingHabitsRecord feedingHabitsRecord;
-
     public WeeklyFoodRecord() {
-    }
-
-    public WeeklyFoodRecord(WeeklyFoodRecordOB w) {
-        this.setId(w.getId());
-        this.setFood(w.getFood());
-        this.setSevenDaysFreq(w.getSevenDaysFreq());
-//        this.setFeedingHabitsRecord(Convert.convertFeedingHabitsRecord(w.getFeedingHabitsRecord().getTarget()));
     }
 
     public long getId() {
@@ -62,14 +49,6 @@ public class WeeklyFoodRecord {
     public void setSevenDaysFreq(String sevenDaysFreq) {
         this.sevenDaysFreq = sevenDaysFreq;
     }
-
-//    public FeedingHabitsRecord getFeedingHabitsRecord() {
-//        return feedingHabitsRecord;
-//    }
-
-//    public void setFeedingHabitsRecord(FeedingHabitsRecord feedingHabitsRecord) {
-//        this.feedingHabitsRecord = feedingHabitsRecord;
-//    }
 
     /**
      * Convert object to json format.

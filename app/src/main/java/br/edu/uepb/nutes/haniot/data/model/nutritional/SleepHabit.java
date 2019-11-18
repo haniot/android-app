@@ -11,7 +11,6 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 
 import br.edu.uepb.nutes.haniot.data.model.ActivityHabitsRecord;
-import br.edu.uepb.nutes.haniot.data.objectbox.nutritional.SleepHabitOB;
 
 public class SleepHabit extends ActivityHabitsRecord {
     @SerializedName("week_day_sleep")
@@ -23,12 +22,6 @@ public class SleepHabit extends ActivityHabitsRecord {
     private int weekDayWakeUp;
 
     public SleepHabit() { }
-
-    public SleepHabit(SleepHabitOB s) {
-        super(s.getId(), s.get_id());
-        this.setWeekDaySleep(s.getWeekDaySleep());
-        this.setWeekDayWakeUp(s.getWeekDayWakeUp());
-    }
 
     public int getWeekDaySleep() {
         return weekDaySleep;

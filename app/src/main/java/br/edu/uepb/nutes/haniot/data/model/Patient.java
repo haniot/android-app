@@ -8,8 +8,6 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 
-import br.edu.uepb.nutes.haniot.data.objectbox.PatientOB;
-
 public class Patient extends User {
 
     @SerializedName("pilotstudy_id")
@@ -28,16 +26,6 @@ public class Patient extends User {
     private String createdAt;
 
     public Patient() {
-    }
-
-    public Patient(PatientOB p) {
-        super(p.getId(), p.get_id(), p.getEmail(), p.getName(), p.getBirthDate(), p.getHealthArea(),
-                p.getPassword(), p.getOldPassword(), p.getNewPassword(), p.getPhoneNumber(), p.getLastLogin(),
-                p.getLastSync(), p.getLanguage(), p.getPilotStudyIDSelected(), p.getUserType(), p.isSync());
-        this.setPilotId(p.getPilotId());
-        this.setGender(p.getGender());
-        this.setHealthProfessionalId(p.getHealthProfessionalId());
-        this.setCreatedAt(p.getCreatedAt());
     }
 
     public String getPilotId() {

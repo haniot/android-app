@@ -5,8 +5,6 @@ import android.support.annotation.NonNull;
 import java.util.List;
 import java.util.Objects;
 
-import br.edu.uepb.nutes.haniot.data.Convert;
-import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.annotation.Index;
@@ -46,32 +44,6 @@ public class MeasurementOB extends SyncOB {
 
     public MeasurementOB() {
         super();
-    }
-
-    public MeasurementOB(Measurement m) {
-        super(m.isSync());
-        this.set_id(m.get_id());
-        this.setId(m.getId());
-        this.setValue(m.getValue());
-        this.setUnit(m.getUnit());
-        this.setType(m.getType());
-        this.setTimestamp(m.getTimestamp());
-
-        this.setUser_id(m.getUser_id());
-        this.setUserId(m.getUserId());
-
-        this.setDeviceId(m.getDeviceId());
-        this.setSystolic(m.getSystolic());
-        this.setDiastolic(m.getDiastolic());
-        this.setPulse(m.getPulse());
-        this.setMeal(m.getMeal());
-
-        if (m.getFat() != null)
-            this.fat.setTarget(Convert.convertBodyFat(m.getFat()));
-
-        this.setBodyFat(Convert.convertListBodyFatToObjectBox(m.getBodyFat()));
-
-        this.setDataset(Convert.convertListHeartRate(m.getDataset()));
     }
 
     public long getId() {
@@ -202,6 +174,10 @@ public class MeasurementOB extends SyncOB {
 
     public void setFat(ToOne<BodyFatOB> fat) {
         this.fat = fat;
+    }
+
+    public void setFatModel(BodyFatOB fat) {
+        this.fat.setTarget(fat);
     }
 
     @Override

@@ -18,10 +18,10 @@ import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.model.nutritional.NutritionalQuestionnaire;
 import br.edu.uepb.nutes.haniot.data.model.odontological.OdontologicalQuestionnaire;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
-import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import io.reactivex.Completable;
 import io.reactivex.Single;
+import io.reactivex.disposables.CompositeDisposable;
 import retrofit2.Response;
 
 /**
@@ -45,6 +45,8 @@ public class Repository extends RepositoryOn {
         this.patientDAO = PatientDAO.getInstance(context);
         this.nutritionalQuestionnaireDAO = NutritionalQuestionnaireDAO.getInstance(context);
         this.odontologicalQuestionnaireDAO = OdontologicalQuestionnaireDAO.getInstance(context);
+
+        this.mCompositeDisposable = new CompositeDisposable();
     }
 
     private AppPreferencesHelper appPreferencesHelper;
@@ -53,6 +55,8 @@ public class Repository extends RepositoryOn {
     private PatientDAO patientDAO;
     private NutritionalQuestionnaireDAO nutritionalQuestionnaireDAO;
     private OdontologicalQuestionnaireDAO odontologicalQuestionnaireDAO;
+
+    private CompositeDisposable mCompositeDisposable;
 
     private boolean sendUnsynchronized() {
         List<Device> devices = deviceDAO.getAllNotSync();
@@ -65,7 +69,7 @@ public class Repository extends RepositoryOn {
         }
 
         for (Device device : devices) {
-            DisposableManager.add(
+            mCompositeDisposable.add(
                     haniotNetRepository.saveDevice(device)
                             .doAfterSuccess(device1 -> deviceDAO.markAsSync(device.getId()))
                             .subscribe()
@@ -73,7 +77,7 @@ public class Repository extends RepositoryOn {
         }
 
         for (Patient patient : patients) {
-            DisposableManager.add(
+            mCompositeDisposable.add(
                     haniotNetRepository.savePatient(patient)
                             .doAfterSuccess(patientServer -> { // patiente com _id, posso enviar as measurements, questionnaires
                                 haniotNetRepository.associatePatientToPilotStudy(patient.getPilotId(), patientServer.get_id()).subscribe();
@@ -120,7 +124,7 @@ public class Repository extends RepositoryOn {
 
         for (Measurement m : measurements) {
             if (m.getUser_id() != null)
-                DisposableManager.add(
+                mCompositeDisposable.add(
                         haniotNetRepository.saveMeasurement(m)
                                 .doAfterSuccess(measurement1 -> measurementDAO.markAsSync(m.getId()))
                                 .subscribe()
@@ -129,7 +133,7 @@ public class Repository extends RepositoryOn {
 
         for (NutritionalQuestionnaire n : nutritionalQuestionnaires) {
             if (n.getPatient_id() != null)
-                DisposableManager.add(
+                mCompositeDisposable.add(
                         haniotNetRepository.saveNutritionalQuestionnaire(n)
                                 .doAfterSuccess(nutritionalQuestionnaire1 -> nutritionalQuestionnaireDAO.markAsSync(n.getId()))
                                 .subscribe()
@@ -138,7 +142,7 @@ public class Repository extends RepositoryOn {
 
         for (OdontologicalQuestionnaire o : odontologicalQuestionnaires) {
             if (o.getPatient_id() != null)
-                DisposableManager.add(
+                mCompositeDisposable.add(
                         haniotNetRepository.saveOdontologicalQuestionnaire(o)
                                 .doAfterSuccess(odontologicalQuestionnaire1 -> odontologicalQuestionnaireDAO.markAsSync(o.getId()))
                                 .subscribe()
@@ -164,7 +168,7 @@ public class Repository extends RepositoryOn {
             String pilotId = pilotStudyId;
             Log.i(TAG, "syncronize: Agora vamos baixar os pacientes....");
 
-            DisposableManager.add(haniotNetRepository
+            mCompositeDisposable.add(haniotNetRepository
                     .getAllPatients(pilotStudyId, "created_at", 1, 100)
                     .doAfterSuccess(patients1 -> {
                         patientDAO.removeSyncronized();
@@ -203,8 +207,7 @@ public class Repository extends RepositoryOn {
     }
 
     private void downloadMeasurements(String patient_id, long patientId) {
-        measurementDAO = MeasurementDAO.getInstance(mContext);
-        DisposableManager.add(
+        mCompositeDisposable.add(
                 haniotNetRepository.getAllMeasurements(patient_id, 1, 100, "-timestamp")
                         .doAfterSuccess(measurements -> {
                             measurementDAO.removeSyncronized();
@@ -221,7 +224,7 @@ public class Repository extends RepositoryOn {
     }
 
     private void downloadOdontologicalQuestionnaires(String patient_id, long patientId) {
-        DisposableManager.add(
+        mCompositeDisposable.add(
                 haniotNetRepository.getAllOdontologicalQuestionnaires(patient_id, 1, 100, "created_at")
                         .doAfterSuccess(odontologicalQuestionnaires -> {
                             odontologicalQuestionnaireDAO.removeSyncronized();
@@ -238,7 +241,7 @@ public class Repository extends RepositoryOn {
     }
 
     private void downloadNutritionalQuestionnaires(String patient_id, long patientId) {
-        DisposableManager.add(
+        mCompositeDisposable.add(
                 haniotNetRepository.getAllNutritionalQuestionnaires(patient_id, 1, 100, "created_at")
                         .doAfterSuccess(nutritionalQuestionnaires -> {
                             nutritionalQuestionnaireDAO.removeSyncronized();

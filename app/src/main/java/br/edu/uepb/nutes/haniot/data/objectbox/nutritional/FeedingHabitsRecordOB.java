@@ -1,13 +1,9 @@
 package br.edu.uepb.nutes.haniot.data.objectbox.nutritional;
 
-import android.util.Log;
-
 import java.util.List;
 
-import br.edu.uepb.nutes.haniot.data.model.nutritional.FeedingHabitsRecord;
 import br.edu.uepb.nutes.haniot.data.objectbox.ActivityHabitsRecordOB;
 import br.edu.uepb.nutes.haniot.utils.ConverterStringToDatabase;
-import io.objectbox.annotation.Backlink;
 import io.objectbox.annotation.Convert;
 import io.objectbox.annotation.Entity;
 import io.objectbox.relation.ToMany;
@@ -29,16 +25,6 @@ public class FeedingHabitsRecordOB extends ActivityHabitsRecordOB {
 
     public FeedingHabitsRecordOB() {
         super();
-    }
-
-    public FeedingHabitsRecordOB(FeedingHabitsRecord f) {
-        super(f.getId(), f.get_id());
-        this.setDailyWaterGlasses(f.getDailyWaterGlasses());
-        this.setSixMonthBreastFeeding(f.getSixMonthBreastFeeding());
-        this.setFoodAllergyIntolerance(f.getFoodAllergyIntolerance());
-        this.setBreakfastDailyFrequency(f.getBreakfastDailyFrequency());
-        this.setWeeklyFeedingHabits((
-                br.edu.uepb.nutes.haniot.data.Convert.listWeeklyFoodRecordToObjectBox(f.getWeeklyFeedingHabits())));
     }
 
     public String getDailyWaterGlasses() {

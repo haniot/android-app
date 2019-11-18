@@ -31,13 +31,6 @@ public class BodyFatOB {
         this.type = MeasurementType.BODY_FAT;
     }
 
-    public BodyFatOB(BodyFat b) {
-        this.setId(b.getId());
-        this.setValue(b.getValue());
-        this.setUnit(b.getUnit());
-        this.setTimestamp(b.getTimestamp());
-    }
-
     public long getId() {
         return id;
     }

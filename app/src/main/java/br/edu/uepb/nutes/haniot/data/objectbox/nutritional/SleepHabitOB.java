@@ -1,6 +1,5 @@
 package br.edu.uepb.nutes.haniot.data.objectbox.nutritional;
 
-import br.edu.uepb.nutes.haniot.data.model.nutritional.SleepHabit;
 import br.edu.uepb.nutes.haniot.data.objectbox.ActivityHabitsRecordOB;
 import io.objectbox.annotation.Entity;
 
@@ -11,15 +10,7 @@ public class SleepHabitOB extends ActivityHabitsRecordOB {
 
     private int weekDayWakeUp;
 
-    public SleepHabitOB() {
-        super();
-    }
-
-    public SleepHabitOB(SleepHabit s) {
-        super(s.getId(), s.get_id());
-        this.setWeekDaySleep(s.getWeekDaySleep());
-        this.setWeekDayWakeUp(s.getWeekDayWakeUp());
-    }
+    public SleepHabitOB() {}
 
     public int getWeekDaySleep() {
         return weekDaySleep;

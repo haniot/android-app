@@ -2,8 +2,6 @@ package br.edu.uepb.nutes.haniot.data.objectbox.odontological;
 
 import java.util.Objects;
 
-import br.edu.uepb.nutes.haniot.data.Convert;
-import br.edu.uepb.nutes.haniot.data.model.odontological.OdontologicalQuestionnaire;
 import br.edu.uepb.nutes.haniot.data.objectbox.SyncOB;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
@@ -31,20 +29,6 @@ public class OdontologicalQuestionnaireOB extends SyncOB {
     ToOne<OralHealthRecordOB> oralHealthRecord;
 
     public OdontologicalQuestionnaireOB() { }
-
-    public OdontologicalQuestionnaireOB(OdontologicalQuestionnaire o) {
-        super(o.isSync());
-        this.setId(o.getId());
-        this.set_id(o.get_id());
-        this.setCreatedAt(o.getCreatedAt());
-
-        this.setPatientId(o.getPatientId());
-        this.setPatient_id(o.getPatient_id());
-
-        this.setSociodemographicRecord(Convert.convertSociodemographicRecord(o.getSociodemographicRecord()));
-        this.setFamilyCohesionRecord(Convert.convertFamilyCohesionRecord(o.getFamilyCohesionRecord()));
-        this.setOralHealthRecord(Convert.convertOralHealthRecord(o.getOralHealthRecord()));
-    }
 
     public long getId() {
         return id;

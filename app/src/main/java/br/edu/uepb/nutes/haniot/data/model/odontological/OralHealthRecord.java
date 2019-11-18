@@ -7,9 +7,6 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-import br.edu.uepb.nutes.haniot.data.Convert;
-import br.edu.uepb.nutes.haniot.data.objectbox.odontological.OralHealthRecordOB;
-
 public class OralHealthRecord {
 
     @Expose(serialize = false, deserialize = false)
@@ -35,15 +32,6 @@ public class OralHealthRecord {
     private List<ToothLesion> toothLesions;
 
     public OralHealthRecord() { }
-
-    public OralHealthRecord(OralHealthRecordOB o) {
-        this.setId(o.getId());
-        this.set_id(o.get_id());
-//        this.setPatientId(o.getPatientId());
-//        this.setCreatedAt(o.getCreatedAt());
-        this.setTeethBrushingFreq(o.getTeethBrushingFreq());
-        this.setToothLesions(Convert.convertListToothLesionToModel(o.getToothLesions()));
-    }
 
     public long getId() {
         return id;

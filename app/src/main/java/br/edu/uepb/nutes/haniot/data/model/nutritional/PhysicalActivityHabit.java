@@ -10,7 +10,6 @@ import java.lang.reflect.Type;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.data.model.ActivityHabitsRecord;
-import br.edu.uepb.nutes.haniot.data.objectbox.nutritional.PhysicalActivityHabitOB;
 
 public class PhysicalActivityHabit extends ActivityHabitsRecord {
     @SerializedName("school_activity_freq")
@@ -21,12 +20,7 @@ public class PhysicalActivityHabit extends ActivityHabitsRecord {
     @Expose()
     private List<String> weeklyActivities;
 
-    public PhysicalActivityHabit() { }
-
-    public PhysicalActivityHabit(PhysicalActivityHabitOB p) {
-        super(p.getId(), p.get_id());
-        this.setSchoolActivityFreq(p.getSchoolActivityFreq());
-        this.setWeeklyActivities(p.getWeeklyActivities());
+    public PhysicalActivityHabit() {
     }
 
     public String getSchoolActivityFreq() {

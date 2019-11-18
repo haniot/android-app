@@ -8,9 +8,6 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 
-import br.edu.uepb.nutes.haniot.data.Convert;
-import br.edu.uepb.nutes.haniot.data.objectbox.nutritional.ChronicDiseaseOB;
-
 public class ChronicDisease {
 
     @Expose(serialize = false, deserialize = false)
@@ -24,21 +21,11 @@ public class ChronicDisease {
     @Expose()
     private String diseaseHistory;
 
-//    @Expose(serialize = false, deserialize = false)
-//    private MedicalRecord medicalRecord;
-
     public ChronicDisease() { }
 
     public ChronicDisease(String type, String diseaseHistory) {
         this.type = type;
         this.diseaseHistory = diseaseHistory;
-    }
-
-    public ChronicDisease(ChronicDiseaseOB c) {
-        this.setId(c.getId());
-        this.setType(c.getType());
-        this.setDiseaseHistory(c.getDiseaseHistory());
-//        this.setMedicalRecord(Convert.convertMedicalRecord(c.getMedicalRecord().getTarget()));
     }
 
     public long getId() {

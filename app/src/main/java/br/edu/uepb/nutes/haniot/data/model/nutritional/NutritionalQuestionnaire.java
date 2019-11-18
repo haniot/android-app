@@ -7,9 +7,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.Objects;
 
-import br.edu.uepb.nutes.haniot.data.Convert;
 import br.edu.uepb.nutes.haniot.data.model.Sync;
-import br.edu.uepb.nutes.haniot.data.objectbox.nutritional.NutritionalQuestionnaireOB;
 
 public class NutritionalQuestionnaire extends Sync {
 
@@ -44,24 +42,7 @@ public class NutritionalQuestionnaire extends Sync {
     @Expose()
     MedicalRecord medicalRecord;
 
-    public NutritionalQuestionnaire() {
-    }
-
-    public NutritionalQuestionnaire(NutritionalQuestionnaireOB q) {
-        super(q.isSync());
-        this.setId(q.getId());
-        this.set_id(q.get_id());
-
-        this.setPatient_id(q.getPatient_id());
-        this.setPatientId(q.getPatientId());
-
-        this.setPatientId(q.getPatientId());
-        this.setCreatedAt(q.getCreatedAt());
-        this.setSleepHabit(Convert.convertSleepHabit(q.getSleepHabit()));
-        this.setPhysicalActivityHabit(Convert.convertPhysicalActivityHabit(q.getPhysicalActivityHabit()));
-        this.setFeedingHabitsRecord(Convert.convertFeedingHabitsRecord(q.getFeedingHabitsRecord()));
-        this.setMedicalRecord(Convert.convertMedicalRecord(q.getMedicalRecord()));
-    }
+    public NutritionalQuestionnaire() { }
 
     public long getId() {
         return id;

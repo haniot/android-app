@@ -7,9 +7,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.Objects;
 
-import br.edu.uepb.nutes.haniot.data.Convert;
 import br.edu.uepb.nutes.haniot.data.model.Sync;
-import br.edu.uepb.nutes.haniot.data.objectbox.odontological.OdontologicalQuestionnaireOB;
 
 public class OdontologicalQuestionnaire extends Sync {
 
@@ -41,19 +39,6 @@ public class OdontologicalQuestionnaire extends Sync {
     OralHealthRecord oralHealthRecord;
 
     public OdontologicalQuestionnaire() {
-    }
-
-    public OdontologicalQuestionnaire(OdontologicalQuestionnaireOB o) {
-        this.setId(o.getId());
-        this.set_id(o.get_id());
-        this.setCreatedAt(o.getCreatedAt());
-
-        this.setPatient_id(o.getPatient_id());
-        this.setPatientId(o.getPatientId());
-
-        this.setSociodemographicRecord(Convert.convertSociodemographicRecord(o.getSociodemographicRecord()));
-        this.setFamilyCohesionRecord(Convert.convertFamilyCohesionRecord(o.getFamilyCohesionRecord()));
-        this.setOralHealthRecord(Convert.convertOralHealthRecord(o.getOralHealthRecord()));
     }
 
     public long getId() {

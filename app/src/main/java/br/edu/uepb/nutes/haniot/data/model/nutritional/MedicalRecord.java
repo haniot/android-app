@@ -10,9 +10,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.edu.uepb.nutes.haniot.data.Convert;
 import br.edu.uepb.nutes.haniot.data.model.ActivityHabitsRecord;
-import br.edu.uepb.nutes.haniot.data.objectbox.nutritional.MedicalRecordOB;
 
 public class MedicalRecord extends ActivityHabitsRecord {
 
@@ -21,10 +19,6 @@ public class MedicalRecord extends ActivityHabitsRecord {
     private List<ChronicDisease> chronicDiseases;
 
     public MedicalRecord() { }
-
-    public MedicalRecord(MedicalRecordOB m) {
-        this.setChronicDiseases(Convert.listChronicsToModel(m.getChronicDiseases()));
-    }
 
     public List<ChronicDisease> getChronicDiseases() {
         return chronicDiseases;

@@ -4,11 +4,8 @@ import android.support.annotation.NonNull;
 
 import java.util.Objects;
 
-import br.edu.uepb.nutes.haniot.data.Convert;
-import br.edu.uepb.nutes.haniot.data.model.HeartRateItem;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
-import io.objectbox.relation.ToOne;
 
 /**
  * Represents Object of a HeartRateItemOB.
@@ -25,12 +22,6 @@ public class HeartRateItemOB {
     private String timestamp;
 
     public HeartRateItemOB() {}
-
-    public HeartRateItemOB(HeartRateItem h) {
-        this.setId(h.getId());
-        this.setValue(h.getValue());
-        this.setTimestamp(h.getTimestamp());
-    }
 
     public long getId() {
         return id;

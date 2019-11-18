@@ -11,8 +11,6 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.Objects;
 
-import br.edu.uepb.nutes.haniot.data.objectbox.DeviceOB;
-
 /**
  * Represents DeviceOB object.
  *
@@ -57,18 +55,7 @@ public class Device extends Sync implements Parcelable {
     @Expose(serialize = false, deserialize = false)
     private int img;
 
-    public Device(DeviceOB d) {
-        this.setId(d.getId());
-        this.set_id(d.get_id());
-        this.setName(d.getName());
-        this.setAddress(d.getAddress());
-        this.setType(d.getType());
-        this.setModelNumber(d.getModelNumber());
-        this.setManufacturer(d.getManufacturer());
-        this.setUserId(d.getUserId());
-        this.setUuid(d.getUuid());
-        this.setImg(d.getImg());
-    }
+    public Device() { }
 
     public Device(String name, String manufacturer, String modelNumber, int img, String type, String uuid) {
         this.name = name;

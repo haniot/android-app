@@ -44,7 +44,7 @@ public class OdontologicalQuestionnaireDAO {
     }
 
     public long save(OdontologicalQuestionnaire odontologicalQuestionnaire) {
-        return odontologicalQuestionnaireBox.put(new OdontologicalQuestionnaireOB(odontologicalQuestionnaire));
+        return odontologicalQuestionnaireBox.put(Convert.convertOdontologicalQuestionnaire(odontologicalQuestionnaire));
     }
 
     public List<OdontologicalQuestionnaire> getAllNotSync() {

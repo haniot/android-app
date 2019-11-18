@@ -175,7 +175,7 @@ public class MeasurementDAO {
     public void addAll(List<Measurement> measurements) {
         for (Measurement measurement : measurements) {
             measurement.setSync(true);
-            measurementBox.put(new MeasurementOB(measurement));
+            measurementBox.put(Convert.convertMeasurement(measurement));
         }
     }
 }

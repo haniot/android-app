@@ -2,11 +2,8 @@ package br.edu.uepb.nutes.haniot.data.objectbox.odontological;
 
 import java.util.Objects;
 
-import br.edu.uepb.nutes.haniot.data.Convert;
-import br.edu.uepb.nutes.haniot.data.model.odontological.ToothLesion;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
-import io.objectbox.relation.ToOne;
 
 @Entity
 public class ToothLesionOB {
@@ -19,12 +16,6 @@ public class ToothLesionOB {
     private String lesionType;
 
     public ToothLesionOB() {}
-
-    public ToothLesionOB(ToothLesion t) {
-        this.setId(t.getId());
-        this.setToothType(t.getToothType());
-        this.setLesionType(t.getLesionType());
-    }
 
     public long getId() {
         return id;
@@ -55,7 +46,6 @@ public class ToothLesionOB {
         return "ToothLesionOB{" +
                 "toothType='" + toothType + '\'' +
                 ", lesionType='" + lesionType + '\'' +
-//                ", oralHealthRecord=" + oralHealthRecord +
                 '}';
     }
 

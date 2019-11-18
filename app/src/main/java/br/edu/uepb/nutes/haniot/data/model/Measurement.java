@@ -12,9 +12,6 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 import java.util.Objects;
 
-import br.edu.uepb.nutes.haniot.data.Convert;
-import br.edu.uepb.nutes.haniot.data.objectbox.MeasurementOB;
-
 /**
  * Represents Object of a MeasurementOB.
  *
@@ -49,6 +46,8 @@ public class Measurement extends Sync implements Parcelable {
     @Expose()
     private String user_id;
 
+    @SerializedName("userId")
+    @Expose()
     private long userId;
 
     @SerializedName("device_id")
@@ -84,31 +83,6 @@ public class Measurement extends Sync implements Parcelable {
     private String meal;
 
     public Measurement() {
-    }
-
-    public Measurement(MeasurementOB m) {
-        super(m.isSync());
-        this.set_id(m.get_id());
-        this.setId(m.getId());
-        this.setValue(m.getValue());
-        this.setUnit(m.getUnit());
-        this.setType(m.getType());
-        this.setTimestamp(m.getTimestamp());
-
-        this.setUser_id(m.getUser_id());
-        this.setUserId(m.getUserId());
-
-        this.setDeviceId(m.getDeviceId());
-        this.setSystolic(m.getSystolic());
-        this.setDiastolic(m.getDiastolic());
-        this.setPulse(m.getPulse());
-        this.setMeal(m.getMeal());
-
-        if (m.getFat() != null && m.getFat().getTarget() != null)
-            this.setFat(Convert.convertBodyFat(m.getFat().getTarget()));
-
-        this.setBodyFat(Convert.convertListBodyFatToModel(m.getBodyFat()));
-        this.setDataset(Convert.convertListHeartRateToModel(m.getDataset()));
     }
 
     protected Measurement(Parcel in) {

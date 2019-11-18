@@ -2,8 +2,6 @@ package br.edu.uepb.nutes.haniot.data.objectbox.nutritional;
 
 import java.util.Objects;
 
-import br.edu.uepb.nutes.haniot.data.Convert;
-import br.edu.uepb.nutes.haniot.data.model.nutritional.NutritionalQuestionnaire;
 import br.edu.uepb.nutes.haniot.data.objectbox.SyncOB;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
@@ -33,24 +31,7 @@ public class NutritionalQuestionnaireOB extends SyncOB {
 
     ToOne<MedicalRecordOB> medicalRecord;
 
-    public NutritionalQuestionnaireOB() {
-        super();
-    }
-
-    public NutritionalQuestionnaireOB(NutritionalQuestionnaire n) {
-        super(n.isSync());
-        this.setId(n.getId());
-        this.set_id(n.get_id());
-
-        this.setPatient_id(n.getPatient_id());
-        this.setPatientId(n.getPatientId());
-
-        this.setCreatedAt(n.getCreatedAt());
-        this.setSleepHabit(Convert.convertSleepHabit(n.getSleepHabit()));
-        this.setPhysicalActivityHabit(Convert.convertPhysicalActivityHabit(n.getPhysicalActivityHabit()));
-        this.setFeedingHabitsRecord(Convert.convertFeedingHabitsRecord(n.getFeedingHabitsRecord()));
-        this.setMedicalRecord(Convert.convertMedicalRecord(n.getMedicalRecord()));
-    }
+    public NutritionalQuestionnaireOB() { }
 
     public long getId() {
         return id;
