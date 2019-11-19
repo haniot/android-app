@@ -89,8 +89,8 @@ public class Patient extends User {
         return "Patient{" + super.toString() +
                 ", pilotId='" + pilotId + '\'' +
                 ", gender='" + gender + '\'' +
-                ", healthProfessionalId='" + healthProfessionalId + '\'' +
-                ", createdAt='" + createdAt + "\'" +
+//                ", healthProfessionalId='" + healthProfessionalId + '\'' +
+//                ", createdAt='" + createdAt + "\'" +
                 '}';
     }
 }

@@ -119,17 +119,16 @@ public class MeasurementDAO {
 //                        .filter(m -> DateUtils.compareDates(m.getTimestamp(), dateStart, dateEnd))
                     .build()
                     .find(page * limit, limit);
-            Log.i(TAG, "getMeasurementsByType: AUX" + aux.toString());
         } else {
             Log.i(TAG, "getMeasurementsByType: SEM _ID");
             aux = measurementBox.query()
                     .equal(MeasurementOB_.userId, patient.getId())
                     .equal(MeasurementOB_.type, type)
                     .orderDesc(MeasurementOB_.timestamp)
-//                        .filter(m -> DateUtils.compareDates(m.getTimestamp(), dateStart, dateEnd))
                     .build()
                     .find(page * limit, limit);
         }
+        Log.i(TAG, "getMeasurementsByType: AUX " + aux.toString());
 
         List<MeasurementOB> teste = measurementBox.query()
                 .orderDesc(MeasurementOB_.timestamp)

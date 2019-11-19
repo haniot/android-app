@@ -18,7 +18,6 @@ import br.edu.uepb.nutes.haniot.data.model.type.UserType;
  */
 public class User extends Sync {
 
-//    @Expose(serialize = false, deserialize = false)
     @SerializedName("idLocal")
     @Expose()
     private long id;
@@ -280,22 +279,20 @@ public class User extends Sync {
 
     @Override
     public String toString() {
-        return "UserOB{" +
-                "id=" + id +
+        return
+//                "User{" +
+                "name='" + name + '\'' +
+                ", id=" + id +
                 ", _id='" + _id + '\'' +
-                ", email='" + email + '\'' +
-                ", name='" + name + '\'' +
+//                ", email='" + email + '\'' +
                 ", birthDate='" + birthDate + '\'' +
-                ", healthArea='" + healthArea + '\'' +
-//                ", password='" + password + '\'' +
-//                ", oldPassword='" + oldPassword + '\'' +
-//                ", newPassword='" + newPassword + '\'' +
-                ", phoneNumber='" + phoneNumber + '\'' +
-                ", lastLogin='" + lastLogin + '\'' +
-                ", lastSync='" + lastSync + '\'' +
-                ", language='" + language + '\'' +
-                ", pilotStudyIDSelected='" + pilotStudyIDSelected + '\'' +
-                ", userType='" + userType + '\'' +
-                '}';
+//                ", healthArea='" + healthArea + '\'' +
+//                ", phoneNumber='" + phoneNumber + '\'' +
+//                ", lastLogin='" + lastLogin + '\'' +
+//                ", lastSync='" + lastSync + '\'' +
+//                ", language='" + language + '\'' +
+//                ", pilotStudyIDSelected='" + pilotStudyIDSelected + '\'' +
+//                ", userType='" + userType + '\'' +
+                "";
     }
 }

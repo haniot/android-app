@@ -104,6 +104,12 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
         initToolbar();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        DisposableManager.dispose();
+    }
+
     private void initResources() {
         groupItemNutritionEvaluations = new ArrayList<>();
         groupItemOdontologicalEvaluations = new ArrayList<>();

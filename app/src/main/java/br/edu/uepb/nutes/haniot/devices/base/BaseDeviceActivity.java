@@ -54,7 +54,6 @@ import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.BluetoothManager;
-import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import br.edu.uepb.nutes.haniot.utils.NetworkUtil;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -511,7 +510,7 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
     @Override
     protected void onDestroy() {
         super.onDestroy();
-//        DisposableManager.clear();
+        DisposableManager.dispose();
         if (manager != null) manager.close();
         unregisterReceiver(mReceiver);
     }

@@ -143,6 +143,7 @@ public class AddMeasurementActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        DisposableManager.dispose();
         unregisterReceiver(mReceiver);
     }
 

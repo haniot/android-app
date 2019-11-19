@@ -144,6 +144,12 @@ public class MainPreferenceFragment extends PreferenceFragment {
         });
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        DisposableManager.dispose();
+    }
+
     /**
      * Email client intent to send support email.
      * Appends the necessary device information to email body useful when providing support

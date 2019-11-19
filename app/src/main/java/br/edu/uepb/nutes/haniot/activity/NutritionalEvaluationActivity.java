@@ -109,6 +109,12 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        DisposableManager.dispose();
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         prepareItems();

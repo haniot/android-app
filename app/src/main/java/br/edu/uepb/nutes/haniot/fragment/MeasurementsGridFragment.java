@@ -139,6 +139,12 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        DisposableManager.dispose();
+    }
+
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_measurements_dashboard, container, false);
