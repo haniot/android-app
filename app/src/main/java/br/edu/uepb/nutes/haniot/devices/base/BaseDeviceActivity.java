@@ -58,6 +58,9 @@ import br.edu.uepb.nutes.haniot.utils.NetworkUtil;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * Generalization of device activity
+ */
 public abstract class BaseDeviceActivity extends AppCompatActivity implements View.OnClickListener {
     protected final int REQUEST_ENABLE_BLUETOOTH = 1;
     protected final int REQUEST_ENABLE_LOCATION = 2;
@@ -90,7 +93,6 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
     private Runnable runnable;
     private Snackbar snackbar;
 
-    private boolean first;
     /**
      * We need this variable to lock and unlock loading more.
      * We should not charge more when a request has already been made.
@@ -296,7 +298,7 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
                 runnable = () -> {
                     removePendingMeasurements();
                 };
-                handler.postDelayed(runnable, 4000);
+                handler.postDelayed(runnable, 3000);
 
                 snackbar = Snackbar
                         .make(findViewById(R.id.root), getString(R.string.confirm_remove_measurement), Snackbar.LENGTH_LONG);
@@ -354,10 +356,12 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
         }.start();
     }
 
-    private void removePendingMeasurements() {
+    private synchronized void removePendingMeasurements() {
         Log.w("XXX", "removePendingMeasurements()");
         if (measurementsToDelete == null || measurementsToDelete.isEmpty()) return;
-        for (Measurement measurement : measurementsToDelete) {
+
+        List<Measurement> copy = new ArrayList<>(measurementsToDelete);
+        for (Measurement measurement : copy) {
             measurement.setUser_id(patient.get_id());
             measurement.setUserId(patient.getId());
 
@@ -407,9 +411,8 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
                     if (measurements != null && measurements.size() > 0) {
                         mAdapter.addItems(measurements);
                         itShouldLoadMore = true;
-                        if (page == INITIAL_PAGE) {
+                        if (page == INITIAL_PAGE)
                             updateUILastMeasurement((Measurement) mAdapter.getFirstItem(), false);
-                        }
                         page++;
                     } else {
                         toggleLoading(false);
@@ -488,11 +491,11 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
 
     @Override
     protected void onResume() {
+        super.onResume();
         if (!wifiRequest && !bluetoothRequest) {
             boxMessage.setVisibility(View.GONE);
         }
         checkPermissions();
-//        if (!isFirst)
         loadData(true);
         updateConnectionState();
 
@@ -504,7 +507,6 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
             if (manager.getConnectionState() != BluetoothProfile.STATE_CONNECTED && mDevice != null) {
                 manager.connect(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(mDevice.getAddress()));
             }
-        super.onResume();
     }
 
     @Override

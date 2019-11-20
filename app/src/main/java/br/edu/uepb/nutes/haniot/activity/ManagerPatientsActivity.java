@@ -11,6 +11,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -41,6 +42,7 @@ import butterknife.ButterKnife;
  * @copyright Copyright (c) 2019, NUTES UEPB
  */
 public class ManagerPatientsActivity extends AppCompatActivity {
+    private final String TAG = "ManagerPatientsActivity";
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -74,19 +76,11 @@ public class ManagerPatientsActivity extends AppCompatActivity {
         initResources();
     }
 
-
     /**
      * Initialize SwipeRefresh
      */
     private void initDataSwipeRefresh() {
-//        mDataSwipeRefresh.setOnRefreshListener(this::loadData);
-        mDataSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                loadData();
-            }
-        });
-//        loadData();
+        mDataSwipeRefresh.setOnRefreshListener(this::loadData);
     }
 
     /**
@@ -137,9 +131,16 @@ public class ManagerPatientsActivity extends AppCompatActivity {
 //        mDataSwipeRefresh.setRefreshing(true);
         DisposableManager.add(mRepository
                 .getAllPatients(user.getPilotStudyIDSelected(), "created_at", 1, 100)
-                .doAfterTerminate(() -> mDataSwipeRefresh.setRefreshing(false))
-                .doOnSubscribe(disposable -> mDataSwipeRefresh.setRefreshing(true))
+                .doAfterTerminate(() -> {
+                    Log.i(TAG, "loadData: doAfterTerminate");
+                    mDataSwipeRefresh.setRefreshing(false);
+                })
+                .doOnSubscribe(disposable -> {
+                    Log.i(TAG, "loadData: doOnSubscribe");
+                    mDataSwipeRefresh.setRefreshing(true);
+                })
                 .subscribe(patients -> {
+                    Log.i(TAG, "loadData: subscribe");
                     patientList = patients;
 
                     initRecyclerView();
@@ -282,8 +283,8 @@ public class ManagerPatientsActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        super.onResume();
         loadData();
+        super.onResume();
     }
 
     @Override

@@ -163,10 +163,12 @@ public class MeasurementDAO {
                 .remove();
     }
 
-    public void removeSyncronized() {
-        Log.i(Repository.TAG, "Removendo Measurements sincronizadas");
+    public void removeSyncronized(@NonNull Patient patient) {
+        Log.i(Repository.TAG, "Removendo Measurements sincronizadas: " + patient.get_id());
+        if (patient.get_id() == null) return;
         measurementBox.query()
                 .equal(MeasurementOB_.sync, true)
+                .equal(MeasurementOB_.user_id, patient.get_id())
                 .build()
                 .remove();
     }

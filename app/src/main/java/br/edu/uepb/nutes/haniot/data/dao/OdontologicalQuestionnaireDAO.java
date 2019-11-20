@@ -3,10 +3,13 @@ package br.edu.uepb.nutes.haniot.data.dao;
 import android.content.Context;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.App;
 import br.edu.uepb.nutes.haniot.data.Convert;
+import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.odontological.OdontologicalQuestionnaire;
 import br.edu.uepb.nutes.haniot.data.objectbox.odontological.OdontologicalQuestionnaireOB;
 import br.edu.uepb.nutes.haniot.data.objectbox.odontological.OdontologicalQuestionnaireOB_;
@@ -71,10 +74,12 @@ public class OdontologicalQuestionnaireDAO {
                 .remove();
     }
 
-    public void removeSyncronized() {
-        Log.i(Repository.TAG, "Removendo OdontologicalQuestionnaire sincronizados");
+    public void removeSyncronized(@NonNull Patient patient) {
+        Log.i(Repository.TAG, "Removendo OdontologicalQuestionnaire sincronizados: " + patient.get_id());
+        if (patient.get_id() == null) return;
         odontologicalQuestionnaireBox.query()
                 .equal(OdontologicalQuestionnaireOB_.sync, true)
+                .equal(OdontologicalQuestionnaireOB_.patient_id, patient.get_id())
                 .build()
                 .remove();
     }

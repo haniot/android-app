@@ -3,6 +3,8 @@ package br.edu.uepb.nutes.haniot.data.dao;
 import android.content.Context;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,10 +85,12 @@ public class NutritionalQuestionnaireDAO {
                 .remove();
     }
 
-    public void removeSyncronized() {
-        Log.i(Repository.TAG, "Removendo NutritionalQuestionnaire sincronizadas");
+    public void removeSyncronized(@NonNull Patient patient) {
+        Log.i(Repository.TAG, "Removendo NutritionalQuestionnaire sincronizadas: " + patient.get_id());
+        if (patient.get_id() == null) return;
         nutritionalQuestionnaireBox.query()
                 .equal(NutritionalQuestionnaireOB_.sync, true)
+                .equal(NutritionalQuestionnaireOB_.patient_id, patient.get_id())
                 .build()
                 .remove();
     }
