@@ -14,10 +14,10 @@ import java.util.Collections;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.odontological.FamilyCohesionRecord;
 import br.edu.uepb.nutes.haniot.data.model.odontological.OdontologicalQuestionnaire;
 import br.edu.uepb.nutes.haniot.data.model.odontological.OralHealthRecord;
-import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.odontological.SociodemographicRecord;
 import br.edu.uepb.nutes.haniot.data.model.odontological.ToothLesion;
 import br.edu.uepb.nutes.haniot.data.model.type.FrequencyAnswersType;
@@ -26,7 +26,6 @@ import br.edu.uepb.nutes.haniot.data.model.type.SociodemographicType;
 import br.edu.uepb.nutes.haniot.data.model.type.ToothLesionType;
 import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
-import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import br.edu.uepb.nutes.simplesurvey.base.SimpleSurvey;
 import br.edu.uepb.nutes.simplesurvey.question.Dichotomic;
@@ -34,6 +33,7 @@ import br.edu.uepb.nutes.simplesurvey.question.Infor;
 import br.edu.uepb.nutes.simplesurvey.question.Multiple;
 import br.edu.uepb.nutes.simplesurvey.question.Open;
 import br.edu.uepb.nutes.simplesurvey.question.Single;
+import io.reactivex.disposables.CompositeDisposable;
 import retrofit2.HttpException;
 
 import static br.edu.uepb.nutes.haniot.data.model.type.TypeEvaluation.FAMILY_COHESION;
@@ -62,6 +62,7 @@ public class QuizOdontologyActivity extends SimpleSurvey implements Infor.OnInfo
 
     private AppPreferencesHelper appPreferencesHelper;
     private Repository mRepository;
+    private CompositeDisposable mComposite;
 
     private FamilyCohesionRecord familyCohesionRecord;
     private OralHealthRecord oralHealthRecord;
@@ -145,6 +146,7 @@ public class QuizOdontologyActivity extends SimpleSurvey implements Infor.OnInfo
     private void initResources() {
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
         mRepository = Repository.getInstance(this);
+        mComposite = new CompositeDisposable();
         patient = appPreferencesHelper.getLastPatient();
         familyCohesionRecord = new FamilyCohesionRecord();
         oralHealthRecord = new OralHealthRecord();
@@ -607,7 +609,7 @@ public class QuizOdontologyActivity extends SimpleSurvey implements Infor.OnInfo
         odontologicalQuestionnaire.setCreatedAt(DateUtils.getCurrentDateTimeUTC());
 
         if (updateType == null) {
-            DisposableManager.add(mRepository
+            mComposite.add(mRepository
                     .saveOdontologicalQuestionnaire(odontologicalQuestionnaire)
                     .doAfterTerminate(() -> {
                     })
@@ -642,7 +644,7 @@ public class QuizOdontologyActivity extends SimpleSurvey implements Infor.OnInfo
 
             Log.w("AAA", "id: " + idUpdate);
             if (idUpdate != null) {
-                DisposableManager.add(mRepository
+                mComposite.add(mRepository
                         .updateOdontologicalQuestionnaire(patient.get_id(), idUpdate, updateType, resourceToUpdate)
                         .subscribe(o -> {
                             dialog.cancel();
@@ -826,6 +828,6 @@ public class QuizOdontologyActivity extends SimpleSurvey implements Infor.OnInfo
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        DisposableManager.dispose();
+        mComposite.dispose();
     }
 }

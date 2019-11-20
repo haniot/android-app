@@ -28,11 +28,11 @@ import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
-import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.ErrorHandler;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.disposables.CompositeDisposable;
 
 /**
  * ManagerPatientsActivity implementation.
@@ -60,6 +60,7 @@ public class ManagerPatientsActivity extends AppCompatActivity {
     private List<Patient> patientList;
     private ManagerPatientAdapter adapter;
     private Repository mRepository;
+    private CompositeDisposable mComposite;
     private SearchView searchView;
     private AppPreferencesHelper appPreferencesHelper;
     private User user;
@@ -108,6 +109,7 @@ public class ManagerPatientsActivity extends AppCompatActivity {
         message.setVisibility(View.INVISIBLE);
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
         mRepository = Repository.getInstance(this);
+        mComposite = new CompositeDisposable();
         patientList = new ArrayList<>();
         user = appPreferencesHelper.getUserLogged();
         disableBack();
@@ -129,7 +131,7 @@ public class ManagerPatientsActivity extends AppCompatActivity {
             addPatient.show();
 
 //        mDataSwipeRefresh.setRefreshing(true);
-        DisposableManager.add(mRepository
+        mComposite.add(mRepository
                 .getAllPatients(user.getPilotStudyIDSelected(), "created_at", 1, 100)
                 .doAfterTerminate(() -> {
                     Log.i(TAG, "loadData: doAfterTerminate");
@@ -141,7 +143,8 @@ public class ManagerPatientsActivity extends AppCompatActivity {
                 })
                 .subscribe(patients -> {
                     Log.i(TAG, "loadData: subscribe");
-                    patientList = patients;
+                    patientList.clear();
+                    patientList.addAll(patients);
 
                     initRecyclerView();
                 }, this::errorHandler));
@@ -162,11 +165,6 @@ public class ManagerPatientsActivity extends AppCompatActivity {
      */
     private void errorHandler(Throwable e) {
         ErrorHandler.showMessage(this, e);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
     }
 
     private void initRecyclerView() {
@@ -251,7 +249,7 @@ public class ManagerPatientsActivity extends AppCompatActivity {
 
     private void removePatient(Patient patient) {
 
-        DisposableManager.add(mRepository
+        mComposite.add(mRepository
                 .deletePatient(patient)
                 .doAfterTerminate(this::loadData)
                 .subscribe(() -> {
@@ -302,6 +300,6 @@ public class ManagerPatientsActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        DisposableManager.dispose();
+        mComposite.dispose();
     }
 }

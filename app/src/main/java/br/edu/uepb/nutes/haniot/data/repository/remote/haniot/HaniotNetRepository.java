@@ -8,6 +8,7 @@ import com.google.gson.JsonObject;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.data.model.MeasurementLastResponse;

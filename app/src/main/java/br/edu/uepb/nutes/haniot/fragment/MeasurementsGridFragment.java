@@ -62,7 +62,6 @@ import br.edu.uepb.nutes.haniot.data.model.type.ItemGridType;
 import br.edu.uepb.nutes.haniot.data.model.type.MeasurementType;
 import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
-import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.devices.BloodPressureActivity;
 import br.edu.uepb.nutes.haniot.devices.GlucoseActivity;
 import br.edu.uepb.nutes.haniot.devices.HeartRateActivity;
@@ -83,6 +82,7 @@ import br.edu.uepb.nutes.simpleblescanner.SimpleBleScanner;
 import br.edu.uepb.nutes.simpleblescanner.SimpleScannerCallback;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.disposables.CompositeDisposable;
 
 /**
  * MeasurementsGridFragment implementation.
@@ -110,6 +110,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
     private SharedPreferences prefSettings;
     private DecimalFormat decimalFormat;
     private Repository mRepository;
+    private CompositeDisposable mComposite;
     private PilotStudy pilotStudy;
     private static List<HeartRateItem> heartRateItems;
     private Patient patient;
@@ -136,12 +137,13 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mRepository = Repository.getInstance(mContext);
+        mComposite = new CompositeDisposable();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        DisposableManager.dispose();
+        mComposite.dispose();
     }
 
     @Override
@@ -157,7 +159,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
 
     //TODO Próxima sprint
     private void downloadLastMeasurements() {
-        DisposableManager.add(mRepository
+        mComposite.add(mRepository
                 .getAllMeasurementsByType(patient, "blood_glucose", "-timestamp", null, null, 1, 1)
                 .subscribe(measurements -> {
                     if (!measurements.isEmpty()) {
@@ -537,7 +539,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
 
     private void sendMeasurementToServer(Measurement measurement) {
         Log.i(LOG_TAG, "Saving " + measurement.toJson());
-        DisposableManager.add(mRepository
+        mComposite.add(mRepository
                 .saveMeasurement(measurement)
                 .doAfterSuccess(measurement1 -> {
                     Log.i(LOG_TAG, "Saved " + measurement1.toJson());
@@ -572,7 +574,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
 //        DeviceOB device1 = getDeviceRegistered(DeviceType.HEART_RATE);
 //        if (device1 != null) measurement.setDeviceId(device1.get_id());
 
-//        DisposableManager.add(mRepository
+//        mComposite.add(mRepository
 //        .getAllMeasurementsByType(patient.get_id(), MeasurementType.HEART_RATE, null, null, null, 1, 10000));
 
 //        List<Measurement> measurements = mRepository.listMeasurements(MeasurementType.HEART_RATE, patient.get_id(), 100, 1000);
@@ -580,7 +582,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
         if (measurements == null) measurements = new ArrayList<>();
         measurements.add(measurement);
 
-        DisposableManager.add(mRepository
+        mComposite.add(mRepository
                 .saveMeasurement(measurements)
                 .doAfterTerminate(() -> {
                     dialog.cancel();
@@ -853,7 +855,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
 //        deviceDAO = DeviceDAO.getInstance(mContext);
 //        Log.w("AAA", Arrays.toString(deviceDAO.getAllByUserId(user.get_id()).toArray()));
 
-        DisposableManager.add(
+        mComposite.add(
                 mRepository.getAllDevices(user.get_id())
                         .subscribe(devices1 -> {
                             devices = devices1;

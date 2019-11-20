@@ -52,11 +52,11 @@ import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
-import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.BluetoothManager;
 import br.edu.uepb.nutes.haniot.utils.NetworkUtil;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.disposables.CompositeDisposable;
 
 /**
  * Generalization of device activity
@@ -78,6 +78,7 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
     protected Device mDevice;
     protected AppPreferencesHelper appPreferencesHelper;
     protected Repository mRepository;
+    protected CompositeDisposable mComposite;
     protected DecimalFormat decimalFormat;
     private BaseAdapter mAdapter;
     protected BluetoothManager manager;
@@ -145,6 +146,7 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
 
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
         mRepository = Repository.getInstance(this);
+        mComposite = new CompositeDisposable();
         decimalFormat = new DecimalFormat(getString(R.string.format_number2), new DecimalFormatSymbols(Locale.US));
         measurementsToDelete = new ArrayList<>();
         animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
@@ -365,7 +367,7 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
             measurement.setUser_id(patient.get_id());
             measurement.setUserId(patient.getId());
 
-            DisposableManager.add(mRepository
+            mComposite.add(mRepository
                     .deleteMeasurement(measurement)
                     .subscribe(() -> {
                         measurementsToDelete.remove(measurement);
@@ -393,7 +395,7 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
         }
 
         removePendingMeasurements();
-        DisposableManager.add(mRepository
+        mComposite.add(mRepository
                 .getAllMeasurementsByType(patient,
                         getMeasurementType(), "-timestamp",
                         null, null, page, LIMIT_PER_PAGE)
@@ -512,7 +514,7 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        DisposableManager.dispose();
+        mComposite.dispose();
         if (manager != null) manager.close();
         unregisterReceiver(mReceiver);
     }
@@ -540,7 +542,7 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
      * @param measurement MeasurementOB to save in server
      */
     protected void saveMeasurement(Measurement measurement) {
-        DisposableManager.add(mRepository
+        mComposite.add(mRepository
                 .saveMeasurement(measurement)
                 .doAfterSuccess(measurement1 -> {
                     printMessage(getString(R.string.measurement_save));

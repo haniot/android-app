@@ -17,8 +17,8 @@ import br.edu.uepb.nutes.haniot.activity.account.ChangePasswordActivity;
 import br.edu.uepb.nutes.haniot.activity.account.LoginActivity;
 import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
-import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.devices.register.DeviceManagerActivity;
+import io.reactivex.disposables.CompositeDisposable;
 
 /**
  * MainPreferenceFragment implementation.
@@ -30,6 +30,7 @@ public class MainPreferenceFragment extends PreferenceFragment {
 
     private AppPreferencesHelper appPreferences;
     private Repository mRepository;
+    private CompositeDisposable mComposite;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -39,6 +40,7 @@ public class MainPreferenceFragment extends PreferenceFragment {
 
         appPreferences = AppPreferencesHelper.getInstance(getActivity().getApplicationContext());
         mRepository = Repository.getInstance(getActivity().getApplicationContext());
+        mComposite = new CompositeDisposable();
         // Send feedback
         Preference prefSendFeedback = findPreference(getString(R.string.key_send_bug));
         prefSendFeedback.setOnPreferenceClickListener(preference -> {
@@ -113,7 +115,7 @@ public class MainPreferenceFragment extends PreferenceFragment {
                     .setMessage(R.string.confirm_delete_account)
                     .setPositiveButton(R.string.bt_ok, (dialog, which) -> {
                                 // Remove user from server and redirect to login screen
-                                DisposableManager.add(mRepository
+                                mComposite.add(mRepository
                                         .deleteUserById(appPreferences.getUserLogged().get_id())
                                         .subscribe(() -> {
                                             if (appPreferences.removeUserLogged()) {
@@ -147,7 +149,7 @@ public class MainPreferenceFragment extends PreferenceFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        DisposableManager.dispose();
+        mComposite.dispose();
     }
 
     /**

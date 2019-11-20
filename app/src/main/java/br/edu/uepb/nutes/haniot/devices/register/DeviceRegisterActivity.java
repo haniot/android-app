@@ -36,11 +36,11 @@ import br.edu.uepb.nutes.haniot.data.model.Device;
 import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
-import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.simpleblescanner.SimpleBleScanner;
 import br.edu.uepb.nutes.simpleblescanner.SimpleScannerCallback;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.disposables.CompositeDisposable;
 import pl.bclogic.pulsator4droid.library.PulsatorLayout;
 
 import static br.edu.uepb.nutes.haniot.utils.GattAttributes.SERVICE_SCALE_YUNMAI;
@@ -57,6 +57,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     private SimpleBleScanner mScanner;
     private Device mDevice;
     private Repository mRepository;
+    private CompositeDisposable mComposite;
     private AppPreferencesHelper appPreferences;
     private User user;
 
@@ -138,7 +139,6 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
 
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
         registerReceiver(mBroadcastReceiver, filter);
-
     }
 
     /**
@@ -197,7 +197,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         mDevice.setUserId(user.get_id());
         device.setUserId(user.get_id());
 
-        DisposableManager.add(mRepository
+        mComposite.add(mRepository
                 .saveDeviceRemote(device)
                 .subscribe(deviceRest -> {
                     deviceRest.setImg(device.getImg());
@@ -338,10 +338,10 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
 
     @Override
     protected void onDestroy() {
-        Log.d(LOG_TAG, "onDestroy: called.");
+        Log.d(LOG_TAG, "mCompositey: called.");
         super.onDestroy();
         unregisterReceiver(mBroadcastReceiver);
-        DisposableManager.dispose();
+        mComposite.dispose();
     }
 
     /**
@@ -413,7 +413,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         mDevice = getIntent().getParcelableExtra(DeviceManagerActivity.EXTRA_DEVICE);
         appPreferences = AppPreferencesHelper.getInstance(this);
         mRepository = Repository.getInstance(this);
-
+        mComposite = new CompositeDisposable();
         btnDeviceRegisterScanner.setOnClickListener(this);
         btnDeviceRegisterStop.setOnClickListener(this);
         btnCloseRegister.setOnClickListener(this);

@@ -20,11 +20,11 @@ import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
-import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.ErrorHandler;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.disposables.CompositeDisposable;
 
 import static br.edu.uepb.nutes.haniot.data.model.type.UserType.ADMIN;
 import static br.edu.uepb.nutes.haniot.data.model.type.UserType.HEALTH_PROFESSIONAL;
@@ -59,6 +59,7 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
     private User user;
     private AppPreferencesHelper appPreferences;
     private Repository mRepository;
+    private CompositeDisposable mComposite;
     private Menu menu;
 
     @Override
@@ -75,6 +76,7 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
 
         appPreferences = AppPreferencesHelper.getInstance(this);
         mRepository = Repository.getInstance(this);
+        mComposite = new CompositeDisposable();
 
         user = appPreferences.getUserLogged();
         if (user == null) {
@@ -92,7 +94,7 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        DisposableManager.dispose();
+        mComposite.dispose();
     }
 
     @Override
@@ -137,7 +139,7 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
     private void prepareEditing() {
         switch (appPreferences.getUserLogged().getUserType()) {
             case ADMIN:
-                DisposableManager.add(mRepository
+                mComposite.add(mRepository
                         .getAdmin(user.get_id())
                         .doOnSubscribe(disposable -> {
                             populateView(); // Populate view with local data
@@ -154,7 +156,7 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
                         }, this::errorHandler));
                 break;
             case HEALTH_PROFESSIONAL:
-                DisposableManager.add(mRepository
+                mComposite.add(mRepository
                         .getHealthProfissional(user.get_id())
                         .doOnSubscribe(disposable -> {
                             populateView(); // Populate view with local data
@@ -171,7 +173,7 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
                         }, this::errorHandler));
                 break;
             case PATIENT:
-                DisposableManager.add(mRepository
+                mComposite.add(mRepository
                         .getPatientBy_id(user.get_id())
                         .doOnSubscribe(disposable -> {
                             populateView(); // Populate view with local data
@@ -208,7 +210,7 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
 
         switch (appPreferences.getUserLogged().getUserType()) {
             case ADMIN:
-                DisposableManager.add(mRepository
+                mComposite.add(mRepository
                         .updateAdmin((Admin) getUserView())
                         .doOnSubscribe(disposable -> loading(true))
                         .doAfterTerminate(() -> loading(false))
@@ -223,7 +225,7 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
                 );
                 break;
             case HEALTH_PROFESSIONAL:
-                DisposableManager.add(mRepository
+                mComposite.add(mRepository
                         .updateHealthProfissional((HealthProfessional) getUserView())
                         .doOnSubscribe(disposable -> loading(true))
                         .doAfterTerminate(() -> loading(false))
@@ -238,7 +240,7 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
                 );
                 break;
             case PATIENT:
-                DisposableManager.add(mRepository
+                mComposite.add(mRepository
                         .updatePatient((Patient) getUserView())
                         .doOnSubscribe(disposable -> loading(true))
                         .doAfterTerminate(() -> loading(false))

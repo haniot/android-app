@@ -38,7 +38,6 @@ import br.edu.uepb.nutes.haniot.data.model.type.MeasurementType;
 import br.edu.uepb.nutes.haniot.data.model.type.PatientsType;
 import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
-import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.ErrorHandler;
 import br.edu.uepb.nutes.haniot.fragment.FragmentAnthropometrics;
 import br.edu.uepb.nutes.haniot.fragment.FragmentBloodPressure;
@@ -49,6 +48,7 @@ import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import br.edu.uepb.nutes.haniot.utils.NetworkUtil;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.disposables.CompositeDisposable;
 
 public class AddMeasurementActivity extends AppCompatActivity {
 
@@ -97,8 +97,8 @@ public class AddMeasurementActivity extends AppCompatActivity {
     TextView messageError;
 
     private final Calendar myCalendar = Calendar.getInstance();
-    //    private HaniotNetRepository haniotNetRepository;
     private Repository mRepository;
+    private CompositeDisposable mComposite;
     private AppPreferencesHelper appPreferencesHelper;
     private Fragment myFragment;
     private User user;
@@ -117,7 +117,7 @@ public class AddMeasurementActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setupComponents();
         mRepository = Repository.getInstance(this);
-//        haniotNetRepository = HaniotNetRepository.getInstance(this);
+        mComposite = new CompositeDisposable();
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
         user = appPreferencesHelper.getUserLogged();
         patient = appPreferencesHelper.getLastPatient();
@@ -143,7 +143,7 @@ public class AddMeasurementActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        DisposableManager.dispose();
+        mComposite.dispose();
         unregisterReceiver(mReceiver);
     }
 
@@ -400,7 +400,7 @@ public class AddMeasurementActivity extends AppCompatActivity {
                 .setMessage(getString(R.string.confirm_save_measurement))
                 .setCancelable(false)
                 .setPositiveButton(getString(R.string.yes_text), (dialog, id) -> {
-                    DisposableManager.add(mRepository
+                    mComposite.add(mRepository
                             .saveMeasurement(measurements)
                             .doAfterSuccess(measurement1 -> {
                                 showToast(getString(R.string.measurement_save));
@@ -428,7 +428,7 @@ public class AddMeasurementActivity extends AppCompatActivity {
                     .setMessage(getString(R.string.confirm_save_measurement))
                     .setCancelable(false)
                     .setPositiveButton(getString(R.string.yes_text), (dialog, id) -> {
-                        DisposableManager.add(mRepository
+                        mComposite.add(mRepository
                                 .saveMeasurement(measurement)
                                 .doAfterSuccess(measurement1 -> {
                                     showToast(getString(R.string.measurement_save));

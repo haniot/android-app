@@ -27,10 +27,10 @@ import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.model.type.TypeEvaluation;
 import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
-import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.disposables.CompositeDisposable;
 
 import static br.edu.uepb.nutes.haniot.data.model.ItemEvaluation.TYPE_ERROR;
 import static br.edu.uepb.nutes.haniot.data.model.ItemEvaluation.TYPE_LOADING;
@@ -76,6 +76,7 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
     TextView textErrorDentistry;
 
     private Repository mRepository;
+    private CompositeDisposable mComposite;
     private AppPreferencesHelper appPreferencesHelper;
     private Patient patient;
     private List<GroupItemEvaluation> groupItemNutritionEvaluations;
@@ -83,6 +84,7 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
     private HistoricQuizAdapter historicNutritionalAdapter;
     private HistoricQuizAdapter historicOdontologicalAdapter;
     private User user;
+
     @BindView(R.id.loading_nutrition)
     ProgressBar loadingNutrition;
 
@@ -107,16 +109,18 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        DisposableManager.dispose();
+        mComposite.dispose();
     }
 
     private void initResources() {
         groupItemNutritionEvaluations = new ArrayList<>();
         groupItemOdontologicalEvaluations = new ArrayList<>();
         mRepository = Repository.getInstance(this);
+        mComposite = new CompositeDisposable();
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
         patient = appPreferencesHelper.getLastPatient();
         user = appPreferencesHelper.getUserLogged();
+        
         if (!user.getUserType().equals(ADMIN)) {
             if (user.getHealthArea().equals(DENTISTRY)) {
                 nutritionTitle.setVisibility(View.GONE);
@@ -151,7 +155,7 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
 
     private void downloadData() {
         if (user.getUserType().equals(ADMIN) || !user.getHealthArea().equals(DENTISTRY)) {
-            DisposableManager.add(mRepository
+            mComposite.add(mRepository
                     .getAllNutritionalQuestionnaires(patient, 1, 100, "created_at")
                     .subscribe(nutritional -> {
                         Log.w("AAA", "Size Nutrition: " + nutritional.size());
@@ -165,7 +169,7 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
         }
 
         if (user.getUserType().equals(ADMIN) || !user.getHealthArea().equals(NUTRITION)) {
-            DisposableManager.add(mRepository
+            mComposite.add(mRepository
                     .getAllOdontologicalQuestionnaires(patient.get_id(), 1, 100, "created_at")
                     .subscribe(odontological -> {
                         Log.w("AAA", "Size Odonto: " + odontological.size());

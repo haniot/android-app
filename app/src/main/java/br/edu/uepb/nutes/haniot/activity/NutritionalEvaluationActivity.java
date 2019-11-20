@@ -36,12 +36,12 @@ import br.edu.uepb.nutes.haniot.data.model.type.ItemGridType;
 import br.edu.uepb.nutes.haniot.data.model.type.TypeEvaluation;
 import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
-import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.devices.GlucoseActivity;
 import br.edu.uepb.nutes.haniot.devices.ScaleActivity;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.disposables.CompositeDisposable;
 
 import static br.edu.uepb.nutes.haniot.data.model.ItemEvaluation.TYPE_EMPTY_REQUIRED;
 import static br.edu.uepb.nutes.haniot.data.model.ItemEvaluation.TYPE_ERROR;
@@ -83,6 +83,7 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
     private AppPreferencesHelper helper;
     private Patient patient;
     private Repository mRepository;
+    private CompositeDisposable mComposite;
     private AppPreferencesHelper appPreferencesHelper;
     private NutritionalEvaluation nutritionalEvaluation;
     private PilotStudy pilotStudy;
@@ -111,7 +112,7 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        DisposableManager.dispose();
+        mComposite.dispose();
     }
 
     @Override
@@ -153,6 +154,7 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
         groupItemEvaluations = new ArrayList<>();
         helper = AppPreferencesHelper.getInstance(this);
         mRepository = Repository.getInstance(this);
+        mComposite = new CompositeDisposable();
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
         patient = helper.getLastPatient();
         user = helper.getUserLogged();
@@ -377,7 +379,7 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
      */
     private void downloadData() {
 
-        DisposableManager.add(mRepository
+        mComposite.add(mRepository
                 .getLastNutritionalQuestionnaire(patient.get_id())
                 .subscribe(nutritionalQuestionnaires -> {
                     Log.w("AAA", nutritionalQuestionnaires.toJson());
@@ -388,7 +390,7 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
                     onDownloadError(ALL_QUIZ);
                 }));
 
-        DisposableManager.add(mRepository
+        mComposite.add(mRepository
                 .getLastMeasurements(patient.get_id())
                 .subscribe(measurents -> {
                     Log.w("AAA", measurents.toJson());
@@ -464,7 +466,7 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
                     .setMessage(getString(R.string.confirm_save_evaluation))
                     .setCancelable(false)
                     .setPositiveButton(getString(R.string.yes_text), (dialog, id) -> {
-                        DisposableManager.add(mRepository
+                        mComposite.add(mRepository
                                 .saveNutritionalEvaluation(nutritionalEvaluation)
                                 .subscribe(nutritionalEvaluationResult -> {
                                     Toast.makeText(this, R.string.evaluation_sucessfull, Toast.LENGTH_LONG).show();

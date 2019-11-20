@@ -34,10 +34,10 @@ import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.model.type.DeviceType;
 import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
-import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.disposables.CompositeDisposable;
 
 import static br.edu.uepb.nutes.haniot.utils.GattAttributes.SERVICE_GLUCOSE;
 import static br.edu.uepb.nutes.haniot.utils.GattAttributes.SERVICE_HEALTH_THERMOMETER;
@@ -109,6 +109,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
     private DeviceAdapter mAdapterDeviceRegistered;
     private AppPreferencesHelper appPreferences;
     private Repository mRepository;
+    private CompositeDisposable mComposite;
     private List<String> deviceIdToDelete;
     private Handler handler;
     private Runnable runnable;
@@ -121,6 +122,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         appPreferences = AppPreferencesHelper.getInstance(this);
         mRepository = Repository.getInstance(this);
+        mComposite = new CompositeDisposable();
 
         user = appPreferences.getUserLogged();
         if (user == null || user.get_id().isEmpty()) finish();
@@ -186,7 +188,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
      * Download getAllByUserId of devices registered.
      */
     public void downloadDevicesData() {
-        DisposableManager.add(mRepository
+        mComposite.add(mRepository
                 .getAllDevices(user.get_id())
                 .doOnSubscribe(disposable -> {
                     swipeRefreshLayoutDevices.setRefreshing(true);
@@ -341,7 +343,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
         Log.w("XXX", "removePendingDevices()");
         if (deviceIdToDelete == null || deviceIdToDelete.isEmpty()) return;
         for (String idDevice : deviceIdToDelete) {
-            DisposableManager.add(mRepository
+            mComposite.add(mRepository
                     .deleteDevice(user.get_id(), idDevice).subscribe(() -> {
                         deviceIdToDelete.remove(idDevice);
                     }));

@@ -16,7 +16,6 @@ import br.edu.uepb.nutes.haniot.activity.charts.base.BaseChartActivity;
 import br.edu.uepb.nutes.haniot.activity.charts.base.CreateChart;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.type.MeasurementType;
-import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 
 /**
  * BodyCompositionChartActivity implementation.
@@ -88,7 +87,7 @@ public class BodyCompositionChartActivity extends BaseChartActivity {
      */
     public void setLimitObesity() {
         runOnUiThread(() -> {
-            DisposableManager.add(mRepository.
+            mComposite.add(mRepository.
                     getAllMeasurementsByType(patient, MeasurementType.HEIGHT,
                             "-timestamp", null, null, 1, 1)
                     .doAfterSuccess(measurements -> {

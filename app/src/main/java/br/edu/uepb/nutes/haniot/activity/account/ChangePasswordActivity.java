@@ -20,11 +20,11 @@ import br.edu.uepb.nutes.haniot.activity.MainActivity;
 import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
-import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.ErrorHandler;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.disposables.CompositeDisposable;
 
 /**
  * ChangePasswordActivity implementation.
@@ -54,6 +54,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
 
     private Menu menu;
     private Repository mRepository;
+    private CompositeDisposable mComposite;
     private AppPreferencesHelper appPreferences;
     private User user;
 
@@ -67,6 +68,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(R.string.change_password);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mRepository = Repository.getInstance(this);
+        mComposite = new CompositeDisposable();
         appPreferences = AppPreferencesHelper.getInstance(this);
 
         String changePasswordId = appPreferences.getString("user_id");
@@ -92,7 +94,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        DisposableManager.dispose();
+        mComposite.dispose();
     }
 
     @Override
@@ -184,7 +186,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
         user.setOldPassword(String.valueOf(currentPasswordEditText.getText()));
         user.setNewPassword(String.valueOf(newPasswordEditText.getText()));
 
-        DisposableManager.add(mRepository
+        mComposite.add(mRepository
                 .changePassword(user)
                 .doOnSubscribe(disposable -> loadingSend(true))
                 .doAfterTerminate(() -> loadingSend(false))

@@ -19,7 +19,6 @@ import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.type.DeviceType;
 import br.edu.uepb.nutes.haniot.data.model.type.ItemGridType;
 import br.edu.uepb.nutes.haniot.data.model.type.MeasurementType;
-import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.devices.base.BaseDeviceActivity;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.ScaleManager;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.callback.ScaleDataCallback;
@@ -236,7 +235,7 @@ public class ScaleActivity extends BaseDeviceActivity {
                 titleBodyFatTextView.setVisibility(View.VISIBLE);
             }
 
-            DisposableManager.add(mRepository.
+            mComposite.add(mRepository.
                     getAllMeasurementsByType(patient,
                             MeasurementType.HEIGHT, "-timestamp", null, null, 1, 1)
                     .subscribe(measurements -> {

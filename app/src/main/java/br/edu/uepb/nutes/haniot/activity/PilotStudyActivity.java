@@ -31,11 +31,11 @@ import br.edu.uepb.nutes.haniot.data.model.PilotStudy;
 import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
-import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.ErrorHandler;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.disposables.CompositeDisposable;
 
 import static br.edu.uepb.nutes.haniot.data.model.type.UserType.ADMIN;
 import static br.edu.uepb.nutes.haniot.data.model.type.UserType.HEALTH_PROFESSIONAL;
@@ -93,6 +93,7 @@ public class PilotStudyActivity extends AppCompatActivity {
     private PilotStudyAdapter mPilotStudyAdapter;
     private AppPreferencesHelper appPreferences;
     private Repository mRepository;
+    private CompositeDisposable mComposite;
     private User user; // Health Professional
 
     @Override
@@ -103,6 +104,7 @@ public class PilotStudyActivity extends AppCompatActivity {
 
         appPreferences = AppPreferencesHelper.getInstance(this);
         mRepository = Repository.getInstance(this);
+        mComposite = new CompositeDisposable();
 
         user = appPreferences.getUserLogged();
 
@@ -120,7 +122,7 @@ public class PilotStudyActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        DisposableManager.dispose();
+        mComposite.dispose();
     }
 
     /**
@@ -258,7 +260,7 @@ public class PilotStudyActivity extends AppCompatActivity {
             Patient patient = new Patient();
             patient.set_id(user.get_id());
             patient.setPilotStudyIDSelected(pilot.get_id());
-            DisposableManager.add(mRepository.updatePatient(patient).subscribe(patient1 -> {
+            mComposite.add(mRepository.updatePatient(patient).subscribe(patient1 -> {
                 openDashboard();
             }, throwable -> {
                 Log.w("AAA", throwable.getMessage());
@@ -268,7 +270,7 @@ public class PilotStudyActivity extends AppCompatActivity {
             Admin admin = new Admin();
             admin.set_id(user.get_id());
             admin.setPilotStudyIDSelected(pilot.get_id());
-            DisposableManager.add(mRepository.updateAdmin(admin).subscribe(admin1 -> {
+            mComposite.add(mRepository.updateAdmin(admin).subscribe(admin1 -> {
                 openDashboard();
             }, throwable -> {
                 Log.w("AAA", throwable.getMessage());
@@ -278,7 +280,7 @@ public class PilotStudyActivity extends AppCompatActivity {
             HealthProfessional healthProfessional = new HealthProfessional();
             healthProfessional.set_id(user.get_id());
             healthProfessional.setPilotStudyIDSelected(pilot.get_id());
-            DisposableManager.add(mRepository.updateHealthProfissional(healthProfessional).subscribe(healthProfessional1 -> {
+            mComposite.add(mRepository.updateHealthProfissional(healthProfessional).subscribe(healthProfessional1 -> {
                 openDashboard();
             }, throwable -> {
                 Log.w("AAA", throwable.getMessage());
@@ -312,7 +314,7 @@ public class PilotStudyActivity extends AppCompatActivity {
         }
 
         if (appPreferences.getUserLogged().getUserType().equals(ADMIN)) {
-            DisposableManager.add(mRepository
+            mComposite.add(mRepository
                     .getAllPilotStudies()
                     .doOnSubscribe(disposable -> showLoading(true))
                     .doAfterTerminate(() -> showLoading(false))
@@ -328,7 +330,7 @@ public class PilotStudyActivity extends AppCompatActivity {
                     })
             );
         } else {
-            DisposableManager.add(mRepository
+            mComposite.add(mRepository
                     .getAllUserPilotStudies(appPreferences.getUserLogged().get_id())
                     .doOnSubscribe(disposable -> showLoading(true))
                     .doAfterTerminate(() -> showLoading(false))

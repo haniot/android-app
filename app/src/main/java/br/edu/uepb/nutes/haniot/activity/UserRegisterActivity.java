@@ -31,11 +31,11 @@ import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.model.type.PatientsType;
 import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
-import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.disposables.CompositeDisposable;
 import retrofit2.HttpException;
 
 import static br.edu.uepb.nutes.haniot.data.model.type.UserType.ADMIN;
@@ -89,6 +89,7 @@ public class UserRegisterActivity extends AppCompatActivity {
     private Patient patient;
     private AppPreferencesHelper appPreferencesHelper;
     private Repository mRepository;
+    private CompositeDisposable mComposite;
     private boolean isEdit = false;
     private String oldEmail;
     private boolean editUserLogged;
@@ -149,7 +150,7 @@ public class UserRegisterActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        DisposableManager.dispose();
+        mComposite.dispose();
     }
 
     private void editAdmin() {
@@ -170,7 +171,7 @@ public class UserRegisterActivity extends AppCompatActivity {
         admin.setBirthDate(DateUtils.formatDate(myCalendar.getTimeInMillis(), "yyyy-MM-dd"));
         Log.w("AAA", "editing AdminOB: " + admin.toJson());
 
-        DisposableManager.add(mRepository.updateAdmin(admin)
+        mComposite.add(mRepository.updateAdmin(admin)
                 .subscribe(admin1 -> {
                     showMessage(R.string.update_success);
                     finish();
@@ -197,7 +198,7 @@ public class UserRegisterActivity extends AppCompatActivity {
         healthProfessional.setBirthDate(DateUtils.formatDate(myCalendar.getTimeInMillis(), "yyyy-MM-dd"));
         Log.w("AAA", "editing Health Professional: " + healthProfessional.toJson());
 
-        DisposableManager.add(mRepository.updateHealthProfissional(healthProfessional)
+        mComposite.add(mRepository.updateHealthProfissional(healthProfessional)
                 .subscribe(healthProfessional1 -> {
                     showMessage(R.string.update_success);
                     finish();
@@ -240,7 +241,7 @@ public class UserRegisterActivity extends AppCompatActivity {
 
         if (isEdit) {
             Log.w("AAA", "patient to edit: " + patient.toJson());
-            DisposableManager.add(mRepository
+            mComposite.add(mRepository
                     .updatePatient(patient)
                     .doOnSubscribe(disposable -> showLoading(true))
                     .doAfterTerminate(() -> showLoading(false))
@@ -253,7 +254,7 @@ public class UserRegisterActivity extends AppCompatActivity {
         } else {
             patient.setCreatedAt(DateUtils.getCurrentDateTimeUTC());
 
-            DisposableManager.add(mRepository
+            mComposite.add(mRepository
                     .savePatient(patient)
                     .doAfterSuccess(patient1 -> {
 
@@ -285,7 +286,7 @@ public class UserRegisterActivity extends AppCompatActivity {
      * Associate patient to selected pilot study in server.
      */
     private void associatePatientToPilotStudy() {
-        DisposableManager.add(mRepository
+        mComposite.add(mRepository
                 .associatePatientToPilotStudy(userLogged.getPilotStudyIDSelected(), patient)
                 .subscribe(o -> {
                     Log.w(TAG, "Patient associated to pilotstudy");
@@ -366,7 +367,7 @@ public class UserRegisterActivity extends AppCompatActivity {
      */
     private void prepareEditing() {
         if (userLogged.getUserType().equals(PATIENT) || !editUserLogged) {
-            DisposableManager.add(mRepository
+            mComposite.add(mRepository
                     .getPatient(appPreferencesHelper.getLastPatient())
                     .doOnSubscribe(disposable -> {
                         enabledView(false);
@@ -393,7 +394,7 @@ public class UserRegisterActivity extends AppCompatActivity {
                     }, this::errorHandler));
         } else if (userLogged.getUserType().equals(HEALTH_PROFESSIONAL)) {
             genderIcon.setImageResource(R.drawable.ic_health_professional);
-            DisposableManager.add(mRepository
+            mComposite.add(mRepository
                     .getHealthProfissional(userLogged.get_id())
                     .doOnSubscribe(disposable -> {
                         enabledView(false);
@@ -418,7 +419,7 @@ public class UserRegisterActivity extends AppCompatActivity {
                     }, this::errorHandler));
         } else if (userLogged.getUserType().equals(ADMIN)) {
             genderIcon.setImageResource(R.drawable.ic_admin);
-            DisposableManager.add(mRepository
+            mComposite.add(mRepository
                     .getAdmin(userLogged.get_id())
                     .doOnSubscribe(disposable -> {
                         enabledView(false);
@@ -519,6 +520,7 @@ public class UserRegisterActivity extends AppCompatActivity {
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
         Log.i(TAG, appPreferencesHelper.getUserAccessHaniot().getAccessToken());
         mRepository = Repository.getInstance(this);
+        mComposite = new CompositeDisposable();
         myCalendar = Calendar.getInstance();
         userLogged = appPreferencesHelper.getUserLogged();
         fab.setOnClickListener(fabClick);

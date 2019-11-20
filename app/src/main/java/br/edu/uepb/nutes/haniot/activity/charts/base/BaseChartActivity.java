@@ -29,10 +29,10 @@ import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.type.MeasurementType;
 import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
-import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.disposables.CompositeDisposable;
 
 /**
  * Base Chart implementation.
@@ -51,6 +51,7 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
 
     protected int currentChartType;
     protected Repository mRepository;
+    protected CompositeDisposable mComposite;
     private AppPreferencesHelper appPreferencesHelper;
     protected Patient patient;
 
@@ -95,6 +96,7 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
 
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
         mRepository = Repository.getInstance(this);
+        mComposite = new CompositeDisposable();
         patient = appPreferencesHelper.getLastPatient();
 
         initView();
@@ -115,7 +117,7 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
 
     @Override
     protected void onDestroy() {
-        DisposableManager.dispose();
+        mComposite.dispose();
         super.onDestroy();
     }
 
@@ -212,8 +214,7 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
         Log.w(TAG, "Data inicio: " + dateStart);
         Log.w(TAG, "Data fim: " + dateEnd);
 
-//        if (ConnectionUtils.internetIsEnabled(this)) {
-        DisposableManager.add(mRepository.
+        mComposite.add(mRepository.
                 getAllMeasurementsByType(patient, getTypeMeasurement(), "timestamp",
                         dateStart, dateEnd, 1, 100)
                 .doOnSubscribe(disposable -> {
@@ -239,13 +240,6 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
                     Log.w(TAG, "onError()");
                     printMessage(getString(R.string.error_500));
                 }));
-//        } else {
-//            runOnUiThread(() -> {
-//                onUpdateData(new ArrayList<>(), currentChartType);
-//                createMoreInfo(new ArrayList<>());
-////                printMessage(getString(R.string.connect_network_try_again));
-//            });
-//        }
     }
 
     /**
