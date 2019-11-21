@@ -52,14 +52,6 @@ public class ChronicDisease {
         this.diseaseHistory = diseaseHistory;
     }
 
-//    public MedicalRecord getMedicalRecord() {
-//        return medicalRecord;
-//    }
-//
-//    public void setMedicalRecord(MedicalRecord medicalRecord) {
-//        this.medicalRecord = medicalRecord;
-//    }
-
     /**
      * Convert object to json format.
      *
@@ -89,7 +81,6 @@ public class ChronicDisease {
                 "id=" + id +
                 ", type='" + type + '\'' +
                 ", diseaseHistory='" + diseaseHistory + '\'' +
-//                ", medicalRecord=" + medicalRecord +
                 '}';
     }
 }

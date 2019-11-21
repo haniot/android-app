@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.data.model.ActivityHabitsRecord;
 import br.edu.uepb.nutes.haniot.data.model.nutritional.ChronicDisease;
 import br.edu.uepb.nutes.haniot.data.model.nutritional.FeedingHabitsRecord;
 import br.edu.uepb.nutes.haniot.data.model.nutritional.MedicalRecord;
@@ -78,8 +79,9 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
     int checkpoint;
     private NutritionalQuestionnaire nutritionalQuestionnaire;
     private String updateType;
-    private String idUpdate;
-    private Object resourceToUpdate;
+    private String _idQuestionnaireUpdate;
+    private long idQuestionnaireUpdate;
+    private ActivityHabitsRecord resourceToUpdate;
 
     /**
      * Init view.
@@ -89,12 +91,13 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
         initResources();
 
         checkpoint = getIntent().getIntExtra("checkpoint", -1);
-        idUpdate = getIntent().getStringExtra("idUpdate");
+        _idQuestionnaireUpdate = getIntent().getStringExtra("_idUpdate");
+//        idQuestionnaireUpdate = getIntent().getLongExtra("idUpdate");
         setMessageBlocked(getResources().getString(R.string.not_answered));
         // Animation
         setFadeAnimation();
 
-        switch (checkpoint) {
+        switch (checkpoint) { // checkpoint != null = edicao
             case MEDICAL_RECORDS:
                 addMedicalRocordsPages();
                 updateType = NutritionalQuestionnaireType.MEDICAL_RECORDS;
@@ -111,7 +114,7 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
                 addSleepHabitsPages();
                 updateType = NutritionalQuestionnaireType.SLEEP_HABIT;
                 break;
-            default:
+            default: // new questionnaire
                 addStartPage();
                 addPhysicalHabitsPages();
                 addFeedingHabitsPages();
@@ -724,13 +727,18 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
                         builder.show();
                     }));
         } else {
-            Log.w("AAA", "updateType != null: " + updateType);
-            Log.w("AAA", "updateType: " + updateType + " idUpdate: " + idUpdate);
+            Log.w("AAA", "updateType != null");
+            Log.w("AAA", "updateType: " + updateType + " idUpdate: " + _idQuestionnaireUpdate);
             printJson();
-            Log.w("AAA", "id: " + idUpdate);
-            if (idUpdate != null) {
+
+            NutritionalQuestionnaire n = new NutritionalQuestionnaire();
+            n.set_id(_idQuestionnaireUpdate);
+            n.setId(idQuestionnaireUpdate);
+
+            if (_idQuestionnaireUpdate != null) {
                 mComposite.add(mRepository
-                        .updateNutritionalQuestionnaire(patient.get_id(), idUpdate, updateType, resourceToUpdate)
+                        // resourceToUpdate = sleepHabit || ...
+                        .updateNutritionalQuestionnaire(patient, n, updateType, resourceToUpdate)
                         .subscribe(o -> {
                             dialog.cancel();
                             AlertDialog.Builder builder = new AlertDialog.Builder(this);

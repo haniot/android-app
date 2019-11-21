@@ -408,7 +408,8 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
                 break;
         }
         if (intent != null) {
-            intent.putExtra("idUpdate", idQuiz);
+            intent.putExtra("_idUpdate", idQuiz);
+//            intent.putExtra("id", )
             startActivity(intent);
         }
     }

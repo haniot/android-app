@@ -40,39 +40,37 @@ import br.edu.uepb.nutes.haniot.data.objectbox.odontological.ToothLesionOB;
 
 public class Convert {
 
-    // ------------- DEVICE ---------------------
-
-    public static DeviceOB convertDevice(Device d) {
-        if (d == null) return null;
+    public static DeviceOB convertDevice(Device dP) {
+        if (dP == null) return null;
 
         DeviceOB device = new DeviceOB();
-        device.setId(d.getId());
-        device.set_id(d.get_id());
-        device.setName(d.getName());
-        device.setAddress(d.getAddress());
-        device.setType(d.getType());
-        device.setModelNumber(d.getModelNumber());
-        device.setManufacturer(d.getManufacturer());
-        device.setUserId(d.getUserId());
-        device.setUuid(d.getUuid());
-        device.setImg(d.getImg());
+        device.setId(dP.getId());
+        device.set_id(dP.get_id());
+        device.setName(dP.getName());
+        device.setAddress(dP.getAddress());
+        device.setType(dP.getType());
+        device.setModelNumber(dP.getModelNumber());
+        device.setManufacturer(dP.getManufacturer());
+        device.setUserId(dP.getUserId());
+        device.setUuid(dP.getUuid());
+        device.setImg(dP.getImg());
         return device;
     }
 
-    public static Device convertDevice(DeviceOB d) {
-        if (d == null) return null;
+    public static Device convertDevice(DeviceOB dP) {
+        if (dP == null) return null;
 
         Device device = new Device();
-        device.setId(d.getId());
-        device.set_id(d.get_id());
-        device.setName(d.getName());
-        device.setAddress(d.getAddress());
-        device.setType(d.getType());
-        device.setModelNumber(d.getModelNumber());
-        device.setManufacturer(d.getManufacturer());
-        device.setUserId(d.getUserId());
-        device.setUuid(d.getUuid());
-        device.setImg(d.getImg());
+        device.setId(dP.getId());
+        device.set_id(dP.get_id());
+        device.setName(dP.getName());
+        device.setAddress(dP.getAddress());
+        device.setType(dP.getType());
+        device.setModelNumber(dP.getModelNumber());
+        device.setManufacturer(dP.getManufacturer());
+        device.setUserId(dP.getUserId());
+        device.setUuid(dP.getUuid());
+        device.setImg(dP.getImg());
         return device;
     }
 
@@ -81,677 +79,592 @@ public class Convert {
         if (devices == null || devices.isEmpty()) return list;
 
         for (DeviceOB d : devices) {
-            list.add(Convert.convertDevice(d));
+            list.add(convertDevice(d));
         }
         return list;
     }
 
-    // ------------- FEEDING HABITS RECORD ----------------------------
-
-    public static FeedingHabitsRecord convertFeedingHabitsRecord(FeedingHabitsRecordOB f) {
-        if (f == null) return null;
+    private static FeedingHabitsRecord convertFeedingHabitsRecord(FeedingHabitsRecordOB fP) {
+        if (fP == null) return null;
 
         FeedingHabitsRecord fh = new FeedingHabitsRecord();
-        fh.setId(f.getId());
-        fh.set_id(f.get_id());
-        fh.setWeeklyFeedingHabits(Convert.convertListWeeklyFoodRecord(f.getWeeklyFeedingHabits()));
-        fh.setDailyWaterGlasses(f.getDailyWaterGlasses());
-        fh.setSixMonthBreastFeeding(f.getSixMonthBreastFeeding());
-        fh.setFoodAllergyIntolerance(f.getFoodAllergyIntolerance());
-        fh.setBreakfastDailyFrequency(f.getBreakfastDailyFrequency());
+        fh.setId(fP.getId());
+        fh.set_id(fP.get_id());
+        fh.setWeeklyFeedingHabits(convertListWeeklyFoodRecord(fP.getWeeklyFeedingHabits()));
+        fh.setDailyWaterGlasses(fP.getDailyWaterGlasses());
+        fh.setSixMonthBreastFeeding(fP.getSixMonthBreastFeeding());
+        fh.setFoodAllergyIntolerance(fP.getFoodAllergyIntolerance());
+        fh.setBreakfastDailyFrequency(fP.getBreakfastDailyFrequency());
         return fh;
     }
 
-    public static FeedingHabitsRecordOB convertFeedingHabitsRecord(FeedingHabitsRecord f) {
-        if (f == null) return null;
+    private static FeedingHabitsRecordOB convertFeedingHabitsRecord(FeedingHabitsRecord fP) {
+        if (fP == null) return null;
 
         FeedingHabitsRecordOB fh = new FeedingHabitsRecordOB();
-        fh.setId(f.getId());
-        fh.set_id(f.get_id());
-        fh.setDailyWaterGlasses(f.getDailyWaterGlasses());
-        fh.setSixMonthBreastFeeding(f.getSixMonthBreastFeeding());
-        fh.setFoodAllergyIntolerance(f.getFoodAllergyIntolerance());
-        fh.setBreakfastDailyFrequency(f.getBreakfastDailyFrequency());
-        fh.setWeeklyFeedingHabits((
-                br.edu.uepb.nutes.haniot.data.Convert.listWeeklyFoodRecordToObjectBox(f.getWeeklyFeedingHabits())));
+        fh.setId(fP.getId());
+        fh.set_id(fP.get_id());
+        fh.setDailyWaterGlasses(fP.getDailyWaterGlasses());
+        fh.setSixMonthBreastFeeding(fP.getSixMonthBreastFeeding());
+        fh.setFoodAllergyIntolerance(fP.getFoodAllergyIntolerance());
+        fh.setBreakfastDailyFrequency(fP.getBreakfastDailyFrequency());
+        fh.setWeeklyFeedingHabits(listWeeklyFoodRecordToObjectBox(fP.getWeeklyFeedingHabits()));
         return fh;
     }
 
-    public static List<FeedingHabitsRecord> listFeedingHabitsRecordToModel(List<FeedingHabitsRecordOB> feedingHabitsRecords) {
-        List<FeedingHabitsRecord> lista = new ArrayList<>();
-        if (feedingHabitsRecords == null || feedingHabitsRecords.isEmpty()) return lista;
+    private static List<WeeklyFoodRecord> convertListWeeklyFoodRecord(List<WeeklyFoodRecordOB> listP) {
+        List<WeeklyFoodRecord> list = new ArrayList<>();
+        if (listP == null || listP.isEmpty()) return list;
 
-        for (FeedingHabitsRecordOB aux : feedingHabitsRecords) {
-            lista.add(Convert.convertFeedingHabitsRecord(aux));
-        }
-        return lista;
+        for (WeeklyFoodRecordOB aux : listP)
+            list.add(convertWeeklyFoodRecord(aux));
+        return list;
     }
 
-    public static List<WeeklyFoodRecord> convertListWeeklyFoodRecord(List<WeeklyFoodRecordOB> list) {
-        List<WeeklyFoodRecord> lista = new ArrayList<>();
-        if (list == null || list.isEmpty()) return lista;
-
-        for (WeeklyFoodRecordOB aux : list) {
-            lista.add(Convert.convertWeeklyFoodRecord(aux));
-        }
-        return lista;
-    }
-
-    public static WeeklyFoodRecord convertWeeklyFoodRecord(WeeklyFoodRecordOB wf) {
-        if (wf == null) return null;
+    private static WeeklyFoodRecord convertWeeklyFoodRecord(WeeklyFoodRecordOB wP) {
+        if (wP == null) return null;
 
         WeeklyFoodRecord w = new WeeklyFoodRecord();
-        w.setId(wf.getId());
-        w.setFood(wf.getFood());
-        w.setSevenDaysFreq(wf.getSevenDaysFreq());
+        w.setId(wP.getId());
+        w.setFood(wP.getFood());
+        w.setSevenDaysFreq(wP.getSevenDaysFreq());
         return w;
     }
 
-    public static List<WeeklyFoodRecordOB> listWeeklyFoodRecordToObjectBox(List<WeeklyFoodRecord> list) {
-        List<WeeklyFoodRecordOB> lista = new ArrayList<>();
-        if (list == null || list.isEmpty()) return lista;
+    private static List<WeeklyFoodRecordOB> listWeeklyFoodRecordToObjectBox(List<WeeklyFoodRecord> listP) {
+        List<WeeklyFoodRecordOB> list = new ArrayList<>();
+        if (listP == null || listP.isEmpty()) return list;
 
-        for (WeeklyFoodRecord aux : list) {
-            lista.add(Convert.convertWeeklyFoodRecord(aux));
-        }
-        return lista;
+        for (WeeklyFoodRecord aux : listP)
+            list.add(convertWeeklyFoodRecord(aux));
+        return list;
     }
 
-    public static WeeklyFoodRecordOB convertWeeklyFoodRecord(WeeklyFoodRecord wf) {
-        if (wf == null) return null;
+    private static WeeklyFoodRecordOB convertWeeklyFoodRecord(WeeklyFoodRecord wP) {
+        if (wP == null) return null;
 
         WeeklyFoodRecordOB w = new WeeklyFoodRecordOB();
-        w.setId(wf.getId());
-        w.setFood(wf.getFood());
-        w.setSevenDaysFreq(wf.getSevenDaysFreq());
+        w.setId(wP.getId());
+        w.setFood(wP.getFood());
+        w.setSevenDaysFreq(wP.getSevenDaysFreq());
         return w;
     }
 
-    // ----------- MEASUREMENT ---------------------
-
-    public static MeasurementOB convertMeasurement(Measurement measurement) {
-        if (measurement == null) return null;
+    public static MeasurementOB convertMeasurement(Measurement mP) {
+        if (mP == null) return null;
 
         MeasurementOB m = new MeasurementOB();
-        m.set_id(measurement.get_id());
-        m.setId(measurement.getId());
-        m.setValue(measurement.getValue());
-        m.setUnit(measurement.getUnit());
-        m.setType(measurement.getType());
-        m.setTimestamp(measurement.getTimestamp());
+        m.set_id(mP.get_id());
+        m.setId(mP.getId());
+        m.setValue(mP.getValue());
+        m.setUnit(mP.getUnit());
+        m.setType(mP.getType());
+        m.setTimestamp(mP.getTimestamp());
 
-        m.setUser_id(measurement.getUser_id());
-        m.setUserId(measurement.getUserId());
+        m.setUser_id(mP.getUser_id());
+        m.setUserId(mP.getUserId());
 
-        m.setDeviceId(measurement.getDeviceId());
-        m.setSystolic(measurement.getSystolic());
-        m.setDiastolic(measurement.getDiastolic());
-        m.setPulse(measurement.getPulse());
-        m.setMeal(measurement.getMeal());
+        m.setDeviceId(mP.getDeviceId());
+        m.setSystolic(mP.getSystolic());
+        m.setDiastolic(mP.getDiastolic());
+        m.setPulse(mP.getPulse());
+        m.setMeal(mP.getMeal());
 
-        if (measurement.getFat() != null)
-            m.setFatModel(Convert.convertBodyFat(measurement.getFat()));
+        if (mP.getFat() != null)
+            m.setFatModel(convertBodyFat(mP.getFat()));
 
-        m.setBodyFat(Convert.convertListBodyFatToObjectBox(measurement.getBodyFat()));
-        m.setDataset(Convert.convertListHeartRateToObjectBox(measurement.getDataset()));
-        m.setSync(measurement.isSync());
+        m.setBodyFat(convertListBodyFatToObjectBox(mP.getBodyFat()));
+        m.setDataset(convertListHeartRateToObjectBox(mP.getDataset()));
+        m.setSync(mP.isSync());
         return m;
     }
 
-    public static Measurement convertMeasurement(MeasurementOB measurement) {
-        if (measurement == null) return null;
+    private static Measurement convertMeasurement(MeasurementOB mP) {
+        if (mP == null) return null;
 
         Measurement m = new Measurement();
-        m.set_id(measurement.get_id());
-        m.setId(measurement.getId());
-        m.setValue(measurement.getValue());
-        m.setUnit(measurement.getUnit());
-        m.setType(measurement.getType());
-        m.setTimestamp(measurement.getTimestamp());
+        m.set_id(mP.get_id());
+        m.setId(mP.getId());
+        m.setValue(mP.getValue());
+        m.setUnit(mP.getUnit());
+        m.setType(mP.getType());
+        m.setTimestamp(mP.getTimestamp());
 
-        m.setUser_id(measurement.getUser_id());
-        m.setUserId(measurement.getUserId());
+        m.setUser_id(mP.getUser_id());
+        m.setUserId(mP.getUserId());
 
-        m.setDeviceId(measurement.getDeviceId());
-        m.setSystolic(measurement.getSystolic());
-        m.setDiastolic(measurement.getDiastolic());
-        m.setPulse(measurement.getPulse());
-        m.setMeal(measurement.getMeal());
+        m.setDeviceId(mP.getDeviceId());
+        m.setSystolic(mP.getSystolic());
+        m.setDiastolic(mP.getDiastolic());
+        m.setPulse(mP.getPulse());
+        m.setMeal(mP.getMeal());
 
-        if (measurement.getFat() != null && measurement.getFat().getTarget() != null)
-            m.setFat(Convert.convertBodyFat(measurement.getFat().getTarget()));
+        if (mP.getFat() != null && mP.getFat().getTarget() != null)
+            m.setFat(convertBodyFat(mP.getFat().getTarget()));
 
-        m.setBodyFat(Convert.convertListBodyFatToModel(measurement.getBodyFat()));
-        m.setDataset(Convert.convertListHeartRateToModel(measurement.getDataset()));
-        m.setSync(measurement.isSync());
+        m.setBodyFat(convertListBodyFatToModel(mP.getBodyFat()));
+        m.setDataset(convertListHeartRateToModel(mP.getDataset()));
+        m.setSync(mP.isSync());
         return m;
     }
 
-    public static List<Measurement> listMeasurementsToModel(List<MeasurementOB> list) {
-        List<Measurement> lista = new ArrayList<>();
-        if (list == null || list.isEmpty()) return lista;
+    public static List<Measurement> listMeasurementsToModel(List<MeasurementOB> listP) {
+        List<Measurement> list = new ArrayList<>();
+        if (listP == null || listP.isEmpty()) return list;
 
-        for (MeasurementOB aux : list) {
-            lista.add(Convert.convertMeasurement(aux));
-        }
-        return lista;
+        for (MeasurementOB aux : listP)
+            list.add(convertMeasurement(aux));
+        return list;
     }
 
-    public static List<MeasurementOB> listMeasurementsToObjectBox(List<Measurement> list) {
-        List<MeasurementOB> lista = new ArrayList<>();
-        if (list == null || list.isEmpty()) return lista;
-
-        for (Measurement aux : list) {
-            lista.add(Convert.convertMeasurement(aux));
-        }
-        return lista;
-    }
-
-    public static BodyFatOB convertBodyFat(BodyFat bf) {
-        if (bf == null) return null;
+    private static BodyFatOB convertBodyFat(BodyFat bP) {
+        if (bP == null) return null;
 
         BodyFatOB b = new BodyFatOB();
-        b.setId(bf.getId());
-        b.setValue(bf.getValue());
-        b.setUnit(bf.getUnit());
-        b.setTimestamp(bf.getTimestamp());
+        b.setId(bP.getId());
+        b.setValue(bP.getValue());
+        b.setUnit(bP.getUnit());
+        b.setTimestamp(bP.getTimestamp());
         return b;
     }
 
-    public static BodyFat convertBodyFat(BodyFatOB bf) {
-        if (bf == null) return null;
+    private static BodyFat convertBodyFat(BodyFatOB bP) {
+        if (bP == null) return null;
 
         BodyFat b = new BodyFat();
-        b.setId(bf.getId());
-        b.setValue(bf.getValue());
-        b.setUnit(bf.getUnit());
-        b.setTimestamp(bf.getTimestamp());
+        b.setId(bP.getId());
+        b.setValue(bP.getValue());
+        b.setUnit(bP.getUnit());
+        b.setTimestamp(bP.getTimestamp());
         return b;
     }
 
-    public static List<HeartRateItemOB> convertListHeartRateToObjectBox(List<HeartRateItem> list) {
-        List<HeartRateItemOB> lista = new ArrayList<>();
-        if (list == null || list.isEmpty()) return lista;
+    private static List<HeartRateItemOB> convertListHeartRateToObjectBox(List<HeartRateItem> listP) {
+        List<HeartRateItemOB> list = new ArrayList<>();
+        if (listP == null || listP.isEmpty()) return list;
 
-        for (HeartRateItem aux : list) {
-            lista.add(Convert.convertHeartRateItem(aux));
-        }
-        return lista;
+        for (HeartRateItem aux : listP)
+            list.add(convertHeartRateItem(aux));
+        return list;
     }
 
-    private static HeartRateItemOB convertHeartRateItem(HeartRateItem h) {
-        if (h == null) return null;
+    private static HeartRateItemOB convertHeartRateItem(HeartRateItem hP) {
+        if (hP == null) return null;
 
-        HeartRateItemOB hr = new HeartRateItemOB();
-        hr.setId(h.getId());
-        hr.setValue(h.getValue());
-        hr.setTimestamp(h.getTimestamp());
-        return hr;
+        HeartRateItemOB h = new HeartRateItemOB();
+        h.setId(hP.getId());
+        h.setValue(hP.getValue());
+        h.setTimestamp(hP.getTimestamp());
+        return h;
     }
 
-    public static List<HeartRateItem> convertListHeartRateToModel(List<HeartRateItemOB> list) {
-        List<HeartRateItem> lista = new ArrayList<>();
-        if (list == null || list.isEmpty()) return lista;
+    private static List<HeartRateItem> convertListHeartRateToModel(List<HeartRateItemOB> listP) {
+        List<HeartRateItem> list = new ArrayList<>();
+        if (listP == null || listP.isEmpty()) return list;
 
-        for (HeartRateItemOB aux : list) {
-            lista.add(Convert.convertHeartRateItem(aux));
-        }
-        return lista;
+        for (HeartRateItemOB aux : listP)
+            list.add(convertHeartRateItem(aux));
+        return list;
     }
 
-    public static HeartRateItem convertHeartRateItem(HeartRateItemOB h) {
-        if (h == null) return null;
+    private static HeartRateItem convertHeartRateItem(HeartRateItemOB hP) {
+        if (hP == null) return null;
 
-        HeartRateItem hr = new HeartRateItem();
-        hr.setId(h.getId());
-        hr.setValue(h.getValue());
-        hr.setTimestamp(h.getTimestamp());
-        return hr;
+        HeartRateItem h = new HeartRateItem();
+        h.setId(hP.getId());
+        h.setValue(hP.getValue());
+        h.setTimestamp(hP.getTimestamp());
+        return h;
     }
 
-    // --------------- MEDICAL RECORDS ------------------------
-
-    public static MedicalRecord convertMedicalRecord(MedicalRecordOB medicalRecord) {
-        if (medicalRecord == null) return null;
+    private static MedicalRecord convertMedicalRecord(MedicalRecordOB mP) {
+        if (mP == null) return null;
 
         MedicalRecord m = new MedicalRecord();
-        m.setId(medicalRecord.getId());
-        m.set_id(medicalRecord.get_id());
-        m.setChronicDiseases(Convert.listChronicsToModel(medicalRecord.getChronicDiseases()));
+        m.setId(mP.getId());
+        m.set_id(mP.get_id());
+        m.setChronicDiseases(listChronicDiseasesToModel(mP.getChronicDiseases()));
         return m;
     }
 
-    public static List<MedicalRecord> listMedicalRecordsToModel(List<MedicalRecordOB> medicalRecords) {
-        List<MedicalRecord> lista = new ArrayList<>();
-        if (medicalRecords == null || medicalRecords.isEmpty()) return lista;
-
-        for (MedicalRecordOB aux : medicalRecords) {
-            lista.add(Convert.convertMedicalRecord(aux));
-        }
-        return lista;
-    }
-
-    public static MedicalRecordOB convertMedicalRecord(MedicalRecord medicalRecord) {
-        if (medicalRecord == null) return null;
+    private static MedicalRecordOB convertMedicalRecord(MedicalRecord mP) {
+        if (mP == null) return null;
 
         MedicalRecordOB m = new MedicalRecordOB();
-        m.setId(medicalRecord.getId());
-        m.set_id(medicalRecord.get_id());
-        m.setChronicDiseases(Convert.listChronicsToObjectBox(medicalRecord.getChronicDiseases()));
+        m.setId(mP.getId());
+        m.set_id(mP.get_id());
+        m.setChronicDiseases(listChronicsToObjectBox(mP.getChronicDiseases()));
         return m;
     }
 
-    public static List<ChronicDisease> listChronicsToModel(List<ChronicDiseaseOB> c) {
+    private static List<ChronicDisease> listChronicDiseasesToModel(List<ChronicDiseaseOB> listP) {
         List<ChronicDisease> list = new ArrayList<>();
-        if (c == null || c.isEmpty()) return null;
+        if (listP == null || listP.isEmpty()) return list;
 
-        for (ChronicDiseaseOB aux : c) {
-            list.add(Convert.convertChronicDisease(aux));
-        }
+        for (ChronicDiseaseOB aux : listP)
+            list.add(convertChronicDisease(aux));
         return list;
     }
 
-    public static ChronicDisease convertChronicDisease(ChronicDiseaseOB cd) {
-        if (cd == null) return null;
+    private static ChronicDisease convertChronicDisease(ChronicDiseaseOB cP) {
+        if (cP == null) return null;
 
         ChronicDisease c = new ChronicDisease();
-        c.setId(c.getId());
-        c.setType(c.getType());
-        c.setDiseaseHistory(c.getDiseaseHistory());
+        c.setId(cP.getId());
+        c.setType(cP.getType());
+        c.setDiseaseHistory(cP.getDiseaseHistory());
         return c;
     }
 
-    public static List<ChronicDiseaseOB> listChronicsToObjectBox(List<ChronicDisease> c) {
-        List<ChronicDiseaseOB> lista = new ArrayList<>();
-        if (c == null || c.isEmpty()) return lista;
+    private static List<ChronicDiseaseOB> listChronicsToObjectBox(List<ChronicDisease> listP) {
+        List<ChronicDiseaseOB> list = new ArrayList<>();
+        if (listP == null || listP.isEmpty()) return list;
 
-        for (ChronicDisease aux : c) {
-            lista.add(Convert.convertChronicDisease(aux));
-        }
-        return lista;
-    }
-
-    public static ChronicDiseaseOB convertChronicDisease(ChronicDisease cd) {
-        if (cd == null) return null;
-
-        ChronicDiseaseOB c = new ChronicDiseaseOB();
-        c.setId(cd.getId());
-        c.setType(cd.getType());
-        c.setDiseaseHistory(cd.getDiseaseHistory());
-        return c;
-    }
-
-    // ------- PATIENT --------------
-
-    public static Patient convertPatient(PatientOB patientOB) {
-        if (patientOB == null) return null;
-
-        Patient p = new Patient();
-        p.setId(patientOB.getId());
-        p.set_id(patientOB.get_id());
-        p.setEmail(patientOB.getEmail());
-        p.setName(patientOB.getName());
-        p.setBirthDate(patientOB.getBirthDate());
-        p.setHealthArea(patientOB.getHealthArea());
-        p.setPassword(patientOB.getPassword());
-        p.setOldPassword(patientOB.getOldPassword());
-        p.setNewPassword(patientOB.getNewPassword());
-        p.setPhoneNumber(patientOB.getPhoneNumber());
-        p.setLastLogin(patientOB.getLastLogin());
-        p.setLastSync(patientOB.getLastSync());
-        p.setLanguage(patientOB.getLanguage());
-        p.setPilotStudyIDSelected(patientOB.getPilotStudyIDSelected());
-        p.setUserType(patientOB.getUserType());
-        p.setPilotId(patientOB.getPilotId());
-        p.setGender(patientOB.getGender());
-        p.setHealthProfessionalId(patientOB.getHealthProfessionalId());
-        p.setCreatedAt(patientOB.getCreatedAt());
-        p.setSync(patientOB.isSync());
-
-        return p;
-    }
-
-    public static PatientOB convertPatient(Patient patient) {
-        if (patient == null) return null;
-
-        PatientOB p = new PatientOB();
-        p.setId(patient.getId());
-        p.set_id(patient.get_id());
-        p.setEmail(patient.getEmail());
-        p.setName(patient.getName());
-        p.setBirthDate(patient.getBirthDate());
-        p.setHealthArea(patient.getHealthArea());
-        p.setPassword(patient.getPassword());
-        p.setOldPassword(patient.getOldPassword());
-        p.setNewPassword(patient.getNewPassword());
-        p.setPhoneNumber(patient.getPhoneNumber());
-        p.setLastLogin(patient.getLastLogin());
-        p.setLastSync(patient.getLastSync());
-        p.setLanguage(patient.getLanguage());
-        p.setPilotStudyIDSelected(patient.getPilotStudyIDSelected());
-        p.setUserType(patient.getUserType());
-        p.setPilotId(patient.getPilotId());
-        p.setGender(patient.getGender());
-        p.setHealthProfessionalId(patient.getHealthProfessionalId());
-        p.setCreatedAt(patient.getCreatedAt());
-        p.setSync(patient.isSync());
-
-        return p;
-    }
-
-    public static List<Patient> listPatientsToModel(List<PatientOB> patientsOB) {
-        List<Patient> list = new ArrayList<>();
-        if (patientsOB == null || patientsOB.isEmpty()) return list;
-
-        for (PatientOB p : patientsOB) {
-            list.add(Convert.convertPatient(p));
-        }
+        for (ChronicDisease aux : listP)
+            list.add(convertChronicDisease(aux));
         return list;
     }
 
-    // ---------- PHYSICAL ACTIVITY HABIT -----------------
+    private static ChronicDiseaseOB convertChronicDisease(ChronicDisease cP) {
+        if (cP == null) return null;
 
-    public static PhysicalActivityHabitOB convertPhysicalActivityHabit(PhysicalActivityHabit p) {
-        if (p == null) return null;
-
-        PhysicalActivityHabitOB pa = new PhysicalActivityHabitOB();
-        pa.setId(p.getId());
-        pa.set_id(p.get_id());
-        pa.setSchoolActivityFreq(p.getSchoolActivityFreq());
-        pa.setWeeklyActivities(p.getWeeklyActivities());
-        return pa;
+        ChronicDiseaseOB c = new ChronicDiseaseOB();
+        c.setId(cP.getId());
+        c.setType(cP.getType());
+        c.setDiseaseHistory(cP.getDiseaseHistory());
+        return c;
     }
 
-    public static PhysicalActivityHabit convertPhysicalActivityHabit(PhysicalActivityHabitOB p) {
-        if (p == null) return null;
+    public static Patient convertPatient(PatientOB pP) {
+        if (pP == null) return null;
 
-        PhysicalActivityHabit pa = new PhysicalActivityHabit();
-        pa.setId(p.getId());
-        pa.set_id(p.get_id());
-        pa.setSchoolActivityFreq(p.getSchoolActivityFreq());
-        pa.setWeeklyActivities(p.getWeeklyActivities());
-        return pa;
+        Patient p = new Patient();
+        p.setId(pP.getId());
+        p.set_id(pP.get_id());
+        p.setEmail(pP.getEmail());
+        p.setName(pP.getName());
+        p.setBirthDate(pP.getBirthDate());
+        p.setHealthArea(pP.getHealthArea());
+        p.setPassword(pP.getPassword());
+        p.setOldPassword(pP.getOldPassword());
+        p.setNewPassword(pP.getNewPassword());
+        p.setPhoneNumber(pP.getPhoneNumber());
+        p.setLastLogin(pP.getLastLogin());
+        p.setLastSync(pP.getLastSync());
+        p.setLanguage(pP.getLanguage());
+        p.setPilotStudyIDSelected(pP.getPilotStudyIDSelected());
+        p.setUserType(pP.getUserType());
+        p.setPilotId(pP.getPilotId());
+        p.setGender(pP.getGender());
+        p.setHealthProfessionalId(pP.getHealthProfessionalId());
+        p.setCreatedAt(pP.getCreatedAt());
+        p.setSync(pP.isSync());
+        return p;
     }
 
-    public static List<PhysicalActivityHabit> convertListPhysicalActivityHabit(List<PhysicalActivityHabitOB> physicalActivityHabits) {
-        List<PhysicalActivityHabit> lista = new ArrayList<>();
-        if (physicalActivityHabits == null || physicalActivityHabits.isEmpty()) return lista;
+    public static PatientOB convertPatient(Patient pP) {
+        if (pP == null) return null;
 
-        for (PhysicalActivityHabitOB aux : physicalActivityHabits) {
-            lista.add(Convert.convertPhysicalActivityHabit(aux));
-        }
-        return lista;
+        PatientOB p = new PatientOB();
+        p.setId(pP.getId());
+        p.set_id(pP.get_id());
+        p.setEmail(pP.getEmail());
+        p.setName(pP.getName());
+        p.setBirthDate(pP.getBirthDate());
+        p.setHealthArea(pP.getHealthArea());
+        p.setPassword(pP.getPassword());
+        p.setOldPassword(pP.getOldPassword());
+        p.setNewPassword(pP.getNewPassword());
+        p.setPhoneNumber(pP.getPhoneNumber());
+        p.setLastLogin(pP.getLastLogin());
+        p.setLastSync(pP.getLastSync());
+        p.setLanguage(pP.getLanguage());
+        p.setPilotStudyIDSelected(pP.getPilotStudyIDSelected());
+        p.setUserType(pP.getUserType());
+        p.setPilotId(pP.getPilotId());
+        p.setGender(pP.getGender());
+        p.setHealthProfessionalId(pP.getHealthProfessionalId());
+        p.setCreatedAt(pP.getCreatedAt());
+        p.setSync(pP.isSync());
+        return p;
     }
 
-    // -------------- SLEEP HABITS DAO ---------------------
+    public static List<Patient> listPatientsToModel(List<PatientOB> listP) {
+        List<Patient> list = new ArrayList<>();
+        if (listP == null || listP.isEmpty()) return list;
 
-    public static SleepHabitOB convertSleepHabit(SleepHabit s) {
-        if (s == null) return null;
-
-        SleepHabitOB sh = new SleepHabitOB();
-        sh.setId(s.getId());
-        sh.set_id(s.get_id());
-        sh.setWeekDaySleep(s.getWeekDaySleep());
-        sh.setWeekDayWakeUp(s.getWeekDayWakeUp());
-        return sh;
+        for (PatientOB p : listP)
+            list.add(convertPatient(p));
+        return list;
     }
 
-    public static SleepHabit convertSleepHabit(SleepHabitOB s) {
-        if (s == null) return null;
+    private static PhysicalActivityHabitOB convertPhysicalActivityHabit(PhysicalActivityHabit pP) {
+        if (pP == null) return null;
 
-        SleepHabit sh = new SleepHabit();
-        sh.setId(s.getId());
-        sh.set_id(s.get_id());
-        sh.setWeekDaySleep(s.getWeekDaySleep());
-        sh.setWeekDayWakeUp(s.getWeekDayWakeUp());
-        return sh;
+        PhysicalActivityHabitOB p = new PhysicalActivityHabitOB();
+        p.setId(pP.getId());
+        p.set_id(pP.get_id());
+        p.setSchoolActivityFreq(pP.getSchoolActivityFreq());
+        p.setWeeklyActivities(pP.getWeeklyActivities());
+        return p;
     }
 
-    public static List<SleepHabit> listSleepHabitsToModel(List<SleepHabitOB> sleepHabits) {
-        List<SleepHabit> lista = new ArrayList<>();
-        if (sleepHabits == null || sleepHabits.isEmpty()) return lista;
+    private static PhysicalActivityHabit convertPhysicalActivityHabit(PhysicalActivityHabitOB pP) {
+        if (pP == null) return null;
 
-        for (SleepHabitOB aux : sleepHabits) {
-            lista.add(Convert.convertSleepHabit(aux));
-        }
-        return lista;
+        PhysicalActivityHabit p = new PhysicalActivityHabit();
+        p.setId(pP.getId());
+        p.set_id(pP.get_id());
+        p.setSchoolActivityFreq(pP.getSchoolActivityFreq());
+        p.setWeeklyActivities(pP.getWeeklyActivities());
+        return p;
     }
 
-    public static List<NutritionalQuestionnaire> listNutritionalQuestionnaireToModel(List<NutritionalQuestionnaireOB> n) {
-        List<NutritionalQuestionnaire> aux = new ArrayList<>();
-        if (n == null || n.isEmpty()) return aux;
+    private static SleepHabitOB convertSleepHabit(SleepHabit sP) {
+        if (sP == null) return null;
 
-        for (NutritionalQuestionnaireOB questionnaire : n) {
-            aux.add(convertNutritionalQuestionnaire(questionnaire));
-        }
-        return aux;
+        SleepHabitOB s = new SleepHabitOB();
+        s.setId(sP.getId());
+        s.set_id(sP.get_id());
+        s.setWeekDaySleep(sP.getWeekDaySleep());
+        s.setWeekDayWakeUp(sP.getWeekDayWakeUp());
+        return s;
     }
 
-    public static NutritionalQuestionnaire convertNutritionalQuestionnaire(NutritionalQuestionnaireOB n) {
-        if (n == null) return null;
+    private static SleepHabit convertSleepHabit(SleepHabitOB sP) {
+        if (sP == null) return null;
 
-        NutritionalQuestionnaire nq = new NutritionalQuestionnaire();
-        nq.setSync(n.isSync());
-        nq.setId(n.getId());
-        nq.set_id(n.get_id());
-
-        nq.setPatient_id(n.getPatient_id());
-        nq.setPatientId(n.getPatientId());
-
-        nq.setCreatedAt(n.getCreatedAt());
-        nq.setSleepHabit(Convert.convertSleepHabit(n.getSleepHabit()));
-        nq.setPhysicalActivityHabit(Convert.convertPhysicalActivityHabit(n.getPhysicalActivityHabit()));
-        nq.setFeedingHabitsRecord(Convert.convertFeedingHabitsRecord(n.getFeedingHabitsRecord()));
-        nq.setMedicalRecord(Convert.convertMedicalRecord(n.getMedicalRecord()));
-        return nq;
+        SleepHabit s = new SleepHabit();
+        s.setId(sP.getId());
+        s.set_id(sP.get_id());
+        s.setWeekDaySleep(sP.getWeekDaySleep());
+        s.setWeekDayWakeUp(sP.getWeekDayWakeUp());
+        return s;
     }
 
-    public static NutritionalQuestionnaireOB convertNutritionalQuestionnaire(NutritionalQuestionnaire n) {
-        if (n == null) return null;
+    public static List<NutritionalQuestionnaire> listNutritionalQuestionnaireToModel(List<NutritionalQuestionnaireOB> listP) {
+        List<NutritionalQuestionnaire> list = new ArrayList<>();
+        if (listP == null || listP.isEmpty()) return list;
 
-        NutritionalQuestionnaireOB nq = new NutritionalQuestionnaireOB();
-        nq.setSync(n.isSync());
-        nq.setId(n.getId());
-        nq.set_id(n.get_id());
-
-        nq.setPatient_id(n.getPatient_id());
-        nq.setPatientId(n.getPatientId());
-
-        nq.setCreatedAt(n.getCreatedAt());
-        nq.setSleepHabit(Convert.convertSleepHabit(n.getSleepHabit()));
-        nq.setPhysicalActivityHabit(Convert.convertPhysicalActivityHabit(n.getPhysicalActivityHabit()));
-        nq.setFeedingHabitsRecord(Convert.convertFeedingHabitsRecord(n.getFeedingHabitsRecord()));
-        nq.setMedicalRecord(Convert.convertMedicalRecord(n.getMedicalRecord()));
-        return nq;
+        for (NutritionalQuestionnaireOB questionnaire : listP)
+            list.add(convertNutritionalQuestionnaire(questionnaire));
+        return list;
     }
 
-    public static SociodemographicRecordOB convertSociodemographicRecord(SociodemographicRecord s) {
-        if (s == null) return null;
+    private static NutritionalQuestionnaire convertNutritionalQuestionnaire(NutritionalQuestionnaireOB nP) {
+        if (nP == null) return null;
 
-        SociodemographicRecordOB sr = new SociodemographicRecordOB();
-        sr.setId(s.getId());
-        sr.set_id(s.get_id());
-        sr.setColorRace(s.getColorRace());
-        sr.setMotherScholarity(s.getMotherScholarity());
-        sr.setPeopleInHome(s.getPeopleInHome());
-        return sr;
+        NutritionalQuestionnaire n = new NutritionalQuestionnaire();
+        n.setSync(nP.isSync());
+        n.setId(nP.getId());
+        n.set_id(nP.get_id());
+        n.setPatient_id(nP.getPatient_id());
+        n.setPatientId(nP.getPatientId());
+        n.setCreatedAt(nP.getCreatedAt());
+        n.setSleepHabit(convertSleepHabit(nP.getSleepHabit()));
+        n.setPhysicalActivityHabit(convertPhysicalActivityHabit(nP.getPhysicalActivityHabit()));
+        n.setFeedingHabitsRecord(convertFeedingHabitsRecord(nP.getFeedingHabitsRecord()));
+        n.setMedicalRecord(convertMedicalRecord(nP.getMedicalRecord()));
+        return n;
     }
 
-    public static SociodemographicRecord convertSociodemographicRecord(SociodemographicRecordOB s) {
-        if (s == null) return null;
+    public static NutritionalQuestionnaireOB convertNutritionalQuestionnaire(NutritionalQuestionnaire nP) {
+        if (nP == null) return null;
 
-        SociodemographicRecord sr = new SociodemographicRecord();
-        sr.setId(s.getId());
-        sr.set_id(s.get_id());
-        sr.setColorRace(s.getColorRace());
-        sr.setMotherScholarity(s.getMotherScholarity());
-        sr.setPeopleInHome(s.getPeopleInHome());
-        return sr;
+        NutritionalQuestionnaireOB n = new NutritionalQuestionnaireOB();
+        n.setSync(nP.isSync());
+        n.setId(nP.getId());
+        n.set_id(nP.get_id());
+        n.setPatient_id(nP.getPatient_id());
+        n.setPatientId(nP.getPatientId());
+        n.setCreatedAt(nP.getCreatedAt());
+        n.setSleepHabit(convertSleepHabit(nP.getSleepHabit()));
+        n.setPhysicalActivityHabit(convertPhysicalActivityHabit(nP.getPhysicalActivityHabit()));
+        n.setFeedingHabitsRecord(convertFeedingHabitsRecord(nP.getFeedingHabitsRecord()));
+        n.setMedicalRecord(convertMedicalRecord(nP.getMedicalRecord()));
+        return n;
     }
 
-    public static List<OdontologicalQuestionnaire> listOdontologicalQuestionnaireToModel(List<OdontologicalQuestionnaireOB> n) {
-        List<OdontologicalQuestionnaire> aux = new ArrayList<>();
-        if (n == null || n.isEmpty()) return aux;
+    private static SociodemographicRecordOB convertSociodemographicRecord(SociodemographicRecord sP) {
+        if (sP == null) return null;
 
-        for (OdontologicalQuestionnaireOB questionnaire : n)
-            aux.add(convertOdontologicalQuestionnaire(questionnaire));
-        return aux;
+        SociodemographicRecordOB s = new SociodemographicRecordOB();
+        s.setId(sP.getId());
+        s.set_id(sP.get_id());
+        s.setColorRace(sP.getColorRace());
+        s.setMotherScholarity(sP.getMotherScholarity());
+        s.setPeopleInHome(sP.getPeopleInHome());
+        return s;
     }
 
-    public static OdontologicalQuestionnaire convertOdontologicalQuestionnaire(OdontologicalQuestionnaireOB o) {
-        if (o == null) return null;
+    private static SociodemographicRecord convertSociodemographicRecord(SociodemographicRecordOB sP) {
+        if (sP == null) return null;
 
-        OdontologicalQuestionnaire oq = new OdontologicalQuestionnaire();
-        oq.setId(o.getId());
-        oq.set_id(o.get_id());
-        oq.setCreatedAt(o.getCreatedAt());
-
-        oq.setPatient_id(o.getPatient_id());
-        oq.setPatientId(o.getPatientId());
-
-        oq.setSociodemographicRecord(Convert.convertSociodemographicRecord(o.getSociodemographicRecord()));
-        oq.setFamilyCohesionRecord(Convert.convertFamilyCohesionRecord(o.getFamilyCohesionRecord()));
-        oq.setOralHealthRecord(Convert.convertOralHealthRecord(o.getOralHealthRecord()));
-        return oq;
+        SociodemographicRecord s = new SociodemographicRecord();
+        s.setId(sP.getId());
+        s.set_id(sP.get_id());
+        s.setColorRace(sP.getColorRace());
+        s.setMotherScholarity(sP.getMotherScholarity());
+        s.setPeopleInHome(sP.getPeopleInHome());
+        return s;
     }
 
-    public static FamilyCohesionRecordOB convertFamilyCohesionRecord(FamilyCohesionRecord f) {
-        if (f == null) return null;
+    public static List<OdontologicalQuestionnaire> listOdontologicalQuestionnaireToModel(List<OdontologicalQuestionnaireOB> listP) {
+        List<OdontologicalQuestionnaire> list = new ArrayList<>();
+        if (listP == null || listP.isEmpty()) return list;
 
-        FamilyCohesionRecordOB fc = new FamilyCohesionRecordOB();
-        fc.setId(f.getId());
-        fc.set_id(f.get_id());
-
-        fc.setFamilyMutualAidFreq(f.getFamilyMutualAidFreq());
-        fc.setFriendshipApprovalFreq(f.getFriendshipApprovalFreq());
-        fc.setFamilyOnlyTaskFreq(f.getFamilyOnlyTaskFreq());
-        fc.setFamilyOnlyPreferenceFreq(f.getFamilyOnlyPreferenceFreq());
-        fc.setFreeTimeTogetherFreq(f.getFreeTimeTogetherFreq());
-        fc.setFamilyProximityPerceptionFreq(f.getFamilyProximityPerceptionFreq());
-        fc.setAllFamilyTasksFreq(f.getAllFamilyTasksFreq());
-        fc.setFamilyTasksOpportunityFreq(f.getFamilyTasksOpportunityFreq());
-        fc.setFamilyDecisionSupportFreq(f.getFamilyDecisionSupportFreq());
-        fc.setFamilyUnionRelevanceFreq(f.getFamilyUnionRelevanceFreq());
-        fc.setFamilyCohesionResult(f.getFamilyCohesionResult());
-        return fc;
+        for (OdontologicalQuestionnaireOB questionnaire : listP)
+            list.add(convertOdontologicalQuestionnaire(questionnaire));
+        return list;
     }
 
-    public static FamilyCohesionRecord convertFamilyCohesionRecord(FamilyCohesionRecordOB f) {
-        if (f == null) return null;
+    private static OdontologicalQuestionnaire convertOdontologicalQuestionnaire(OdontologicalQuestionnaireOB oP) {
+        if (oP == null) return null;
 
-        FamilyCohesionRecord fc = new FamilyCohesionRecord();
-        fc.setId(f.getId());
-        fc.set_id(f.get_id());
-
-        fc.setFamilyMutualAidFreq(f.getFamilyMutualAidFreq());
-        fc.setFriendshipApprovalFreq(f.getFriendshipApprovalFreq());
-        fc.setFamilyOnlyTaskFreq(f.getFamilyOnlyTaskFreq());
-        fc.setFamilyOnlyPreferenceFreq(f.getFamilyOnlyPreferenceFreq());
-        fc.setFreeTimeTogetherFreq(f.getFreeTimeTogetherFreq());
-        fc.setFamilyProximityPerceptionFreq(f.getFamilyProximityPerceptionFreq());
-        fc.setAllFamilyTasksFreq(f.getAllFamilyTasksFreq());
-        fc.setFamilyTasksOpportunityFreq(f.getFamilyTasksOpportunityFreq());
-        fc.setFamilyDecisionSupportFreq(f.getFamilyDecisionSupportFreq());
-        fc.setFamilyUnionRelevanceFreq(f.getFamilyUnionRelevanceFreq());
-        fc.setFamilyCohesionResult(f.getFamilyCohesionResult());
-        return fc;
+        OdontologicalQuestionnaire o = new OdontologicalQuestionnaire();
+        o.setId(oP.getId());
+        o.set_id(oP.get_id());
+        o.setCreatedAt(oP.getCreatedAt());
+        o.setPatient_id(oP.getPatient_id());
+        o.setPatientId(oP.getPatientId());
+        o.setSociodemographicRecord(convertSociodemographicRecord(oP.getSociodemographicRecord()));
+        o.setFamilyCohesionRecord(convertFamilyCohesionRecord(oP.getFamilyCohesionRecord()));
+        o.setOralHealthRecord(convertOralHealthRecord(oP.getOralHealthRecord()));
+        return o;
     }
 
-    public static OralHealthRecordOB convertOralHealthRecord(OralHealthRecord o) {
-        if (o == null) return null;
+    private static FamilyCohesionRecordOB convertFamilyCohesionRecord(FamilyCohesionRecord fP) {
+        if (fP == null) return null;
 
-        OralHealthRecordOB oh = new OralHealthRecordOB();
-        oh.setId(o.getId());
-        oh.set_id(o.get_id());
-        oh.setTeethBrushingFreq(o.getTeethBrushingFreq());
-        oh.setToothLesions(Convert.listToothLesionsToObjectBox(o.getToothLesions()));
-        return oh;
+        FamilyCohesionRecordOB f = new FamilyCohesionRecordOB();
+        f.setId(fP.getId());
+        f.set_id(fP.get_id());
+        f.setFamilyMutualAidFreq(fP.getFamilyMutualAidFreq());
+        f.setFriendshipApprovalFreq(fP.getFriendshipApprovalFreq());
+        f.setFamilyOnlyTaskFreq(fP.getFamilyOnlyTaskFreq());
+        f.setFamilyOnlyPreferenceFreq(fP.getFamilyOnlyPreferenceFreq());
+        f.setFreeTimeTogetherFreq(fP.getFreeTimeTogetherFreq());
+        f.setFamilyProximityPerceptionFreq(fP.getFamilyProximityPerceptionFreq());
+        f.setAllFamilyTasksFreq(fP.getAllFamilyTasksFreq());
+        f.setFamilyTasksOpportunityFreq(fP.getFamilyTasksOpportunityFreq());
+        f.setFamilyDecisionSupportFreq(fP.getFamilyDecisionSupportFreq());
+        f.setFamilyUnionRelevanceFreq(fP.getFamilyUnionRelevanceFreq());
+        f.setFamilyCohesionResult(fP.getFamilyCohesionResult());
+        return f;
     }
 
-    public static OralHealthRecord convertOralHealthRecord(OralHealthRecordOB o) {
-        if (o == null) return null;
+    private static FamilyCohesionRecord convertFamilyCohesionRecord(FamilyCohesionRecordOB fP) {
+        if (fP == null) return null;
 
-        OralHealthRecord oh = new OralHealthRecord();
-        oh.setId(o.getId());
-        oh.set_id(o.get_id());
-        oh.setTeethBrushingFreq(o.getTeethBrushingFreq());
-        oh.setToothLesions(Convert.listToothLesionsToModel(o.getToothLesions()));
-        return oh;
+        FamilyCohesionRecord f = new FamilyCohesionRecord();
+        f.setId(fP.getId());
+        f.set_id(fP.get_id());
+        f.setFamilyMutualAidFreq(fP.getFamilyMutualAidFreq());
+        f.setFriendshipApprovalFreq(fP.getFriendshipApprovalFreq());
+        f.setFamilyOnlyTaskFreq(fP.getFamilyOnlyTaskFreq());
+        f.setFamilyOnlyPreferenceFreq(fP.getFamilyOnlyPreferenceFreq());
+        f.setFreeTimeTogetherFreq(fP.getFreeTimeTogetherFreq());
+        f.setFamilyProximityPerceptionFreq(fP.getFamilyProximityPerceptionFreq());
+        f.setAllFamilyTasksFreq(fP.getAllFamilyTasksFreq());
+        f.setFamilyTasksOpportunityFreq(fP.getFamilyTasksOpportunityFreq());
+        f.setFamilyDecisionSupportFreq(fP.getFamilyDecisionSupportFreq());
+        f.setFamilyUnionRelevanceFreq(fP.getFamilyUnionRelevanceFreq());
+        f.setFamilyCohesionResult(fP.getFamilyCohesionResult());
+        return f;
     }
 
-    public static List<ToothLesionOB> listToothLesionsToObjectBox(List<ToothLesion> toothLesions) {
-        List<ToothLesionOB> aux = new ArrayList<>();
-        if (toothLesions == null || toothLesions.isEmpty()) return aux;
+    private static OralHealthRecordOB convertOralHealthRecord(OralHealthRecord oP) {
+        if (oP == null) return null;
 
-        for (ToothLesion t : toothLesions) {
-            aux.add(Convert.convertToothLesion(t));
-        }
-        return aux;
+        OralHealthRecordOB o = new OralHealthRecordOB();
+        o.setId(oP.getId());
+        o.set_id(oP.get_id());
+        o.setTeethBrushingFreq(oP.getTeethBrushingFreq());
+        o.setToothLesions(listToothLesionsToObjectBox(oP.getToothLesions()));
+        return o;
     }
 
-    public static ToothLesionOB convertToothLesion(ToothLesion t) {
-        if (t == null) return null;
+    private static OralHealthRecord convertOralHealthRecord(OralHealthRecordOB oP) {
+        if (oP == null) return null;
 
-        ToothLesionOB tl = new ToothLesionOB();
-        tl.setId(t.getId());
-        tl.setToothType(t.getToothType());
-        tl.setLesionType(t.getLesionType());
-        return tl;
+        OralHealthRecord o = new OralHealthRecord();
+        o.setId(oP.getId());
+        o.set_id(oP.get_id());
+        o.setTeethBrushingFreq(oP.getTeethBrushingFreq());
+        o.setToothLesions(listToothLesionsToModel(oP.getToothLesions()));
+        return o;
     }
 
-    public static List<ToothLesion> listToothLesionsToModel(List<ToothLesionOB> toothLesions) {
-        List<ToothLesion> aux = new ArrayList<>();
-        if (toothLesions == null || toothLesions.isEmpty()) return aux;
+    private static List<ToothLesionOB> listToothLesionsToObjectBox(List<ToothLesion> listP) {
+        List<ToothLesionOB> list = new ArrayList<>();
+        if (listP == null || listP.isEmpty()) return list;
 
-        for (ToothLesionOB t : toothLesions) {
-            aux.add(Convert.convertToothLesion(t));
-        }
-        return aux;
+        for (ToothLesion t : listP)
+            list.add(convertToothLesion(t));
+        return list;
     }
 
-    public static ToothLesion convertToothLesion(ToothLesionOB t) {
-        if (t == null) return null;
+    private static ToothLesionOB convertToothLesion(ToothLesion tP) {
+        if (tP == null) return null;
 
-        ToothLesion tl = new ToothLesion();
-        tl.setId(t.getId());
-        tl.setToothType(t.getToothType());
-        tl.setLesionType(t.getLesionType());
-        return tl;
+        ToothLesionOB t = new ToothLesionOB();
+        t.setId(tP.getId());
+        t.setToothType(tP.getToothType());
+        t.setLesionType(tP.getLesionType());
+        return t;
     }
 
-    public static List<BodyFatOB> convertListBodyFatToObjectBox(List<BodyFat> bodyFat) {
-        List<BodyFatOB> aux = new ArrayList<>();
-        if (bodyFat == null || bodyFat.isEmpty()) return aux;
+    private static List<ToothLesion> listToothLesionsToModel(List<ToothLesionOB> listP) {
+        List<ToothLesion> list = new ArrayList<>();
+        if (listP == null || listP.isEmpty()) return list;
 
-        for (BodyFat bf : bodyFat) {
-            aux.add(Convert.convertBodyFat(bf));
-        }
-        return aux;
+        for (ToothLesionOB t : listP)
+            list.add(convertToothLesion(t));
+        return list;
     }
 
-    public static List<BodyFat> convertListBodyFatToModel(List<BodyFatOB> bodyFat) {
-        List<BodyFat> aux = new ArrayList<>();
-        if (bodyFat == null || bodyFat.isEmpty()) return aux;
+    private static ToothLesion convertToothLesion(ToothLesionOB tP) {
+        if (tP == null) return null;
 
-        for (BodyFatOB bf : bodyFat)
-            aux.add(Convert.convertBodyFat(bf));
-        return aux;
+        ToothLesion t = new ToothLesion();
+        t.setId(tP.getId());
+        t.setToothType(tP.getToothType());
+        t.setLesionType(tP.getLesionType());
+        return t;
     }
 
-    public static OdontologicalQuestionnaireOB convertOdontologicalQuestionnaire(OdontologicalQuestionnaire o) {
-        if (o == null) return null;
+    private static List<BodyFatOB> convertListBodyFatToObjectBox(List<BodyFat> listP) {
+        List<BodyFatOB> list = new ArrayList<>();
+        if (listP == null || listP.isEmpty()) return list;
 
-        OdontologicalQuestionnaireOB oq = new OdontologicalQuestionnaireOB();
-        oq.setId(o.getId());
-        oq.set_id(o.get_id());
-        oq.setCreatedAt(o.getCreatedAt());
+        for (BodyFat bf : listP)
+            list.add(convertBodyFat(bf));
+        return list;
+    }
 
-        oq.setPatient_id(o.getPatient_id());
-        oq.setPatientId(o.getPatientId());
+    private static List<BodyFat> convertListBodyFatToModel(List<BodyFatOB> listP) {
+        List<BodyFat> list = new ArrayList<>();
+        if (listP == null || listP.isEmpty()) return list;
 
-        oq.setSociodemographicRecord(Convert.convertSociodemographicRecord(o.getSociodemographicRecord()));
-        oq.setFamilyCohesionRecord(Convert.convertFamilyCohesionRecord(o.getFamilyCohesionRecord()));
-        oq.setOralHealthRecord(Convert.convertOralHealthRecord(o.getOralHealthRecord()));
-        return oq;
+        for (BodyFatOB bf : listP)
+            list.add(convertBodyFat(bf));
+        return list;
+    }
+
+    public static OdontologicalQuestionnaireOB convertOdontologicalQuestionnaire(OdontologicalQuestionnaire oP) {
+        if (oP == null) return null;
+
+        OdontologicalQuestionnaireOB o = new OdontologicalQuestionnaireOB();
+        o.setId(oP.getId());
+        o.set_id(oP.get_id());
+        o.setCreatedAt(oP.getCreatedAt());
+
+        o.setPatient_id(oP.getPatient_id());
+        o.setPatientId(oP.getPatientId());
+
+        o.setSociodemographicRecord(convertSociodemographicRecord(oP.getSociodemographicRecord()));
+        o.setFamilyCohesionRecord(convertFamilyCohesionRecord(oP.getFamilyCohesionRecord()));
+        o.setOralHealthRecord(convertOralHealthRecord(oP.getOralHealthRecord()));
+        return o;
     }
 }

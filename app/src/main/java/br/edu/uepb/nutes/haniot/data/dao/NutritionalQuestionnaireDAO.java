@@ -54,7 +54,19 @@ public class NutritionalQuestionnaireDAO {
         return Convert.listNutritionalQuestionnaireToModel(aux);
     }
 
-    public void update(String patientId, String questionnaireId, String resourceName, Object object) {
+    public void update(long patientId, long questionnaireId, String question, Object newValue) {
+        NutritionalQuestionnaireOB q = get(patientId, questionnaireId);
+        Log.i(Repository.TAG, "update: questionnaire: " + q);
+        Log.i(Repository.TAG, "update: question: "+ question);
+        Log.i(Repository.TAG, "update: newValue: "+ newValue);
+    }
+
+    public NutritionalQuestionnaireOB get(long patient_id, long questionnaire_id) {
+        return nutritionalQuestionnaireBox.query()
+                .equal(NutritionalQuestionnaireOB_.id, questionnaire_id)
+                .equal(NutritionalQuestionnaireOB_.patientId, patient_id)
+                .build()
+                .findFirst();
     }
 
     public long save(NutritionalQuestionnaire nutritionalQuestionnaire) {

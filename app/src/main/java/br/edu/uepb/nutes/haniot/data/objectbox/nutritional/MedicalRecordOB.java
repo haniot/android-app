@@ -9,12 +9,9 @@ import io.objectbox.relation.ToMany;
 @Entity
 public class MedicalRecordOB extends ActivityHabitsRecordOB {
 
-//    @Backlink(to = "medicalRecord")
     private ToMany<ChronicDiseaseOB> chronicDiseases;
 
-    public MedicalRecordOB() {
-        super();
-    }
+    public MedicalRecordOB() { }
 
     public List<ChronicDiseaseOB> getChronicDiseases() {
         return chronicDiseases;

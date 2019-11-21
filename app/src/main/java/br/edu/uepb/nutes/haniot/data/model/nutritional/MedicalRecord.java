@@ -18,7 +18,8 @@ public class MedicalRecord extends ActivityHabitsRecord {
     @Expose()
     private List<ChronicDisease> chronicDiseases;
 
-    public MedicalRecord() { }
+    public MedicalRecord() {
+    }
 
     public List<ChronicDisease> getChronicDiseases() {
         return chronicDiseases;
@@ -61,9 +62,9 @@ public class MedicalRecord extends ActivityHabitsRecord {
 
     @Override
     public String toString() {
-        return super.toString() +
-                " MedicalRecord{" +
-                ", chronicDiseases=" + chronicDiseases +
+        return "MedicalRecord{" +
+                super.toString() +
+                "chronicDiseases=" + chronicDiseases +
                 '}';
     }
 }

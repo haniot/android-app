@@ -44,7 +44,6 @@ public class ChronicDiseaseOB {
                 "id=" + id +
                 ", type='" + type + '\'' +
                 ", diseaseHistory='" + diseaseHistory + '\'' +
-//                ", medicalRecord=" + medicalRecord +
                 '}';
     }
 }

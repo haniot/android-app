@@ -90,11 +90,7 @@ public abstract class ActivityHabitsRecord extends Sync {
 
     @Override
     public String toString() {
-        return "ActivityHabitsRecordOB{" +
-                "id=" + id +
-                ", _id='" + _id + '\'' +
-//                ", createdAt='" + createdAt + '\'' +
-//                ", patientId='" + patientId + '\'' +
-                '}';
+        return "id=" + id +
+                ", _id='" + _id + "\', ";
     }
 }
