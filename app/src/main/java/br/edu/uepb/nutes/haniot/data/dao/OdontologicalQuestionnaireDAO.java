@@ -9,13 +9,21 @@ import java.util.List;
 
 import br.edu.uepb.nutes.haniot.App;
 import br.edu.uepb.nutes.haniot.data.Convert;
+import br.edu.uepb.nutes.haniot.data.model.ActivityHabitsRecord;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
+import br.edu.uepb.nutes.haniot.data.model.odontological.FamilyCohesionRecord;
 import br.edu.uepb.nutes.haniot.data.model.odontological.OdontologicalQuestionnaire;
+import br.edu.uepb.nutes.haniot.data.model.odontological.OralHealthRecord;
+import br.edu.uepb.nutes.haniot.data.model.odontological.SociodemographicRecord;
 import br.edu.uepb.nutes.haniot.data.objectbox.odontological.OdontologicalQuestionnaireOB;
 import br.edu.uepb.nutes.haniot.data.objectbox.odontological.OdontologicalQuestionnaireOB_;
 import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import io.objectbox.Box;
 import io.objectbox.BoxStore;
+
+import static br.edu.uepb.nutes.haniot.data.model.type.OdontologicalQuestionnaireType.FAMILY_COHESION_RECORD;
+import static br.edu.uepb.nutes.haniot.data.model.type.OdontologicalQuestionnaireType.ORAL_HEALTH_RECORD;
+import static br.edu.uepb.nutes.haniot.data.model.type.OdontologicalQuestionnaireType.SOCIODEMOGRAPHIC_RECORD;
 
 public class OdontologicalQuestionnaireDAO {
 
@@ -43,7 +51,29 @@ public class OdontologicalQuestionnaireDAO {
         return Convert.listOdontologicalQuestionnaireToModel(aux);
     }
 
-    public void update(String patientId, String questionnaireId, String resourceName, Object object) {
+    public void update(long questionnaireId, String question, ActivityHabitsRecord newValue) {
+        OdontologicalQuestionnaireOB o = get(questionnaireId);
+        if (o == null) return;
+
+        switch (question) {
+            case SOCIODEMOGRAPHIC_RECORD:
+                o.setSociodemographicRecord(Convert.sociodemographicRecord((SociodemographicRecord) newValue));
+                break;
+            case FAMILY_COHESION_RECORD:
+                o.setFamilyCohesionRecord(Convert.familyCohesionRecord((FamilyCohesionRecord) newValue));
+                break;
+            case ORAL_HEALTH_RECORD:
+                o.setOralHealthRecord(Convert.oralHealthRecord((OralHealthRecord) newValue));
+                break;
+        }
+        odontologicalQuestionnaireBox.put(o);
+    }
+
+    private OdontologicalQuestionnaireOB get(long id) {
+        return odontologicalQuestionnaireBox.query()
+                .equal(OdontologicalQuestionnaireOB_.id, id)
+                .build()
+                .findFirst();
     }
 
     public long save(OdontologicalQuestionnaire odontologicalQuestionnaire) {

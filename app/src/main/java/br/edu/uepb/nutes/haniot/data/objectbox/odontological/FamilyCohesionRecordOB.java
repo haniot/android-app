@@ -1,18 +1,10 @@
 package br.edu.uepb.nutes.haniot.data.objectbox.odontological;
 
-import br.edu.uepb.nutes.haniot.data.model.odontological.FamilyCohesionRecord;
+import br.edu.uepb.nutes.haniot.data.objectbox.ActivityHabitsRecordOB;
 import io.objectbox.annotation.Entity;
-import io.objectbox.annotation.Id;
-import io.objectbox.annotation.Index;
 
 @Entity
-public class FamilyCohesionRecordOB {
-
-    @Id
-    private long id;
-
-    @Index
-    private String _id;
+public class FamilyCohesionRecordOB  extends ActivityHabitsRecordOB {
 
     private String familyMutualAidFreq;
 
@@ -37,22 +29,6 @@ public class FamilyCohesionRecordOB {
     private int familyCohesionResult;
 
     public FamilyCohesionRecordOB() {}
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public String get_id() {
-        return _id;
-    }
-
-    public void set_id(String _id) {
-        this._id = _id;
-    }
 
     public String getFamilyMutualAidFreq() {
         return familyMutualAidFreq;
@@ -145,9 +121,8 @@ public class FamilyCohesionRecordOB {
     @Override
     public String toString() {
         return "FamilyCohesionRecordOB{" +
-                "id=" + id +
-                ", _id='" + _id + '\'' +
-                ", familyMutualAidFreq='" + familyMutualAidFreq + '\'' +
+                super.toString() +
+                "familyMutualAidFreq='" + familyMutualAidFreq + '\'' +
                 ", friendshipApprovalFreq='" + friendshipApprovalFreq + '\'' +
                 ", familyOnlyTaskFreq='" + familyOnlyTaskFreq + '\'' +
                 ", familyOnlyPreferenceFreq='" + familyOnlyPreferenceFreq + '\'' +

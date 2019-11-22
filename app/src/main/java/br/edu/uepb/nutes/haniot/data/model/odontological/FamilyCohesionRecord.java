@@ -7,14 +7,9 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class FamilyCohesionRecord {
+import br.edu.uepb.nutes.haniot.data.model.ActivityHabitsRecord;
 
-    @Expose(serialize = false, deserialize = false)
-    private long id;
-
-    @SerializedName("id")
-    @Expose()
-    private String _id;
+public class FamilyCohesionRecord extends ActivityHabitsRecord {
 
 //    @Expose(serialize = false, deserialize = false)
 //    private String patientId;
@@ -68,22 +63,6 @@ public class FamilyCohesionRecord {
     private int familyCohesionResult;
 
     public FamilyCohesionRecord() {
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public String get_id() {
-        return _id;
-    }
-
-    public void set_id(String _id) {
-        this._id = _id;
     }
 
     public String getFamilyMutualAidFreq() {
@@ -197,11 +176,8 @@ public class FamilyCohesionRecord {
     @Override
     public String toString() {
         return "FamilyCohesionRecordOB{" +
-                "id=" + id +
-                ", _id='" + _id + '\'' +
-//                ", patientId='" + patientId + '\'' +
-//                ", createdAt='" + createdAt + '\'' +
-                ", familyMutualAidFreq='" + familyMutualAidFreq + '\'' +
+                super.toString() +
+                "familyMutualAidFreq='" + familyMutualAidFreq + '\'' +
                 ", friendshipApprovalFreq='" + friendshipApprovalFreq + '\'' +
                 ", familyOnlyTaskFreq='" + familyOnlyTaskFreq + '\'' +
                 ", familyOnlyPreferenceFreq='" + familyOnlyPreferenceFreq + '\'' +

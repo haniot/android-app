@@ -7,21 +7,9 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class SociodemographicRecord {
+import br.edu.uepb.nutes.haniot.data.model.ActivityHabitsRecord;
 
-    @Expose(serialize = false, deserialize = false)
-    private long id;
-
-    @SerializedName("id")
-    @Expose()
-    private String _id;
-
-//    @Expose(serialize = false, deserialize = false)
-//    private String patientId;
-//
-//    @SerializedName("created_at")
-//    @Expose(serialize = false)
-//    private String createdAt;
+public class SociodemographicRecord extends ActivityHabitsRecord {
 
     @SerializedName("color_race")
     @Expose()
@@ -37,30 +25,6 @@ public class SociodemographicRecord {
 
     public SociodemographicRecord() {
     }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String get_id() {
-        return _id;
-    }
-
-    public void set_id(String _id) {
-        this._id = _id;
-    }
-
-//    public String getCreatedAt() {
-//        return createdAt;
-//    }
-//
-//    public void setCreatedAt(String createdAt) {
-//        this.createdAt = createdAt;
-//    }
 
     public String getColorRace() {
         return colorRace;
@@ -109,11 +73,8 @@ public class SociodemographicRecord {
     @Override
     public String toString() {
         return "SociodemographicRecordOB{" +
-                "id=" + id +
-                ", _id='" + _id + '\'' +
-//                ", patientId='" + patientId + '\'' +
-//                ", createdAt='" + createdAt + '\'' +
-                ", colorRace='" + colorRace + '\'' +
+                super.toString() +
+                "colorRace='" + colorRace + '\'' +
                 ", motherScholarity='" + motherScholarity + '\'' +
                 ", peopleInHome=" + peopleInHome +
                 '}';

@@ -185,7 +185,8 @@ public class HistoricQuizAdapter extends CustomExpandableRecyclerViewAdapter<His
         h.messageText.setVisibility(View.VISIBLE);
 
         h.checkItem.setOnClickListener(v -> {
-            mListener.onAddItemClick(ig.getTitle(), ig.getTypeEvaluation(), ((GroupItemEvaluation) group).getIdGroup());
+            mListener.onAddItemClick(ig.getTitle(), ig.getTypeEvaluation(),
+                    ((GroupItemEvaluation) group).get_idGroup(), ((GroupItemEvaluation) group).getIdGroup());
         });
         StringBuilder stringBuilder = new StringBuilder();
 
@@ -409,7 +410,7 @@ public class HistoricQuizAdapter extends CustomExpandableRecyclerViewAdapter<His
     public interface OnClick {
         void onAddItemClick(String name, int type);
 
-        void onAddItemClick(String name, int type, String idQuiz);
+        void onAddItemClick(String name, int type, String _idQuiz, long idQuiz);
 
         void onSelectClick(ItemEvaluation itemEvaluation, String idQuiz);
     }

@@ -84,7 +84,7 @@ public class Convert {
         return list;
     }
 
-    private static FeedingHabitsRecord convertFeedingHabitsRecord(FeedingHabitsRecordOB fP) {
+    public static FeedingHabitsRecord feedingHabitsRecord(FeedingHabitsRecordOB fP) {
         if (fP == null) return null;
 
         FeedingHabitsRecord fh = new FeedingHabitsRecord();
@@ -98,7 +98,7 @@ public class Convert {
         return fh;
     }
 
-    private static FeedingHabitsRecordOB convertFeedingHabitsRecord(FeedingHabitsRecord fP) {
+    public static FeedingHabitsRecordOB feedingHabitsRecord(FeedingHabitsRecord fP) {
         if (fP == null) return null;
 
         FeedingHabitsRecordOB fh = new FeedingHabitsRecordOB();
@@ -277,7 +277,7 @@ public class Convert {
         return h;
     }
 
-    private static MedicalRecord convertMedicalRecord(MedicalRecordOB mP) {
+    public static MedicalRecord medicalRecord(MedicalRecordOB mP) {
         if (mP == null) return null;
 
         MedicalRecord m = new MedicalRecord();
@@ -287,7 +287,7 @@ public class Convert {
         return m;
     }
 
-    private static MedicalRecordOB convertMedicalRecord(MedicalRecord mP) {
+    public static MedicalRecordOB medicalRecord(MedicalRecord mP) {
         if (mP == null) return null;
 
         MedicalRecordOB m = new MedicalRecordOB();
@@ -335,7 +335,7 @@ public class Convert {
         return c;
     }
 
-    public static Patient convertPatient(PatientOB pP) {
+    public static Patient patient(PatientOB pP) {
         if (pP == null) return null;
 
         Patient p = new Patient();
@@ -362,7 +362,7 @@ public class Convert {
         return p;
     }
 
-    public static PatientOB convertPatient(Patient pP) {
+    public static PatientOB patient(Patient pP) {
         if (pP == null) return null;
 
         PatientOB p = new PatientOB();
@@ -394,11 +394,11 @@ public class Convert {
         if (listP == null || listP.isEmpty()) return list;
 
         for (PatientOB p : listP)
-            list.add(convertPatient(p));
+            list.add(patient(p));
         return list;
     }
 
-    private static PhysicalActivityHabitOB convertPhysicalActivityHabit(PhysicalActivityHabit pP) {
+    public static PhysicalActivityHabitOB physicalActivityHabit(PhysicalActivityHabit pP) {
         if (pP == null) return null;
 
         PhysicalActivityHabitOB p = new PhysicalActivityHabitOB();
@@ -409,7 +409,7 @@ public class Convert {
         return p;
     }
 
-    private static PhysicalActivityHabit convertPhysicalActivityHabit(PhysicalActivityHabitOB pP) {
+    public static PhysicalActivityHabit physicalActivityHabit(PhysicalActivityHabitOB pP) {
         if (pP == null) return null;
 
         PhysicalActivityHabit p = new PhysicalActivityHabit();
@@ -420,7 +420,7 @@ public class Convert {
         return p;
     }
 
-    private static SleepHabitOB convertSleepHabit(SleepHabit sP) {
+    public static SleepHabitOB sleepHabit(SleepHabit sP) {
         if (sP == null) return null;
 
         SleepHabitOB s = new SleepHabitOB();
@@ -431,7 +431,7 @@ public class Convert {
         return s;
     }
 
-    private static SleepHabit convertSleepHabit(SleepHabitOB sP) {
+    public static SleepHabit sleepHabit(SleepHabitOB sP) {
         if (sP == null) return null;
 
         SleepHabit s = new SleepHabit();
@@ -447,11 +447,11 @@ public class Convert {
         if (listP == null || listP.isEmpty()) return list;
 
         for (NutritionalQuestionnaireOB questionnaire : listP)
-            list.add(convertNutritionalQuestionnaire(questionnaire));
+            list.add(nutritionalQuestionnaire(questionnaire));
         return list;
     }
 
-    private static NutritionalQuestionnaire convertNutritionalQuestionnaire(NutritionalQuestionnaireOB nP) {
+    private static NutritionalQuestionnaire nutritionalQuestionnaire(NutritionalQuestionnaireOB nP) {
         if (nP == null) return null;
 
         NutritionalQuestionnaire n = new NutritionalQuestionnaire();
@@ -461,14 +461,14 @@ public class Convert {
         n.setPatient_id(nP.getPatient_id());
         n.setPatientId(nP.getPatientId());
         n.setCreatedAt(nP.getCreatedAt());
-        n.setSleepHabit(convertSleepHabit(nP.getSleepHabit()));
-        n.setPhysicalActivityHabit(convertPhysicalActivityHabit(nP.getPhysicalActivityHabit()));
-        n.setFeedingHabitsRecord(convertFeedingHabitsRecord(nP.getFeedingHabitsRecord()));
-        n.setMedicalRecord(convertMedicalRecord(nP.getMedicalRecord()));
+        n.setSleepHabit(sleepHabit(nP.getSleepHabit()));
+        n.setPhysicalActivityHabit(physicalActivityHabit(nP.getPhysicalActivityHabit()));
+        n.setFeedingHabitsRecord(feedingHabitsRecord(nP.getFeedingHabitsRecord()));
+        n.setMedicalRecord(medicalRecord(nP.getMedicalRecord()));
         return n;
     }
 
-    public static NutritionalQuestionnaireOB convertNutritionalQuestionnaire(NutritionalQuestionnaire nP) {
+    public static NutritionalQuestionnaireOB nutritionalQuestionnaire(NutritionalQuestionnaire nP) {
         if (nP == null) return null;
 
         NutritionalQuestionnaireOB n = new NutritionalQuestionnaireOB();
@@ -478,14 +478,14 @@ public class Convert {
         n.setPatient_id(nP.getPatient_id());
         n.setPatientId(nP.getPatientId());
         n.setCreatedAt(nP.getCreatedAt());
-        n.setSleepHabit(convertSleepHabit(nP.getSleepHabit()));
-        n.setPhysicalActivityHabit(convertPhysicalActivityHabit(nP.getPhysicalActivityHabit()));
-        n.setFeedingHabitsRecord(convertFeedingHabitsRecord(nP.getFeedingHabitsRecord()));
-        n.setMedicalRecord(convertMedicalRecord(nP.getMedicalRecord()));
+        n.setSleepHabit(sleepHabit(nP.getSleepHabit()));
+        n.setPhysicalActivityHabit(physicalActivityHabit(nP.getPhysicalActivityHabit()));
+        n.setFeedingHabitsRecord(feedingHabitsRecord(nP.getFeedingHabitsRecord()));
+        n.setMedicalRecord(medicalRecord(nP.getMedicalRecord()));
         return n;
     }
 
-    private static SociodemographicRecordOB convertSociodemographicRecord(SociodemographicRecord sP) {
+    public static SociodemographicRecordOB sociodemographicRecord(SociodemographicRecord sP) {
         if (sP == null) return null;
 
         SociodemographicRecordOB s = new SociodemographicRecordOB();
@@ -497,7 +497,7 @@ public class Convert {
         return s;
     }
 
-    private static SociodemographicRecord convertSociodemographicRecord(SociodemographicRecordOB sP) {
+    public static SociodemographicRecord sociodemographicRecord(SociodemographicRecordOB sP) {
         if (sP == null) return null;
 
         SociodemographicRecord s = new SociodemographicRecord();
@@ -527,13 +527,13 @@ public class Convert {
         o.setCreatedAt(oP.getCreatedAt());
         o.setPatient_id(oP.getPatient_id());
         o.setPatientId(oP.getPatientId());
-        o.setSociodemographicRecord(convertSociodemographicRecord(oP.getSociodemographicRecord()));
-        o.setFamilyCohesionRecord(convertFamilyCohesionRecord(oP.getFamilyCohesionRecord()));
-        o.setOralHealthRecord(convertOralHealthRecord(oP.getOralHealthRecord()));
+        o.setSociodemographicRecord(sociodemographicRecord(oP.getSociodemographicRecord()));
+        o.setFamilyCohesionRecord(familyCohesionRecord(oP.getFamilyCohesionRecord()));
+        o.setOralHealthRecord(oralHealthRecord(oP.getOralHealthRecord()));
         return o;
     }
 
-    private static FamilyCohesionRecordOB convertFamilyCohesionRecord(FamilyCohesionRecord fP) {
+    public static FamilyCohesionRecordOB familyCohesionRecord(FamilyCohesionRecord fP) {
         if (fP == null) return null;
 
         FamilyCohesionRecordOB f = new FamilyCohesionRecordOB();
@@ -553,7 +553,7 @@ public class Convert {
         return f;
     }
 
-    private static FamilyCohesionRecord convertFamilyCohesionRecord(FamilyCohesionRecordOB fP) {
+    public static FamilyCohesionRecord familyCohesionRecord(FamilyCohesionRecordOB fP) {
         if (fP == null) return null;
 
         FamilyCohesionRecord f = new FamilyCohesionRecord();
@@ -573,7 +573,7 @@ public class Convert {
         return f;
     }
 
-    private static OralHealthRecordOB convertOralHealthRecord(OralHealthRecord oP) {
+    public static OralHealthRecordOB oralHealthRecord(OralHealthRecord oP) {
         if (oP == null) return null;
 
         OralHealthRecordOB o = new OralHealthRecordOB();
@@ -584,7 +584,7 @@ public class Convert {
         return o;
     }
 
-    private static OralHealthRecord convertOralHealthRecord(OralHealthRecordOB oP) {
+    public static OralHealthRecord oralHealthRecord(OralHealthRecordOB oP) {
         if (oP == null) return null;
 
         OralHealthRecord o = new OralHealthRecord();
@@ -662,9 +662,9 @@ public class Convert {
         o.setPatient_id(oP.getPatient_id());
         o.setPatientId(oP.getPatientId());
 
-        o.setSociodemographicRecord(convertSociodemographicRecord(oP.getSociodemographicRecord()));
-        o.setFamilyCohesionRecord(convertFamilyCohesionRecord(oP.getFamilyCohesionRecord()));
-        o.setOralHealthRecord(convertOralHealthRecord(oP.getOralHealthRecord()));
+        o.setSociodemographicRecord(sociodemographicRecord(oP.getSociodemographicRecord()));
+        o.setFamilyCohesionRecord(familyCohesionRecord(oP.getFamilyCohesionRecord()));
+        o.setOralHealthRecord(oralHealthRecord(oP.getOralHealthRecord()));
         return o;
     }
 }

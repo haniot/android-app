@@ -1,17 +1,10 @@
 package br.edu.uepb.nutes.haniot.data.objectbox.odontological;
 
+import br.edu.uepb.nutes.haniot.data.objectbox.ActivityHabitsRecordOB;
 import io.objectbox.annotation.Entity;
-import io.objectbox.annotation.Id;
-import io.objectbox.annotation.Index;
 
 @Entity
-public class SociodemographicRecordOB {
-
-    @Id
-    private long id;
-
-    @Index
-    private String _id;
+public class SociodemographicRecordOB extends ActivityHabitsRecordOB {
 
     private String colorRace;
 
@@ -20,22 +13,6 @@ public class SociodemographicRecordOB {
     private int peopleInHome;
 
     public SociodemographicRecordOB() {}
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String get_id() {
-        return _id;
-    }
-
-    public void set_id(String _id) {
-        this._id = _id;
-    }
 
     public String getColorRace() {
         return colorRace;
@@ -76,9 +53,8 @@ public class SociodemographicRecordOB {
     @Override
     public String toString() {
         return "SociodemographicRecordOB{" +
-                "id=" + id +
-                ", _id='" + _id + '\'' +
-                ", colorRace='" + colorRace + '\'' +
+                super.toString() +
+                "colorRace='" + colorRace + '\'' +
                 ", motherScholarity='" + motherScholarity + '\'' +
                 ", peopleInHome=" + peopleInHome +
                 '}';

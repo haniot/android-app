@@ -60,14 +60,14 @@ public class NutritionalEvaluation extends Sync {
 //    public NutritionalEvaluation(NutritionalEvaluationOB n) {
 //        this.setId(n.getId());
 //        this.set_id(n.get_id());
-//        this.setPatient(Convert.convertPatient(n.getPatientOB().getTarget()));
+//        this.setPatient(Convert.patient(n.getPatientOB().getTarget()));
 //        this.setHealthProfessionalId(n.getHealthProfessionalId());
 //        this.setPilotStudy(n.getPilotStudy());
 //        this.setMeasurements(Convert.listMeasurementsToModel(n.getMeasurements()));
-//        this.setFeedingHabits(Convert.convertFeedingHabitsRecord(n.getFeedingHabits().getTarget()));
-//        this.setSleepHabits(Convert.convertSleepHabit(n.getSleepHabits().getTarget()));
-//        this.setPhysicalActivityHabits(Convert.convertPhysicalActivityHabit(n.getPhysicalActivityHabits().getTarget()));
-//        this.setMedicalRecord(Convert.convertMedicalRecord(n.getMedicalRecord().getTarget()));
+//        this.setFeedingHabits(Convert.feedingHabitsRecord(n.getFeedingHabits().getTarget()));
+//        this.setSleepHabits(Convert.sleepHabit(n.getSleepHabits().getTarget()));
+//        this.setPhysicalActivityHabits(Convert.physicalActivityHabit(n.getPhysicalActivityHabits().getTarget()));
+//        this.setMedicalRecord(Convert.medicalRecord(n.getMedicalRecord().getTarget()));
 //    }
 
     public long getId() {

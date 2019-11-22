@@ -544,19 +544,22 @@ public class Repository extends RepositoryOn {
 
     public Single<Object> updateNutritionalQuestionnaire(Patient patient, NutritionalQuestionnaire questionnaire, String question, ActivityHabitsRecord newValue) {
         Log.i(TAG, "updateNutritionalQuestionnaire: ");
-        if (ConnectionUtils.internetIsEnabled(mContext)) {
+
+        if (questionnaire.get_id() == null) { // ainda tá off
+            nutritionalQuestionnaireDAO.update(questionnaire.getId(), question, newValue); // pra atualizar OFF tem que ser id long
+
+            if (ConnectionUtils.internetIsEnabled(mContext))
+                syncronize();
+
+            return Single.just(newValue);
+        } else { // so on
             return haniotNetRepository.updateNutritionalQuestionnaire(patient.get_id(), questionnaire.get_id(), question, newValue)
                     .map(o -> {
                         syncronize();
                         return o;
                     });
-        } else {
-            nutritionalQuestionnaireDAO.update(patient.getId(), questionnaire.getId(), question, newValue); // pra atualizar OFF tem que ser id long
-            return Single.just(newValue); // VERIFICAR
         }
     }
-
-    // --------------- Odontological Questionnaire -------------------------------
 
     public Single<List<OdontologicalQuestionnaire>> getAllOdontologicalQuestionnaires(String patientId, int page, int limit, String sort) {
         Log.i(TAG, "getAllOdontologicalQuestionnaires: ");
@@ -582,29 +585,18 @@ public class Repository extends RepositoryOn {
         return Single.just(odontologicalQuestionnaire);
     }
 
-    public Single<Object> updateOdontologicalQuestionnaire(String patientId, String questionnaireId, String resourceName, Object object) {
+    public Single<Object> updateOdontologicalQuestionnaire(Patient patient, OdontologicalQuestionnaire questionnaire, String question, ActivityHabitsRecord newValue) {
         Log.i(TAG, "updateOdontologicalQuestionnaire: ");
-        if (ConnectionUtils.internetIsEnabled(mContext)) {
-            return haniotNetRepository.updateOdontologicalQuestionnaire(patientId, questionnaireId, resourceName, object)
+
+        if (questionnaire.get_id() == null) {
+            odontologicalQuestionnaireDAO.update(questionnaire.getId(), question, newValue);
+            return Single.just(newValue);
+        } else {
+            return haniotNetRepository.updateOdontologicalQuestionnaire(patient.get_id(), questionnaire.get_id(), question, newValue)
                     .map(o -> {
                         syncronize();
                         return o;
                     });
-        } else {
-            odontologicalQuestionnaireDAO.update(patientId, questionnaireId, resourceName, object);
-            return (null); // VERIFICAR
         }
-    }
-
-    // -------- UNUSED ------------------------
-
-    /**
-     * Selects user based on local id
-     *
-     * @param _id String
-     * @return UserOB
-     */
-    public User getUser(@NonNull String _id) {
-        return null;
     }
 }

@@ -51,7 +51,7 @@ public class PatientDAO {
                     .build()
                     .findFirst();
         }
-        return Convert.convertPatient(aux);
+        return Convert.patient(aux);
     }
 
     public Patient getBy_id(@NonNull String _id) {
@@ -59,11 +59,11 @@ public class PatientDAO {
                 .equal(PatientOB_._id, _id)
                 .build()
                 .findFirst();
-        return Convert.convertPatient(aux);
+        return Convert.patient(aux);
     }
 
     public long save(@NonNull Patient patient) {
-        return patientBox.put(Convert.convertPatient(patient));
+        return patientBox.put(Convert.patient(patient));
     }
 
     public long update(@NonNull Patient patient) {

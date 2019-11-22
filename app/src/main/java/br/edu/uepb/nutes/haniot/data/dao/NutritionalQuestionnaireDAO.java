@@ -5,18 +5,26 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.App;
 import br.edu.uepb.nutes.haniot.data.Convert;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
+import br.edu.uepb.nutes.haniot.data.model.nutritional.FeedingHabitsRecord;
+import br.edu.uepb.nutes.haniot.data.model.nutritional.MedicalRecord;
 import br.edu.uepb.nutes.haniot.data.model.nutritional.NutritionalQuestionnaire;
+import br.edu.uepb.nutes.haniot.data.model.nutritional.PhysicalActivityHabit;
+import br.edu.uepb.nutes.haniot.data.model.nutritional.SleepHabit;
 import br.edu.uepb.nutes.haniot.data.objectbox.nutritional.NutritionalQuestionnaireOB;
 import br.edu.uepb.nutes.haniot.data.objectbox.nutritional.NutritionalQuestionnaireOB_;
 import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import io.objectbox.Box;
 import io.objectbox.BoxStore;
+
+import static br.edu.uepb.nutes.haniot.data.model.type.NutritionalQuestionnaireType.FEEDING_HABITS_RECORD;
+import static br.edu.uepb.nutes.haniot.data.model.type.NutritionalQuestionnaireType.MEDICAL_RECORDS;
+import static br.edu.uepb.nutes.haniot.data.model.type.NutritionalQuestionnaireType.PHYSICAL_ACTIVITY_HABITS;
+import static br.edu.uepb.nutes.haniot.data.model.type.NutritionalQuestionnaireType.SLEEP_HABIT;
 
 public class NutritionalQuestionnaireDAO {
 
@@ -54,23 +62,44 @@ public class NutritionalQuestionnaireDAO {
         return Convert.listNutritionalQuestionnaireToModel(aux);
     }
 
-    public void update(long patientId, long questionnaireId, String question, Object newValue) {
-        NutritionalQuestionnaireOB q = get(patientId, questionnaireId);
+    public void update(long questionnaireId, String question, Object newValue) {
+        NutritionalQuestionnaireOB q = get(questionnaireId);
         Log.i(Repository.TAG, "update: questionnaire: " + q);
         Log.i(Repository.TAG, "update: question: "+ question);
         Log.i(Repository.TAG, "update: newValue: "+ newValue);
+
+        if (q == null) return;
+
+        switch (question) {
+            case SLEEP_HABIT:
+                if (newValue instanceof SleepHabit)
+                    q.setSleepHabit(Convert.sleepHabit((SleepHabit) newValue));
+                break;
+            case FEEDING_HABITS_RECORD:
+                if (newValue instanceof FeedingHabitsRecord)
+                    q.setFeedingHabitsRecord(Convert.feedingHabitsRecord((FeedingHabitsRecord) newValue));
+                break;
+            case MEDICAL_RECORDS:
+                if (newValue instanceof MedicalRecord)
+                    q.setMedicalRecord(Convert.medicalRecord((MedicalRecord) newValue));
+                break;
+            case PHYSICAL_ACTIVITY_HABITS:
+                if (newValue instanceof PhysicalActivityHabit)
+                    q.setPhysicalActivityHabit(Convert.physicalActivityHabit((PhysicalActivityHabit) newValue));
+                break;
+        }
+        nutritionalQuestionnaireBox.put(q);
     }
 
-    public NutritionalQuestionnaireOB get(long patient_id, long questionnaire_id) {
+    public NutritionalQuestionnaireOB get(long questionnaireId) {
         return nutritionalQuestionnaireBox.query()
-                .equal(NutritionalQuestionnaireOB_.id, questionnaire_id)
-                .equal(NutritionalQuestionnaireOB_.patientId, patient_id)
+                .equal(NutritionalQuestionnaireOB_.id, questionnaireId)
                 .build()
                 .findFirst();
     }
 
     public long save(NutritionalQuestionnaire nutritionalQuestionnaire) {
-        return nutritionalQuestionnaireBox.put(Convert.convertNutritionalQuestionnaire(nutritionalQuestionnaire));
+        return nutritionalQuestionnaireBox.put(Convert.nutritionalQuestionnaire(nutritionalQuestionnaire));
     }
 
     public List<NutritionalQuestionnaire> getAllNotSync() {

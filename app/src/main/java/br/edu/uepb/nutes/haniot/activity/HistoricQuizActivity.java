@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +28,7 @@ import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.model.type.TypeEvaluation;
 import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
+import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -132,7 +134,6 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
         }
     }
 
-
     /**
      * Initialize toolbar.
      */
@@ -152,7 +153,6 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
     /**
      * Download data listNutritional from the server.
      */
-
     private void downloadData() {
         if (user.getUserType().equals(ADMIN) || !user.getHealthArea().equals(DENTISTRY)) {
             mComposite.add(mRepository
@@ -215,10 +215,9 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
         itemEvaluations.add(itemEvaluation);
 
         GroupItemEvaluation groupItemEvaluation = new GroupItemEvaluation(DateUtils.convertDateTimeUTCToLocale(nutritionalQuestionnaire.getCreatedAt(), getString(R.string.datetime_format)),
-                itemEvaluations, 1000, nutritionalQuestionnaire.get_id());
+                itemEvaluations, 1000, nutritionalQuestionnaire.get_id(), nutritionalQuestionnaire.getId());
 
         groupItemNutritionEvaluations.add(groupItemEvaluation);
-
     }
 
 
@@ -249,10 +248,9 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
 
 
         GroupItemEvaluation groupItemEvaluation = new GroupItemEvaluation("Respondido em " + DateUtils.convertDateTimeUTCToLocale(odontologicalQuestionnaire.getCreatedAt(), getString(R.string.datetime_format)),
-                itemEvaluations, 1000, odontologicalQuestionnaire.get_id());
+                itemEvaluations, 1000, odontologicalQuestionnaire.get_id(), odontologicalQuestionnaire.getId());
 
         groupItemOdontologicalEvaluations.add(groupItemEvaluation);
-
     }
 
     private void setNutritionalGroups(List<NutritionalQuestionnaire> nutritionalQuestionnaires) {
@@ -283,31 +281,31 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
         initRecyclerView();
     }
 
-    /**
-     * Show error.
-     *
-     * @param
-     */
-    private void onDownloadError(int type) {
-        GroupItemEvaluation groupItemEvaluation = getEvaluationGroupByType(type);
-        if (groupItemEvaluation == null) return;
-        groupItemEvaluation.getItems().get(0).setTypeHeader(TYPE_ERROR);
-    }
+//    /**
+//     * Show error.
+//     *
+//     * @param
+//     */
+//    private void onDownloadError(int type) {
+//        GroupItemEvaluation groupItemEvaluation = getEvaluationGroupByType(type);
+//        if (groupItemEvaluation == null) return;
+//        groupItemEvaluation.getItems().get(0).setTypeHeader(TYPE_ERROR);
+//    }
 
-    /**
-     * Get get listNutritional group object by type.
-     *
-     * @param type
-     * @return
-     */
-    private GroupItemEvaluation getEvaluationGroupByType(int type) {
-        for (GroupItemEvaluation groupItemEvaluation : groupItemNutritionEvaluations) {
-            if (groupItemEvaluation.getType() == type) {
-                return groupItemEvaluation;
-            }
-        }
-        return null;
-    }
+//    /**
+//     * Get get listNutritional group object by type.
+//     *
+//     * @param type
+//     * @return
+//     */
+//    private GroupItemEvaluation getEvaluationGroupByType(int type) {
+//        for (GroupItemEvaluation groupItemEvaluation : groupItemNutritionEvaluations) {
+//            if (groupItemEvaluation.getType() == type) {
+//                return groupItemEvaluation;
+//            }
+//        }
+//        return null;
+//    }
 
     /**
      * Show recyclerview items in prepareItems mode.
@@ -374,7 +372,7 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
     }
 
     @Override
-    public void onAddItemClick(String name, int type, String idQuiz) {
+    public void onAddItemClick(String name, int type, String _idQuiz, long idQuiz) {
         Intent intent = null;
 
         switch (type) {
@@ -408,9 +406,13 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
                 break;
         }
         if (intent != null) {
-            intent.putExtra("_idUpdate", idQuiz);
-//            intent.putExtra("id", )
-            startActivity(intent);
+            if (_idQuiz != null && !ConnectionUtils.internetIsEnabled(this)) {
+                Toast.makeText(this, getString(R.string.connect_network_try_again), Toast.LENGTH_SHORT).show();
+            } else {
+                intent.putExtra("_idUpdate", _idQuiz);
+                intent.putExtra("idUpdate", idQuiz);
+                startActivity(intent);
+            }
         }
     }
 

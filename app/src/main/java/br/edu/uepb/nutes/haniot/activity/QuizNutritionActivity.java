@@ -92,7 +92,7 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
 
         checkpoint = getIntent().getIntExtra("checkpoint", -1);
         _idQuestionnaireUpdate = getIntent().getStringExtra("_idUpdate");
-//        idQuestionnaireUpdate = getIntent().getLongExtra("idUpdate");
+        idQuestionnaireUpdate = getIntent().getLongExtra("idUpdate", 0);
         setMessageBlocked(getResources().getString(R.string.not_answered));
         // Animation
         setFadeAnimation();
@@ -267,7 +267,6 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
                 .nextQuestionAuto()
                 .pageNumber(21)
                 .build());
-
     }
 
     private void addFeedingHabitsPages() {
@@ -532,7 +531,6 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
                 .nextQuestionAuto()
                 .pageNumber(5)
                 .build());
-
     }
 
     private void addSleepHabitsPages() {
@@ -599,7 +597,6 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
                 .nextQuestionAuto()
                 .pageNumber(FIRST_PAGE)
                 .build());
-
     }
 
     private void addEndPage() {
@@ -735,7 +732,7 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
             n.set_id(_idQuestionnaireUpdate);
             n.setId(idQuestionnaireUpdate);
 
-            if (_idQuestionnaireUpdate != null) {
+            if (_idQuestionnaireUpdate != null || idQuestionnaireUpdate != 0) {
                 mComposite.add(mRepository
                         // resourceToUpdate = sleepHabit || ...
                         .updateNutritionalQuestionnaire(patient, n, updateType, resourceToUpdate)

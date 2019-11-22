@@ -7,16 +7,18 @@ import java.util.List;
 public class GroupItemEvaluation extends ExpandableGroup<ItemEvaluation> {
 
     private int type;
-    private String idGroup;
+    private String _idGroup;
+    private long idGroup;
 
     public GroupItemEvaluation(String title, List<ItemEvaluation> items, int type) {
         super(title, items);
         this.type = type;
     }
 
-    public GroupItemEvaluation(String title, List<ItemEvaluation> items, int type, String idGroup) {
+    public GroupItemEvaluation(String title, List<ItemEvaluation> items, int type, String _idGroup, long idGroup) {
         super(title, items);
         this.type = type;
+        this._idGroup = _idGroup;
         this.idGroup = idGroup;
     }
 
@@ -28,11 +30,19 @@ public class GroupItemEvaluation extends ExpandableGroup<ItemEvaluation> {
         this.type = type;
     }
 
-    public String getIdGroup() {
+    public String get_idGroup() {
+        return _idGroup;
+    }
+
+    public void set_idGroup(String _idGroup) {
+        this._idGroup = _idGroup;
+    }
+
+    public long getIdGroup() {
         return idGroup;
     }
 
-    public void setIdGroup(String idGroup) {
+    public void setIdGroup(long idGroup) {
         this.idGroup = idGroup;
     }
 }

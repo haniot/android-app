@@ -63,7 +63,7 @@ public class Session {
      * @return UserOB
      */
     public User getUserLogged() {
-        return Repository.getInstance(context).getUser(get_idLogged());
+        return new User();
     }
 
     /**

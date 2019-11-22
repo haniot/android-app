@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.R;
+import br.edu.uepb.nutes.haniot.data.model.ActivityHabitsRecord;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.odontological.FamilyCohesionRecord;
 import br.edu.uepb.nutes.haniot.data.model.odontological.OdontologicalQuestionnaire;
@@ -72,8 +73,9 @@ public class QuizOdontologyActivity extends SimpleSurvey implements Infor.OnInfo
     private OdontologicalQuestionnaire odontologicalQuestionnaire;
     int checkpoint;
     private String updateType;
-    private String idUpdate;
-    private Object resourceToUpdate;
+    private String _idUpdate;
+    private long idUpdate;
+    private ActivityHabitsRecord resourceToUpdate;
 
     /**
      * Init view.
@@ -83,7 +85,8 @@ public class QuizOdontologyActivity extends SimpleSurvey implements Infor.OnInfo
         initResources();
 
         checkpoint = getIntent().getIntExtra("checkpoint", -1);
-        idUpdate = getIntent().getStringExtra("idUpdate");
+        _idUpdate = getIntent().getStringExtra("_idUpdate");
+        idUpdate = getIntent().getLongExtra("idUpate", 0);
         setMessageBlocked(getResources().getString(R.string.not_answered));
 
         // Animation
@@ -643,9 +646,13 @@ public class QuizOdontologyActivity extends SimpleSurvey implements Infor.OnInfo
             printJson();
 
             Log.w("AAA", "id: " + idUpdate);
-            if (idUpdate != null) {
+            if (_idUpdate != null || idUpdate != 0) {
+                OdontologicalQuestionnaire odonto = new OdontologicalQuestionnaire();
+                odonto.setId(idUpdate);
+                odonto.set_id(_idUpdate);
+
                 mComposite.add(mRepository
-                        .updateOdontologicalQuestionnaire(patient.get_id(), idUpdate, updateType, resourceToUpdate)
+                        .updateOdontologicalQuestionnaire(patient, odonto, updateType, resourceToUpdate)
                         .subscribe(o -> {
                             dialog.cancel();
                             AlertDialog.Builder builder = new AlertDialog.Builder(this);

@@ -111,10 +111,10 @@ public class NutritionalQuestionnaireOB extends SyncOB {
                 "id=" + id +
                 ", _id='" + _id + '\'' +
                 ", createdAt='" + createdAt + '\'' +
-                ", sleepHabit=" + sleepHabit +
-                ", physicalActivityHabit=" + physicalActivityHabit +
-                ", feedingHabitsRecord=" + feedingHabitsRecord +
-                ", medicalRecord=" + medicalRecord +
+                ", sleepHabit=" + sleepHabit.toString() +
+                ", physicalActivityHabit=" + physicalActivityHabit.toString() +
+                ", feedingHabitsRecord=" + feedingHabitsRecord.toString() +
+                ", medicalRecord=" + medicalRecord.toString() +
                 '}';
     }
 
