@@ -163,6 +163,15 @@ public class MeasurementDAO {
                 .remove();
     }
 
+    public void markAsSync(String patient_id, String type, String timestamp) {
+        measurementBox.query()
+                .equal(MeasurementOB_.user_id, patient_id)
+                .equal(MeasurementOB_.type, type)
+                .equal(MeasurementOB_.timestamp, timestamp)
+                .build()
+                .remove();
+    }
+
     public void removeSyncronized(@NonNull Patient patient) {
         Log.i(Repository.TAG, "Removendo Measurements sincronizadas: " + patient.get_id());
         if (patient.get_id() == null) return;

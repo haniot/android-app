@@ -31,6 +31,7 @@ import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.nutritional.PhysicalActivityHabit;
 import br.edu.uepb.nutes.haniot.data.model.PilotStudy;
 import br.edu.uepb.nutes.haniot.data.model.nutritional.SleepHabit;
+import br.edu.uepb.nutes.haniot.data.repository.Synchronize;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.BaseNetRepository;
 import io.reactivex.Completable;
@@ -205,7 +206,7 @@ public class HaniotNetRepository extends BaseNetRepository {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Single<Object> saveMeasurement(List<Measurement> measurement) {
+    public Single<Synchronize.Result> saveMeasurement(List<Measurement> measurement) {
         return haniotService.addMeasurement(measurement.get(0).getUser_id(), measurement)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());

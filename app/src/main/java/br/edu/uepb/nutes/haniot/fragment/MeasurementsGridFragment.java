@@ -579,7 +579,6 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
 
 //        List<Measurement> measurements = mRepository.listMeasurements(MeasurementType.HEART_RATE, patient.get_id(), 100, 1000);
         List<Measurement> measurements = new ArrayList<>();
-        if (measurements == null) measurements = new ArrayList<>();
         measurements.add(measurement);
 
         mComposite.add(mRepository

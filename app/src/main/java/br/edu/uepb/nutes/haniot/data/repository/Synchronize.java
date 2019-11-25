@@ -3,6 +3,9 @@ package br.edu.uepb.nutes.haniot.data.repository;
 import android.content.Context;
 import android.util.Log;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 import br.edu.uepb.nutes.haniot.data.dao.DeviceDAO;
@@ -10,7 +13,9 @@ import br.edu.uepb.nutes.haniot.data.dao.MeasurementDAO;
 import br.edu.uepb.nutes.haniot.data.dao.NutritionalQuestionnaireDAO;
 import br.edu.uepb.nutes.haniot.data.dao.OdontologicalQuestionnaireDAO;
 import br.edu.uepb.nutes.haniot.data.dao.PatientDAO;
+import br.edu.uepb.nutes.haniot.data.model.BodyFat;
 import br.edu.uepb.nutes.haniot.data.model.Device;
+import br.edu.uepb.nutes.haniot.data.model.HeartRateItem;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.nutritional.NutritionalQuestionnaire;
@@ -58,7 +63,8 @@ public class Synchronize {
         List<NutritionalQuestionnaire> nutritionalQuestionnaires = nutritionalQuestionnaireDAO.getAllNotSync();
         List<OdontologicalQuestionnaire> odontologicalQuestionnaires = odontologicalQuestionnaireDAO.getAllNotSync();
 
-        if (devices.isEmpty() && patients.isEmpty() && measurements.isEmpty() && nutritionalQuestionnaires.isEmpty() && odontologicalQuestionnaires.isEmpty()) return;
+        if (devices.isEmpty() && patients.isEmpty() && measurements.isEmpty() && nutritionalQuestionnaires.isEmpty() && odontologicalQuestionnaires.isEmpty())
+            return;
 
         sendDevices(devices);
 
@@ -69,7 +75,8 @@ public class Synchronize {
                             .doAfterSuccess(patientServer -> { // patiente com _id, posso enviar as measurements, questionnaires
                                 haniotNetRepository.associatePatientToPilotStudy(patientLocal.getPilotId(), patientServer.get_id()).subscribe();
 
-                                if (patientLocal.getId() == appPreferencesHelper.getLastPatient().getId()) appPreferencesHelper.saveLastPatient(patientServer);
+                                if (patientLocal.getId() == appPreferencesHelper.getLastPatient().getId())
+                                    appPreferencesHelper.saveLastPatient(patientServer);
 
                                 long patientId = patientLocal.getId();
                                 patientDAO.markAsSync(patientId);
@@ -92,7 +99,8 @@ public class Synchronize {
                                     o.setPatient_id(patient_id);
                                 sendOdontologicalQuestionnaires(oAux);
                             })
-                            .subscribe((patient, throwable) -> {})
+                            .subscribe((patient, throwable) -> {
+                            })
             );
         }
         // Segundo envia os dados dos pacientes já sincronizados / já tem o _id
@@ -107,7 +115,8 @@ public class Synchronize {
             mCompositeDisposable.add(
                     haniotNetRepository.saveDevice(device)
                             .doAfterSuccess(device1 -> deviceDAO.markAsSync(device.getId()))
-                            .subscribe((device1, throwable) -> {})
+                            .subscribe((device1, throwable) -> {
+                            })
             );
     }
 
@@ -117,7 +126,8 @@ public class Synchronize {
                 mCompositeDisposable.add(
                         haniotNetRepository.saveOdontologicalQuestionnaire(o)
                                 .doAfterSuccess(odontologicalQuestionnaire -> odontologicalQuestionnaireDAO.markAsSync(o.getId()))
-                                .subscribe((odontologicalQuestionnaire, throwable) -> {})
+                                .subscribe((odontologicalQuestionnaire, throwable) -> {
+                                })
                 );
     }
 
@@ -127,18 +137,240 @@ public class Synchronize {
                 mCompositeDisposable.add(
                         haniotNetRepository.saveNutritionalQuestionnaire(n)
                                 .doAfterSuccess(nutritionalQuestionnaire -> nutritionalQuestionnaireDAO.markAsSync(n.getId()))
-                                .subscribe((nutritionalQuestionnaire, throwable) -> {})
+                                .subscribe((nutritionalQuestionnaire, throwable) -> {
+                                })
                 );
     }
 
+    public class Item {
+
+        @SerializedName("value")
+        @Expose()
+        private double value;
+
+        @SerializedName("unit")
+        @Expose()
+        private String unit;
+
+        @SerializedName("type")
+        @Expose()
+        private String type;
+
+        @SerializedName("timestamp")
+        @Expose()
+        private String timestamp;
+
+        @SerializedName("patient_id")
+        @Expose()
+        private String patient_id;
+
+        @SerializedName("device_id")
+        @Expose()
+        private String deviceId;
+
+        @SerializedName("fat")
+        @Expose()
+        private BodyFat fat;
+
+        @SerializedName("dataset")
+        @Expose()
+        private List<HeartRateItem> dataset;
+
+        @SerializedName("bodyfat")
+        @Expose()
+        private List<BodyFat> bodyFat;
+
+        @SerializedName("systolic")
+        @Expose()
+        private int systolic;
+
+        @SerializedName("diastolic")
+        @Expose()
+        private int diastolic;
+
+        @SerializedName("pulse")
+        @Expose()
+        private int pulse;
+
+        @SerializedName("meal")
+        @Expose()
+        private String meal;
+
+        @Override
+        public String toString() {
+            return "Item{" +
+                    "value=" + value +
+                    ", unit='" + unit + '\'' +
+                    ", type='" + type + '\'' +
+                    ", timestamp='" + timestamp + '\'' +
+                    ", patient_id='" + patient_id + '\'' +
+                    ", deviceId='" + deviceId + '\'' +
+                    ", fat=" + fat +
+                    ", dataset=" + dataset +
+                    ", bodyFat=" + bodyFat +
+                    ", systolic=" + systolic +
+                    ", diastolic=" + diastolic +
+                    ", pulse=" + pulse +
+                    ", meal='" + meal + '\'' +
+                    '}';
+        }
+
+        public double getValue() {
+            return value;
+        }
+
+        public String getUnit() {
+            return unit;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public String getTimestamp() {
+            return timestamp;
+        }
+
+        public String getPatient_id() {
+            return patient_id;
+        }
+
+        public String getDeviceId() {
+            return deviceId;
+        }
+
+        public BodyFat getFat() {
+            return fat;
+        }
+
+        public List<HeartRateItem> getDataset() {
+            return dataset;
+        }
+
+        public List<BodyFat> getBodyFat() {
+            return bodyFat;
+        }
+
+        public int getSystolic() {
+            return systolic;
+        }
+
+        public int getDiastolic() {
+            return diastolic;
+        }
+
+        public int getPulse() {
+            return pulse;
+        }
+
+        public String getMeal() {
+            return meal;
+        }
+    }
+
+    public class Success {
+        @SerializedName("code")
+        @Expose()
+        private int code;
+
+        @SerializedName("item")
+        @Expose()
+        private Item item;
+
+        public int getCode() {
+            return code;
+        }
+
+        public Item getItem() {
+            return item;
+        }
+
+        @Override
+        public String toString() {
+            return "Item{" +
+                    "code=" + code +
+                    ", item=" + item.toString() +
+                    '}';
+        }
+    }
+
+    public class Erro {
+        @SerializedName("code")
+        @Expose()
+        public int code;
+
+        @SerializedName("message")
+        @Expose()
+        public String message;
+
+        @SerializedName("description")
+        @Expose()
+        public String description;
+
+        @SerializedName("item")
+        @Expose()
+        public Item item;
+
+        @Override
+        public String toString() {
+            return "Erro{" +
+                    "code=" + code +
+                    ", message='" + message + '\'' +
+                    ", description='" + description + '\'' +
+                    ", item=" + item.toString() +
+                    '}';
+        }
+    }
+
+    public class Result {
+        @SerializedName("success")
+        @Expose()
+        private List<Success> success;
+
+        @SerializedName("error")
+        @Expose()
+        private List<Erro> erro;
+
+        public List<Success> getSuccess() {
+            return success;
+        }
+
+        public List<Erro> getErro() {
+            return erro;
+        }
+
+        @Override
+        public String toString() {
+            return "Result{" +
+                    "success=" + success.toString() +
+                    ", erro=" + erro.toString() +
+                    '}';
+        }
+    }
+
     private void sendMeasurements(List<Measurement> list) {
-        for (Measurement m : list)
-            if (m.getUser_id() != null)
-                mCompositeDisposable.add(
-                        haniotNetRepository.saveMeasurement(m)
-                                .doAfterSuccess(measurement -> measurementDAO.markAsSync(m.getId()))
-                                .subscribe((measurement, throwable) -> {})
-                );
+
+        int count = list.size() / 100 + 1; // quantidade de requisições que serão feitas
+        int low;
+        int high = 0;
+
+        for (int i = 0; i < count; i++) {
+            low = high;
+            high = (high + 100 > list.size()) ? list.size() : high + 100;
+            List<Measurement> lista = list.subList(low, high);
+
+            mCompositeDisposable.add(
+                    haniotNetRepository.saveMeasurement(lista)
+                            .subscribe(result -> {
+                                List<Success> success = result.getSuccess(); // medições gravadas com sucesso
+                                for (Success s : success)
+                                    measurementDAO.markAsSync(s.getItem().getPatient_id(), s.getItem().getType(), s.getItem().getTimestamp());
+
+                                Log.i(TAG, "sendMeasurements: " + result.toString());
+                            }, throwable -> {
+                            })
+            );
+        }
     }
 
     public synchronized void synchronize() {
@@ -205,12 +437,14 @@ public class Synchronize {
                                                 }
                                                 Log.i(TAG, "syncronize: Baixados (" + patientDAO.getBy_id(patientServer.get_id()).getName() + "): " +
                                                         measurementDAO.getAllMeasurements(patientServer.get_id(), null, null, null, 1, 100));
-                                            }, throwable -> {})
+                                            }, throwable -> {
+                                            })
                             );
                         }
                         Log.i(TAG, "pacientes salvos localmente: " + patientDAO.getAllPatients(pilotStudyId, null, 1, 100).toString());
                     })
-                    .subscribe((patients, throwable) -> {})
+                    .subscribe((patients, throwable) -> {
+                    })
             );
 
             // recupera todos os dipositivos de todos os pacientes - verificar se é o paciente ou o profissional que tem

@@ -24,6 +24,7 @@ import br.edu.uepb.nutes.haniot.data.model.nutritional.SleepHabit;
 import br.edu.uepb.nutes.haniot.data.model.odontological.SociodemographicRecord;
 import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.model.UserAccess;
+import br.edu.uepb.nutes.haniot.data.repository.Synchronize;
 import io.reactivex.Completable;
 import io.reactivex.Single;
 import retrofit2.Response;
@@ -107,8 +108,8 @@ public interface HaniotService {
                                        @Body Measurement measurement);
 
     @POST("patients/{patient_id}/measurements")
-    Single<Object> addMeasurement(@Path("patient_id") String patientId,
-                                  @Body List<Measurement> measurement);
+    Single<Synchronize.Result> addMeasurement(@Path("patient_id") String patientId,
+                                              @Body List<Measurement> measurement);
 
     @GET("patients/{patient_id}/measurements")
     Single<List<Measurement>> getAllMeasurements(@Path("patient_id") String userId,
