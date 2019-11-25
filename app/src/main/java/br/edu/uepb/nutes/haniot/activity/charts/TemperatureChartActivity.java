@@ -45,7 +45,7 @@ public class TemperatureChartActivity extends BaseChartActivity {
                 .highlightStyle(Color.TRANSPARENT, 0.7f)
                 .createLimit(getString(R.string.limit_temperature), FEVER, getResources().getColor(R.color.colorRed))
                 .setRangeY(35,38)
-                .build();
+                .build(this);
 
         requestData(CHART_TYPE_MONTH);
     }

@@ -38,8 +38,6 @@ import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.type.MeasurementType;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 
-import static br.edu.uepb.nutes.haniot.server.SynchronizationServer.context;
-
 /**
  * Constructor of chart.
  *
@@ -61,13 +59,17 @@ public final class CreateChart<T> {
     BarDataSet setBar;
     private LineDataSet set2;
 
+    private Context mContext;
+
     /**
      * @param params
      * @param mChart
+     * @param context
      */
-    public CreateChart(Params params, Chart mChart) {
+    public CreateChart(Params params, Chart mChart, Context context) {
         this.params = params;
         this.mChart = mChart;
+        this.mContext = context;
     }
 
     public Params getParams() {
@@ -314,9 +316,9 @@ public final class CreateChart<T> {
             barChart.setDoubleTapToZoomEnabled(true);
 
             setBar.setColor(Color.WHITE);
-            setBar.setBarBorderColor(ContextCompat.getColor(context, R.color.colorPrimaryDark));
+            setBar.setBarBorderColor(ContextCompat.getColor(mContext, R.color.colorPrimaryDark));
             setBar.setValueTextColor(Color.WHITE);
-            setBar.setHighLightColor(ContextCompat.getColor(context, R.color.colorPrimaryDark));
+            setBar.setHighLightColor(ContextCompat.getColor(mContext, R.color.colorPrimaryDark));
             setBar.setDrawValues(false);
 
             barChart.getAxisLeft().setDrawGridLines(false);
@@ -833,8 +835,8 @@ public final class CreateChart<T> {
         /**
          * Configure and generate graph.
          */
-        public CreateChart build() {
-            return new CreateChart(this, mChart);
+        public CreateChart build(Context context) {
+            return new CreateChart(this, mChart, context);
         }
     }
 }

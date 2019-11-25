@@ -65,6 +65,6 @@ public class RealTimeFragment extends Fragment {
                 .setTypeLine(LineDataSet.Mode.CUBIC_BEZIER)
                 .colorGridChart(0,0)
                 .drawCircleStyle(0,0)
-                .build();
+                .build(mContext);
     }
 }

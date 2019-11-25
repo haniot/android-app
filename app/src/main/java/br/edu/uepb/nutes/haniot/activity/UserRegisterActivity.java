@@ -290,7 +290,6 @@ public class UserRegisterActivity extends AppCompatActivity {
                 .associatePatientToPilotStudy(userLogged.getPilotStudyIDSelected(), patient)
                 .subscribe(o -> {
                     Log.w(TAG, "Patient associated to pilotstudy");
-//                    mRepository.savePatient(patient);
                     appPreferencesHelper.saveLastPatient(patient);
                     if (appPreferencesHelper.getUserLogged().getUserType().equals(HEALTH_PROFESSIONAL)) {
                         User user = appPreferencesHelper.getUserLogged();
@@ -375,22 +374,24 @@ public class UserRegisterActivity extends AppCompatActivity {
                     })
                     .doAfterTerminate(() -> showLoading(false))
                     .subscribe(patient1 -> {
-                        _id = patient1.get_id();
-                        idLocal = patient1.getId();
+                        if (patient1 != null) {
+                            _id = patient1.get_id();
+                            idLocal = patient1.getId();
 
-                        if (patient1.getEmail() != null) {
-                            patient.setEmail(patient1.getEmail());
-                            oldEmail = patient1.getEmail();
+                            if (patient1.getEmail() != null) {
+                                patient.setEmail(patient1.getEmail());
+                                oldEmail = patient1.getEmail();
+                            }
+                            if (patient1.getName() != null) {
+                                patient.setName(patient1.getName());
+                                name = patient1.getName();
+                            }
+                            phoneNumber = patient1.getPhoneNumber();
+                            birthday = patient1.getBirthDate();
+                            gender = patient1.getGender();
+                            prepareView();
+                            enabledView(true);
                         }
-                        if (patient1.getName() != null) {
-                            patient.setName(patient1.getName());
-                            name = patient1.getName();
-                        }
-                        phoneNumber = patient1.getPhoneNumber();
-                        birthday = patient1.getBirthDate();
-                        gender = patient1.getGender();
-                        prepareView();
-                        enabledView(true);
                     }, this::errorHandler));
         } else if (userLogged.getUserType().equals(HEALTH_PROFESSIONAL)) {
             genderIcon.setImageResource(R.drawable.ic_health_professional);
@@ -531,7 +532,6 @@ public class UserRegisterActivity extends AppCompatActivity {
         if (isEdit || editUserLogged) {
             prepareEditing();
         }
-
 
         genderGroup.setOnCheckedChangeListener((group, checkedId) -> {
             if (checkedId == R.id.male) genderIcon.setImageResource(R.drawable.x_boy);

@@ -54,7 +54,7 @@ public class SmartBandChartActivity extends BaseChartActivity {
                 .highlightStyle(Color.TRANSPARENT, 0.7f)
                 .setRangeY(35, 38)
                 .formatDate(getString(R.string.date_format_month_day))
-                .build();
+                .build(this);
 
         requestData(CHART_TYPE_MONTH);
 

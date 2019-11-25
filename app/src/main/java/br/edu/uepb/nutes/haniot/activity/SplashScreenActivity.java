@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.account.LoginActivity;
+import br.edu.uepb.nutes.haniot.data.repository.Synchronize;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.service.TokenExpirationService;
 import butterknife.BindView;
@@ -52,16 +53,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         super.onStart();
 
         openActivity();
-//        SynchronizationServer.getInstance(this).run(new SynchronizationServer.Callback() {
-//            @Override
-//            public void onError(JSONObject result) {
-//            }
-//
-//            @Override
-//            public void onSuccess(JSONObject result) {
-//                openActivity();
-//            }
-//        });
+        Synchronize.getInstance(this).synchronize();
     }
 
     private void openActivity() {

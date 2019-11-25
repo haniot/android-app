@@ -1,6 +1,7 @@
 package br.edu.uepb.nutes.haniot.data.repository;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.google.gson.JsonObject;
@@ -10,6 +11,7 @@ import java.util.List;
 import br.edu.uepb.nutes.haniot.data.model.Admin;
 import br.edu.uepb.nutes.haniot.data.model.HealthProfessional;
 import br.edu.uepb.nutes.haniot.data.model.MeasurementLastResponse;
+import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.PilotStudy;
 import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.model.UserAccess;
@@ -17,6 +19,7 @@ import br.edu.uepb.nutes.haniot.data.model.nutritional.NutritionalEvaluation;
 import br.edu.uepb.nutes.haniot.data.model.nutritional.NutritionalEvaluationResult;
 import br.edu.uepb.nutes.haniot.data.model.nutritional.NutritionalQuestionnaire;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
+import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import io.reactivex.Completable;
 import io.reactivex.Single;
 
@@ -115,5 +118,14 @@ public abstract class RepositoryOn {
     public Single<NutritionalEvaluationResult> saveNutritionalEvaluation(NutritionalEvaluation nutritionalEvaluation) {
         Log.i(TAG, "saveNutritionalEvaluation: ");
         return haniotNetRepository.saveNutritionalEvaluation(nutritionalEvaluation);
+    }
+
+    public Single<Patient> getPatientBy_id(@NonNull String _id) {
+        Log.i(TAG, "getPatientBy_id: ");
+        return haniotNetRepository.getPatient(_id);
+    }
+
+    protected boolean isConnected() {
+        return ConnectionUtils.internetIsEnabled(mContext);
     }
 }

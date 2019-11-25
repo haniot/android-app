@@ -44,7 +44,7 @@ public class BloodPresssureChartActivity extends BaseChartActivity {
                 .createLimit(getString(R.string.limit_high_systolic), 140, getResources().getColor(R.color.colorRed))
                 .createLimit(getString(R.string.limit_high_diastolic), 90, getResources().getColor(R.color.colorRed))
                 .addLegend(getString(R.string.systolic), getString(R.string.diastolic))
-                .build();
+                .build(this);
 
         requestData(CHART_TYPE_MONTH);
     }

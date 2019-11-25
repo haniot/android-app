@@ -41,14 +41,24 @@ public class OdontologicalQuestionnaireDAO {
         return instance;
     }
 
-    public List<OdontologicalQuestionnaire> getAll(String patientId, int page, int limit, String sort) {
+    public List<OdontologicalQuestionnaire> getAll(Patient patient, int page, int limit, String sort) {
         page--;
-        List<OdontologicalQuestionnaireOB> aux = odontologicalQuestionnaireBox.query()
-                .equal(OdontologicalQuestionnaireOB_.patientId, patientId)
-                .orderDesc(OdontologicalQuestionnaireOB_.createdAt)
-                .build()
-                .find(page * limit, limit);
-        return Convert.listOdontologicalQuestionnaireToModel(aux);
+        List<OdontologicalQuestionnaireOB> list;
+
+        if (patient.get_id() != null) {
+            list = odontologicalQuestionnaireBox.query()
+                    .equal(OdontologicalQuestionnaireOB_.patient_id, patient.get_id())
+                    .orderDesc(OdontologicalQuestionnaireOB_.createdAt)
+                    .build()
+                    .find(page * limit, limit);
+        } else {
+            list = odontologicalQuestionnaireBox.query()
+                    .equal(OdontologicalQuestionnaireOB_.patientId, patient.getId())
+                    .orderDesc(OdontologicalQuestionnaireOB_.createdAt)
+                    .build()
+                    .find(page * limit, limit);
+        }
+        return Convert.listOdontologicalQuestionnaireToModel(list);
     }
 
     public void update(long questionnaireId, String question, ActivityHabitsRecord newValue) {

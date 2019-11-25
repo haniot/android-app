@@ -49,7 +49,6 @@ import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.fragment.GenericDialogFragment;
 import br.edu.uepb.nutes.haniot.fragment.RealTimeFragment;
-import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
 import br.edu.uepb.nutes.haniot.service.BluetoothLeService;
 import br.edu.uepb.nutes.haniot.utils.GattAttributes;
 import butterknife.BindView;
@@ -419,13 +418,6 @@ public class RecordHeartRateActivity extends AppCompatActivity implements View.O
             }
         }
     };
-
-    /**
-     * Performs routine for data synchronization with server.
-     */
-    private void synchronizeWithServer() {
-        SynchronizationServer.getInstance(this).run();
-    }
 
     /**
      * Send Measurements for chart.

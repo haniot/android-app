@@ -44,7 +44,7 @@ public class GlucoseChartActivity extends BaseChartActivity {
                 .colorFontDescription(Color.WHITE)
                 .highlightStyle(Color.TRANSPARENT, 0.7f)
                 .createLimit(getString(R.string.limit_glucose), PRE_DIABETES, Color.RED)
-                .build();
+                .build(this);
 
         requestData(CHART_TYPE_MONTH);
     }

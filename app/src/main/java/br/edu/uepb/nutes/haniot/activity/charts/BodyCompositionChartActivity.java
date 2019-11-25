@@ -44,7 +44,7 @@ public class BodyCompositionChartActivity extends BaseChartActivity {
                 .setTextValuesColor(Color.WHITE)
                 .colorFontDescription(Color.WHITE)
                 .highlightStyle(Color.TRANSPARENT, 0.7f)
-                .build();
+                .build(this);
         setLimitObesity();
 
         requestData(CHART_TYPE_MONTH);

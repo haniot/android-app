@@ -30,7 +30,6 @@ import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.SettingsActivity;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.User;
-import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.fragment.DashboardChartsFragment;
 import br.edu.uepb.nutes.haniot.fragment.MeasurementsGridFragment;
@@ -80,7 +79,6 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
     private MeasurementsGridFragment measurementsGridFragment;
     private DashboardChartsFragment dashboardChartsFragment;
     private AppPreferencesHelper appPreferences;
-    private Repository mRepository;
     private Patient patient;
     private long backPressed;
     private User userLogged;
@@ -106,9 +104,6 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
         setupPatientActions();
         Log.w("AAA", "UserOB type: " + appPreferences.getUserAccessHaniot());
         Log.w("AAA", "UserOB: " + appPreferences.getUserLogged());
-
-        mRepository = Repository.getInstance(this);
-        mRepository.syncronize();
     }
 
     private void loadDashboard() {
@@ -121,12 +116,6 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
                 .beginTransaction()
                 .replace(R.id.frameMeasurements, measurementsGridFragment)
                 .commit();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-//        mRepository.syncronize();
     }
 
     @Override
@@ -145,14 +134,7 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
     @Override
     protected void onDestroy() {
         super.onDestroy();
-//        DisposableManager.clear();
         unregisterReceiver(mReceiver);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-//        DisposableManager.clear();
     }
 
     /**

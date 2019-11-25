@@ -42,7 +42,6 @@ import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
 import br.edu.uepb.nutes.haniot.data.model.Device;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
-import br.edu.uepb.nutes.haniot.server.SynchronizationServer;
 import br.edu.uepb.nutes.haniot.service.BluetoothLeService;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import br.edu.uepb.nutes.haniot.utils.GattAttributes;
@@ -131,8 +130,6 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
         setContentView(R.layout.activity_smart_band);
         ButterKnife.bind(this);
 
-        // synchronization with server
-        synchronizeWithServer();
 
         mDeviceAddress = "CD:EE:CD:A2:21:D4";
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
@@ -730,13 +727,6 @@ public class SmartBandActivity extends AppCompatActivity implements View.OnClick
         }
 
         return false;
-    }
-
-    /**
-     * Performs routine for data synchronization with server.
-     */
-    private void synchronizeWithServer() {
-        SynchronizationServer.getInstance(this).run();
     }
 
     @Override

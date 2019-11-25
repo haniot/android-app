@@ -170,7 +170,7 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
 
         if (user.getUserType().equals(ADMIN) || !user.getHealthArea().equals(NUTRITION)) {
             mComposite.add(mRepository
-                    .getAllOdontologicalQuestionnaires(patient.get_id(), 1, 100, "created_at")
+                    .getAllOdontologicalQuestionnaires(patient, 1, 100, "created_at")
                     .subscribe(odontological -> {
                         Log.w("AAA", "Size Odonto: " + odontological.size());
                         showErrorDownloadData(false, DENTISTRY);

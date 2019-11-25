@@ -30,6 +30,7 @@ import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.PilotStudy;
 import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.repository.Repository;
+import br.edu.uepb.nutes.haniot.data.repository.Synchronize;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.ErrorHandler;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
@@ -254,7 +255,7 @@ public class PilotStudyActivity extends AppCompatActivity {
         appPreferences.removeLastPilotStudy();
         appPreferences.saveLastPilotStudy(pilot);
         appPreferences.saveUserLogged(user);
-        mRepository.syncronize();
+        Synchronize.getInstance(this).synchronize();
 
         if (user.getUserType().equals(PATIENT)) {
             Patient patient = new Patient();
