@@ -285,7 +285,8 @@ public class Measurement extends Sync implements Parcelable {
         if (!(o instanceof Measurement)) return false;
         Measurement that = (Measurement) o;
         return Objects.equals(timestamp, that.timestamp) &&
-                Objects.equals(user_id, that.user_id);
+                Objects.equals(type, that.type) &&
+                (Objects.equals(userId, that.userId) || Objects.equals(user_id, that.user_id));
     }
 
     @NonNull

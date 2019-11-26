@@ -110,7 +110,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
     private AppPreferencesHelper appPreferences;
     private Repository mRepository;
     private CompositeDisposable mComposite;
-    private List<String> deviceIdToDelete;
+    private List<Device> deviceToDelete;
     private Handler handler;
     private Runnable runnable;
     private Snackbar snackbar;
@@ -126,7 +126,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
 
         user = appPreferences.getUserLogged();
         if (user == null || user.get_id().isEmpty()) finish();
-        deviceIdToDelete = new ArrayList<>();
+        deviceToDelete = new ArrayList<>();
         initComponents();
         checkConnectivity();
         initDataSwipeRefresh();
@@ -319,7 +319,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
             @Override
             public void onItemSwiped(Device item, int position) {
                 mAdapterDeviceRegistered.removeItem(item);
-                deviceIdToDelete.add(item.get_id());
+                deviceToDelete.add(item);
                 handler = new Handler();
                 runnable = this::run;
                 handler.postDelayed(runnable, 4000);
@@ -329,7 +329,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
                 snackbar.setAction(getString(R.string.undo), view -> {
                     mAdapterDeviceRegistered.restoreItem(item, position);
                     mRegisteredRecyclerView.scrollToPosition(position);
-                    deviceIdToDelete.remove(item.get_id());
+                    deviceToDelete.remove(item);
                 });
                 snackbar.show();
                 showNoDevices(mAdapterDeviceRegistered.itemsIsEmpty());
@@ -341,12 +341,16 @@ public class DeviceManagerActivity extends AppCompatActivity {
 
     private void removePendingDevices() {
         Log.w("XXX", "removePendingDevices()");
-        if (deviceIdToDelete == null || deviceIdToDelete.isEmpty()) return;
-        for (String idDevice : deviceIdToDelete) {
+        if (deviceToDelete == null || deviceToDelete.isEmpty()) return;
+
+        List<Device> aux = new ArrayList<>(deviceToDelete);
+
+        for (Device device : aux) {
             mComposite.add(mRepository
-                    .deleteDevice(user.get_id(), idDevice).subscribe(() -> {
-                        deviceIdToDelete.remove(idDevice);
-                    }));
+                    .deleteDevice(user.get_id(), device)
+                    .subscribe(() -> {
+                        deviceToDelete.remove(device);
+                    }, throwable -> {}));
         }
     }
 

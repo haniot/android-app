@@ -19,6 +19,7 @@ import br.edu.uepb.nutes.haniot.activity.AddMeasurementActivity;
 import br.edu.uepb.nutes.haniot.activity.charts.HeartRateChartActivity;
 import br.edu.uepb.nutes.haniot.adapter.HeartRateAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.BaseAdapter;
+import br.edu.uepb.nutes.haniot.data.model.Device;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.HeartRateItem;
 import br.edu.uepb.nutes.haniot.data.model.type.DeviceType;
@@ -65,7 +66,11 @@ public class HeartRateActivity extends BaseDeviceActivity implements GenericDial
         manager = new HeartRateManager(this);
         ((HeartRateManager) manager).setSimpleCallback(heartRateDataCallback);
 
-        mDevice = mRepository.getDeviceByType(appPreferencesHelper.getUserLogged().get_id(), DeviceType.HEART_RATE);
+        mComposite.add(
+                mRepository.getDeviceByType(appPreferencesHelper.getUserLogged(), DeviceType.HEART_RATE)
+                .doAfterSuccess(device -> mDevice = device)
+                .subscribe((device, throwable) -> {})
+        );
     }
 
     HeartRateDataCallback heartRateDataCallback = new HeartRateDataCallback() {

@@ -15,6 +15,7 @@ import br.edu.uepb.nutes.haniot.data.model.ActivityHabitsRecord;
 import br.edu.uepb.nutes.haniot.data.model.Device;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
+import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.model.nutritional.NutritionalQuestionnaire;
 import br.edu.uepb.nutes.haniot.data.model.odontological.OdontologicalQuestionnaire;
 import io.reactivex.Completable;
@@ -48,39 +49,28 @@ public class Repository extends RepositoryOn {
     private OdontologicalQuestionnaireDAO odontologicalQuestionnaireDAO;
     private Synchronize synchronize;
 
-    public Single<Device> saveDeviceRemote(Device device) {
-        Log.i(TAG, "saveDeviceRemote: " + device.toString());
-        if (isConnected()) {
-            return haniotNetRepository.saveDevice(device)
-                    .map(device1 -> {
-                        synchronize.synchronize();
-                        return device1;
-                    });
-        } else {
-            device.setSync(false);
-            return this.saveDeviceLocal(device);
-        }
-    }
+    public Single<Device> saveDevice(Device device) {
+        Log.i(TAG, "saveDevice: " + device.toString());
 
-    /**
-     * Adds a new device to the database.
-     *
-     * @param device DeviceOB
-     * @return boolean
-     */
-    public Single<Device> saveDeviceLocal(@NonNull Device device) {
-        Log.i(TAG, "saveDeviceLocal: " + device.toString());
         long id = deviceDAO.save(device);
         device.setId(id);
+
+        if (isConnected())
+            synchronize.synchronize();
+
         return Single.just(device);
     }
 
-    public Single<List<Device>> getAllDevices(String userId) {
+    public Single<List<Device>> getAllDevices(String user_id) {
         Log.i(TAG, "getAllDevices: ");
         if (isConnected()) {
-            return haniotNetRepository.getAllDevices(userId);
+            return haniotNetRepository.getAllDevices(user_id)
+                    .map(devices -> {
+                        devices.addAll(deviceDAO.getAllNotSync());
+                        return devices;
+                    });
         } else {
-            List<Device> devices = deviceDAO.getAllDevices(userId);
+            List<Device> devices = deviceDAO.getAllDevices(user_id);
             Log.i(TAG, "getAllDevices: LOCAL -> " + devices.toString());
             return Single.just(devices);
         }
@@ -89,41 +79,53 @@ public class Repository extends RepositoryOn {
     /**
      * Retrieves all device according to userId and type.
      *
-     * @param userId {@link String}
-     * @param type   {@link String}
+     * @param user User
+     * @param type String
      * @return DeviceOB
      */
-    public Device getDeviceByType(@NonNull String userId, String type) {
-        Log.i(TAG, "getDeviceByType: LOCAL -> " + deviceDAO.getByType(userId, type));
-        return deviceDAO.getByType(userId, type);
+    public Single<Device> getDeviceByType(@NonNull User user, @NonNull String type) {
+
+        if (user.get_id() != null && isConnected()) {
+            return haniotNetRepository.getAllDevices(user.get_id())
+                    .map(devices -> {
+                        for (Device d : devices) {
+                            if (type.equals(d.getType()))
+                                return d;
+                        }
+                        return null;
+                    });
+        } else {
+            Device d = deviceDAO.getByType(user, type);
+            return Single.just(d);
+        }
     }
 
     /**
      * Removes device passed as parameter.
      *
-     * @param userId   String
-     * @param deviceId String
+     * @param userId String
+     * @param device Device
      * @return boolean
      */
-    public Completable deleteDevice(@NonNull String userId, @NonNull String deviceId) {
+    public Completable deleteDevice(@NonNull String userId, @NonNull Device device) {
         Log.i(TAG, "deleteDevice: ");
-        return haniotNetRepository.deleteDevice(userId, deviceId)
-                .doOnComplete(() -> synchronize.synchronize());
-    }
 
-    /**
-     * Removes all devices.
-     * According to userId user.
-     * @param userId {@link String}
-     * @return boolean - True if removed or False if not removed
-     */
-    public boolean removeAllDevicesLocal(@NonNull String userId) {
-        Log.i(TAG, "removeAllDevicesLocal: ");
-        return deviceDAO.removeAll(userId);
+        if (device.get_id() == null) {
+            deviceDAO.remove(device.getId());
+
+            if (isConnected())
+                synchronize.synchronize();
+            return Completable.complete();
+
+        } else {
+            return haniotNetRepository.deleteDevice(userId, device.get_id())
+                    .doOnComplete(() -> synchronize.synchronize());
+        }
     }
 
     /**
      * Adds a new measurement to the database
+     *
      * @param measurement Measurement
      * @return boolean
      */
@@ -152,6 +154,7 @@ public class Repository extends RepositoryOn {
 
     /**
      * Remove measurement
+     *
      * @param measurement Measurement
      * @return boolean
      */
@@ -265,7 +268,7 @@ public class Repository extends RepositoryOn {
         if (patient.get_id() == null) { // ta salvo apenas off
             if (patientDAO.remove(patient.getId())) {
                 measurementDAO.removeByPatientId(patient.getId());
-                nutritionalQuestionnaireDAO.removeByPatienId(patient.getId());
+                nutritionalQuestionnaireDAO.removeByPatientId(patient.getId());
                 odontologicalQuestionnaireDAO.removeByPatientId(patient.getId());
             }
             if (isConnected())

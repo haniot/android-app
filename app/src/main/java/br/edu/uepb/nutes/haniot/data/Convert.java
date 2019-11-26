@@ -51,9 +51,10 @@ public class Convert {
         device.setType(dP.getType());
         device.setModelNumber(dP.getModelNumber());
         device.setManufacturer(dP.getManufacturer());
+        device.setUser_id(dP.getUser_id());
         device.setUserId(dP.getUserId());
-        device.setUuid(dP.getUuid());
-        device.setImg(dP.getImg());
+//        device.setUuid(dP.getUuid());
+//        device.setImg(dP.getImg());
         return device;
     }
 
@@ -68,9 +69,10 @@ public class Convert {
         device.setType(dP.getType());
         device.setModelNumber(dP.getModelNumber());
         device.setManufacturer(dP.getManufacturer());
+        device.setUser_id(dP.getUser_id());
         device.setUserId(dP.getUserId());
-        device.setUuid(dP.getUuid());
-        device.setImg(dP.getImg());
+//        device.setUuid(dP.getUuid());
+//        device.setImg(dP.getImg());
         return device;
     }
 

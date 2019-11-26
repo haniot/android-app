@@ -8,30 +8,29 @@ import com.google.gson.JsonObject;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import br.edu.uepb.nutes.haniot.data.model.Admin;
+import br.edu.uepb.nutes.haniot.data.model.Device;
+import br.edu.uepb.nutes.haniot.data.model.HealthProfessional;
+import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.MeasurementLastResponse;
+import br.edu.uepb.nutes.haniot.data.model.Patient;
+import br.edu.uepb.nutes.haniot.data.model.PilotStudy;
+import br.edu.uepb.nutes.haniot.data.model.Result;
+import br.edu.uepb.nutes.haniot.data.model.User;
+import br.edu.uepb.nutes.haniot.data.model.UserAccess;
+import br.edu.uepb.nutes.haniot.data.model.nutritional.FeedingHabitsRecord;
 import br.edu.uepb.nutes.haniot.data.model.nutritional.MedicalRecord;
 import br.edu.uepb.nutes.haniot.data.model.nutritional.NutritionalEvaluation;
 import br.edu.uepb.nutes.haniot.data.model.nutritional.NutritionalEvaluationResult;
 import br.edu.uepb.nutes.haniot.data.model.nutritional.NutritionalQuestionnaire;
+import br.edu.uepb.nutes.haniot.data.model.nutritional.PhysicalActivityHabit;
+import br.edu.uepb.nutes.haniot.data.model.nutritional.SleepHabit;
+import br.edu.uepb.nutes.haniot.data.model.odontological.FamilyCohesionRecord;
 import br.edu.uepb.nutes.haniot.data.model.odontological.OdontologicalQuestionnaire;
 import br.edu.uepb.nutes.haniot.data.model.odontological.OralHealthRecord;
 import br.edu.uepb.nutes.haniot.data.model.odontological.SociodemographicRecord;
-import br.edu.uepb.nutes.haniot.data.model.User;
-import br.edu.uepb.nutes.haniot.data.model.UserAccess;
-import br.edu.uepb.nutes.haniot.data.model.Admin;
-import br.edu.uepb.nutes.haniot.data.model.Device;
-import br.edu.uepb.nutes.haniot.data.model.odontological.FamilyCohesionRecord;
-import br.edu.uepb.nutes.haniot.data.model.nutritional.FeedingHabitsRecord;
-import br.edu.uepb.nutes.haniot.data.model.HealthProfessional;
-import br.edu.uepb.nutes.haniot.data.model.Measurement;
-import br.edu.uepb.nutes.haniot.data.model.Patient;
-import br.edu.uepb.nutes.haniot.data.model.nutritional.PhysicalActivityHabit;
-import br.edu.uepb.nutes.haniot.data.model.PilotStudy;
-import br.edu.uepb.nutes.haniot.data.model.nutritional.SleepHabit;
-import br.edu.uepb.nutes.haniot.data.repository.Synchronize;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.BaseNetRepository;
 import io.reactivex.Completable;
@@ -206,8 +205,8 @@ public class HaniotNetRepository extends BaseNetRepository {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Single<Synchronize.Result> saveMeasurement(List<Measurement> measurement) {
-        return haniotService.addMeasurement(measurement.get(0).getUser_id(), measurement)
+    public Single<Result> saveMeasurement(String patient_id, List<Measurement> measurement) {
+        return haniotService.addMeasurement(patient_id, measurement)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -263,16 +262,17 @@ public class HaniotNetRepository extends BaseNetRepository {
 
     // users.devices
     public Single<Device> saveDevice(Device device) {
-        return haniotService.addDevice(device.getUserId(), device)
+        return haniotService.addDevice(device.getUser_id(), device)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Single<List<Device>> getAllDevices(String userId) {
-        return haniotService.getAllDevices(userId)
+    public Single<List<Device>> getAllDevices(String user_id) {
+        return haniotService.getAllDevices(user_id)
                 .map(devices -> {
                     for (Device d : devices) {
-                        d.setUserId(userId);
+                        d.setUser_id(user_id);
+                        d.setSync(true);
                     }
                     return devices;
                 })

@@ -190,7 +190,8 @@ public class MeasurementOB extends SyncOB {
         if (!(o instanceof MeasurementOB)) return false;
         MeasurementOB that = (MeasurementOB) o;
         return Objects.equals(timestamp, that.timestamp) &&
-                Objects.equals(userId, that.userId);
+                Objects.equals(type, that.type) &&
+                (Objects.equals(userId, that.userId) || Objects.equals(user_id, that.user_id));
     }
 
     @NonNull

@@ -64,7 +64,12 @@ public class ScaleActivity extends BaseDeviceActivity {
         super.onCreate(savedInstanceState);
         manager = new ScaleManager(this);
 
-        mDevice = mRepository.getDeviceByType(appPreferencesHelper.getUserLogged().get_id(), DeviceType.BODY_COMPOSITION);
+        mComposite.add(
+                mRepository.getDeviceByType(appPreferencesHelper.getUserLogged(), DeviceType.BODY_COMPOSITION)
+                        .doAfterSuccess(device -> mDevice = device)
+                        .subscribe((device, throwable) -> {
+                        })
+        );
     }
 
     @Override

@@ -9,6 +9,7 @@ import java.util.List;
 
 import br.edu.uepb.nutes.haniot.App;
 import br.edu.uepb.nutes.haniot.data.Convert;
+import br.edu.uepb.nutes.haniot.data.model.ActivityHabitsRecord;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.nutritional.FeedingHabitsRecord;
 import br.edu.uepb.nutes.haniot.data.model.nutritional.MedicalRecord;
@@ -17,7 +18,6 @@ import br.edu.uepb.nutes.haniot.data.model.nutritional.PhysicalActivityHabit;
 import br.edu.uepb.nutes.haniot.data.model.nutritional.SleepHabit;
 import br.edu.uepb.nutes.haniot.data.objectbox.nutritional.NutritionalQuestionnaireOB;
 import br.edu.uepb.nutes.haniot.data.objectbox.nutritional.NutritionalQuestionnaireOB_;
-import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import io.objectbox.Box;
 import io.objectbox.BoxStore;
 
@@ -26,7 +26,11 @@ import static br.edu.uepb.nutes.haniot.data.model.type.NutritionalQuestionnaireT
 import static br.edu.uepb.nutes.haniot.data.model.type.NutritionalQuestionnaireType.PHYSICAL_ACTIVITY_HABITS;
 import static br.edu.uepb.nutes.haniot.data.model.type.NutritionalQuestionnaireType.SLEEP_HABIT;
 
+/**
+ * Nutritional Questionnaire DAO implementation
+ */
 public class NutritionalQuestionnaireDAO {
+    private static final String TAG = "NUTRITIONALDAO";
 
     private static NutritionalQuestionnaireDAO instance;
     private static Box<NutritionalQuestionnaireOB> nutritionalQuestionnaireBox;
@@ -42,8 +46,17 @@ public class NutritionalQuestionnaireDAO {
         return instance;
     }
 
-    public List<NutritionalQuestionnaire> getAll(Patient patient, int page, int limit, String sort) {
-        page--;
+    /**
+     * Get all questionnaires by patient
+     *
+     * @param patient Patient
+     * @param page    Int
+     * @param limit   Int
+     * @param sort    String
+     * @return List of Questionnaire
+     */
+    public List<NutritionalQuestionnaire> getAll(@NonNull Patient patient, int page, int limit, String sort) {
+        Log.i(TAG, "getAll: ");
         List<NutritionalQuestionnaireOB> aux;
 
         if (patient.get_id() != null) {
@@ -51,23 +64,27 @@ public class NutritionalQuestionnaireDAO {
                     .equal(NutritionalQuestionnaireOB_.patient_id, patient.get_id())
                     .orderDesc(NutritionalQuestionnaireOB_.createdAt)
                     .build()
-                    .find(page * limit, limit);
+                    .find((page - 1) * limit, limit);
         } else {
             aux = nutritionalQuestionnaireBox.query()
                     .equal(NutritionalQuestionnaireOB_.patientId, patient.getId())
                     .orderDesc(NutritionalQuestionnaireOB_.createdAt)
                     .build()
-                    .find(page * limit, limit);
+                    .find((page - 1) * limit, limit);
         }
         return Convert.listNutritionalQuestionnaireToModel(aux);
     }
 
-    public void update(long questionnaireId, String question, Object newValue) {
+    /**
+     * Update Questionnaire
+     *
+     * @param questionnaireId Long (only locale)
+     * @param question        String
+     * @param newValue        ActivityHabitsRecord
+     */
+    public void update(long questionnaireId, @NonNull String question, @NonNull ActivityHabitsRecord newValue) {
+        Log.i(TAG, "update: ");
         NutritionalQuestionnaireOB q = get(questionnaireId);
-        Log.i(Repository.TAG, "update: questionnaire: " + q);
-        Log.i(Repository.TAG, "update: question: "+ question);
-        Log.i(Repository.TAG, "update: newValue: "+ newValue);
-
         if (q == null) return;
 
         switch (question) {
@@ -91,18 +108,32 @@ public class NutritionalQuestionnaireDAO {
         nutritionalQuestionnaireBox.put(q);
     }
 
-    public NutritionalQuestionnaireOB get(long questionnaireId) {
+    /**
+     * Get Questionnaire by id
+     *
+     * @param id Long
+     * @return Questionnaire or Null
+     */
+    public NutritionalQuestionnaireOB get(long id) {
         return nutritionalQuestionnaireBox.query()
-                .equal(NutritionalQuestionnaireOB_.id, questionnaireId)
+                .equal(NutritionalQuestionnaireOB_.id, id)
                 .build()
                 .findFirst();
     }
 
-    public long save(NutritionalQuestionnaire nutritionalQuestionnaire) {
-        return nutritionalQuestionnaireBox.put(Convert.nutritionalQuestionnaire(nutritionalQuestionnaire));
+    /**
+     * Add Questionnaire to the DataBase
+     *
+     * @param questionnaire Questionnaire
+     * @return Long > 0 if success or 0 otherwise
+     */
+    public long save(@NonNull NutritionalQuestionnaire questionnaire) {
+        Log.i(TAG, "save: ");
+        return nutritionalQuestionnaireBox.put(Convert.nutritionalQuestionnaire(questionnaire));
     }
 
     public List<NutritionalQuestionnaire> getAllNotSync() {
+        Log.i(TAG, "getAllNotSync: ");
         List<NutritionalQuestionnaireOB> aux = nutritionalQuestionnaireBox.query()
                 .equal(NutritionalQuestionnaireOB_.sync, false)
                 .build()
@@ -111,6 +142,7 @@ public class NutritionalQuestionnaireDAO {
     }
 
     public List<NutritionalQuestionnaire> getAllNotSync(long id) {
+        Log.i(TAG, "getAllNotSync: ");
         List<NutritionalQuestionnaireOB> aux = nutritionalQuestionnaireBox.query()
                 .equal(NutritionalQuestionnaireOB_.patientId, id)
                 .equal(NutritionalQuestionnaireOB_.sync, false)
@@ -119,27 +151,38 @@ public class NutritionalQuestionnaireDAO {
         return Convert.listNutritionalQuestionnaireToModel(aux);
     }
 
-    public void markAsSync(long id) {
+    /**
+     * Remove questionnaire by id
+     *
+     * @param id Long
+     */
+    public void remove(long id) {
+        Log.i(TAG, "remove: ");
         nutritionalQuestionnaireBox.query()
                 .equal(NutritionalQuestionnaireOB_.id, id)
                 .build()
                 .remove();
     }
 
-    public void removeSyncronized(@NonNull Patient patient) {
-        Log.i(Repository.TAG, "Removendo NutritionalQuestionnaire sincronizadas: " + patient.get_id());
-        if (patient.get_id() == null) return;
+    public void removeSyncronized(@NonNull String patient_id) {
+        Log.i(TAG, "removeSyncronized: ");
         nutritionalQuestionnaireBox.query()
                 .equal(NutritionalQuestionnaireOB_.sync, true)
-                .equal(NutritionalQuestionnaireOB_.patient_id, patient.get_id())
+                .equal(NutritionalQuestionnaireOB_.patient_id, patient_id)
                 .build()
                 .remove();
     }
 
-    public boolean removeByPatienId(long patientId) {
-        return nutritionalQuestionnaireBox.query()
+    /**
+     * Remove all questionnaires of a patient
+     *
+     * @param patientId Long
+     */
+    public void removeByPatientId(long patientId) {
+        Log.i(TAG, "removeByPatientId: ");
+        nutritionalQuestionnaireBox.query()
                 .equal(NutritionalQuestionnaireOB_.patientId, patientId)
                 .build()
-                .remove() > 0;
+                .remove();
     }
 }

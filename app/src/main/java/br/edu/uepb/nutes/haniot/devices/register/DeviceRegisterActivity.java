@@ -174,7 +174,8 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         if (device != null) {
             mDevice.setAddress(device.getAddress());
             unpairDevice(mDevice);
-            mDevice.setUserId(user.get_id());
+            mDevice.setUser_id(user.get_id());
+            mDevice.setUserId(user.getId());
             device.createBond();
             animationScanner(false);
             progressBarPairing.setVisibility(View.VISIBLE);
@@ -194,19 +195,20 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     public void saveDeviceInServer(final Device device) {
         Log.i("AAA", device.toJson());
         device.setModelNumber(null); // TODO Remover quando a API der suporte
-        mDevice.setUserId(user.get_id());
-        device.setUserId(user.get_id());
+        mDevice.setUser_id(user.get_id());
+        mDevice.setUserId(user.getId());
+        mDevice.setImg(device.getImg());
 
         mComposite.add(mRepository
-                .saveDeviceRemote(device)
+                .saveDevice(mDevice)
                 .subscribe(deviceRest -> {
-                    deviceRest.setImg(device.getImg());
+//                    deviceRest.setImg(device.getImg());
                     Log.w("AAA", "UserOB: " + user.get_id());
                     Log.w("AAA", "subscribe: " + deviceRest.toJson());
-                    deviceRest.setSync(true);
-                    mRepository.saveDeviceLocal(deviceRest);
+//                    deviceRest.setSync(true);
+//                    mRepository.saveDeviceLocal(deviceRest);
 
-                    onDeviceRegistered(mDevice);
+                    onDeviceRegistered(deviceRest);
                 }, err -> {
                     onDeviceFounded(null);
                     Log.w(LOG_TAG, "ERROR SAVE:" + err.getMessage() + device);

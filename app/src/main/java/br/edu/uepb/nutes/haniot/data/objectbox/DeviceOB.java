@@ -4,11 +4,9 @@ import android.support.annotation.NonNull;
 
 import java.util.Objects;
 
-import br.edu.uepb.nutes.haniot.data.model.Device;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.annotation.Index;
-import io.objectbox.annotation.Transient;
 
 /**
  * Represents DeviceOB object.
@@ -21,11 +19,11 @@ public class DeviceOB extends SyncOB {
     private long id;
 
     @Index
-    private String _id; // _id in server remote (UUID)
+    private String _id;
 
     private String name;
 
-    private String address; // MAC address
+    private String address;
 
     private String type;
 
@@ -33,40 +31,17 @@ public class DeviceOB extends SyncOB {
 
     private String manufacturer;
 
-    private String userId;
+    private String user_id;
 
-    @Transient // not persisted
-    private String uuid;
+    private long userId;
 
-    @Transient // not persisted
-    private int img;
+//    @Transient // not persisted
+//    private String uuid;
+//
+//    @Transient // not persisted
+//    private int img;
 
-    public DeviceOB() {
-        super();
-    }
-
-    public DeviceOB(Device d) {
-        super(d.isSync());
-        this.setId(d.getId());
-        this.set_id(d.get_id());
-        this.setName(d.getName());
-        this.setAddress(d.getAddress());
-        this.setType(d.getType());
-        this.setModelNumber(d.getModelNumber());
-        this.setManufacturer(d.getManufacturer());
-        this.setUserId(d.getUserId());
-        this.setUuid(d.getUuid());
-        this.setImg(d.getImg());
-    }
-
-//    public DeviceOB(String name, String manufacturer, String modelNumber, int img, String type, String uuid) {
-//        this.name = name;
-//        this.manufacturer = manufacturer;
-//        this.modelNumber = modelNumber;
-//        this.img = img;
-//        this.type = type;
-//        this.uuid = uuid;
-//    }
+    public DeviceOB() { }
 
     public long getId() {
         return id;
@@ -124,28 +99,20 @@ public class DeviceOB extends SyncOB {
         this.manufacturer = manufacturer;
     }
 
-    public String getUserId() {
+    public String getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
+    }
+
+    public long getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(long userId) {
         this.userId = userId;
-    }
-
-    public int getImg() {
-        return img;
-    }
-
-    public void setImg(int img) {
-        this.img = img;
-    }
-
-    public String getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
     }
 
     @Override
@@ -172,9 +139,7 @@ public class DeviceOB extends SyncOB {
                 ", type='" + type + '\'' +
                 ", modelNumber='" + modelNumber + '\'' +
                 ", manufacturer='" + manufacturer + '\'' +
-                ", userId='" + userId + '\'' +
-                ", img=" + img +
-                ", uuid=" + uuid +
+                ", user_id='" + user_id + '\'' +
                 '}';
     }
 }

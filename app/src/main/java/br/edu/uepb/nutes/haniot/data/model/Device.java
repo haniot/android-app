@@ -12,7 +12,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.Objects;
 
 /**
- * Represents DeviceOB object.
+ * Represents Device object.
  *
  * @author Copyright (c) 2019, NUTES/UEPB
  */
@@ -23,7 +23,7 @@ public class Device extends Sync implements Parcelable {
 
     @SerializedName("id")
     @Expose()
-    private String _id; // _id in server remote (UUID)
+    private String _id;
 
     @SerializedName("name")
     @Expose()
@@ -47,7 +47,11 @@ public class Device extends Sync implements Parcelable {
 
     @SerializedName("user_id")
     @Expose()
-    private String userId;
+    private String user_id;
+
+    @SerializedName("userId")
+    @Expose()
+    private long userId;
 
     @Expose(serialize = false, deserialize = false)
     private String uuid;
@@ -74,7 +78,7 @@ public class Device extends Sync implements Parcelable {
         type = in.readString();
         modelNumber = in.readString();
         manufacturer = in.readString();
-        userId = in.readString();
+        user_id = in.readString();
         img = in.readInt();
         uuid = in.readString();
     }
@@ -88,7 +92,7 @@ public class Device extends Sync implements Parcelable {
         dest.writeString(type);
         dest.writeString(modelNumber);
         dest.writeString(manufacturer);
-        dest.writeString(userId);
+        dest.writeString(user_id);
         dest.writeInt(img);
         dest.writeString(uuid);
     }
@@ -166,12 +170,12 @@ public class Device extends Sync implements Parcelable {
         this.manufacturer = manufacturer;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getUser_id() {
+        return user_id;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUser_id(String userId) {
+        this.user_id = userId;
     }
 
     public int getImg() {
@@ -188,6 +192,14 @@ public class Device extends Sync implements Parcelable {
 
     public void setUuid(String uuid) {
         this.uuid = uuid;
+    }
+
+    public long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(long userId) {
+        this.userId = userId;
     }
 
     @Override
@@ -216,7 +228,7 @@ public class Device extends Sync implements Parcelable {
     @NonNull
     @Override
     public String toString() {
-        return "DeviceOB{" +
+        return "Device{" +
                 "id=" + id +
                 ", _id='" + _id + '\'' +
                 ", name='" + name + '\'' +
@@ -224,9 +236,10 @@ public class Device extends Sync implements Parcelable {
                 ", type='" + type + '\'' +
                 ", modelNumber='" + modelNumber + '\'' +
                 ", manufacturer='" + manufacturer + '\'' +
-                ", userId='" + userId + '\'' +
+                ", user_id='" + user_id + '\'' +
+                ", userId=" + userId +
+                ", uuid='" + uuid + '\'' +
                 ", img=" + img +
-                ", uuid=" + uuid +
                 '}';
     }
 }

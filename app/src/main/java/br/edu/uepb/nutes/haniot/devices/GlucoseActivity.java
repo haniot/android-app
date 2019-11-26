@@ -55,7 +55,12 @@ public class GlucoseActivity extends BaseDeviceActivity {
         manager = new GlucoseManager(this);
         ((GlucoseManager) manager).setSimpleCallback(glucoseDataCallback);
 
-        mDevice = mRepository.getDeviceByType(appPreferencesHelper.getUserLogged().get_id(), DeviceType.GLUCOMETER);
+        mComposite.add(
+                mRepository.getDeviceByType(appPreferencesHelper.getUserLogged(), DeviceType.GLUCOMETER)
+                        .doAfterSuccess(device -> mDevice = device)
+                        .subscribe((device, throwable) -> {
+                        })
+        );
     }
 
     private BloodGlucoseDataCallback glucoseDataCallback = new BloodGlucoseDataCallback() {

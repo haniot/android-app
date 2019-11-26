@@ -6,25 +6,25 @@ import java.util.List;
 
 import br.edu.uepb.nutes.haniot.data.model.Admin;
 import br.edu.uepb.nutes.haniot.data.model.Device;
-import br.edu.uepb.nutes.haniot.data.model.odontological.FamilyCohesionRecord;
-import br.edu.uepb.nutes.haniot.data.model.nutritional.FeedingHabitsRecord;
 import br.edu.uepb.nutes.haniot.data.model.HealthProfessional;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.MeasurementLastResponse;
+import br.edu.uepb.nutes.haniot.data.model.Patient;
+import br.edu.uepb.nutes.haniot.data.model.PilotStudy;
+import br.edu.uepb.nutes.haniot.data.model.Result;
+import br.edu.uepb.nutes.haniot.data.model.User;
+import br.edu.uepb.nutes.haniot.data.model.UserAccess;
+import br.edu.uepb.nutes.haniot.data.model.nutritional.FeedingHabitsRecord;
 import br.edu.uepb.nutes.haniot.data.model.nutritional.MedicalRecord;
 import br.edu.uepb.nutes.haniot.data.model.nutritional.NutritionalEvaluation;
 import br.edu.uepb.nutes.haniot.data.model.nutritional.NutritionalEvaluationResult;
 import br.edu.uepb.nutes.haniot.data.model.nutritional.NutritionalQuestionnaire;
+import br.edu.uepb.nutes.haniot.data.model.nutritional.PhysicalActivityHabit;
+import br.edu.uepb.nutes.haniot.data.model.nutritional.SleepHabit;
+import br.edu.uepb.nutes.haniot.data.model.odontological.FamilyCohesionRecord;
 import br.edu.uepb.nutes.haniot.data.model.odontological.OdontologicalQuestionnaire;
 import br.edu.uepb.nutes.haniot.data.model.odontological.OralHealthRecord;
-import br.edu.uepb.nutes.haniot.data.model.Patient;
-import br.edu.uepb.nutes.haniot.data.model.nutritional.PhysicalActivityHabit;
-import br.edu.uepb.nutes.haniot.data.model.PilotStudy;
-import br.edu.uepb.nutes.haniot.data.model.nutritional.SleepHabit;
 import br.edu.uepb.nutes.haniot.data.model.odontological.SociodemographicRecord;
-import br.edu.uepb.nutes.haniot.data.model.User;
-import br.edu.uepb.nutes.haniot.data.model.UserAccess;
-import br.edu.uepb.nutes.haniot.data.repository.Synchronize;
 import io.reactivex.Completable;
 import io.reactivex.Single;
 import retrofit2.Response;
@@ -108,8 +108,8 @@ public interface HaniotService {
                                        @Body Measurement measurement);
 
     @POST("patients/{patient_id}/measurements")
-    Single<Synchronize.Result> addMeasurement(@Path("patient_id") String patientId,
-                                              @Body List<Measurement> measurement);
+    Single<Result> addMeasurement(@Path("patient_id") String patientId,
+                                  @Body List<Measurement> measurement);
 
     @GET("patients/{patient_id}/measurements")
     Single<List<Measurement>> getAllMeasurements(@Path("patient_id") String userId,

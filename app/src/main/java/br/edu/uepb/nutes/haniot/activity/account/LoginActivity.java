@@ -267,12 +267,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     finish();
                 })
                 .subscribe(devices -> {
-                    mRepository.removeAllDevicesLocal(userId);
-                    for (Device d : devices) {
-                        d.setUserId(userId);
-                        d.setSync(true);
-                        mRepository.saveDeviceLocal(d);
-                    }
+//                    mRepository.removeAllDevicesLocal(userId);
+//                    for (Device d : devices)
+//                        mRepository.saveDeviceLocal(d);
                 }, error -> Log.w(LOG_TAG, "syncDevices() error: " + error.getMessage()))
         );
     }

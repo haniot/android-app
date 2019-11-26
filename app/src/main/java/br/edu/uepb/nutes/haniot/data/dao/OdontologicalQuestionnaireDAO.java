@@ -17,7 +17,6 @@ import br.edu.uepb.nutes.haniot.data.model.odontological.OralHealthRecord;
 import br.edu.uepb.nutes.haniot.data.model.odontological.SociodemographicRecord;
 import br.edu.uepb.nutes.haniot.data.objectbox.odontological.OdontologicalQuestionnaireOB;
 import br.edu.uepb.nutes.haniot.data.objectbox.odontological.OdontologicalQuestionnaireOB_;
-import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import io.objectbox.Box;
 import io.objectbox.BoxStore;
 
@@ -25,7 +24,11 @@ import static br.edu.uepb.nutes.haniot.data.model.type.OdontologicalQuestionnair
 import static br.edu.uepb.nutes.haniot.data.model.type.OdontologicalQuestionnaireType.ORAL_HEALTH_RECORD;
 import static br.edu.uepb.nutes.haniot.data.model.type.OdontologicalQuestionnaireType.SOCIODEMOGRAPHIC_RECORD;
 
+/**
+ * Odontological Questionnaire DAO implementation
+ */
 public class OdontologicalQuestionnaireDAO {
+    private static final String TAG = "ODONTOLOGICALDAO";
 
     private static OdontologicalQuestionnaireDAO instance;
     private static Box<OdontologicalQuestionnaireOB> odontologicalQuestionnaireBox;
@@ -41,8 +44,16 @@ public class OdontologicalQuestionnaireDAO {
         return instance;
     }
 
+    /**
+     * Get all questionnaires by patient
+     * @param patient Patient
+     * @param page Int
+     * @param limit Int
+     * @param sort String
+     * @return List of Questionnaire
+     */
     public List<OdontologicalQuestionnaire> getAll(Patient patient, int page, int limit, String sort) {
-        page--;
+        Log.i(TAG, "getAll: ");
         List<OdontologicalQuestionnaireOB> list;
 
         if (patient.get_id() != null) {
@@ -50,18 +61,25 @@ public class OdontologicalQuestionnaireDAO {
                     .equal(OdontologicalQuestionnaireOB_.patient_id, patient.get_id())
                     .orderDesc(OdontologicalQuestionnaireOB_.createdAt)
                     .build()
-                    .find(page * limit, limit);
+                    .find((page - 1) * limit, limit);
         } else {
             list = odontologicalQuestionnaireBox.query()
                     .equal(OdontologicalQuestionnaireOB_.patientId, patient.getId())
                     .orderDesc(OdontologicalQuestionnaireOB_.createdAt)
                     .build()
-                    .find(page * limit, limit);
+                    .find((page - 1) * limit, limit);
         }
         return Convert.listOdontologicalQuestionnaireToModel(list);
     }
 
-    public void update(long questionnaireId, String question, ActivityHabitsRecord newValue) {
+    /**
+     * Update Questionnaire
+     * @param questionnaireId Long (only locale)
+     * @param question String
+     * @param newValue ActivityHabitsRecord
+     */
+    public void update(long questionnaireId, @NonNull String question, @NonNull ActivityHabitsRecord newValue) {
+        Log.i(TAG, "update: ");
         OdontologicalQuestionnaireOB o = get(questionnaireId);
         if (o == null) return;
 
@@ -79,6 +97,11 @@ public class OdontologicalQuestionnaireDAO {
         odontologicalQuestionnaireBox.put(o);
     }
 
+    /**
+     * Get Questionnaire by id
+     * @param id Long
+     * @return Questionnaire or Null
+     */
     private OdontologicalQuestionnaireOB get(long id) {
         return odontologicalQuestionnaireBox.query()
                 .equal(OdontologicalQuestionnaireOB_.id, id)
@@ -86,11 +109,18 @@ public class OdontologicalQuestionnaireDAO {
                 .findFirst();
     }
 
-    public long save(OdontologicalQuestionnaire odontologicalQuestionnaire) {
-        return odontologicalQuestionnaireBox.put(Convert.convertOdontologicalQuestionnaire(odontologicalQuestionnaire));
+    /**
+     * Add Questionnaire to the DataBase
+     * @param questionnaire Questionnaire
+     * @return Long > 0 if success or 0 otherwise
+     */
+    public long save(@NonNull OdontologicalQuestionnaire questionnaire) {
+        Log.i(TAG, "save: ");
+        return odontologicalQuestionnaireBox.put(Convert.convertOdontologicalQuestionnaire(questionnaire));
     }
 
     public List<OdontologicalQuestionnaire> getAllNotSync() {
+        Log.i(TAG, "getAllNotSync: ");
         List<OdontologicalQuestionnaireOB> aux = odontologicalQuestionnaireBox.query()
                 .equal(OdontologicalQuestionnaireOB_.sync, false)
                 .build()
@@ -99,6 +129,7 @@ public class OdontologicalQuestionnaireDAO {
     }
 
     public List<OdontologicalQuestionnaire> getAllNotSync(long id) {
+        Log.i(TAG, "getAllNotSync: ");
         List<OdontologicalQuestionnaireOB> aux = odontologicalQuestionnaireBox.query()
                 .equal(OdontologicalQuestionnaireOB_.patientId, id)
                 .equal(OdontologicalQuestionnaireOB_.sync, false)
@@ -107,27 +138,38 @@ public class OdontologicalQuestionnaireDAO {
         return Convert.listOdontologicalQuestionnaireToModel(aux);
     }
 
-    public void markAsSync(long id) {
+    /**
+     * Remove questionnaire by id
+     *
+     * @param id Long
+     */
+    public void remove(long id) {
+        Log.i(TAG, "remove: ");
         odontologicalQuestionnaireBox.query()
                 .equal(OdontologicalQuestionnaireOB_.id, id)
                 .build()
                 .remove();
     }
 
-    public void removeSyncronized(@NonNull Patient patient) {
-        Log.i(Repository.TAG, "Removendo OdontologicalQuestionnaire sincronizados: " + patient.get_id());
-        if (patient.get_id() == null) return;
+    public void removeSyncronized(@NonNull String patient_id) {
+        Log.i(TAG, "removeSyncronized: ");
         odontologicalQuestionnaireBox.query()
                 .equal(OdontologicalQuestionnaireOB_.sync, true)
-                .equal(OdontologicalQuestionnaireOB_.patient_id, patient.get_id())
+                .equal(OdontologicalQuestionnaireOB_.patient_id, patient_id)
                 .build()
                 .remove();
     }
 
-    public boolean removeByPatientId(long patientId) {
-        return odontologicalQuestionnaireBox.query()
+    /**
+     * Remove all questionnaires of a patient
+     *
+     * @param patientId Long
+     */
+    public void removeByPatientId(long patientId) {
+        Log.i(TAG, "removeByPatientId: ");
+        odontologicalQuestionnaireBox.query()
                 .equal(OdontologicalQuestionnaireOB_.patientId, patientId)
                 .build()
-                .remove() > 0;
+                .remove();
     }
 }
