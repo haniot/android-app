@@ -21,10 +21,10 @@ import br.edu.uepb.nutes.haniot.data.objectbox.nutritional.NutritionalQuestionna
 import io.objectbox.Box;
 import io.objectbox.BoxStore;
 
-import static br.edu.uepb.nutes.haniot.data.model.type.NutritionalQuestionnaireType.FEEDING_HABITS_RECORD;
-import static br.edu.uepb.nutes.haniot.data.model.type.NutritionalQuestionnaireType.MEDICAL_RECORDS;
-import static br.edu.uepb.nutes.haniot.data.model.type.NutritionalQuestionnaireType.PHYSICAL_ACTIVITY_HABITS;
-import static br.edu.uepb.nutes.haniot.data.model.type.NutritionalQuestionnaireType.SLEEP_HABIT;
+import static br.edu.uepb.nutes.haniot.data.type.NutritionalQuestionnaireType.FEEDING_HABITS_RECORD;
+import static br.edu.uepb.nutes.haniot.data.type.NutritionalQuestionnaireType.MEDICAL_RECORDS;
+import static br.edu.uepb.nutes.haniot.data.type.NutritionalQuestionnaireType.PHYSICAL_ACTIVITY_HABITS;
+import static br.edu.uepb.nutes.haniot.data.type.NutritionalQuestionnaireType.SLEEP_HABIT;
 
 /**
  * Nutritional Questionnaire DAO implementation

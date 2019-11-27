@@ -23,12 +23,11 @@ import io.reactivex.Single;
 import io.reactivex.disposables.CompositeDisposable;
 
 public class Synchronize {
+    private final static String TAG = "SYNCHRONIZE";
 
     public static Synchronize getInstance(Context context) {
         return new Synchronize(context);
     }
-
-    private final static String TAG = "SYNCHRONIZE";
 
     private Context mContext;
     private DeviceDAO deviceDAO;
@@ -60,6 +59,7 @@ public class Synchronize {
 
         if (ConnectionUtils.internetIsEnabled(this.mContext)) {
             Log.i(TAG, "synchronize: COM INTERNET");
+            mDisposable.clear();
             sendUnsynchronized(); // envia os dados não sincronizados
             downloadMostRecent(); // Baixa os mais recentes do servidor
         } else {
@@ -120,20 +120,15 @@ public class Synchronize {
      * @param measurements Measurements
      */
     private void sendMeasurements(List<Measurement> measurements) {
-        for (Measurement m : measurements) {
-            Log.i(TAG, "sendMeasurements: "+ m.toJson());
+        Log.i(TAG, "sendMeasurements: ");
+        for (Measurement m : measurements)
             if (m.getUser_id() != null)
                 mDisposable.add(
                         haniotNetRepository.saveMeasurement(m)
-                                .doAfterSuccess(measurement -> {
-                                    Log.i(TAG, "sendMeasurements: doAfterSuccess");
-                                    measurementDAO.remove(m.getId());
-                                })
+                                .doAfterSuccess(measurement -> measurementDAO.remove(m.getId()))
                                 .subscribe((measurement, throwable) -> {
-                                    Log.i(TAG, "sendMeasurements: "+throwable.getMessage());
                                 })
                 );
-        }
     }
 
     /**
@@ -143,12 +138,13 @@ public class Synchronize {
      */
     private void sendDevices(List<Device> devices) {
         for (Device device : devices)
-            mDisposable.add(
-                    haniotNetRepository.saveDevice(device)
-                            .doAfterSuccess(device1 -> deviceDAO.markAsSync(device.getId()))
-                            .subscribe((device1, throwable) -> {
-                            })
-            );
+            if (device.getUser_id() != null)
+                mDisposable.add(
+                        haniotNetRepository.saveDevice(device)
+                                .doAfterSuccess(device1 -> deviceDAO.markAsSync(device.getId()))
+                                .subscribe((device1, throwable) -> {
+                                })
+                );
     }
 
     /**
@@ -215,7 +211,6 @@ public class Synchronize {
     private void downloadMostRecent() {
         String pilotStudyId = getPilotStudyId();
         if (pilotStudyId == null || "".equals(pilotStudyId)) return;
-        mDisposable.clear();
 
         mDisposable.add(haniotNetRepository
                 .getAllPatients(pilotStudyId, "-created_at", 1, 100)
@@ -286,8 +281,7 @@ public class Synchronize {
 
         for (Measurement m : measurements) {
             m.setUserId(patientId);
-            if (measurementDAO.save(m) > 0)
-                Log.i(TAG, "measurement salva de: " + m.toString());
+            measurementDAO.save(m);
         }
     }
 
@@ -318,7 +312,7 @@ public class Synchronize {
         List<NutritionalQuestionnaire> nutritionalQuestionnaires;
         List<OdontologicalQuestionnaire> odontologicalQuestionnaires;
 
-        public GetResponseList(List<Measurement> measurements, List<NutritionalQuestionnaire> nutritionalQuestionnaires, List<OdontologicalQuestionnaire> odontologicalQuestionnaires) {
+        GetResponseList(List<Measurement> measurements, List<NutritionalQuestionnaire> nutritionalQuestionnaires, List<OdontologicalQuestionnaire> odontologicalQuestionnaires) {
             this.measurements = measurements;
             this.nutritionalQuestionnaires = nutritionalQuestionnaires;
             this.odontologicalQuestionnaires = odontologicalQuestionnaires;

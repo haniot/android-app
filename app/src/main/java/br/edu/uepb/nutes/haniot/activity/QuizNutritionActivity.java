@@ -22,12 +22,12 @@ import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.nutritional.PhysicalActivityHabit;
 import br.edu.uepb.nutes.haniot.data.model.nutritional.SleepHabit;
 import br.edu.uepb.nutes.haniot.data.model.nutritional.WeeklyFoodRecord;
-import br.edu.uepb.nutes.haniot.data.model.type.ChronicDiseaseType;
-import br.edu.uepb.nutes.haniot.data.model.type.FeendingHabitsRecordType;
-import br.edu.uepb.nutes.haniot.data.model.type.FoodType;
-import br.edu.uepb.nutes.haniot.data.model.type.NutritionalQuestionnaireType;
-import br.edu.uepb.nutes.haniot.data.model.type.SchoolActivityFrequencyType;
-import br.edu.uepb.nutes.haniot.data.model.type.SportsType;
+import br.edu.uepb.nutes.haniot.data.type.ChronicDiseaseType;
+import br.edu.uepb.nutes.haniot.data.type.FeendingHabitsRecordType;
+import br.edu.uepb.nutes.haniot.data.type.FoodType;
+import br.edu.uepb.nutes.haniot.data.type.NutritionalQuestionnaireType;
+import br.edu.uepb.nutes.haniot.data.type.SchoolActivityFrequencyType;
+import br.edu.uepb.nutes.haniot.data.type.SportsType;
 import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
@@ -40,10 +40,10 @@ import br.edu.uepb.nutes.simplesurvey.question.Single;
 import io.reactivex.disposables.CompositeDisposable;
 import retrofit2.HttpException;
 
-import static br.edu.uepb.nutes.haniot.data.model.type.TypeEvaluation.FEEDING_HABITS;
-import static br.edu.uepb.nutes.haniot.data.model.type.TypeEvaluation.MEDICAL_RECORDS;
-import static br.edu.uepb.nutes.haniot.data.model.type.TypeEvaluation.PHYSICAL_ACTIVITY;
-import static br.edu.uepb.nutes.haniot.data.model.type.TypeEvaluation.SLEEP_HABITS;
+import static br.edu.uepb.nutes.haniot.data.type.TypeEvaluation.FEEDING_HABITS;
+import static br.edu.uepb.nutes.haniot.data.type.TypeEvaluation.MEDICAL_RECORDS;
+import static br.edu.uepb.nutes.haniot.data.type.TypeEvaluation.PHYSICAL_ACTIVITY;
+import static br.edu.uepb.nutes.haniot.data.type.TypeEvaluation.SLEEP_HABITS;
 
 /**
  * QuizNutritionActivity implementation.

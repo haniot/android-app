@@ -28,7 +28,7 @@ import br.edu.uepb.nutes.haniot.data.model.Admin;
 import br.edu.uepb.nutes.haniot.data.model.HealthProfessional;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.User;
-import br.edu.uepb.nutes.haniot.data.model.type.PatientsType;
+import br.edu.uepb.nutes.haniot.data.type.PatientsType;
 import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
@@ -38,9 +38,9 @@ import butterknife.ButterKnife;
 import io.reactivex.disposables.CompositeDisposable;
 import retrofit2.HttpException;
 
-import static br.edu.uepb.nutes.haniot.data.model.type.UserType.ADMIN;
-import static br.edu.uepb.nutes.haniot.data.model.type.UserType.HEALTH_PROFESSIONAL;
-import static br.edu.uepb.nutes.haniot.data.model.type.UserType.PATIENT;
+import static br.edu.uepb.nutes.haniot.data.type.UserType.ADMIN;
+import static br.edu.uepb.nutes.haniot.data.type.UserType.HEALTH_PROFESSIONAL;
+import static br.edu.uepb.nutes.haniot.data.type.UserType.PATIENT;
 
 /**
  * UserRegisterActivity implementation.

@@ -9,7 +9,7 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 
 import br.edu.uepb.nutes.haniot.data.objectbox.UserOB;
-import br.edu.uepb.nutes.haniot.data.model.type.UserType;
+import br.edu.uepb.nutes.haniot.data.type.UserType;
 
 /**
  * Represents UserOB object.

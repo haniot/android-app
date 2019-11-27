@@ -4,8 +4,7 @@ import android.support.annotation.NonNull;
 
 import java.util.Objects;
 
-import br.edu.uepb.nutes.haniot.data.model.BodyFat;
-import br.edu.uepb.nutes.haniot.data.model.type.MeasurementType;
+import br.edu.uepb.nutes.haniot.data.type.MeasurementType;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 

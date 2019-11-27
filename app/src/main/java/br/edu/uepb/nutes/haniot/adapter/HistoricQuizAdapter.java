@@ -33,25 +33,25 @@ import br.edu.uepb.nutes.haniot.data.model.nutritional.SleepHabit;
 import br.edu.uepb.nutes.haniot.data.model.odontological.SociodemographicRecord;
 import br.edu.uepb.nutes.haniot.data.model.odontological.ToothLesion;
 import br.edu.uepb.nutes.haniot.data.model.nutritional.WeeklyFoodRecord;
-import br.edu.uepb.nutes.haniot.data.model.type.ChronicDiseaseType;
-import br.edu.uepb.nutes.haniot.data.model.type.FeendingHabitsRecordType;
-import br.edu.uepb.nutes.haniot.data.model.type.FoodType;
-import br.edu.uepb.nutes.haniot.data.model.type.FrequencyAnswersType;
-import br.edu.uepb.nutes.haniot.data.model.type.SchoolActivityFrequencyType;
-import br.edu.uepb.nutes.haniot.data.model.type.SociodemographicType;
-import br.edu.uepb.nutes.haniot.data.model.type.SportsType;
-import br.edu.uepb.nutes.haniot.data.model.type.ToothLesionType;
+import br.edu.uepb.nutes.haniot.data.type.ChronicDiseaseType;
+import br.edu.uepb.nutes.haniot.data.type.FeendingHabitsRecordType;
+import br.edu.uepb.nutes.haniot.data.type.FoodType;
+import br.edu.uepb.nutes.haniot.data.type.FrequencyAnswersType;
+import br.edu.uepb.nutes.haniot.data.type.SchoolActivityFrequencyType;
+import br.edu.uepb.nutes.haniot.data.type.SociodemographicType;
+import br.edu.uepb.nutes.haniot.data.type.SportsType;
+import br.edu.uepb.nutes.haniot.data.type.ToothLesionType;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static android.view.View.GONE;
-import static br.edu.uepb.nutes.haniot.data.model.type.TypeEvaluation.FAMILY_COHESION;
-import static br.edu.uepb.nutes.haniot.data.model.type.TypeEvaluation.FEEDING_HABITS;
-import static br.edu.uepb.nutes.haniot.data.model.type.TypeEvaluation.MEDICAL_RECORDS;
-import static br.edu.uepb.nutes.haniot.data.model.type.TypeEvaluation.ORAL_HEALTH;
-import static br.edu.uepb.nutes.haniot.data.model.type.TypeEvaluation.PHYSICAL_ACTIVITY;
-import static br.edu.uepb.nutes.haniot.data.model.type.TypeEvaluation.SLEEP_HABITS;
-import static br.edu.uepb.nutes.haniot.data.model.type.TypeEvaluation.SOCIODEMOGRAPHICS;
+import static br.edu.uepb.nutes.haniot.data.type.TypeEvaluation.FAMILY_COHESION;
+import static br.edu.uepb.nutes.haniot.data.type.TypeEvaluation.FEEDING_HABITS;
+import static br.edu.uepb.nutes.haniot.data.type.TypeEvaluation.MEDICAL_RECORDS;
+import static br.edu.uepb.nutes.haniot.data.type.TypeEvaluation.ORAL_HEALTH;
+import static br.edu.uepb.nutes.haniot.data.type.TypeEvaluation.PHYSICAL_ACTIVITY;
+import static br.edu.uepb.nutes.haniot.data.type.TypeEvaluation.SLEEP_HABITS;
+import static br.edu.uepb.nutes.haniot.data.type.TypeEvaluation.SOCIODEMOGRAPHICS;
 
 public class HistoricQuizAdapter extends CustomExpandableRecyclerViewAdapter<HistoricQuizAdapter.HeaderViewHolder,
         HistoricQuizAdapter.ViewHolder> {

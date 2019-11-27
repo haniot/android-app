@@ -21,10 +21,10 @@ import br.edu.uepb.nutes.haniot.data.model.odontological.OdontologicalQuestionna
 import br.edu.uepb.nutes.haniot.data.model.odontological.OralHealthRecord;
 import br.edu.uepb.nutes.haniot.data.model.odontological.SociodemographicRecord;
 import br.edu.uepb.nutes.haniot.data.model.odontological.ToothLesion;
-import br.edu.uepb.nutes.haniot.data.model.type.FrequencyAnswersType;
-import br.edu.uepb.nutes.haniot.data.model.type.OdontologicalQuestionnaireType;
-import br.edu.uepb.nutes.haniot.data.model.type.SociodemographicType;
-import br.edu.uepb.nutes.haniot.data.model.type.ToothLesionType;
+import br.edu.uepb.nutes.haniot.data.type.FrequencyAnswersType;
+import br.edu.uepb.nutes.haniot.data.type.OdontologicalQuestionnaireType;
+import br.edu.uepb.nutes.haniot.data.type.SociodemographicType;
+import br.edu.uepb.nutes.haniot.data.type.ToothLesionType;
 import br.edu.uepb.nutes.haniot.data.repository.Repository;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
@@ -37,9 +37,9 @@ import br.edu.uepb.nutes.simplesurvey.question.Single;
 import io.reactivex.disposables.CompositeDisposable;
 import retrofit2.HttpException;
 
-import static br.edu.uepb.nutes.haniot.data.model.type.TypeEvaluation.FAMILY_COHESION;
-import static br.edu.uepb.nutes.haniot.data.model.type.TypeEvaluation.ORAL_HEALTH;
-import static br.edu.uepb.nutes.haniot.data.model.type.TypeEvaluation.SOCIODEMOGRAPHICS;
+import static br.edu.uepb.nutes.haniot.data.type.TypeEvaluation.FAMILY_COHESION;
+import static br.edu.uepb.nutes.haniot.data.type.TypeEvaluation.ORAL_HEALTH;
+import static br.edu.uepb.nutes.haniot.data.type.TypeEvaluation.SOCIODEMOGRAPHICS;
 
 /**
  * QuizOdontologyActivity implementation.

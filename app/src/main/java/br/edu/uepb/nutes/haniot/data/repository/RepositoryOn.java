@@ -26,10 +26,10 @@ import io.reactivex.Single;
 public abstract class RepositoryOn {
     public static String TAG = "REPOSITORY";
 
-    protected HaniotNetRepository haniotNetRepository;
-    protected Context mContext;
+    HaniotNetRepository haniotNetRepository;
+    private Context mContext;
 
-    public RepositoryOn(Context context) {
+    RepositoryOn(Context context) {
         this.mContext = context;
         this.haniotNetRepository = HaniotNetRepository.getInstance(context);
     }

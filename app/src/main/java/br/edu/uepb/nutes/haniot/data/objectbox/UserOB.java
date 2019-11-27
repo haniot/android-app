@@ -1,7 +1,7 @@
 package br.edu.uepb.nutes.haniot.data.objectbox;
 
 import br.edu.uepb.nutes.haniot.data.model.User;
-import br.edu.uepb.nutes.haniot.data.model.type.UserType;
+import br.edu.uepb.nutes.haniot.data.type.UserType;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.annotation.Index;

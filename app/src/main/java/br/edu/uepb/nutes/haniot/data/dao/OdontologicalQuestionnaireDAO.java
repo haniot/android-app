@@ -20,9 +20,9 @@ import br.edu.uepb.nutes.haniot.data.objectbox.odontological.OdontologicalQuesti
 import io.objectbox.Box;
 import io.objectbox.BoxStore;
 
-import static br.edu.uepb.nutes.haniot.data.model.type.OdontologicalQuestionnaireType.FAMILY_COHESION_RECORD;
-import static br.edu.uepb.nutes.haniot.data.model.type.OdontologicalQuestionnaireType.ORAL_HEALTH_RECORD;
-import static br.edu.uepb.nutes.haniot.data.model.type.OdontologicalQuestionnaireType.SOCIODEMOGRAPHIC_RECORD;
+import static br.edu.uepb.nutes.haniot.data.type.OdontologicalQuestionnaireType.FAMILY_COHESION_RECORD;
+import static br.edu.uepb.nutes.haniot.data.type.OdontologicalQuestionnaireType.ORAL_HEALTH_RECORD;
+import static br.edu.uepb.nutes.haniot.data.type.OdontologicalQuestionnaireType.SOCIODEMOGRAPHIC_RECORD;
 
 /**
  * Odontological Questionnaire DAO implementation

@@ -37,10 +37,10 @@ import br.edu.uepb.nutes.haniot.utils.NetworkUtil;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static br.edu.uepb.nutes.haniot.data.model.type.UserType.DENTISTRY;
-import static br.edu.uepb.nutes.haniot.data.model.type.UserType.HEALTH_PROFESSIONAL;
-import static br.edu.uepb.nutes.haniot.data.model.type.UserType.NUTRITION;
-import static br.edu.uepb.nutes.haniot.data.model.type.UserType.PATIENT;
+import static br.edu.uepb.nutes.haniot.data.type.UserType.DENTISTRY;
+import static br.edu.uepb.nutes.haniot.data.type.UserType.HEALTH_PROFESSIONAL;
+import static br.edu.uepb.nutes.haniot.data.type.UserType.NUTRITION;
+import static br.edu.uepb.nutes.haniot.data.type.UserType.PATIENT;
 
 /**
  * Main activity, application start.

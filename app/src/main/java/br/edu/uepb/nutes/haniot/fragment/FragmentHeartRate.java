@@ -16,7 +16,7 @@ import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.AddMeasurementActivity;
 import br.edu.uepb.nutes.haniot.data.model.HeartRateItem;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
-import br.edu.uepb.nutes.haniot.data.model.type.MeasurementType;
+import br.edu.uepb.nutes.haniot.data.type.MeasurementType;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 

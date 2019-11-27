@@ -24,7 +24,7 @@ import io.objectbox.BoxStore;
  */
 public class MeasurementDAO {
     private static final String TAG = "MEASUREMENTDAO";
-    public static MeasurementDAO instance;
+    private static MeasurementDAO instance;
     private static Box<MeasurementOB> measurementBox;
 
     private MeasurementDAO(Context context) {
@@ -109,13 +109,14 @@ public class MeasurementDAO {
 
     /**
      * Get measurements by type
-     * @param patient Patient
-     * @param type String
-     * @param sort String
+     *
+     * @param patient   Patient
+     * @param type      String
+     * @param sort      String
      * @param dateStart String
-     * @param dateEnd String
-     * @param page Int
-     * @param limit Int
+     * @param dateEnd   String
+     * @param page      Int
+     * @param limit     Int
      * @return List of Measurement
      */
     public List<Measurement> getMeasurementsByType(Patient patient, String type, String sort, String dateStart, String dateEnd, int page, int limit) {
