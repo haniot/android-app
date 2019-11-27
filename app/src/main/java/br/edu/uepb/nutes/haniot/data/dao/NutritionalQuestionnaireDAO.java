@@ -20,6 +20,7 @@ import br.edu.uepb.nutes.haniot.data.objectbox.nutritional.NutritionalQuestionna
 import br.edu.uepb.nutes.haniot.data.objectbox.nutritional.NutritionalQuestionnaireOB_;
 import io.objectbox.Box;
 import io.objectbox.BoxStore;
+import io.objectbox.query.QueryBuilder;
 
 import static br.edu.uepb.nutes.haniot.data.type.NutritionalQuestionnaireType.FEEDING_HABITS_RECORD;
 import static br.edu.uepb.nutes.haniot.data.type.NutritionalQuestionnaireType.MEDICAL_RECORDS;
@@ -57,21 +58,22 @@ public class NutritionalQuestionnaireDAO {
      */
     public List<NutritionalQuestionnaire> getAll(@NonNull Patient patient, int page, int limit, String sort) {
         Log.i(TAG, "getAll: ");
-        List<NutritionalQuestionnaireOB> aux;
+
+        boolean desc = false;
+        if (sort != null && '-' == sort.charAt(0)) desc = true;
+
+        QueryBuilder<NutritionalQuestionnaireOB> query = nutritionalQuestionnaireBox.query();
 
         if (patient.get_id() != null) {
-            aux = nutritionalQuestionnaireBox.query()
-                    .equal(NutritionalQuestionnaireOB_.patient_id, patient.get_id())
-                    .orderDesc(NutritionalQuestionnaireOB_.createdAt)
-                    .build()
-                    .find((page - 1) * limit, limit);
+            query.equal(NutritionalQuestionnaireOB_.patient_id, patient.get_id());
         } else {
-            aux = nutritionalQuestionnaireBox.query()
-                    .equal(NutritionalQuestionnaireOB_.patientId, patient.getId())
-                    .orderDesc(NutritionalQuestionnaireOB_.createdAt)
-                    .build()
-                    .find((page - 1) * limit, limit);
+            query.equal(NutritionalQuestionnaireOB_.patientId, patient.getId());
         }
+
+        if (desc) query.orderDesc(NutritionalQuestionnaireOB_.createdAt);
+        else query.order(NutritionalQuestionnaireOB_.createdAt);
+
+        List<NutritionalQuestionnaireOB> aux = query.build().find((page - 1) * limit, limit);
         return Convert.listNutritionalQuestionnaireToModel(aux);
     }
 

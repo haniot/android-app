@@ -19,6 +19,7 @@ import br.edu.uepb.nutes.haniot.data.objectbox.odontological.OdontologicalQuesti
 import br.edu.uepb.nutes.haniot.data.objectbox.odontological.OdontologicalQuestionnaireOB_;
 import io.objectbox.Box;
 import io.objectbox.BoxStore;
+import io.objectbox.query.QueryBuilder;
 
 import static br.edu.uepb.nutes.haniot.data.type.OdontologicalQuestionnaireType.FAMILY_COHESION_RECORD;
 import static br.edu.uepb.nutes.haniot.data.type.OdontologicalQuestionnaireType.ORAL_HEALTH_RECORD;
@@ -54,21 +55,21 @@ public class OdontologicalQuestionnaireDAO {
      */
     public List<OdontologicalQuestionnaire> getAll(Patient patient, int page, int limit, String sort) {
         Log.i(TAG, "getAll: ");
-        List<OdontologicalQuestionnaireOB> list;
+
+        boolean desc = false;
+        if (sort != null && '-' == sort.charAt(0)) desc = true;
+
+        QueryBuilder<OdontologicalQuestionnaireOB> query = odontologicalQuestionnaireBox.query();
 
         if (patient.get_id() != null) {
-            list = odontologicalQuestionnaireBox.query()
-                    .equal(OdontologicalQuestionnaireOB_.patient_id, patient.get_id())
-                    .orderDesc(OdontologicalQuestionnaireOB_.createdAt)
-                    .build()
-                    .find((page - 1) * limit, limit);
+            query.equal(OdontologicalQuestionnaireOB_.patient_id, patient.get_id());
         } else {
-            list = odontologicalQuestionnaireBox.query()
-                    .equal(OdontologicalQuestionnaireOB_.patientId, patient.getId())
-                    .orderDesc(OdontologicalQuestionnaireOB_.createdAt)
-                    .build()
-                    .find((page - 1) * limit, limit);
+            query.equal(OdontologicalQuestionnaireOB_.patientId, patient.getId());
         }
+        if (desc) query.orderDesc(OdontologicalQuestionnaireOB_.createdAt);
+        else query.order(OdontologicalQuestionnaireOB_.createdAt);
+
+        List<OdontologicalQuestionnaireOB> list = query.build().find((page - 1) * limit, limit);
         return Convert.listOdontologicalQuestionnaireToModel(list);
     }
 

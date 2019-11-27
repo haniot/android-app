@@ -14,6 +14,7 @@ import br.edu.uepb.nutes.haniot.data.objectbox.MeasurementOB;
 import br.edu.uepb.nutes.haniot.data.objectbox.MeasurementOB_;
 import io.objectbox.Box;
 import io.objectbox.BoxStore;
+import io.objectbox.query.QueryBuilder;
 
 /**
  * MeasurementDAO implementation.
@@ -121,24 +122,26 @@ public class MeasurementDAO {
      */
     public List<Measurement> getMeasurementsByType(Patient patient, String type, String sort, String dateStart, String dateEnd, int page, int limit) {
         Log.i(TAG, "getMeasurementsByType: ");
-        List<MeasurementOB> aux;
+
+        boolean desc = false;
+        if (sort != null && '-' == sort.charAt(0)) desc = true;
+
+        QueryBuilder<MeasurementOB> query = measurementBox.query();
 
         if (patient.get_id() != null) {
-            aux = measurementBox.query()
-                    .equal(MeasurementOB_.user_id, patient.get_id())
-                    .equal(MeasurementOB_.type, type)
-                    .orderDesc(MeasurementOB_.timestamp)
+            query.equal(MeasurementOB_.user_id, patient.get_id())
+                    .equal(MeasurementOB_.type, type);
 //                        .filter(m -> DateUtils.compareDates(m.getTimestamp(), dateStart, dateEnd)) nao suportado
-                    .build()
-                    .find((page - 1) * limit, limit);
         } else {
-            aux = measurementBox.query()
-                    .equal(MeasurementOB_.userId, patient.getId())
-                    .equal(MeasurementOB_.type, type)
-                    .orderDesc(MeasurementOB_.timestamp)
-                    .build()
-                    .find((page - 1) * limit, limit);
+            query.equal(MeasurementOB_.userId, patient.getId())
+                    .equal(MeasurementOB_.type, type);
         }
+        if (desc) query.orderDesc(MeasurementOB_.timestamp);
+        else query.order(MeasurementOB_.timestamp);
+
+        List<MeasurementOB> aux = query
+                .build()
+                .find((page - 1) * limit, limit);
         return Convert.listMeasurementsToModel(aux);
     }
 

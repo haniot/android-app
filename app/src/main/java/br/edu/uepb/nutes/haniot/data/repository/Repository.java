@@ -96,7 +96,17 @@ public class Repository extends RepositoryOn {
                     });
         } else {
             Device d = deviceDAO.getByType(user, type);
-            return Single.just(d);
+            if (d != null)
+                return Single.just(d);
+            else
+                return haniotNetRepository.getAllDevices(user.get_id())
+                        .map(devices -> {
+                            for (Device e : devices) {
+                                if (type.equals(e.getType()))
+                                    return e;
+                            }
+                            return null;
+                        });
         }
     }
 
