@@ -16,6 +16,7 @@ import br.edu.uepb.nutes.haniot.activity.PilotStudyActivity;
 import br.edu.uepb.nutes.haniot.activity.account.ChangePasswordActivity;
 import br.edu.uepb.nutes.haniot.activity.account.LoginActivity;
 import br.edu.uepb.nutes.haniot.data.repository.Repository;
+import br.edu.uepb.nutes.haniot.data.repository.Synchronize;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.devices.register.DeviceManagerActivity;
 import io.reactivex.disposables.CompositeDisposable;
@@ -136,12 +137,16 @@ public class MainPreferenceFragment extends PreferenceFragment {
 
         // Manager Pilot Study
         Preference prefMeasurements = findPreference(getString(R.string.key_monitor_measurements));
-        prefMeasurements.setOnPreferenceClickListener(preference ->
-
-        {
+        prefMeasurements.setOnPreferenceClickListener(preference -> {
             Intent intent = new Intent(getActivity(), SettingsActivity.class);
             intent.putExtra(SettingsActivity.SETTINGS_TYPE, SettingsActivity.SETTINGS_MEASUREMENTS);
             getActivity().startActivity(intent);
+            return true;
+        });
+
+        Preference prefSync = findPreference(getString(R.string.key_sync));
+        prefSync.setOnPreferenceClickListener(preference -> {
+            Synchronize.getInstance(getActivity().getApplicationContext()).synchronize(true);
             return true;
         });
     }

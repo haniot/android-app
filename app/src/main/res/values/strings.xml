@@ -112,7 +112,9 @@
     <string name="settings_delete_account">Excluir Conta</string>
     <string name="settings_account">Conta</string>
     <string name="settings_monitor_measurements">Monitorar Medições</string>
+    <string name="settings_sync">Sincronizar Dados</string>
     <string name="settings_summary_monitor_measurements">Selecione os tipos de mediçeõs que deseja monitorar.</string>
+    <string name="settings_summary_sync">Envia os dados salvos localmente e faz o download dos dados mais recentes do servidor</string>
     <string name="settings_about">Sobre</string>
     <string name="settings_general">Geral</string>
     <string name="settings_send_bug">Reportar um problema</string>
@@ -123,6 +125,7 @@
     <string name="settings_version">Versão</string>
     <string name="key_your_data">key_your_data</string>
     <string name="key_monitor_measurements">key_monitor_measurements</string>
+    <string name="key_sync">key_sync</string>
     <string name="key_send_bug">key_send_bug</string>
     <string name="key_url_server">key_url_server</string>
     <string name="key_signout">key_signout</string>

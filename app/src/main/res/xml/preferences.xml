@@ -28,6 +28,11 @@
             android:key="@string/key_monitor_measurements"
             android:summary="@string/settings_summary_monitor_measurements"
             android:title="@string/settings_monitor_measurements" />
+
+        <Preference
+            android:key="@string/key_sync"
+            android:summary="@string/settings_summary_sync"
+            android:title="@string/settings_sync" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/settings_about">
