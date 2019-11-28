@@ -499,6 +499,7 @@
         <item>Uma vez por semana</item>
         <item>Duas vezes por semana</item>
         <item>Três vezes por semana</item>
+        <item>Quatro ou mais vezes por semana</item>
         <item>Não participo da educação física da escola</item>
     </string-array>
     <string-array name="frequency_lunch_answers">

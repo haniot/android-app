@@ -53,8 +53,6 @@ public class Convert {
         device.setManufacturer(dP.getManufacturer());
         device.setUser_id(dP.getUser_id());
         device.setUserId(dP.getUserId());
-//        device.setUuid(dP.getUuid());
-//        device.setImg(dP.getImg());
         return device;
     }
 
@@ -71,8 +69,6 @@ public class Convert {
         device.setManufacturer(dP.getManufacturer());
         device.setUser_id(dP.getUser_id());
         device.setUserId(dP.getUserId());
-//        device.setUuid(dP.getUuid());
-//        device.setImg(dP.getImg());
         return device;
     }
 

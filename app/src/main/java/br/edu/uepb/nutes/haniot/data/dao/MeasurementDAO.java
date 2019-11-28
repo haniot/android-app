@@ -14,6 +14,7 @@ import br.edu.uepb.nutes.haniot.data.objectbox.MeasurementOB;
 import br.edu.uepb.nutes.haniot.data.objectbox.MeasurementOB_;
 import io.objectbox.Box;
 import io.objectbox.BoxStore;
+import io.objectbox.query.Query;
 import io.objectbox.query.QueryBuilder;
 
 /**
@@ -58,13 +59,17 @@ public class MeasurementDAO {
      * @return True if contains or False otherwise
      */
     private boolean contains(@NonNull Measurement m) {
-        MeasurementOB first = measurementBox.query()
-                .equal(MeasurementOB_.user_id, m.getUser_id())
-                .equal(MeasurementOB_.userId, m.getUserId())
-                .equal(MeasurementOB_.type, m.getType())
-                .equal(MeasurementOB_.timestamp, m.getTimestamp())
-                .build()
-                .findFirst();
+        QueryBuilder<MeasurementOB> query = measurementBox.query();
+
+        if (m.getUser_id() == null) { // id
+            query.equal(MeasurementOB_.userId, m.getUserId());
+        } else { // _id
+            query.equal(MeasurementOB_.user_id, m.getUser_id());
+        }
+        query.equal(MeasurementOB_.type, m.getType())
+                .equal(MeasurementOB_.timestamp, m.getTimestamp());
+
+        MeasurementOB first = query.build().findFirst();
         return first != null;
     }
 
