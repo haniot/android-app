@@ -163,9 +163,9 @@ public class MainPreferenceFragment extends PreferenceFragment {
         try {
             body = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
             body = "\n\n-----------------------------\n" + context.getString(R.string.message_not_remove)
-                    + "\n DeviceOB OS: Android \n DeviceOB OS version: " +
-                    Build.VERSION.RELEASE + "\n App Version: " + body + "\n DeviceOB Brand: " + Build.BRAND +
-                    "\n DeviceOB Model: " + Build.MODEL + "\n DeviceOB Manufacturer: " + Build.MANUFACTURER;
+                    + "\n Device OS: Android \n Device OS version: " +
+                    Build.VERSION.RELEASE + "\n App Version: " + body + "\n Device Brand: " + Build.BRAND +
+                    "\n Device Model: " + Build.MODEL + "\n Device Manufacturer: " + Build.MANUFACTURER;
         } catch (PackageManager.NameNotFoundException e) {
         }
 

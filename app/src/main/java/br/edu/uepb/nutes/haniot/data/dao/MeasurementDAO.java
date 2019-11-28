@@ -155,15 +155,22 @@ public class MeasurementDAO {
         return Convert.listMeasurementsToModel(aux);
     }
 
-    public List<Measurement> getAllNotSync(long id) {
+    public List<Measurement> getAllNotSync(Patient patient) {
         Log.i(TAG, "getAllNotSync: ");
-        List<MeasurementOB> aux =
-                measurementBox.query()
-                        .equal(MeasurementOB_.userId, id)
-                        .equal(MeasurementOB_.sync, false)
-                        .build()
-                        .find();
+        QueryBuilder<MeasurementOB> query = measurementBox.query();
+
+        if (patient.get_id() == null) {
+            query.equal(MeasurementOB_.userId, patient.getId());
+        } else {
+            query.equal(MeasurementOB_.user_id, patient.get_id());
+        }
+        query.equal(MeasurementOB_.sync, false);
+        List<MeasurementOB> aux = query.build().find();
         return Convert.listMeasurementsToModel(aux);
+    }
+
+    public boolean isSync() {
+        return measurementBox.query().equal(MeasurementOB_.sync, false).build().find().isEmpty();
     }
 
     public void markAsSync(String patient_id, String type, String timestamp) {

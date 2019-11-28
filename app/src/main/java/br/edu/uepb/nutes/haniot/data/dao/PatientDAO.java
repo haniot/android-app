@@ -134,6 +134,10 @@ public class PatientDAO {
         return Convert.listPatientsToModel(aux);
     }
 
+    public boolean isSync() {
+        return patientBox.query().equal(PatientOB_.sync, false).build().find().isEmpty();
+    }
+
     public void removeSyncronized() {
         Log.i(TAG, "removeSyncronized: ");
         patientBox.query()

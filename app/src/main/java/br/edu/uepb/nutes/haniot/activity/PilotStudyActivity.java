@@ -255,7 +255,7 @@ public class PilotStudyActivity extends AppCompatActivity {
         appPreferences.removeLastPilotStudy();
         appPreferences.saveLastPilotStudy(pilot);
         appPreferences.saveUserLogged(user);
-        Synchronize.getInstance(this).synchronize();
+        Synchronize.getInstance(this).synchronize(true);
 
         if (user.getUserType().equals(PATIENT)) {
             Patient patient = new Patient();

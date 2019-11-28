@@ -2,9 +2,11 @@ package br.edu.uepb.nutes.haniot.data.repository;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.List;
 
+import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.data.dao.DeviceDAO;
 import br.edu.uepb.nutes.haniot.data.dao.MeasurementDAO;
 import br.edu.uepb.nutes.haniot.data.dao.NutritionalQuestionnaireDAO;
@@ -54,24 +56,34 @@ public class Synchronize {
     /**
      * Synchronize data of application
      * Send the data unsynchronized and download most recent data of server
+     * @param feedback If True show feedback to user
      */
-    public synchronized void synchronize() {
+    public synchronized void synchronize(boolean feedback) {
 
         if (ConnectionUtils.internetIsEnabled(this.mContext)) {
             Log.i(TAG, "synchronize: COM INTERNET");
             mDisposable.clear();
-            sendUnsynchronized(); // envia os dados não sincronizados
-            downloadMostRecent(); // Baixa os mais recentes do servidor
+            sendUnsynchronized(feedback); // envia os dados não sincronizados
+            downloadMostRecent(feedback); // Baixa os mais recentes do servidor
         } else {
             Log.i(TAG, "synchronize: SEM INTERNET");
         }
     }
 
+    synchronized void synchronize() {
+        this.synchronize(false);
+    }
+
     /**
      * Send or try send the measurements unsynchronized
+     *
+     * @param feedback If True show feedback to user
      */
-    private void sendUnsynchronized() {
+    private void sendUnsynchronized(boolean feedback) {
         sendDevices(deviceDAO.getAllNotSync());
+
+        if (feedback)
+            Toast.makeText(mContext, R.string.title_synchronize, Toast.LENGTH_LONG).show();
 
         List<Patient> patients = patientDAO.getAllNotSync();
         // primeiro envia os pacientes não sincronizados, juntamente com os seus dados (medições e questionários) / ainda não tem o _id
@@ -89,7 +101,7 @@ public class Synchronize {
                                 String patient_id = patientServer.get_id();
 
                                 //pega as lista de dados com o id(long) do paciente enviado
-                                List<Measurement> mAux = measurementDAO.getAllNotSync(patientId);
+                                List<Measurement> mAux = measurementDAO.getAllNotSync(patientLocal);
                                 List<NutritionalQuestionnaire> nAux = nutritionalQuestionnaireDAO.getAllNotSync(patientId);
                                 List<OdontologicalQuestionnaire> oAux = odontologicalQuestionnaireDAO.getAllNotSync(patientId);
 
@@ -208,12 +220,16 @@ public class Synchronize {
         }
     }
 
-    private void downloadMostRecent() {
+    private void downloadMostRecent(boolean feedback) {
         String pilotStudyId = getPilotStudyId();
         if (pilotStudyId == null || "".equals(pilotStudyId)) return;
 
         mDisposable.add(haniotNetRepository
                 .getAllPatients(pilotStudyId, "-created_at", 1, 100)
+                .doAfterTerminate(() -> {
+                    if (feedback)
+                        Toast.makeText(mContext, R.string.complete_synchronize, Toast.LENGTH_LONG).show();
+                })
                 .doAfterSuccess(patients1 -> {
                     patientDAO.removeSyncronized();
 

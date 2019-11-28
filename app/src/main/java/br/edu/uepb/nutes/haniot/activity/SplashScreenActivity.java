@@ -53,7 +53,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         super.onStart();
 
         openActivity();
-        Synchronize.getInstance(this).synchronize();
+        Synchronize.getInstance(this).synchronize(true);
     }
 
     private void openActivity() {

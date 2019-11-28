@@ -55,8 +55,7 @@ public class Repository extends RepositoryOn {
         long id = deviceDAO.save(device);
         device.setId(id);
 
-        if (isConnected())
-            synchronize.synchronize();
+        synchronize.synchronize();
 
         return Single.just(device);
     }
@@ -123,10 +122,8 @@ public class Repository extends RepositoryOn {
         if (device.get_id() == null) {
             deviceDAO.remove(device.getId());
 
-            if (isConnected())
-                synchronize.synchronize();
+            synchronize.synchronize();
             return Completable.complete();
-
         } else {
             return haniotNetRepository.deleteDevice(userId, device.get_id())
                     .doOnComplete(() -> synchronize.synchronize());
@@ -145,8 +142,7 @@ public class Repository extends RepositoryOn {
         long id = measurementDAO.save(measurement);
         measurement.setId(id);
 
-        if (isConnected())
-            synchronize.synchronize();
+        synchronize.synchronize();
         return Single.just(measurement);
     }
 
@@ -157,8 +153,7 @@ public class Repository extends RepositoryOn {
             long id = measurementDAO.save(m);
             m.setId(id);
         }
-        if (isConnected())
-            synchronize.synchronize();
+        synchronize.synchronize();
         return Single.just(measurements);
     }
 
@@ -173,8 +168,7 @@ public class Repository extends RepositoryOn {
         if (measurement.get_id() == null) { // não foi sincronizada ainda, removo localmente
             measurementDAO.remove(measurement.getId());
 
-            if (isConnected())
-                synchronize.synchronize();
+            synchronize.synchronize();
             return Completable.complete();
         } else {
             return haniotNetRepository.deleteMeasurement(measurement.getUser_id(), measurement.get_id())
@@ -186,15 +180,14 @@ public class Repository extends RepositoryOn {
                                                               String sort, String dateStart,
                                                               String dateEnd, int page, int limit) {
         Log.i(TAG, "Measurements (" + type + ") de: " + patient.getName());
-        List<Measurement> aux = measurementDAO.getMeasurementsByType(patient, type, sort, dateStart, dateEnd, page, limit);
 
         if (patient.get_id() != null && isConnected()) {
-            Log.i(TAG, "getAllMeasurementsByType: ON - page[" + page + "] -> " + aux.toString());
+            if (!measurementDAO.isSync()) synchronize.synchronize();
 
             return haniotNetRepository.getAllMeasurementsByType(
                     patient.get_id(), type, sort, dateStart, dateEnd, page, limit);
         } else {
-            Log.i(TAG, "getAllMeasurementsByType: OFF - page[" + page + "] -> " + aux.toString());
+            List<Measurement> aux = measurementDAO.getMeasurementsByType(patient, type, sort, dateStart, dateEnd, page, limit);
             return Single.just(aux);
         }
     }
@@ -219,7 +212,6 @@ public class Repository extends RepositoryOn {
             patient.setSync(false);
             long id = patientDAO.save(patient);
             patient.setId(id);
-            Log.i(TAG, "Salvo localmente");
             return Single.just(patient);
         }
     }
@@ -248,8 +240,7 @@ public class Repository extends RepositoryOn {
             patient.setSync(false);
             patientDAO.update(patient);
 
-            if (isConnected())
-                synchronize.synchronize();
+            synchronize.synchronize();
             return Single.just(patient);
         } else {
             return haniotNetRepository.updatePatient(patient)
@@ -259,12 +250,11 @@ public class Repository extends RepositoryOn {
 
     public Single<List<Patient>> getAllPatients(String pilotStudyId, String sort, int page, int limit) {
         Log.i(TAG, "getAllPatients: ");
+
         if (isConnected()) {
-            return haniotNetRepository.getAllPatients(pilotStudyId, sort, page, limit)
-                    .map(patients -> {
-                        patients.addAll(patientDAO.getAllNotSync());
-                        return patients;
-                    });
+            if (!patientDAO.isSync()) synchronize.synchronize();
+
+            return haniotNetRepository.getAllPatients(pilotStudyId, sort, page, limit);
         } else {
             List<Patient> aux = patientDAO.getAllPatients(pilotStudyId, sort, page, limit);
             Log.i(TAG, "getAllPatients(LOCAL): " + aux.toString());
@@ -275,14 +265,13 @@ public class Repository extends RepositoryOn {
     public Completable deletePatient(@NonNull Patient patient) {
         Log.i(TAG, "deletePatient: ");
 
-        if (patient.get_id() == null) { // ta salvo apenas off
+        if (patient.get_id() == null) { // ta salvo local
             if (patientDAO.remove(patient.getId())) {
                 measurementDAO.removeByPatientId(patient.getId());
                 nutritionalQuestionnaireDAO.removeByPatientId(patient.getId());
                 odontologicalQuestionnaireDAO.removeByPatientId(patient.getId());
             }
-            if (isConnected())
-                synchronize.synchronize();
+            synchronize.synchronize();
             return Completable.complete();
         } else {
             return haniotNetRepository.deletePatient(patient.get_id())
@@ -291,13 +280,14 @@ public class Repository extends RepositoryOn {
     }
 
     public Single<List<NutritionalQuestionnaire>> getAllNutritionalQuestionnaires(Patient patient, int page, int limit, String sort) {
-        List<NutritionalQuestionnaire> aux = nutritionalQuestionnaireDAO.getAll(patient, page, limit, sort);
+        Log.i(TAG, "getAllNutritionalQuestionnaires (" + patient.getName() + "):");
 
-        if (isConnected() && patient.get_id() != null) {
-            Log.i(TAG, "getAllNutritionalQuestionnaires: ON: " + aux.toString());
+        if (patient.get_id() != null && isConnected()) {
+            if (!nutritionalQuestionnaireDAO.isSync()) synchronize.synchronize();
+
             return haniotNetRepository.getAllNutritionalQuestionnaires(patient.get_id(), page, limit, sort);
         } else {
-            Log.i(TAG, "getAllNutritionalQuestionnaires: OFF: " + aux.toString());
+            List<NutritionalQuestionnaire> aux = nutritionalQuestionnaireDAO.getAll(patient, page, limit, sort);
             return Single.just(aux);
         }
     }
@@ -309,8 +299,7 @@ public class Repository extends RepositoryOn {
         long id = nutritionalQuestionnaireDAO.save(n);
         n.setId(id);
 
-        if (isConnected())
-            synchronize.synchronize();
+        synchronize.synchronize();
         return Single.just(n);
     }
 
@@ -320,8 +309,7 @@ public class Repository extends RepositoryOn {
         if (questionnaire.get_id() == null) { // ainda tá off
             nutritionalQuestionnaireDAO.update(questionnaire.getId(), question, newValue); // pra atualizar OFF tem que ser id long
 
-            if (isConnected())
-                synchronize.synchronize();
+            synchronize.synchronize();
             return Single.just(newValue);
         } else { // so on
             return haniotNetRepository.updateNutritionalQuestionnaire(patient.get_id(), questionnaire.get_id(), question, newValue)
@@ -330,13 +318,14 @@ public class Repository extends RepositoryOn {
     }
 
     public Single<List<OdontologicalQuestionnaire>> getAllOdontologicalQuestionnaires(Patient patient, int page, int limit, String sort) {
-        List<OdontologicalQuestionnaire> aux = odontologicalQuestionnaireDAO.getAll(patient, page, limit, sort);
+        Log.i(TAG, "getAllOdontologicalQuestionnaires (" + patient.getName() + "):");
 
-        if (isConnected() && patient.get_id() != null) {
-            Log.i(TAG, "getAllOdontologicalQuestionnaires: ON: " + aux.toString());
+        if (patient.get_id() != null && isConnected()) {
+            if (!odontologicalQuestionnaireDAO.isSync()) synchronize.synchronize();
+
             return haniotNetRepository.getAllOdontologicalQuestionnaires(patient.get_id(), page, limit, sort);
         } else {
-            Log.i(TAG, "getAllOdontologicalQuestionnaires: OFF: " + aux.toString());
+            List<OdontologicalQuestionnaire> aux = odontologicalQuestionnaireDAO.getAll(patient, page, limit, sort);
             return Single.just(aux);
         }
     }
@@ -348,8 +337,7 @@ public class Repository extends RepositoryOn {
         long id = odontologicalQuestionnaireDAO.save(odontologicalQuestionnaire);
         odontologicalQuestionnaire.setId(id);
 
-        if (isConnected())
-            synchronize.synchronize();
+        synchronize.synchronize();
         return Single.just(odontologicalQuestionnaire);
     }
 
@@ -359,8 +347,7 @@ public class Repository extends RepositoryOn {
         if (questionnaire.get_id() == null) {
             odontologicalQuestionnaireDAO.update(questionnaire.getId(), question, newValue);
 
-            if (isConnected())
-                synchronize.synchronize();
+            synchronize.synchronize();
             return Single.just(newValue);
         } else {
             return haniotNetRepository.updateOdontologicalQuestionnaire(patient.get_id(), questionnaire.get_id(), question, newValue)

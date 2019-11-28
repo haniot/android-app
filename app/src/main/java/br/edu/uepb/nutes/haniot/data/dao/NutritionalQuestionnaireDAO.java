@@ -153,6 +153,10 @@ public class NutritionalQuestionnaireDAO {
         return Convert.listNutritionalQuestionnaireToModel(aux);
     }
 
+    public boolean isSync() {
+        return nutritionalQuestionnaireBox.query().equal(NutritionalQuestionnaireOB_.sync, false).build().find().isEmpty();
+    }
+
     /**
      * Remove questionnaire by id
      *

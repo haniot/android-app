@@ -15,6 +15,7 @@ import br.edu.uepb.nutes.haniot.data.model.odontological.FamilyCohesionRecord;
 import br.edu.uepb.nutes.haniot.data.model.odontological.OdontologicalQuestionnaire;
 import br.edu.uepb.nutes.haniot.data.model.odontological.OralHealthRecord;
 import br.edu.uepb.nutes.haniot.data.model.odontological.SociodemographicRecord;
+import br.edu.uepb.nutes.haniot.data.objectbox.nutritional.NutritionalQuestionnaireOB_;
 import br.edu.uepb.nutes.haniot.data.objectbox.odontological.OdontologicalQuestionnaireOB;
 import br.edu.uepb.nutes.haniot.data.objectbox.odontological.OdontologicalQuestionnaireOB_;
 import io.objectbox.Box;
@@ -137,6 +138,10 @@ public class OdontologicalQuestionnaireDAO {
                 .build()
                 .find();
         return Convert.listOdontologicalQuestionnaireToModel(aux);
+    }
+
+    public boolean isSync() {
+        return odontologicalQuestionnaireBox.query().equal(OdontologicalQuestionnaireOB_.sync, false).build().find().isEmpty();
     }
 
     /**
