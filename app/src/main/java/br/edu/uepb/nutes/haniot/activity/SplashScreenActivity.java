@@ -17,6 +17,10 @@ import br.edu.uepb.nutes.haniot.service.TokenExpirationService;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static br.edu.uepb.nutes.haniot.data.model.UserType.ADMIN;
+import static br.edu.uepb.nutes.haniot.data.model.UserType.NUTRITION;
+import static br.edu.uepb.nutes.haniot.data.model.UserType.PATIENT;
+
 /**
  * Activity SplashScreenActivity.
  *
@@ -39,6 +43,10 @@ public class SplashScreenActivity extends AppCompatActivity {
 
         appPreference = AppPreferencesHelper.getInstance(this);
 
+        // TODO for test
+//        appPreference.removeLastPilotStudy();
+//        appPreference.getUserLogged().setUserType(PATIENT);
+        //
         startService(new Intent(this, TokenExpirationService.class));
 
         Animation animation = AnimationUtils.loadAnimation(this, R.anim.slide_up);

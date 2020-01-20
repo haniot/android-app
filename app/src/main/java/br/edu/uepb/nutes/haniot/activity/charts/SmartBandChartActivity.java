@@ -98,11 +98,6 @@ public class SmartBandChartActivity extends BaseChartActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
@@ -178,12 +173,12 @@ public class SmartBandChartActivity extends BaseChartActivity {
 //        if (type == Calendar.YEAR) {
 //            for (int i = 0; i <= data.size() - 1; i++) {
 //                total += data.get(i).getValue();
-//                if (data.get(i).getMeasurementList().get(0).getTypeId() == MeasurementType.DISTANCE) {
-//                    totalCal += data.get(i).getMeasurementList().get(0).getValue();
-//                    totalDist += data.get(i).getMeasurementList().get(1).getValue();
+//                if (data.get(i).getMeasurements().get(0).getTypeId() == MeasurementType.DISTANCE) {
+//                    totalCal += data.get(i).getMeasurements().get(0).getValue();
+//                    totalDist += data.get(i).getMeasurements().get(1).getValue();
 //                } else {
-//                    totalCal += data.get(i).getMeasurementList().get(1).getValue();
-//                    totalDist += data.get(i).getMeasurementList().get(0).getValue();
+//                    totalCal += data.get(i).getMeasurements().get(1).getValue();
+//                    totalDist += data.get(i).getMeasurements().get(0).getValue();
 //                }
 //            }
 //
@@ -207,12 +202,12 @@ public class SmartBandChartActivity extends BaseChartActivity {
 //                int compare = c.get(type);
 //
 //                total += data.get(i).getValue();
-//                if (data.get(i).getMeasurementList().get(0).getTypeId() == MeasurementType.DISTANCE) {
-//                    totalCal += data.get(i).getMeasurementList().get(0).getValue();
-//                    totalDist += data.get(i).getMeasurementList().get(1).getValue();
+//                if (data.get(i).getMeasurements().get(0).getTypeId() == MeasurementType.DISTANCE) {
+//                    totalCal += data.get(i).getMeasurements().get(0).getValue();
+//                    totalDist += data.get(i).getMeasurements().get(1).getValue();
 //                } else {
-//                    totalCal += data.get(i).getMeasurementList().get(1).getValue();
-//                    totalDist += data.get(i).getMeasurementList().get(0).getValue();
+//                    totalCal += data.get(i).getMeasurements().get(1).getValue();
+//                    totalDist += data.get(i).getMeasurements().get(0).getValue();
 //                }
 //
 //                if (current != compare) {
@@ -234,19 +229,20 @@ public class SmartBandChartActivity extends BaseChartActivity {
         return points;
     }
 
-    @Override
-    protected void requestData(int type) {
-        if (type == CHART_TYPE_DAY) {
-            currentChartType = CHART_TYPE_DAY;
-        } else if (type == CHART_TYPE_SEVEN) {
-            currentChartType = CHART_TYPE_SEVEN;
-        } else if (type == CHART_TYPE_MONTH) {
-            currentChartType = CHART_TYPE_MONTH;
-        } else if (type == CHART_TYPE_YEAR) {
-            currentChartType = CHART_TYPE_YEAR;
-        }
-        requestDataInServer("");
-    }
+//    @Override
+//    protected void requestData(int type) {
+//        if (type == CHART_TYPE_DAY) {
+//            currentChartType = CHART_TYPE_DAY;
+//        } else if (type == CHART_TYPE_SEVEN) {
+//            currentChartType = CHART_TYPE_SEVEN;
+//        } else if (type == CHART_TYPE_MONTH) {
+//            currentChartType = CHART_TYPE_MONTH;
+//        } else if (type == CHART_TYPE_YEAR) {
+//
+//        }
+//        currentChartType = type;
+//        requestDataInServer(type);
+//    }
 
     @Override
     public void createMoreInfo(List<Measurement> measurements) {
@@ -270,8 +266,8 @@ public class SmartBandChartActivity extends BaseChartActivity {
             infos.add(new InfoMeasurement(getString(R.string.info_period), " - "));
         } else {
             infos.add(new InfoMeasurement(getString(R.string.info_steps), String.valueOf((int) measurements.get(0).getValue())));
-//            infos.add(new InfoMeasurement(getString(R.string.info_distance), String.valueOf((int) (measurements.get(0).getMeasurementList().get(0).getValue())) + " m"));
-//            infos.add(new InfoMeasurement(getString(R.string.info_calories), String.valueOf((int) (measurements.get(0).getMeasurementList().get(1).getValue())) + " kcal"));
+//            infos.add(new InfoMeasurement(getString(R.string.info_distance), String.valueOf((int) (measurements.get(0).getMeasurements().get(0).getValue())) + " m"));
+//            infos.add(new InfoMeasurement(getString(R.string.info_calories), String.valueOf((int) (measurements.get(0).getMeasurements().get(1).getValue())) + " kcal"));
 //            infos.add(new InfoMeasurement(getString(R.string.info_period), DateUtils.formatDate(measurements.get(0).getRegistrationDate(), getString(R.string.date_format))));
         }
         return infos;

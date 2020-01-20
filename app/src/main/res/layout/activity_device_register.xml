@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:animateLayoutChanges="true"
     tools:context=".devices.register.DeviceRegisterActivity">
 
     <FrameLayout
@@ -33,6 +34,15 @@
         android:layout_height="match_parent"
         android:visibility="gone">
         <include layout="@layout/layout_box_response"/>
+    </FrameLayout>
+
+    <!-- search result -->
+    <FrameLayout
+        android:id="@+id/box_error"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+        <include layout="@layout/layout_box_error"/>
     </FrameLayout>
 
 

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -20,11 +21,18 @@ import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.QuizOdontologyActivity;
 import br.edu.uepb.nutes.haniot.adapter.base.BaseAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
+import br.edu.uepb.nutes.haniot.data.model.HealthProfessional;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.PatientsType;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static br.edu.uepb.nutes.haniot.data.model.UserType.ADMIN;
+import static br.edu.uepb.nutes.haniot.data.model.UserType.DENTISTRY;
+import static br.edu.uepb.nutes.haniot.data.model.UserType.HEALTH_PROFESSIONAL;
+import static br.edu.uepb.nutes.haniot.data.model.UserType.NUTRITION;
+import static br.edu.uepb.nutes.haniot.data.model.UserType.PATIENT;
 
 public class ManagerPatientAdapter extends BaseAdapter<Patient> {
 
@@ -91,23 +99,28 @@ public class ManagerPatientAdapter extends BaseAdapter<Patient> {
             ManagerPatientViewHolder h = (ManagerPatientViewHolder) holder;
 
             h.textName.setText(patient.getName());
+            h.textName.setEllipsize(TextUtils.TruncateAt.END);
             h.textAge.setText(calculateAge(patient.getBirthDate()));
             if (patient.getGender().equals(PatientsType.GenderType.FEMALE))
                 h.profile.setImageResource(R.drawable.x_girl);
             else h.profile.setImageResource(R.drawable.x_boy);
 
-            h.mView.setOnClickListener(v -> {
-                actionsPatientListener.onItemClick(patient);
-            });
+            h.mView.setOnClickListener(v -> actionsPatientListener.onItemClick(patient));
 
             h.btnMore.setOnClickListener(v -> {
                 PopupMenu popup = new PopupMenu(context, ((ManagerPatientViewHolder) holder).btnMore);
                 popup.inflate(R.menu.menu_patient_actions);
-                if (appPreferencesHelper.getUserLogged().getHealthArea().equals("nutrition"))
-                    popup.getMenu().getItem(2).setVisible(false);
-                else if (appPreferencesHelper.getUserLogged().getHealthArea().equals("dentistry")) {
-                    popup.getMenu().getItem(1).setVisible(false);
-                    popup.getMenu().getItem(3).setVisible(false);
+
+                if (appPreferencesHelper.getUserLogged().getUserType().equals(HEALTH_PROFESSIONAL)) {
+                    String userType = (appPreferencesHelper.getUserLogged()).getHealthArea();
+                    if (!userType.equals(ADMIN)) {
+                        if (userType.equals(NUTRITION)) {
+                            popup.getMenu().getItem(2).setVisible(false);
+                        } else if (userType.equals(DENTISTRY)) {
+                            popup.getMenu().getItem(1).setVisible(false);
+                            popup.getMenu().getItem(3).setVisible(false);
+                        }
+                    }
                 }
                 popup.setOnMenuItemClickListener(item -> {
                     switch (item.getItemId()) {
@@ -122,6 +135,9 @@ public class ManagerPatientAdapter extends BaseAdapter<Patient> {
                             break;
                         case R.id.nutrition_evaluation:
                             actionsPatientListener.onMenuClick("nutrition_evaluation", patient);
+                            break;
+                        case R.id.historic_quiz:
+                            actionsPatientListener.onMenuClick("historic_quiz", patient);
                             break;
                         default:
                             break;

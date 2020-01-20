@@ -3,6 +3,8 @@ package br.edu.uepb.nutes.haniot.activity.account;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.StringRes;
@@ -28,9 +30,13 @@ import java.util.Objects;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.MainActivity;
 import br.edu.uepb.nutes.haniot.data.model.Device;
+import br.edu.uepb.nutes.haniot.data.model.User;
+import br.edu.uepb.nutes.haniot.data.model.UserAccess;
+import br.edu.uepb.nutes.haniot.data.model.UserType;
 import br.edu.uepb.nutes.haniot.data.model.dao.DeviceDAO;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
+import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.ErrorHandler;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.haniot.service.TokenExpirationService;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
@@ -40,6 +46,9 @@ import okhttp3.ResponseBody;
 import retrofit2.HttpException;
 
 import static android.view.inputmethod.InputMethodManager.HIDE_NOT_ALWAYS;
+import static br.edu.uepb.nutes.haniot.data.model.UserType.ADMIN;
+import static br.edu.uepb.nutes.haniot.data.model.UserType.HEALTH_PROFESSIONAL;
+import static br.edu.uepb.nutes.haniot.data.model.UserType.PATIENT;
 
 /**
  * LoginActivity implementation.
@@ -70,6 +79,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @BindView(R.id.message_error)
     TextView messageError;
 
+    @BindView(R.id.forgot_password)
+    TextView forgotPassword;
+
     private TokenExpirationService tokenExpirationService;
     private boolean mIsBound;
     private DeviceDAO mDeviceDAO;
@@ -80,9 +92,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
         ButterKnife.bind(this);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            int flags = getWindow().getDecorView().getSystemUiVisibility();
+            flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+            getWindow().getDecorView().setSystemUiVisibility(flags);
+            getWindow().setStatusBarColor(getColor(android.R.color.background_light));
+        }
         mDeviceDAO = DeviceDAO.getInstance(this);
         haniotNetRepository = HaniotNetRepository.getInstance(this);
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
@@ -90,6 +107,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         doBindService();
 
         buttonLogin.setOnClickListener(this);
+        forgotPassword.setOnClickListener(this);
         passwordEditText.setOnEditorActionListener((textView, actionId, keyEvent) -> {
             if (actionId == EditorInfo.IME_ACTION_SEND) login();
 
@@ -122,6 +140,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             case R.id.btn_login:
                 login();
                 break;
+            case R.id.forgot_password:
+                startActivity(new Intent(this, ForgotPasswordActivity.class));
+                break;
             default:
                 break;
         }
@@ -134,9 +155,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         boxMessage.setVisibility(View.GONE);
 
         // close keyboard
-        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(Objects.requireNonNull(
-                getCurrentFocus()).getWindowToken(), HIDE_NOT_ALWAYS);
+        if (getCurrentFocus() != null) {
+            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(Objects.requireNonNull(getCurrentFocus())
+                    .getWindowToken(), HIDE_NOT_ALWAYS);
+        }
 
         // Check if you have an internet connection.
         // If yes, it does authentication with the remote server
@@ -155,7 +178,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 .doAfterTerminate(() -> showLoading(false))
                 .subscribe(userAccess -> {
                     if (appPreferencesHelper.saveUserAccessHaniot(userAccess)) {
-                        getUserProfile(userAccess.getSubject());
+                        getUserProfile(userAccess);
+                        //TODO Temp
+                        Log.w("AAA", "Token: " + userAccess.getAccessToken());
                     }
                 }, this::errorHandler)
         );
@@ -164,25 +189,71 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     /**
      * Get data user from server.
      *
-     * @param userId {@link String}
+     * @param userAccess {@link UserAccess}
      */
-    private void getUserProfile(String userId) {
-        DisposableManager.add(haniotNetRepository
-                .getHealthProfissional(userId)
-                .doOnSubscribe(disposable -> showLoading(true))
-                .doAfterTerminate(() -> showLoading(false))
-                .subscribe(user -> {
-                    if (user.get_id() == null) {
-                        showMessage(R.string.error_recover_data);
-                        showLoading(false);
-                        return;
-                    }
+    private void getUserProfile(UserAccess userAccess) {
+        switch (userAccess.getTokenType()) {
+            case HEALTH_PROFESSIONAL:
+                DisposableManager.add(haniotNetRepository
+                        .getHealthProfissional(userAccess.getSubject())
+                        .doOnSubscribe(disposable -> showLoading(true))
+                        .doAfterTerminate(() -> showLoading(false))
+                        .subscribe(user -> {
+                            if (user.get_id() == null) {
+                                showMessage(R.string.error_recover_data);
+                                showLoading(false);
+                                return;
+                            }
+                            user.setUserType(HEALTH_PROFESSIONAL);
+                            saveUserInfo(user);
+                        }, this::errorHandler)
+                );
+                break;
+            case ADMIN:
+                DisposableManager.add(haniotNetRepository
+                        .getAdmin(userAccess.getSubject())
+                        .doOnSubscribe(disposable -> showLoading(true))
+                        .doAfterTerminate(() -> showLoading(false))
+                        .subscribe(user -> {
+                            if (user.get_id() == null) {
+                                showMessage(R.string.error_recover_data);
+                                showLoading(false);
+                                return;
+                            }
+                            user.setUserType(ADMIN);
+                            saveUserInfo(user);
+                        }, this::errorHandler)
+                );
+                break;
+            case PATIENT:
+                DisposableManager.add(haniotNetRepository
+                        .getPatient(userAccess.getSubject())
+                        .doOnSubscribe(disposable -> showLoading(true))
+                        .doAfterTerminate(() -> showLoading(false))
+                        .subscribe(user -> {
+                            if (user.get_id() == null) {
+                                showMessage(R.string.error_recover_data);
+                                showLoading(false);
+                                return;
+                            }
+                            user.setUserType(PATIENT);
+                            saveUserInfo(user);
+                            appPreferencesHelper.saveLastPatient(user);
+                        }, this::errorHandler)
+                );
+                break;
+        }
+    }
 
-                    appPreferencesHelper.saveUserLogged(user);
-                    tokenExpirationService.initTokenMonitor();
-                    syncDevices(userId);
-                }, this::errorHandler)
-        );
+    /**
+     * Save user info in AppPreferences.
+     *
+     * @param user
+     */
+    private void saveUserInfo(User user) {
+        appPreferencesHelper.saveUserLogged(user);
+        tokenExpirationService.initTokenMonitor();
+        syncDevices(user.get_id());
     }
 
     /**
@@ -224,7 +295,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     ChangePasswordActivity.class
             );
             Log.i("AAA", redirectLink);
-            intent.putExtra("user_id", redirectLink.split("/")[2]);
+            appPreferencesHelper.saveString("user_id", redirectLink.split("/")[2]);
             startActivity(intent);
         } catch (IOException e1) {
             e1.printStackTrace();
@@ -245,26 +316,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 case 401:
                     showMessage(R.string.validate_invalid_email_or_password);
                     break;
-                case 403: {
-                    if (httpEx.response().errorBody() == null) {
-                        showMessage(R.string.error_500);
-                        return;
-                    }
-                    Log.i("AAA", "" + httpEx.response().errorBody());
-                    openScreenChangePassword(Objects.requireNonNull(httpEx.response().errorBody()));
-                    break;
-                }
-                case 404:
-                    showMessage(R.string.error_recover_data);
+                case 429:
+                    showMessage(R.string.error_limit_rate);
                     break;
                 default:
-                    showMessage(R.string.error_500);
+                    ErrorHandler.showMessage(this, e);
                     break;
             }
             return;
         }
-        Log.i(LOG_TAG, e.getMessage());
         showMessage(R.string.error_500);
+        Log.i(LOG_TAG, e.getMessage());
     }
 
     /**

@@ -1,6 +1,7 @@
 package br.edu.uepb.nutes.haniot.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
@@ -9,9 +10,12 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AnimationUtils;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -21,14 +25,23 @@ import java.util.Objects;
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.adapter.PilotStudyAdapter;
 import br.edu.uepb.nutes.haniot.adapter.base.OnRecyclerViewListener;
+import br.edu.uepb.nutes.haniot.data.model.Admin;
+import br.edu.uepb.nutes.haniot.data.model.HealthProfessional;
+import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.PilotStudy;
 import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
+import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.ErrorHandler;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static br.edu.uepb.nutes.haniot.data.model.UserType.ADMIN;
+import static br.edu.uepb.nutes.haniot.data.model.UserType.HEALTH_PROFESSIONAL;
+import static br.edu.uepb.nutes.haniot.data.model.UserType.NUTRITION;
+import static br.edu.uepb.nutes.haniot.data.model.UserType.PATIENT;
 
 /**
  * Implementation of the pilot study selection list.
@@ -56,6 +69,21 @@ public class PilotStudyActivity extends AppCompatActivity {
 
     @BindView(R.id.info_inactive_selected)
     TextView infoInactiveSelectedMessage;
+
+    @BindView(R.id.content_error)
+    LinearLayout errorPilotStudy;
+
+    @BindView(R.id.content)
+    FrameLayout content;
+
+    @BindView(R.id.icon_error)
+    ImageView iconError;
+
+    @BindView(R.id.message_error_server)
+    TextView messageError;
+
+    @BindView(R.id.message_error_server_title)
+    TextView titleError;
 
     /**
      * We need this variable to lock and unlock loading more.
@@ -85,12 +113,8 @@ public class PilotStudyActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                super.onBackPressed();
-                break;
-            default:
-                break;
+        if (item.getItemId() == android.R.id.home) {
+            super.onBackPressed();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -115,6 +139,36 @@ public class PilotStudyActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setTitle(getResources().getString(R.string.piloty_study_title));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    /**
+     * @param enabled
+     */
+    private void showErrorPilot(boolean enabled) {
+        if (enabled) {
+            errorPilotStudy.setVisibility(View.VISIBLE);
+            content.setVisibility(View.GONE);
+        } else {
+            errorPilotStudy.setVisibility(View.GONE);
+            content.setVisibility(View.VISIBLE);
+        }
+    }
+
+    /**
+     * @param enabled
+     */
+    private void showErrorConnection(boolean enabled) {
+        if (enabled) {
+            showErrorPilot(true);
+            iconError.setImageResource(R.drawable.ic_error_server);
+            titleError.setText("Opss! Houve algum erro.");
+            messageError.setText(getText(R.string.error_500));
+        } else {
+            showErrorPilot(false);
+            iconError.setImageResource(R.drawable.ic_no_pilot_study);
+            titleError.setText("Opss! Você ainda não possui Piloto Estudo.");
+            messageError.setText(getText(R.string.piloty_study_no_allocated));
+        }
     }
 
     /**
@@ -143,6 +197,11 @@ public class PilotStudyActivity extends AppCompatActivity {
 
             @Override
             public void onMenuContextClick(View v, PilotStudy pilot) {
+
+            }
+
+            @Override
+            public void onItemSwiped(PilotStudy item, int position) {
 
             }
         });
@@ -191,12 +250,49 @@ public class PilotStudyActivity extends AppCompatActivity {
     private void savePilotSelected(PilotStudy pilot) {
         pilot.setSelected(true);
         pilot.setUserId(user.get_id());
+        user.setPilotStudyIDSelected(pilot.get_id());
+        appPreferences.removeLastPilotStudy();
         appPreferences.saveLastPilotStudy(pilot);
-        appPreferences.removeLastPatient();
+        appPreferences.saveUserLogged(user);
+        if (user.getUserType().equals(PATIENT)) {
+            Patient patient = new Patient();
+            patient.set_id(user.get_id());
+            patient.setPilotStudyIDSelected(pilot.get_id());
+            DisposableManager.add(haniotNetRepository.updatePatient(patient).subscribe(patient1 -> {
+                openDashboard();
+            }, throwable -> {
+                Log.w("AAA", throwable.getMessage());
+                ErrorHandler.showMessage(this, throwable);
+            }));
+        } else if (user.getUserType().equals(ADMIN)) {
+            Admin admin = new Admin();
+            admin.set_id(user.get_id());
+            admin.setPilotStudyIDSelected(pilot.get_id());
 
-        // Back activity
-        setResult(Activity.RESULT_OK);
-        finish();
+            DisposableManager.add(haniotNetRepository.updateAdmin(admin).subscribe(admin1 -> {
+                openDashboard();
+            }, throwable -> {
+                Log.w("AAA", throwable.getMessage());
+                ErrorHandler.showMessage(this, throwable);
+            }));
+        } else if (user.getUserType().equals(HEALTH_PROFESSIONAL)) {
+            HealthProfessional healthProfessional = new HealthProfessional();
+            healthProfessional.set_id(user.get_id());
+            healthProfessional.setPilotStudyIDSelected(pilot.get_id());
+            DisposableManager.add(haniotNetRepository.updateHealthProfissional(healthProfessional).subscribe(healthProfessional1 -> {
+                openDashboard();
+            }, throwable -> {
+                Log.w("AAA", throwable.getMessage());
+                ErrorHandler.showMessage(this, throwable);
+            }));
+        }
+
+    }
+
+    private void openDashboard() {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 
     /**
@@ -217,24 +313,39 @@ public class PilotStudyActivity extends AppCompatActivity {
             return;
         }
 
-        DisposableManager.add(haniotNetRepository
-                .getAllPilotStudies(appPreferences.getUserLogged().get_id())
-                .doOnSubscribe(disposable -> showLoading(true))
-                .doAfterTerminate(() -> showLoading(false))
-                .subscribe(pilotStudies -> {
-                    if (pilotStudies.isEmpty()) return;
-
-                    PilotStudy pilotLast = appPreferences.getLastPilotStudy();
-                    for (PilotStudy pilot : pilotStudies) {
-                        if (pilotLast != null && pilot.get_id().equals(pilotLast.get_id())) {
-                            pilot.setSelected(true);
+        if (appPreferences.getUserLogged().getUserType().equals(ADMIN)) {
+            DisposableManager.add(haniotNetRepository
+                    .getAllPilotStudies()
+                    .doOnSubscribe(disposable -> showLoading(true))
+                    .doAfterTerminate(() -> showLoading(false))
+                    .subscribe(pilotStudies -> {
+                        for (PilotStudy pilot : pilotStudies) {
+                            if (user.getPilotStudyIDSelected() != null && pilot.get_id().equals(user.getPilotStudyIDSelected())) {
+                                pilot.setSelected(true);
+                            }
                         }
-                    }
-                    populatePilotStudiesView(pilotStudies);
-                }, error -> {
-                    populatePilotStudiesView(null);
-                })
-        );
+                        populatePilotStudiesView(pilotStudies);
+                    }, error -> {
+                        populatePilotStudiesView(null);
+                    })
+            );
+        } else {
+            DisposableManager.add(haniotNetRepository
+                    .getAllUserPilotStudies(appPreferences.getUserLogged().get_id())
+                    .doOnSubscribe(disposable -> showLoading(true))
+                    .doAfterTerminate(() -> showLoading(false))
+                    .subscribe(pilotStudies -> {
+                        for (PilotStudy pilot : pilotStudies) {
+                            if (user.getPilotStudyIDSelected() != null && pilot.get_id().equals(user.getPilotStudyIDSelected())) {
+                                pilot.setSelected(true);
+                            }
+                        }
+                        populatePilotStudiesView(pilotStudies);
+                    }, error -> {
+                        populatePilotStudiesView(null);
+                    })
+            );
+        }
     }
 
     /**
@@ -246,12 +357,18 @@ public class PilotStudyActivity extends AppCompatActivity {
         mPilotStudyAdapter.clearItems();
         mPilotStudyAdapter.addItems(pilotStudies);
 
-        if (mPilotStudyAdapter.itemsIsEmpty()) {
-            showNoDataMessage(true);
+        if (pilotStudies == null) {
+            showErrorConnection(true);
+        } else if (pilotStudies.isEmpty()) {
+//            showNoDataMessage(true);
+            showErrorConnection(false);
+            showErrorPilot(true);
             showInstructionsMessage(false);
         } else {
-            showNoDataMessage(false);
-            if (appPreferences.getLastPilotStudy() != null) { // Pilot is selected
+//            showNoDataMessage(false);
+            showErrorConnection(false);
+            showErrorPilot(false);
+            if (user.getPilotStudyIDSelected() != null) { // Pilot is selected
                 showInstructionsMessage(false);
             } else {
                 showInstructionsMessage(true);

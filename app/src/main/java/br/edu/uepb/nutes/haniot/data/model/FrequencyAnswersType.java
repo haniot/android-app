@@ -14,7 +14,7 @@ public class FrequencyAnswersType {
         public static final String RARELY_PTBR = "Raramente";
         public static final String SOMETIMES_PTBR = "As vezes";
         public static final String OFTEN_PTBR = "Frequentemente";
-        public static final String ALMOST_EVERYDAY_PTBR = "Quase todos os dias";
+        public static final String ALMOST_ALWAYS_PTBR = "Quase sempre";
 
         public static String getString(int type) {
             switch (type) {
@@ -44,7 +44,38 @@ public class FrequencyAnswersType {
                 case OFTEN:
                     return OFTEN_PTBR;
                 case ALMOST_ALWAYS:
-                    return ALMOST_EVERYDAY_PTBR;
+                    return ALMOST_ALWAYS_PTBR;
+                default:
+                    return "";
+            }
+        }
+    }
+
+    public static class Afirmation {
+
+        public static final String YES = "yes";
+        public static final String NOT = "not";
+
+        public static final String YES_PTBR = "Sim";
+        public static final String NOT_PTBR = "Não";
+
+        public static String getString(int type) {
+            switch (type) {
+                case 0:
+                    return YES;
+                case 1:
+                    return NOT;
+                default:
+                    return "";
+            }
+        }
+
+        public static String getStringPTBR(String type) {
+            switch (type) {
+                case YES:
+                    return YES_PTBR;
+                case NOT:
+                    return NOT_PTBR;
                 default:
                     return "";
             }

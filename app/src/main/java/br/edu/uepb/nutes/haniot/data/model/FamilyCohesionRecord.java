@@ -204,4 +204,25 @@ public class FamilyCohesionRecord {
         Log.i("AAAAAAAAAA", a);
         return a;
     }
+
+    @Override
+    public String toString() {
+        return "FamilyCohesionRecord{" +
+                "id=" + id +
+                ", _id='" + _id + '\'' +
+                ", patientId='" + patientId + '\'' +
+                ", createdAt='" + createdAt + '\'' +
+                ", familyMutualAidFreq='" + familyMutualAidFreq + '\'' +
+                ", friendshipApprovalFreq='" + friendshipApprovalFreq + '\'' +
+                ", familyOnlyTaskFreq='" + familyOnlyTaskFreq + '\'' +
+                ", familyOnlyPreferenceFreq='" + familyOnlyPreferenceFreq + '\'' +
+                ", freeTimeTogetherFreq='" + freeTimeTogetherFreq + '\'' +
+                ", familyProximityPerceptionFreq='" + familyProximityPerceptionFreq + '\'' +
+                ", allFamilyTasksFreq='" + allFamilyTasksFreq + '\'' +
+                ", familyTasksOpportunityFreq='" + familyTasksOpportunityFreq + '\'' +
+                ", familyDecisionSupportFreq='" + familyDecisionSupportFreq + '\'' +
+                ", familyUnionRelevanceFreq='" + familyUnionRelevanceFreq + '\'' +
+                ", familyCohesionResult=" + familyCohesionResult +
+                '}';
+    }
 }

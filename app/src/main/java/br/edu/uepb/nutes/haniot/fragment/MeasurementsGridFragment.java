@@ -31,6 +31,8 @@ import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 
+import com.github.clans.fab.FloatingActionMenu;
+
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
@@ -63,6 +65,7 @@ import br.edu.uepb.nutes.haniot.data.model.dao.MeasurementDAO;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
+import br.edu.uepb.nutes.haniot.devices.BloodPressureActivity;
 import br.edu.uepb.nutes.haniot.devices.GlucoseActivity;
 import br.edu.uepb.nutes.haniot.devices.HeartRateActivity;
 import br.edu.uepb.nutes.haniot.devices.ScaleActivity;
@@ -171,6 +174,30 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        FloatingActionMenu fab = ((MainActivity) getActivity()).patientActionsMenu;
+        if (fab == null) {
+            Log.w("AAA", "fab null");
+            return;
+        }
+
+//        gridMeasurement.addOnScrollListener(new RecyclerView.OnScrollListener() {
+//
+//            @Override
+//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+//                if (dy > 0 || dy < 0 && fab.isShown())
+////                    fab.hideMenu(true);
+//                    fab.setVisibility(View.GONE);
+//            }
+//
+//            @Override
+//            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+//                Log.w("AAA", "onScrollStateChanged");
+//                if (newState == RecyclerView.SCROLL_STATE_IDLE)
+////                    fab.hideMenu(false);
+//                    fab.setVisibility(View.VISIBLE);
+//                super.onScrollStateChanged(recyclerView, newState);
+//            }
+//        });
 //        refreshManagerBLE();
     }
 
@@ -202,7 +229,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
         bloodPressureManager = null;
         glucoseManager = null;
         heartRateManager = null;
-        if (simpleBleScanner != null) simpleBleScanner.stopScan();
+//        if (simpleBleScanner != null) simpleBleScanner.stopScan();
     }
 
     /**
@@ -214,7 +241,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
                 && ((MainActivity) getActivity()).hasLocationPermissions()) {
             simpleBleScanner.startScan(simpleScannerCallback);
         } else if (isAdded() && getActivity() != null) {
-            communicator.showMessage(R.string.bluetooth_disabled);
+//            communicator.showMessageConnection(R.string.bluetooth_disabled);
         }
     }
 
@@ -921,20 +948,23 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
     public void onItemClick(MeasurementMonitor item) {
         switch (item.getType()) {
             case ItemGridType.TEMPERATURE:
+                if (thermometerManager != null) thermometerManager.close();
                 startActivity(new Intent(mContext, ThermometerActivity.class));
                 break;
             case ItemGridType.BLOOD_GLUCOSE:
+                if (glucoseManager != null) glucoseManager.close();
                 startActivity(new Intent(mContext, GlucoseActivity.class));
                 break;
             case ItemGridType.HEART_RATE:
+                if (heartRateManager != null) heartRateManager.close();
                 startActivity(new Intent(mContext, HeartRateActivity.class));
                 break;
             case ItemGridType.WEIGHT:
+                if (scaleManager != null) scaleManager.close();
                 startActivity(new Intent(mContext, ScaleActivity.class));
                 break;
             case ItemGridType.BLOOD_PRESSURE:
-                break;
-            default:
+                startActivity(new Intent(mContext, BloodPressureActivity.class));
                 break;
         }
     }
@@ -983,5 +1013,10 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
             default:
                 break;
         }
+    }
+
+    @Override
+    public void onItemSwiped(MeasurementMonitor item, int position) {
+
     }
 }

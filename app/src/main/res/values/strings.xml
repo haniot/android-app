@@ -2,7 +2,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation" tools:locale="pt">
     <string name="app_name">HANIoT</string>
     <string name="app_name_desc">Health ANalytics Internet of Things</string>
-    <string name="app_version">1.5.0</string>
+    <string name="app_version">1.7.0</string>
     <string name="copyright">© 2019 NUTES/UEPB</string>
     <string name="stop_scan">Parar Escaneamento</string>
     <string name="device_address">Endereço: %s</string>
@@ -18,7 +18,7 @@
     <string name="device_not_bonded">Não pareado</string>
     <string name="permission_location">A permissão de localização é obrigatória no utilizar Bluetooth Low Energy!</string>
     <string name="not_bluetooth_le">Seu dispositivo não suporta Bluetooth Low Energy!</string>
-    <string name="welcome">Bem-vindo</string>
+    <string name="welcome">Bem-vindo ao HANIoT</string>
     <string name="no_more_data">Não há mais dados disponíveis&#8230;</string>
     <string name="today_text">Hoje</string>
     <string name="yes_text">Sim</string>
@@ -44,7 +44,7 @@
     <string name="piloty_study_title">Estudo Piloto</string>
     <string name="piloty_study_sumary">Selecione o estudo piloto que você estar alocado.</string>
     <string name="piloty_study_desc">Selecione o piloto que deseja realizar o estudo. Você poderá a qualquer momento voltar aqui e mudar sua escolha.</string>
-    <string name="piloty_study_no_allocated">Você não estar alocado em nenhum estudo piloto. Por favor, entre em contato com o administrador.</string>
+    <string name="piloty_study_no_allocated">Você não está alocado em nenhum estudo piloto. Por favor, entre em contato com o administrador.</string>
     <string name="piloty_study_inactive_alert">Para os pilotos inativos, apenas o modo de consulta estará disponível.</string>
     <string name="piloty_study_confirm_selected">O estudo piloto de nome \"%s\" será configurado. Deseja continuar?</string>
     <string name="piloty_study_is_selected">O estudo piloto de nome \"%s\" já estar configurado&#8230;</string>
@@ -96,6 +96,7 @@
 
     <!-- ERROR MESSAGES -->
     <string name="error_sign_out">Aconteceu um erro ao tentar sair&#8230;</string>
+    <string name="error_delete_account">Aconteceu um erro ao tentar excluir sua conta&#8230;</string>
     <string name="error_500">Não foi possível concluir a operação! Por favor, tente novamente mais tarde&#8230;</string>
     <string name="error_connectivity">Aconteceu um erro na comunicação com nossos servidores. Por favor, verifique a conectividade do seu telefone e tente novamente mais tarde.</string>
     <string name="connect_network_try_again">Conecte-se a uma rede e tente novamente&#8230;</string>
@@ -108,13 +109,14 @@
     <string name="settings_measurements_supported">Tipos de medições suportadas</string>
     <string name="settings_measurements">Medições</string>
     <string name="settings_signout">Sair</string>
+    <string name="settings_delete_account">Excluir Conta</string>
     <string name="settings_account">Conta</string>
     <string name="settings_monitor_measurements">Monitorar Medições</string>
     <string name="settings_summary_monitor_measurements">Selecione os tipos de mediçeõs que deseja monitorar.</string>
     <string name="settings_about">Sobre</string>
     <string name="settings_general">Geral</string>
     <string name="settings_send_bug">Reportar um problema</string>
-    <string name="settings_summary_your_data">Atualize seu nome, endereço de email e password.</string>
+    <string name="settings_summary_your_data">Atualize seu nome, endereço de email e outras informações.</string>
     <string name="settings_summary_signout">Você será desconectado do aplicativo e redirecionado para a tela de login.</string>
     <string name="settings_summary_bug">Encontrou um problema? Conte-nos e vamos nos esforçar para concertar :)</string>
     <string name="settings_summary_about">O NUTES é um centro de referência para o desenvolvimento de tecnologias a serem aplicadas no domínio da saúde, composto por professores, pesquisadores e estudantes de nível de graduação e pós-graduação das áreas de Ciência da Computação, Odontologia e Fisioterapia.</string>
@@ -124,6 +126,7 @@
     <string name="key_send_bug">key_send_bug</string>
     <string name="key_url_server">key_url_server</string>
     <string name="key_signout">key_signout</string>
+    <string name="key_delete_account">key_delete_account</string>
     <string name="key_manager_device">key_manager_device</string>
     <string name="key_pilot_study">key_about</string>
     <string name="url_about">http://nutes.uepb.edu.br/quem-somos/</string>
@@ -158,6 +161,7 @@
 
     <!-- DIALOGS -->
     <string name="confirm_sign_out">Você realmente deseja sair do aplicativo?\nVocê será redirecionado para a tela de login&#8230;</string>
+    <string name="confirm_delete_account">Atenção! Você realmente deseja excluir sua conta?\nTodos os seus dados serão perdidos&#8230;</string>
     <string name="title_save_captured_data">Salvar dados&#8230;</string>
     <string name="message_save_captured_data">Você deseja salvar os dados capturados?</string>
     <!-- END DIALOGS -->
@@ -166,6 +170,7 @@
     <string name="unit_percentage">%</string>
     <string name="unit_celsius">°C</string>
     <string name="unit_pressure">mmHg</string>
+    <string name="unit_per_minutes">/min</string>
     <string name="unit_pulse">bpm</string>
     <string name="unit_glucose_mg_dL">mg/dL</string>
 
@@ -190,9 +195,11 @@
     <!--Limit and Lines of Chart-->
     <string name="diastolic">Diastólica</string>
     <string name="systolic">Sistólica</string>
-    <string name="limit_heart_rate">Limit 1</string>
-    <string name="limit_glucose">Pre Diabetes</string>
+    <string name="limit_glucose">Indício de diabetes</string>
     <string name="limit_temperature">Febre</string>
+    <string name="limit_obesity">Obesidade</string>
+    <string name="limit_high_systolic">Sistólica elevada</string>
+    <string name="limit_high_diastolic">Diastólica elevada</string>
 
     <!--FLOATING-->
     <string name="day">Dia</string>
@@ -275,11 +282,11 @@
     <string name="device_not_found_try_again">Dispositivo não encontrado. Por favor, tente novamente!</string>
     <string name="no_devices_registered">Não há dispositivos cadastrados&#8230;</string>
     <string name="no_devices_available">Nenhum dispositivo disponível. Em breve a lista será atualizada&#8230;</string>
-    <string name="device_registered_success">Dispositivo %s cadastrado com sucesso!</string>
+    <string name="device_registered_success">%s cadastrado com sucesso!</string>
+    <string name="device_registered_error">Não foi possível cadastrar %s</string>
     <string name="connection">Matenha o dispositivo de saúde próximo ao telefone/tablet.</string>
     <string name="come_back">Voltar</string>
     <string name="attention">Atenção</string>
-    s
     <string name="other">Outro</string>
     <string name="model_device">Modelo do dispositivo</string>
     <string name="name_device">Nome do dispositivo</string>
@@ -310,7 +317,7 @@
     <string name="glucose_type_interstitial">Interstitial Fluid (ISF)</string>
     <string name="glucose_type_control_solution">Control Solution</string>
 
-    <string name="no_data_available">No data to display&#8230;</string>
+    <string name="no_data_available">Nenhum dado para exibir</string>
 
     <!-- SYNCHRONIZATION -->
     <string name="synchronization_no_data_to_send">There is no data to send&#8230;</string>
@@ -397,8 +404,10 @@
     </string-array>
 
     <string-array name="user_group_array">
-        <item>Super</item>
-        <item>Common</item>
+        <item>Admin</item>
+        <item>Nutrition</item>
+        <item>Dentistry</item>
+        <item>Patient</item>
     </string-array>
 
     <!--TYPES AND GROUPS-->
@@ -724,9 +733,10 @@
 
     <!-- EVALUATION -->
     <string name="evaluation_message">Escolha os dados referentes a %s para a Avaliação \n%s:</string>
+    <string name="quiz_historic_message">Questionários respondidos por \n%s:</string>
     <string name="evaluation_empty_message">Sem resgistros! É necessário pelo menos uma medição\nClique aqui para inserir</string>
     <string name="evaluation_error_message">Opss! Não foi possível fazer a sincronização dos seus dados...\n Atualize a página para tentar novamente!</string>
-    <string name="evaluation_required_fields">Selecione pelo menos um item de cada campo para finalizar a avaliação!</string>
+    <string name="evaluation_required_fields">Preencha todos os itens obrigatórios para finalizar a avaliação!</string>
     <string name="fat">Gordura Corporal</string>
     <string name="height">Altura</string>
     <string name="waits_circumference">Circunferência da Cintura</string>
@@ -743,4 +753,44 @@
     <string name="loading_synchronize">Aguarde enquanto os dados estão sendo sincronizados...</string>
     <string name="type_nutrition">nutrition</string>
     <string name="type_dentistry">dentistry</string>
+    <string name="confirm_remove_measurement">Você removeu essa medição, deseja desfazer?</string>
+    <string name="confirm_remove_devices">Você removeu esse dispositivo, deseja desfazer?</string>
+    <string name="undo">Desfazer</string>
+    <string name="title_activity_historic_quiz">HistoricQuizActivity</string>
+    <string name="error_limit_rate">Limite de tentativas de login excedida! Aguarde 1 hora para tentar novamente...</string>
+    <string name="sleep_at">Dorme às</string>
+    <string name="wakeup_at">Acorda às</string>
+    <string name="water_cup">Copos de água por dia</string>
+    <string name="hours">Horas</string>
+    <string name="breakfast">Café da manhã</string>
+    <string name="sports_in_week">Esportes praticados durante a semana</string>
+    <string name="physical_school">Frequência de atividades físicas na escola</string>
+    <string name="help_family">Os membros da família pedem ajuda uns aos outros?</string>
+    <string name="approval_friends">Aprovamos os amigos que cada um tem?</string>
+    <string name="only_family">Gostamos de fazer coisas apenas com nossa família?</string>
+    <string name="not_strangers">Os membros da família sentem-se mais próximos entre si que com pessoas estranhas à família?</string>
+    <string name="family_freetime">Os membros da família gostam de passar o tempo livre juntos?</string>
+    <string name="family_union">Os membros da família se sentem muito próximos uns aos outros?</string>
+    <string name="family_share">Estamos todos presentes quando compartilhamos atividades em nossa família?</string>
+    <string name="easy_family">Facilmente nos ocorrem que podemos fazer juntos, em família?</string>
+    <string name="family_decision">Os membros da família consultam outras pessoas da família para tomarem suas decisões?</string>
+    <string name="familiy_union_important">União familiar é muito importante?</string>
+    <string name="tooth_higien">Escovação de dentes ao dia</string>
+    <string name="white_spot_lesion_deciduous_tooth">Cárie dentária cavitada em dentes decíduos</string>
+    <string name="white_spot_lesion_permanent_tooth">Cárie dentária cavitada em dentes permanentes</string>
+    <string name="cavitated_lesion_deciduous_tooth">Lesões de cárie do tipo mancha branca em dentes decíduos</string>
+    <string name="cavitated_lesion_permanent_tooth">Lesões de cárie do tipo mancha branca em dentes permanentes</string>
+    <string name="color_race">Cor/Raça</string>
+    <string name="schoolarity_mother">Escolaridade da mãe</string>
+    <string name="people_in_home">Número de pessoas em casa</string>
+    <string name="admin">Administrador</string>
+    <string name="key_your_password">key_password</string>
+    <string name="settings_summary_your_password">Atualize sua senha.</string>
+    <string name="settings_your_password">Mudar senha</string>
+    <string name="nutrition_quiz_empty">Ainda não há questionários nutricionais respondidos...</string>
+    <string name="dentistry_quiz_empty">Ainda não há questionários odontológicos respondidos...</string>
+    <string name="invalid_auth">Auntenticação inválida! Faça login em outra conta e tente novamente.</string>
+    <string name="not_permission">Você não tem permissão para efetuar essa tarefa!</string>
+    <string name="not_found">Recurso não encontrado!</string>
+    <string name="request_exceeded">Limite de requisições excedidas, tente novamente mais tarde!</string>
 </resources>

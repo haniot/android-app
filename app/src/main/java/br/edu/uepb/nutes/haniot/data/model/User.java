@@ -37,6 +37,14 @@ public class User {
     @Expose()
     private String name;
 
+    @SerializedName("birth_date")
+    @Expose()
+    private String birthDate;
+
+    @SerializedName("health_area")
+    @Expose()
+    private String healthArea;
+
     @Expose(deserialize = false)
     private String password;
 
@@ -48,20 +56,30 @@ public class User {
     @Expose(deserialize = false)
     private String newPassword;
 
-    @SerializedName("health_area")
-    @Expose()
-    private String healthArea; // provide by the server
-
     @SerializedName("phone_number")
     @Expose()
     private String phoneNumber; // provide by the server
 
+    @SerializedName("last_login")
+    @Expose()
+    private String lastLogin;
+
+    @SerializedName("last_sync")
+    @Expose()
+    private String lastSync;
+
+    @SerializedName("language")
+    @Expose()
+    private String language;
+
+    @SerializedName("selected_pilot_study")
     @Expose()
     private String pilotStudyIDSelected;
     /**
      * {@link UserType ()}
      */
-    private int userType; // 1 admin, 2 health_profissional
+    @Expose()
+    private String userType; // 1 admin, 2 health_profissional
 
     public User() {
     }
@@ -69,12 +87,6 @@ public class User {
     public User(String email, String password) {
         this.email = email;
         this.password = password;
-    }
-
-    public User(String name, String email, int userType) {
-        this.name = name;
-        this.email = email;
-        this.userType = userType;
     }
 
     public User(String _id, String oldPassword, String newPassword) {
@@ -115,11 +127,11 @@ public class User {
         this.email = email;
     }
 
-    public int getUserType() {
+    public String getUserType() {
         return userType;
     }
 
-    public void setUserType(int userType) {
+    public void setUserType(String userType) {
         this.userType = userType;
     }
 
@@ -145,14 +157,6 @@ public class User {
 
     public void setNewPassword(String newPassword) {
         this.newPassword = newPassword;
-    }
-
-    public String getHealthArea() {
-        return healthArea;
-    }
-
-    public void setHealthArea(String healthArea) {
-        this.healthArea = healthArea;
     }
 
     public String getPilotStudyIDSelected() {
@@ -181,6 +185,46 @@ public class User {
         return gson.toJson(this);
     }
 
+    public String getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(String birthDate) {
+        this.birthDate = birthDate;
+    }
+
+    public String getLastLogin() {
+        return lastLogin;
+    }
+
+    public void setLastLogin(String lastLogin) {
+        this.lastLogin = lastLogin;
+    }
+
+    public String getLastSync() {
+        return lastSync;
+    }
+
+    public void setLastSync(String lastSync) {
+        this.lastSync = lastSync;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
+    public String getHealthArea() {
+        return healthArea;
+    }
+
+    public void setHealthArea(String healthArea) {
+        this.healthArea = healthArea;
+    }
+
     /**
      * Convert json to Object.
      *
@@ -201,7 +245,10 @@ public class User {
 
         User other = (User) o;
 
-        return other.get_id().equals(this.get_id()) && other.getEmail().equals(this.getEmail());
+        return other.get_id().equals(this.get_id())
+                && (other.email == null
+                || this.email == null
+                || other.getEmail().equals(this.getEmail()));
     }
 
     @Override
@@ -211,12 +258,17 @@ public class User {
                 ", _id='" + _id + '\'' +
                 ", email='" + email + '\'' +
                 ", name='" + name + '\'' +
+                ", birthDate='" + birthDate + '\'' +
+                ", healthArea='" + healthArea + '\'' +
                 ", password='" + password + '\'' +
                 ", oldPassword='" + oldPassword + '\'' +
                 ", newPassword='" + newPassword + '\'' +
-                ", healthArea='" + healthArea + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", lastLogin='" + lastLogin + '\'' +
+                ", lastSync='" + lastSync + '\'' +
+                ", language='" + language + '\'' +
                 ", pilotStudyIDSelected='" + pilotStudyIDSelected + '\'' +
-                ", userType=" + userType +
+                ", userType='" + userType + '\'' +
                 '}';
     }
 }

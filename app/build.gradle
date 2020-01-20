@@ -6,19 +6,29 @@ apply plugin: 'com.android.application'
 apply plugin: 'io.objectbox'
 
 android {
+    buildToolsVersion = '28.0.3'
     compileSdkVersion 28
     defaultConfig {
         applicationId "br.edu.uepb.nutes.haniot"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 2
-        versionName "1.5.0"
+        versionCode 4
+        versionName "1.7.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
+        multiDexEnabled true
     }
     buildTypes {
-        release {
+        debug {
             minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        release {
+            lintOptions {
+                disable 'MissingTranslation'
+            }
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -37,8 +47,8 @@ dependencies {
     implementation 'com.android.support:recyclerview-v7:28.0.0'
     implementation 'com.android.support:cardview-v7:28.0.0'
     implementation 'com.android.support:support-vector-drawable:28.0.0'
-    implementation 'com.squareup.okhttp3:okhttp:3.10.0'
-    // TODO REMOVER após migração com retrofit for finalizada!
+
+    // Charts
     implementation 'com.mikhaellopez:circularprogressbar:2.0.0'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
 
@@ -46,20 +56,20 @@ dependencies {
     implementation 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
 
-    //Floating Action Button
+    // Floating Action Button
     implementation 'com.github.clans:fab:1.6.4'
 
-    //LIBRARY Simple BLE Connect
+    // LIBRARY Simple BLE Connect
     implementation 'com.github.nutes-uepb:simple-ble-scanner:v1.0.1'
 
-    //LIBRARY Pulsator4Droid
+    // LIBRARY Pulsator4Droid
     implementation 'pl.bclogic:pulsator4droid:1.0.3'
 
     // NUMBER PICKER
     implementation 'com.shawnlin:number-picker:2.4.6'
 
     // EVENT BUS
-    implementation 'org.greenrobot:eventbus:3.0.0'
+    implementation 'org.greenrobot:eventbus:3.1.1'
 
     //Android BLE Nordic
     implementation 'no.nordicsemi.android:ble:2.1.0'
@@ -68,17 +78,25 @@ dependencies {
     implementation 'com.github.nutes-uepb:simple-survey:v1.2.1'
 
     // JavaRx
-    implementation 'io.reactivex.rxjava2:rxjava:2.2.7'
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.12'
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
 
     // Retrofit
-    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
-    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.5.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.6.1'
+    implementation 'com.squareup.retrofit2:converter-gson:2.6.1'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.6.1'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.1.1'
 
     // Encode/Decode
     implementation 'com.scottyab:secure-preferences-lib:0.1.7'
     implementation 'com.auth0.android:jwtdecode:1.2.0'
+
+    // Expandable Recyclerview
+    implementation 'com.thoughtbot:expandablerecyclerview:1.3'
+    implementation 'com.thoughtbot:expandablecheckrecyclerview:1.4'
+
+    // Nordic Scanner
+    implementation 'no.nordicsemi.android.support.v18:scanner:1.4.1'
 
     // TEST
     testImplementation 'junit:junit:4.12'
@@ -86,6 +104,5 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation 'io.jsonwebtoken:jjwt:0.2'
 
-    implementation 'com.thoughtbot:expandablerecyclerview:1.3'
-    implementation 'com.thoughtbot:expandablecheckrecyclerview:1.4'
+    implementation 'com.android.support:multidex:1.0.3'
 }

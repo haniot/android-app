@@ -18,6 +18,7 @@ import java.lang.reflect.Type;
  */
 public class UserAccess implements Parcelable {
     public static final String KEY_SCOPES = "scope";
+    public static final String SUB_TYPE = "sub_type";
 
     @Expose()
     private String subject;
@@ -37,6 +38,7 @@ public class UserAccess implements Parcelable {
 
     @Expose(serialize = false, deserialize = false)
     private String scopes;
+
 
     public UserAccess() {
     }

@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -19,10 +20,13 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
 
 import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.settings.SettingsActivity;
@@ -35,6 +39,11 @@ import br.edu.uepb.nutes.haniot.utils.NetworkUtil;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static br.edu.uepb.nutes.haniot.data.model.UserType.DENTISTRY;
+import static br.edu.uepb.nutes.haniot.data.model.UserType.HEALTH_PROFESSIONAL;
+import static br.edu.uepb.nutes.haniot.data.model.UserType.NUTRITION;
+import static br.edu.uepb.nutes.haniot.data.model.UserType.PATIENT;
+
 /**
  * Main activity, application start.
  *
@@ -44,13 +53,17 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
     private final String LOG_TAG = "MainActivity";
     private final int REQUEST_ENABLE_BLUETOOTH = 1;
     private final int REQUEST_ENABLE_LOCATION = 2;
-
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.frameCharts)
     FrameLayout frameChart;
     @BindView(R.id.frameMeasurements)
     FrameLayout frameMeasurements;
+    @BindView(R.id.nestedScrollView)
+    NestedScrollView nestedScrollView;
+
+    @BindView(R.id.patient_actions)
+    public FloatingActionMenu patientActionsMenu;
 
     @BindView(R.id.evaluation_nutrition)
     FloatingActionButton nutritioEvaluation;
@@ -66,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
     private AppPreferencesHelper appPreferences;
     private Patient patient;
     private long backPressed;
+    private User userLogged;
 
 
     @Override
@@ -76,16 +90,20 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
 
         toolbar.setTitle(getResources().getString(R.string.app_name));
         setSupportActionBar(toolbar);
+        toolbar.requestFocus();
         appPreferences = AppPreferencesHelper.getInstance(this);
-
         dashboardChartsFragment = DashboardChartsFragment.newInstance();
         measurementsGridFragment = MeasurementsGridFragment.newInstance();
-
+        userLogged = appPreferences.getUserLogged();
         IntentFilter filterBluetooth = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
         registerReceiver(mReceiver, filterBluetooth);
         IntentFilter filterInternet = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
         registerReceiver(mReceiver, filterInternet);
         setupPatientActions();
+        Log.w("AAA", "User type: " + appPreferences.getUserAccessHaniot());
+        Log.w("AAA", "User: " + appPreferences.getUserLogged());
+
+
     }
 
     private void loadDashboard() {
@@ -109,7 +127,9 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
     protected void onResume() {
         super.onResume();
         // Verify the pilot is selected
-        if (appPreferences.getLastPilotStudy() == null) {
+        Log.w("AAA", "" + userLogged.getPilotStudyIDSelected());
+        if ((userLogged.getPilotStudyIDSelected() == null || userLogged.getPilotStudyIDSelected().isEmpty())
+                && !appPreferences.getUserLogged().getUserType().equals(PATIENT)) {
             startActivity(new Intent(this, WelcomeActivity.class));
         } else {
             checkPatient();
@@ -127,26 +147,43 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
      */
     private void setupPatientActions() {
 
-        if (appPreferences.getUserLogged().getHealthArea().equals("dentistry")) {
-            quizNutrition.setVisibility(View.GONE);
-            nutritioEvaluation.setVisibility(View.GONE);
+        nestedScrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+            if (scrollY > oldScrollY) {
+                patientActionsMenu.hideMenu(true);
+            } else {
+                patientActionsMenu.showMenu(true);
+            }
+        });
+        quizOdonto.setOnClickListener(v -> {
+            startActivity(new Intent(this, QuizOdontologyActivity.class));
+            finish();
+        });
+        quizNutrition.setOnClickListener(v -> {
+            startActivity(new Intent(this, QuizNutritionActivity.class));
+            finish();
+        });
+        nutritioEvaluation.setOnClickListener(v -> {
+            Intent intent = new Intent(this, NutritionalEvaluationActivity.class);
+            intent.putExtra("type", "nutrition");
+            startActivity(intent);
+        });
 
-            quizOdonto.setOnClickListener(v -> {
-                startActivity(new Intent(this, QuizOdontologyActivity.class));
-                finish();
-            });
+        if (appPreferences.getUserLogged().getUserType().equals(HEALTH_PROFESSIONAL)) {
 
-        } else {
-            quizOdonto.setVisibility(View.GONE);
-            quizNutrition.setOnClickListener(v -> {
-                startActivity(new Intent(this, QuizNutritionActivity.class));
-                finish();
-            });
-            nutritioEvaluation.setOnClickListener(v -> {
-                measurementsGridFragment.saveHeartRateCollection();
-            });
+            String healthArea = appPreferences.getUserLogged().getHealthArea();
 
+            if (healthArea.equals(DENTISTRY)) {
+                quizNutrition.setVisibility(View.GONE);
+                nutritioEvaluation.setVisibility(View.GONE);
 
+            } else if (healthArea.equals(NUTRITION)) {
+                quizOdonto.setVisibility(View.GONE);
+
+            } else if (healthArea.equals(PATIENT)) {
+                patientActionsMenu.setVisibility(View.INVISIBLE);
+            }
+        } else if (appPreferences.getUserLogged().getUserType().equals(PATIENT)) {
+            patientActionsMenu.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -158,10 +195,11 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
 
         if (patient != null) {
             loadDashboard();
-
             checkPermissions();
         } else {
-            startActivity(new Intent(this, ManagerPatientsActivity.class));
+            if (!appPreferences.getUserLogged().getUserType().equals(PATIENT)) {
+                startActivity(new Intent(this, ManagerPatientsActivity.class));
+            }
         }
     }
 
@@ -172,7 +210,9 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
     public void checkPermissions() {
         if (BluetoothAdapter.getDefaultAdapter() != null &&
                 !BluetoothAdapter.getDefaultAdapter().isEnabled()) {
-            requestBluetoothEnable();
+            Log.w(LOG_TAG, "checkPermissions(): Bluetooth desligado");
+            dashboardChartsFragment.showMessageConnection("bluetooth", true);
+            if (appPreferences.getBluetoothMode()) requestBluetoothEnable();
         } else if (!hasLocationPermissions()) {
             requestLocationPermission();
         }
@@ -182,6 +222,7 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
      * Request Bluetooth permission
      */
     private void requestBluetoothEnable() {
+        Log.w(LOG_TAG, "requestBluetoothEnable(): Criando intent");
         startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE),
                 REQUEST_ENABLE_BLUETOOTH);
     }
@@ -224,8 +265,12 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_ENABLE_BLUETOOTH) {
             if (resultCode != Activity.RESULT_OK) {
-                requestBluetoothEnable();
+                Log.w(LOG_TAG, "onActivityResult(): Bluetooth negado");
+                appPreferences.saveBluetoothMode(false);
+                dashboardChartsFragment.showMessageConnection("bluetooth", true);
             } else {
+                Log.w(LOG_TAG, "onActivityResult(): Bluetooth aceito");
+                appPreferences.saveBluetoothMode(true);
                 requestLocationPermission();
             }
         }
@@ -235,6 +280,8 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
+        if (appPreferences.getUserLogged().getUserType().equals(PATIENT))
+            menu.getItem(0).setVisible(false);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -285,7 +332,7 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
 
     @Override
     public void showMessage(int message) {
-        dashboardChartsFragment.showMessage(message);
+//        dashboardChartsFragment.showMessageConnection(message);
     }
 
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -295,19 +342,23 @@ public class MainActivity extends AppCompatActivity implements DashboardChartsFr
             int status = NetworkUtil.getConnectivityStatusString(context);
             if ("android.net.conn.CONNECTIVITY_CHANGE".equals(intent.getAction())) {
                 if (status == NetworkUtil.NETWORK_STATUS_NOT_CONNECTED) {
-                    dashboardChartsFragment.showMessage(R.string.wifi_disabled);
+                    Log.w(LOG_TAG, "mReceiver: wifi desligado");
+                    dashboardChartsFragment.showMessageConnection("wifi", true);
                 } else {
-                    dashboardChartsFragment.showMessage(-1);
+                    Log.w(LOG_TAG, "mReceiver: wifi ligado");
+                    dashboardChartsFragment.showMessageConnection("wifi", false);
                 }
             }
             if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
                 final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE,
                         BluetoothAdapter.ERROR);
                 if (state == BluetoothAdapter.STATE_OFF) {
-                    dashboardChartsFragment.showMessage(R.string.bluetooth_disabled);
-
+                    Log.w(LOG_TAG, "mReceiver: Bluetooth desligado");
+                    dashboardChartsFragment.showMessageConnection("bluetooth", true);
                 } else if (state == BluetoothAdapter.STATE_ON) {
-                    dashboardChartsFragment.showMessage(-1);
+                    Log.w(LOG_TAG, "mReceiver: Bluetooth ligado");
+                    appPreferences.saveBluetoothMode(true);
+                    dashboardChartsFragment.showMessageConnection("bluetooth", false);
                 }
             }
         }

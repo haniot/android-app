@@ -7,6 +7,8 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Objects;
+
 import io.objectbox.relation.ToOne;
 
 public class ToothLesion {
@@ -23,6 +25,11 @@ public class ToothLesion {
     private ToOne<OralHealthRecord> oralHealthRecord;
 
     public ToothLesion() {
+    }
+
+    public ToothLesion(String toothType, String lesionType) {
+        this.toothType = toothType;
+        this.lesionType = lesionType;
     }
 
     public String getToothType() {
@@ -59,5 +66,28 @@ public class ToothLesion {
         String a = gson.toJson(this);
         Log.i("AAAAAAAAAA", a);
         return a;
+    }
+
+    @Override
+    public String toString() {
+        return "ToothLesion{" +
+                "toothType='" + toothType + '\'' +
+                ", lesionType='" + lesionType + '\'' +
+                ", oralHealthRecord=" + oralHealthRecord +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ToothLesion that = (ToothLesion) o;
+        return toothType.equals(that.toothType) &&
+                lesionType.equals(that.lesionType);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(toothType, lesionType);
     }
 }

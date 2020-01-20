@@ -1,14 +1,21 @@
 package br.edu.uepb.nutes.haniot.data.repository.remote.haniot;
 
+import com.google.gson.JsonObject;
+
 import java.util.List;
 
+import br.edu.uepb.nutes.haniot.data.model.Admin;
 import br.edu.uepb.nutes.haniot.data.model.Device;
 import br.edu.uepb.nutes.haniot.data.model.FamilyCohesionRecord;
 import br.edu.uepb.nutes.haniot.data.model.FeedingHabitsRecord;
+import br.edu.uepb.nutes.haniot.data.model.HealthProfessional;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
+import br.edu.uepb.nutes.haniot.data.model.MeasurementLastResponse;
 import br.edu.uepb.nutes.haniot.data.model.MedicalRecord;
 import br.edu.uepb.nutes.haniot.data.model.NutritionalEvaluation;
 import br.edu.uepb.nutes.haniot.data.model.NutritionalEvaluationResult;
+import br.edu.uepb.nutes.haniot.data.model.NutritionalQuestionnaire;
+import br.edu.uepb.nutes.haniot.data.model.OdontologicalQuestionnaire;
 import br.edu.uepb.nutes.haniot.data.model.OralHealthRecord;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.PhysicalActivityHabit;
@@ -19,11 +26,16 @@ import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.model.UserAccess;
 import io.reactivex.Completable;
 import io.reactivex.Single;
+import okhttp3.RequestBody;
+import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
+import retrofit2.http.Field;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -34,59 +46,82 @@ import retrofit2.http.Query;
  */
 public interface HaniotService {
     //    String BASE_URL_HANIOT = "http://192.168.0.119:8080/"; // API GATEWAY LOCAL
-    String BASE_URL_HANIOT = "https://200.129.82.8:8081";
+//    String BASE_URL_HANIOT = "https://haniot.nutes.uepb.edu.br:8081/v1/"; // API GATEWAY PRODUCTION
+    String BASE_URL_HANIOT = "https://dev.haniot.ml:8081/v1/"; // API GATEWAY DEV
 
     // auth
     @POST("auth")
     Single<UserAccess> auth(@Body User user);
 
+    // auth
+    @POST("auth/forgot")
+    Single<Object> forgotPassword(@Body JsonObject email);
+
     // user
     @DELETE("users/{user_id}")
     Completable deleteUser(@Path("user_id") String userId);
 
-    @PATCH("users/{user_id}/password")
-    Completable changePassword(@Path("user_id") String userId, @Body User user);
+    @PATCH("auth/password")
+    Completable changePassword(@Body User user);
 
     // users.healthprofessionals
-    @GET("users/healthprofessionals/{healthprofessional_id}")
-    Single<User> getHealthProfessional(
+    @GET("healthprofessionals/{healthprofessional_id}")
+    Single<HealthProfessional> getHealthProfessional(
             @Path("healthprofessional_id") String healthProfessionalId
     );
 
-    @PATCH("users/healthprofessionals/{healthprofessional_id}")
-    Single<User> updateHealthProfissional(
+    // users.admin
+    @GET("admins/{admin_id}")
+    Single<Admin> getAdmin(
+            @Path("admin_id") String adminId
+    );
+
+    @PATCH("healthprofessionals/{healthprofessional_id}")
+    Single<HealthProfessional> updateHealthProfissional(
             @Path("healthprofessional_id") String healthProfessionalId,
             @Body User healthProfissional
     );
 
+    @PATCH("admins/{admin_id}")
+    Single<Admin> updateAdmin(
+            @Path("admin_id") String healthProfessionalId,
+            @Body User healthProfissional
+    );
+
     // pilotstudies
-    @GET("users/healthprofessionals/{healthprofessional_id}/pilotstudies")
-    Single<List<PilotStudy>> getAllPilotStudies(
+    @GET("healthprofessionals/{healthprofessional_id}/pilotstudies")
+    Single<List<PilotStudy>> getAllUserPilotStudies(
             @Path("healthprofessional_id") String healthProfessionalId
     );
+
+    @GET("pilotstudies")
+    Single<List<PilotStudy>> getAllPilotStudies();
+
+    @POST("pilotstudies/{pilotstudy_id}/patients/{patient_id}")
+    Single<Response<Void>> associatePatientToPilotStudy(@Path("pilotstudy_id") String pilotStudyId, @Path("patient_id") String patientId);
 
     @GET("pilotstudies/{pilotstudy_id}")
     Single<PilotStudy> getPilotStudy(@Path("pilotstudy_id") String pilotId);
 
     // users.measurements
-    @POST("users/{user_id}/measurements")
-    Single<Measurement> addMeasurement(@Path("user_id") String userId,
+    @POST("patients/{patient_id}/measurements")
+    Single<Measurement> addMeasurement(@Path("patient_id") String patientId,
                                        @Body Measurement measurement);
 
-    @POST("users/{user_id}/measurements")
-    Single<Object> addMeasurement(@Path("user_id") String userId,
+    @POST("patients/{patient_id}/measurements")
+    Single<Object> addMeasurement(@Path("patient_id") String patientId,
                                   @Body List<Measurement> measurement);
 
-    @GET("users/{user_id}/measurements")
-    Single<List<Measurement>> getAllMeasurements(@Path("user_id") String userId,
+    @GET("patients/{patient_id}/measurements")
+    Single<List<Measurement>> getAllMeasurements(@Path("patient_id") String userId,
                                                  @Query("sort") String sort,
                                                  @Query("start_at") String dateStart,
                                                  @Query("end_at") String dateEnd,
                                                  @Query("page") int page,
                                                  @Query("limit") int limit);
 
-    @GET("users/{user_id}/measurements")
-    Single<List<Measurement>> getAllMeasurements(@Path("user_id") String userId,
+    @GET("patients/{patient_id}/measurements")
+    Single<List<Measurement>> getAllMeasurements(@Path("patient_id") String userId,
                                                  @Query("type") String type,
                                                  @Query("sort") String sort,
                                                  @Query("start_at") String dateStart,
@@ -94,44 +129,44 @@ public interface HaniotService {
                                                  @Query("page") int page,
                                                  @Query("limit") int limit);
 
-    @GET("users/{user_id}/measurements")
-    Single<List<Measurement>> getAllMeasurements(@Path("user_id") String userId,
+    @GET("patients/{patient_id}/measurements")
+    Single<List<Measurement>> getAllMeasurements(@Path("patient_id") String userId,
                                                  @Query("type") String type,
                                                  @Query("sort") String sort,
                                                  @Query("page") int page,
                                                  @Query("limit") int limit);
 
-    @GET("users/{user_id}/measurements")
-    Single<List<Measurement>> getAllMeasurements(@Path("user_id") String userId,
+    @GET("patients/{patient_id}/measurements")
+    Single<List<Measurement>> getAllMeasurements(@Path("patient_id") String userId,
                                                  @Query("page") int page,
                                                  @Query("limit") int limit,
                                                  @Query("sort") String sort);
 
-    @GET("users/{user_id}/measurements/{measurement_id}")
-    Single<Measurement> getMeasurement(@Path("user_id") String userId,
+    @GET("patients/{patient_id}/measurements/{measurement_id}")
+    Single<Measurement> getMeasurement(@Path("patient_id") String userId,
                                        @Path("measurement_id") String measurementId);
 
-    @DELETE("users/{user_id}/measurements/{measurement_id}")
-    Completable deleteMeasurement(@Path("user_id") String userId,
+    @DELETE("patients/{patient_id}/measurements/{measurement_id}")
+    Completable deleteMeasurement(@Path("patient_id") String userId,
                                   @Path("measurement_id") String measurementId);
 
     // user.devices
-    @POST("users/{user_id}/devices")
-    Single<Device> addDevice(@Path("user_id") String userId, @Body Device device);
+    @POST("patients/{patient_id}/devices")
+    Single<Device> addDevice(@Path("patient_id") String userId, @Body Device device);
 
-    @GET("users/{user_id}/devices")
-    Single<List<Device>> getAllDevices(@Path("user_id") String userId);
+    @GET("patients/{patient_id}/devices")
+    Single<List<Device>> getAllDevices(@Path("patient_id") String userId);
 
-    @GET("users/{user_id}/devices/{device_id}")
-    Single<Device> getDevice(@Path("user_id") String userId,
+    @GET("patients/{patient_id}/devices/{device_id}")
+    Single<Device> getDevice(@Path("patient_id") String userId,
                              @Path("device_id") String deviceId);
 
-    @DELETE("users/{user_id}/devices/{device_id}")
-    Completable deleteDevice(@Path("user_id") String userId,
+    @DELETE("patients/{patient_id}/devices/{device_id}")
+    Completable deleteDevice(@Path("patient_id") String userId,
                              @Path("device_id") String deviceId);
 
     // pilotstudies.patients
-    @POST("users/patients")
+    @POST("patients")
     Single<Patient> addPatient(@Body Patient patient);
 
     @GET("pilotstudies/{pilotstudy_id}/patients")
@@ -140,10 +175,10 @@ public interface HaniotService {
                                                      @Query("page") int page,
                                                      @Query("limit") int limit);
 
-    @GET("users/patients/{patient_id}")
+    @GET("patients/{patient_id}")
     Single<Patient> getPatient(@Path("patient_id") String patientId);
 
-    @PATCH("users/patients/{patient_id}")
+    @PATCH("patients/{patient_id}")
     Single<Patient> updatePatient(@Path("patient_id") String patientId,
                                   @Body Patient patient);
 
@@ -283,5 +318,56 @@ public interface HaniotService {
     @POST("patients/{patient_id}/nutritional/evaluations")
     Single<NutritionalEvaluationResult> saveNutritionalEvaluation(@Path("patient_id") String patientId,
                                                                   @Body NutritionalEvaluation nutritionalEvaluation);
+
+
+    @GET("patients/{patient_id}/nutritional/questionnaires")
+    Single<List<NutritionalQuestionnaire>> getAllNutritionalQuestionnaires(@Path("patient_id") String patientId,
+                                                                           @Query("page") int page,
+                                                                           @Query("limit") int limit,
+                                                                           @Query("sort") String sort);
+
+    @GET("patients/{patient_id}/odontological/questionnaires")
+    Single<List<OdontologicalQuestionnaire>> getAllOdontologicalQuestionnaires(@Path("patient_id") String patientId,
+                                                                               @Query("page") int page,
+                                                                               @Query("limit") int limit,
+                                                                               @Query("sort") String sort);
+
+    @GET("patients/{patient_id}/odontological/questionnaires/last")
+    Single<OdontologicalQuestionnaire> getLastOdontologicalQuestionnaires(@Path("patient_id") String patientId);
+
+    @GET("patients/{patient_id}/nutritional/questionnaires/last")
+    Single<NutritionalQuestionnaire> getLastNutritionalQuestionnaire(@Path("patient_id") String patientId);
+
+    @GET("patients/{patient_id}/measurements/last")
+    Single<MeasurementLastResponse> getLastMeasurements(@Path("patient_id") String patientId);
+
+
+    @PUT("patients/{patient_id}/nutritional/questionnaires/{questionnaire_id}/{resource_name}")
+    Single<Object> updateNutritionalQuestionnaire(
+            @Path("patient_id") String patientId,
+            @Path("questionnaire_id") String questionnaireId,
+            @Path("resource_name") String resourceName,
+            @Body Object object
+    );
+
+    @PUT("patients/{patient_id}/odontological/questionnaires/{questionnaire_id}/{resource_name}")
+    Single<Object> updateOdontologicalQuestionnaire(
+            @Path("patient_id") String patientId,
+            @Path("questionnaire_id") String questionnaireId,
+            @Path("resource_name") String resourceName,
+            @Body Object object
+    );
+
+    @POST("patients/{patient_id}/odontological/questionnaires")
+    Single<OdontologicalQuestionnaire> saveOdontologicalQuestionnaire(
+            @Path("patient_id") String patientId,
+            @Body OdontologicalQuestionnaire odontologicalQuestionnaire
+    );
+
+    @POST("patients/{patient_id}/nutritional/questionnaires")
+    Single<NutritionalQuestionnaire> saveNutritionalQuestionnaire(
+            @Path("patient_id") String patientId,
+            @Body NutritionalQuestionnaire nutritionalQuestionnaire
+    );
 
 }
