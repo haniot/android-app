@@ -2,7 +2,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation" tools:locale="pt">
     <string name="app_name">HANIoT</string>
     <string name="app_name_desc">Health ANalytics Internet of Things</string>
-    <string name="app_version">1.5.0</string>
+    <string name="app_version">1.7.0</string>
     <string name="copyright">© 2019 NUTES/UEPB</string>
     <string name="stop_scan">Parar Escaneamento</string>
     <string name="device_address">Endereço: %s</string>

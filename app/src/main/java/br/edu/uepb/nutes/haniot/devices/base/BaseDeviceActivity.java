@@ -503,6 +503,7 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
 
     @Override
     protected void onResume() {
+        super.onResume();
         if (!wifiRequest && !bluetoothRequest) {
             boxMessage.setVisibility(View.GONE);
         }
@@ -510,15 +511,17 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
         loadData(true);
         updateConnectionState();
 
-        if (mDevice != null && manager != null)
+        if(!ConnectionUtils.isSupportedBluetooth()) return;
+
+        if (mDevice != null && manager != null) {
             manager.connect(BluetoothAdapter.getDefaultAdapter()
                     .getRemoteDevice(mDevice.getAddress())).useAutoConnect(true).enqueue();
+        }
 
-        if (manager != null)
-            if (manager.getConnectionState() != BluetoothProfile.STATE_CONNECTED && mDevice != null) {
-                manager.connect(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(mDevice.getAddress()));
-            }
-        super.onResume();
+        if (manager != null &&
+                (manager.getConnectionState() != BluetoothProfile.STATE_CONNECTED && mDevice != null)) {
+            manager.connect(BluetoothAdapter.getDefaultAdapter().getRemoteDevice(mDevice.getAddress()));
+        }
     }
 
     @Override

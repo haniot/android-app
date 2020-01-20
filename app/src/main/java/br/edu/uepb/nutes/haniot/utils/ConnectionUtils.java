@@ -32,7 +32,7 @@ public final class ConnectionUtils {
      * @return true for device supports bluetooth or false otherwise.
      */
     public static boolean isSupportedBluetooth() {
-        return (BluetoothAdapter.getDefaultAdapter() == null) ? false : true;
+        return BluetoothAdapter.getDefaultAdapter() != null;
     }
 
     /**

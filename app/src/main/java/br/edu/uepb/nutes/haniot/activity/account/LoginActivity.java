@@ -155,11 +155,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         boxMessage.setVisibility(View.GONE);
 
         // close keyboard
-        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-
-        if (getCurrentFocus().getWindowToken() != null)
-            inputMethodManager.hideSoftInputFromWindow(Objects.requireNonNull(
-                    getCurrentFocus()).getWindowToken(), HIDE_NOT_ALWAYS);
+        if (getCurrentFocus() != null) {
+            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(Objects.requireNonNull(getCurrentFocus())
+                    .getWindowToken(), HIDE_NOT_ALWAYS);
+        }
 
         // Check if you have an internet connection.
         // If yes, it does authentication with the remote server
