@@ -102,8 +102,8 @@ public class ManagerPatientAdapter extends BaseAdapter<Patient> {
             h.textName.setEllipsize(TextUtils.TruncateAt.END);
             h.textAge.setText(calculateAge(patient.getBirthDate()));
             if (patient.getGender().equals(PatientsType.GenderType.FEMALE))
-                h.profile.setImageResource(R.drawable.x_girl);
-            else h.profile.setImageResource(R.drawable.x_boy);
+                h.profile.setImageResource(R.drawable.ic_action_gender_female);
+            else h.profile.setImageResource(R.drawable.ic_action_gender_male);
 
             h.mView.setOnClickListener(v -> actionsPatientListener.onItemClick(patient));
 

@@ -41,7 +41,6 @@
                     app:cpb_progressbar_width="6dp" />
 
                 <RelativeLayout
-                    android:id="@+id/box_smartband"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignBottom="@+id/view_circle"
@@ -125,7 +124,6 @@
                     app:cpb_progressbar_width="4dp" />
 
                 <RelativeLayout
-                    android:id="@+id/relativeLayout3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignBottom="@+id/view_heart_rate"
@@ -204,7 +202,6 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <TextView
-            android:id="@+id/text_view_title_history"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"

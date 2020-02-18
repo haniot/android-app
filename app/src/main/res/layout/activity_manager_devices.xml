@@ -40,7 +40,6 @@
                 android:visibility="gone">
 
                 <ImageView
-                    android:id="@+id/icon_error_server"
                     android:layout_width="150dp"
                     android:layout_height="150dp"
                     android:src="@drawable/ic_error_server" />
@@ -138,7 +137,6 @@
                                 app:srcCompat="@drawable/ic_no_devices" />
 
                             <TextView
-                                android:id="@+id/no_registered_devices_textView"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="20dp"

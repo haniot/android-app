@@ -70,7 +70,6 @@
                 app:srcCompat="@drawable/thermometer" />
 
             <ImageView
-                android:id="@+id/imageSuccess"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_alignBottom="@+id/img_device_sucess"

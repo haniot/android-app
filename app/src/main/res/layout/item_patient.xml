@@ -11,23 +11,20 @@
 
     <ImageView
         android:id="@+id/textLetter"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
-        android:background="@mipmap/ic_circle"
-        android:padding="8dp"
-        android:src="@drawable/x_boy" />
+        android:layout_marginTop="24dp"
+        android:src="@drawable/ic_action_gender_male" />
 
     <TextView
         android:id="@+id/textNameChildValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="17dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="17dp"
+        android:layout_marginStart="5dp"
         android:layout_marginEnd="17dp"
         android:layout_toStartOf="@+id/btnEditChildren"
         android:layout_toEndOf="@id/textLetter"

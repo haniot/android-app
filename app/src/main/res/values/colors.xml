@@ -3,8 +3,6 @@
     <color name="colorPrimary">#009b8a</color>
     <color name="colorPrimaryDark">#17806E</color>
     <color name="colorAccent">#53cdba</color>
-    <color name="colorAccentSecondary">#4fc3f7</color>
-    <color name="colorBackRadioGroup">#f0f0f0</color>
     <color name="colorErrorBind">#C4334E</color>
 
     <color name="colorCard">#EBF6F4</color>

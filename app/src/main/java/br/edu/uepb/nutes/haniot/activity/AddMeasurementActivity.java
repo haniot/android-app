@@ -89,9 +89,6 @@ public class AddMeasurementActivity extends AppCompatActivity {
     @BindView(R.id.saveMeasurement)
     FloatingActionButton saveMeasurement;
 
-    @BindView(R.id.gender_icon)
-    ImageView genderIcon;
-
     @BindView(R.id.box_message_error)
     LinearLayout boxMessage;
 
@@ -123,12 +120,6 @@ public class AddMeasurementActivity extends AppCompatActivity {
         patient = appPreferencesHelper.getLastPatient();
         type = appPreferencesHelper.getInt(getResources().getString(R.string.measurementType));
         patientName = patient.getName();
-
-        if (patient.getGender().equals(PatientsType.GenderType.MALE)) {
-            genderIcon.setImageResource(R.drawable.x_boy);
-        } else {
-            genderIcon.setImageResource(R.drawable.x_girl);
-        }
 
         if (ItemGridType.typeSupported(type)) {
             replaceFragment(type);

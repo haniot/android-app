@@ -4,27 +4,12 @@
     <string name="app_name_desc">Health ANalytics Internet of Things</string>
     <string name="app_version">1.7.0</string>
     <string name="copyright">© 2019 NUTES/UEPB</string>
-    <string name="stop_scan">Parar Escaneamento</string>
-    <string name="device_address">Endereço: %s</string>
-    <string name="device_connection_state">Estado: %s</string>
-    <string name="device_read_data">Data: %s</string>
-    <string name="disconnect">Desconectado</string>
-    <string name="connect">Conectar</string>
-    <string name="connected">Conectado</string>
-    <string name="disconnected">Desconectado</string>
     <string name="devices">Dispositivos</string>
-    <string name="device_bonded">Paraado</string>
-    <string name="device_bonding">Pareando</string>
-    <string name="device_not_bonded">Não pareado</string>
     <string name="permission_location">A permissão de localização é obrigatória no utilizar Bluetooth Low Energy!</string>
-    <string name="not_bluetooth_le">Seu dispositivo não suporta Bluetooth Low Energy!</string>
     <string name="welcome">Bem-vindo ao HANIoT</string>
-    <string name="no_more_data">Não há mais dados disponíveis&#8230;</string>
     <string name="today_text">Hoje</string>
     <string name="yes_text">Sim</string>
     <string name="no_text">Não</string>
-    <string name="unknown_characteristic">Caracteríticas desconhecida</string>
-    <string name="unknown_service">Serviço desconhecido</string>
     <string name="temperature">Temperatura</string>
     <string name="weight">Peso</string>
     <string name="body_weight_scale">Escala de peso corporal</string>
@@ -34,8 +19,6 @@
     <string name="body_fat_title">Gordura Corporal</string>
     <string name="body_bmi_title">BMI</string>
     <string name="pulse_mark_title">Pulso:</string>
-    <string name="temperatre_type_armpit">Axila</string>
-    <string name="temperatre_type_body">Corpo (geral)</string>
     <string name="image">Imagem</string>
     <string name="welcome_app_functionalities_title">Aqui você pode:</string>
     <string name="welcome_app_functionalities">• Cadastrar/gerenciar seus pacientes;\n• Submeter questionários para seus pacientes responderem;\n• Realizar medições;\n• Consultar históricos e muito mais.</string>
@@ -66,7 +49,6 @@
 
     <!-- SIGNUP -->
     <string name="name">Nome</string>
-    <string name="last_name">Sobrenome</string>
     <string name="gender">Gênero</string>
     <string name="gender_male">Masculino</string>
     <string name="gender_female">Feminino</string>
@@ -96,7 +78,6 @@
 
     <!-- ERROR MESSAGES -->
     <string name="error_sign_out">Aconteceu um erro ao tentar sair&#8230;</string>
-    <string name="error_delete_account">Aconteceu um erro ao tentar excluir sua conta&#8230;</string>
     <string name="error_500">Não foi possível concluir a operação! Por favor, tente novamente mais tarde&#8230;</string>
     <string name="error_connectivity">Aconteceu um erro na comunicação com nossos servidores. Por favor, verifique a conectividade do seu telefone e tente novamente mais tarde.</string>
     <string name="connect_network_try_again">Conecte-se a uma rede e tente novamente&#8230;</string>
@@ -146,8 +127,6 @@
 
     <!-- ACTIONS -->
     <string name="action_settings">Configurações</string>
-    <string name="action_bond">Parear</string>
-    <string name="action_scanner_devices">Escanear Dispositivos</string>
     <string name="action_save">Salvar</string>
     <!-- END ACTIONS -->
 
@@ -186,10 +165,6 @@
     </string>
     <!-- END SURVEY -->
 
-    <string name="get_monitor">Obter do Monitor</string>
-    <string name="get_monitor_dialog_tittle">Obtendo dados do monitor&#8230;</string>
-    <string name="get_monitor_desc">Verifique se o monitor está próximo e no modo de transferência de dados (Selecione Meus Dados, Transf. de Dados, Sem fio).</string>
-
     <string name="no_data">Sem dados</string>
 
     <!--Limit and Lines of Chart-->
@@ -223,7 +198,6 @@
     <string name="wifi_disabled">Você está sem conexão com a internet. \nPrecisamos para sincronizar os seus dados!</string>
     <string name="dash_item_description">Botão de Medição</string>
     <string name="manage_patient">Gerenciar Pacientes</string>
-    <string name="search">Pesquisar</string>
     <string name="unit_kilometer">KM</string>
     <string name="key_temperature">key_temperature</string>
     <string name="key_weight">key_weight</string>
@@ -231,7 +205,6 @@
     <string name="key_blood_pressure">key_blood_pressure</string>
     <string name="key_heart_rate">key_heart_rate</string>
     <string name="blood_glucose">Glicose no sangue</string>
-    <string name="steps">Passos</string>
     <string name="unit_temperature">°C</string>
     <string name="unit_weight">kg</string>
     <string name="unit_hour">h</string>
@@ -252,78 +225,34 @@
     <string name="no_patient_registered">Nenhum paciente cadastrado!\nPara continuar, cadastre um novo paciente a seguir.</string>
     <!-- END OF STRINGS FOR TABLET -->
 
-    <string-array name="measurement_types_array">
-        <item>Temperatura</item>
-        <item>Blood Glucose</item>
-        <item>Body Weight</item>
-        <item>Body Fat</item>
-        <item>Blood Pressure</item>
-        <item>Heart Rate</item>
-        <item>BMI - Body Mass Index</item>
-        <item>RMR - Resting Metabolic Rate</item>
-        <item>BMR - Basal Metabolic Rate</item>
-        <item>Muscle Mass</item>
-        <item>Visceral Fat</item>
-        <item>Body Age</item>
-        <item>Passos</item>
-        <item>Distancia</item>
-        <item>Calorias</item>
-    </string-array>
-
     <!-- REGISTERED DEVICES -->
     <string name="title_devices_registered">Cadastrados</string>
     <string name="title_devices_available">Disponíveis</string>
-    <string name="remove_device">Tem certeza que deseja remover %s?\nUma vez removido, não será possível recuperar os dados desse dispositivo.</string>
-    <string name="remove">Remover</string>
-    <string name="start_scanner">Iniciar scanner</string>
-    <string name="start_search_device">Procurar dispositivo</string>
-    <string name="start_scanner_try">Tentar novamente</string>
-    <string name="stop_scanner">Parar scanner</string>
-    <string name="device_not_found_try_again">Dispositivo não encontrado. Por favor, tente novamente!</string>
     <string name="no_devices_registered">Não há dispositivos cadastrados&#8230;</string>
     <string name="no_devices_available">Nenhum dispositivo disponível. Em breve a lista será atualizada&#8230;</string>
     <string name="device_registered_success">%s cadastrado com sucesso!</string>
     <string name="device_registered_error">Não foi possível cadastrar %s</string>
     <string name="connection">Matenha o dispositivo de saúde próximo ao telefone/tablet.</string>
-    <string name="come_back">Voltar</string>
     <string name="attention">Atenção</string>
     <string name="other">Outro</string>
     <string name="model_device">Modelo do dispositivo</string>
     <string name="name_device">Nome do dispositivo</string>
     <string name="settings_configure_device">Configurar Dispositivos</string>
     <string name="settings_summary_configure_device">Gerencie seus dispositivos registrados ou insira novos.</string>
-    <string name="failed_pairing_device">Falha ao parear dispositivo</string>
     <string name="pairing_device">Pareando dispositivo&#8230;</string>
 
 
     <!--GLUCOSE STATUS ANNUNCIATION-->
 
     <!--GLUCOSE LOCATION-->
-    <string name="glucose_location_finger">Finger</string>
-    <string name="glucose_location_alternate">Alternate Site Test (AST)</string>
-    <string name="glucose_location_earlobe">Earlobe</string>
-    <string name="glucose_location_control_solution">Contril solution</string>
-    <string name="glucose_location_sample_not_available">Sample Location valueId not available</string>
 
     <!--GLUCOSE TYPE-->
-    <string name="glucose_type_capillary_whole">Capillary Whole blood</string>
-    <string name="glucose_type_capillary_plasma">Capillary Plasma</string>
-    <string name="glucose_type_venous_whole">Venous Whole blood</string>
-    <string name="glucose_type_venous_plasma">Venous Plasma</string>
-    <string name="glucose_type_arterial_whole">Arterial Whole blood</string>
-    <string name="glucose_type_arterial_plama">Arterial Plasma</string>
-    <string name="glucose_type_undertermined_whole">Undetermined Whole blood</string>
-    <string name="glucose_type_undertermined_plasma">Undetermined Plasma</string>
-    <string name="glucose_type_interstitial">Interstitial Fluid (ISF)</string>
-    <string name="glucose_type_control_solution">Control Solution</string>
 
     <string name="no_data_available">Nenhum dado para exibir</string>
 
     <!-- SYNCHRONIZATION -->
-    <string name="synchronization_no_data_to_send">There is no data to send&#8230;</string>
 
     <!--UNITS-->
-    <string name="unit_kcal">cal</string>
     <string name="unit_meters">m</string>
 
     <!--LOGIN-->
@@ -331,22 +260,7 @@
     <string name="password">Senha</string>
     <string name="login">Entrar</string>
 
-    <string name="temperatre_type_ear">Ear (usually ear lobe)</string>
-    <string name="temperatre_type_finger">Finger</string>
-    <string name="temperatre_type_gastro">Gastro-intestinal Tract</string>
-    <string name="temperatre_type_mouth">Mouth</string>
-    <string name="temperatre_type_rectum">Rectum</string>
-    <string name="temperatre_type_toe">Toe</string>
-    <string name="temperatre_type_typanum">Tympanum (ear drum)</string>
-
     <!--GLUCOSE CARBOHYDRATE-->
-    <string name="glucose_carbohydrate_breakfast">Breakfast</string>
-    <string name="glucose_carbohydrate_lunch">Lunch</string>
-    <string name="glucose_carbohydrate_dinner">Dinner</string>
-    <string name="glucose_carbohydrate_snakck">Snack</string>
-    <string name="glucose_carbohydrate_drink">Drink</string>
-    <string name="glucose_carbohydrate_supper">Supper</string>
-    <string name="glucose_carbohydrate_brunch">Brunch</string>
 
     <string name="title_activity_manage_children">ManageChildrenActivity</string>
 
@@ -358,51 +272,6 @@
         <item>Temperature Type</item>
     </string-array>
 
-    <string-array name="measurement_values_context_types_array">
-        <item>@string/other</item>
-        <!--GLUCOSE CARBOHYDRATE (2-8)-->
-        <item>@string/glucose_carbohydrate_breakfast</item>
-        <item>@string/glucose_carbohydrate_lunch</item>
-        <item>@string/glucose_carbohydrate_dinner</item>
-        <item>@string/glucose_carbohydrate_snakck</item>
-        <item>@string/glucose_carbohydrate_drink</item>
-        <item>@string/glucose_carbohydrate_supper</item>
-        <item>@string/glucose_carbohydrate_brunch</item>
-        <!--GLUCOSE MEAL (9-13)-->
-        <item>@string/glucose_meal_preprandial</item>
-        <item>@string/glucose_meal_postprandial</item>
-        <item>@string/glucose_meal_fasting</item>
-        <item>@string/glucose_meal_casual</item>
-        <item>@string/glucose_meal_bedtime</item>
-        <!--GLUCOSE LOCATION (14-18)-->
-        <item>@string/glucose_location_finger</item>
-        <item>@string/glucose_location_alternate</item>
-        <item>@string/glucose_location_earlobe</item>
-        <item>@string/glucose_location_control_solution</item>
-        <item>@string/glucose_location_sample_not_available</item>
-        <!--GLUCOSE TYPE (19-28)-->
-        <item>@string/glucose_type_capillary_whole</item>
-        <item>@string/glucose_type_capillary_plasma</item>
-        <item>@string/glucose_type_venous_whole</item>
-        <item>@string/glucose_type_venous_plasma</item>
-        <item>@string/glucose_type_arterial_whole</item>
-        <item>@string/glucose_type_arterial_plama</item>
-        <item>@string/glucose_type_undertermined_whole</item>
-        <item>@string/glucose_type_undertermined_plasma</item>
-        <item>@string/glucose_type_interstitial</item>
-        <item>@string/glucose_type_control_solution</item>
-        <!--TEMPERATURE TYPE (29-37)-->
-        <item>@string/temperatre_type_armpit</item>
-        <item>@string/temperatre_type_body</item>
-        <item>@string/temperatre_type_ear</item>
-        <item>@string/temperatre_type_finger</item>
-        <item>@string/temperatre_type_gastro</item>
-        <item>@string/temperatre_type_mouth</item>
-        <item>@string/temperatre_type_rectum</item>
-        <item>@string/temperatre_type_toe</item>
-        <item>@string/temperatre_type_typanum</item>
-    </string-array>
-
     <string-array name="user_group_array">
         <item>Admin</item>
         <item>Nutrition</item>
@@ -411,24 +280,11 @@
     </string-array>
 
     <!--TYPES AND GROUPS-->
-    <string-array name="device_types_array">
-        <item>Thermometer</item>
-        <item>Glucometer</item>
-        <item>Scale</item>
-        <item>Blood Pressure</item>
-        <item>Heart Rate</item>
-        <item>Smart Watch</item>
-        <item>Smart Band</item>
-    </string-array>
 
     <!-- MEASUREMENTS TYPES -->
-    <string name="thermometer">Termômetro</string>
-    <string name="glucometer">Glicosímetro</string>
     <string name="body_composition">Balança</string>
     <string name="blood_pressure">Pressão Sanguínea</string>
     <string name="heart_rate">Frequência Cardíaca</string>
-    <string name="smartwatch">Smartwatch</string>
-    <string name="smartband">Smartband</string>
     <!-- END MEASUREMENTS TYPES -->
 
     <!-- Patient Quiz Nutrition -->
@@ -666,7 +522,6 @@
     <string name="question_8">Facilmente nos ocorrem coisas que podemos fazer juntos, em família:</string>
     <string name="question_9">Os membros da família consultam outras pessoas da família para tomarem suas decisões:</string>
     <string name="question_10">A união familiar é muito importante:</string>
-    <string name="question_11">Soma total coesão familiar:</string>
     <string name="question_12">Cor ou raça:</string>
     <string name="question_13">Escolaridade da mãe:</string>
     <string name="question_14">Número de pessoas morando em casa:</string>
@@ -706,15 +561,6 @@
         <item>Superior Completo</item>
     </string-array>
 
-    <string-array name="number6_answers">
-        <item>Uma</item>
-        <item>Duas</item>
-        <item>Três</item>
-        <item>Quatro</item>
-        <item>Cinco</item>
-        <item>Seis ou Mais</item>
-    </string-array>
-
     <string-array name="number3_answers">
         <item>Nenhuma</item>
         <item>Uma</item>
@@ -732,12 +578,10 @@
     <string name="add_manually">Adicionar Manualmente</string>
 
     <!-- EVALUATION -->
-    <string name="evaluation_message">Escolha os dados referentes a %s para a Avaliação \n%s:</string>
-    <string name="quiz_historic_message">Questionários respondidos por \n%s:</string>
+    <string name="evaluation_message">Escolha os dados referentes a %s para a Avaliação %s:</string>
     <string name="evaluation_empty_message">Sem resgistros! É necessário pelo menos uma medição\nClique aqui para inserir</string>
     <string name="evaluation_error_message">Opss! Não foi possível fazer a sincronização dos seus dados...\n Atualize a página para tentar novamente!</string>
     <string name="evaluation_required_fields">Preencha todos os itens obrigatórios para finalizar a avaliação!</string>
-    <string name="fat">Gordura Corporal</string>
     <string name="height">Altura</string>
     <string name="waits_circumference">Circunferência da Cintura</string>
     <string name="evaluation_sucessfull">Avaliação Nutricional gerada com sucesso!</string>
@@ -747,7 +591,6 @@
     <string name="confirm_save_measurement">Deseja salvar essa medição?</string>
     <string name="measurement_save">Medição salva com sucesso!</string>
     <string name="confirm_save_evaluation">Deseja salvar essa avaliação?</string>
-    <string name="evaluation_saved">Avaliação salva com sucesso!</string>
     <string name="no_internet_conection">Sem conexão com a internet!</string>
     <string name="title_synchronize">Sincronizando dados</string>
     <string name="loading_synchronize">Aguarde enquanto os dados estão sendo sincronizados...</string>
@@ -791,6 +634,5 @@
     <string name="dentistry_quiz_empty">Ainda não há questionários odontológicos respondidos...</string>
     <string name="invalid_auth">Auntenticação inválida! Faça login em outra conta e tente novamente.</string>
     <string name="not_permission">Você não tem permissão para efetuar essa tarefa!</string>
-    <string name="not_found">Recurso não encontrado!</string>
     <string name="request_exceeded">Limite de requisições excedidas, tente novamente mais tarde!</string>
 </resources>

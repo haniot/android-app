@@ -67,9 +67,6 @@ public class UserRegisterActivity extends AppCompatActivity {
     @BindView(R.id.email_edittext)
     EditText emailEditTExt;
 
-    @BindView(R.id.gender_icon)
-    ImageView genderIcon;
-
     @BindView(R.id.radio_group)
     RadioGroup genderGroup;
 
@@ -377,7 +374,6 @@ public class UserRegisterActivity extends AppCompatActivity {
                         enabledView(true);
                     }, this::errorHandler));
         } else if (userLogged.getUserType().equals(HEALTH_PROFESSIONAL)) {
-            genderIcon.setImageResource(R.drawable.ic_health_professional);
             DisposableManager.add(haniotNetRepository
                     .getHealthProfissional(userLogged.get_id())
                     .doOnSubscribe(disposable -> {
@@ -402,7 +398,6 @@ public class UserRegisterActivity extends AppCompatActivity {
                         enabledView(true);
                     }, this::errorHandler));
         } else if (userLogged.getUserType().equals(ADMIN)) {
-            genderIcon.setImageResource(R.drawable.ic_admin);
             DisposableManager.add(haniotNetRepository
                     .getAdmin(userLogged.get_id())
                     .doOnSubscribe(disposable -> {
@@ -516,11 +511,6 @@ public class UserRegisterActivity extends AppCompatActivity {
             prepareEditing();
         }
 
-
-        genderGroup.setOnCheckedChangeListener((group, checkedId) -> {
-            if (checkedId == R.id.male) genderIcon.setImageResource(R.drawable.x_boy);
-            else genderIcon.setImageResource(R.drawable.x_girl);
-        });
 
         birthEdittext.setOnClickListener(v -> {
             InputMethodManager inputManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);

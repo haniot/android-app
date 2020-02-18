@@ -82,24 +82,12 @@
                     android:id="@+id/message_add"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/gender_icon"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="35dp"
+                    android:layout_marginTop="135dp"
                     android:gravity="center"
                     android:text="@string/add_measurement_message"
                     android:textColor="@color/colorSubmenu"
                     android:textSize="17sp" />
-
-
-                <ImageView
-                    android:id="@+id/gender_icon"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:layout_alignTop="@+id/box_time"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="11dp"
-                    android:background="@drawable/ic_circle"
-                    app:srcCompat="@drawable/x_boy" />
 
                 <RelativeLayout
                     android:id="@+id/box_measurement"
@@ -149,7 +137,6 @@
                 </RelativeLayout>
 
                 <RelativeLayout
-                    android:id="@+id/box_time"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
@@ -159,7 +146,7 @@
                         android:layout_height="30dp"
                         android:layout_alignParentStart="true"
                         android:layout_alignParentTop="true"
-                        android:layout_marginStart="100dp"
+                        android:layout_marginStart="135dp"
                         android:layout_marginTop="35dp"
                         android:src="@drawable/calen"
                         android:tint="@color/colorSubmenu" />
@@ -185,7 +172,7 @@
                         android:layout_alignParentTop="true"
                         android:layout_alignParentEnd="true"
                         android:layout_marginTop="35dp"
-                        android:layout_marginEnd="100dp"
+                        android:layout_marginEnd="135dp"
                         android:src="@drawable/cclock"
                         android:tint="@color/colorSubmenu" />
 
@@ -198,7 +185,7 @@
                         android:layout_alignParentEnd="true"
                         android:layout_marginStart="-27dp"
                         android:layout_marginTop="0dp"
-                        android:layout_marginEnd="75dp"
+                        android:layout_marginEnd="110dp"
                         android:gravity="center"
                         android:text="18:40"
                         android:textColor="@color/colorPrimary"

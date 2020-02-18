@@ -213,9 +213,9 @@ public class DashboardChartsFragment extends Fragment {
             String namePatient = patient.getName().split("\\s+")[0];
             patientName.setText(namePatient);
             if (patient.getGender().equals("male"))
-                patientSex.setImageResource(R.drawable.x_boy);
+                patientSex.setImageResource(R.drawable.ic_action_gender_male);
             else
-                patientSex.setImageResource(R.drawable.x_girl);
+                patientSex.setImageResource(R.drawable.ic_action_gender_female);
         }
     }
 

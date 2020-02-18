@@ -67,8 +67,6 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
     RecyclerView evaluation;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @BindView(R.id.gender_icon)
-    ImageView gender;
     @BindView(R.id.send_evaluation)
     FloatingActionButton sendEvaluation;
     @BindView(R.id.message_patient)
@@ -135,8 +133,6 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         messagePatient.setText(String.format(getResources().getString(R.string.evaluation_message),
                 patient.getName(), "Nutricional"));
-        if (patient.getGender().equals("female")) gender.setImageResource(R.drawable.x_girl);
-        else gender.setImageResource(R.drawable.x_boy);
     }
 
     /**

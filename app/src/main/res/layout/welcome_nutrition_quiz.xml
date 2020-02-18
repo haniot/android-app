@@ -15,7 +15,6 @@
         android:paddingRight="30dp">
 
         <ImageView
-            android:id="@+id/logo"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             app:srcCompat="@drawable/app_logo_dark" />
