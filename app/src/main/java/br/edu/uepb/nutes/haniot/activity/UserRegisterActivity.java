@@ -13,9 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
@@ -25,7 +23,6 @@ import java.util.Calendar;
 import java.util.Objects;
 
 import br.edu.uepb.nutes.haniot.R;
-import br.edu.uepb.nutes.haniot.activity.account.ChangePasswordActivity;
 import br.edu.uepb.nutes.haniot.data.model.Admin;
 import br.edu.uepb.nutes.haniot.data.model.HealthProfessional;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
@@ -61,20 +58,26 @@ public class UserRegisterActivity extends AppCompatActivity {
     @BindView(R.id.fab)
     FloatingActionButton fab;
 
+    @BindView(R.id.message_add)
+    TextView messageAdd;
+
     @BindView(R.id.name_edittext)
-    EditText nameEditTExt;
+    EditText nameEditText;
 
     @BindView(R.id.email_edittext)
-    EditText emailEditTExt;
+    EditText emailEditText;
 
     @BindView(R.id.radio_group)
     RadioGroup genderGroup;
 
     @BindView(R.id.birth_edittext)
-    EditText birthEdittext;
+    EditText birthEditText;
+
+    @BindView(R.id.address_edittext)
+    EditText addressEditText;
 
     @BindView(R.id.phone_edittext)
-    EditText phoneEdittext;
+    EditText phoneEditText;
 
     @BindView(R.id.box_message_error)
     LinearLayout boxMessage;
@@ -97,6 +100,7 @@ public class UserRegisterActivity extends AppCompatActivity {
     private Admin admin;
     private User userLogged;
     private String name;
+    private String address;
     private String phoneNumber;
     private String birthday;
     private String gender;
@@ -128,18 +132,18 @@ public class UserRegisterActivity extends AppCompatActivity {
      */
     private boolean validate() {
         boolean validated = true;
-        if (nameEditTExt.getText().toString().isEmpty()) {
-            nameEditTExt.setError(getResources().getString(R.string.required_field));
+        if (nameEditText.getText().toString().isEmpty()) {
+            nameEditText.setError(getResources().getString(R.string.required_field));
             validated = false;
         }
 
-        if (birthEdittext.getText().toString().isEmpty()) {
-            birthEdittext.setError(getResources().getString(R.string.required_field));
+        if (birthEditText.getText().toString().isEmpty()) {
+            birthEditText.setError(getResources().getString(R.string.required_field));
             validated = false;
         }
 
-        if (emailEditTExt.getText().length() > 0 && !android.util.Patterns.EMAIL_ADDRESS.matcher(emailEditTExt.getText()).matches()) {
-            emailEditTExt.setError(getResources().getString(R.string.validate_email));
+        if (emailEditText.getText().length() > 0 && !android.util.Patterns.EMAIL_ADDRESS.matcher(emailEditText.getText()).matches()) {
+            emailEditText.setError(getResources().getString(R.string.validate_email));
             validated = false;
         }
         return validated;
@@ -154,18 +158,18 @@ public class UserRegisterActivity extends AppCompatActivity {
     private void editAdmin() {
         Log.w("AAA", "editAdmin()");
         admin.set_id(id);
-        admin.setName(nameEditTExt.getText().toString());
+        admin.setName(nameEditText.getText().toString());
         if (isEdit) {
-            if ((emailEditTExt.getText().toString().equals(userLogged.getEmail()))
-                    || emailEditTExt.getText().toString().isEmpty()) {
+            if ((emailEditText.getText().toString().equals(userLogged.getEmail()))
+                    || emailEditText.getText().toString().isEmpty()) {
                 admin.setEmail(null);
-            } else admin.setEmail(emailEditTExt.getText().toString());
+            } else admin.setEmail(emailEditText.getText().toString());
         } else {
-            if (emailEditTExt.getText().toString().isEmpty()) admin.setEmail(null);
-            else admin.setEmail(emailEditTExt.getText().toString());
+            if (emailEditText.getText().toString().isEmpty()) admin.setEmail(null);
+            else admin.setEmail(emailEditText.getText().toString());
         }
 
-        admin.setPhoneNumber(phoneEdittext.getText().toString());
+        admin.setPhoneNumber(phoneEditText.getText().toString());
         admin.setBirthDate(DateUtils.formatDate(myCalendar.getTimeInMillis(), "yyyy-MM-dd"));
         Log.w("AAA", "editing Admin: " + admin.toJson());
         DisposableManager.add(haniotNetRepository.updateAdmin(admin).subscribe(admin1 -> {
@@ -178,19 +182,19 @@ public class UserRegisterActivity extends AppCompatActivity {
     private void edithealthProfessional() {
         Log.w("AAA", "edithealthProfessional()");
         healthProfessional.set_id(id);
-        healthProfessional.setName(nameEditTExt.getText().toString());
+        healthProfessional.setName(nameEditText.getText().toString());
 
         if (isEdit) {
-            if ((emailEditTExt.getText().toString().equals(userLogged.getEmail()))
-                    || emailEditTExt.getText().toString().isEmpty()) {
+            if ((emailEditText.getText().toString().equals(userLogged.getEmail()))
+                    || emailEditText.getText().toString().isEmpty()) {
                 healthProfessional.setEmail(null);
-            } else healthProfessional.setEmail(emailEditTExt.getText().toString());
+            } else healthProfessional.setEmail(emailEditText.getText().toString());
         } else {
-            if (emailEditTExt.getText().toString().isEmpty()) healthProfessional.setEmail(null);
-            else healthProfessional.setEmail(emailEditTExt.getText().toString());
+            if (emailEditText.getText().toString().isEmpty()) healthProfessional.setEmail(null);
+            else healthProfessional.setEmail(emailEditText.getText().toString());
         }
 
-        healthProfessional.setPhoneNumber(phoneEdittext.getText().toString());
+        healthProfessional.setPhoneNumber(phoneEditText.getText().toString());
         healthProfessional.setBirthDate(DateUtils.formatDate(myCalendar.getTimeInMillis(), "yyyy-MM-dd"));
         Log.w("AAA", "editing Health Professional: " + healthProfessional.toJson());
         DisposableManager.add(haniotNetRepository.updateHealthProfissional(healthProfessional).subscribe(healthProfessional1 -> {
@@ -206,20 +210,21 @@ public class UserRegisterActivity extends AppCompatActivity {
         Log.w("AAA", "savePatient()");
         if (!isEdit) patient = new Patient();
 
-        patient.setName(nameEditTExt.getText().toString());
+        patient.setName(nameEditText.getText().toString());
 
         if (isEdit) {
             patient.set_id(id);
-            if ((emailEditTExt.getText().toString().equals(patient.getEmail()))
-                    || emailEditTExt.getText().toString().isEmpty()) {
+            if ((emailEditText.getText().toString().equals(patient.getEmail()))
+                    || emailEditText.getText().toString().isEmpty()) {
                 patient.setEmail(null);
-            } else patient.setEmail(emailEditTExt.getText().toString());
+            } else patient.setEmail(emailEditText.getText().toString());
         } else {
-            if (emailEditTExt.getText().toString().isEmpty()) patient.setEmail(null);
-            else patient.setEmail(emailEditTExt.getText().toString());
+            if (emailEditText.getText().toString().isEmpty()) patient.setEmail(null);
+            else patient.setEmail(emailEditText.getText().toString());
         }
 
-        patient.setPhoneNumber(phoneEdittext.getText().toString());
+        patient.setAddress(addressEditText.getText().toString());
+        patient.setPhoneNumber(phoneEditText.getText().toString());
         patient.setBirthDate(DateUtils.formatDate(myCalendar.getTimeInMillis(), "yyyy-MM-dd"));
         Log.w("AAA", "patient BirthDate: " + patient.getBirthDate());
         if (genderGroup.getCheckedRadioButtonId() == R.id.male) {
@@ -367,6 +372,7 @@ public class UserRegisterActivity extends AppCompatActivity {
                             patient.setName(patient1.getName());
                             name = patient1.getName();
                         }
+                        address = patient1.getAddress();
                         phoneNumber = patient1.getPhoneNumber();
                         birthday = patient1.getBirthDate();
                         gender = patient1.getGender();
@@ -448,20 +454,25 @@ public class UserRegisterActivity extends AppCompatActivity {
      */
     private void enabledView(final boolean enabled) {
         runOnUiThread(() -> {
-            nameEditTExt.setEnabled(enabled);
-            emailEditTExt.setEnabled(enabled);
-            phoneEdittext.setEnabled(enabled);
-            birthEdittext.setEnabled(enabled);
+            nameEditText.setEnabled(enabled);
+            emailEditText.setEnabled(enabled);
+            addressEditText.setEnabled(enabled);
+            phoneEditText.setEnabled(enabled);
+            birthEditText.setEnabled(enabled);
             genderGroup.setEnabled(enabled);
         });
     }
 
     private void prepareView() {
-        nameEditTExt.setText(name);
-        emailEditTExt.setText(oldEmail);
-        phoneEdittext.setText(phoneNumber);
-        birthEdittext.setText(DateUtils.formatDate(birthday, getString(R.string.date_format)));
+        nameEditText.setText(name);
+        emailEditText.setText(oldEmail);
+        addressEditText.setText(address);
+        phoneEditText.setText(phoneNumber);
+        birthEditText.setText(DateUtils.formatDate(birthday, getString(R.string.date_format)));
         if (editUserLogged) {
+            toolbar.setTitle(getResources().getString(R.string.user_profile));
+            messageAdd.setText(getResources().getString(R.string.message_info_user));
+            addressEditText.setVisibility(View.GONE);
             genderGroup.setVisibility(View.GONE);
         }
 
@@ -512,7 +523,7 @@ public class UserRegisterActivity extends AppCompatActivity {
         }
 
 
-        birthEdittext.setOnClickListener(v -> {
+        birthEditText.setOnClickListener(v -> {
             InputMethodManager inputManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
             inputManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
             DatePickerDialog dialog = new DatePickerDialog(UserRegisterActivity.this,
@@ -520,7 +531,7 @@ public class UserRegisterActivity extends AppCompatActivity {
                         myCalendar.set(Calendar.YEAR, year);
                         myCalendar.set(Calendar.MONTH, month);
                         myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                        birthEdittext.setText(DateUtils.formatDate(myCalendar.getTimeInMillis(),
+                        birthEditText.setText(DateUtils.formatDate(myCalendar.getTimeInMillis(),
                                 getResources().getString(R.string.date_format)));
                     }, 2010, 1, 1);
             dialog.show();

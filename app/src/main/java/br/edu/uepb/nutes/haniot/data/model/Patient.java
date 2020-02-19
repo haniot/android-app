@@ -20,6 +20,10 @@ public class Patient extends User{
     @Expose()
     private String pilotId;
 
+    @SerializedName("address")
+    @Expose()
+    private String address;
+
     @SerializedName("gender")
     @Expose()
     private String gender;
@@ -37,6 +41,14 @@ public class Patient extends User{
 
     public void setPilotId(String pilotId) {
         this.pilotId = pilotId;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public String getGender() {
@@ -83,6 +95,7 @@ public class Patient extends User{
     public String toString() {
         return "Patient{" +
                 ", pilotId='" + pilotId + '\'' +
+                ", address='" + address + '\'' +
                 ", gender='" + gender + '\'' +
                 ", healthProfessionalId='" + healthProfessionalId + '\'' +
                 '}';
