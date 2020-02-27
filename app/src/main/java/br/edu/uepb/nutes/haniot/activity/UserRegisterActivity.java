@@ -472,8 +472,10 @@ public class UserRegisterActivity extends AppCompatActivity {
         if (editUserLogged) {
             toolbar.setTitle(getResources().getString(R.string.user_profile));
             messageAdd.setText(getResources().getString(R.string.message_info_user));
-            addressEditText.setVisibility(View.GONE);
-            genderGroup.setVisibility(View.GONE);
+            if (!(userLogged.getUserType().equals(PATIENT))) {
+                addressEditText.setVisibility(View.GONE);
+                genderGroup.setVisibility(View.GONE);
+            }
         }
 
         Log.w("AAA", birthday);
