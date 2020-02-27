@@ -111,7 +111,7 @@
                 android:layout_marginRight="20dp"
                 android:ems="10"
                 android:hint="@string/address"
-                android:inputType="textCapWords"
+                android:inputType="textMultiLine|textCapSentences"
                 android:textColor="@color/colorAccent"
                 android:textColorHint="@android:color/tertiary_text_light" />
 
