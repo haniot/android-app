@@ -245,7 +245,6 @@ public class UserRegisterActivity extends AppCompatActivity {
                     .subscribe(patient1 -> {
                         patientDAO.save(patient);
                         showMessage(R.string.update_success);
-                        startActivity(new Intent(UserRegisterActivity.this, ManagerPatientsActivity.class));
                         finish();
                     }, this::errorHandler));
         } else {
