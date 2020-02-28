@@ -2,7 +2,6 @@ package br.edu.uepb.nutes.haniot.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -27,16 +26,15 @@ import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.TypeEvaluation;
 import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
-import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.disposables.CompositeDisposable;
 
 import static br.edu.uepb.nutes.haniot.data.model.ItemEvaluation.TYPE_ERROR;
 import static br.edu.uepb.nutes.haniot.data.model.ItemEvaluation.TYPE_LOADING;
 import static br.edu.uepb.nutes.haniot.data.model.ItemEvaluation.TYPE_QUIZ;
-import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.ALL_QUIZ;
 import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.FAMILY_COHESION;
 import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.FEEDING_HABITS;
 import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.MEDICAL_RECORDS;
@@ -78,6 +76,7 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
     TextView textErrorDentistry;
 
     private HaniotNetRepository haniotNetRepository;
+    private CompositeDisposable compositeDisposable;
     private AppPreferencesHelper appPreferencesHelper;
     private Patient patient;
     private List<GroupItemEvaluation> groupItemNutritionEvaluations;
@@ -110,6 +109,7 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
         groupItemNutritionEvaluations = new ArrayList<>();
         groupItemOdontologicalEvaluations = new ArrayList<>();
         haniotNetRepository = HaniotNetRepository.getInstance(this);
+        compositeDisposable = new CompositeDisposable();
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
         patient = appPreferencesHelper.getLastPatient();
         user = appPreferencesHelper.getUserLogged();
@@ -147,7 +147,7 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
 
     private void downloadData() {
         if (user.getUserType().equals(ADMIN) || !user.getHealthArea().equals(DENTISTRY)) {
-            DisposableManager.add(haniotNetRepository
+            compositeDisposable.add(haniotNetRepository
                     .getAllNutritionalQuestionnaires(patient.get_id(), 1, 100, "created_at")
                     .subscribe(nutritional -> {
                         Log.w("AAA", "Size Nutrition: " + nutritional.size());
@@ -161,7 +161,7 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
         }
 
         if (user.getUserType().equals(ADMIN) || !user.getHealthArea().equals(NUTRITION)) {
-            DisposableManager.add(haniotNetRepository
+            compositeDisposable.add(haniotNetRepository
                     .getAllOdontologicalQuestionnaires(patient.get_id(), 1, 100, "created_at")
                     .subscribe(odontological -> {
                         Log.w("AAA", "Size Odonto: " + odontological.size());
@@ -410,4 +410,9 @@ public class HistoricQuizActivity extends AppCompatActivity implements HistoricQ
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        compositeDisposable.dispose();
+    }
 }

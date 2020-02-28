@@ -19,13 +19,12 @@ import br.edu.uepb.nutes.haniot.data.model.HealthProfessional;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
-import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.ErrorHandler;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import retrofit2.HttpException;
+import io.reactivex.disposables.CompositeDisposable;
 
 import static br.edu.uepb.nutes.haniot.data.model.UserType.ADMIN;
 import static br.edu.uepb.nutes.haniot.data.model.UserType.HEALTH_PROFESSIONAL;
@@ -60,6 +59,7 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
     private User user;
     private AppPreferencesHelper appPreferences;
     private HaniotNetRepository haniotNetRepository;
+    private CompositeDisposable compositeDisposable;
     private Menu menu;
 
     @Override
@@ -76,6 +76,7 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
 
         appPreferences = AppPreferencesHelper.getInstance(this);
         haniotNetRepository = HaniotNetRepository.getInstance(this);
+        compositeDisposable = new CompositeDisposable();
 
         user = appPreferences.getUserLogged();
         if (user == null) {
@@ -93,7 +94,7 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        DisposableManager.dispose();
+        compositeDisposable.dispose();
     }
 
     @Override
@@ -138,7 +139,7 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
     private void prepareEditing() {
         switch (appPreferences.getUserLogged().getUserType()) {
             case ADMIN:
-                DisposableManager.add(haniotNetRepository
+                compositeDisposable.add(haniotNetRepository
                         .getAdmin(user.get_id())
                         .doOnSubscribe(disposable -> {
                             populateView(); // Populate view with local data
@@ -155,7 +156,7 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
                         }, this::errorHandler));
                 break;
             case HEALTH_PROFESSIONAL:
-                DisposableManager.add(haniotNetRepository
+                compositeDisposable.add(haniotNetRepository
                         .getHealthProfissional(user.get_id())
                         .doOnSubscribe(disposable -> {
                             populateView(); // Populate view with local data
@@ -172,7 +173,7 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
                         }, this::errorHandler));
                 break;
             case PATIENT:
-                DisposableManager.add(haniotNetRepository
+                compositeDisposable.add(haniotNetRepository
                         .getPatient(user.get_id())
                         .doOnSubscribe(disposable -> {
                             populateView(); // Populate view with local data
@@ -209,7 +210,7 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
 
         switch (appPreferences.getUserLogged().getUserType()) {
             case ADMIN:
-                DisposableManager.add(haniotNetRepository
+                compositeDisposable.add(haniotNetRepository
                         .updateAdmin((Admin) getUserView())
                         .doOnSubscribe(disposable -> loading(true))
                         .doAfterTerminate(() -> loading(false))
@@ -224,7 +225,7 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
                 );
                 break;
             case HEALTH_PROFESSIONAL:
-                DisposableManager.add(haniotNetRepository
+                compositeDisposable.add(haniotNetRepository
                         .updateHealthProfissional((HealthProfessional) getUserView())
                         .doOnSubscribe(disposable -> loading(true))
                         .doAfterTerminate(() -> loading(false))
@@ -239,7 +240,7 @@ public class UpdateDataActivity extends AppCompatActivity implements View.OnClic
                 );
                 break;
             case PATIENT:
-                DisposableManager.add(haniotNetRepository
+                compositeDisposable.add(haniotNetRepository
                         .updatePatient((Patient) getUserView())
                         .doOnSubscribe(disposable -> loading(true))
                         .doAfterTerminate(() -> loading(false))

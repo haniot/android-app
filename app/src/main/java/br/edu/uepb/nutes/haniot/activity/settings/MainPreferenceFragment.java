@@ -16,9 +16,9 @@ import br.edu.uepb.nutes.haniot.activity.PilotStudyActivity;
 import br.edu.uepb.nutes.haniot.activity.account.ChangePasswordActivity;
 import br.edu.uepb.nutes.haniot.activity.account.LoginActivity;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
-import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.haniot.devices.register.DeviceManagerActivity;
+import io.reactivex.disposables.CompositeDisposable;
 
 /**
  * MainPreferenceFragment implementation.
@@ -30,6 +30,7 @@ public class MainPreferenceFragment extends PreferenceFragment {
 
     private AppPreferencesHelper appPreferences;
     private HaniotNetRepository haniotNetRepository;
+    private CompositeDisposable compositeDisposable;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -39,6 +40,7 @@ public class MainPreferenceFragment extends PreferenceFragment {
 
         appPreferences = AppPreferencesHelper.getInstance(getActivity().getApplicationContext());
         haniotNetRepository = HaniotNetRepository.getInstance(getActivity().getApplicationContext());
+        compositeDisposable = new CompositeDisposable();
         // Send feedback
         Preference prefSendFeedback = findPreference(getString(R.string.key_send_bug));
         prefSendFeedback.setOnPreferenceClickListener(preference -> {
@@ -113,7 +115,7 @@ public class MainPreferenceFragment extends PreferenceFragment {
                     .setMessage(R.string.confirm_delete_account)
                     .setPositiveButton(R.string.bt_ok, (dialog, which) -> {
                                 // Remove user from server and redirect to login screen
-                                DisposableManager.add(haniotNetRepository
+                                compositeDisposable.add(haniotNetRepository
                                         .deleteUserById(appPreferences.getUserLogged().get_id()).subscribe(() -> {
                                             if (appPreferences.removeUserLogged()) {
                                                 Intent intent = new Intent(getActivity(), LoginActivity.class);
@@ -166,5 +168,11 @@ public class MainPreferenceFragment extends PreferenceFragment {
         intent.putExtra(Intent.EXTRA_SUBJECT, "HANIoT - Android App [BUG]");
         intent.putExtra(Intent.EXTRA_TEXT, body);
         context.startActivity(Intent.createChooser(intent, context.getString(R.string.choose_email_client)));
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        compositeDisposable.dispose();
     }
 }

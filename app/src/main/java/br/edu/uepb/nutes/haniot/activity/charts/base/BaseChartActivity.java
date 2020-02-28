@@ -28,12 +28,12 @@ import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.MeasurementType;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
-import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.disposables.CompositeDisposable;
 
 /**
  * Base Chart implementation.
@@ -53,6 +53,7 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
     protected int currentChartType;
     private AppPreferencesHelper appPreferencesHelper;
     protected HaniotNetRepository haniotNetRepository;
+    protected CompositeDisposable compositeDisposable;
     protected Patient patient;
 
     @BindView(R.id.toolbar)
@@ -96,6 +97,7 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
 
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
         haniotNetRepository = HaniotNetRepository.getInstance(this);
+        compositeDisposable = new CompositeDisposable();
         patient = appPreferencesHelper.getLastPatient();
 
         initView();
@@ -116,7 +118,7 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
 
     @Override
     protected void onDestroy() {
-        DisposableManager.dispose();
+        compositeDisposable.dispose();
         super.onDestroy();
     }
 
@@ -214,7 +216,7 @@ abstract public class BaseChartActivity extends AppCompatActivity implements Vie
         Log.w(TAG, "Data fim: " + dateEnd);
 
         if (ConnectionUtils.internetIsEnabled(this)) {
-            DisposableManager.add(haniotNetRepository.
+            compositeDisposable.add(haniotNetRepository.
                     getAllMeasurementsByType(patient.get_id(), getTypeMeasurement(), "timestamp",
                             dateStart, dateEnd, 1, 100)
                     .doOnSubscribe(disposable -> {

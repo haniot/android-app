@@ -53,13 +53,13 @@ import br.edu.uepb.nutes.haniot.data.model.Patient;
 import br.edu.uepb.nutes.haniot.data.model.dao.DeviceDAO;
 import br.edu.uepb.nutes.haniot.data.model.dao.MeasurementDAO;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
-import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.haniot.service.ManagerDevices.BluetoothManager;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import br.edu.uepb.nutes.haniot.utils.NetworkUtil;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.disposables.CompositeDisposable;
 
 public abstract class BaseDeviceActivity extends AppCompatActivity implements View.OnClickListener {
     protected final int REQUEST_ENABLE_BLUETOOTH = 1;
@@ -84,6 +84,7 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
     protected BluetoothManager manager;
 
     protected HaniotNetRepository haniotNetRepository;
+    protected CompositeDisposable compositeDisposable;
     protected Patient patient;
 
     private boolean wifiRequest;
@@ -154,6 +155,7 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
         mAddButton.setOnClickListener(this);
 
         haniotNetRepository = HaniotNetRepository.getInstance(this);
+        compositeDisposable = new CompositeDisposable();
         patient = appPreferencesHelper.getLastPatient();
 
         if (isTablet(this)) {
@@ -362,7 +364,7 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
         Log.w("XXX", "removePendingMeasurements()");
         if (measurementIdToDelete == null || measurementIdToDelete.isEmpty()) return;
         for (String id : measurementIdToDelete)
-            DisposableManager.add(haniotNetRepository
+            compositeDisposable.add(haniotNetRepository
                     .deleteMeasurement(patient.get_id(), id).subscribe(() -> {
                         measurementIdToDelete.remove(id);
                     }));
@@ -402,7 +404,7 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
             loadDataLocal();
         } else {
             removePendingMeasurements();
-            DisposableManager.add(haniotNetRepository
+            compositeDisposable.add(haniotNetRepository
                     .getAllMeasurementsByType(patient.get_id(),
                             getMeasurementType(), "-timestamp",
                             null, null, page, LIMIT_PER_PAGE)
@@ -527,7 +529,7 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        DisposableManager.dispose();
+        compositeDisposable.dispose();
         if (manager != null) manager.close();
         unregisterReceiver(mReceiver);
     }
@@ -555,7 +557,7 @@ public abstract class BaseDeviceActivity extends AppCompatActivity implements Vi
      * @param measurement Measurement to save in server
      */
     protected void synchronizeWithServer(Measurement measurement) {
-        DisposableManager.add(haniotNetRepository
+        compositeDisposable.add(haniotNetRepository
                 .saveMeasurement(measurement)
                 .doAfterSuccess(measurement1 -> {
                     printMessage(getString(R.string.measurement_save));

@@ -63,7 +63,6 @@ import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.model.dao.DeviceDAO;
 import br.edu.uepb.nutes.haniot.data.model.dao.MeasurementDAO;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
-import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.haniot.devices.BloodPressureActivity;
 import br.edu.uepb.nutes.haniot.devices.GlucoseActivity;
@@ -85,6 +84,7 @@ import br.edu.uepb.nutes.simpleblescanner.SimpleBleScanner;
 import br.edu.uepb.nutes.simpleblescanner.SimpleScannerCallback;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.disposables.CompositeDisposable;
 
 /**
  * MeasurementsGridFragment implementation.
@@ -113,6 +113,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
     private SharedPreferences prefSettings;
     private DecimalFormat decimalFormat;
     private HaniotNetRepository haniotRepository;
+    private CompositeDisposable compositeDisposable;
     private MeasurementDAO measurementDAO;
     private PilotStudy pilotStudy;
     private static List<HeartRateItem> heartRateItems;
@@ -140,6 +141,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         haniotRepository = HaniotNetRepository.getInstance(mContext);
+        compositeDisposable = new CompositeDisposable();
         measurementDAO = MeasurementDAO.getInstance(mContext);
 
     }
@@ -157,7 +159,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
 
     //TODO Próxima sprint
     private void downloadLastMeasurements() {
-        DisposableManager.add(haniotRepository
+        compositeDisposable.add(haniotRepository
                 .getAllMeasurementsByType(patient.get_id(), "blood_glucose", "-timestamp", null, null, 1, 1)
                 .subscribe(measurements -> {
                     if (!measurements.isEmpty()) {
@@ -533,7 +535,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
 
     private void sendMeasurementToServer(Measurement measurement) {
         Log.i(LOG_TAG, "Saving " + measurement.toJson());
-        DisposableManager.add(haniotRepository
+        compositeDisposable.add(haniotRepository
                 .saveMeasurement(measurement)
                 .doAfterSuccess(measurement1 -> {
                     Log.i(LOG_TAG, "Saved " + measurement1.toJson());
@@ -571,7 +573,7 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
         if (measurements == null) measurements = new ArrayList<>();
         measurements.add(measurement);
 
-        DisposableManager.add(haniotRepository
+        compositeDisposable.add(haniotRepository
                 .saveMeasurement(measurements)
                 .doAfterTerminate(() -> {
                     dialog.cancel();
@@ -1018,5 +1020,11 @@ public class MeasurementsGridFragment extends Fragment implements OnRecyclerView
     @Override
     public void onItemSwiped(MeasurementMonitor item, int position) {
 
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        compositeDisposable.dispose();
     }
 }

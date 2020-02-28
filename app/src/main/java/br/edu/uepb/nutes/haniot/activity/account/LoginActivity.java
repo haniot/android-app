@@ -3,7 +3,6 @@ package br.edu.uepb.nutes.haniot.activity.account;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -32,16 +31,15 @@ import br.edu.uepb.nutes.haniot.activity.MainActivity;
 import br.edu.uepb.nutes.haniot.data.model.Device;
 import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.model.UserAccess;
-import br.edu.uepb.nutes.haniot.data.model.UserType;
 import br.edu.uepb.nutes.haniot.data.model.dao.DeviceDAO;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
-import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.ErrorHandler;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.haniot.service.TokenExpirationService;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.disposables.CompositeDisposable;
 import okhttp3.ResponseBody;
 import retrofit2.HttpException;
 
@@ -86,6 +84,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private boolean mIsBound;
     private DeviceDAO mDeviceDAO;
     private HaniotNetRepository haniotNetRepository;
+    private CompositeDisposable compositeDisposable;
     private AppPreferencesHelper appPreferencesHelper;
 
     @Override
@@ -102,6 +101,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
         mDeviceDAO = DeviceDAO.getInstance(this);
         haniotNetRepository = HaniotNetRepository.getInstance(this);
+        compositeDisposable = new CompositeDisposable();
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
 
         doBindService();
@@ -131,7 +131,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     protected void onDestroy() {
         super.onDestroy();
         doUnbindService();
-        DisposableManager.dispose();
+        compositeDisposable.dispose();
     }
 
     @Override
@@ -172,7 +172,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
      * Authenticates the user on the remote server
      */
     private void authenticationInServer() {
-        DisposableManager.add(haniotNetRepository
+        compositeDisposable.add(haniotNetRepository
                 .auth(String.valueOf(emailEditText.getText()), String.valueOf(passwordEditText.getText()))
                 .doOnSubscribe(disposable -> showLoading(true))
                 .doAfterTerminate(() -> showLoading(false))
@@ -194,7 +194,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private void getUserProfile(UserAccess userAccess) {
         switch (userAccess.getTokenType()) {
             case HEALTH_PROFESSIONAL:
-                DisposableManager.add(haniotNetRepository
+                compositeDisposable.add(haniotNetRepository
                         .getHealthProfissional(userAccess.getSubject())
                         .doOnSubscribe(disposable -> showLoading(true))
                         .doAfterTerminate(() -> showLoading(false))
@@ -210,7 +210,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 );
                 break;
             case ADMIN:
-                DisposableManager.add(haniotNetRepository
+                compositeDisposable.add(haniotNetRepository
                         .getAdmin(userAccess.getSubject())
                         .doOnSubscribe(disposable -> showLoading(true))
                         .doAfterTerminate(() -> showLoading(false))
@@ -226,7 +226,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 );
                 break;
             case PATIENT:
-                DisposableManager.add(haniotNetRepository
+                compositeDisposable.add(haniotNetRepository
                         .getPatient(userAccess.getSubject())
                         .doOnSubscribe(disposable -> showLoading(true))
                         .doAfterTerminate(() -> showLoading(false))
@@ -262,7 +262,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void syncDevices(String userId) {
         if (userId == null) return;
 
-        DisposableManager.add(haniotNetRepository
+        compositeDisposable.add(haniotNetRepository
                 .getAllDevices(userId)
                 .doOnSubscribe(disposable -> showLoading(true))
                 .doAfterTerminate(() -> {

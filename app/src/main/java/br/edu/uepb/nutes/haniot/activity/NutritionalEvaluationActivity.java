@@ -12,7 +12,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,13 +34,13 @@ import br.edu.uepb.nutes.haniot.data.model.PilotStudy;
 import br.edu.uepb.nutes.haniot.data.model.TypeEvaluation;
 import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
-import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.haniot.devices.GlucoseActivity;
 import br.edu.uepb.nutes.haniot.devices.ScaleActivity;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.disposables.CompositeDisposable;
 
 import static br.edu.uepb.nutes.haniot.data.model.ItemEvaluation.TYPE_EMPTY_REQUIRED;
 import static br.edu.uepb.nutes.haniot.data.model.ItemEvaluation.TYPE_ERROR;
@@ -81,6 +80,7 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
     private AppPreferencesHelper helper;
     private Patient patient;
     private HaniotNetRepository haniotNetRepository;
+    private CompositeDisposable compositeDisposable;
     private AppPreferencesHelper appPreferencesHelper;
     private NutritionalEvaluation nutritionalEvaluation;
     private PilotStudy pilotStudy;
@@ -143,6 +143,7 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
         groupItemEvaluations = new ArrayList<>();
         helper = AppPreferencesHelper.getInstance(this);
         haniotNetRepository = HaniotNetRepository.getInstance(this);
+        compositeDisposable = new CompositeDisposable();
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
         patient = helper.getLastPatient();
         user = helper.getUserLogged();
@@ -367,7 +368,7 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
      */
     private void downloadData() {
 
-        DisposableManager.add(haniotNetRepository
+        compositeDisposable.add(haniotNetRepository
                 .getLastNutritionalQuestionnaire(patient.get_id())
                 .subscribe(nutritionalQuestionnaires -> {
                     Log.w("AAA", nutritionalQuestionnaires.toJson());
@@ -378,7 +379,7 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
                     onDownloadError(ALL_QUIZ);
                 }));
 
-        DisposableManager.add(haniotNetRepository
+        compositeDisposable.add(haniotNetRepository
                 .getLastMeasurements(patient.get_id())
                 .subscribe(measurents -> {
                     Log.w("AAA", measurents.toJson());
@@ -454,7 +455,7 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
                     .setMessage(getString(R.string.confirm_save_evaluation))
                     .setCancelable(false)
                     .setPositiveButton(getString(R.string.yes_text), (dialog, id) -> {
-                        DisposableManager.add(haniotNetRepository
+                        compositeDisposable.add(haniotNetRepository
                                 .saveNutritionalEvaluation(nutritionalEvaluation)
                                 .subscribe(nutritionalEvaluationResult -> {
                                     Toast.makeText(this, R.string.evaluation_sucessfull, Toast.LENGTH_LONG).show();
@@ -527,5 +528,11 @@ public class NutritionalEvaluationActivity extends AppCompatActivity implements 
                 return;
         }
         startActivity(intent);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        compositeDisposable.dispose();
     }
 }

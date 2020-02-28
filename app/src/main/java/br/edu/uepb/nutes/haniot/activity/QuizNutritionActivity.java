@@ -32,7 +32,6 @@ import br.edu.uepb.nutes.haniot.data.model.dao.MedicalRecordDAO;
 import br.edu.uepb.nutes.haniot.data.model.dao.PhysicalActivityHabitsDAO;
 import br.edu.uepb.nutes.haniot.data.model.dao.SleepHabitsDAO;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
-import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.simplesurvey.base.SimpleSurvey;
 import br.edu.uepb.nutes.simplesurvey.question.Dichotomic;
@@ -40,6 +39,7 @@ import br.edu.uepb.nutes.simplesurvey.question.Infor;
 import br.edu.uepb.nutes.simplesurvey.question.Multiple;
 import br.edu.uepb.nutes.simplesurvey.question.Open;
 import br.edu.uepb.nutes.simplesurvey.question.Single;
+import io.reactivex.disposables.CompositeDisposable;
 import retrofit2.HttpException;
 
 import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.FEEDING_HABITS;
@@ -82,6 +82,7 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
 
     private AppPreferencesHelper appPreferencesHelper;
     private HaniotNetRepository haniotNetRepository;
+    private CompositeDisposable compositeDisposable;
     int checkpoint;
     private NutritionalQuestionnaire nutritionalQuestionnaire;
     private String updateType;
@@ -134,6 +135,7 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
     private void initResources() {
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
         haniotNetRepository = HaniotNetRepository.getInstance(this);
+        compositeDisposable = new CompositeDisposable();
         patient = appPreferencesHelper.getLastPatient();
         chronicDiseases = new ArrayList<>();
         weeklyFoodRecords = new ArrayList<>();
@@ -696,7 +698,7 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
         if (updateType == null) {
             Log.w("AAA", "updateType == null");
             Log.w("AAA", "Saving: " + nutritionalQuestionnaire.toJson());
-            DisposableManager.add(haniotNetRepository
+            compositeDisposable.add(haniotNetRepository
                     .saveNutritionalQuestionnaire(patient.get_id(), nutritionalQuestionnaire)
                     .doAfterTerminate(() -> {
                     })
@@ -730,7 +732,7 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
             printJson();
             Log.w("AAA", "id: " + idUpdate);
             if (idUpdate != null) {
-                DisposableManager.add(haniotNetRepository
+                compositeDisposable.add(haniotNetRepository
                         .updateNutritionalQuestionnaire(patient.get_id(), idUpdate, updateType, resourceToUpdate)
                         .subscribe(o -> {
                             dialog.cancel();
@@ -953,6 +955,6 @@ public class QuizNutritionActivity extends SimpleSurvey implements Infor.OnInfoL
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        DisposableManager.dispose();
+        compositeDisposable.dispose();
     }
 }

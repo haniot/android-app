@@ -30,12 +30,12 @@ import br.edu.uepb.nutes.haniot.data.model.PatientsType;
 import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.model.dao.PatientDAO;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
-import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.disposables.CompositeDisposable;
 import retrofit2.HttpException;
 
 import static br.edu.uepb.nutes.haniot.data.model.UserType.ADMIN;
@@ -92,6 +92,7 @@ public class UserRegisterActivity extends AppCompatActivity {
     private Patient patient;
     private AppPreferencesHelper appPreferencesHelper;
     private HaniotNetRepository haniotNetRepository;
+    private CompositeDisposable compositeDisposable;
     private PatientDAO patientDAO;
     private boolean isEdit = false;
     private String oldEmail;
@@ -152,7 +153,7 @@ public class UserRegisterActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        DisposableManager.dispose();
+        compositeDisposable.dispose();
     }
 
     private void editAdmin() {
@@ -172,7 +173,7 @@ public class UserRegisterActivity extends AppCompatActivity {
         admin.setPhoneNumber(phoneEditText.getText().toString());
         admin.setBirthDate(DateUtils.formatDate(myCalendar.getTimeInMillis(), "yyyy-MM-dd"));
         Log.w("AAA", "editing Admin: " + admin.toJson());
-        DisposableManager.add(haniotNetRepository.updateAdmin(admin).subscribe(admin1 -> {
+        compositeDisposable.add(haniotNetRepository.updateAdmin(admin).subscribe(admin1 -> {
             showMessage(R.string.update_success);
             finish();
         }, this::errorHandler));
@@ -197,7 +198,7 @@ public class UserRegisterActivity extends AppCompatActivity {
         healthProfessional.setPhoneNumber(phoneEditText.getText().toString());
         healthProfessional.setBirthDate(DateUtils.formatDate(myCalendar.getTimeInMillis(), "yyyy-MM-dd"));
         Log.w("AAA", "editing Health Professional: " + healthProfessional.toJson());
-        DisposableManager.add(haniotNetRepository.updateHealthProfissional(healthProfessional).subscribe(healthProfessional1 -> {
+        compositeDisposable.add(haniotNetRepository.updateHealthProfissional(healthProfessional).subscribe(healthProfessional1 -> {
             showMessage(R.string.update_success);
             finish();
         }, this::errorHandler));
@@ -238,7 +239,7 @@ public class UserRegisterActivity extends AppCompatActivity {
 
         if (isEdit) {
             Log.w("AAA", "patient to edit: " + patient.toJson());
-            DisposableManager.add(haniotNetRepository
+            compositeDisposable.add(haniotNetRepository
                     .updatePatient(patient)
                     .doOnSubscribe(disposable -> showLoading(true))
                     .doAfterTerminate(() -> showLoading(false))
@@ -248,7 +249,7 @@ public class UserRegisterActivity extends AppCompatActivity {
                         finish();
                     }, this::errorHandler));
         } else {
-            DisposableManager.add(haniotNetRepository
+            compositeDisposable.add(haniotNetRepository
                     .savePatient(patient)
                     .doAfterTerminate(() -> {
                         showLoading(false);
@@ -273,7 +274,7 @@ public class UserRegisterActivity extends AppCompatActivity {
      * Associate patient to selected pilot study in server.
      */
     private void associatePatientToPilotStudy() {
-        DisposableManager.add(haniotNetRepository
+        compositeDisposable.add(haniotNetRepository
                 .associatePatientToPilotStudy(userLogged.getPilotStudyIDSelected(), patient.get_id())
                 .subscribe(o -> {
                     Log.w(TAG, "Patient associated to pilotstudy");
@@ -354,7 +355,7 @@ public class UserRegisterActivity extends AppCompatActivity {
      */
     private void prepareEditing() {
         if (userLogged.getUserType().equals(PATIENT) || !editUserLogged) {
-            DisposableManager.add(haniotNetRepository
+            compositeDisposable.add(haniotNetRepository
                     .getPatient(appPreferencesHelper.getLastPatient().get_id())
                     .doOnSubscribe(disposable -> {
                         enabledView(false);
@@ -379,7 +380,7 @@ public class UserRegisterActivity extends AppCompatActivity {
                         enabledView(true);
                     }, this::errorHandler));
         } else if (userLogged.getUserType().equals(HEALTH_PROFESSIONAL)) {
-            DisposableManager.add(haniotNetRepository
+            compositeDisposable.add(haniotNetRepository
                     .getHealthProfissional(userLogged.get_id())
                     .doOnSubscribe(disposable -> {
                         enabledView(false);
@@ -403,7 +404,7 @@ public class UserRegisterActivity extends AppCompatActivity {
                         enabledView(true);
                     }, this::errorHandler));
         } else if (userLogged.getUserType().equals(ADMIN)) {
-            DisposableManager.add(haniotNetRepository
+            compositeDisposable.add(haniotNetRepository
                     .getAdmin(userLogged.get_id())
                     .doOnSubscribe(disposable -> {
                         enabledView(false);
@@ -511,6 +512,7 @@ public class UserRegisterActivity extends AppCompatActivity {
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
         Log.i(TAG, appPreferencesHelper.getUserAccessHaniot().getAccessToken());
         haniotNetRepository = HaniotNetRepository.getInstance(this);
+        compositeDisposable = new CompositeDisposable();
         patientDAO = PatientDAO.getInstance(this);
         myCalendar = Calendar.getInstance();
         userLogged = appPreferencesHelper.getUserLogged();

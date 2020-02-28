@@ -2,13 +2,11 @@ package br.edu.uepb.nutes.haniot.activity;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.text.InputType;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,7 +25,6 @@ import br.edu.uepb.nutes.haniot.data.model.SociodemographicType;
 import br.edu.uepb.nutes.haniot.data.model.ToothLesion;
 import br.edu.uepb.nutes.haniot.data.model.ToothLesionType;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
-import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.simplesurvey.base.SimpleSurvey;
 import br.edu.uepb.nutes.simplesurvey.question.Dichotomic;
@@ -35,12 +32,11 @@ import br.edu.uepb.nutes.simplesurvey.question.Infor;
 import br.edu.uepb.nutes.simplesurvey.question.Multiple;
 import br.edu.uepb.nutes.simplesurvey.question.Open;
 import br.edu.uepb.nutes.simplesurvey.question.Single;
+import io.reactivex.disposables.CompositeDisposable;
 import retrofit2.HttpException;
 
 import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.FAMILY_COHESION;
-import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.FEEDING_HABITS;
 import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.ORAL_HEALTH;
-import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.SLEEP_HABITS;
 import static br.edu.uepb.nutes.haniot.data.model.TypeEvaluation.SOCIODEMOGRAPHICS;
 
 /**
@@ -65,6 +61,7 @@ public class QuizOdontologyActivity extends SimpleSurvey implements Infor.OnInfo
 
     private AppPreferencesHelper appPreferencesHelper;
     private HaniotNetRepository haniotNetRepository;
+    private CompositeDisposable compositeDisposable;
 
     private FamilyCohesionRecord familyCohesionRecord;
     private OralHealthRecord oralHealthRecord;
@@ -148,6 +145,7 @@ public class QuizOdontologyActivity extends SimpleSurvey implements Infor.OnInfo
     private void initResources() {
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
         haniotNetRepository = HaniotNetRepository.getInstance(this);
+        compositeDisposable = new CompositeDisposable();
         patient = appPreferencesHelper.getLastPatient();
         familyCohesionRecord = new FamilyCohesionRecord();
         oralHealthRecord = new OralHealthRecord();
@@ -604,7 +602,7 @@ public class QuizOdontologyActivity extends SimpleSurvey implements Infor.OnInfo
         dialog.show();
         Log.w("AAA", odontologicalQuestionnaire.toJson());
         if (updateType == null) {
-            DisposableManager.add(haniotNetRepository
+            compositeDisposable.add(haniotNetRepository
                     .saveOdontologicalQuestionnaire(patient.get_id(), odontologicalQuestionnaire)
                     .doAfterTerminate(() -> {
                     })
@@ -639,7 +637,7 @@ public class QuizOdontologyActivity extends SimpleSurvey implements Infor.OnInfo
 
             Log.w("AAA", "id: " + idUpdate);
             if (idUpdate != null) {
-                DisposableManager.add(haniotNetRepository
+                compositeDisposable.add(haniotNetRepository
                         .updateOdontologicalQuestionnaire(patient.get_id(), idUpdate, updateType, resourceToUpdate)
                         .subscribe(o -> {
                             dialog.cancel();
@@ -823,6 +821,6 @@ public class QuizOdontologyActivity extends SimpleSurvey implements Infor.OnInfo
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        DisposableManager.dispose();
+        compositeDisposable.dispose();
     }
 }

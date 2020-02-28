@@ -32,15 +32,13 @@ import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.model.UserAccess;
 import br.edu.uepb.nutes.haniot.data.model.dao.DeviceDAO;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
-import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.ErrorHandler;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.haniot.service.TokenExpirationService;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import okhttp3.MediaType;
-import okhttp3.RequestBody;
+import io.reactivex.disposables.CompositeDisposable;
 import okhttp3.ResponseBody;
 import retrofit2.HttpException;
 
@@ -88,6 +86,7 @@ public class ForgotPasswordActivity extends AppCompatActivity implements View.On
     private boolean mIsBound;
     private DeviceDAO mDeviceDAO;
     private HaniotNetRepository haniotNetRepository;
+    private CompositeDisposable compositeDisposable;
     private AppPreferencesHelper appPreferencesHelper;
 
     @Override
@@ -101,6 +100,7 @@ public class ForgotPasswordActivity extends AppCompatActivity implements View.On
         }
         mDeviceDAO = DeviceDAO.getInstance(this);
         haniotNetRepository = HaniotNetRepository.getInstance(this);
+        compositeDisposable = new CompositeDisposable();
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
 
         doBindService();
@@ -125,7 +125,7 @@ public class ForgotPasswordActivity extends AppCompatActivity implements View.On
     protected void onDestroy() {
         super.onDestroy();
         doUnbindService();
-        DisposableManager.dispose();
+        compositeDisposable.dispose();
     }
 
     @Override
@@ -172,7 +172,7 @@ public class ForgotPasswordActivity extends AppCompatActivity implements View.On
 //        user.set
         JsonObject email = new JsonObject();
         email.addProperty("email", emailEditText.getText().toString());
-        DisposableManager.add(haniotNetRepository
+        compositeDisposable.add(haniotNetRepository
                 .forgotPassword(email)
                 .doOnSubscribe(disposable -> showLoading(true))
                 .doAfterTerminate(() -> showLoading(false))
@@ -190,7 +190,7 @@ public class ForgotPasswordActivity extends AppCompatActivity implements View.On
     private void getUserProfile(UserAccess userAccess) {
         switch (userAccess.getTokenType()) {
             case HEALTH_PROFESSIONAL:
-                DisposableManager.add(haniotNetRepository
+                compositeDisposable.add(haniotNetRepository
                         .getHealthProfissional(userAccess.getSubject())
                         .doOnSubscribe(disposable -> showLoading(true))
                         .doAfterTerminate(() -> showLoading(false))
@@ -206,7 +206,7 @@ public class ForgotPasswordActivity extends AppCompatActivity implements View.On
                 );
                 break;
             case ADMIN:
-                DisposableManager.add(haniotNetRepository
+                compositeDisposable.add(haniotNetRepository
                         .getAdmin(userAccess.getSubject())
                         .doOnSubscribe(disposable -> showLoading(true))
                         .doAfterTerminate(() -> showLoading(false))
@@ -222,7 +222,7 @@ public class ForgotPasswordActivity extends AppCompatActivity implements View.On
                 );
                 break;
             case PATIENT:
-                DisposableManager.add(haniotNetRepository
+                compositeDisposable.add(haniotNetRepository
                         .getPatient(userAccess.getSubject())
                         .doOnSubscribe(disposable -> showLoading(true))
                         .doAfterTerminate(() -> showLoading(false))
@@ -258,7 +258,7 @@ public class ForgotPasswordActivity extends AppCompatActivity implements View.On
     public void syncDevices(String userId) {
         if (userId == null) return;
 
-        DisposableManager.add(haniotNetRepository
+        compositeDisposable.add(haniotNetRepository
                 .getAllDevices(userId)
                 .doOnSubscribe(disposable -> showLoading(true))
                 .doAfterTerminate(() -> {

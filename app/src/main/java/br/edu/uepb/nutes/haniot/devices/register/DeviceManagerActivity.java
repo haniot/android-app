@@ -34,11 +34,11 @@ import br.edu.uepb.nutes.haniot.data.model.DeviceType;
 import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.model.dao.DeviceDAO;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
-import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.disposables.CompositeDisposable;
 
 import static br.edu.uepb.nutes.haniot.utils.GattAttributes.SERVICE_GLUCOSE;
 import static br.edu.uepb.nutes.haniot.utils.GattAttributes.SERVICE_HEALTH_THERMOMETER;
@@ -111,6 +111,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
     private AppPreferencesHelper appPreferences;
     private DeviceDAO mDeviceDAO;
     private HaniotNetRepository haniotRepository;
+    private CompositeDisposable compositeDisposable;
     private List<String> deviceIdToDelete;
     private Handler handler;
     private Runnable runnable;
@@ -122,6 +123,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_manager_devices);
         ButterKnife.bind(this);
         haniotRepository = HaniotNetRepository.getInstance(this);
+        compositeDisposable = new CompositeDisposable();
         appPreferences = AppPreferencesHelper.getInstance(this);
         mDeviceDAO = DeviceDAO.getInstance(this);
 
@@ -189,7 +191,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
      * Download list of devices registered.
      */
     public void downloadDevicesData() {
-        DisposableManager.add(
+        compositeDisposable.add(
                 haniotRepository
                         .getAllDevices(user.get_id())
                         .doOnSubscribe(disposable -> {
@@ -346,7 +348,7 @@ public class DeviceManagerActivity extends AppCompatActivity {
         Log.w("XXX", "removePendingDevices()");
         if (deviceIdToDelete == null || deviceIdToDelete.isEmpty()) return;
         for (String idDevice : deviceIdToDelete)
-            DisposableManager.add(haniotRepository
+            compositeDisposable.add(haniotRepository
                     .deleteDevice(user.get_id(), idDevice).subscribe(() -> {
                         mDeviceDAO.remove(idDevice);
                         deviceIdToDelete.remove(idDevice);
@@ -475,5 +477,11 @@ public class DeviceManagerActivity extends AppCompatActivity {
             availableList.remove(d);
         }
         return availableList;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        compositeDisposable.dispose();
     }
 }

@@ -3,7 +3,6 @@ package br.edu.uepb.nutes.haniot.activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -27,7 +26,6 @@ import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -36,10 +34,8 @@ import br.edu.uepb.nutes.haniot.data.model.ItemGridType;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.MeasurementType;
 import br.edu.uepb.nutes.haniot.data.model.Patient;
-import br.edu.uepb.nutes.haniot.data.model.PatientsType;
 import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
-import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.ErrorHandler;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.haniot.fragment.FragmentAnthropometrics;
@@ -51,6 +47,7 @@ import br.edu.uepb.nutes.haniot.utils.DateUtils;
 import br.edu.uepb.nutes.haniot.utils.NetworkUtil;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.disposables.CompositeDisposable;
 
 public class AddMeasurementActivity extends AppCompatActivity {
 
@@ -97,6 +94,7 @@ public class AddMeasurementActivity extends AppCompatActivity {
 
     private final Calendar myCalendar = Calendar.getInstance();
     private HaniotNetRepository haniotNetRepository;
+    private CompositeDisposable compositeDisposable;
     private AppPreferencesHelper appPreferencesHelper;
     private Fragment myFragment;
     private User user;
@@ -115,6 +113,7 @@ public class AddMeasurementActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setupComponents();
         haniotNetRepository = HaniotNetRepository.getInstance(this);
+        compositeDisposable = new CompositeDisposable();
         appPreferencesHelper = AppPreferencesHelper.getInstance(this);
         user = appPreferencesHelper.getUserLogged();
         patient = appPreferencesHelper.getLastPatient();
@@ -135,6 +134,7 @@ public class AddMeasurementActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(mReceiver);
+        compositeDisposable.dispose();
     }
 
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -389,7 +389,7 @@ public class AddMeasurementActivity extends AppCompatActivity {
                 .setMessage(getString(R.string.confirm_save_measurement))
                 .setCancelable(false)
                 .setPositiveButton(getString(R.string.yes_text), (dialog, id) -> {
-                    DisposableManager.add(haniotNetRepository
+                    compositeDisposable.add(haniotNetRepository
                             .saveMeasurement(measurements)
                             .doAfterSuccess(measurement1 -> {
                                 showToast(getString(R.string.measurement_save));
@@ -414,7 +414,7 @@ public class AddMeasurementActivity extends AppCompatActivity {
                     .setMessage(getString(R.string.confirm_save_measurement))
                     .setCancelable(false)
                     .setPositiveButton(getString(R.string.yes_text), (dialog, id) -> {
-                        DisposableManager.add(haniotNetRepository
+                        compositeDisposable.add(haniotNetRepository
                                 .saveMeasurement(measurement)
                                 .doAfterSuccess(measurement1 -> {
                                     showToast(getString(R.string.measurement_save));

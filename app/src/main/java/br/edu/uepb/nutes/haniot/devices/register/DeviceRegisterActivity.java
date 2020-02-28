@@ -36,12 +36,12 @@ import br.edu.uepb.nutes.haniot.data.model.Device;
 import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.model.dao.DeviceDAO;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
-import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.simpleblescanner.SimpleBleScanner;
 import br.edu.uepb.nutes.simpleblescanner.SimpleScannerCallback;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.disposables.CompositeDisposable;
 import pl.bclogic.pulsator4droid.library.PulsatorLayout;
 
 import static br.edu.uepb.nutes.haniot.utils.GattAttributes.SERVICE_SCALE_YUNMAI;
@@ -60,6 +60,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
     private DeviceDAO mDeviceDAO;
     private AppPreferencesHelper appPreferences;
     private HaniotNetRepository haniotRepository;
+    private CompositeDisposable compositeDisposable;
     private User user;
 
     @BindView(R.id.box_scanner)
@@ -197,7 +198,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         Log.i("AAA", device.toJson());
         device.setModelNumber(null); // TODO Remover quando a API der suporte
         device.setUserId(user.get_id());
-        DisposableManager.add(haniotRepository
+        compositeDisposable.add(haniotRepository
                 .saveDevice(device)
                 .subscribe(deviceRest -> {
                     deviceRest.setImg(device.getImg());
@@ -340,7 +341,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         Log.d(LOG_TAG, "onDestroy: called.");
         super.onDestroy();
         unregisterReceiver(mBroadcastReceiver);
-        DisposableManager.dispose();
+        compositeDisposable.dispose();
     }
 
     /**
@@ -412,6 +413,7 @@ public class DeviceRegisterActivity extends AppCompatActivity implements View.On
         mDevice = getIntent().getParcelableExtra(DeviceManagerActivity.EXTRA_DEVICE);
         appPreferences = AppPreferencesHelper.getInstance(this);
         haniotRepository = HaniotNetRepository.getInstance(this);
+        compositeDisposable = new CompositeDisposable();
         mDeviceDAO = DeviceDAO.getInstance(this);
 
         btnDeviceRegisterScanner.setOnClickListener(this);

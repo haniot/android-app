@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,13 +19,12 @@ import br.edu.uepb.nutes.haniot.R;
 import br.edu.uepb.nutes.haniot.activity.MainActivity;
 import br.edu.uepb.nutes.haniot.data.model.User;
 import br.edu.uepb.nutes.haniot.data.repository.local.pref.AppPreferencesHelper;
-import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.ErrorHandler;
 import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.HaniotNetRepository;
 import br.edu.uepb.nutes.haniot.utils.ConnectionUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import retrofit2.HttpException;
+import io.reactivex.disposables.CompositeDisposable;
 
 /**
  * ChangePasswordActivity implementation.
@@ -56,6 +54,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
 
     private Menu menu;
     private HaniotNetRepository haniotNetRepository;
+    private CompositeDisposable compositeDisposable;
     private AppPreferencesHelper appPreferences;
     private User user;
 
@@ -69,6 +68,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(R.string.change_password);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         haniotNetRepository = HaniotNetRepository.getInstance(this);
+        compositeDisposable = new CompositeDisposable();
         appPreferences = AppPreferencesHelper.getInstance(this);
 
         String changePasswordId = appPreferences.getString("user_id");
@@ -94,7 +94,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        DisposableManager.dispose();
+        compositeDisposable.dispose();
     }
 
     @Override
@@ -186,7 +186,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
         user.setOldPassword(String.valueOf(currentPasswordEditText.getText()));
         user.setNewPassword(String.valueOf(newPasswordEditText.getText()));
 
-        DisposableManager.add(haniotNetRepository
+        compositeDisposable.add(haniotNetRepository
                 .changePassword(user)
                 .doOnSubscribe(disposable -> loadingSend(true))
                 .doAfterTerminate(() -> loadingSend(false))

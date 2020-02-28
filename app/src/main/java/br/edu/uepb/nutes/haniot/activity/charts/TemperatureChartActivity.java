@@ -15,7 +15,6 @@ import br.edu.uepb.nutes.haniot.activity.charts.base.BaseChartActivity;
 import br.edu.uepb.nutes.haniot.activity.charts.base.CreateChart;
 import br.edu.uepb.nutes.haniot.data.model.Measurement;
 import br.edu.uepb.nutes.haniot.data.model.MeasurementType;
-import br.edu.uepb.nutes.haniot.data.repository.remote.haniot.DisposableManager;
 
 /**
  * TemperatureChartActivity implementation.
